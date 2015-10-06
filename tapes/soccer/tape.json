@@ -1,0 +1,937 @@
+{
+  "name":"Almost Soccer",
+  "author":"KesieV",
+  "year":2015,
+  "genre":"Sport",
+  "description":"Soccer is the most favourite sport in Italy since forever for me, and that's so true that the world clich&eacute;d that together with the pizza (common, but chinese and japanese restaurants conquered Italy too), mandolino (not much played nowadays) and mafia (successfully exported and a worldwide speciality now) triad. I never liked soccer and I've found it pretty boring, played on the field and with a joystick. Surprisingly this repulsion didn't help on finding friends, leaving me a lot of spare time to spend on Rainbow Islands for ZX Spectrum and a lot of worries to my parents. But can you really make a retro collection of games without a soccer game? That's why I tried, as a total hater and unaware of the genre, to build an arcade version of the game. This game was built during lunch breaks and my colleagues helped a lot on choosing the basic rules to implement and on testing. This is the only game that caught their interest and that's bittersweet funny. Plot! You really need a plot for an arcade soccer game? Okay. Blue Team and Red Team are in finals! Who will win? Use UP/DOWN/LEFT/RIGHT for moving the selected player (the one with the blinking disc under his foots) and your goalkeeper. When you've the ball, press A BUTTON for kicking and B BUTTON for passing it to a nearby player. When you don't have the ball, hold the A BUTTON for running and tackling other players and hit the B BUTTON to switch to the teammate nearest to the ball.",
+  "screenshots":["soccer-1.png","soccer-2.png"],
+  "hardware":{
+    "width":256,
+    "height":192,
+    "texture":"scanlines"
+  },
+  "resources":{
+    "logo":"logo.png",
+    "soccer":"soccer.png",
+    "soccerfield":"soccerfield.png",
+    "soccerpeople":"soccerpeople.png",
+    "defaultsprites":"../default/sprites.png",
+    "scanlines":"../default/scanlines.png"
+  },
+  "stencils":{
+    "modelBall":{
+      "type":"ball",
+      "object":{ "_":[ "stencil", "ballShadow" ] },
+      "image":"defaultsprites", "tileX":136, "tileY":96, "width":8, "height":8,
+      "gravity":0,
+      "power":0,
+      "states":{
+        "code":[
+          { "name":"ZPerspective" },
+          {
+            "name":"Execute",
+            "data":[
+              {
+                "when":{ "_":[ "this", "power" ] },
+                "execute":[ { "subtract":1, "to":{ "_":[ "this", "power" ] } }, { "to":{ "_":"this" }, "set":{ "gravity":0 } } ],
+                "elseExecute":{ "to":{ "_":"this" }, "set":{ "gravity":0.8 } }
+              },
+              {
+                "when":{ "_":[ "this", "ownedBy" ] },
+                "execute":[
+                  { "set":{ "x":{ "_":[ "this", "ownedBy", "frontX" ] }, "y":{ "_":[ "this", "ownedBy", "frontY" ] } } },
+                  {
+                    "when":{ "_":[ "this", "touchZ", "and", { "_":[ "this", "forceZ", "abs", "isLessThan", 1 ] }, "and", { "_":[ "this", "ownedBy", "isMoving" ] } ] },
+                    "set":{ "forceZ":{ "_":[ "randomNumber", [ -4, -2 ] ] } }
+                  },
+                  { "sum":{ "_":[ "this", "ownedBy", "forceX", "*", 10 ] }, "to":{ "_":[ "this", "angle" ] } }
+                ],
+                "elseExecute":{ "sum":{ "_":[ "this", "forceX", "*", 10 ] }, "to":{ "_":[ "this", "angle" ] } }
+              }
+            ]
+          },
+          {
+            "name":"Physics",
+            "data":{
+              "when":{ "_":[ "this", "ownedBy" ] },
+              "walls":{
+                "z":0,
+                "restitution":0.8,
+                "execute":[ { "multiply":0.8, "to":{ "_":[ "this", "forceX" ] } }, { "multiply":0.8, "to":{ "_":[ "this", "forceY" ] } } ]
+              },
+              "gravityZ":{ "_":[ "this", "gravity" ] }
+            }
+          },
+          {
+            "name":"Physics",
+            "data":{
+              "when":{ "_":[ "this", "ownedBy", "not" ] },
+              "walls":[
+                {
+                  "z":0,
+                  "restitution":0.8,
+                  "execute":[ { "multiply":0.8, "to":{ "_":[ "this", "forceX" ] } }, { "multiply":0.8, "to":{ "_":[ "this", "forceY" ] } } ]
+                },
+                { "type":"block", "restitution":0.8 },
+                { "area":{ "width":704, "height":128, "x":32, "y":52 }, "restitution":0.8 }
+              ],
+              "gravityZ":{ "_":[ "this", "gravity" ] },
+              "limitX":[ { "_":[ "this", "maxSpeed", "*", -1 ] }, { "_":[ "this", "maxSpeed" ] } ],
+              "limitY":[ { "_":[ "this", "maxSpeed", "*", -1 ] }, { "_":[ "this", "maxSpeed" ] } ]
+            }
+          }
+        ]
+      }
+    },
+    "modelCameraMan":{
+      "type":[ "sceneObject", "cameraMan" ],
+      "follow":1,
+      "x":376, "y":100,
+      "states":[
+        {
+          "code":{
+            "name":"Execute",
+            "data":[
+              {
+                "when":{ "_":[ "objectTyped", "ball", "ownedBy", "team", "isEqualTo", "playerTeam" ] },
+                "set":{ "subject":{ "_":[ "objectTyped", "ball", "ownedBy" ] } },
+                "elseExecute":{ "set":{ "subject":{ "_":[ "object", "playerTeam", "nearestTo", { "_":[ "objectTyped", "ball" ] } ] } } }
+              },
+              {
+                "when":{ "_":[ "objectTyped", "ball", "ownedBy", "team", "isEqualTo", "playerTeam" ] },
+                "set":{ "x":{ "_":[ "this", "subject", "x" ] } },
+                "elseExecute":{
+                  "when":{ "_":[ "objectTyped", "ball", "ownedBy", "not" ] },
+                  "set":{ "x":{ "_":[ { "_":[ "this", "subject", "x" ] }, "+", { "_":[ "objectTyped", "ball", "x" ] }, "/", 2 ] } },
+                  "elseExecute":{
+                    "when":{ "_":[ { "_":[ "objectTyped", "playerKeeper", "x" ] }, "-", { "_":[ "objectTyped", "ball", "x" ] }, "abs", "isLessThan", 100 ] },
+                    "set":{ "x":{ "_":[ { "_":[ "objectTyped", "playerKeeper", "x" ] }, "+", { "_":[ "objectTyped", "ball", "x" ] }, "/", 2 ] } },
+                    "elseExecute":{ "set":{ "x":{ "_":[ { "_":[ "this", "subject", "x" ] }, "+", { "_":[ "objectTyped", "ball", "x" ] }, "/", 2 ] } } }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "name":"waiting" },
+        {
+          "name":"bounce",
+          "set":{ "forceX":3 },
+          "code":{ "name":"Physics", "data":{ "walls":{ "area":{ "width":640, "height":192, "x":64, "y":0 }, "restitution":1 } } }
+        }
+      ]
+    },
+    "modelGoal":{
+      "type":"goal",
+      "width":8, "height":56,
+      "zIndex":10, "y":88,
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":{
+            "when":{ "_":[ "this", "collidesWith", { "_":[ "objectTyped", "ball" ] } ] },
+            "execute":[
+              { "as":{ "_":[ "object", "people" ] }, "set":{ "animation":"happy" } },
+              { "as":{ "_":[ "objectTyped", "ball" ] }, "set":{ "forceX":0, "forceY":0, "ownedBy":0 } },
+              { "as":{ "_":[ "object", { "_":[ "this", "enemyTeam" ] } ] }, "set":{ "state":"winner" } },
+              { "as":{ "_":[ "object", { "_":[ "this", "team" ] } ] }, "set":{ "state":"loser" } },
+              { "as":{ "_":[ "objectTyped", "cameraMan" ] }, "set":{ "state":"bounce" } },
+              { "sum":1, "to":{ "_":[ "variable", { "_":[ "this", "score" ] } ] } },
+              { "as":{ "_":"scene" }, "set":{ "state":"goal" } },
+              { "set":{ "state":"idle" } }
+            ]
+          }
+        }
+      }
+    },
+    "modelGoalKeeper":{
+      "type":"sceneObject",
+      "object":{ "_":[ "stencil", "playerShadow" ] },
+      "image":"soccer", "width":16, "height":24,
+      "hitbox":{ "width":16, "height":8, "x":0, "y":16 },
+      "speed":1,
+      "animations":{ "idle":{ "frame":11 }, "moving":{ "frames":[ 11, 12 ], "loopTo":0 } },
+      "animation":"idle",
+      "keepArea":{ "width":50, "height":56, "x":34, "y":88 },
+      "kickSide":1,
+      "states":[
+        {
+          "code":[
+            {
+              "name":"Player",
+              "data":{ "when":{ "_":[ "this", "isTyped", "playerKeeper" ] }, "horizontal":{ "control":1, "gotoZero":1 }, "vertical":{ "control":1, "gotoZero":1 } }
+            },
+            {
+              "name":"Execute",
+              "data":[
+                {
+                  "when":{ "_":[ "this", "isTyped", "playerKeeper", "not" ] },
+                  "execute":{ "applyVector":{ "angle":{ "_":[ "this", "pointAt", { "x":8, "y":20 }, "angleTo", { "_":[ "objectTyped", "ball" ] } ] }, "length":1 } }
+                },
+                {
+                  "when":{ "_":[ "this", "collidesWith", { "_":[ "objectTyped", "ball" ] } ] },
+                  "execute":[
+                    { "as":{ "_":[ "that", "ownedBy" ] }, "executeAction":"fall" },
+                    {
+                      "as":{ "_":"that" },
+                      "set":{
+                        "forceX":{ "_":[ "that", "kickSide", "*", { "_":[ "randomNumber", [ 3, 6 ] ] } ] }, "forceY":0, "forceZ":{ "_":[ "randomNumber", [ -4, -8 ] ] },
+                        "ownedBy":0
+                      }
+                    }
+                  ]
+                },
+                {
+                  "when":{ "_":[ "this", "forceX", "or", { "_":[ "this", "forceY" ] } ] },
+                  "set":{ "animation":"moving" },
+                  "elseExecute":{ "set":{ "animation":"idle" } }
+                }
+              ]
+            },
+            {
+              "name":"Physics",
+              "data":{
+                "walls":[ { "z":0, "restitution":0 }, { "type":"block", "restitution":0 }, { "area":{ "_":[ "this", "keepArea" ] }, "restitution":0 } ],
+                "gravityZ":1,
+                "limitX":[ { "_":[ "this", "speed", "*", -1 ] }, { "_":[ "this", "speed" ] } ],
+                "limitY":[ { "_":[ "this", "speed", "*", -1 ] }, { "_":[ "this", "speed" ] } ]
+              }
+            },
+            { "name":"ZPerspective" }
+          ]
+        },
+        {
+          "name":"waiting",
+          "set":{ "frame":11, "animation":"none" },
+          "execute":{
+            "when":{ "_":[ "this", "x", "isGreaterThan", { "_":[ "objectTyped", { "_":[ "this", "goal" ] }, "x" ] } ] },
+            "set":{ "flipX":1 },
+            "elseExecute":{ "set":{ "flipX":0 } }
+          },
+          "code":{ "name":"ZPerspective" }
+        }
+      ]
+    },
+    "modelSoccerPlayer":{
+      "type":"sceneObject",
+      "object":{ "_":[ "stencil", "playerShadow" ] },
+      "image":"soccer", "width":16, "height":24,
+      "hitbox":{ "width":16, "height":8, "x":0, "y":16 },
+      "speed":2,
+      "animations":{
+        "loser":{ "frames":[ 15, 16 ], "loopTo":0 },
+        "stilldown":{ "frame":0 },
+        "stillleft":"stillright",
+        "stillright":{ "frame":6 },
+        "stillup":{ "frame":3 },
+        "stun":{ "frames":[ 9, 10 ], "loopTo":0 },
+        "walkdown":{ "frames":[ 0, 1, 0, 2 ], "speed":2, "loopTo":0 },
+        "walkleft":"walkright",
+        "walkright":{ "frames":[ 6, 7, 6, 8 ], "speed":2, "loopTo":0 },
+        "walkup":{ "frames":[ 3, 4, 3, 5 ], "speed":2, "loopTo":0 },
+        "winner":{ "frames":[ 13, 14 ], "loopTo":0 }
+      },
+      "aggressivity":3,
+      "aloneBallSight":90,
+      "attackDistance":30,
+      "ballSight":70,
+      "doorSight":120,
+      "maxPassPower":10,
+      "maxShotPower":10,
+      "maxStamina":20,
+      "mode":"walking",
+      "noBallSpeed":2,
+      "ownBallSpeed":2,
+      "passPower":0,
+      "runSpeed":3,
+      "shotPower":0,
+      "sight":0,
+      "stamina":0,
+      "stun":0,
+      "tension":0,
+      "tensionDistance":30,
+      "states":[
+        {
+          "code":[
+            {
+              "name":"Player",
+              "data":{
+                "when":{ "_":[ "this", "isTyped", "player", "and", { "_":[ "this", "stun", "not" ] } ] },
+                "horizontal":{ "control":1, "gotoZero":1 },
+                "vertical":{ "control":1, "gotoZero":1 }
+              }
+            },
+            {
+              "name":"Execute",
+              "data":[
+                {
+                  "set":{
+                    "frontX":{ "_":[ { "_":[ "this", "pointingHorizontal" ] }, "*", 12, "+", { "_":[ "this", "x", "+", 4 ] } ] },
+                    "frontY":{ "_":[ { "_":[ "this", "pointingVertical" ] }, "*", 8, "+", { "_":[ "this", "y", "+", 18 ] } ] }
+                  }
+                },
+                { "when":{ "_":[ "this", "stamina", "isLessThan", { "_":[ "this", "maxStamina" ] } ] }, "sum":1, "to":{ "_":[ "this", "stamina" ] } },
+                {
+                  "when":{ "_":[ "objectTyped", "ball", "ownedBy", "isEqualTo", { "_":"this" } ] },
+                  "set":{ "speed":{ "_":[ "this", "ownBallSpeed" ] }, "mode":"" },
+                  "elseExecute":{
+                    "when":{ "_":[ "this", "mode", "isEqualTo", "running", "and", { "_":[ "this", "stamina", "isGreaterThan", 2 ] } ] },
+                    "execute":[ { "set":{ "speed":{ "_":[ "this", "runSpeed" ] } } }, { "subtract":2, "to":{ "_":[ "this", "stamina" ] } } ],
+                    "elseExecute":{ "set":{ "speed":{ "_":[ "this", "noBallSpeed" ] }, "mode":"" } }
+                  }
+                },
+                {
+                  "when":{ "_":[ "this", "stun" ] },
+                  "subtract":1,
+                  "to":{ "_":[ "this", "stun" ] },
+                  "set":{ "animation":"stun" },
+                  "elseExecute":[
+                    { "_":[ "stencil", "topViewAnimation" ] },
+                    {
+                      "when":{ "_":[ "objectTyped", "ball", "ownedBy", "not" ] },
+                      "execute":{ "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "ball" ] }, "distanceZ":4 } ] }, "executeAction":"getBall" },
+                      "elseExecute":{
+                        "when":{ "_":[ "objectTyped", "ball", "ownedBy", "isTyped", { "_":[ "this", "enemyTeam" ] } ] },
+                        "execute":{
+                          "when":{
+                            "_":[
+                              "this",
+                              "mode",
+                              "isEqualTo",
+                              "running",
+                              "and",
+                              { "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "ball" ] }, "distanceZ":4 } ] }
+                            ]
+                          },
+                          "as":{ "_":[ "objectTyped", "ball", "ownedBy" ] },
+                          "executeAction":"fall"
+                        }
+                      }
+                    },
+                    {
+                      "when":{ "_":[ "this", "isTyped", "player" ] },
+                      "execute":{
+                        "when":{ "_":[ "objectTyped", "ball", "ownedBy", "isEqualTo", { "_":"this" } ] },
+                        "execute":[
+                          {
+                            "when":{ "_":[ "keyA", "isDown", "and", { "_":[ "this", "shotPower", "isLessThan", { "_":[ "this", "maxShotPower" ] } ] } ] },
+                            "sum":1,
+                            "to":{ "_":[ "this", "shotPower" ] }
+                          },
+                          {
+                            "when":{ "_":[ "keyB", "isDown", "and", { "_":[ "this", "passPower", "isLessThan", { "_":[ "this", "maxPassPower" ] } ] } ] },
+                            "sum":1,
+                            "to":{ "_":[ "this", "passPower" ] }
+                          },
+                          { "when":{ "_":[ "keyA", "isReleased" ] }, "executeAction":"shot", "elseExecute":{ "when":{ "_":[ "keyB", "isReleased" ] }, "executeAction":"pass" } }
+                        ],
+                        "elseExecute":[
+                          { "when":{ "_":[ "keyA", "isHit" ] }, "set":{ "mode":"running" }, "elseExecute":{ "when":{ "_":[ "keyA", "isReleased" ] }, "set":{ "mode":"" } } },
+                          {
+                            "when":{ "_":[ "keyB", "isHit" ] },
+                            "as":{ "_":[ "object", { "_":[ "this", "team", ".", "Switchable" ] }, "nearestTo", { "_":[ "objectTyped", "ball" ] } ] },
+                            "executeAction":"setPlayer"
+                          }
+                        ]
+                      },
+                      "elseExecute":{
+                        "when":{ "_":[ "objectTyped", "ball", "ownedBy", "isEqualTo", { "_":"this" } ] },
+                        "execute":[
+                          {
+                            "applyVector":{ "angle":{ "_":[ "this", "angleTo", { "_":[ "objectTyped", { "_":[ "that", "goal" ] } ] } ] }, "length":{ "_":[ "this", "ownBallSpeed" ] } }
+                          },
+                          {
+                            "when":{
+                              "_":[
+                                "this",
+                                "distanceTo",
+                                { "_":[ "objectTyped", { "_":[ "this", "goal" ] } ] },
+                                "isLessThan",
+                                { "_":[ "this", "doorSight" ] },
+                                "and",
+                                { "_":[ "randomNumber", [ 0, 10 ], "isLessThan", { "_":[ "this", "aggressivity" ] } ] }
+                              ]
+                            },
+                            "execute":[
+                              {
+                                "as":{ "_":[ "objectTyped", "ball" ] },
+                                "set":{
+                                  "forceZ":0,
+                                  "ownedBy":0,
+                                  "power":{ "_":[ "randomNumber", [ { "_":[ "that", "maxShotPower", "/", 2, "floor" ] }, { "_":[ "that", "maxShotPower" ] } ] ] }
+                                },
+                                "applyVector":{
+                                  "angle":{ "_":[ "that", "angleTo", { "_":[ "objectTyped", { "_":[ "that", "goal" ] } ] }, "+", { "_":[ "randomNumber", [ -20, 20 ] ] } ] },
+                                  "length":10
+                                }
+                              },
+                              { "set":{ "stun":10 } }
+                            ]
+                          },
+                          {
+                            "when":{
+                              "_":[
+                                "object",
+                                { "_":[ "this", "enemyTeam" ] },
+                                "nearestTo",
+                                { "_":"this" },
+                                "distanceTo",
+                                { "_":"this" },
+                                "isLessThan",
+                                { "_":[ "this", "tensionDistance" ] }
+                              ]
+                            },
+                            "sum":1,
+                            "to":{ "_":[ "this", "tension" ] }
+                          },
+                          {
+                            "when":{ "_":[ "this", "tension", "isGreaterThan", 30 ] },
+                            "execute":[
+                              { "set":{ "decision":{ "_":[ "randomValue", [ 0, 1, 2, 3 ] ] } } },
+                              { "when":{ "_":[ "this", "decision", "isEqualTo", 1 ] }, "set":{ "tension":10 } },
+                              {
+                                "when":{ "_":[ "this", "decision", "isEqualTo", 2 ] },
+                                "execute":[
+                                  { "set":{ "teammate":{ "_":[ "object", { "_":[ "this", "team" ] }, "nearestTo", { "_":"this" } ] } } },
+                                  { "set":{ "power":{ "_":[ "this", "distanceTo", { "_":[ "this", "teammate" ] }, "/", 8, "floor" ] } } },
+                                  { "when":{ "_":[ "this", "power", "isGreaterThan", { "_":[ "this", "maxPassPower" ] } ] }, "set":{ "power":{ "_":[ "this", "maxPassPower" ] } } },
+                                  {
+                                    "as":{ "_":[ "objectTyped", "ball" ] },
+                                    "set":{ "forceZ":{ "_":[ "that", "power" ] }, "ownedBy":0 },
+                                    "applyVector":{ "toward":{ "_":[ "that", "teammate" ] }, "length":4 }
+                                  },
+                                  { "set":{ "stun":10 } }
+                                ]
+                              },
+                              {
+                                "when":{ "_":[ "this", "decision", "isEqualTo", 3 ] },
+                                "execute":[
+                                  {
+                                    "as":{ "_":[ "objectTyped", "ball" ] },
+                                    "set":{
+                                      "forceZ":0,
+                                      "ownedBy":0,
+                                      "power":{ "_":[ "randomNumber", [ { "_":[ "that", "maxShotPower", "/", 2, "floor" ] }, { "_":[ "that", "maxShotPower" ] } ] ] }
+                                    },
+                                    "applyVector":{
+                                      "angle":{ "_":[ "that", "angleTo", { "_":[ "objectTyped", { "_":[ "that", "goal" ] } ] }, "+", { "_":[ "randomNumber", [ -20, 20 ] ] } ] },
+                                      "length":10
+                                    }
+                                  },
+                                  { "set":{ "stun":10 } }
+                                ]
+                              }
+                            ]
+                          }
+                        ],
+                        "elseExecute":[
+                          {
+                            "when":{ "_":[ "objectTyped", "ball", "ownedBy", "team", "isEqualTo", { "_":[ "this", "team" ] } ] },
+                            "set":{ "position":{ "_":[ "this", "attackPosition" ] } },
+                            "elseExecute":[
+                              {
+                                "when":{ "_":[ "objectTyped", "ball", "ownedBy" ] },
+                                "set":{ "sight":{ "_":[ "this", "ballSight" ] } },
+                                "elseExecute":{ "set":{ "sight":{ "_":[ "this", "aloneBallSight" ] } } }
+                              },
+                              {
+                                "when":{ "_":[ "this", "distanceTo", { "_":[ "objectTyped", "ball" ] }, "isLessThan", { "_":[ "this", "sight" ] } ] },
+                                "execute":[
+                                  { "set":{ "position":{ "_":[ "objectTyped", "ball" ] } } },
+                                  {
+                                    "when":{
+                                      "_":[
+                                        "this",
+                                        "stamina",
+                                        "isEqualTo",
+                                        { "_":[ "this", "maxStamina" ] },
+                                        "and",
+                                        { "_":[ "this", "distanceTo", { "_":[ "objectTyped", "ball" ] }, "isLessThan", { "_":[ "this", "attackDistance" ] } ] }
+                                      ]
+                                    },
+                                    "set":{ "mode":"running" }
+                                  }
+                                ],
+                                "elseExecute":{ "set":{ "position":{ "_":[ "this", "defensePosition" ] } } }
+                              }
+                            ]
+                          },
+                          {
+                            "when":{ "_":[ "this", "pointAt", { "x":8, "y":20 }, "distanceTo", { "_":[ "this", "position" ] }, "isGreaterThan", { "_":[ "this", "speed" ] } ] },
+                            "applyVector":{ "angle":{ "_":[ "this", "pointAt", { "x":8, "y":20 }, "angleTo", { "_":[ "this", "position" ] } ] }, "length":{ "_":[ "this", "speed" ] } },
+                            "elseExecute":{ "set":{ "forceX":0, "forceY":0 } }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            { "name":"ZPerspective" },
+            {
+              "name":"Physics",
+              "data":{
+                "walls":[
+                  {
+                    "z":0,
+                    "restitution":0,
+                    "execute":{
+                      "when":{ "_":[ "this", "stun" ] },
+                      "execute":[ { "multiply":0.8, "to":{ "_":[ "this", "forceX" ] } }, { "multiply":0.8, "to":{ "_":[ "this", "forceY" ] } } ]
+                    }
+                  },
+                  { "type":"block", "restitution":0 },
+                  { "area":{ "width":704, "height":136, "x":32, "y":48 }, "restitution":0 }
+                ],
+                "gravityZ":1,
+                "limitX":[ { "_":[ "this", "speed", "*", -1 ] }, { "_":[ "this", "speed" ] } ],
+                "limitY":[ { "_":[ "this", "speed", "*", -1 ] }, { "_":[ "this", "speed" ] } ]
+              }
+            }
+          ],
+          "actions":[
+            {
+              "name":"shot",
+              "execute":{
+                "as":{ "_":[ "objectTyped", "ball" ] },
+                "set":{
+                  "forceX":{ "_":[ "that", "pointingHorizontal", "*", 10, "floor" ] }, "forceY":{ "_":[ "that", "pointingVertical", "*", 10, "floor" ] }, "forceZ":0,
+                  "ownedBy":0,
+                  "power":{ "_":[ "that", "shotPower", "/", 2, "floor" ] }
+                }
+              }
+            },
+            {
+              "name":"pass",
+              "execute":{
+                "as":{ "_":[ "objectTyped", "ball" ] },
+                "set":{
+                  "forceX":{ "_":[ "that", "pointingHorizontal", "*", 4 ] }, "forceY":{ "_":[ "that", "pointingVertical", "*", 4 ] }, "forceZ":{ "_":[ "that", "passPower" ] },
+                  "ownedBy":0
+                }
+              }
+            },
+            {
+              "name":"fall",
+              "execute":[
+                {
+                  "as":{ "_":[ "objectTyped", "ball" ] },
+                  "set":{ "forceZ":{ "_":[ "randomNumber", [ -4, -2 ] ] }, "ownedBy":0 },
+                  "applyVector":{ "angle":{ "_":[ "randomNumber", [ 0, 360 ] ] }, "length":3 }
+                },
+                { "set":{ "forceX":{ "_":[ "that", "forceX" ] }, "forceY":{ "_":[ "that", "forceY" ] }, "forceZ":-5, "stun":40 } }
+              ]
+            },
+            {
+              "name":"getBall",
+              "execute":[ { "as":{ "_":[ "objectTyped", "ball" ] }, "set":{ "ownedBy":{ "_":"that" } } }, { "set":{ "tension":0 } }, { "executeAction":"setPlayer" } ]
+            },
+            {
+              "name":"setPlayer",
+              "execute":{
+                "when":{ "_":[ "this", "isTyped", "playerTeam" ] },
+                "execute":[ { "as":{ "_":[ "object", "player" ] }, "set":{ "removeType":"player" } }, { "set":{ "type":"player", "passPower":0, "shotPower":0 } } ]
+              }
+            }
+          ]
+        },
+        {
+          "name":"waiting",
+          "set":{ "frame":6, "animation":"none" },
+          "execute":{
+            "when":{ "_":[ "this", "x", "isGreaterThan", { "_":[ "objectTyped", { "_":[ "this", "goal" ] }, "x" ] } ] },
+            "set":{ "flipX":1 },
+            "elseExecute":{ "set":{ "flipX":0 } }
+          },
+          "code":{ "name":"ZPerspective" }
+        },
+        { "name":"winner", "set":{ "z":0, "forceX":0, "forceY":0, "forceZ":0, "animation":"winner" } },
+        { "name":"loser", "set":{ "z":0, "forceX":0, "forceY":0, "forceZ":0, "animation":"loser" } }
+      ]
+    },
+    "playerShadow":{
+      "into":{ "_":[ "this", "parent" ] },
+      "image":"soccer", "tileX":0, "tileY":48, "width":16, "height":8,
+      "zIndex":500,
+      "animations":{ "idle":{ "frame":0 }, "selected":{ "frame":1, "frames":2, "loopTo":0 } },
+      "attachedTo":{ "_":"that" },
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":[
+            {
+              "set":{
+                "width":{ "_":[ "this", "attachedTo", "width" ] },
+                "x":{ "_":[ "this", "attachedTo", "x" ] }, "y":{ "_":[ "this", "attachedTo", "y", "+", { "_":[ "this", "attachedTo", "height" ] }, "-", 4 ] },
+                "visible":{ "_":[ "this", "attachedTo", "visible" ] }
+              }
+            },
+            {
+              "when":{ "_":[ "this", "attachedTo", "isTyped", "player", "or", { "_":[ "this", "attachedTo", "isTyped", "playerKeeper" ] } ] },
+              "set":{ "animation":"selected" },
+              "elseExecute":{ "set":{ "animation":"idle" } }
+            },
+            { "when":{ "_":[ "this", "attachedTo", "removed" ] }, "remove":1 }
+          ]
+        }
+      }
+    },
+    "ballShadow":{
+      "into":{ "_":[ "this", "parent" ] },
+      "image":"defaultsprites", "tileX":136, "tileY":104, "width":8, "height":8,
+      "zIndex":500,
+      "attachedTo":{ "_":"that" },
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":[
+            {
+              "set":{
+                "width":{ "_":[ "this", "attachedTo", "width" ] },
+                "x":{ "_":[ "this", "attachedTo", "x" ] }, "y":{ "_":[ "this", "attachedTo", "y", "+", { "_":[ "this", "attachedTo", "height" ] } ] },
+                "visible":{ "_":[ "this", "attachedTo", "visible" ] }
+              }
+            },
+            { "when":{ "_":[ "this", "attachedTo", "removed" ] }, "remove":1 }
+          ]
+        }
+      }
+    },
+    "makeTeam":{
+      "object":[
+        { "type":[ "newTeam", "goalKeeper" ], "set":{ "_":[ "stencil", "modelGoalKeeper" ] }, "tileY":0, "x":45, "y":92 },
+        {
+          "type":[ "newTeam", "leftSide", "switchable" ],
+          "set":{ "_":[ "stencil", "modelSoccerPlayer" ] },
+          "tileY":0,
+          "x":142, "y":92,
+          "attackPosition":{ "x":150, "y":112 },
+          "defensePosition":{ "x":150, "y":112 }
+        },
+        {
+          "type":[ "newTeam", "switchable" ],
+          "set":{ "_":[ "stencil", "modelSoccerPlayer" ] },
+          "tileY":0,
+          "x":228, "y":52,
+          "attackPosition":{ "x":236, "y":72 },
+          "defensePosition":{ "x":236, "y":72 }
+        },
+        {
+          "type":[ "newTeam", "switchable" ],
+          "set":{ "_":[ "stencil", "modelSoccerPlayer" ] },
+          "tileY":0,
+          "x":228, "y":142,
+          "attackPosition":{ "x":236, "y":162 },
+          "defensePosition":{ "x":236, "y":162 }
+        },
+        {
+          "type":[ "newTeam", "rightSide", "switchable" ],
+          "set":{ "_":[ "stencil", "modelSoccerPlayer" ] },
+          "tileY":0,
+          "x":348, "y":92,
+          "attackPosition":{ "x":356, "y":112 },
+          "defensePosition":{ "x":356, "y":112 }
+        }
+      ]
+    },
+    "topViewAnimation":[
+      {
+        "when":{ "_":[ "this", "forceY", "isLessThan", 0 ] },
+        "set":{ "pointingSide":"up", "pointingVertical":-1 },
+        "elseExecute":{
+          "when":{ "_":[ "this", "forceY", "isGreaterThan", 0 ] },
+          "set":{ "pointingSide":"down", "pointingVertical":1 },
+          "elseExecute":{ "set":{ "pointingVertical":0 } }
+        }
+      },
+      {
+        "when":{ "_":[ "this", "forceX", "isLessThan", 0 ] },
+        "set":{ "flipX":1, "pointingHorizontal":-1, "pointingSide":"left" },
+        "elseExecute":{
+          "when":{ "_":[ "this", "forceX", "isGreaterThan", 0 ] },
+          "set":{ "flipX":0, "pointingHorizontal":1, "pointingSide":"right" },
+          "elseExecute":{ "set":{ "pointingHorizontal":0 } }
+        }
+      },
+      {
+        "when":{ "_":[ "this", "forceY", "isEqualTo", 0, "and", { "_":[ "this", "forceX", "isEqualTo", 0 ] } ] },
+        "execute":{ "set":{ "animation":{ "_":[ "still", ".", { "_":[ "this", "pointingSide" ] } ] }, "isMoving":0 } },
+        "elseExecute":{ "set":{ "animation":{ "_":[ "walk", ".", { "_":[ "this", "pointingSide" ] } ] }, "isMoving":1 } }
+      }
+    ]
+  },
+  "scenes":{
+    "intro":{
+      "object":[
+        {
+          "width":128, "height":192,
+          "x":0, "y":-192,
+          "bgcolor":"#f00",
+          "forceY":5,
+          "states":{ "code":{ "name":"Physics", "data":{ "walls":{ "area":{ "width":128, "height":384, "x":0, "y":-192 } } } } }
+        },
+        {
+          "width":128, "height":192,
+          "x":128, "y":192,
+          "bgcolor":"#00f",
+          "forceY":-5,
+          "states":{ "code":{ "name":"Physics", "data":{ "walls":{ "area":{ "width":128, "height":384, "x":192, "y":0 } } } } }
+        },
+        {
+          "width":256, "height":70,
+          "zIndex":10, "x":256, "y":20,
+          "bgcolor":"#fff",
+          "forceX":-5,
+          "states":{ "code":{ "name":"Physics", "data":{ "walls":{ "area":{ "width":512, "height":192, "x":0, "y":0 } } } } }
+        }
+      ],
+      "execute":{ "as":{ "_":"variable" }, "set":{ "cpuScore":0, "playerScore":0, "time":90 } },
+      "states":{
+        "code":[
+          {
+            "name":"Sequence",
+            "data":[
+              { "wait":60 },
+              {
+                "object":[
+                  { "image":"logo", "width":187, "height":51, "zIndex":20, "x":34, "y":30 },
+                  {
+                    "box":"label", "width":256,
+                    "zIndex":20, "x":0, "y":100,
+                    "color":"#000",
+                    "font":"spectrum", "fontSize":20, "lineHeight":20, "outline":"#fff", "textAlign":"center", "html":"PRESS START",
+                    "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "visible":0 }, "wait":10 }, { "set":{ "visible":1 }, "wait":10, "loopTo":0 } ] } }
+                  },
+                  {
+                    "box":"label", "width":108, "height":30,
+                    "zIndex":20, "x":10, "y":160,
+                    "color":"#000",
+                    "font":"spectrum", "fontSize":15, "lineHeight":8, "textAlign":"center", "html":"WITH BALL<br>(A) KICK<br>(B) PASS"
+                  },
+                  {
+                    "box":"label", "width":108, "height":30,
+                    "zIndex":20, "x":138, "y":160,
+                    "color":"#000",
+                    "font":"spectrum", "fontSize":15, "lineHeight":8, "textAlign":"center", "html":"WITHOUT BALL<br>(A) RUN/TACKLE<br>(B) SWITCH PLAYER"
+                  }
+                ]
+              }
+            ]
+          },
+          { "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"match" } }
+        ]
+      }
+    },
+    "match":{
+      "object":[
+        {
+          "type":"people",
+          "image":"soccerpeople", "width":768, "height":40,
+          "x":0, "y":0,
+          "animations":{ "happy":{ "frames":[ 1, 2 ], "loopTo":0 }, "idle":{ "frame":0 } }
+        },
+        { "image":"soccerfield", "width":768, "height":152, "x":0, "y":40, "bgcolor":"#007f00" },
+        { "type":"playerGoal", "set":{ "_":[ "stencil", "modelGoal" ] }, "x":34, "enemyTeam":"cpuTeam", "score":"cpuScore", "team":"playerTeam" },
+        { "type":"cpuGoal", "set":{ "_":[ "stencil", "modelGoal" ] }, "x":728, "enemyTeam":"playerTeam", "score":"playerScore", "team":"cpuTeam" },
+        {
+          "type":"block",
+          "image":"soccer", "tileX":0, "tileY":65, "width":34, "height":39,
+          "zIndex":1088, "x":8, "y":49,
+          "hitbox":{ "width":35, "height":8, "x":0, "y":31 }
+        },
+        {
+          "type":"block",
+          "image":"soccer", "tileX":34, "tileY":65, "width":34, "height":103,
+          "zIndex":1152, "x":8, "y":49,
+          "hitbox":{ "width":35, "height":8, "x":0, "y":95 }
+        },
+        {
+          "type":"block",
+          "image":"soccer", "tileX":0, "tileY":65, "width":34, "height":39,
+          "zIndex":1088, "x":726, "y":49,
+          "hitbox":{ "width":35, "height":8, "x":0, "y":31 },
+          "flipX":1
+        },
+        {
+          "type":"block",
+          "image":"soccer", "tileX":34, "tileY":65, "width":34, "height":103,
+          "zIndex":1152, "x":726, "y":49,
+          "hitbox":{ "width":35, "height":8, "x":0, "y":95 },
+          "flipX":1
+        },
+        { "set":{ "_":[ "stencil", "modelBall" ] }, "x":380, "y":110, "forceZ":-5, "ownedBy":{ "_":[ "objectTyped", "player" ] } },
+        { "_":[ "stencil", "modelCameraMan" ] }
+      ],
+      "width":768,
+      "cameraFocusX":128, "cameraFocusY":0, "cameraFocusWidth":1, "cameraFocusHeight":192,
+      "cameras":{ "width":768, "height":192, "x":0, "y":0 },
+      "execute":[
+        {
+          "object":[
+            { "box":"label", "width":70, "x":5, "y":0, "color":"#0ff", "font":"spectrum", "outline":"#000000", "html":"PLAYER" },
+            {
+              "type":"hud",
+              "hudType":"label", "label":"%number|variable.playerScore%",
+              "box":"label", "width":70, "height":25,
+              "x":5, "y":12,
+              "font":"spectrum", "fontSize":40, "lineHeight":25, "outline":"#000000"
+            },
+            { "box":"label", "width":70, "x":181, "y":0, "color":"#0ff", "font":"spectrum", "outline":"#000000", "textAlign":"right", "html":"CPU" },
+            {
+              "type":"hud",
+              "hudType":"label", "label":"%number|variable.cpuScore%",
+              "box":"label", "width":70, "height":25,
+              "x":181, "y":12,
+              "font":"spectrum", "fontSize":40, "lineHeight":25, "outline":"#000000", "textAlign":"right"
+            },
+            { "box":"label", "width":70, "x":98, "y":0, "color":"#0ff", "font":"spectrum", "outline":"#000000", "textAlign":"center", "html":"TIME" },
+            {
+              "type":"hud",
+              "hudType":"label", "label":"%number|variable.time%",
+              "box":"label", "width":70, "height":25,
+              "x":98, "y":9,
+              "font":"spectrum", "fontSize":25, "lineHeight":25, "outline":"#000000", "textAlign":"center"
+            },
+            {
+              "type":"goldengoal",
+              "box":"label", "width":110, "height":25,
+              "x":78, "y":19,
+              "visible":0,
+              "font":"spectrum", "lineHeight":25, "outline":"#000000", "textAlign":"center", "html":"GOLDEN GOAL"
+            }
+          ],
+          "into":{ "_":"scenehud" }
+        },
+        { "_":[ "stencil", "makeTeam" ] },
+        {
+          "as":{ "_":[ "object", "newTeam" ] },
+          "set":{ "type":"playerTeam", "tileY":0, "enemyTeam":"cpuTeam", "goal":"cpuGoal", "team":"playerTeam" },
+          "execute":{ "assign":{ "_":[ 808, "-", { "_":[ "this", "attackPosition", "x" ] } ] }, "to":{ "_":[ "this", "attackPosition", "x" ] } }
+        },
+        { "as":{ "_":[ "objectTyped", "rightSide" ] }, "set":{ "type":"player" } },
+        { "as":{ "_":[ "objectTyped", "goalKeeper" ] }, "set":{ "type":"playerKeeper" } },
+        { "as":{ "_":[ "object", "switchable" ] }, "set":{ "type":"playerTeamSwitchable" } },
+        { "times":10, "as":{ "_":[ "objectTyped", "newTeam" ] }, "set":{ "removeType":"newTeam" } },
+        { "as":{ "_":[ "objectTyped", "goalKeeper" ] }, "set":{ "removeType":"goalKeeper" } },
+        { "as":{ "_":[ "objectTyped", "switchable" ] }, "set":{ "removeType":"switchable" } },
+        { "_":[ "stencil", "makeTeam" ] },
+        {
+          "as":{ "_":[ "object", "newTeam" ] },
+          "set":{ "type":"cpuTeam", "tileY":24, "enemyTeam":"playerTeam", "goal":"playerGoal", "team":"cpuTeam" },
+          "execute":[
+            { "assign":{ "_":[ 750, "-", { "_":[ "this", "x" ] } ] }, "to":{ "_":[ "this", "x" ] } },
+            { "assign":{ "_":[ 750, "-", { "_":[ "this", "defensePosition", "x" ] } ] }, "to":{ "_":[ "this", "defensePosition", "x" ] } },
+            { "subtract":40, "to":{ "_":[ "this", "attackPosition", "x" ] } }
+          ]
+        },
+        { "as":{ "_":[ "objectTyped", "goalKeeper" ] }, "set":{ "x":707, "flipX":1, "keepArea":{ "width":50, "height":56, "x":686, "y":88 }, "kickSide":-1 } },
+        { "as":{ "_":[ "object", "newTeam" ] }, "set":{ "removeType":"newTeam" } },
+        { "as":{ "_":[ "objectTyped", "goalKeeper" ] }, "set":{ "removeType":"goalKeeper" } },
+        { "as":{ "_":[ "objectTyped", "switchable" ] }, "set":{ "removeType":"switchable" } },
+        { "as":{ "_":[ "object", "sceneObject" ] }, "set":{ "state":"waiting" } }
+      ],
+      "states":[
+        {
+          "code":{
+            "name":"Sequence",
+            "data":[
+              {
+                "object":{
+                  "type":"message",
+                  "box":"label", "width":256, "height":50,
+                  "x":0, "y":71,
+                  "font":"spectrum", "fontSize":60, "lineHeight":50, "outline":"#000000", "textAlign":"center", "html":"KICK OFF",
+                  "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "color":"#0ff" } }, { "wait":2 }, { "set":{ "color":"#fff" } }, { "wait":2 }, { "loopTo":0 } ] } }
+                },
+                "into":{ "_":"scenehud" }
+              },
+              { "wait":50 },
+              { "as":{ "_":[ "object", "message" ] }, "remove":1 },
+              { "as":{ "_":[ "object", "sceneObject" ] }, "set":{ "state":"default" } },
+              { "wait":25 },
+              { "subtract":1, "to":{ "_":[ "variable", "time" ] } },
+              { "when":{ "_":[ "variable", "time", "isLessThan", 0 ] }, "as":{ "_":"variable" }, "set":{ "time":0 } },
+              { "loopTo":-3, "until":{ "_":[ "variable", "time", "not" ] } },
+              {
+                "when":{ "_":[ "variable", "playerScore", "isEqualTo", { "_":[ "variable", "cpuScore" ] } ] },
+                "execute":{ "as":{ "_":[ "objectTyped", "goldengoal" ] }, "set":{ "visible":1 } },
+                "elseExecute":{ "set":{ "state":"endmatch" } }
+              }
+            ]
+          }
+        },
+        {
+          "name":"goal",
+          "code":{
+            "name":"Sequence",
+            "data":[
+              {
+                "object":{
+                  "type":"message",
+                  "box":"label", "width":256, "height":50,
+                  "x":0, "y":71,
+                  "font":"spectrum", "fontSize":60, "lineHeight":50, "outline":"#000000", "textAlign":"center", "html":"GOAL!",
+                  "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "color":"#f00" } }, { "wait":1 }, { "set":{ "color":"#fff" } }, { "wait":1 }, { "loopTo":0 } ] } }
+                },
+                "into":{ "_":"scenehud" }
+              },
+              { "wait":100 },
+              { "as":{ "_":[ "object", "message" ] }, "remove":1 },
+              {
+                "when":{ "_":[ "variable", "time", "not" ] },
+                "execute":{
+                  "when":{ "_":[ "variable", "playerScore", "isEqualTo", { "_":[ "variable", "cpuScore" ] } ] },
+                  "gotoScene":"match",
+                  "elseExecute":{ "set":{ "state":"endmatch" } }
+                },
+                "elseExecute":{ "gotoScene":"match" }
+              }
+            ]
+          }
+        },
+        {
+          "name":"endmatch",
+          "execute":{
+            "when":{ "_":[ "variable", "cpuScore", "isGreaterThan", { "_":[ "variable", "playerScore" ] } ] },
+            "execute":[
+              { "as":{ "_":[ "object", "people" ] }, "set":{ "animation":"happy" } },
+              { "as":{ "_":[ "objectTyped", "ball" ] }, "set":{ "forceX":0, "forceY":0, "ownedBy":0 } },
+              { "as":{ "_":[ "object", "cpuTeam" ] }, "set":{ "state":"winner" } },
+              { "as":{ "_":[ "object", "playerTeam" ] }, "set":{ "state":"loser" } },
+              { "as":{ "_":[ "objectTyped", "cameraMan" ] }, "set":{ "state":"bounce" } },
+              {
+                "object":{
+                  "type":"message",
+                  "box":"label", "width":256, "height":50,
+                  "x":0, "y":71,
+                  "font":"spectrum", "fontSize":60, "lineHeight":50, "outline":"#000000", "textAlign":"center", "html":"YOU LOSE",
+                  "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "color":"#00f" } }, { "wait":2 }, { "set":{ "color":"#fff" } }, { "wait":2 }, { "loopTo":0 } ] } }
+                },
+                "into":{ "_":"scenehud" }
+              }
+            ],
+            "elseExecute":[
+              { "as":{ "_":[ "object", "people" ] }, "set":{ "animation":"happy" } },
+              { "as":{ "_":[ "objectTyped", "ball" ] }, "set":{ "forceX":0, "forceY":0, "ownedBy":0 } },
+              { "as":{ "_":[ "object", "playerTeam" ] }, "set":{ "state":"winner" } },
+              { "as":{ "_":[ "object", "cpuTeam" ] }, "set":{ "state":"loser" } },
+              { "as":{ "_":[ "objectTyped", "cameraMan" ] }, "set":{ "state":"bounce" } },
+              {
+                "object":{
+                  "type":"message",
+                  "box":"label", "width":256, "height":50,
+                  "x":0, "y":71,
+                  "font":"spectrum", "fontSize":60, "lineHeight":50, "outline":"#000000", "textAlign":"center", "html":"YOU WIN!",
+                  "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "color":"#f00" } }, { "wait":2 }, { "set":{ "color":"#fff" } }, { "wait":2 }, { "loopTo":0 } ] } }
+                },
+                "into":{ "_":"scenehud" }
+              }
+            ]
+          },
+          "code":{ "name":"Sequence", "data":[ { "wait":200 }, { "gotoScene":"intro" } ] }
+        }
+      ]
+    }
+  }
+}

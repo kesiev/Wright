@@ -1,0 +1,1025 @@
+{
+  "name":"World Racing",
+  "author":"KesieV",
+  "year":2015,
+  "genre":"Racing",
+  "description":"Despite most of the pages of the Wright! Magazine depicts me as a frustrated sport-hater, I always had a catch for racing games, from the great Pitstop II (1984), the top-down racers around the 90's and the modern arcades, like Ridge Racer and its fourth excellent chapter (1998). So why not including a classic to my collection, test how I can check laps and position on a circuit using Wright! and bring tons of nostalgia? Plot! You're the legendary driver of the Aquamarine car, challenging the Red Team for the first place on the World Racing Championship! Use LEFT/RIGHT for steering left or right and A BUTTON for accelerating. And I don't like racing as a real sport. Obviously.",
+  "screenshots":["worldracing-1.png","worldracing-2.png"],
+  "hardware":{
+    "width":256,
+    "height":192,
+    "texture":"scanlines"
+  },
+  "cheats":{
+    "slowCars":"Slow CPU cars"
+  },
+  "resources":{
+    "ending":"ending.png",
+    "tiles":"tiles.png",
+    "title":"title.png",
+    "defaultsprites":"../default/sprites.png",
+    "scanlines":"../default/scanlines.png"
+  },
+  "stencils":{
+    "codeCarPositon":{
+      "code":{
+        "name":"Execute",
+        "data":[
+          { "set":{ "nextcheckpoint":{ "_":[ "objectTyped", { "_":[ "checkpoint", ".", { "_":[ "this", "checkpoint" ] } ] } ] } } },
+          {
+            "when":{ "_":[ "this", "collidesWith", { "_":[ "this", "nextcheckpoint" ] } ] },
+            "execute":[
+              { "sum":1, "to":{ "_":[ "this", "checkpointcount" ] } },
+              { "sum":1, "to":{ "_":[ "this", "checkpoint" ] } },
+              { "set":{ "checkpointdistance":0 } },
+              {
+                "when":{ "_":[ "objectTyped", { "_":[ "checkpoint", ".", { "_":[ "this", "checkpoint" ] } ] }, "not" ] },
+                "execute":[
+                  { "set":{ "checkpoint":0 } },
+                  { "sum":1, "to":{ "_":[ "this", "laps" ] } },
+                  { "when":{ "_":[ "this", "isTyped", "player" ] }, "as":{ "_":"scene" }, "executeAction":"playerlap" }
+                ]
+              }
+            ],
+            "elseExecute":{ "set":{ "checkpointdistance":{ "_":[ 3000, "-", { "_":[ "this", "distanceTo", { "_":[ "this", "nextcheckpoint" ] } ] } ] } } }
+          },
+          { "set":{ "score":{ "_":[ "this", "checkpointcount", "*", 4000, "+", { "_":[ "this", "checkpointdistance" ] } ] } } }
+        ]
+      }
+    },
+    "codeMakeChart":{
+      "code":{
+        "name":"Execute",
+        "data":[
+          { "as":{ "_":"variable" }, "set":{ "chart":{ "_":[ "new", [] ] }, "position":0 } },
+          { "foreach":{ "_":[ "object", "car" ] }, "pushInto":{ "_":[ "variable", "chart" ] } },
+          { "reversed":1, "sort":{ "_":[ "variable", "chart" ] }, "by":"score" },
+          {
+            "foreach":{ "_":[ "variable", "chart" ] },
+            "execute":[ { "sum":1, "to":{ "_":[ "variable", "position" ] } }, { "set":{ "position":{ "_":[ "variable", "position" ] } } } ]
+          }
+        ]
+      }
+    },
+    "modelCar":{
+      "type":"car",
+      "friction":0.1,
+      "image":"defaultsprites", "width":16, "height":16,
+      "zIndex":10,
+      "angle":0,
+      "acceleration":0.1,
+      "animationCounter":0,
+      "braking":0.1,
+      "checkpoint":0,
+      "checkpointcount":0,
+      "checkpointdistance":0,
+      "invulnerability":0,
+      "laps":1,
+      "maxSpeed":4,
+      "movingSpeed":0,
+      "steeringSpeed":3,
+      "states":[
+        { "like":{ "_":[ "stencil", "codeCarPositon" ] } },
+        {
+          "name":"go",
+          "like":{ "_":[ "stencil", "codeCarPositon" ] },
+          "code":[
+            {
+              "name":"Execute",
+              "data":[
+                {
+                  "when":{ "_":[ "this", "steer", "isEqualTo", "right" ] },
+                  "sum":{ "_":[ "this", "steeringSpeed" ] },
+                  "to":{ "_":[ "this", "angle" ] },
+                  "elseExecute":{ "when":{ "_":[ "this", "steer", "isEqualTo", "left" ] }, "subtract":{ "_":[ "this", "steeringSpeed" ] }, "to":{ "_":[ "this", "angle" ] } }
+                },
+                {
+                  "when":{ "_":[ "this", "accelerator", "isEqualTo", "down" ] },
+                  "sum":{ "_":[ "this", "acceleration" ] },
+                  "to":{ "_":[ "this", "movingSpeed" ] },
+                  "elseExecute":{ "subtract":{ "_":[ "this", "friction" ] }, "to":{ "_":[ "this", "movingSpeed" ] } }
+                },
+                { "when":{ "_":[ "this", "brake", "isEqualTo", "down" ] }, "subtract":{ "_":[ "this", "braking" ] }, "to":{ "_":[ "this", "movingSpeed" ] } },
+                { "when":{ "_":[ "this", "movingSpeed", "isLessThan", 0 ] }, "set":{ "movingSpeed":0 } },
+                { "when":{ "_":[ "this", "movingSpeed", "isGreaterThan", { "_":[ "this", "maxSpeed" ] } ] }, "set":{ "movingSpeed":{ "_":[ "this", "maxSpeed" ] } } },
+                {
+                  "when":{
+                    "_":[
+                      "this",
+                      "collidesWith",
+                      { "_":[ "object", "sand" ] },
+                      "and",
+                      { "_":[ "this", "movingSpeed", "isGreaterThan", { "_":[ "this", "maxSpeed", "-", 2 ] } ] }
+                    ]
+                  },
+                  "set":{ "movingSpeed":{ "_":[ "this", "maxSpeed", "-", 2 ] } }
+                },
+                {
+                  "when":{ "_":[ "this", "invulnerability" ] },
+                  "subtract":1,
+                  "to":{ "_":[ "this", "invulnerability" ] },
+                  "elseExecute":{
+                    "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "car" ] } ] },
+                    "execute":{
+                      "foreach":{ "_":"that" },
+                      "execute":{
+                        "when":{ "_":[ "that", "score", "isGreaterThan", { "_":[ "this", "score" ] } ] },
+                        "set":{ "invulnerability":10, "movingSpeed":0 },
+                        "elseExecute":{ "as":{ "_":"that" }, "set":{ "invulnerability":10, "movingSpeed":0 } }
+                      }
+                    }
+                  }
+                },
+                {
+                  "when":{ "_":[ "this", "movingSpeed" ] },
+                  "execute":[
+                    { "sum":1, "to":{ "_":[ "this", "animationCounter" ] } },
+                    {
+                      "when":{ "_":[ "this", "animationCounter", "isGreaterThan", { "_":[ 4, "-", { "_":[ "this", "movingSpeed" ] } ] } ] },
+                      "execute":[
+                        { "when":{ "_":[ "this", "frame", "isEqualTo", 0 ] }, "set":{ "frame":1 }, "elseExecute":{ "set":{ "frame":0 } } },
+                        { "set":{ "animationCounter":0 } }
+                      ]
+                    }
+                  ]
+                },
+                { "applyVector":{ "angle":{ "_":[ "this", "angle" ] }, "length":{ "_":[ "this", "movingSpeed" ] } } }
+              ]
+            },
+            { "name":"Physics", "data":{ "walls":{ "type":"wall", "restitution":0, "execute":{ "set":{ "movingSpeed":0 } } } } }
+          ]
+        }
+      ]
+    },
+    "modelRace":{
+      "states":[
+        {
+          "like":{ "_":[ "stencil", "codeMakeChart" ] },
+          "execute":[
+            {
+              "object":[
+                { "type":"target0", "set":{ "_":[ "stencil", "target" ] } },
+                { "type":"target1", "set":{ "_":[ "stencil", "target" ] } },
+                { "type":"target2", "set":{ "_":[ "stencil", "target" ] } }
+              ]
+            },
+            {
+              "as":{ "_":"variable" },
+              "set":{ "bestcsec":99, "bestmin":99, "bestsec":59, "besttime":599999, "csec":0, "min":0, "sec":0, "time":0, "timelimit":300 }
+            },
+            {
+              "object":[
+                {
+                  "type":"hud",
+                  "hudType":"label", "label":"LAP %number|objectTyped.player.laps%/%number|scene.lapsCount%<br>Limit %number|variable.timelimit|0|3% sec.<br>Time %number|variable.min|0|2%'%number|variable.sec|0|2%\"%number|variable.csec|0|2%<br>Best %number|variable.bestmin|0|2%'%number|variable.bestsec|0|2%\"%number|variable.bestcsec|0|2%",
+                  "box":"label", "width":173, "height":50,
+                  "x":80, "y":137,
+                  "font":"spectrum", "lineHeight":12, "outline":"#000000", "textAlign":"right"
+                },
+                {
+                  "type":"hud",
+                  "hudType":"label", "label":"%number|objectTyped.player.position%",
+                  "box":"label", "width":50, "height":60,
+                  "x":5, "y":137,
+                  "font":"spectrum", "fontSize":120, "lineHeight":35, "outline":"#000000"
+                },
+                {
+                  "label":"%number|objectTyped.player.position%",
+                  "box":"label", "width":30,
+                  "zIndex":10, "x":45, "y":137,
+                  "font":"spectrum", "outline":"#000000",
+                  "states":{
+                    "code":{
+                      "name":"Execute",
+                      "data":{
+                        "when":{ "_":[ "objectTyped", "player", "position", "isEqualTo", 1 ] },
+                        "set":{ "html":"st." },
+                        "elseExecute":{
+                          "when":{ "_":[ "objectTyped", "player", "position", "isEqualTo", 2 ] },
+                          "set":{ "html":"nd." },
+                          "elseExecute":{ "when":{ "_":[ "objectTyped", "player", "position", "isEqualTo", 3 ] }, "set":{ "html":"rd." }, "elseExecute":{ "set":{ "html":"th." } } }
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "width":256, "height":30,
+                  "x":-256, "y":81,
+                  "bgcolor":"#00f", "color":"#fff",
+                  "font":"spectrum", "fontSize":50, "lineHeight":27, "outline":"#000", "textAlign":"center", "html":{ "_":[ "scene", "trackName" ] },
+                  "states":{
+                    "code":{
+                      "name":"Execute",
+                      "data":[
+                        { "sum":4, "to":{ "_":[ "this", "x" ] } },
+                        { "when":{ "_":[ "this", "x", "isGreaterThan", 256 ] }, "execute":[ { "remove":1 }, { "as":{ "_":"scene" }, "set":{ "state":"semaphore" } } ] }
+                      ]
+                    }
+                  }
+                }
+              ],
+              "into":{ "_":"scenehud" }
+            }
+          ]
+        },
+        {
+          "name":"semaphore",
+          "execute":{
+            "object":[
+              { "type":"line1", "set":{ "_":[ "stencil", "semaphore" ] }, "x":192, "y":64 },
+              { "type":"line1", "set":{ "_":[ "stencil", "semaphore" ] }, "x":208, "y":64 },
+              { "type":"line1", "set":{ "_":[ "stencil", "semaphore" ] }, "x":224, "y":64 },
+              { "type":"line2", "set":{ "_":[ "stencil", "semaphore" ] }, "x":192, "y":80 },
+              { "type":"line2", "set":{ "_":[ "stencil", "semaphore" ] }, "x":208, "y":80 },
+              { "type":"line2", "set":{ "_":[ "stencil", "semaphore" ] }, "x":224, "y":80 },
+              { "type":"line3", "set":{ "_":[ "stencil", "semaphore" ] }, "x":192, "y":96 },
+              { "type":"line3", "set":{ "_":[ "stencil", "semaphore" ] }, "x":208, "y":96 },
+              {
+                "type":"line3",
+                "set":{ "_":[ "stencil", "semaphore" ] },
+                "x":224, "y":96,
+                "states":{
+                  "code":{
+                    "name":"Sequence",
+                    "data":[
+                      { "wait":25 },
+                      { "as":{ "_":[ "object", "line1" ] }, "set":{ "bgcolor":"#f00" } },
+                      { "wait":25 },
+                      { "as":{ "_":[ "object", "line2" ] }, "set":{ "bgcolor":"#ff0" } },
+                      { "wait":25 },
+                      { "as":{ "_":[ "object", "line3" ] }, "set":{ "bgcolor":"#0f0" } },
+                      { "as":{ "_":"scene" }, "set":{ "state":"go" } },
+                      { "wait":50 },
+                      { "as":{ "_":[ "object", "semaphore" ] }, "remove":1 }
+                    ]
+                  }
+                }
+              }
+            ],
+            "into":{ "_":"scenehud" }
+          }
+        },
+        {
+          "name":"go",
+          "like":{ "_":[ "stencil", "codeMakeChart" ] },
+          "execute":{ "as":{ "_":[ "object", "car" ] }, "set":{ "state":"go" } },
+          "code":{
+            "name":"Execute",
+            "data":[
+              { "sum":4, "to":{ "_":[ "variable", "csec" ] } },
+              { "sum":4, "to":{ "_":[ "variable", "time" ] } },
+              {
+                "when":{ "_":[ "variable", "csec", "isGreaterEqualThan", 100 ] },
+                "execute":[
+                  { "sum":1, "to":{ "_":[ "variable", "sec" ] } },
+                  { "subtract":1, "to":{ "_":[ "variable", "timelimit" ] } },
+                  { "as":{ "_":"variable" }, "set":{ "csec":0 } }
+                ]
+              },
+              {
+                "when":{ "_":[ "variable", "sec", "isGreaterEqualThan", 60 ] },
+                "execute":[ { "sum":1, "to":{ "_":[ "variable", "min" ] } }, { "as":{ "_":"variable" }, "set":{ "sec":0 } } ]
+              },
+              { "when":{ "_":[ "variable", "timelimit", "isEqualTo", 0 ] }, "set":{ "state":"timeup" } }
+            ]
+          },
+          "actions":{
+            "name":"playerlap",
+            "execute":[
+              {
+                "when":{ "_":[ "variable", "time", "isLessThan", { "_":[ "variable", "besttime" ] } ] },
+                "as":{ "_":"variable" },
+                "set":{
+                  "bestcsec":{ "_":[ "variable", "csec" ] },
+                  "bestmin":{ "_":[ "variable", "min" ] },
+                  "bestsec":{ "_":[ "variable", "sec" ] },
+                  "besttime":{ "_":[ "variable", "time" ] }
+                }
+              },
+              { "as":{ "_":"variable" }, "set":{ "csec":0, "min":0, "sec":0, "time":0 } },
+              {
+                "when":{ "_":[ "objectTyped", "player", "laps", "isGreaterThan", { "_":[ "scene", "lapsCount" ] } ] },
+                "execute":[
+                  { "as":{ "_":[ "objectTyped", "player" ] }, "set":{ "laps":{ "_":[ "scene", "lapsCount" ] } } },
+                  {
+                    "when":{ "_":[ "objectTyped", "player", "position", "isEqualTo", 1 ] },
+                    "set":{ "state":"playerwin" },
+                    "elseExecute":{ "set":{ "state":"playerlose" } }
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name":"timeup",
+          "execute":[
+            { "as":{ "_":[ "object", "car" ] }, "set":{ "state":"default" } },
+            {
+              "object":{
+                "width":256, "height":30,
+                "x":0, "y":81,
+                "bgcolor":"#00f", "color":"#fff",
+                "font":"spectrum", "fontSize":50, "lineHeight":30, "outline":"#000", "textAlign":"center", "html":"TIME UP!",
+                "states":{
+                  "code":{
+                    "name":"Execute",
+                    "data":{ "when":{ "_":[ "this", "color", "isEqualTo", "#fff" ] }, "set":{ "color":"#f00" }, "elseExecute":{ "set":{ "color":"#fff" } } }
+                  }
+                }
+              },
+              "into":{ "_":"scenehud" }
+            }
+          ],
+          "code":{ "name":"Sequence", "data":[ { "wait":125 }, { "gotoScene":"gameover" } ] }
+        },
+        {
+          "name":"playerlose",
+          "execute":[
+            { "as":{ "_":[ "object", "car" ] }, "set":{ "state":"default" } },
+            {
+              "object":{
+                "width":256, "height":30,
+                "x":0, "y":81,
+                "bgcolor":"#00f", "color":"#fff",
+                "font":"spectrum", "fontSize":50, "lineHeight":30, "outline":"#000", "textAlign":"center", "html":"YOU LOSE!",
+                "states":{
+                  "code":{
+                    "name":"Execute",
+                    "data":{ "when":{ "_":[ "this", "color", "isEqualTo", "#fff" ] }, "set":{ "color":"#f00" }, "elseExecute":{ "set":{ "color":"#fff" } } }
+                  }
+                }
+              },
+              "into":{ "_":"scenehud" }
+            }
+          ],
+          "code":{ "name":"Sequence", "data":[ { "wait":125 }, { "gotoScene":"gameover" } ] }
+        },
+        {
+          "name":"playerwin",
+          "execute":[
+            { "as":{ "_":[ "object", "car" ] }, "set":{ "state":"default" } },
+            {
+              "object":{
+                "width":256, "height":30,
+                "x":0, "y":81,
+                "bgcolor":"#00f", "color":"#fff",
+                "font":"spectrum", "fontSize":50, "lineHeight":30, "outline":"#000", "textAlign":"center", "html":"YOU WIN!",
+                "states":{
+                  "code":{
+                    "name":"Execute",
+                    "data":{ "when":{ "_":[ "this", "color", "isEqualTo", "#fff" ] }, "set":{ "color":"#0f0" }, "elseExecute":{ "set":{ "color":"#fff" } } }
+                  }
+                }
+              },
+              "into":{ "_":"scenehud" }
+            }
+          ],
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "wait":125 },
+              { "sum":1, "to":{ "_":[ "variable", "nextStage" ] } },
+              {
+                "when":{ "_":[ "variable", "nextStage", "isEqualTo", 4 ] },
+                "gotoScene":"ending",
+                "elseExecute":{ "gotoScene":{ "_":[ "variable", "nextStage" ] } }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "playerCar":{
+      "type":"player",
+      "follow":1,
+      "set":{ "_":[ "stencil", "modelCar" ] },
+      "tileX":32, "tileY":480,
+      "states":{
+        "name":"go",
+        "code":{
+          "name":"Execute",
+          "data":[
+            {
+              "when":{ "_":[ "keyRight", "isDown" ] },
+              "set":{ "steer":"right" },
+              "elseExecute":{ "when":{ "_":[ "keyLeft", "isDown" ] }, "set":{ "steer":"left" }, "elseExecute":{ "set":{ "steer":"none" } } }
+            },
+            { "when":{ "_":[ "keyUp", "isDown" ] }, "set":{ "accelerator":"down" }, "elseExecute":{ "set":{ "accelerator":"up" } } },
+            { "when":{ "_":[ "keyDown", "isDown" ] }, "set":{ "brake":"down" }, "elseExecute":{ "set":{ "brake":"up" } } }
+          ]
+        }
+      }
+    },
+    "cpuCar":{
+      "set":{ "_":[ "stencil", "modelCar" ] },
+      "tileX":0, "tileY":480,
+      "constance":20,
+      "curveDistance":40,
+      "decisionDistance":100,
+      "maneuverAngle":60,
+      "maneuverSpeed":2,
+      "position":0,
+      "riderMaxSpeed":4,
+      "waypoint":0,
+      "states":{
+        "name":"go",
+        "execute":{ "when":{ "_":[ "cheat", "slowCars" ] }, "set":{ "riderMaxSpeed":2 } },
+        "code":{
+          "name":"Execute",
+          "data":[
+            {
+              "when":{ "_":[ "this", "distanceTo", { "_":[ "this", "nextpoint" ] }, "isGreaterThan", { "_":[ "this", "decisionDistance" ] } ] },
+              "execute":[
+                { "subtract":1, "to":{ "_":[ "this", "expireNextpoint" ] } },
+                {
+                  "when":{ "_":[ "this", "expireNextpoint", "isLessThan", 0 ] },
+                  "set":{ "maxSpeed":{ "_":[ "this", "riderMaxSpeed", "+", { "_":[ "randomValue", [ 1, 0, -1 ] ] } ] }, "nextpoint":0 }
+                }
+              ]
+            },
+            {
+              "when":{ "_":[ "this", "nextpoint", "not" ] },
+              "execute":[
+                {
+                  "set":{
+                    "expireNextpoint":{ "_":[ "this", "constance" ] },
+                    "nextpoint":{ "_":[ "new", {} ] },
+                    "nextwaypoint":{ "_":[ "objectTyped", { "_":[ "waypoint", ".", { "_":[ "this", "waypoint" ] } ] } ] }
+                  }
+                },
+                {
+                  "as":{ "_":[ "this", "nextpoint" ] },
+                  "set":{
+                    "x":{ "_":[ "that", "nextwaypoint", "x", "+", { "_":[ "randomNumber", [ 0, { "_":[ "that", "nextwaypoint", "width", "-", 16 ] } ] ] } ] }, "y":{ "_":[ "that", "nextwaypoint", "y", "+", { "_":[ "randomNumber", [ 0, { "_":[ "that", "nextwaypoint", "height", "-", 16 ] } ] ] } ] }
+                  }
+                }
+              ]
+            },
+            {
+              "when":{ "_":[ "this", "collidesWith", { "_":[ "this", "nextwaypoint" ] } ] },
+              "execute":[
+                { "set":{ "nextpoint":0 } },
+                { "sum":1, "to":{ "_":[ "this", "waypoint" ] } },
+                { "when":{ "_":[ "objectTyped", { "_":[ "waypoint", ".", { "_":[ "this", "waypoint" ] } ] }, "not" ] }, "set":{ "waypoint":0 }, "loop":1 }
+              ],
+              "elseExecute":[
+                {
+                  "as":{ "_":[ "objectTyped", { "_":[ "target", ".", { "_":[ "this", "carid" ] } ] } ] },
+                  "set":{ "x":{ "_":[ "that", "nextpoint", "x" ] }, "y":{ "_":[ "that", "nextpoint", "y" ] } }
+                },
+                { "set":{ "angleto":{ "_":[ "this", "angleTo", { "_":[ "this", "nextpoint" ] } ] } } },
+                { "set":{ "shortestAngle":{ "_":[ "this", "angle", "shortestAngleTo", { "_":[ "this", "angleto" ] } ] } } },
+                {
+                  "when":{ "_":[ "this", "shortestAngle", "abs", "isGreaterThan", 5 ] },
+                  "execute":{ "when":{ "_":[ "this", "shortestAngle", "isGreaterThan", 1 ] }, "set":{ "steer":"right" }, "elseExecute":{ "set":{ "steer":"left" } } },
+                  "elseExecute":{ "set":{ "steer":"none" } }
+                },
+                {
+                  "when":{ "_":[ "this", "shortestAngle", "abs", "isLessThan", { "_":[ "this", "maneuverAngle" ] } ] },
+                  "execute":{
+                    "when":{ "_":[ "this", "distanceTo", { "_":[ "this", "nextpoint" ] }, "isGreaterThan", { "_":[ "this", "curveDistance" ] } ] },
+                    "set":{ "accelerator":"down" },
+                    "elseExecute":{
+                      "when":{ "_":[ "this", "movingSpeed", "isLessThan", { "_":[ "this", "maneuverSpeed" ] } ] },
+                      "set":{ "accelerator":"down" },
+                      "elseExecute":{ "set":{ "accelerator":"up" } }
+                    }
+                  },
+                  "elseExecute":{ "set":{ "accelerator":"up" } }
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "party":{
+      "image":"defaultsprites", "tileX":216, "tileY":104, "width":8, "height":8,
+      "zIndex":5, "y":193,
+      "animations":{ "default":{ "frames":[ 0, 1, 2, 1 ], "loopTo":0 } },
+      "animation":"default",
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":[
+            {
+              "when":{ "_":[ "this", "y", "isGreaterThan", 192 ] },
+              "set":{
+                "x":{ "_":[ "randomNumber", [ 0, 248 ] ] }, "y":-8,
+                "fallspeedx":{ "_":[ "randomValue", [ -0.3, -0.2, -0.1, 0, 0.1, 0.2, 0.3 ] ] },
+                "fallspeedy":{ "_":[ "randomNumber", [ 1, 3 ] ] }
+              }
+            },
+            { "sum":{ "_":[ "this", "fallspeedy" ] }, "to":{ "_":[ "this", "y" ] } },
+            { "sum":{ "_":[ "this", "fallspeedx" ] }, "to":{ "_":[ "this", "x" ] } }
+          ]
+        }
+      }
+    },
+    "semaphore":{ "type":"semaphore", "image":"defaultsprites", "tileX":0, "tileY":496, "width":16, "height":16, "bgcolor":"#7f7f7f" },
+    "target":{ "type":"target", "width":8, "height":8, "zIndex":30, "bgcolor":"#0f0" },
+    "#":{ "image":"tiles", "tileX":0, "tileY":48, "width":16, "height":16 },
+    "'":{ "image":"tiles", "tileX":0, "tileY":16, "width":16, "height":16 },
+    ",":{ "image":"tiles", "tileX":0, "tileY":32, "width":16, "height":16 },
+    ".":{ "image":"tiles", "tileX":0, "tileY":0, "width":16, "height":16 },
+    "=":{ "image":"tiles", "tileX":0, "tileY":64, "width":16, "height":16, "zIndex":50 },
+    "H":{ "set":{ "_":[ "stencil", "=" ] }, "tileX":16, "tileY":48 },
+    "B":{ "set":{ "_":[ "stencil", "A" ] }, "tileX":48, "tileY":0 },
+    "C":{ "set":{ "_":[ "stencil", "A" ] }, "tileX":32, "tileY":16 },
+    "A":{ "type":"wall", "image":"tiles", "tileX":32, "tileY":0, "width":16, "height":16 },
+    "D":{ "set":{ "_":[ "stencil", "A" ] }, "tileX":48, "tileY":16 },
+    "F":{ "set":{ "_":[ "stencil", "A" ] }, "tileX":16, "tileY":64 },
+    "[":{ "image":"tiles", "tileX":64, "tileY":16, "width":16, "height":16 },
+    "^":{ "image":"tiles", "tileX":16, "tileY":16, "width":16, "height":16 },
+    "_":{ "image":"tiles", "tileX":16, "tileY":32, "width":16, "height":16 },
+    "a":{ "image":"tiles", "tileX":32, "tileY":32, "width":16, "height":16 },
+    "b":{ "image":"tiles", "tileX":48, "tileY":32, "width":16, "height":16 },
+    "c":{ "image":"tiles", "tileX":64, "tileY":32, "width":16, "height":16 },
+    "d":{ "image":"tiles", "tileX":32, "tileY":48, "width":16, "height":16 },
+    "e":{ "image":"tiles", "tileX":48, "tileY":48, "width":16, "height":16 },
+    "f":{ "image":"tiles", "tileX":64, "tileY":48, "width":16, "height":16 },
+    "g":{ "image":"tiles", "tileX":32, "tileY":64, "width":16, "height":16 },
+    "h":{ "image":"tiles", "tileX":48, "tileY":64, "width":16, "height":16 },
+    "i":{ "image":"tiles", "tileX":64, "tileY":64, "width":16, "height":16 },
+    "j":{ "image":"tiles", "tileX":64, "tileY":0, "width":16, "height":16 },
+    "s":{ "type":"sand", "image":"tiles", "tileX":16, "tileY":0, "width":16, "height":16 }
+  },
+  "scenes":{
+    "intro":{
+      "bgcolor":"#0ff",
+      "execute":[
+        { "as":{ "_":"variable" }, "set":{ "nextStage":1 } },
+        {
+          "object":[
+            { "image":"title", "width":182, "height":55, "x":37, "y":13 },
+            {
+              "box":"label", "width":256,
+              "zIndex":30, "x":0, "y":73,
+              "color":"#fff",
+              "font":"spectrum", "fontSize":20, "lineHeight":20, "outline":"#000", "textAlign":"center", "html":"PRESS START",
+              "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "visible":0 }, "wait":10 }, { "set":{ "visible":1 }, "wait":10, "loopTo":0 } ] } }
+            },
+            {
+              "image":"defaultsprites", "tileX":0, "tileY":480, "width":16, "height":16,
+              "zIndex":10, "x":400,
+              "angle":90,
+              "animations":{ "default":{ "frames":2, "speed":2, "loopTo":0 } },
+              "animation":"default",
+              "states":{
+                "code":{
+                  "name":"Execute",
+                  "data":[
+                    {
+                      "when":{ "_":[ "this", "x", "isGreaterThan", 300 ] },
+                      "set":{
+                        "tileX":{ "_":[ "randomValue", [ 0, 32 ] ] },
+                        "x":-16, "y":{ "_":[ "randomNumber", [ 144, 176 ] ] },
+                        "movingSpeed":{ "_":[ "randomNumber", [ 3, 5 ] ] }
+                      }
+                    },
+                    { "sum":{ "_":[ "this", "movingSpeed" ] }, "to":{ "_":[ "this", "x" ] } }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      ],
+      "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":{ "_":[ "variable", "nextStage" ] } } } },
+      "tilemap":{
+        "height":192,
+        "y":80,
+        "tileWidth":16,
+        "tileHeight":16,
+        "map":[
+          "            F   ",
+          " abbbbbbbbc H   ",
+          "sghhhhhhhhisHsss",
+          "DDDDDDDDDDDDHDDD",
+          ".........#..H...",
+          ".........#..H...",
+          ".........#..H..."
+        ]
+      }
+    },
+    "ending":{
+      "execute":[
+        {
+          "object":[
+            {
+              "box":"label", "width":256,
+              "zIndex":10, "x":0, "y":18,
+              "color":"#fff",
+              "font":"spectrum", "outline":"#000", "textAlign":"center", "html":"CONGRATULATIONS! YOU'RE THE"
+            },
+            {
+              "width":256, "height":30,
+              "zIndex":10, "x":0, "y":31,
+              "color":"#fff",
+              "font":"spectrum", "fontSize":50, "lineHeight":30, "outline":"#000", "textAlign":"center", "html":"CHAMPION!",
+              "states":{
+                "code":{
+                  "name":"Execute",
+                  "data":{ "when":{ "_":[ "this", "color", "isEqualTo", "#fff" ] }, "set":{ "color":"#0f0" }, "elseExecute":{ "set":{ "color":"#fff" } } }
+                }
+              }
+            },
+            {
+              "image":"ending", "width":256, "height":192,
+              "y":192,
+              "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "this", "y", "isGreaterThan", 0 ] }, "subtract":1, "to":{ "_":[ "this", "y" ] } } } }
+            }
+          ]
+        },
+        { "times":10, "object":{ "_":[ "stencil", "party" ] } }
+      ],
+      "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"gameover" } } }
+    },
+    "gameover":{
+      "object":{
+        "width":256, "height":192,
+        "x":0, "y":0,
+        "font":"spectrum", "fontSize":20, "lineHeight":192, "outline":"#000", "textAlign":"center", "html":"GAME OVER"
+      },
+      "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"intro" } } }
+    },
+    "1":{
+      "object":[
+        { "set":{ "_":[ "stencil", "cpuCar" ] }, "x":96, "y":592 },
+        { "set":{ "_":[ "stencil", "cpuCar" ] }, "x":128, "y":624 },
+        { "set":{ "_":[ "stencil", "cpuCar" ] }, "x":96, "y":656 },
+        { "set":{ "_":[ "stencil", "playerCar" ] }, "x":128, "y":688 },
+        { "type":"checkpoint13", "width":144, "height":16, "x":48, "y":544 },
+        { "type":"checkpoint0", "width":144, "height":16, "x":48, "y":528 },
+        { "type":"checkpoint3", "width":16, "height":176, "x":400, "y":48 },
+        { "type":"checkpoint2", "width":16, "height":176, "x":272, "y":48 },
+        { "type":"checkpoint4", "width":144, "height":16, "x":432, "y":240 },
+        { "type":"checkpoint5", "width":160, "height":16, "x":432, "y":544 },
+        { "type":"checkpoint6", "width":16, "height":144, "x":608, "y":560 },
+        { "type":"checkpoint7", "width":16, "height":160, "x":880, "y":560 },
+        { "type":"checkpoint8", "width":160, "height":16, "x":912, "y":736 },
+        { "type":"checkpoint9", "width":160, "height":16, "x":912, "y":880 },
+        { "type":"checkpoint10", "width":16, "height":144, "x":864, "y":928 },
+        { "type":"checkpoint11", "width":16, "height":160, "x":256, "y":912 },
+        { "type":"checkpoint12", "width":144, "height":16, "x":48, "y":832 },
+        { "type":"waypoint0", "width":48, "height":48, "x":96, "y":208 },
+        { "type":"waypoint1", "width":48, "height":48, "x":208, "y":96 },
+        { "type":"waypoint2", "width":48, "height":48, "x":400, "y":96 },
+        { "type":"waypoint3", "width":48, "height":48, "x":480, "y":176 },
+        { "type":"waypoint4", "width":48, "height":48, "x":480, "y":544 },
+        { "type":"waypoint5", "width":48, "height":48, "x":544, "y":608 },
+        { "type":"waypoint6", "width":48, "height":48, "x":896, "y":608 },
+        { "type":"waypoint7", "width":48, "height":48, "x":976, "y":704 },
+        { "type":"waypoint8", "width":48, "height":48, "x":976, "y":896 },
+        { "type":"waypoint9", "width":48, "height":48, "x":880, "y":976 },
+        { "type":"waypoint10", "width":48, "height":48, "x":208, "y":976 },
+        { "type":"waypoint11", "width":48, "height":48, "x":96, "y":848 },
+        { "type":"checkpoint1", "width":160, "height":16, "x":48, "y":272 }
+      ],
+      "set":{ "_":[ "stencil", "modelRace" ] },
+      "lapsCount":3,
+      "trackName":"Italy",
+      "tilemap":{
+        "tileWidth":16,
+        "tileHeight":16,
+        "map":[
+          "jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj..jjjjjjjjjjjjjjjjjjjjjjjjjjjj",
+          "jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj..jjjjjjjjjjjjjjjjjjjjjjjjjjjj",
+          "jjjjjjjjDDDDDDDDDDDDDDDDDDDDDDDDDjjjjjjj..jjjjjjjjjjjjjjjjjjjjjjjjjjjj",
+          "jjjjjjjCsssssssssssssssssssssssssAjjjjjj..jjjjjjjjjjjjjjjjjjjjjjjjjjjj",
+          "jjjjjjCsssssssssssssssssssssssssssAjjjjj..jjjjjjjjjjjjjjjjjjjjjjjjjjjj",
+          "jjjjjCsss'....................^ssssAjjjj..jjjjjjjjjjjjjjjjjjjjjjjjjjjj",
+          "jjjjjCss'......................^sssAjjjj..jjjjjjjjjjjjjjjjjjjjjjjjjjjj",
+          "jjjjCss'........................^sssAjjj..jjjjjjjjjjjjjjjjjjjjjjjjjjjj",
+          "jjjjCss..........................^ssAjjj..jjjjjjjjjjjjjjjjjjjjjjjjjjjj",
+          "jjjCss'...........................ssAabc..abcjjjjjjjjjjjjjjjjjjjjjjjjj",
+          "jjCsss........._ssssssssss,.......ssAdef..defjjjjjjjjjjjjjjjjjjjjjjjjj",
+          "jjCss'......._sssssssssssss,......ssAdef..ghijjjjjjjjjjjjjjjjjjjjjjjjj",
+          "jjCss......._sssssssssssssss,.....ssAdef..jjjjjjjjjjjjjjjjjjjjjjjjjjjj",
+          "jjCss......_sssssssssssssssss.....ssAdef..jjjjjjjjjjjjjjjjjjjjjjjjjjjj",
+          "jjCss......sssssBBBBBBBBBBsss.....ssAdef..abcjjjjjjjjjjjjjjjjjjjjjjjjj",
+          "jjCss......ssssBjjjjjjac'^Css.....ssAghi..defjjjjjjjjjjjjjjjjjjjjjjjjj",
+          "jjCss....._sssBjjjjjjjdf,_Css.....ssA.....ghijjjjjjjjjjjjjjjjjjjjjjjjj",
+          "jjCss.....sssBjjjjjjjjdebcCss.....ssA.....jjjjjjjjjjjjjjjjjjjjjjjjjjjj",
+          "jjCss.....ssAabc......deefCss.....ssAss,..abcjjjjjjjjjjjjjjjjjjjjjjjjj",
+          "jjCss.....ssAdef......ghhiCss.....ssAss'..defjjjjjjjjjjjjjjjjjjjjjjjjj",
+          "jjCss.....ssAdef..jj..jjjjCss.....ssA.....ghijjjjjjjjjjjjjjjjjjjjjjjjj",
+          "jjCss.....ssAdef..jj..jjjjCss.....ssA.....jjjjjjjjjjjjjjjjjjjjjjjjjjjj",
+          "jjCss.....ssAdef..jj..jjjjCss.....ssAabc..jjjjjjjjjjjjjjjjjjjjjjjjjjjj",
+          "jjCss.....ssAdef..jj..jabcCss.....ssAdef..jjjjjjjjjjjjjjjjjjjjjjjjjjjj",
+          "jjCss.....ssAghi..jj..jdefCss.....ssAdef..jjjjjjjjjjjjjjjjjjjjjjjjjjjj",
+          "jjCss.....ssAjjj..jj..jdefCss.....ssAdef..jjjjjjjjjjjjjjjjjjjjjjjjjjjj",
+          "jjCss.....ssAacj..jj..jdefCss.....ssAdef..jjjjjjjjjjjjjjjjjjjjjjjjjjjj",
+          "jjCss.....ssAdfj..jj..jdefCss.....ssAdef..jjjjjjjjjjjjjjjjjjjjjjjjjjjj",
+          "jjCss.....ssAdfj..jj..jdefCss.....ssAghi..abcjabcabcjjjjabcjjjjjjjjjjj",
+          "jjCss.....ssAgij..jj..jghiCss.....ssAsss..defjdefdefjjjjdefjjjjjjjjjjj",
+          "jjCss.....ssAjjj..jj..jjjjCss.....ssAsss..ghijghighijjjjghijjjjjjjjjjj",
+          "jjCss.....ssAabc..jj..jjjjCss.....ssAsss..............................",
+          "jjCss.....ssAdef..jj..jabcCss.....ssAsss,.............................",
+          "jjCss.....ssAdef..jj..jdefCss.....ssAsssssssssssssssssssssssssssssssss",
+          "jjCss#####ssAdef..jj..jdefCss.....sssDDDDDDDDDDDDDDDDDDDDDDDDjjabbbbbc",
+          "jjCss.....ssAdef..jj..jdefCss......^sssssssssssssssssssssssssDjghhhhhi",
+          "jjCss.[...ssAdef..jj..jdefCss.......^sssssssssssssssssssssssssAjjjjjjj",
+          "jjCss.....ssAghi..jj..jdefCss...............................^ssAjjjjjj",
+          "jjCss...[.ssAjjj..jj..jghiCss,...............................^ssAjjjjj",
+          "jjCss.....ssAabc..jj..jjjjjCss,...............................^ssAjjjj",
+          "jjCss.[...ssAdef..jj..jjjjjjCss,...............................^ssAjjj",
+          "jjCss.....ssAdef..jj..jjjjjjCsss,...............................sssAjj",
+          "jjCss...[.ssAdef..jj..jjjjjjjCssssssssssssssssssssssssss,.......^ssAjj",
+          "jjCss.....ssAdef..jj..jjjjjjjjCssssssssssssssssssssssssss,.......ssAjj",
+          "jjCss.....ssAdef..jj..jjjjjjjjjBBBBBBBBBBBBBBBBBBBBBBBBsss,......ssAjj",
+          "jjCss.....ssAghi..jj..jjjjjjjjjabbbbbbbbbcjabbbbbbbbbcjCsss,.....ssAjj",
+          "jjCss.....ssAjjj..jj..jjjjjjjjjdeeeeeeeeefjdeeeeeeeeefjjCsss.....ssAjj",
+          "jjCss.....ssAacj..jj..jjjjjjjjjghhhhhhhhhijghhhhhhhhhijjjCss.....ssAjj",
+          "jjCss.....ssAdfj.......................................jjCss.....ssAjj",
+          "jjCss.....ssAdfj.......................................jjCss.....ssAjj",
+          "jjCss.....ssAgij.._,..jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj..jjCss.....ssAjj",
+          "jjCss.....ssAjjj..^'..jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj..jjCss.....ssAjj",
+          "jjCss.....ssAjjj.......................................jjCss.....ssAjj",
+          "jjCss.....^sAjjj.......................................jjCss.....ssAjj",
+          "jjCss......ssAjjjabcabcjjjabbbbbbbbbcjjjjabbbbbbbbbcjjjjjCss.....ssAjj",
+          "jjCss......sssAjjdefdefjjjdeeeeeeeeefjjjjdeeeeeeeeefjjjjDsss.....ssAjj",
+          "jjCss......^sssAAghighijjjghhhhhhhhhijjjjghhhhhhhhhijjjDsss'.....ssAjj",
+          "jjCss,......^ssssDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDssss......ssAjj",
+          "jjCsss.......^sssssssssssssssssssssssssssssssssssssssssss'.......ssAjj",
+          "jjCsss.........^sssssssssssssssssssssssssssssssssssssss'.........ssAjj",
+          "jjjCss,........................................................._ssAjj",
+          "jjjCsss,........................................................sssAjj",
+          "jjjjCsss,......................................................_ssBjjj",
+          "jjjjjCsss,..................................................._sssBjjjj",
+          "jjjjjjCssss,..............................................._sssBBjjjjj",
+          "jjjjjjCssssssssssssssssssssssssssssssssssssssssssssssssssssssBBjjjjjjj",
+          "jjjjjjjCssssssssssssssssssssssssssssssssssssssssssssssssssssBjjjjjjjjj",
+          "jjjjjjjjBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBjjjjjjjjjj",
+          "jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj",
+          "jjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjjj"
+        ]
+      }
+    },
+    "2":{
+      "object":[
+        { "set":{ "_":[ "stencil", "cpuCar" ] }, "x":624, "y":384 },
+        { "set":{ "_":[ "stencil", "cpuCar" ] }, "x":656, "y":416 },
+        { "set":{ "_":[ "stencil", "cpuCar" ] }, "x":624, "y":448 },
+        { "set":{ "_":[ "stencil", "playerCar" ] }, "x":656, "y":480 },
+        { "type":"waypoint0", "width":48, "height":48, "x":624, "y":192 },
+        { "type":"waypoint1", "width":48, "height":48, "x":736, "y":96 },
+        { "type":"waypoint2", "width":48, "height":48, "x":912, "y":112 },
+        { "type":"waypoint3", "width":48, "height":48, "x":976, "y":208 },
+        { "type":"waypoint4", "width":48, "height":48, "x":960, "y":432 },
+        { "type":"waypoint5", "width":48, "height":48, "x":992, "y":608 },
+        { "type":"waypoint6", "width":48, "height":48, "x":960, "y":816 },
+        { "type":"waypoint7", "width":48, "height":48, "x":960, "y":912 },
+        { "type":"waypoint8", "width":48, "height":48, "x":880, "y":976 },
+        { "type":"waypoint9", "width":48, "height":48, "x":608, "y":960 },
+        { "type":"waypoint10", "width":48, "height":48, "x":352, "y":992 },
+        { "type":"waypoint11", "width":48, "height":48, "x":160, "y":976 },
+        { "type":"waypoint12", "width":48, "height":48, "x":96, "y":880 },
+        { "type":"waypoint13", "width":48, "height":48, "x":80, "y":608 },
+        { "type":"waypoint14", "width":48, "height":48, "x":112, "y":432 },
+        { "type":"waypoint15", "width":48, "height":48, "x":80, "y":256 },
+        { "type":"waypoint17", "width":48, "height":48, "x":192, "y":96 },
+        { "type":"waypoint16", "width":48, "height":48, "x":96, "y":144 },
+        { "type":"waypoint18", "width":48, "height":48, "x":368, "y":96 },
+        { "type":"waypoint19", "width":48, "height":48, "x":448, "y":176 },
+        { "type":"waypoint20", "width":48, "height":48, "x":432, "y":336 },
+        { "type":"waypoint21", "width":48, "height":48, "x":464, "y":432 },
+        { "type":"waypoint22", "width":48, "height":48, "x":448, "y":576 },
+        { "type":"waypoint23", "width":48, "height":48, "x":528, "y":624 },
+        { "type":"waypoint24", "width":48, "height":48, "x":624, "y":592 },
+        { "type":"checkpoint16", "width":144, "height":16, "x":576, "y":336 },
+        { "type":"checkpoint0", "width":144, "height":16, "x":576, "y":320 },
+        { "type":"checkpoint1", "width":144, "height":16, "x":576, "y":240 },
+        { "type":"checkpoint2", "width":16, "height":144, "x":768, "y":48 },
+        { "type":"checkpoint3", "width":16, "height":144, "x":864, "y":48 },
+        { "type":"checkpoint4", "width":144, "height":16, "x":928, "y":256 },
+        { "type":"checkpoint5", "width":144, "height":16, "x":928, "y":864 },
+        { "type":"checkpoint6", "width":16, "height":144, "x":848, "y":928 },
+        { "type":"checkpoint7", "width":16, "height":144, "x":224, "y":928 },
+        { "type":"checkpoint8", "width":144, "height":16, "x":48, "y":864 },
+        { "type":"checkpoint9", "width":144, "height":16, "x":48, "y":208 },
+        { "type":"checkpoint10", "width":16, "height":144, "x":208, "y":48 },
+        { "type":"checkpoint11", "width":16, "height":144, "x":352, "y":48 },
+        { "type":"checkpoint12", "width":144, "height":16, "x":400, "y":224 },
+        { "type":"checkpoint13", "width":144, "height":16, "x":400, "y":528 },
+        { "type":"checkpoint14", "width":16, "height":176, "x":544, "y":544 },
+        { "type":"checkpoint15", "width":144, "height":16, "x":576, "y":528 }
+      ],
+      "set":{ "_":[ "stencil", "modelRace" ] },
+      "lapsCount":3,
+      "trackName":"Japan",
+      "tilemap":{
+        "tileWidth":16,
+        "tileHeight":16,
+        "map":[
+          "ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",
+          "ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",
+          "ssssssDDDDDDDDDDDDDDDDDDDDDDDDsssssssssssssDDDDDDDDDDDDDDDDDDDssssssss",
+          "sssssDssssssssssssssssssssssssAAssssssssDDDsssssssssssssssssssDsssssss",
+          "ssssDsssssssssssssssssssssssssssAsssssDDsssssssssssssssssssssssAssssss",
+          "sssCss'......................^sssAsssCsssss'.................^ssAsssss",
+          "ssCss'........................^ssAssCsss'.....................^ssAssss",
+          "ssCss..........................^ssACssss.......................^sAssss",
+          "ssCss...........................ssACsss'........................ssAsss",
+          "ssCss...........................ssACsss.........................ssAsss",
+          "ssCss......_ssssssssssss,.......ssACss'........_ssssssss,.......^ssAss",
+          "ssCss.....ssssssssssssssss......ssACss......._sssssssssss,.......ssAss",
+          "ssCss.....sssBBBBBBBBBBsss,.....ssACss......_sssBBBBBBBsss,......ssAss",
+          "ssCss.....ssA..........Bsss.....ssACss......sssBabbbbbcCsss......ssAss",
+          "ssCss.....ssA.abc..abc..Css.....ssACss....._ssA.deeeeef.Css......ssAss",
+          "ssCss.....ssA.def..def..Css.....ssACss.....ssAj.dfgggdf.Css,.....ssAss",
+          "ssCss.....ssA.ghi..ghi..Css.....ssACss.....ssAj.df'.^df.jCss.....ssAss",
+          "ssCss.....ssA...........Css.....ssACss.....ssAj.df...df.jCss.....ssAss",
+          "ssCss.....ssA...........Css.....ssACss.....ssAj.df,._df.jCss.....ssAss",
+          "ssCss.....ssA.abc..abc..Css.....ssACss.....ssAj.debbbef.jCss.....ssAss",
+          "ssCss.....ssA.def..def..Css.....ssACss.....ssAj.ghhhhhi.jCss.....ssAss",
+          "ssCss.....ssA.ghi..ghi..Css.....ssACss#####ssAj.........jCss.....ssAss",
+          "ssCss.....ssA...........Css.....ssACss.....ssAjjjjs..jjjjCss.....ssAss",
+          "ssCss.....ssA...........Css.....ssACss.[...ssAjjjjs..jjjjCss.....ssAss",
+          "ssCss.....ssA.abc..abc..Css.....ssACss.....ssAjjjjs..jjjjCss.....ssAss",
+          "ssCss.....ssA.def..def..Css.....ssACss...[.ssAjjjjs..jjjjCss.....ssAss",
+          "ssCss.....ssA.ghi..ghi..Css.....ssACss.....ssAjjjjs..jjjjCss.....ssAss",
+          "ssCss.....ssA...........Css.....ssACss.[...ssAjjjjs..jjjjCss.....ssAss",
+          "ssCss.....ssA...........Css.....ssACss.....ssAjjjjs..jjjjCss.....ssAss",
+          "ssCss.....ssA.abc..abc..Css.....ssACss...[.ssAjjjjs..jjjjCss.....ssAss",
+          "ssCss.....ssA.def..def..Css.....ssACss.....ssAjjjjs..jjjjCss.....ssAss",
+          "ssCss.....ssA.ghi..ghi..Css.....ssACss.....ssAjjjjs..jjjjCss.....ssAss",
+          "ssCss.....ssA...........Css.....ssACss.....ssAjjjjs..jjjjCss.....ssAss",
+          "ssCss.....ssA...........Css.....ssACss.....ssAjjjjs..jjjjCss.....ssAss",
+          "ssCss.....ssA.abc..abc..Css.....ssssss.....ssAjjjjs..jjjjCss.....ssAss",
+          "ssCss.....ssA.def..def..Css.....^sssss.....ssAjjjjs..jjjjCss.....ssAss",
+          "ssCss.....ssA.ghi..ghi..Css......sssss.....ssAjjjjs..jjjjCss.....ssAss",
+          "ssCss.....ssA...........Css......^ss'......ssAjjjjs..jjjjCss.....ssAss",
+          "ssCss.....ssA...........Css................ssAjjjjs..jjjjCss.....ssAss",
+          "ssCss.....ssAsss,.._ssssCss,...............ssAjjjjs..jjjjCss.....ssAss",
+          "ssCss.....ssAjjjs..sjjjjCsss...............ssAjjjjs..jjjjCss.....ssAss",
+          "ssCss.....ssAjjjs..sjjjjCsss,............._ssAjjjjs..jjjjCss.....ssAss",
+          "ssCss.....ssAjjjs..sjjjjjBsss,.........._ssssAjjjjs..jjjjCss.....ssAss",
+          "ssCss.....ssAjjjs..sjjjjjjBsssssssssssssssssAjjjjjs..jjjjCss.....ssAss",
+          "ssCss.....ssAjjjs..sjjjjjjjBsssssssssssssssBjjjjjjs..jjjjCss.....ssAss",
+          "ssCss.....ssAjjjs..sjjjjjjjjBBBBBBBBBBBBBBBjjjjjjjs..jjjjCss.....ssAss",
+          "ssCss.....ssAsss'..^ssssssssssssssssssssssssssssss'..jjjjCss.....ssAss",
+          "ssCss.....ssA...........................................jCss.....ssAss",
+          "ssCss.....ssA...........................................jCss.....ssAss",
+          "ssCss.....ssA.abbbbbc._sssssssssssssssssssssss,.abbbbbc.jCss.....ssAss",
+          "ssCss.....ssA.deeeeef.sssssssssssssssssssssssss.deeeeef.jCss.....ssAss",
+          "ssCss.....ssA.dfgggdf.sssabcsssssabcsssssabcsss.dfgggdf.jCss.....ssAss",
+          "ssCss.....ssA.df'.^df.sssdefsssssdefsssssdefsss.df'.^df.jCss.....ssAss",
+          "ssCss.....ssA.df...df.sssghisssssghisssssghisss.df...df.jCss.....ssAss",
+          "ssCss.....ssA.df,._df.sssssssssssssssssssssssss.df,._df.jCss.....ssAss",
+          "ssCss.....^sA.debbbef.sssssssssssssssssssssssss.debbbef.Css'.....ssAss",
+          "ssCss......ssDghhhhhi.^sssssssssssssssssssssss'.ghhhhhiDsss......ssAss",
+          "ssCss......^ssDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDsss'......ssAss",
+          "ssCss.......^ssssssssssssssssssssssssssssssssssssssssssss'.......ssAss",
+          "ssCss........^sssssssssssssssssssssssssssssssssssssssss'.........ssAss",
+          "ssCss,.........................................................._ssAss",
+          "ssCsss..........................................................ssAsss",
+          "ssCsss,........................................................_ssAsss",
+          "ssCssss,......................................................_ssAssss",
+          "sssCssss,..................................................._ssssAssss",
+          "ssssCsssssssssssssssssssssssssssssssssssssssssssssssssssssssssssBsssss",
+          "sssssBsssssssssssssssssssssssssssssssssssssssssssssssssssssssssBssssss",
+          "ssssssBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBsssssss",
+          "ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss",
+          "ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss"
+        ]
+      }
+    },
+    "3":{
+      "object":[
+        { "set":{ "_":[ "stencil", "cpuCar" ] }, "x":784, "y":432 },
+        { "set":{ "_":[ "stencil", "cpuCar" ] }, "x":816, "y":464 },
+        { "set":{ "_":[ "stencil", "cpuCar" ] }, "x":784, "y":496 },
+        { "set":{ "_":[ "stencil", "playerCar" ] }, "x":816, "y":528 },
+        { "type":"waypoint0", "width":48, "height":48, "x":784, "y":160 },
+        { "type":"waypoint1", "width":48, "height":48, "x":864, "y":96 },
+        { "type":"waypoint2", "width":48, "height":48, "x":976, "y":208 },
+        { "type":"waypoint3", "width":48, "height":48, "x":960, "y":384 },
+        { "type":"waypoint4", "width":48, "height":48, "x":992, "y":528 },
+        { "type":"waypoint5", "width":48, "height":48, "x":960, "y":688 },
+        { "type":"waypoint6", "width":48, "height":48, "x":976, "y":880 },
+        { "type":"waypoint7", "width":48, "height":48, "x":880, "y":976 },
+        { "type":"waypoint8", "width":48, "height":48, "x":176, "y":976 },
+        { "type":"waypoint9", "width":48, "height":48, "x":96, "y":896 },
+        { "type":"waypoint10", "width":48, "height":48, "x":112, "y":688 },
+        { "type":"waypoint11", "width":48, "height":48, "x":80, "y":544 },
+        { "type":"waypoint12", "width":48, "height":48, "x":112, "y":368 },
+        { "type":"waypoint13", "width":48, "height":48, "x":96, "y":160 },
+        { "type":"waypoint14", "width":48, "height":48, "x":192, "y":96 },
+        { "type":"waypoint15", "width":48, "height":48, "x":272, "y":160 },
+        { "type":"waypoint16", "width":48, "height":48, "x":272, "y":640 },
+        { "type":"waypoint17", "width":48, "height":48, "x":320, "y":720 },
+        { "type":"waypoint18", "width":48, "height":48, "x":384, "y":720 },
+        { "type":"waypoint19", "width":48, "height":48, "x":432, "y":640 },
+        { "type":"waypoint20", "width":48, "height":48, "x":432, "y":176 },
+        { "type":"waypoint21", "width":48, "height":48, "x":528, "y":96 },
+        { "type":"waypoint22", "width":48, "height":48, "x":624, "y":160 },
+        { "type":"waypoint23", "width":48, "height":48, "x":624, "y":672 },
+        { "type":"waypoint24", "width":48, "height":48, "x":704, "y":736 },
+        { "type":"waypoint25", "width":48, "height":48, "x":784, "y":672 },
+        { "type":"checkpoint20", "width":144, "height":16, "x":736, "y":384 },
+        { "type":"checkpoint0", "width":144, "height":16, "x":736, "y":368 },
+        { "type":"checkpoint1", "width":144, "height":16, "x":736, "y":240 },
+        { "type":"checkpoint2", "width":16, "height":176, "x":896, "y":48 },
+        { "type":"checkpoint3", "width":144, "height":16, "x":928, "y":240 },
+        { "type":"checkpoint4", "width":144, "height":16, "x":928, "y":864 },
+        { "type":"checkpoint5", "width":16, "height":144, "x":848, "y":928 },
+        { "type":"checkpoint6", "width":16, "height":144, "x":224, "y":928 },
+        { "type":"checkpoint7", "width":144, "height":16, "x":48, "y":880 },
+        { "type":"checkpoint8", "width":144, "height":16, "x":48, "y":224 },
+        { "type":"checkpoint10", "width":144, "height":16, "x":224, "y":224 },
+        { "type":"checkpoint11", "width":144, "height":16, "x":224, "y":640 },
+        { "type":"checkpoint13", "width":144, "height":16, "x":384, "y":640 },
+        { "type":"checkpoint14", "width":144, "height":16, "x":384, "y":224 },
+        { "type":"checkpoint16", "width":144, "height":16, "x":576, "y":224 },
+        { "type":"checkpoint17", "width":144, "height":16, "x":576, "y":640 },
+        { "type":"checkpoint19", "width":144, "height":16, "x":736, "y":640 },
+        { "type":"checkpoint15", "width":16, "height":160, "x":544, "y":48 },
+        { "type":"checkpoint9", "width":16, "height":176, "x":208, "y":48 },
+        { "type":"checkpoint12", "width":16, "height":176, "x":368, "y":656 },
+        { "type":"checkpoint18", "width":16, "height":176, "x":720, "y":656 }
+      ],
+      "set":{ "_":[ "stencil", "modelRace" ] },
+      "lapsCount":3,
+      "trackName":"USA",
+      "tilemap":{
+        "tileWidth":16,
+        "tileHeight":16,
+        "map":[
+          "ssssss.sssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss.s",
+          "s'.....ssssssssssssssssssssssssssssssssssssssssssssssssssssssssss'...^",
+          "sabc._sssDDDDDDDDDDsssssssssDDDDDDDDDDDDsssssssssssssDDDDDsssssss.abc.",
+          "sdef.sssDssssssssssDsssssssDssssssssssssDsssssssssDDDsssssDDDDsss.def.",
+          "sghi_sDDssssssssssssDsssssCssssssssssssssDssssssDDssssssssssssDDs.ghi.",
+          "sssssDssss'......^sssDsssCssss'.......^sssDssssDsssss'...^ssssssD,..._",
+          "ssssDsss'.........^sssAsCssss'.........^sssAssDssss'.........^sssAssss",
+          "sssCsss'...........^sssAssss'...........^sssACssss'...........^sssAsss",
+          "ssCsss'.............^ssCsss'.............^sssAss'..............^sssAss",
+          "ssCss'...............ssAsss...............^ssCss................sssAss",
+          "ssCss......._s,......ssCss'......_s,.......ssAss......._s,......sssAss",
+          "ssCss......_sss,.....ssAss......_sss,......ssCss......_sss,.....sssAss",
+          "ssCss....._sssss.....ssCss....._sssss,.....ssAss....._sssss,....^ssAss",
+          "ssCss.....ssssss.....ssCss.....sssBsss.....ssCss.....sssssss.....ssAss",
+          "ssCss.....ssACss.....ssAss.....ssAjCss.....ssAss.....sssBsss.....ssAss",
+          "ssCss.....ssACss.....ssCss.....ssAjCss.....ssCss.....ssAjCss.....ssAss",
+          "ssCss.....ssACss.....ssAss.....ssAjCss.....ssAss.....ssAjCss.....ssAss",
+          "ssCss.....ssACss.....ssCss.....ssAjCss.....ssCss.....ssAjCss.....ssAss",
+          "ssCss.....ssACss.....ssAss.....ssAjCss.....ssAss.....ssAjCss.....ssAss",
+          "ssCss.....ssACss.....ssCss.....ssAjCss.....ssCss.....ssAjCss.....ssAss",
+          "ssF=========FF=========F=========FjF=========F=========FjF=========Fss",
+          "ssCss.....ssACss.....ssCss.....ssAjCss.....ssCss.....ssAjCss.....ssAss",
+          "ssCss.....ssACss.....ssAss.....ssAjCss.....ssAss.....ssAjCss.....ssAss",
+          "ssCss.....ssACss.....ssCss.....ssAjCss.....ssCss.....ssAjCss.....ssAss",
+          "ssCss.....ssACss.....ssAss.....ssAjCss.....ssAss#####ssAjCss.....ssAss",
+          "ssCss.....ssACss.....ssCss.....ssAjCss.....ssCss.....ssAjCss.....ssAss",
+          "ssCss.....ssACss.....ssAss.....ssAjCss.....ssAss.[...ssAjCss.....ssAss",
+          "ssCss.....ssACss.....ssCss.....ssAjCss.....ssCss.....ssAjCss.....ssAss",
+          "ssCss.....ssACss.....ssAss.....ssAjCss.....ssAss...[.ssAjCss.....ssAss",
+          "ssCss.....ssACss.....ssCss.....ssAjCss.....ssCss.....ssAjCss.....ssAss",
+          "ssCss.....ssACss.....ssAss.....ssAjCss.....ssAss.[...ssAjCss.....ssAss",
+          "ssCss.....ssACss.....ssCss.....ssAjCss.....ssCss.....ssAjCss.....ssAss",
+          "ssCss.....ssACss.....ssAss.....ssAjCss.....ssAss...[.ssAjCss.....ssAss",
+          "ssCss.....ssACss.....ssCss.....ssAjCss.....ssCss.....ssAjCss.....ssAss",
+          "ssCss.....ssACss.....ssAss.....ssAjCss.....ssAss.....ssAjCss.....ssAss",
+          "ssF=========FF=========F=========FjF=========F=========FjF=========Fss",
+          "ssCss.....ssACss.....ssAss.....ssAjCss.....ssAss.....ssAjCss.....ssAss",
+          "ssCss.....ssACss.....ssCss.....ssAjCss.....ssCss.....ssAjCss.....ssAss",
+          "ssCss.....ssACss.....ssAss.....ssAjCss.....ssAss.....ssAjCss.....ssAss",
+          "ssCss.....ssACss.....ssCss.....ssAjCss.....ssCss.....ssAjCss.....ssAss",
+          "ssCss.....ssACss.....ssAss.....ssAjCss.....ssCss.....ssAjCss.....ssAss",
+          "ssCss.....ssACss.....sssss.....ssAjCss.....sssss.....ssAjCss.....ssAss",
+          "ssCss.....ssACss.....^sss'.....ssAjCss.....^sss'.....ssAjCss.....ssAss",
+          "ssCss.....ssACss......^s'......ssAjCss......^s'......ssAjCss.....ssAss",
+          "ssCss.....ssACss.............._ssAjCss...............ssAjCss.....ssAss",
+          "ssCss.....ssACss,.............sssAjCss,............._ssAjCss.....ssAss",
+          "ssCss.....ssACsss,..........._ssAjjCsss,..........._ssAjjCss.....ssAss",
+          "ssCss.....ssAjCsss,........._sssAjjjCsss,........._sssAjjCss.....ssAss",
+          "ssCss.....ssAjjCsss,......._sssBssssjBsss,......._sssBjjjCss.....ssAss",
+          "ssCss.....ssAjjjBsss,....._sssB.s'^sjjBsss,....._sssBjjjjCss.....ssAss",
+          "ssCss.....ssAjjjjBsssssssssssBj.s,_sjjjBsssssssssssBjjjjjCss.....ssAss",
+          "ssCss.....ssAjjjjjBsssssssssBjj.ssssjjjjBssssssssBBjjjjjjCss.....ssAss",
+          "ssCss.....ssAj.....BBBBBBBBB....^ss'....jBBBBBBBB.....jjjCss.....ssAss",
+          "ssCss.....ssAj.abc.jj.abc.jj.abc_'^,abc.jjjabcjjj.abc.jjjCss.....ssAss",
+          "ssCss.....ssAj.def.jj.def.jj.defs,_sdef.jjjdefjjj.def.jjjCss.....ssAss",
+          "ssCss.....ssAj.ghi.jj.ghi.jj.ghi^ss'ghi.jjjghijjj.ghi.jjDsss.....ssAss",
+          "ssCss.....sssD.........................................Dsss'.....ssAss",
+          "ssCss.....^sssDDDDFDDDDDDDDDDDDDDDDDDDDDDDDDFDDDDDDDDDDsss'......ssAss",
+          "ssCss......^ssssssHsssssssssssssssssssssssssHssssssssssss'.......ssAss",
+          "ssCss.......^sssssHsssssssssssssssssssssssssHsssssssssss'......._ssAss",
+          "ssCss,............H.........................H.................._sssAss",
+          "ssCsss,...........H.........................H................._ssssAss",
+          "sssCsss,..........H.........................H................_ssssAsss",
+          "ssssCsss,.........H.........................H..............._ssssAssss",
+          "....^Csss,........H.........................H............._sssssA'....",
+          "sabc.sBsssssssssssHsssssssssssssssssssssssssHssssssssssssssssssBs.abcs",
+          "sdef.ssBssssssssssHsssssssssssssssssssssssssHsssssssssssssssssBss.defs",
+          "sghi.sssBBBBBBBBBBFBBBBBBBBBBBBBBBBBBBBBBBBBFBBBBBBBBBBBBBBBBBsss.ghis",
+          "ssss.ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss.ssss",
+          "ssss.ssssssssssssssssssssssssssssssssssssssssssssssssssssssssssss.ssss"
+        ]
+      }
+    }
+  }
+}

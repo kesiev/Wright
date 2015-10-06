@@ -1,0 +1,1012 @@
+{
+  "name":"Starcat Bolle",
+  "author":"KesieV",
+  "year":2015,
+  "genre":"Platformer",
+  "description":"How ironic. Porting arcade games on home computers and consoles was a pretty common, hard and appreciated practice during 80's and 90's. Every port was a labour of love: since most of the arcade machines were may much more powerful than most of the home entertainment systems, coders and designers studied where and how to cut and adapt games in order to fit screens, memories and tapes, keeping the gameplay as faithful as they could. Playing a good arcade port on a home computer gives you a bittersweet feeling: the game plays the same but it feels brand new in some ways. My favourite one is Bubble Bobble (1996) to the Commodre 64, ported one year later after its original release. It played really the same but, while the original one had sparkling joyful colors, the dimmed one of the C64 version were more relaxing and warm, reflecting the chilling environment of the living room where I used to play. What is ironic? Despite the hard work needed by porting Bubble Bobble for Commodore 64, I played its pirated version, called 'Bolle Bolle' ('Bubble Bubble' in italian) and distributed by a magazine called 'Special Program', which used to publish translated versions of original games. These magazines were so popular that most of the Commodore 64 gamers of the 90's still call 'Bubble Bobble' 'Bolle Bolle'... or don't know the original name at all! That's quite unbelivable nowdays, isn't it? Plot! 'Starcat Bolle' (partially translated in italian as extra tribute) is the new adventure of our hero Starcat! One last star is missing from the sky and... is into the Purple Blobs headquarter! Use your handy new ability, trap any menace inside bubbles, scatter them around, eat fruit and find the last star! Use LEFT/RIGHT for moving, UP for jumping and the A BUTTON for firing bubbles. You can jump over bubbles keeping holding UP!",
+  "screenshots":[ "starcat-bolle-1.png", "starcat-bolle-2.png" ],
+  "hardware":{
+    "width":320,
+    "height":200,
+    "texture":"scanlines"
+  },
+  "cheats":{
+    "unlimitedLives":"Unlimited lives"
+  },
+  "resources":{
+    "fader":"fader.png",
+    "logo":"logo.png",
+    "tiles":"tiles.png",
+    "defaultsprites":"../default/sprites64.png",
+    "gameover":"../default/gameover.png",
+    "scanlines":"../default/scanlines.png"
+  },
+  "stencils":{
+    "codeHitableHit":{
+      "code":{
+        "name":"Execute",
+        "data":{ "when":{ "_":[ "this", "collidesWith", { "_":[ "objectTyped", "hitable" ] } ] }, "as":{ "_":"that" }, "executeAction":"hit" }
+      }
+    },
+    "codeInFade":{
+      "object":{
+        "image":"fader", "width":256, "height":280,
+        "zIndex":5, "x":0, "y":-39,
+        "states":{
+          "code":{
+            "name":"Execute",
+            "data":{ "when":{ "_":[ "this", "y", "isGreaterThan", -280 ] }, "subtract":8, "to":{ "_":[ "this", "y" ] }, "elseExecute":{ "remove":1 } }
+          }
+        }
+      },
+      "into":{ "_":"scenehud" }
+    },
+    "codeOutFade":{
+      "object":{
+        "image":"fader", "width":256, "height":280,
+        "zIndex":5, "x":0, "y":200,
+        "states":{
+          "code":{
+            "name":"Execute",
+            "data":{
+              "when":{ "_":[ "this", "y", "isGreaterThan", -39 ] },
+              "subtract":8,
+              "to":{ "_":[ "this", "y" ] },
+              "elseExecute":{ "gotoScene":{ "_":[ "variable", "nextScene" ] }, "withTransition":2 }
+            }
+          }
+        }
+      },
+      "into":{ "_":"scenehud" }
+    },
+    "codeSpin":{ "code":{ "name":"Sequence", "data":{ "sum":90, "to":{ "_":[ "this", "angle" ] }, "wait":3, "loop":1 } } },
+    "codeStage":{
+      "states":{
+        "execute":[
+          {
+            "as":{ "_":[ "object", "shadowed" ] },
+            "execute":{
+              "object":{
+                "image":"tiles", "tileX":16, "tileY":{ "_":[ "variable", "level", "*", 16, "+", 8 ] }, "width":8, "height":8,
+                "x":{ "_":[ "that", "x" ] }, "y":{ "_":[ "that", "y", "+", 8 ] }
+              }
+            }
+          },
+          { "as":{ "_":[ "object", "tile" ] }, "set":{ "tileY":{ "_":[ "variable", "level", "*", 16 ] } } },
+          { "object":{ "_":[ "stencil", "player" ] } }
+        ],
+        "code":[
+          {
+            "name":"Execute",
+            "data":{
+              "when":{ "_":[ "objectTyped", "player", "not" ] },
+              "execute":[
+                { "when":{ "_":[ "cheat", "unlimitedLives", "not" ] }, "subtract":1, "to":{ "_":[ "variable", "lives" ] } },
+                {
+                  "when":{ "_":[ "variable", "lives", "isGreaterThan", 0 ] },
+                  "object":{ "_":[ "stencil", "player" ] },
+                  "elseExecute":[ { "set":{ "state":"idle" } }, { "as":{ "_":"variable" }, "set":{ "nextScene":"gameover" } }, { "_":[ "stencil", "codeOutFade" ] } ]
+                }
+              ]
+            }
+          },
+          {
+            "name":"Sequence",
+            "data":[
+              { "_":[ "stencil", "codeInFade" ] },
+              {
+                "object":{
+                  "type":"introlabel",
+                  "width":256, "height":40,
+                  "zIndex":10, "x":0, "y":80,
+                  "color":"#fff",
+                  "font":"commodore", "fontSize":8, "lineHeight":16, "outline":"#000", "textAlign":"center", "html":{ "_":[ "ROUND ", ".", { "_":[ "variable", "level", "+", 1 ] }, ".", "<br>READY!!" ] }
+                },
+                "into":{ "_":"scenehud" }
+              },
+              { "wait":50 },
+              { "as":{ "_":[ "objectTyped", "introlabel" ] }, "remove":1 },
+              { "as":{ "_":[ "object", "foe" ] }, "set":{ "state":"moving" } },
+              { "wait":1, "loop":1, "until":{ "_":[ "objectTyped", "foecount", "not" ] } },
+              {
+                "object":{
+                  "type":"endinglabel",
+                  "width":256, "height":40,
+                  "zIndex":10, "x":0, "y":88,
+                  "color":"#fff",
+                  "font":"commodore", "fontSize":8, "lineHeight":16, "outline":"#000", "textAlign":"center", "html":"CLEARED!"
+                },
+                "into":{ "_":"scenehud" }
+              },
+              { "wait":80 },
+              { "as":{ "_":[ "objectTyped", "endinglabel" ] }, "remove":1 },
+              { "wait":80 },
+              { "as":{ "_":[ "objectTyped", "player" ] }, "set":{ "state":"endlevel" } },
+              { "sum":1, "to":{ "_":[ "variable", "level" ] } },
+              { "as":{ "_":"variable" }, "set":{ "nextScene":{ "_":[ "variable", "level" ] } } },
+              { "_":[ "stencil", "codeOutFade" ] }
+            ]
+          }
+        ]
+      }
+    },
+    "codeWarp":{
+      "code":{
+        "name":"Execute",
+        "data":{
+          "when":{ "_":[ "this", "y", "isLessThan", -15 ] },
+          "set":{ "y":199 },
+          "elseExecute":{ "when":{ "_":[ "this", "y", "isGreaterThan", 199 ] }, "set":{ "y":-15 } }
+        }
+      }
+    },
+    "spark":{
+      "image":"defaultsprites", "tileX":0, "tileY":32, "width":16, "height":16,
+      "zIndex":10000, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "animations":{ "spark":{ "frames":4, "speed":0 } },
+      "animation":"spark",
+      "states":{ "code":{ "name":"Sequence", "data":[ { "wait":4 }, { "remove":1 } ] } }
+    },
+    "removeWithSpark":[ { "object":{ "_":[ "stencil", "spark" ] } }, { "remove":1 } ],
+    "modelPopupLabel":{
+      "width":100, "height":12,
+      "zIndex":1000, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "that", "y", "-", 5 ] },
+      "color":"#fff",
+      "font":"commodore", "fontSize":8, "lineHeight":10, "outline":"#000", "textAlign":"center",
+      "speed":0.5,
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[ { "subtract":{ "_":[ "this", "speed" ] }, "to":{ "_":[ "this", "y" ] }, "wait":1, "loop":1, "cycles":15 }, { "remove":1 } ]
+        }
+      }
+    },
+    "player":{
+      "type":[ "player", "hitable" ],
+      "image":"defaultsprites", "tileX":0, "tileY":0, "width":16, "height":16,
+      "zIndex":10, "x":24, "y":176,
+      "hitbox":{ "width":12, "height":14, "x":2, "y":2 },
+      "animations":{
+        "bubbling":{ "frames":[ 6, 7, 8, 7, 6 ], "speed":1 },
+        "fall":{ "frame":5 },
+        "jump":{ "frame":4 },
+        "still":{ "frames":4, "loopTo":0 },
+        "walk":"still"
+      },
+      "animation":"still",
+      "bubbling":0,
+      "invulnerability":25,
+      "states":[
+        {
+          "like":{ "_":[ "stencil", "codeWarp" ] },
+          "code":[
+            {
+              "name":"Execute",
+              "data":[
+                {
+                  "when":{ "_":[ "this", "bubbling", "not", "and", { "_":[ "keyA", "isHit" ] } ] },
+                  "execute":[ { "set":{ "bubbling":10 } }, { "object":{ "_":[ "stencil", "bubble" ] } } ]
+                },
+                {
+                  "when":{ "_":[ "this", "invulnerability" ] },
+                  "execute":[ { "subtract":1, "to":{ "_":[ "this", "invulnerability" ] } }, { "set":{ "visible":{ "_":[ "this", "visible", "not" ] } } } ],
+                  "elseExecute":{ "set":{ "visible":1 } }
+                },
+                { "when":{ "_":[ "this", "bubbling" ] }, "execute":{ "subtract":1, "to":{ "_":[ "this", "bubbling" ] } } },
+                {
+                  "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "poppable" ] } ] },
+                  "execute":{
+                    "when":{ "_":[ "keyUp", "isDown", "and", { "_":[ "this", "isOver", { "_":"that" } ] }, "and", { "_":[ "this", "forceY", "isGreaterThan", 0 ] } ] },
+                    "set":{ "forceY":-10 },
+                    "elseExecute":{ "as":{ "_":"that" }, "executeAction":"pop" }
+                  }
+                },
+                { "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "pickable" ] } ] }, "as":{ "_":"that" }, "executeAction":"pick" },
+                {
+                  "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "bonus" ] } ] },
+                  "as":{ "_":"that" },
+                  "sum":10,
+                  "to":{ "_":[ "variable", "score" ] },
+                  "remove":1
+                }
+              ]
+            },
+            { "name":"Player", "data":{ "horizontal":{ "control":1, "gotoZero":1 }, "jump":{ "forceY":-10 } } },
+            {
+              "name":"Physics",
+              "data":{
+                "walls":[ { "type":"solidwall", "restitution":0 }, { "type":"wall", "restitution":0, "only":{ "top":1, "left":1, "right":1 } } ],
+                "gravityX":0,
+                "gravityY":1,
+                "limitX":[ -3, 3 ],
+                "limitY":[ -10, 4 ]
+              }
+            },
+            {
+              "name":"Execute",
+              "data":[
+                { "when":{ "_":[ "this", "forceX", "isLessThan", 0 ] }, "set":{ "flipX":1 } },
+                { "when":{ "_":[ "this", "forceX", "isGreaterThan", 0 ] }, "set":{ "flipX":0 } },
+                {
+                  "when":{ "_":[ "this", "bubbling" ] },
+                  "set":{ "animation":"bubbling" },
+                  "elseExecute":[
+                    { "when":{ "_":[ "this", "forceY", "isLessThan", 0 ] }, "set":{ "animation":"jump" } },
+                    { "when":{ "_":[ "this", "forceY", "isGreaterThan", 0 ] }, "set":{ "animation":"fall" } },
+                    {
+                      "when":{ "_":[ "this", "forceY", "isEqualTo", 0 ] },
+                      "execute":{ "when":{ "_":[ "this", "forceX", "isEqualTo", 0 ] }, "set":{ "animation":"still" }, "elseExecute":{ "set":{ "animation":"walk" } } }
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "actions":{
+            "name":"hit",
+            "execute":{
+              "when":{ "_":[ "this", "invulnerability", "not", "and", { "_":[ "this", "collidesWith", { "_":[ "object", "foe" ] } ] } ] },
+              "set":{ "state":"dead" }
+            }
+          }
+        },
+        {
+          "name":"dead",
+          "set":{ "removeType":"hitable", "frame":0, "visible":"true", "flipX":0, "animation":"none" },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "sum":90, "to":{ "_":[ "this", "angle" ] }, "wait":2, "loop":1, "cycles":10 },
+              { "set":{ "visible":0 } },
+              { "object":{ "_":[ "stencil", "spark" ] } },
+              { "wait":30 },
+              { "remove":1 }
+            ]
+          }
+        },
+        {
+          "name":"endlevel",
+          "set":{ "forceX":0, "forceY":-5, "animation":"fall" },
+          "code":[
+            { "name":"Execute", "data":{ "_":[ "when", "this", "y", "isGreaterThan", 200 ] }, "set":{ "state":"idle" } },
+            { "name":"Physics", "data":{ "gravityY":1 } }
+          ]
+        }
+      ]
+    },
+    "foeBlob":{
+      "type":[ "foe", "bubbleable", "foecount" ],
+      "image":"defaultsprites", "tileX":0, "tileY":16, "width":16, "height":16,
+      "zIndex":10,
+      "hitbox":{ "width":12, "height":14, "x":2, "y":2 },
+      "animations":{ "fall":"still", "jump":"still", "still":{ "frame":2 }, "walk":{ "frames":4, "loopTo":0 } },
+      "bubbleContent":[ "b", "d" ],
+      "bubbleFrame":2,
+      "contentImage":"defaultsprites",
+      "contentTileX":32,
+      "contentTileY":16,
+      "states":[
+        {
+          "like":{ "_":[ "stencil", "codeHitableHit" ] },
+          "set":{ "animation":"walk" },
+          "execute":{ "when":{ "_":[ "this", "forceX", "isLessThan", 0 ] }, "set":{ "flipX":1 }, "elseExecute":{ "set":{ "flipX":0 } } }
+        },
+        {
+          "name":"moving",
+          "like":[ { "_":[ "stencil", "codeHitableHit" ] }, { "_":[ "stencil", "codeWarp" ] } ],
+          "code":[
+            {
+              "name":"Sequence",
+              "data":[
+                { "wait":{ "_":[ "randomValue", [ 30, 60, 90, 120 ] ] } },
+                { "wait":1, "loop":1, "until":{ "_":[ "this", "touchDown" ] } },
+                { "set":{ "forceX":0, "forceY":0, "animation":"still" } },
+                { "set":{ "flipX":{ "_":[ "this", "flipX", "not" ] } }, "wait":8, "loop":1, "cycles":3 },
+                { "set":{ "forceY":-10 } },
+                { "wait":2 },
+                { "wait":1, "loop":1, "until":{ "_":[ "this", "touchDown" ] } },
+                { "set":{ "forceX":{ "_":[ "randomValue", [ -1, 1 ] ] } } },
+                { "loopTo":0 }
+              ]
+            },
+            {
+              "name":"Physics",
+              "data":{
+                "walls":[
+                  { "type":"solidwall", "restitutionX":1, "restitutionY":0 },
+                  { "type":"wall", "restitutionX":1, "restitutionY":0, "only":{ "top":1, "left":1, "right":1 } }
+                ],
+                "gravityX":0,
+                "gravityY":1,
+                "limitX":[ -5, 5 ],
+                "limitY":[ -10, 5 ]
+              }
+            },
+            { "_":[ "stencil", "platformerAnimation" ] }
+          ]
+        }
+      ]
+    },
+    "foeGhost":{
+      "type":[ "foe", "bubbleable", "foecount" ],
+      "image":"defaultsprites", "tileX":64, "tileY":16, "width":16, "height":16,
+      "zIndex":10,
+      "hitbox":{ "width":12, "height":12, "x":2, "y":2 },
+      "animations":{ "float":{ "frames":2, "loopTo":0 } },
+      "animation":"float",
+      "bubbleContent":[ "1", "2", "3", "4" ],
+      "bubbleFrame":3,
+      "contentImage":"defaultsprites",
+      "contentTileX":64,
+      "contentTileY":16,
+      "states":[
+        {
+          "like":{ "_":[ "stencil", "codeHitableHit" ] },
+          "execute":{ "when":{ "_":[ "this", "forceX", "isLessThan", 0 ] }, "set":{ "flipX":1 }, "elseExecute":{ "set":{ "flipX":0 } } }
+        },
+        {
+          "name":"moving",
+          "like":[ { "_":[ "stencil", "codeHitableHit" ] }, { "_":[ "stencil", "codeWarp" ] } ],
+          "code":[
+            { "name":"Physics", "data":{ "walls":{ "type":"block", "restitution":1 } } },
+            { "name":"Execute", "data":{ "when":{ "_":[ "this", "forceX", "isLessThan", 0 ] }, "set":{ "flipX":1 }, "elseExecute":{ "set":{ "flipX":0 } } } }
+          ]
+        }
+      ]
+    },
+    "bonus":{
+      "type":"pickable",
+      "image":"defaultsprites", "tileX":{ "_":[ "randomValue", [ 0, 16, 32, 48, 64 ] ] }, "tileY":64, "width":16, "height":16,
+      "zIndex":5, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "states":{
+        "code":{ "name":"Sequence", "data":[ { "wait":150 }, { "_":[ "stencil", "removeWithSpark" ] } ] },
+        "actions":{
+          "name":"pick",
+          "execute":[
+            { "sum":150, "to":{ "_":[ "variable", "score" ] } },
+            { "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "color":"#a3e599", "html":"150pts.", "speed":1 } },
+            { "remove":1 }
+          ]
+        }
+      }
+    },
+    "bubble":{
+      "image":"defaultsprites", "tileY":48, "width":16, "height":16,
+      "x":{ "_":[ "that", "x" ] }, "y":{ "_":[ "that", "y" ] },
+      "execute":{ "when":{ "_":[ "that", "flipX" ] }, "set":{ "forceX":-5 }, "elseExecute":{ "set":{ "forceX":5 } } },
+      "life":7,
+      "states":[
+        {
+          "code":[
+            {
+              "name":"Execute",
+              "data":{
+                "when":{ "_":[ "this", "life" ] },
+                "execute":[
+                  { "subtract":1, "to":{ "_":[ "this", "life" ] } },
+                  {
+                    "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "bubbleable" ] } ] },
+                    "execute":[
+                      {
+                        "set":{
+                          "type":"foecount",
+                          "frame":{ "_":[ "that", "bubbleFrame" ] },
+                          "content":{ "_":[ "that", "bubbleContent" ] },
+                          "contentImage":{ "_":[ "that", "contentImage" ] },
+                          "contentTileX":{ "_":[ "that", "contentTileX" ] },
+                          "contentTileY":{ "_":[ "that", "contentTileY" ] },
+                          "state":"float"
+                        }
+                      },
+                      { "as":{ "_":"that" }, "remove":1 }
+                    ]
+                  }
+                ],
+                "elseExecute":{ "set":{ "frame":1, "state":"float" } }
+              }
+            },
+            { "name":"Physics", "data":{ "walls":{ "type":"block", "restitution":0, "execute":{ "set":{ "frame":1, "state":"float" } } } } }
+          ]
+        },
+        {
+          "name":"float",
+          "like":{ "_":[ "stencil", "codeWarp" ] },
+          "set":{ "type":"poppable", "forceX":0, "life":200 },
+          "code":[
+            {
+              "name":"Execute",
+              "data":[
+                {
+                  "when":{ "_":[ "this", "life" ] },
+                  "execute":[
+                    { "subtract":1, "to":{ "_":[ "this", "life" ] } },
+                    { "when":{ "_":[ "this", "life", "isLessThan", 50 ] }, "set":{ "visible":{ "_":[ "this", "visible", "not" ] } } }
+                  ],
+                  "elseExecute":{ "set":{ "state":"autopop" } }
+                },
+                {
+                  "when":{ "_":[ "this", "touchUp" ] },
+                  "execute":{ "when":{ "_":[ "this", "forceX", "isEqualTo", 0 ] }, "set":{ "forceX":{ "_":[ "randomValue", [ -1, 1 ] ] } } },
+                  "elseExecute":{ "set":{ "forceX":0 } }
+                }
+              ]
+            },
+            {
+              "name":"Physics",
+              "data":{ "walls":{ "type":"blockbubble", "restitutionX":1, "restitutionY":0 }, "gravityY":-1, "limitX":[ -1, 1 ], "limitY":[ -1, 1 ] }
+            }
+          ],
+          "actions":{
+            "name":"pop",
+            "execute":[
+              {
+                "when":{ "_":[ "this", "content" ] },
+                "execute":[
+                  { "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "color":"#a3e599", "html":"15pts.", "speed":1 } },
+                  { "sum":15, "to":{ "_":[ "variable", "score" ] } },
+                  {
+                    "object":{
+                      "set":{ "_":[ "stencil", "killedEnemy" ] },
+                      "image":{ "_":[ "that", "contentImage" ] }, "tileX":{ "_":[ "that", "contentTileX" ] }, "tileY":{ "_":[ "that", "contentTileY" ] }
+                    }
+                  }
+                ],
+                "elseExecute":{ "sum":10, "to":{ "_":[ "variable", "score" ] } }
+              },
+              { "_":[ "stencil", "removeWithSpark" ] }
+            ]
+          }
+        },
+        {
+          "name":"autopop",
+          "execute":[
+            {
+              "when":{ "_":[ "this", "content" ] },
+              "execute":{
+                "object":{
+                  "set":{ "_":[ "stencil", { "_":[ "randomValue", { "_":[ "that", "content" ] } ] } ] },
+                  "x":{ "_":[ "that", "x" ] }, "y":{ "_":[ "that", "y" ] },
+                  "state":"moving"
+                }
+              }
+            },
+            { "_":[ "stencil", "removeWithSpark" ] }
+          ]
+        }
+      ]
+    },
+    "killedEnemy":{
+      "width":16, "height":16,
+      "zIndex":20, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "forceX":{ "_":[ "randomValue", [ -20, 20 ] ] }, "forceY":-10,
+      "states":[
+        {
+          "like":[ { "_":[ "stencil", "codeWarp" ] }, { "_":[ "stencil", "codeSpin" ] } ],
+          "code":[
+            { "name":"Sequence", "data":[ { "wait":50 }, { "set":{ "state":"fall" } } ] },
+            { "name":"Physics", "data":{ "walls":{ "area":{ "width":224, "height":280, "x":16, "y":-40 }, "restitution":1 }, "gravityY":1 } }
+          ]
+        },
+        {
+          "name":"fall",
+          "like":[ { "_":[ "stencil", "codeWarp" ] }, { "_":[ "stencil", "codeSpin" ] } ],
+          "set":{ "forceX":0, "forceY":2 },
+          "code":{
+            "name":"Physics",
+            "data":{ "walls":{ "type":"wall", "only":{ "top":1 }, "execute":[ { "object":{ "_":[ "stencil", "bonus" ] } }, { "remove":1 } ] } }
+          }
+        }
+      ]
+    },
+    "platformerAnimation":{
+      "name":"Execute",
+      "data":[
+        { "when":{ "_":[ "this", "forceX", "isLessThan", 0 ] }, "set":{ "flipX":1 } },
+        { "when":{ "_":[ "this", "forceX", "isGreaterThan", 0 ] }, "set":{ "flipX":0 } },
+        { "when":{ "_":[ "this", "forceY", "isLessThan", 0 ] }, "set":{ "animation":"jump" } },
+        { "when":{ "_":[ "this", "forceY", "isGreaterThan", 0 ] }, "set":{ "animation":"fall" } },
+        {
+          "when":{ "_":[ "this", "forceY", "isEqualTo", 0 ] },
+          "execute":{ "when":{ "_":[ "this", "forceX", "isEqualTo", 0 ] }, "set":{ "animation":"still" }, "elseExecute":{ "set":{ "animation":"walk" } } }
+        }
+      ]
+    },
+    "*":{
+      "image":"defaultsprites", "tileX":144, "tileY":0, "width":16, "height":16,
+      "states":{ "code":{ "name":"Execute", "data":{ "set":{ "angle":{ "_":[ "this", "angle", "+", 5, "%", 360 ] } } } } }
+    },
+    "-":{ "type":"blockbubble", "width":8, "height":8 },
+    ".":{ "type":[ "block", "solidwall", "tile", "blockbubble" ], "image":"tiles", "width":16, "height":16 },
+    "1":{ "set":[ { "_":[ "stencil", "foeGhost" ] }, { "forceX":-2, "forceY":-2 } ] },
+    "2":{ "set":[ { "_":[ "stencil", "foeGhost" ] }, { "forceX":2, "forceY":-2 } ] },
+    "3":{ "set":[ { "_":[ "stencil", "foeGhost" ] }, { "forceX":2, "forceY":2 } ] },
+    "4":{ "set":[ { "_":[ "stencil", "foeGhost" ] }, { "forceX":-2, "forceY":2 } ] },
+    "E":{ "image":"tiles", "tileX":0, "tileY":160, "width":16, "height":16 },
+    "T":{ "image":"tiles", "tileX":16, "tileY":160, "width":16, "height":16 },
+    "b":{ "set":[ { "_":[ "stencil", "foeBlob" ] }, { "forceX":1 } ] },
+    "d":{ "set":[ { "_":[ "stencil", "foeBlob" ] }, { "forceX":-1 } ] },
+    "~":{ "type":[ "shadowed", "block", "tile", "blockbubble" ], "image":"tiles", "tileX":16, "width":8, "height":8, "zIndex":5 },
+    "#":{ "type":"wall", "set":{ "_":[ "stencil", "~" ] } }
+  },
+  "execute":{
+    "object":[
+      { "box":"label", "width":48, "height":1, "x":264, "y":16, "bgcolor":"#984b43" },
+      { "box":"label", "width":48, "height":1, "x":264, "y":21, "bgcolor":"#984b43" },
+      { "box":"label", "width":48, "height":1, "x":264, "y":64, "bgcolor":"#984b43" },
+      { "box":"label", "width":48, "height":1, "x":264, "y":69, "bgcolor":"#984b43" },
+      { "box":"label", "width":48, "height":30, "x":264, "y":32, "color":"#ffffff", "font":"commodore", "fontSize":8, "lineHeight":15, "html":"1UP" },
+      {
+        "type":"hud",
+        "hudType":"label", "label":"STARCAT<br>%number|variable.lives%",
+        "box":"label", "width":63, "height":30,
+        "x":256, "y":176,
+        "color":"#79c1c8",
+        "font":"commodore", "fontSize":8, "lineHeight":8, "textAlign":"center"
+      },
+      {
+        "type":"hud",
+        "hudType":"label", "label":"%number|variable.score|0|2%",
+        "box":"label", "width":48, "height":30,
+        "x":260, "y":40,
+        "color":"#68ae5c",
+        "font":"commodore", "fontSize":8, "lineHeight":15, "textAlign":"right"
+      }
+    ],
+    "into":{ "_":"hud" }
+  },
+  "scenes":{
+    "intro":{
+      "object":[
+        { "image":"logo", "width":230, "height":125, "x":12, "y":20 },
+        {
+          "box":"label", "width":255,
+          "zIndex":2, "x":0, "y":160,
+          "color":"#fff",
+          "font":"commodore", "fontSize":8, "textAlign":"center", "html":"PRESS START",
+          "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "visible":0 }, "wait":10 }, { "set":{ "visible":1 }, "wait":10, "loopTo":0 } ] } }
+        }
+      ],
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[
+            { "_":[ "stencil", "codeInFade" ] },
+            { "wait":10 },
+            { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+            { "as":{ "_":"variable" }, "set":{ "level":0, "lives":3, "nextScene":0, "score":0 } },
+            { "_":[ "stencil", "codeOutFade" ] }
+          ]
+        }
+      }
+    },
+    "gameover":{
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[
+            { "_":[ "stencil", "codeInFade" ] },
+            {
+              "object":{
+                "type":"introlabel",
+                "width":256, "height":40,
+                "zIndex":1, "x":0, "y":80,
+                "color":"#fff",
+                "font":"commodore", "fontSize":8, "lineHeight":16, "outline":"#000", "textAlign":"center", "html":"GAME<br>OVER"
+              },
+              "into":{ "_":"scenehud" }
+            },
+            { "wait":10 },
+            { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+            { "as":{ "_":"variable" }, "set":{ "nextScene":"intro" } },
+            { "_":[ "stencil", "codeOutFade" ] }
+          ]
+        }
+      }
+    },
+    "0":{
+      "set":{ "_":[ "stencil", "codeStage" ] },
+      "tilemap":{
+        "tileWidth":8,
+        "tileHeight":8,
+        "map":[
+          ". ~~~~~~~~~~~~~~~~~~~~~~~~~~~~.",
+          "                               ",
+          ".                    d        .",
+          "                               ",
+          ".                 d           .",
+          "                               ",
+          ".              d              .",
+          "                               ",
+          ".                             .",
+          "  ##   ##################   ## ",
+          ".                             .",
+          "                               ",
+          ".                             .",
+          "                               ",
+          ". ##   ##################   ##.",
+          "                               ",
+          ".                             .",
+          "                               ",
+          ".                             .",
+          "  ##   ##################   ## ",
+          ".                             .",
+          "                               ",
+          ".                             .",
+          "                               ",
+          ". ############################."
+        ]
+      }
+    },
+    "1":{
+      "set":{ "_":[ "stencil", "codeStage" ] },
+      "tilemap":{
+        "tileWidth":8,
+        "tileHeight":8,
+        "map":[
+          ". ~~~~~~~~~~~~~~~~~~~~~~~~~~~~.",
+          "                               ",
+          ".             d b             .",
+          "                               ",
+          ".            ######           .",
+          "                               ",
+          ".                             .",
+          "            d     b            ",
+          ".                             .",
+          "          #####  #####         ",
+          ".                             .",
+          "                               ",
+          ".                             .",
+          "                               ",
+          ".      ##################     .",
+          "                               ",
+          ".                             .",
+          "                               ",
+          ".                             .",
+          "    #######  ######  #######   ",
+          ".                             .",
+          "                               ",
+          ".                             .",
+          "                               ",
+          ". ############################."
+        ]
+      }
+    },
+    "10":{
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[
+            { "_":[ "stencil", "codeInFade" ] },
+            {
+              "object":{
+                "type":"introlabel",
+                "width":256, "height":40,
+                "zIndex":1, "x":0, "y":80,
+                "color":"#fff",
+                "font":"commodore", "fontSize":8, "lineHeight":16, "outline":"#000", "textAlign":"center", "html":"YOU'VE FOUND THE STAR!<br>GOOD JOB!"
+              },
+              "into":{ "_":"scenehud" }
+            },
+            {
+              "object":{
+                "image":"defaultsprites", "tileX":0, "tileY":0, "width":16, "height":16,
+                "x":-16, "y":168,
+                "forceX":2,
+                "animations":{ "move":{ "frames":4, "loopTo":0 } },
+                "animation":"move",
+                "states":{
+                  "code":[
+                    { "name":"Sequence", "data":[ { "wait":70 }, { "set":{ "forceX":0, "forceY":-8 } } ] },
+                    { "name":"Physics", "data":{ "walls":{ "area":{ "width":255, "height":184, "x":-16, "y":0 }, "restitutionY":1 }, "gravityY":1 } }
+                  ]
+                }
+              }
+            },
+            { "wait":10 },
+            { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+            { "as":{ "_":"variable" }, "set":{ "nextScene":"gameover" } },
+            { "_":[ "stencil", "codeOutFade" ] }
+          ]
+        }
+      },
+      "tilemap":{ "y":152, "map":[
+          "          *     ",
+          "          T     ",
+          "EEEEEEEEEEEEEEEE"
+        ] }
+    },
+    "2":{
+      "set":{ "_":[ "stencil", "codeStage" ] },
+      "tilemap":{
+        "y":-8,
+        "tileWidth":8,
+        "tileHeight":8,
+        "map":[
+          "  ~~~~~~~    ~~~~~~    ~~~~~~~ ",
+          ". ~~~~~~~    ~~~~~~    ~~~~~~~.",
+          "                               ",
+          ".        b           d        .",
+          "                               ",
+          ".   ########        ########  .",
+          "    #                      #   ",
+          ".   #                      #  .",
+          "    #b                   d #   ",
+          ".   #                      #  .",
+          "    #########      #########   ",
+          ".   #                      #  .",
+          "    #                      #   ",
+          ".   #                      #  .",
+          "    #                      #   ",
+          ".   ###########  ###########  .",
+          "                               ",
+          ".                             .",
+          "                               ",
+          ".                             .",
+          "  #####  ###        ###  ##### ",
+          ".                             .",
+          "                               ",
+          ".                             .",
+          "                               ",
+          ". #######    ######    #######.",
+          "  #######    ######    ####### "
+        ]
+      }
+    },
+    "3":{
+      "set":{ "_":[ "stencil", "codeStage" ] },
+      "tilemap":{
+        "y":-8,
+        "tileWidth":8,
+        "tileHeight":8,
+        "map":[
+          "  ~~~~~~~    ~~~~~~    ~~~~~~~ ",
+          ". ~~~~~~~    ~~~~~~    ~~~~~~~.",
+          "                               ",
+          ".                             .",
+          "     b                  d      ",
+          ".                             .",
+          "     #########    #########    ",
+          ".    #      ##    ##      #   .",
+          "     # b    ##    ##   d  #    ",
+          ".    #      ##    ##      #   .",
+          "     ####   ##    ##   ####    ",
+          ".           ##    ##          .",
+          "            ##    ##           ",
+          ".           ##    ##          .",
+          "            ##    ##           ",
+          ".    ####              ####   .",
+          "     #                    #    ",
+          ".    #                    #   .",
+          "     #  b            d    #    ",
+          ".    #                    #   .",
+          "     #######   ##   #######    ",
+          ".                             .",
+          "                               ",
+          ".                             .",
+          "                               ",
+          ". #######    ######    #######.",
+          "  #######    ######    ####### "
+        ]
+      }
+    },
+    "4":{
+      "set":{ "_":[ "stencil", "codeStage" ] },
+      "tilemap":{
+        "y":-8,
+        "tileWidth":8,
+        "tileHeight":8,
+        "map":[
+          "  ~~~~~~~    ~~~~~~    ~~~~~~~ ",
+          ". ~~~~~~~    ~~~~~~    ~~~~~~~.",
+          "                               ",
+          ".                 d           .",
+          "      #                  #     ",
+          ".     # ##################    .",
+          "                               ",
+          ".                             .",
+          "               d               ",
+          ".     #                  #    .",
+          "      ################## #     ",
+          ".                             .",
+          "                               ",
+          ".           d                 .",
+          "      #                  #     ",
+          ".     # ##################    .",
+          "                               ",
+          ".                             .",
+          "          d                    ",
+          ".     #                  #    .",
+          "      #########  #########     ",
+          ".                             .",
+          "                               ",
+          ".                             .",
+          "                               ",
+          ". #######    ######    #######.",
+          "  #######    ######    ####### "
+        ]
+      }
+    },
+    "5":{
+      "set":{ "_":[ "stencil", "codeStage" ] },
+      "tilemap":{
+        "y":-8,
+        "tileWidth":8,
+        "tileHeight":8,
+        "map":[
+          "  ~~~~~~~    ~~~~~~    ~~~~~~~ ",
+          ". ~~~~~~~    ~~~~~~    ~~~~~~~.",
+          "                               ",
+          ".                             .",
+          "  ##                        ## ",
+          ".                             .",
+          "   ###b        2        d ###  ",
+          ".    #                    #   .",
+          "  ## ###     1   2      ### ## ",
+          ".    ###                ###   .",
+          "     #####            #####    ",
+          ".        #            #       .",
+          "  ###### ###        ### ###### ",
+          ".        ###        ###       .",
+          "         #####    #####        ",
+          ".          ###    ###         .",
+          "  ######## ###    ### ######## ",
+          ".          ###    ###         .",
+          "           ###    ###          ",
+          ".            #    #           .",
+          "  ####  #### #    # ####  #### ",
+          ".       #              #      .",
+          "        #              #       ",
+          ".       #              #      .",
+          "                               ",
+          ". #######    ######    #######.",
+          "  #######    ######    ####### "
+        ]
+      }
+    },
+    "6":{
+      "set":{ "_":[ "stencil", "codeStage" ] },
+      "tilemap":{
+        "y":-8,
+        "tileWidth":8,
+        "tileHeight":8,
+        "map":[
+          "  ~~~~~~~    ~~~~~~    ~~~~~~~ ",
+          ". ~~~~~~~    ~~~~~~    ~~~~~~~.",
+          "             d d b             ",
+          ".                             .",
+          "         2   ######  2         ",
+          ".          ##########         .",
+          "       2  ############ 2       ",
+          ".        ## ## ## ## ##       .",
+          "        ################       ",
+          ".          ### ## ###         .",
+          "            #      #           ",
+          ".                             .",
+          "                               ",
+          ".                             .",
+          "                               ",
+          ".                             .",
+          "                               ",
+          ".                             .",
+          "                               ",
+          ".    #####   ######   #####   .",
+          "                               ",
+          ".                             .",
+          "                               ",
+          ".              ##             .",
+          "             ######            ",
+          ". #######    ######    #######.",
+          "  #######    ######    ####### "
+        ]
+      }
+    },
+    "7":{
+      "set":{ "_":[ "stencil", "codeStage" ] },
+      "tilemap":{
+        "y":-8,
+        "tileWidth":8,
+        "tileHeight":8,
+        "map":[
+          "  ~~~~~~~    ~~~~~~    ~~~~~~~ ",
+          ". ~~~~~~~    ~~~~~~    ~~~~~~~.",
+          "                               ",
+          ".                             .",
+          "    #                     #    ",
+          ".         ###      ###        .",
+          "         ## ##    ## ##        ",
+          ".        # # #    # # #       .",
+          "         ## ##    ## ##        ",
+          ".    #    ###      ###    #   .",
+          "     #                    #    ",
+          ".    #         ##         #   .",
+          "     #         ##         #    ",
+          ".    #                    #   .",
+          "     #                    #    ",
+          ".    #                    #   .",
+          "  2  #  ##            ##  # 1  ",
+          ". 2  # ## #          ## # # 1 .",
+          "  2  # ####          #### # 1  ",
+          ".    #  ####        ####  #   .",
+          "  # ##   ###        ###   ## # ",
+          ".         ###      ###        .",
+          "           ##      ##          ",
+          ".                             .",
+          "                               ",
+          ". #######    ######    #######.",
+          "  #######    ######    ####### "
+        ]
+      }
+    },
+    "8":{
+      "set":{ "_":[ "stencil", "codeStage" ] },
+      "tilemap":{
+        "tileWidth":8,
+        "tileHeight":8,
+        "map":[
+          ". ~~~~~~~~~~~~~~~~~~~~~~~~~~~~.",
+          "    2                    1     ",
+          ".          #        #         .",
+          "    ########        ########   ",
+          ".   ########        ########  .",
+          "    ##     # 2   1  #     ##   ",
+          ".2  ##     ###    ###     ##1 .",
+          "             #    #            ",
+          ".        #   ######   #       .",
+          "               ##              ",
+          ". #####        ##        #####.",
+          "  #####        ##        ##### ",
+          ". #####        1         #####.",
+          "  #####                  ##### ",
+          ". #####  ######  ######  #####.",
+          "  #####  ######  ######  ##### ",
+          ". #####  ##          ##  #####.",
+          "  #####  ##          ##  ##### ",
+          ". #####  ##  ######  ##  #####.",
+          "  #####      ######      ##### ",
+          ". #####        ##        #####.",
+          "  #            ##            # ",
+          ". #      ##############      #.",
+          "  #      ##############      # ",
+          ". ############################."
+        ]
+      }
+    },
+    "9":{
+      "set":{ "_":[ "stencil", "codeStage" ] },
+      "tilemap":{
+        "y":-8,
+        "tileWidth":8,
+        "tileHeight":8,
+        "map":[
+          "  ~~~~~~~    ~~~~~~    ~~~~~~~ ",
+          ". ~~~~~~~    ~~~~~~    ~~~~~~~.",
+          "                               ",
+          ".                             .",
+          "          ###      ###         ",
+          ".       ### ##    ## ###      .",
+          "       ##    ##  ##    ##      ",
+          ".      #      ## #      #     .",
+          "      ##       #        ##     ",
+          ".     #   2         1    #    .",
+          "      #                  #     ",
+          ".     ##                ##    .",
+          "       #    2     1     #      ",
+          ".      ##              ##     .",
+          "        #              #       ",
+          ".       ##            ##      .",
+          "         ##    2     ##        ",
+          ".         ##        ##        .",
+          "           ##      ##          ",
+          ".   2       ##    ##     1    .",
+          "             ##   #            ",
+          ".             ## #            .",
+          "               #               ",
+          ".                             .",
+          "                               ",
+          ". #######    ######    #######.",
+          "  #######    ######    ####### "
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,319 @@
+{
+  "name":"Invasion",
+  "author":"KesieV",
+  "year":2015,
+  "genre":"Shoot'em up",
+  "description":"Once the hammer become the pneumatic drill, it's harder to pin a nail with it. It's some kind of obvious observation that works in software too: when a simple tool starts becoming more complex, nothing is harder than doing something simple again. For instance: BASIC is designed for solving relatively simple problems and its 'Hello World' is mostly one single line of code. The same 'Hello World' in Java, C# or Obj-C, which are more complete and structured, requires a number of wrappings, inclusions and sometime tools before being able to actually write something on screen. So something easy become cluttered - but it's a common trade off. Enough talk, I decided to go back to Space Invaders (1978) as a check: Wright! handles individual elements while invaders are moving as a group, which is an interesting difference. Time to use event broadcasts! Plot! Obviously aliens are invading our earth once again, so we decided to use our Yellow Orbital Cannon and the Green Orbital Walls to fight them back. Use LEFT/RIGHT for moving the cannon and the A BUTTON for shooting.",
+  "screenshots":["invasion-1.png","invasion-2.png"],
+  "hardware":{
+    "width":256,
+    "height":192,
+    "texture":"scanlines"
+  },
+  "cheats":{
+    "unlimitedLives":"Unlimited lives"
+  },
+  "resources":{
+    "defaultsprites":"../default/sprites.png",
+    "scanlines":"../default/scanlines.png"
+  },
+  "stencils":{
+    "spark":{
+      "image":"defaultsprites", "tileX":64, "tileY":144, "width":16, "height":16,
+      "zIndex":10000, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "animations":{ "spark":{ "frames":4, "speed":0 } },
+      "animation":"spark",
+      "states":{ "code":{ "name":"Sequence", "data":[ { "wait":4 }, { "remove":1 } ] } }
+    },
+    "removeWithSpark":[ { "object":{ "_":[ "stencil", "spark" ] } }, { "remove":1 } ],
+    "modelInvader":{
+      "type":[ "foe", "invader" ],
+      "image":"defaultsprites", "width":16, "height":8,
+      "zIndex":10,
+      "states":{
+        "actions":[
+          { "name":"animate", "execute":{ "when":{ "_":[ "this", "frame" ] }, "set":{ "frame":0 }, "elseExecute":{ "set":{ "frame":1 } } } },
+          { "name":"moveDown", "execute":{ "sum":4, "to":{ "_":[ "this", "y" ] } } },
+          { "name":"moveRight", "execute":{ "sum":2, "to":{ "_":[ "this", "x" ] } } },
+          { "name":"moveLeft", "execute":{ "sum":-2, "to":{ "_":[ "this", "x" ] } } },
+          { "name":"hit", "execute":[ { "sum":{ "_":[ "this", "score" ] }, "to":{ "_":[ "variable", "score" ] } }, { "_":[ "stencil", "removeWithSpark" ] } ] }
+        ]
+      }
+    },
+    "modelWall":{
+      "type":[ "foe", "player" ],
+      "image":"defaultsprites", "width":8, "height":8,
+      "health":2,
+      "states":{
+        "actions":{
+          "name":"hit",
+          "execute":[
+            { "subtract":1, "to":{ "_":[ "this", "health" ] } },
+            { "sum":1, "to":{ "_":[ "this", "frame" ] } },
+            { "when":{ "_":[ "this", "health", "not" ] }, "remove":1 }
+          ]
+        }
+      }
+    },
+    "player":{
+      "type":"player",
+      "image":"defaultsprites", "tileX":96, "tileY":272, "width":24, "height":8,
+      "zIndex":10, "x":116, "y":176,
+      "states":{
+        "code":[
+          { "name":"Player", "data":{ "horizontal":{ "control":2, "gotoZero":2 } } },
+          { "name":"Physics", "data":{ "walls":{ "area":{ "width":256, "height":192, "x":0, "y":0 } }, "limitX":[ -2, 2 ] } },
+          {
+            "name":"Execute",
+            "data":{ "when":{ "_":[ "keyA", "isHit", "and", { "_":[ "object", "playerBullet", "not" ] } ] }, "object":{ "_":[ "stencil", "playerBullet" ] } }
+          }
+        ],
+        "actions":{
+          "name":"hit",
+          "execute":[
+            { "when":{ "_":[ "cheat", "unlimitedLives", "not" ] }, "subtract":1, "to":{ "_":[ "variable", "lives" ] } },
+            { "_":[ "stencil", "removeWithSpark" ] },
+            { "as":{ "_":"scene" }, "set":{ "state":"playerKilled" } }
+          ]
+        }
+      }
+    },
+    "playerBullet":{
+      "type":"playerBullet",
+      "image":"defaultsprites", "tileX":112, "tileY":97, "width":8, "height":8,
+      "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":[
+            { "subtract":3, "to":{ "_":[ "this", "y" ] } },
+            { "when":{ "_":[ "this", "y", "isLessThan", 0 ] }, "remove":1 },
+            {
+              "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "foe" ] } ] },
+              "execute":[ { "as":{ "_":"that" }, "executeAction":"hit" }, { "remove":1 } ]
+            }
+          ]
+        }
+      }
+    },
+    "foeBullet":{
+      "type":"foeBullet",
+      "image":"defaultsprites", "tileX":96, "tileY":96, "width":8, "height":8,
+      "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":[
+            { "sum":3, "to":{ "_":[ "this", "y" ] } },
+            { "when":{ "_":[ "this", "y", "isGreaterThan", 192 ] }, "remove":1 },
+            {
+              "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "player" ] } ] },
+              "execute":[ { "as":{ "_":"that" }, "executeAction":"hit" }, { "remove":1 } ]
+            }
+          ]
+        }
+      }
+    },
+    "foeDisc":{
+      "type":"foe",
+      "image":"defaultsprites", "tileX":120, "tileY":272, "width":24, "height":8,
+      "y":24,
+      "execute":{ "set":{ "_":[ "randomValue", [ { "x":-24, "speed":3 }, { "x":256, "speed":-3 } ] ] } },
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":[
+            { "sum":{ "_":[ "this", "speed" ] }, "to":{ "_":[ "this", "x" ] } },
+            { "when":{ "_":[ "this", "x", "isGreaterThan", 256 ] }, "remove":1 },
+            { "when":{ "_":[ "this", "x", "isLessThan", -24 ] }, "remove":1 }
+          ]
+        },
+        "actions":{
+          "name":"hit",
+          "execute":[ { "_":[ "stencil", "removeWithSpark" ] }, { "sum":{ "_":[ "randomValue", [ 50, 100, 150, 300 ] ] }, "to":{ "_":[ "variable", "score" ] } } ]
+        }
+      }
+    },
+    "A":{ "set":{ "_":[ "stencil", "modelInvader" ] }, "tileX":0, "tileY":272, "score":40 },
+    "B":{ "set":{ "_":[ "stencil", "modelInvader" ] }, "tileX":32, "tileY":272, "score":20 },
+    "C":{ "set":{ "_":[ "stencil", "modelInvader" ] }, "tileX":64, "tileY":272, "score":10 },
+    "#":{ "set":{ "_":[ "stencil", "modelWall" ] }, "tileX":144, "tileY":272 },
+    ",":{ "set":{ "_":[ "stencil", "modelWall" ] }, "tileX":160, "tileY":272 },
+    ".":{ "set":{ "_":[ "stencil", "," ] }, "flipX":1 }
+  },
+  "execute":{
+    "object":[
+      { "type":"hud", "hudType":"label", "label":"SCORE %number|variable.score%", "box":"label", "width":100, "x":5, "y":5, "font":"spectrum" },
+      {
+        "type":"hud",
+        "hudType":"label", "label":"LIVES %repeat|variable.lives|<span style='font-family:pixeldingbats;font-size:8px;color:#ff0'>&#339;</span>%",
+        "box":"label", "width":100,
+        "x":110, "y":5,
+        "font":"spectrum"
+      }
+    ],
+    "into":{ "_":"hud" }
+  },
+  "scenes":{
+    "intro":{
+      "execute":{ "as":{ "_":"variable" }, "set":{ "fireSpeedHigh":100, "fireSpeedLow":80, "lives":3, "score":0, "stage":0 } },
+      "states":{
+        "code":[
+          {
+            "name":"Sequence",
+            "data":[
+              { "wait":10 },
+              { "object":{ "box":"label", "width":256, "x":0, "y":40, "font":"spectrum", "textAlign":"center", "html":"INVASION" } },
+              { "wait":10 },
+              { "object":{ "box":"label", "width":90, "x":120, "y":64, "font":"spectrum", "html":"40 pts." } },
+              { "object":{ "set":{ "_":[ "stencil", "A" ] }, "x":90, "y":70 } },
+              { "wait":10 },
+              { "object":{ "box":"label", "width":90, "x":120, "y":84, "font":"spectrum", "html":"20 pts." } },
+              { "object":{ "set":{ "_":[ "stencil", "B" ] }, "x":90, "y":90 } },
+              { "wait":10 },
+              { "object":{ "box":"label", "width":90, "x":120, "y":104, "font":"spectrum", "html":"10 pts." } },
+              { "object":{ "set":{ "_":[ "stencil", "C" ] }, "x":90, "y":110 } },
+              { "wait":10 },
+              { "object":{ "box":"label", "width":90, "x":120, "y":124, "font":"spectrum", "html":"??? pts." } },
+              { "object":{ "image":"defaultsprites", "tileX":120, "tileY":272, "width":24, "height":8, "x":86, "y":130 } },
+              { "wait":10 },
+              { "object":{ "box":"label", "width":256, "x":0, "y":150, "font":"spectrum", "textAlign":"center", "html":"PRESS START" } }
+            ]
+          },
+          { "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"stage", "withTransition":2 } }
+        ]
+      }
+    },
+    "gameover":{
+      "execute":{
+        "object":{
+          "type":"info",
+          "box":"label", "width":256, "height":192,
+          "zIndex":10, "x":0, "y":0,
+          "font":"spectrum", "lineHeight":192, "textAlign":"center", "html":"GAME OVER"
+        }
+      },
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[ { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } }, { "wait":1 }, { "gotoScene":"intro", "withTransition":2 } ]
+        }
+      }
+    },
+    "stage":{
+      "execute":[
+        { "as":{ "_":"variable" }, "set":{ "posx":5, "posy":0, "side":1 } },
+        { "sum":1, "to":{ "_":[ "variable", "stage" ] } },
+        { "when":{ "_":[ "variable", "fireSpeedHigh", "isGreaterThan", 20 ] }, "subtract":5, "to":{ "_":[ "variable", "fireSpeedHigh" ] } },
+        { "when":{ "_":[ "variable", "fireSpeedLow", "isGreaterThan", 30 ] }, "subtract":5, "to":{ "_":[ "variable", "moveSpeed" ] } }
+      ],
+      "states":[
+        {
+          "code":{
+            "name":"Sequence",
+            "data":[
+              {
+                "object":{
+                  "type":"info",
+                  "box":"label", "width":256,
+                  "zIndex":10, "x":0, "y":120,
+                  "font":"spectrum", "textAlign":"center", "html":{ "_":[ "WAVE ", ".", { "_":[ "variable", "stage" ] } ] }
+                }
+              },
+              { "wait":50 },
+              { "as":{ "_":[ "object", "info" ] }, "remove":1 },
+              { "set":{ "state":"play" } }
+            ]
+          }
+        },
+        {
+          "name":"play",
+          "execute":{ "object":{ "_":[ "stencil", "player" ] } },
+          "code":[
+            {
+              "name":"Sequence",
+              "data":[
+                { "wait":{ "_":[ "object", "invader", "count" ] } },
+                { "as":{ "_":[ "object", "foe" ] }, "executeAction":"animate" },
+                {
+                  "when":{ "_":[ "variable", "posx", "isEqualTo", 10 ] },
+                  "execute":[
+                    {
+                      "when":{ "_":[ "variable", "posy", "isLessThan", 5 ] },
+                      "execute":[ { "sum":1, "to":{ "_":[ "variable", "posy" ] } }, { "as":{ "_":[ "object", "foe" ] }, "executeAction":"moveDown" } ]
+                    },
+                    { "multiply":-1, "to":{ "_":[ "variable", "side" ] } },
+                    { "assign":0, "to":{ "_":[ "variable", "posx" ] } }
+                  ],
+                  "elseExecute":[
+                    { "sum":1, "to":{ "_":[ "variable", "posx" ] } },
+                    { "when":{ "_":[ "variable", "side", "isEqualTo", 1 ] }, "as":{ "_":[ "object", "foe" ] }, "executeAction":"moveRight" },
+                    { "when":{ "_":[ "variable", "side", "isEqualTo", -1 ] }, "as":{ "_":[ "object", "foe" ] }, "executeAction":"moveLeft" }
+                  ]
+                },
+                { "loopTo":0 }
+              ]
+            },
+            {
+              "name":"Sequence",
+              "data":[
+                { "wait":{ "_":[ "randomNumber", [ { "_":[ "variable", "fireSpeedLow" ] }, { "_":[ "variable", "fireSpeedHigh" ] } ] ] } },
+                { "as":{ "_":[ "randomValue", { "_":[ "object", "invader", "items" ] } ] }, "execute":{ "object":{ "_":[ "stencil", "foeBullet" ] } } },
+                { "loopTo":0, "until":{ "_":[ "object", "invader", "length", "not" ] } },
+                { "gotoScene":"waveClear", "withTransition":2 }
+              ]
+            },
+            { "name":"Sequence", "data":[ { "wait":{ "_":[ "randomNumber", [ 500, 1000 ] ] } }, { "object":{ "_":[ "stencil", "foeDisc" ] } }, { "loopTo":0 } ] }
+          ]
+        },
+        {
+          "name":"playerKilled",
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "wait":50 },
+              { "when":{ "_":[ "variable", "lives", "isEqualTo", 0 ] }, "gotoScene":"gameover", "withTransition":2, "elseExecute":{ "set":{ "state":"play" } } }
+            ]
+          }
+        }
+      ],
+      "tilemap":[
+        {
+          "width":256, "height":192,
+          "x":28, "y":40,
+          "tileWidth":19,
+          "tileHeight":16,
+          "map":[
+            "AAAAAAAAAAA",
+            "AAAAAAAAAAA",
+            "BBBBBBBBBBB",
+            "CCCCCCCCCCC",
+            "CCCCCCCCCCC"
+          ]
+        },
+        {
+          "width":256, "height":192,
+          "x":16, "y":144,
+          "tileWidth":8,
+          "tileHeight":8,
+          "map":[
+            ",##.    ,##.    ,##.    ,##.",
+            "####    ####    ####    ####",
+            "#  #    #  #    #  #    #  #"
+          ]
+        }
+      ]
+    },
+    "waveClear":{
+      "execute":{
+        "object":{
+          "type":"info",
+          "box":"label", "width":256, "height":192,
+          "zIndex":10, "x":0, "y":0,
+          "font":"spectrum", "lineHeight":192, "textAlign":"center", "html":{ "_":[ "WAVE ", ".", { "_":[ "variable", "stage" ] }, ".", " CLEARED!" ] }
+        }
+      },
+      "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"stage", "withTransition":2 } } }
+    }
+  }
+}

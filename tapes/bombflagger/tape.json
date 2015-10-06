@@ -1,0 +1,447 @@
+{
+  "name":"Bomb Flagger",
+  "author":"KesieV",
+  "year":2015,
+  "genre":"Puzzle",
+  "description":"Soccer isn't the only mainstream game in Italy I've never liked. Card games, like Scopa and Briscola, aren't my favourite games - which helped me on not finding friends during my 12-25. That's the reason why I'm coming from the 'Minesweeper' side of the Windows '90s gamers - never had a catch for Solitaire. And that's why I decided to test how selectors on grids can be implemented with Wright! making a tiny version of that game. Plot! Our guys won the war and they're coming home! Horray! But, wait! They have to cross a minefield first! Uncover all the mines as fast as you can and save everybody! Use UP/DOWN/LEFT/RIGHT for moving the selector over the grid and press the A BUTTON to uncover a cell. Uncovered cells can be grayed (safe), with a number (indicates how many mines there are in the 9 adjacent cells) or a mine (you failed!). Press the B BUTTON for placing or removing a flag: you can use them for marking cells if you think there's a mine.",
+  "screenshots":["bombflagger-1.png","bombflagger-2.png"],
+  "hardware":{
+    "width":256,
+    "height":192,
+    "texture":"scanlines"
+  },
+  "cheats":{
+    "markMines":"Mark mines"
+  },
+  "resources":{
+    "logo":"logo.png",
+    "tiles":"tiles.png",
+    "defaultsprites":"../default/sprites.png",
+    "scanlines":"../default/scanlines.png"
+  },
+  "stencils":{
+    "codeEndGame":[ { "as":{ "_":[ "object", "bomb" ] }, "set":{ "frame":10 } }, { "as":{ "_":[ "object", "cursor" ] }, "remove":1 } ],
+    "modelStage":{
+      "execute":{ "as":{ "_":"variable" }, "set":{ "addBombs":1, "bonus":120 } },
+      "states":[
+        {
+          "execute":{
+            "object":{
+              "type":"label",
+              "box":"label", "width":210, "height":192,
+              "zIndex":3000, "x":0, "y":0,
+              "color":"#fff",
+              "font":"spectrum", "fontSize":40, "lineHeight":192, "outline":"#f00", "textAlign":"center", "html":"GET READY!"
+            }
+          },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "wait":50 },
+              { "as":{ "_":[ "object", "label" ] }, "remove":1 },
+              { "object":{ "_":[ "stencil", "cursor" ] } },
+              { "wait":25 },
+              { "subtract":1, "to":{ "_":[ "variable", "bonus" ] } },
+              { "loopTo":-2, "until":{ "_":[ "variable", "bonus", "not" ] } }
+            ]
+          }
+        },
+        {
+          "name":"gameover",
+          "execute":[
+            { "_":[ "stencil", "codeEndGame" ] },
+            {
+              "object":{
+                "type":"label",
+                "box":"label", "width":210, "height":192,
+                "zIndex":3000, "x":0, "y":0,
+                "color":"#fff",
+                "font":"spectrum", "fontSize":40, "lineHeight":192, "outline":"#00f", "textAlign":"center", "html":"GAME OVER",
+                "states":{
+                  "code":{
+                    "name":"Sequence",
+                    "data":[ { "sum":1, "to":{ "_":[ "this", "x" ] } }, { "wait":1 }, { "subtract":1, "to":{ "_":[ "this", "x" ] } }, { "wait":1, "loopTo":-3 } ]
+                  }
+                }
+              }
+            }
+          ],
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "wait":20 },
+              { "as":{ "_":[ "object", "label" ] }, "set":{ "state":"none" } },
+              { "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"intro" },
+              { "wait":1, "loopTo":-1 }
+            ]
+          }
+        },
+        {
+          "name":"win",
+          "execute":[
+            { "_":[ "stencil", "codeEndGame" ] },
+            {
+              "object":{
+                "type":"label",
+                "box":"label", "width":210, "height":40,
+                "zIndex":3000, "x":0, "y":76,
+                "color":"#fff",
+                "font":"spectrum", "fontSize":40, "lineHeight":40, "outline":"#0f0", "textAlign":"center", "html":"STAGE CLEAR!",
+                "forceY":-3,
+                "states":{ "code":{ "name":"Physics", "data":{ "walls":{ "area":{ "width":256, "height":116, "x":0, "y":0 }, "restitution":1 }, "gravityY":0.5 } } }
+              }
+            }
+          ],
+          "code":{
+            "name":"Sequence",
+            "data":[
+              {
+                "when":{ "_":[ "variable", "bonus" ] },
+                "execute":[ { "subtract":1, "to":{ "_":[ "variable", "bonus" ] } }, { "sum":1, "to":{ "_":[ "variable", "score" ] } } ]
+              },
+              { "wait":1, "loopTo":-1, "until":{ "_":[ "variable", "bonus", "not" ] } },
+              {
+                "when":{ "_":[ "keyA", "isHit" ] },
+                "execute":[
+                  { "sum":1, "to":{ "_":[ "variable", "nextStage" ] } },
+                  {
+                    "when":{ "_":[ "variable", "nextStage", "isEqualTo", 6 ] },
+                    "gotoScene":"ending",
+                    "elseExecute":{ "gotoScene":{ "_":[ "variable", "nextStage" ] } }
+                  }
+                ]
+              },
+              { "wait":1, "loopTo":-1 }
+            ]
+          }
+        }
+      ]
+    },
+    "cursor":{
+      "type":"cursor",
+      "width":12, "height":12,
+      "zIndex":10, "x":6, "y":6,
+      "border":"#f00",
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":[
+            { "when":{ "_":[ "keyRight", "isHit" ] }, "sum":12, "to":{ "_":[ "this", "x" ] } },
+            { "when":{ "_":[ "keyLeft", "isHit" ] }, "subtract":12, "to":{ "_":[ "this", "x" ] } },
+            { "when":{ "_":[ "keyDown", "isHit" ] }, "sum":12, "to":{ "_":[ "this", "y" ] } },
+            { "when":{ "_":[ "keyUp", "isHit" ] }, "subtract":12, "to":{ "_":[ "this", "y" ] } },
+            { "when":{ "_":[ "this", "x", "isLessThan", 6 ] }, "set":{ "x":186 } },
+            { "when":{ "_":[ "this", "y", "isLessThan", 6 ] }, "set":{ "y":174 } },
+            { "when":{ "_":[ "this", "x", "isGreaterThan", 186 ] }, "set":{ "x":6 } },
+            { "when":{ "_":[ "this", "y", "isGreaterThan", 174 ] }, "set":{ "y":6 } },
+            {
+              "when":{ "_":[ "keyA", "isHit" ] },
+              "execute":{ "as":{ "_":[ "this", "pointAt", { "x":6, "y":6 }, "collidesWith", { "_":[ "object", "tile" ] } ] }, "executeAction":"hit" }
+            },
+            {
+              "when":{ "_":[ "keyB", "isHit" ] },
+              "execute":{ "as":{ "_":[ "this", "pointAt", { "x":6, "y":6 }, "collidesWith", { "_":[ "object", "tile" ] } ] }, "executeAction":"toggleFlag" }
+            }
+          ]
+        }
+      }
+    },
+    "#":{
+      "type":[ "empty", "tile", "available" ],
+      "image":"tiles", "width":12, "height":12,
+      "frame":12,
+      "scale":0,
+      "color":"#fff",
+      "font":"spectrum", "fontSize":18, "lineHeight":10, "outline":"#000", "textAlign":"center",
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[
+            { "wait":{ "_":[ "randomNumber", [ 0, 10 ] ] } },
+            { "sum":0.1, "to":{ "_":[ "this", "scale" ] }, "wait":1, "loop":1, "until":{ "_":[ "this", "scale", "isEqualTo", 1 ] } }
+          ]
+        },
+        "actions":[
+          {
+            "name":"hit",
+            "execute":{
+              "when":{ "_":[ "this", "isDone", "not" ] },
+              "execute":{
+                "when":{ "_":[ "this", "isTyped", "bomb" ] },
+                "execute":{ "as":{ "_":"scene" }, "set":{ "state":"gameover" } },
+                "elseExecute":[
+                  {
+                    "when":{ "_":[ "variable", "addBombs" ] },
+                    "execute":[
+                      { "as":{ "_":"variable" }, "set":{ "addBombs":0 } },
+                      { "set":{ "removeType":"empty" } },
+                      {
+                        "times":{ "_":[ "variable", "bombs" ] },
+                        "as":{ "_":[ "randomObject", { "_":[ "object", "empty" ] } ] },
+                        "set":{ "type":"bomb", "removeType":"empty" }
+                      }
+                    ]
+                  },
+                  { "when":{ "_":[ "cheat", "markMines" ] }, "execute":{ "as":{ "_":[ "object", "bomb" ] }, "set":{ "border":"#00f" } } },
+                  {
+                    "set":{
+                      "removeType":[ "flag", "available" ],
+                      "bombCount":{
+                        "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "bomb" ] }, "all":1, "hitbox":{ "width":24, "height":24, "x":-6, "y":-6 } }, "count" ]
+                      },
+                      "isDone":1
+                    }
+                  },
+                  { "set":{ "frame":{ "_":[ "this", "bombCount" ] } } },
+                  {
+                    "when":{ "_":[ "this", "bombCount", "isEqualTo", 0 ] },
+                    "execute":{
+                      "as":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "tile" ] }, "all":1, "hitbox":{ "width":24, "height":24, "x":-6, "y":-6 } } ] },
+                      "executeAction":"hit"
+                    }
+                  },
+                  { "when":{ "_":[ "object", "available", "count", "isEqualTo", { "_":[ "variable", "bombs" ] } ] }, "as":{ "_":"scene" }, "set":{ "state":"win" } }
+                ]
+              }
+            }
+          },
+          {
+            "name":"toggleFlag",
+            "execute":{
+              "when":{ "_":[ "this", "isDone", "not" ] },
+              "execute":{ "when":{ "_":[ "this", "isTyped", "flag" ] }, "set":{ "removeType":"flag", "frame":12 }, "elseExecute":{ "set":{ "type":"flag", "frame":11 } } }
+            }
+          }
+        ]
+      }
+    }
+  },
+  "execute":{
+    "object":[
+      {
+        "type":"hud",
+        "hudType":"label", "label":"SCORE<br>%number|variable.score%",
+        "box":"label", "width":50, "height":30,
+        "x":200, "y":5,
+        "font":"spectrum", "lineHeight":13, "outline":"#000000", "textAlign":"center"
+      },
+      {
+        "type":"hud",
+        "hudType":"label", "label":"BONUS<br>%number|variable.bonus%",
+        "box":"label", "width":50, "height":30,
+        "x":200, "y":35,
+        "font":"spectrum", "lineHeight":13, "outline":"#000000", "textAlign":"center"
+      },
+      {
+        "type":"hud",
+        "hudType":"label", "label":"STAGE<br>%number|variable.nextStage%",
+        "box":"label", "width":50, "height":30,
+        "x":200, "y":157,
+        "font":"spectrum", "lineHeight":13, "outline":"#000000", "textAlign":"center"
+      }
+    ],
+    "into":{ "_":"hud" }
+  },
+  "scenes":{
+    "intro":{
+      "execute":[
+        { "as":{ "_":"variable" }, "set":{ "nextStage":1, "score":0 } },
+        {
+          "object":[
+            { "image":"logo", "width":157, "height":75, "x":23, "y":40 },
+            {
+              "box":"label", "width":204,
+              "zIndex":30, "x":0, "y":120,
+              "color":"#fff",
+              "font":"spectrum", "fontSize":20, "lineHeight":20, "outline":"#000", "textAlign":"center", "html":"PRESS START",
+              "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "visible":0 }, "wait":10 }, { "set":{ "visible":1 }, "wait":10, "loopTo":0 } ] } }
+            },
+            {
+              "box":"label", "width":204, "height":30,
+              "zIndex":30, "x":0, "y":162,
+              "color":"#fff",
+              "font":"spectrum", "fontSize":15, "lineHeight":13, "outline":"#000", "textAlign":"center", "html":"(A) SELECT TILE<br>(B) TOGGLE FLAG"
+            }
+          ]
+        }
+      ],
+      "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":{ "_":[ "variable", "nextStage" ] } } } }
+    },
+    "ending":{
+      "execute":[
+        { "_":[ "stencil", "codeEndGame" ] },
+        {
+          "object":{
+            "type":"label",
+            "box":"label", "width":210, "height":40,
+            "zIndex":3000, "x":0, "y":76,
+            "color":"#fff",
+            "font":"spectrum", "fontSize":40, "lineHeight":40, "outline":"#0f0", "textAlign":"center", "html":"WELL DONE!",
+            "forceY":-3,
+            "states":{ "code":{ "name":"Physics", "data":{ "walls":{ "area":{ "width":256, "height":116, "x":0, "y":0 }, "restitution":1 }, "gravityY":0.5 } } }
+          }
+        }
+      ],
+      "states":{
+        "code":[
+          { "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"intro" } },
+          {
+            "name":"Sequence",
+            "data":[
+              { "wait":5 },
+              {
+                "object":{
+                  "image":"tiles", "width":12, "height":12,
+                  "x":{ "_":[ "randomNumber", [ 0, 186 ] ] }, "y":-12, "frame":{ "_":[ "randomNumber", [ 0, 12 ] ] },
+                  "speed":{ "_":[ "randomNumber", [ 2, 4 ] ] },
+                  "states":{
+                    "code":{
+                      "name":"Execute",
+                      "data":[ { "sum":{ "_":[ "this", "speed" ] }, "to":{ "_":[ "this", "y" ] } }, { "when":{ "_":[ "this", "y", "isGreaterThan", 192 ] }, "remove":1 } ]
+                    }
+                  }
+                }
+              },
+              { "loopTo":-2 }
+            ]
+          }
+        ]
+      }
+    },
+    "1":{
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "execute":{ "as":{ "_":"variable" }, "set":{ "bombs":10 } },
+      "tilemap":{
+        "width":256, "height":192,
+        "x":6, "y":6,
+        "tileWidth":12,
+        "tileHeight":12,
+        "map":[
+          "################",
+          "################",
+          "################",
+          "################",
+          "################",
+          "################",
+          "################",
+          "################",
+          "################",
+          "################",
+          "################",
+          "################",
+          "################",
+          "################",
+          "################"
+        ]
+      }
+    },
+    "2":{
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "execute":{ "as":{ "_":"variable" }, "set":{ "bombs":10 } },
+      "tilemap":{
+        "width":256, "height":192,
+        "x":6, "y":6,
+        "tileWidth":12,
+        "tileHeight":12,
+        "map":[
+          "################",
+          "################",
+          "################",
+          "####        ####",
+          "####        ####",
+          "################",
+          "################",
+          "################",
+          "################",
+          "################",
+          "####        ####",
+          "####        ####",
+          "################",
+          "################",
+          "################"
+        ]
+      }
+    },
+    "3":{
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "execute":{ "as":{ "_":"variable" }, "set":{ "bombs":20 } },
+      "tilemap":{
+        "width":256, "height":192,
+        "x":6, "y":6,
+        "tileWidth":12,
+        "tileHeight":12,
+        "map":[
+          "################",
+          "################",
+          "################",
+          "################",
+          "################",
+          "################",
+          "################",
+          "################",
+          "################",
+          "################",
+          "################",
+          "################",
+          "################",
+          "################",
+          "################"
+        ]
+      }
+    },
+    "4":{
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "execute":{ "as":{ "_":"variable" }, "set":{ "bombs":20 } },
+      "tilemap":{
+        "width":256, "height":192,
+        "x":6, "y":6,
+        "tileWidth":12,
+        "tileHeight":12,
+        "map":[
+          "################",
+          "################",
+          "################",
+          "################",
+          "####            ",
+          "################",
+          "################",
+          "################",
+          "################",
+          "            ####",
+          "            ####",
+          "################",
+          "################",
+          "################",
+          "################"
+        ]
+      }
+    },
+    "5":{
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "execute":{ "as":{ "_":"variable" }, "set":{ "bombs":30 } },
+      "tilemap":{
+        "width":256, "height":192,
+        "x":6, "y":6,
+        "tileWidth":12,
+        "tileHeight":12,
+        "map":[
+          "################",
+          "################",
+          "################",
+          "################",
+          "################",
+          "################",
+          "################",
+          "################",
+          "################",
+          "################",
+          "################",
+          "################",
+          "################",
+          "################",
+          "################"
+        ]
+      }
+    }
+  }
+}

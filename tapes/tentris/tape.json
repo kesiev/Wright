@@ -1,0 +1,585 @@
+{
+  "name":"Tentris",
+  "author":"KesieV",
+  "year":2015,
+  "genre":"Puzzle",
+  "description":"After the touch screen invasion on the market, mostly because of the iPhone, some of the old keypad games from the J2ME age jumped abroad. One of my all-time favourites was Siberian Strike by Gameloft, which was a clear ripoff of 1942 (1984) and the whole series, but it was greatly playable with the small keypad of my Siemens M50. I obviously purchased the iPhone version at day one and discovered that the touch controls were a little less effective than the keypad one. Videogames hardly migrated from joystick to joypad and it's even harder to adapt games from key controls to touch screens. You have to think the gameplay from scratch: while Tetris is still unplayable on touch screens because of its original tight controls, 1010! retought its rules, allowing to drag pieces everywhere instead of moving them left or right - which better fits touch screen controls - and removing piece rotation, avoiding a gesture or a button for that, reducing the need of reflexes and enhancing strategy. Time to recreate a smaller version and test how pieces can be moved on a grid using Wright!. Plot! There is a grid and some weird shaped blocks. Choose one of them, place it on the grid and make horizontal or vertical lines. Use UP/DOWN/LEFT/RIGHT for moving the current piece. Use A BUTTON for placing it on the grid and the B BUTTON for switching piece from the current set of pieces. Press the A BUTTON and the B BUTTON together and confirm with the B BUTTON if you're stuck to give up. Sorry. No plot.",
+  "screenshots":["tentris-1.png","tentris-2.png"],
+  "hardware":{
+    "width":256,
+    "height":192,
+    "texture":"scanlines"
+  },
+  "resources":{
+    "logo":"logo.png",
+    "sprites":"sprites.png",
+    "defaultsprites":"../default/sprites.png",
+    "scanlines":"../default/scanlines.png"
+  },
+  "stencils":{
+    "codeCleanLines":[
+      { "as":{ "_":"variable" }, "set":{ "bonus":5, "linehitbox":{ "width":16, "height":160, "x":16, "y":16 } } },
+      {
+        "times":10,
+        "execute":[
+          {
+            "when":{ "_":[ "variable", "linehitbox", "complexCollidesWith", { "subject":{ "_":[ "object", "filledSpace" ] }, "all":1 } ] },
+            "execute":{
+              "when":{ "_":[ "that", "count", "isEqualTo", 10 ] },
+              "execute":[
+                { "as":{ "_":"that" }, "executeAction":"remove" },
+                { "sum":{ "_":[ "variable", "bonus" ] }, "to":{ "_":[ "variable", "score" ] } },
+                { "sum":5, "to":{ "_":[ "variable", "score" ] } }
+              ]
+            }
+          },
+          { "sum":16, "to":{ "_":[ "variable", "linehitbox", "x" ] } }
+        ]
+      },
+      { "as":{ "_":"variable" }, "set":{ "bonus":5, "linehitbox":{ "width":160, "height":16, "x":16, "y":16 } } },
+      {
+        "times":10,
+        "execute":[
+          {
+            "when":{ "_":[ "variable", "linehitbox", "complexCollidesWith", { "subject":{ "_":[ "object", "filledSpace" ] }, "all":1 } ] },
+            "execute":{
+              "when":{ "_":[ "that", "count", "isEqualTo", 10 ] },
+              "execute":[
+                { "as":{ "_":"that" }, "executeAction":"remove" },
+                { "sum":{ "_":[ "variable", "bonus" ] }, "to":{ "_":[ "variable", "score" ] } },
+                { "sum":5, "to":{ "_":[ "variable", "score" ] } }
+              ]
+            }
+          },
+          { "sum":16, "to":{ "_":[ "variable", "linehitbox", "y" ] } }
+        ]
+      },
+      { "as":{ "_":[ "object", "removed" ] }, "set":{ "type":"emptySpace", "removeType":"filledSpace" } },
+      { "times":100, "as":{ "_":[ "objectTyped", "removed" ] }, "set":{ "removeType":"removed" } }
+    ],
+    "codeNextPiece":[
+      { "sum":1, "to":{ "_":[ "variable", "cursor" ] } },
+      {
+        "times":3,
+        "execute":[
+          { "when":{ "_":[ "variable", "pieces", { "_":[ "variable", "cursor" ] }, "isEqualTo", -1 ] }, "sum":1, "to":{ "_":[ "variable", "cursor" ] } },
+          { "when":{ "_":[ "variable", "cursor", "isGreaterThan", 2 ] }, "assign":0, "to":{ "_":[ "variable", "cursor" ] } }
+        ]
+      },
+      { "_":[ "stencil", "codeSpawnPiece" ] }
+    ],
+    "codeNextSet":[
+      { "as":{ "_":"variable" }, "set":{ "left":3, "cursor":0, "cycle":0, "pieces":[ 0, 0, 0 ] } },
+      {
+        "times":3,
+        "execute":[
+          { "assign":{ "_":[ "randomNumber", [ 0, 18 ] ] }, "to":{ "_":[ "variable", "pieces", { "_":[ "variable", "cycle" ] } ] } },
+          {
+            "object":{
+              "type":{ "_":[ "next", ".", { "_":[ "variable", "cycle" ] } ] },
+              "x":204, "y":{ "_":[ "variable", "cycle", "*", 24, "+", 40 ] },
+              "tilemap":{ "tileWidth":4, "tileHeight":4, "map":{ "_":[ "stencil", { "_":[ "variable", "pieces", { "_":[ "variable", "cycle" ] } ] }, "preview" ] } }
+            }
+          },
+          {
+            "as":{ "_":[ "object", "nextPiece" ] },
+            "set":{ "bgcolor":{ "_":[ "stencil", { "_":[ "variable", "pieces", { "_":[ "variable", "cycle" ] } ] }, "fillColor" ] } }
+          },
+          { "times":25, "as":{ "_":[ "objectTyped", "nextPiece" ] }, "set":{ "removeType":"nextPiece" } },
+          { "sum":1, "to":{ "_":[ "variable", "cycle" ] } }
+        ]
+      }
+    ],
+    "codeSpawnPiece":[
+      { "as":{ "_":[ "object", "currentpiece" ] }, "remove":1 },
+      { "assign":{ "_":[ "stencil", { "_":[ "variable", "pieces", { "_":[ "variable", "cursor" ] } ] } ] }, "to":{ "_":[ "variable", "piece" ] } },
+      {
+        "object":{
+          "type":"currentpiece",
+          "zIndex":10, "x":{ "_":[ "variable", "piece", "spawnX" ] }, "y":{ "_":[ "variable", "piece", "spawnY" ] },
+          "states":[
+            { "execute":{ "set":{ "state":"play" } } },
+            {
+              "name":"play",
+              "code":{
+                "name":"Execute",
+                "data":[
+                  { "when":{ "_":[ "keyUp", "isHit", "and", { "_":[ "this", "y", "isGreaterThan", 16 ] } ] }, "subtract":16, "to":{ "_":[ "this", "y" ] } },
+                  {
+                    "when":{ "_":[ "keyDown", "isHit", "and", { "_":[ "this", "y", "isLessThan", { "_":[ "variable", "piece", "boundsY" ] } ] } ] },
+                    "sum":16,
+                    "to":{ "_":[ "this", "y" ] }
+                  },
+                  { "when":{ "_":[ "keyLeft", "isHit", "and", { "_":[ "this", "x", "isGreaterThan", 16 ] } ] }, "subtract":16, "to":{ "_":[ "this", "x" ] } },
+                  {
+                    "when":{ "_":[ "keyRight", "isHit", "and", { "_":[ "this", "x", "isLessThan", { "_":[ "variable", "piece", "boundsX" ] } ] } ] },
+                    "sum":16,
+                    "to":{ "_":[ "this", "x" ] }
+                  },
+                  {
+                    "when":{ "_":[ "keyA", "isDown", "and", { "_":[ "keyB", "isDown" ] } ] },
+                    "execute":[ { "remove":1 }, { "as":{ "_":"scene" }, "set":{ "state":"giveup" } } ],
+                    "elseExecute":{
+                      "when":{ "_":[ "keyA", "isHit" ] },
+                      "execute":[
+                        { "as":{ "_":"variable" }, "set":{ "placeable":0 } },
+                        { "as":{ "_":[ "object", "blockToPlace" ] }, "executeAction":"check" },
+                        {
+                          "when":{ "_":[ "variable", "placeable", "isEqualTo", { "_":[ "variable", "piece", "blocks" ] } ] },
+                          "execute":[
+                            { "sum":{ "_":[ "variable", "piece", "blocks" ] }, "to":{ "_":[ "variable", "score" ] } },
+                            { "as":{ "_":[ "object", "blockToPlace" ] }, "executeAction":"place" },
+                            { "as":{ "_":[ "object", "blockToPlace" ] }, "remove":1 },
+                            { "assign":-1, "to":{ "_":[ "variable", "pieces", { "_":[ "variable", "cursor" ] } ] } },
+                            { "as":{ "_":[ "object", { "_":[ "next", ".", { "_":[ "variable", "cursor" ] } ] } ] }, "remove":1 },
+                            { "_":[ "stencil", "codeCleanLines" ] },
+                            { "subtract":1, "to":{ "_":[ "variable", "left" ] } },
+                            {
+                              "when":{ "_":[ "variable", "left", "isEqualTo", 0 ] },
+                              "execute":[ { "_":[ "stencil", "codeNextSet" ] }, { "_":[ "stencil", "codeSpawnPiece" ] } ],
+                              "elseExecute":{ "_":[ "stencil", "codeNextPiece" ] }
+                            }
+                          ]
+                        }
+                      ],
+                      "elseExecute":{ "when":{ "_":[ "keyB", "isHit" ] }, "execute":{ "_":[ "stencil", "codeNextPiece" ] } }
+                    }
+                  },
+                  { "as":{ "_":[ "object", "blockToPlace" ] }, "set":{ "fillColor":{ "_":[ "variable", "piece", "fillColor" ] } } }
+                ]
+              }
+            }
+          ],
+          "tilemap":{ "map":{ "_":[ "variable", "piece", "map" ] } }
+        }
+      }
+    ],
+    "spark":{
+      "image":"defaultsprites", "tileX":64, "tileY":144, "width":16, "height":16,
+      "zIndex":10000, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "animations":{ "spark":{ "frames":4, "speed":0 } },
+      "animation":"spark",
+      "states":{ "code":{ "name":"Sequence", "data":[ { "wait":4 }, { "remove":1 } ] } }
+    },
+    "10":{
+      "blocks":4,
+      "boundsX":144,
+      "boundsY":144,
+      "fillColor":"#ff0",
+      "preview":[ "xx", "xx" ],
+      "spawnX":80,
+      "spawnY":80,
+      "map":[
+        "XX",
+        "XX"
+      ]
+    },
+    "11":{
+      "blocks":5,
+      "boundsX":128,
+      "boundsY":128,
+      "fillColor":"#0ff",
+      "preview":[ "xxx", "x", "x" ],
+      "spawnX":80,
+      "spawnY":80,
+      "map":[
+        "XXX",
+        "X",
+        "X"
+      ]
+    },
+    "12":{
+      "blocks":5,
+      "boundsX":128,
+      "boundsY":128,
+      "fillColor":"#0ff",
+      "preview":[ "xxx", "  x", "  x" ],
+      "spawnX":80,
+      "spawnY":80,
+      "map":[
+        "XXX",
+        "  X",
+        "  X"
+      ]
+    },
+    "13":{
+      "blocks":5,
+      "boundsX":128,
+      "boundsY":128,
+      "fillColor":"#0ff",
+      "preview":[ "  x", "  x", "xxx" ],
+      "spawnX":80,
+      "spawnY":80,
+      "map":[
+        "  X",
+        "  X",
+        "XXX"
+      ]
+    },
+    "14":{
+      "blocks":5,
+      "boundsX":128,
+      "boundsY":128,
+      "fillColor":"#0ff",
+      "preview":[ "x", "x", "xxx" ],
+      "spawnX":80,
+      "spawnY":80,
+      "map":[
+        "X",
+        "X",
+        "XXX"
+      ]
+    },
+    "15":{
+      "blocks":3,
+      "boundsX":144,
+      "boundsY":144,
+      "fillColor":"#7f007f",
+      "preview":[ "xx", "x" ],
+      "spawnX":80,
+      "spawnY":80,
+      "map":[
+        "XX",
+        "X"
+      ]
+    },
+    "16":{
+      "blocks":3,
+      "boundsX":144,
+      "boundsY":144,
+      "fillColor":"#7f007f",
+      "preview":[ "xx", " x" ],
+      "spawnX":80,
+      "spawnY":80,
+      "map":[
+        "XX",
+        " X"
+      ]
+    },
+    "17":{
+      "blocks":3,
+      "boundsX":144,
+      "boundsY":144,
+      "fillColor":"#7f007f",
+      "preview":[ " x", "xx" ],
+      "spawnX":80,
+      "spawnY":80,
+      "map":[
+        " X",
+        "XX"
+      ]
+    },
+    "18":{
+      "blocks":3,
+      "boundsX":144,
+      "boundsY":144,
+      "fillColor":"#7f007f",
+      "preview":[ "x", "xx" ],
+      "spawnX":80,
+      "spawnY":80,
+      "map":[
+        "X",
+        "XX"
+      ]
+    },
+    "cursor":{
+      "image":"defaultsprites", "tileX":216, "tileY":96, "width":8, "height":8,
+      "x":184, "y":0,
+      "states":{ "code":{ "name":"Execute", "data":{ "assign":{ "_":[ "variable", "cursor", "*", 24, "+", 38 ] }, "to":{ "_":[ "this", "y" ] } } } }
+    },
+    "smoke":{
+      "image":"defaultsprites", "tileX":80, "tileY":16, "width":16, "height":16,
+      "zIndex":{ "_":[ "that", "zIndex", "+", 1 ] }, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "animations":{ "spark":{ "frames":4, "speed":1 } },
+      "animation":"spark",
+      "states":{ "code":[ { "name":"Physics" }, { "name":"Sequence", "data":[ { "wait":8 }, { "remove":1 } ] } ] }
+    },
+    "#":{
+      "type":"emptySpace",
+      "image":"sprites", "width":16, "height":16,
+      "states":[
+        {
+          "actions":{
+            "name":"fill",
+            "execute":[
+              { "object":{ "set":{ "_":[ "stencil", "smoke" ] }, "forceY":-2 } },
+              { "set":{ "type":"filledSpace", "removeType":"emptySpace", "frame":1, "bgcolor":{ "_":[ "that", "fillColor" ] } } }
+            ]
+          }
+        },
+        {
+          "actions":{
+            "name":"remove",
+            "execute":[
+              { "when":{ "_":[ "this", "isTyped", "removed", "not" ] }, "object":{ "_":[ "stencil", "spark" ] } },
+              { "set":{ "type":"removed", "frame":0, "bgcolor":"" } }
+            ]
+          }
+        }
+      ]
+    },
+    "0":{
+      "blocks":5,
+      "boundsX":160,
+      "boundsY":96,
+      "fillColor":"#f00",
+      "preview":[ "x", "x", "x", "x", "x" ],
+      "spawnX":96,
+      "spawnY":48,
+      "map":[
+        "X",
+        "X",
+        "X",
+        "X",
+        "X"
+      ]
+    },
+    "1":{ "blocks":5, "boundsX":96, "boundsY":160, "fillColor":"#f00", "preview":[ "xxxxx" ], "spawnX":64, "spawnY":96, "map":[
+        "XXXXX"
+      ] },
+    "2":{
+      "blocks":4,
+      "boundsX":160,
+      "boundsY":112,
+      "fillColor":"#0f0",
+      "preview":[ "x", "x", "x", "x" ],
+      "spawnX":96,
+      "spawnY":64,
+      "map":[
+        "X",
+        "X",
+        "X",
+        "X"
+      ]
+    },
+    "3":{ "blocks":4, "boundsX":112, "boundsY":160, "fillColor":"#0f0", "preview":[ "xxxx" ], "spawnX":64, "spawnY":96, "map":[
+        "XXXX"
+      ] },
+    "4":{
+      "blocks":3,
+      "boundsX":160,
+      "boundsY":128,
+      "fillColor":"#00f",
+      "preview":[ "x", "x", "x" ],
+      "spawnX":96,
+      "spawnY":80,
+      "map":[
+        "X",
+        "X",
+        "X"
+      ]
+    },
+    "5":{ "blocks":3, "boundsX":128, "boundsY":160, "fillColor":"#00f", "preview":[ "xxx" ], "spawnX":64, "spawnY":80, "map":[
+        "XXX"
+      ] },
+    "6":{
+      "blocks":2,
+      "boundsX":160,
+      "boundsY":144,
+      "fillColor":"#f0f",
+      "preview":[ "x", "x" ],
+      "spawnX":80,
+      "spawnY":80,
+      "map":[
+        "X",
+        "X"
+      ]
+    },
+    "7":{ "blocks":2, "boundsX":144, "boundsY":160, "fillColor":"#f0f", "preview":[ "xx" ], "spawnX":80, "spawnY":80, "map":[
+        "XX"
+      ] },
+    "8":{ "blocks":1, "boundsX":160, "boundsY":160, "fillColor":"#ff0", "preview":[ "x" ], "spawnX":80, "spawnY":80, "map":[
+        "X"
+      ] },
+    "9":{
+      "blocks":9,
+      "boundsX":128,
+      "boundsY":128,
+      "fillColor":"#ff0",
+      "preview":[ "xxx", "xxx", "xxx" ],
+      "spawnX":80,
+      "spawnY":80,
+      "map":[
+        "XXX",
+        "XXX",
+        "XXX"
+      ]
+    },
+    "X":{
+      "type":"blockToPlace",
+      "image":"sprites", "tileX":32, "width":16, "height":16,
+      "animations":{ "idle":{ "frames":2, "loopTo":0 } },
+      "animation":"idle",
+      "states":{
+        "actions":[
+          {
+            "name":"check",
+            "execute":{ "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "emptySpace" ] } ] }, "sum":1, "to":{ "_":[ "variable", "placeable" ] } }
+          },
+          { "name":"place", "execute":{ "as":{ "_":[ "this", "collidesWith", { "_":[ "object", "emptySpace" ] } ] }, "executeAction":"fill" } }
+        ]
+      }
+    },
+    "Y":{ "image":"sprites", "width":16, "height":16 },
+    "x":{ "type":"nextPiece", "width":4, "height":4 }
+  },
+  "scenes":{
+    "intro":{
+      "object":[
+        {
+          "width":272, "height":208,
+          "states":{
+            "code":{
+              "name":"Sequence",
+              "data":[
+                { "set":{ "x":-16, "y":-16 } },
+                { "wait":1 },
+                { "sum":1, "to":{ "_":[ "this", "x" ] } },
+                { "sum":1, "to":{ "_":[ "this", "y" ] } },
+                { "cycles":15, "loopTo":-3 },
+                { "loopTo":0 }
+              ]
+            }
+          },
+          "tilemap":{
+            "map":[
+              "Y Y Y Y Y Y Y Y Y",
+              " Y Y Y Y Y Y Y Y ",
+              "Y Y Y Y Y Y Y Y Y",
+              " Y Y Y Y Y Y Y Y ",
+              "Y Y Y Y Y Y Y Y Y",
+              " Y Y Y Y Y Y Y Y ",
+              "Y Y Y Y Y Y Y Y Y",
+              " Y Y Y Y Y Y Y Y ",
+              "Y Y Y Y Y Y Y Y Y",
+              " Y Y Y Y Y Y Y Y ",
+              "Y Y Y Y Y Y Y Y Y",
+              " Y Y Y Y Y Y Y Y ",
+              "Y Y Y Y Y Y Y Y Y"
+            ]
+          }
+        },
+        {
+          "box":"label", "width":256,
+          "zIndex":30, "x":0, "y":110,
+          "color":"#fff",
+          "font":"spectrum", "fontSize":20, "lineHeight":20, "outline":"#000", "textAlign":"center", "html":"PRESS START",
+          "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "visible":0 }, "wait":10 }, { "set":{ "visible":1 }, "wait":10, "loopTo":0 } ] } }
+        },
+        { "image":"logo", "width":218, "height":32, "zIndex":30, "x":19, "y":60 }
+      ],
+      "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"game" } } }
+    },
+    "game":{
+      "object":[
+        { "width":80, "height":20, "x":184, "y":16, "font":"spectrum", "html":"NEXT" },
+        {
+          "type":"hud",
+          "hudType":"label", "label":"SCORE<br>%number|variable.score%",
+          "width":70, "height":30,
+          "x":184, "y":150,
+          "font":"spectrum", "lineHeight":12
+        },
+        { "_":[ "stencil", "cursor" ] }
+      ],
+      "execute":[ { "as":{ "_":"variable" }, "set":{ "score":0 } }, { "_":[ "stencil", "codeNextSet" ] } ],
+      "states":[
+        {
+          "execute":{
+            "object":{
+              "type":"label",
+              "box":"label", "width":160, "height":160,
+              "zIndex":3000, "x":16, "y":16,
+              "color":"#fff",
+              "font":"spectrum", "fontSize":40, "lineHeight":160, "outline":"#f00", "textAlign":"center", "html":"GET READY!"
+            }
+          },
+          "code":{ "name":"Sequence", "data":[ { "wait":50 }, { "as":{ "_":[ "object", "label" ] }, "remove":1 }, { "set":{ "state":"play" } } ] }
+        },
+        {
+          "name":"play",
+          "execute":[
+            { "_":[ "stencil", "codeSpawnPiece" ] },
+            {
+              "object":{
+                "type":"alert",
+                "box":"label", "width":256, "height":20,
+                "zIndex":2, "x":0, "y":178,
+                "color":"#fff",
+                "font":"spectrum", "lineHeight":12, "outline":"#000", "textAlign":"center", "html":"PRESS A+B TO GIVE UP.",
+                "states":{ "code":{ "name":"Sequence", "data":[ { "wait":50 }, { "remove":1 } ] } }
+              }
+            }
+          ]
+        },
+        {
+          "name":"giveup",
+          "execute":[
+            { "as":{ "_":[ "object", "alert" ] }, "remove":1 },
+            {
+              "object":{
+                "type":"alert",
+                "box":"label", "width":256, "height":20,
+                "zIndex":2, "x":0, "y":178,
+                "color":"#fff",
+                "font":"spectrum", "lineHeight":12, "outline":"#000", "textAlign":"center", "html":"GIVE UP? (A) NO (B) YES",
+                "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "color":"#ff0" } }, { "wait":5 }, { "set":{ "color":"#fff" } }, { "wait":5 }, { "loopTo":0 } ] } }
+              }
+            }
+          ],
+          "code":{
+            "name":"Execute",
+            "data":{
+              "when":{ "_":[ "keyA", "isHit" ] },
+              "execute":[ { "as":{ "_":[ "object", "alert" ] }, "remove":1 }, { "set":{ "state":"play" } } ],
+              "elseExecute":{ "when":{ "_":[ "keyB", "isHit" ] }, "execute":[ { "as":{ "_":[ "object", "alert" ] }, "remove":1 }, { "set":{ "state":"gameover" } } ] }
+            }
+          }
+        },
+        {
+          "name":"gameover",
+          "execute":{
+            "object":{
+              "type":"label",
+              "box":"label", "width":160, "height":160,
+              "zIndex":3000, "x":16, "y":16,
+              "color":"#fff",
+              "font":"spectrum", "fontSize":40, "lineHeight":160, "outline":"#00f", "textAlign":"center", "html":"GAME OVER",
+              "states":{
+                "code":{
+                  "name":"Sequence",
+                  "data":[ { "sum":1, "to":{ "_":[ "this", "x" ] } }, { "wait":1 }, { "subtract":1, "to":{ "_":[ "this", "x" ] } }, { "wait":1, "loopTo":-3 } ]
+                }
+              }
+            }
+          },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "wait":20 },
+              { "as":{ "_":[ "object", "label" ] }, "set":{ "state":"none" } },
+              { "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"intro" },
+              { "wait":1, "loopTo":-1 }
+            ]
+          }
+        }
+      ],
+      "tilemap":{
+        "width":256, "height":192,
+        "x":16, "y":16,
+        "map":[
+          "##########",
+          "##########",
+          "##########",
+          "##########",
+          "##########",
+          "##########",
+          "##########",
+          "##########",
+          "##########",
+          "##########"
+        ]
+      }
+    }
+  }
+}

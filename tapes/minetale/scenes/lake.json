@@ -1,0 +1,84 @@
+{
+  "object":[
+    { "type":"doorLakeSide", "set":{ "_":[ "stencil", "door" ] }, "x":1056, "y":80, "spawnPoint":"doorLakeRoom" },
+    { "type":"doorLakeRoom", "set":{ "_":[ "stencil", "door" ] }, "x":1024, "y":256, "spawnPoint":"doorLakeSide" },
+    { "set":{ "_":[ "stencil", "bonusOxygen" ] }, "x":1088, "y":256 },
+    { "type":"doorEntrance", "set":{ "_":[ "stencil", "door" ] }, "x":64, "y":96, "spawnPoint":"doorLake", "spawnScene":"village" },
+    { "type":"checkpointLake", "set":{ "_":[ "stencil", "savePoint" ] }, "x":96, "y":96, "spawnPoint":"checkpointLake" },
+    { "set":{ "_":[ "stencil", "bonusKey" ] }, "x":64, "y":320, "checkVariable":"key3" },
+    { "set":{ "_":[ "stencil", "foeGreenSlime" ] }, "x":160, "y":64 },
+    { "set":{ "_":[ "stencil", "foeGreenSlime" ] }, "x":192, "y":64 },
+    { "set":{ "_":[ "stencil", "foeGreenSlime" ] }, "x":256, "y":96 },
+    { "set":{ "_":[ "stencil", "foeGreenSlime" ] }, "x":464, "y":320 },
+    { "set":{ "_":[ "stencil", "foeGreenSlime" ] }, "x":528, "y":320 },
+    { "set":{ "_":[ "stencil", "foeGreenSlime" ] }, "x":608, "y":320 },
+    { "set":{ "_":[ "stencil", "foeGreenSlime" ] }, "x":656, "y":320 },
+    { "set":{ "_":[ "stencil", "foeRedSlime" ] }, "x":576, "y":320 },
+    { "set":{ "_":[ "stencil", "foeGreenSlime" ] }, "x":992, "y":80 },
+    { "set":{ "_":[ "stencil", "foeGreenSlime" ] }, "x":1120, "y":80 },
+    { "set":{ "_":[ "stencil", "foeGreenSlime" ] }, "x":144, "y":240 },
+    { "set":{ "_":[ "stencil", "foeGreenSlime" ] }, "x":208, "y":240 },
+    { "set":{ "_":[ "stencil", "foeGreenSlime" ] }, "x":320, "y":320 },
+    { "set":{ "_":[ "stencil", "foeGreenSlime" ] }, "x":352, "y":320 },
+    { "set":{ "_":[ "stencil", "foeGreenSlime" ] }, "x":736, "y":96 },
+    { "set":{ "_":[ "stencil", "foeGreenSlime" ] }, "x":832, "y":96 },
+    { "set":{ "_":[ "stencil", "foeGreenSlime" ] }, "x":416, "y":96 },
+    { "set":{ "_":[ "stencil", "foeGreenSlime" ] }, "x":576, "y":96 },
+    {
+      "set":{ "_":[ "stencil", "npcSign" ] },
+      "x":944, "y":96,
+      "dialogue":[
+        { "as":{ "_":[ "objectTyped", "dialoguePortrait" ] }, "set":{ "visible":1, "animations":{ "idle":{ "frame":1 } } } },
+        { "as":{ "_":[ "objectTyped", "dialogueText" ] }, "set":{ "html":"Rebels base." } },
+        { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } }
+      ]
+    },
+    {
+      "set":{ "_":[ "stencil", "npcSign" ] },
+      "x":96, "y":320,
+      "dialogue":[
+        { "as":{ "_":[ "objectTyped", "dialoguePortrait" ] }, "set":{ "visible":1, "animations":{ "idle":{ "frame":1 } } } },
+        { "as":{ "_":[ "objectTyped", "dialogueText" ] }, "set":{ "html":"If you're reading this, we failed our mission." } },
+        { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+        { "as":{ "_":[ "objectTyped", "dialogueText" ] }, "set":{ "html":"Please, escape this cursed mine and..." } },
+        { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+        { "as":{ "_":[ "objectTyped", "dialogueText" ] }, "set":{ "html":"...tell everyone about what they're doing here." } },
+        { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+        { "as":{ "_":[ "objectTyped", "dialogueText" ] }, "set":{ "html":"...tell everyone about the monsters army they're building." } },
+        { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } }
+      ]
+    },
+    { "type":"checkpointLake2", "set":{ "_":[ "stencil", "savePoint" ] }, "x":1056, "y":256, "spawnPoint":"checkpointLake2" }
+  ],
+  "execute":{ "_":[ "stencil", "stageInitialize" ] },
+  "tileColor":"#7f7f00",
+  "titleLabel":"Lake",
+  "tilemap":{
+    "tileWidth":16,
+    "tileHeight":16,
+    "map":[
+      "                  #                  #             T T                    ",
+      "                  #                  #             T T                    ",
+      "                  #                  #             T T                    ",
+      "                  #                  #             T T          IPPPO     ",
+      "                  #                  #             T T          MPPPN     ",
+      "         #####    #                  #             T T         QMPPPNQ    ",
+      "    YYYY       YYY#      YYY       YY#       YYY   T T    Q Qpaaaaaaaaas  ",
+      "   paaas       paas      pas       pa#       pas   pas   paaa@@@@@@@@@@@s ",
+      "  p@@@@#  ##  #rrr#      #@#      ####       #@#   #r#   e@@@@@@@$@@@@@@@a",
+      " #rr@$@w           ------ #           ------- #          ##@@@@@@@@@@@@@@@",
+      "::::e@@@s::::::::::::::#::#::::::::::::::::#::#:::::::::::e@@@#########@@@",
+      "~~~~e@@r#~~~~~~~~~~~~~##~~#~~~~~~~~~~~~~~~##~~#~~~~~~~~~~~e@@@#   #YYY#@@@",
+      "#~~~e$w~~~ps~~~ps~~~~##~~~#~~~ps~~~ps~~~~##~~~#~~~~~~~~~~~e@@@#   #YYY#@@@",
+      "~~~#e@w~~~##~~~##~~~~~~~~~#~~~ew~~~ew~~~~~~~~~#~~~~~~~~~~~e@@@#   #YYY#@@@",
+      "~~~~e@w~~~~~~~~~~~~~###~~~##~~ew~~#ew~~~###~~~#~~~~~~~~~~~e@$@#   #YYY#@@@",
+      "#~~#e@@s~~~~~~~~~~~~~~~~###~~~ew~~~ew~~~~~~~###~~~~~~~~~~~e@@@#IPO YYY#@$@",
+      "~~#######aaaaaaas~~~~~~~~~#~~#ew#~~ew#~~~~~~~~#~~~~~~~~~~~e@@@#M N YYY#@@@",
+      "~##H H H#rrrrrrr#~~~~##~~~#~~~ew~~~ew~~####~~~#~~~~~~~~~~~e@@@#aaaaaaa#@@@",
+      "### H H #~~~#~~~#~~~~~~~~~#~~~##~~~##~~~~~~~~~#~~~~~~~~~~~e@@@@@@@@@@@@@@@",
+      "###     #~#~#~#~#~~~~~~~###~~~~~~~~~~~~~~~~~###~~~~~~~~~~~e@@@@@@@@@@@@@@@",
+      "###     f~#~~~#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~e@$@@@@@$@@@@@$@",
+      "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa@@@@@@@@@@@@@@@@"
+    ]
+  }
+}

@@ -1,0 +1,208 @@
+{
+  "name":"Jumpy Cheep",
+  "author":"KesieV",
+  "year":2015,
+  "genre":"Casual game",
+  "description":"Have you seen the category of this game? Casual game. That's harsh. The nearest word with the same effect in the non-nerd-land is probably 'migrant', expecially here in Italy. You can use that word for a plethora of meanings, ranging from adjective to insult but, in most cases, this difference is determined by discrimation only. Flappy Bird (2013) had a huge success, despite and thanks to its simple design. We started calling games like that 'casual games', mostly because they're very accessable, but the 'hardcore gamers' (i.e. experienced gamers) used the same term as insult, for indicating 'stupid games for stupid people'. As every form of discrimation, it's based on ignorance: long time players were forged by Tetris, Puzzle Bobble and Pang, which rules are fairly simple and could be labeled 'hardcore games' nowadays. And - telling the truth - I don't think that real 'hardcore gamers' can really use the 'casual game' as insult. Anyway, I've found Flappy Bird quite boring and simple but nothing is better than implementing a stripped-down version to better understand that success in gaming is not measured in lines of code. Plot! You're a bird that's too fat for flying: all you can do is flap your wings and in order to pass through... suspiciously familiar pipes. Press the A BUTTON for flapping. That's all. I've ripped graphics form Super Paolo Rossi for increased rip-ception.",
+  "screenshots":["jumpycheep-1.png","jumpycheep-2.png"],
+  "hardware":{
+    "width":256,
+    "height":192,
+    "texture":"scanlines"
+  },
+  "resources":{
+    "sprites":"sprites.png",
+    "defaultsprites":"../default/sprites.png",
+    "scanlines":"../default/scanlines.png"
+  },
+  "stencils":{
+    "bird":{
+      "image":"defaultsprites", "tileY":448, "width":17, "height":12,
+      "zIndex":5, "x":38, "y":80,
+      "animations":{ "fly":{ "frames":2, "loopTo":0 } },
+      "animation":"fly",
+      "states":[
+        {
+          "code":{
+            "name":"Execute",
+            "data":{
+              "when":{ "_":[ "keyA", "isHit" ] },
+              "execute":[
+                { "set":{ "forceY":-7, "state":"play" } },
+                { "as":{ "_":[ "object", "tutorial" ] }, "remove":1 },
+                { "as":{ "_":"scene" }, "set":{ "state":"play" } }
+              ]
+            }
+          }
+        },
+        {
+          "name":"play",
+          "code":[
+            {
+              "name":"Execute",
+              "data":[ { "when":{ "_":[ "keyA", "isHit" ] }, "set":{ "forceY":-7 } }, { "set":{ "angle":{ "_":[ "this", "forceY", "*", 6 ] } } } ]
+            },
+            {
+              "name":"Physics",
+              "data":{
+                "walls":[
+                  {
+                    "type":"obstacle",
+                    "execute":[
+                      { "as":{ "_":[ "object", "scrollingObjects" ] }, "set":{ "state":"idle" } },
+                      { "as":{ "_":"scene" }, "set":{ "state":"gameover" } },
+                      { "set":{ "animation":"none", "state":"dead" } }
+                    ]
+                  },
+                  { "area":{ "width":256, "height":192, "x":0, "y":0 } }
+                ],
+                "gravityY":1
+              }
+            }
+          ]
+        },
+        {
+          "name":"dead",
+          "code":[
+            { "name":"Execute", "data":{ "set":{ "angle":{ "_":[ "this", "forceY", "*", 6 ] } } } },
+            { "name":"Physics", "data":{ "walls":{ "type":"obstacle", "restitution":0 }, "gravityY":1 } }
+          ]
+        }
+      ]
+    },
+    "floor":{
+      "type":[ "floor", "obstacle", "scrollingObjects" ],
+      "image":"sprites", "tileX":27, "width":271, "height":24,
+      "zIndex":10, "x":0, "y":168,
+      "states":{
+        "code":{ "name":"Execute", "data":[ { "subtract":2, "to":{ "_":[ "this", "x" ] } }, { "when":{ "_":[ "this", "x", "isEqualTo", -14 ] }, "set":{ "x":0 } } ] }
+      }
+    },
+    "parallax":{
+      "type":"scrollingObjects",
+      "image":"sprites", "tileX":27, "tileY":24, "width":395, "height":33,
+      "x":0, "y":135,
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":[ { "subtract":1, "to":{ "_":[ "this", "x" ] } }, { "when":{ "_":[ "this", "x", "isEqualTo", -139 ] }, "set":{ "x":0 } } ]
+        }
+      }
+    },
+    "pipe":{
+      "type":[ "obstacle", "scrollingObjects" ],
+      "image":"sprites", "width":27, "height":192,
+      "zIndex":5, "x":256,
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":[
+            { "subtract":2, "to":{ "_":[ "this", "x" ] } },
+            { "when":{ "_":[ "this", "flipY", "and", { "_":[ "this", "x", "isEqualTo", 30 ] } ] }, "sum":1, "to":{ "_":[ "variable", "score" ] } },
+            { "when":{ "_":[ "this", "x", "isLessThan", -27 ] }, "remove":1 }
+          ]
+        }
+      }
+    }
+  },
+  "execute":{
+    "as":{ "_":"variable" },
+    "set":{ "highScore":0, "score":0 }
+  },
+  "scenes":{
+    "intro":{
+      "object":[
+        { "_":[ "stencil", "floor" ] },
+        { "_":[ "stencil", "parallax" ] },
+        { "image":"sprites", "tileX":27, "tileY":57, "width":197, "height":45, "x":29, "y":15 },
+        {
+          "type":"hud",
+          "hudType":"label", "label":"LAST SCORE<br>%number|variable.score%",
+          "width":256, "height":30,
+          "zIndex":100, "y":80,
+          "font":"spectrum", "lineHeight":12, "outline":"#000", "textAlign":"center"
+        },
+        {
+          "type":"hud",
+          "hudType":"label", "label":"HIGH SCORE<br>%number|variable.highScore%",
+          "width":256, "height":30,
+          "zIndex":100, "y":110,
+          "font":"spectrum", "lineHeight":12, "outline":"#000", "textAlign":"center"
+        },
+        {
+          "box":"label", "width":256,
+          "zIndex":3000, "x":0, "y":173,
+          "font":"spectrum", "lineHeight":20, "outline":"#000", "textAlign":"center", "html":"PRESS START",
+          "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "visible":0 }, "wait":10 }, { "set":{ "visible":1 }, "wait":10, "loopTo":0 } ] } }
+        }
+      ],
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "execute":[ { "as":{ "_":"variable" }, "set":{ "score":0 } }, { "gotoScene":"game" } ] }
+        }
+      }
+    },
+    "game":{
+      "object":[
+        { "_":[ "stencil", "bird" ] },
+        { "_":[ "stencil", "floor" ] },
+        { "_":[ "stencil", "parallax" ] },
+        {
+          "type":"hud",
+          "hudType":"label", "label":"%number|variable.score%",
+          "width":256, "height":25,
+          "zIndex":100, "y":5,
+          "font":"spectrum", "fontSize":40, "lineHeight":25, "outline":"#000", "textAlign":"center"
+        },
+        {
+          "type":"tutorial",
+          "box":"label", "width":256,
+          "zIndex":3000, "x":0, "y":173,
+          "font":"spectrum", "lineHeight":20, "outline":"#000", "textAlign":"center", "html":"PRESS A TO FLY!",
+          "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "visible":0 }, "wait":10 }, { "set":{ "visible":1 }, "wait":10, "loopTo":0 } ] } }
+        }
+      ],
+      "states":[
+        {
+          "name":"play",
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "as":{ "_":"variable" }, "set":{ "pipePosition":{ "_":[ "randomNumber", [ 20, 100 ] ] } } },
+              { "object":{ "set":{ "_":[ "stencil", "pipe" ] }, "y":{ "_":[ "variable", "pipePosition", "-", 192 ] } } },
+              { "object":{ "set":{ "_":[ "stencil", "pipe" ] }, "y":{ "_":[ "variable", "pipePosition", "+", 48 ] }, "flipY":1 } },
+              { "wait":40, "loopTo":0 }
+            ]
+          }
+        },
+        {
+          "name":"gameover",
+          "execute":[
+            {
+              "object":{
+                "width":256, "height":25,
+                "zIndex":100, "y":50,
+                "font":"spectrum", "fontSize":40, "lineHeight":23, "outline":"#000", "textAlign":"center", "html":"GAME OVER"
+              }
+            },
+            {
+              "when":{ "_":[ "variable", "score", "isGreaterThan", { "_":[ "variable", "highScore" ] } ] },
+              "execute":[
+                { "as":{ "_":"variable" }, "set":{ "highScore":{ "_":[ "variable", "score" ] } } },
+                {
+                  "object":{
+                    "width":256, "height":15,
+                    "zIndex":100, "y":75,
+                    "font":"spectrum", "lineHeight":13, "outline":"#000", "textAlign":"center", "html":"NEW HIGH SCORE!"
+                  }
+                }
+              ]
+            }
+          ],
+          "code":{ "name":"Sequence", "data":[ { "wait":20 }, { "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"intro" }, { "wait":1, "loopTo":-1 } ] }
+        }
+      ]
+    }
+  }
+}

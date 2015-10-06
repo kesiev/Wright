@@ -1,0 +1,287 @@
+{
+  "name":"Starcat",
+  "author":"KesieV",
+  "year":2014,
+  "genre":"Platformer",
+  "description":"The Wright! engine was originally thought for single-screen platformers only, in order to being able to code quick demakes and talk about the original game with a short article. This game is the first prototype, built with an older version of the engine that was just few hundreds lines long. During the engine development I kept updating the game JSON in order to keep it working: it has been very useful for finding code regressions and understanding when the game code was getting unreadable after adding or renaming programming statements. Back to the game! Ahh. When platformers didn't scroll. Why don't start our trip to the past and play a textbook single-screen platformer, like Nuts & Milk (1983) or Manic Miner (1983)? Plot! All the stars of the sky have been scattered around every planet! Help Starcat in its perilous mission, move from planet to planet and collect all the spinning stars! Move with the LEFT/RIGHT keys, jump with the UP key.",
+  "screenshots":["starcat-1.png","starcat-2.png"],
+  "hardware":{
+    "width":256,
+    "height":192,
+    "texture":"scanlines"
+  },
+  "cheats":{
+    "unlimitedLives":"Unlimited lives"
+  },
+  "resources":{
+    "intro":"intro.png",
+    "defaultsprites":"../default/sprites.png",
+    "gameover":"../default/gameover.png",
+    "scanlines":"../default/scanlines.png"
+  },
+  "stencils":{
+    "modelFoeBasic":{
+      "type":"foe",
+      "image":"defaultsprites", "tileX":0, "tileY":32,
+      "zIndex":1,
+      "animations":{ "fall":"still", "jump":"still", "still":{ "frames":4, "loopTo":0 }, "walk":"still" }
+    },
+    "modelStage":{
+      "x":-8, "y":-8,
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":[
+            { "when":{ "_":[ "variable", "lives", "isEqualTo", 0 ] }, "gotoScene":"gameover" },
+            {
+              "when":{ "_":[ "object", "bonus", "count", "isEqualTo", 0 ] },
+              "execute":[
+                { "sum":1, "to":{ "_":[ "variable", "nextStage" ] } },
+                { "when":{ "_":[ "variable", "nextStage", "isGreaterThan", 6 ] }, "as":{ "_":"variable" }, "set":{ "nextStage":1 } },
+                { "gotoScene":{ "_":[ "variable", "nextStage" ] } }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "platformerAnimation":{
+      "name":"Execute",
+      "data":[
+        { "when":{ "_":[ "this", "forceX", "isLessThan", 0 ] }, "set":{ "flipX":1 } },
+        { "when":{ "_":[ "this", "forceX", "isGreaterThan", 0 ] }, "set":{ "flipX":0 } },
+        { "when":{ "_":[ "this", "forceY", "isLessThan", 0 ] }, "set":{ "animation":"jump" } },
+        { "when":{ "_":[ "this", "forceY", "isGreaterThan", 0 ] }, "set":{ "animation":"fall" } },
+        {
+          "when":{ "_":[ "this", "forceY", "isEqualTo", 0 ] },
+          "execute":{ "when":{ "_":[ "this", "forceX", "isEqualTo", 0 ] }, "set":{ "animation":"still" }, "elseExecute":{ "set":{ "animation":"walk" } } }
+        }
+      ]
+    },
+    "!":{
+      "image":"defaultsprites", "tileX":64, "tileY":32,
+      "zIndex":1,
+      "animations":{ "fall":{ "frame":5 }, "jump":{ "frame":4 }, "still":{ "frames":4, "loopTo":0 }, "walk":"still" },
+      "animation":"still",
+      "states":{
+        "code":[
+          {
+            "name":"Execute",
+            "data":[
+              {
+                "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "bonus" ] } ] },
+                "as":{ "_":"that" },
+                "sum":10,
+                "to":{ "_":[ "variable", "score" ] },
+                "remove":1
+              },
+              {
+                "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "foe" ] } ] },
+                "execute":[
+                  { "when":{ "_":[ "cheat", "unlimitedLives", "not" ] }, "subtract":1, "to":{ "_":[ "variable", "lives" ] } },
+                  { "when":{ "_":[ "variable", "lives", "isEqualTo", 0 ] }, "gotoScene":"gameover", "elseExecute":{ "restartScene":1 } }
+                ]
+              }
+            ]
+          },
+          { "name":"Player", "data":{ "horizontal":{ "control":1, "gotoZero":1 }, "jump":{ "forceY":-9 } } },
+          { "name":"Physics", "data":{ "walls":{ "type":"wall", "restitution":0 }, "gravityX":0, "gravityY":1, "limitX":[ -5, 5 ], "limitY":[ -9, 5 ] } },
+          { "_":[ "stencil", "platformerAnimation" ] }
+        ]
+      }
+    },
+    "#":{ "type":"wall", "image":"defaultsprites", "tileX":0, "tileY":0 },
+    "*":{
+      "type":"bonus",
+      "image":"defaultsprites", "tileX":32, "tileY":0,
+      "states":{ "code":{ "name":"Execute", "data":{ "set":{ "angle":{ "_":[ "this", "angle", "+", 5, "%", 360 ] } } } } }
+    },
+    ".":{ "image":"defaultsprites", "tileX":16, "tileY":0 },
+    "b":{
+      "set":[ { "_":[ "stencil", "modelFoeBasic" ] }, { "forceX":1 } ],
+      "states":{
+        "code":[
+          { "name":"Physics", "data":{ "walls":{ "type":"wall", "restitutionX":1, "restitutionY":0 }, "gravityX":0, "gravityY":1 } },
+          { "_":[ "stencil", "platformerAnimation" ] }
+        ]
+      }
+    },
+    "d":{
+      "set":[ { "_":[ "stencil", "modelFoeBasic" ] }, { "forceX":-1 } ],
+      "states":{
+        "code":[
+          { "name":"Physics", "data":{ "walls":{ "type":"wall", "restitutionX":1, "restitutionY":0 }, "gravityX":0, "gravityY":1 } },
+          { "_":[ "stencil", "platformerAnimation" ] }
+        ]
+      }
+    },
+    "~":{ "image":"defaultsprites", "tileX":0, "tileY":16, "animations":{ "still":{ "frames":4, "loopTo":0 } }, "animation":"still" }
+  },
+  "execute":{
+    "object":[
+      {
+        "type":"hud",
+        "hudType":"label", "label":"SCORE %number|variable.score%",
+        "box":"label", "width":100,
+        "x":5, "y":5,
+        "font":"spectrum", "outline":"#000000"
+      },
+      {
+        "type":"hud",
+        "hudType":"label", "label":"LIVES %repeat|variable.lives|<span style='font-family:pixeldingbats;font-size:8px;color:#f00'>[</span>%",
+        "box":"label", "width":100,
+        "x":110, "y":5,
+        "font":"spectrum", "outline":"#000000"
+      },
+      {
+        "type":"hud",
+        "hudType":"label", "label":"STAGE %number|variable.idScene|1%",
+        "box":"label", "width":70,
+        "x":181, "y":175,
+        "font":"spectrum", "outline":"#000000", "textAlign":"right"
+      }
+    ],
+    "into":{ "_":"hud" }
+  },
+  "scenes":{
+    "intro":{
+      "object":{
+        "image":"intro",
+        "size":{ "width":256, "height":192 }, "x":0, "y":0,
+        "animations":{ "idle":{ "frames":2, "speed":10, "loopTo":0 } },
+        "animation":"idle"
+      },
+      "execute":{ "as":{ "_":"variable" }, "set":{ "lives":3, "nextStage":1, "score":0 } },
+      "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":{ "_":[ "variable", "nextStage" ] } } } }
+    },
+    "gameover":{
+      "object":{
+        "image":"gameover",
+        "size":{ "width":256, "height":192 }, "x":0, "y":0,
+        "animations":{ "idle":{ "frames":2, "speed":5, "loopTo":0 } },
+        "animation":"idle"
+      },
+      "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"intro" } } }
+    },
+    "1":{
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "tilemap":{
+        "map":[
+          "#################",
+          "#               #",
+          "#               #",
+          "#         !*    #",
+          "#    ##  ###    #",
+          "#  b            #",
+          "# ##            #",
+          "#             * #",
+          "#~~~##~~~~~~~~~~#",
+          "#...............#",
+          "#......##.......#",
+          "#...............#",
+          "#################"
+        ]
+      }
+    },
+    "2":{
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "tilemap":{
+        "map":[
+          "#################",
+          "#               #",
+          "#          !    #",
+          "#         ###   #",
+          "#               #",
+          "#     #  * b *  #",
+          "#    ##  # d #  #",
+          "#        #####  #",
+          "#  ###     *    #",
+          "#               #",
+          "#    ##   ###   #",
+          "# ***           #",
+          "#################"
+        ]
+      }
+    },
+    "3":{
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "tilemap":{
+        "map":[
+          "#################",
+          "#               #",
+          "#  !            #",
+          "############ * ##",
+          "#          #   # ",
+          "#          #   # ",
+          "#  *  *    #   # ",
+          "# b#~~#    #   # ",
+          "# ##########   # ",
+          "#  *   *   #   ##",
+          "##         # *  #",
+          "#               #",
+          "#################"
+        ]
+      }
+    },
+    "4":{
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "tilemap":{
+        "map":[
+          "#################",
+          "#  !            #",
+          "#  #        b   #",
+          "# # #  *     b  #",
+          "##   #        b #",
+          "#*b   #  *     b#",
+          "####   #        #",
+          "#       #       #",
+          "#  #######      #",
+          "#~~~~~~~~~~~~~~~#",
+          "#################",
+          "# b           d #",
+          "#################"
+        ]
+      }
+    },
+    "5":{
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "tilemap":{
+        "map":[
+          "#################",
+          "#               #",
+          "#*           *  #",
+          "#  d  d  ###    #",
+          "##########      #",
+          "#            #  #",
+          "#          *   d#",
+          "#          #   ##",
+          "#       *  #  * #",
+          "#    *  #  #~##~#",
+          "# !  #  #  #....#",
+          "# # d# d# d#....#",
+          "#################"
+        ]
+      }
+    },
+    "6":{
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "tilemap":{
+        "map":[
+          "#################",
+          "#               #",
+          "#!             *#",
+          "###           #*#",
+          "#ddd  ddd bbb #*#",
+          "###############*#",
+          "#               #",
+          "#      ***      #",
+          "#   **  ~  **   #",
+          "# *** #~.~# *** #",
+          "# #~~~#...#~~~# #",
+          "# #...........# #",
+          "#################"
+        ]
+      }
+    }
+  }
+}

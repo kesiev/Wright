@@ -1,0 +1,388 @@
+{
+  "Potion":{
+    "label":"Potion",
+    "itemType":"defense",
+    "goldValue":10,
+    "usableInMap":1,
+    "usableInBattle":1,
+    "usableInEquip":0,
+    "quantity":1,
+    "battleUse":[
+      {
+        "set":{
+          "outHeal":10,
+          "thenAction":{"_":["variable","getHealMethod"]}
+        },
+        "as":{"_":"variable"}
+      },
+      {
+        "set":{"state":"use"},"as":{"_":["objectTyped",{"_":["variable","currentTurnEntity","type"]}]}
+      }
+    ]
+  },
+  "Cure":{
+    "label":"Cure",
+    "itemType":"defense",
+    "goldValue":20,
+    "usableInMap":1,
+    "usableInBattle":1,
+    "usableInEquip":0,
+    "quantity":1,
+    "battleUse":[
+      {
+        "set":{
+          "outHeal":20,
+          "thenAction":{"_":["variable","getHealMethod"]}
+        },
+        "as":{"_":"variable"}
+      },
+      {
+        "set":{"state":"use"},"as":{"_":["objectTyped",{"_":["variable","currentTurnEntity","type"]}]}
+      }
+    ]
+  },
+  "Feather":{
+    "label":"Feather",
+    "itemType":"defense",
+    "goldValue":30,
+    "usableInMap":1,
+    "usableInBattle":1,
+    "usableInEquip":0,
+    "quantity":1,
+    "battleUse":[
+      {
+        "when":{"_":["variable","selectedEntity","hp","isEqualTo",0]},
+        "set":{"hp":1},"as":{"_":["variable","selectedEntity"]}
+      },
+      {
+        "set":{
+          "outHeal":10,
+          "thenAction":{"_":["variable","getHealMethod"]}
+        },
+        "as":{"_":"variable"}
+      },
+      {
+        "set":{"state":"use"},"as":{"_":["objectTyped",{"_":["variable","currentTurnEntity","type"]}]}
+      }
+    ]
+  },
+  "Revive":{
+    "label":"Revive",
+    "itemType":"defense",
+    "goldValue":90,
+    "usableInMap":1,
+    "usableInBattle":1,
+    "usableInEquip":0,
+    "quantity":1,
+    "battleUse":[
+      {
+        "when":{"_":["variable","selectedEntity","hp","isEqualTo",0]},
+        "set":{"hp":1},"as":{"_":["variable","selectedEntity"]}
+      },
+      {
+        "set":{
+          "outHeal":99999,
+          "thenAction":{"_":["variable","getHealMethod"]}
+        },
+        "as":{"_":"variable"}
+      },
+      {
+        "set":{"state":"use"},"as":{"_":["objectTyped",{"_":["variable","currentTurnEntity","type"]}]}
+      }
+    ]
+  },
+ 
+
+  "Punch": {
+    "label": "Punch",
+    "goldValue": 12,
+    "usableInMap": 0,
+    "usableInBattle": 0,
+    "usableInEquip": 1,
+    "attrAttack": 2,
+    "attrMagic": 1,
+    "quantity": 1
+  },
+  "Knife": {
+    "label": "Knife",
+    "goldValue": 24,
+    "usableInMap": 0,
+    "usableInBattle": 0,
+    "usableInEquip": 1,
+    "attrAttack": 3,
+    "attrMagic": 2,
+    "quantity": 1
+  },
+  "Blade": {
+    "label": "Blade",
+    "goldValue": 36,
+    "usableInMap": 0,
+    "usableInBattle": 0,
+    "usableInEquip": 1,
+    "attrAttack": 4,
+    "attrMagic": 3,
+    "quantity": 1
+  },
+  "Mstar": {
+    "label": "Mstar",
+    "goldValue": 54,
+    "usableInMap": 0,
+    "usableInBattle": 0,
+    "usableInEquip": 1,
+    "attrAttack": 5,
+    "attrMagic": 4,
+    "quantity": 1
+  },
+  "Spear": {
+    "label": "Spear",
+    "goldValue": 90,
+    "usableInMap": 0,
+    "usableInBattle": 0,
+    "usableInEquip": 1,
+    "attrAttack": 6,
+    "attrMagic": 5,
+    "quantity": 1
+  },
+  "Mspear": {
+    "label": "Mspear",
+    "goldValue": 192,
+    "usableInMap": 0,
+    "usableInBattle": 0,
+    "usableInEquip": 1,
+    "attrAttack": 8,
+    "attrMagic": 6,
+    "quantity": 1
+  },
+  "Sword": {
+    "label": "Sword",
+    "goldValue": 264,
+    "usableInMap": 0,
+    "usableInBattle": 0,
+    "usableInEquip": 1,
+    "attrAttack": 12,
+    "attrMagic": 7,
+    "quantity": 1
+  },
+  "Axe": {
+    "label": "Axe",
+    "goldValue": 408,
+    "usableInMap": 0,
+    "usableInBattle": 0,
+    "usableInEquip": 1,
+    "attrAttack": 14,
+    "attrMagic": 8,
+    "quantity": 1
+  },
+  "Xsword": {
+    "label": "Xsword",
+    "goldValue": 0,
+    "usableInMap": 0,
+    "usableInBattle": 0,
+    "usableInEquip": 1,
+    "attrAttack": 21,
+    "attrMagic": 10,
+    "quantity": 1
+  },
+
+
+
+
+
+
+
+
+
+
+
+  "Ring": {
+    "label": "Ring",
+    "goldValue": 12,
+    "usableInMap": 0,
+    "usableInBattle": 0,
+    "usableInEquip": 1,
+    "attrAttack": 0,
+    "attrMagic": 1,
+    "quantity": 1
+  },
+  "Mring": {
+    "label": "Mring",
+    "goldValue": 24,
+    "usableInMap": 0,
+    "usableInBattle": 0,
+    "usableInEquip": 1,
+    "attrAttack": 1,
+    "attrMagic": 2,
+    "quantity": 1
+  },
+  "Wand": {
+    "label": "Wand",
+    "goldValue": 36,
+    "usableInMap": 0,
+    "usableInBattle": 0,
+    "usableInEquip": 1,
+    "attrAttack": 2,
+    "attrMagic": 3,
+    "quantity": 1
+  },
+  "Mwand": {
+    "label": "Mwand",
+    "goldValue": 54,
+    "usableInMap": 0,
+    "usableInBattle": 0,
+    "usableInEquip": 1,
+    "attrAttack": 3,
+    "attrMagic": 4,
+    "quantity": 1
+  },
+  "Staff": {
+    "label": "Staff",
+    "goldValue": 90,
+    "usableInMap": 0,
+    "usableInBattle": 0,
+    "usableInEquip": 1,
+    "attrAttack": 4,
+    "attrMagic": 5,
+    "quantity": 1
+  },
+  "Mstaff": {
+    "label": "Mstaff",
+    "goldValue": 192,
+    "usableInMap": 0,
+    "usableInBattle": 0,
+    "usableInEquip": 1,
+    "attrAttack": 5,
+    "attrMagic": 6,
+    "quantity": 1
+  },
+  "Book": {
+    "label": "Book",
+    "goldValue": 264,
+    "usableInMap": 0,
+    "usableInBattle": 0,
+    "usableInEquip": 1,
+    "attrAttack": 6,
+    "attrMagic": 7,
+    "quantity": 1
+  },
+  "Mbook": {
+    "label": "Mbook",
+    "goldValue": 408,
+    "usableInMap": 0,
+    "usableInBattle": 0,
+    "usableInEquip": 1,
+    "attrAttack": 7,
+    "attrMagic": 8,
+    "quantity": 1
+  },
+  "Xbook": {
+    "label": "Xbook",
+    "goldValue": 0,
+    "usableInMap": 0,
+    "usableInBattle": 0,
+    "usableInEquip": 1,
+    "attrAttack": 8,
+    "attrMagic": 9,
+    "quantity": 1
+  },
+
+
+
+
+
+
+  "Opal": {
+    "label": "Opal",
+    "goldValue": 12,
+    "usableInMap": 0,
+    "usableInBattle": 0,
+    "usableInEquip": 1,
+    "attrAttack": 0,
+    "attrMagic": 0,
+    "quantity": 1
+  },
+  "Mopal": {
+    "label": "Mopal",
+    "goldValue": 24,
+    "usableInMap": 0,
+    "usableInBattle": 0,
+    "usableInEquip": 1,
+    "attrAttack": 1,
+    "attrMagic": 1,
+    "quantity": 1
+  },
+  "Ball": {
+    "label": "Ball",
+    "goldValue": 36,
+    "usableInMap": 0,
+    "usableInBattle": 0,
+    "usableInEquip": 1,
+    "attrAttack": 2,
+    "attrMagic": 2,
+    "quantity": 1
+  },
+  "Mball": {
+    "label": "Mball",
+    "goldValue": 54,
+    "usableInMap": 0,
+    "usableInBattle": 0,
+    "usableInEquip": 1,
+    "attrAttack": 3,
+    "attrMagic": 3,
+    "quantity": 1
+  },
+  "Charm": {
+    "label": "Charm",
+    "goldValue": 90,
+    "usableInMap": 0,
+    "usableInBattle": 0,
+    "usableInEquip": 1,
+    "attrAttack": 4,
+    "attrMagic": 4,
+    "quantity": 1
+  },
+  "Mcharm": {
+    "label": "Mcharm",
+    "goldValue": 192,
+    "usableInMap": 0,
+    "usableInBattle": 0,
+    "usableInEquip": 1,
+    "attrAttack": 5,
+    "attrMagic": 5,
+    "quantity": 1
+  },
+  "Cross": {
+    "label": "Cross",
+    "goldValue": 264,
+    "usableInMap": 0,
+    "usableInBattle": 0,
+    "usableInEquip": 1,
+    "attrAttack": 6,
+    "attrMagic": 6,
+    "quantity": 1
+  },
+  "Mcross": {
+    "label": "Mcross",
+    "goldValue": 408,
+    "usableInMap": 0,
+    "usableInBattle": 0,
+    "usableInEquip": 1,
+    "attrAttack": 7,
+    "attrMagic": 7,
+    "quantity": 1
+  },
+  "Xcross": {
+    "label": "Xcross",
+    "goldValue": 0,
+    "usableInMap": 0,
+    "usableInBattle": 0,
+    "usableInEquip": 1,
+    "attrAttack": 8,
+    "attrMagic": 8,
+    "quantity": 1
+  }
+
+
+
+
+
+}

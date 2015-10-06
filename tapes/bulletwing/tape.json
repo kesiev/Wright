@@ -1,0 +1,935 @@
+{
+  "name":"Bullet Wing",
+  "author":"KesieV",
+  "year":2015,
+  "genre":"Shoot'em up",
+  "description":"There are game genres that I like but I objectively suck on that. One of them are japanese SHMUPs, which started for me with Truxton (1988) at the arcades on the beach and still continues nowadays. Probably due to my incapability with this genre I'm not able to create a real 'bullet hell', so, I've probably created a 'bullet heaven' with Bullet Wing - like old shooters on ZX Spectrum or Commodore 64, which used to slow down a lot when there were few bullets on screen. Story now! Earth is in danger once again! Purple invaders are coming to conquer our planet... only Red Fighters can save the day! Move your ship with UP/DOWN/LEFT/RIGHT and shoot with the A BUTTON!",
+  "screenshots":["bulletwing-1.png","bulletwing-2.png"],
+  "hardware":{
+    "width":256,
+    "height":192,
+    "texture":"scanlines"
+  },
+  "hardware":{
+    "width":256,
+    "height":192,
+    "texture":"scanlines"
+  },
+  "cheats":{
+    "unlimitedLives":"Unlimited lives"
+  },
+  "resources":{
+    "background":"bg.png",
+    "doorssprites":"doors.png",
+    "logo":"logo.png",
+    "smalllogo":"small-logo.png",
+    "defaultsprites":"../default/sprites.png",
+    "embossbox":"../default/embossbox.png",
+    "scanlines":"../default/scanlines.png"
+  },
+  "stencils":{
+    "spark":{
+      "image":"defaultsprites", "tileX":80, "tileY":16, "width":16, "height":16,
+      "zIndex":{ "_":[ "that", "zIndex", "+", 1 ] },
+      "execute":{ "set":{ "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] } } },
+      "animations":{ "spark":{ "frames":4, "speed":1 } },
+      "animation":"spark",
+      "states":{ "code":[ { "name":"Physics" }, { "name":"Sequence", "data":[ { "wait":8 }, { "remove":1 } ] } ] }
+    },
+    "removeWithSpark":{ "object":{ "_":[ "stencil", "spark" ] }, "remove":1 },
+    "removeWithSparks":[
+      {
+        "times":20,
+        "object":{ "_":[ "stencil", "spark" ] },
+        "execute":[
+          { "sum":{ "_":[ "randomNumber", [ { "_":[ "this", "width", "/", -2 ] }, { "_":[ "this", "width", "/", 2 ] } ] ] }, "to":{ "_":[ "that", "x" ] } },
+          { "sum":{ "_":[ "randomNumber", [ { "_":[ "this", "height", "/", -2 ] }, { "_":[ "this", "height", "/", 2 ] } ] ] }, "to":{ "_":[ "that", "y" ] } }
+        ]
+      },
+      { "remove":1 }
+    ],
+    "modelTransition":{
+      "object":[ { "_":[ "stencil", "transitionLeftPanel" ] }, { "_":[ "stencil", "transitionRightPanel" ] } ],
+      "states":[
+        {
+          "actions":{
+            "name":"gotoScene",
+            "execute":[
+              { "as":{ "_":[ "objectTyped", "transitionLeftPanel" ] }, "set":{ "state":"close" } },
+              { "as":{ "_":[ "objectTyped", "transitionRightPanel" ] }, "set":{ "state":"close" } },
+              { "set":{ "state":"changingStage" } }
+            ]
+          }
+        },
+        {
+          "name":"changingStage",
+          "code":{ "name":"Sequence", "data":[ { "wait":30 }, { "gotoScene":{ "_":[ "this", "nextScene" ] }, "withTransition":2 } ] }
+        }
+      ]
+    },
+    "modelStage":{
+      "object":{ "_":[ "stencil", "player" ] },
+      "set":{ "_":[ "stencil", "modelTransition" ] },
+      "execute":{ "as":{ "_":"variable" }, "set":{ "stageEnded":0 } },
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[
+            { "wait":1, "until":{ "_":[ "variable", "stageEnded", "isEqualTo", 1 ] } },
+            { "as":{ "_":[ "object", "foe" ] }, "execute":{ "_":[ "stencil", "removeWithSpark" ] } },
+            { "as":{ "_":[ "object", "foeBullet" ] }, "execute":{ "_":[ "stencil", "removeWithSpark" ] } },
+            { "wait":30 },
+            {
+              "object":{
+                "width":160, "height":192,
+                "zIndex":20, "x":0, "y":0,
+                "color":"#f00",
+                "font":"spectrum", "fontSize":35, "lineHeight":192, "outline":"#000", "textAlign":"center", "html":"WELL DONE!"
+              },
+              "wait":50
+            },
+            { "when":{ "_":[ "keyA", "isHit" ] }, "set":{ "nextScene":{ "_":[ "variable", "nextStage" ] } }, "executeAction":"gotoScene" },
+            { "wait":1, "loopTo":-1 }
+          ]
+        },
+        "actions":[
+          { "name":"gameover", "execute":{ "set":{ "nextScene":"gameover" }, "executeAction":"gotoScene" } },
+          { "name":"endstage", "execute":{ "when":{ "_":[ "variable", "stageEnded", "isEqualTo", 0 ] }, "as":{ "_":"variable" }, "set":{ "stageEnded":1 } } }
+        ]
+      }
+    },
+    "player":{
+      "image":"defaultsprites", "tileX":144, "tileY":16, "width":16, "height":16,
+      "zIndex":10,
+      "states":[
+        {
+          "set":{ "type":"player", "x":72, "y":192, "frame":2, "visible":1, "forceY":-12, "invulnerability":30, "weapon":"fireSingle" },
+          "code":[
+            { "name":"Physics", "data":{ "gravityY":1 } },
+            { "name":"Execute", "data":{ "when":{ "_":[ "this", "forceY", "isEqualTo", 5 ] }, "set":{ "state":"fly" } } }
+          ]
+        },
+        { "name":"fly", "like":{ "_":[ "stencil", "playerBehaviour" ] }, "set":{ "fireCounter":0 } },
+        {
+          "name":"fireSingle",
+          "like":{ "_":[ "stencil", "playerBehaviour" ] },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              {
+                "object":{ "_":[ "stencil", "playerBullet" ] },
+                "as":{ "_":"that" },
+                "set":{ "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] }, "forceY":-4 },
+                "wait":7, "loop":1, "cycles":3
+              },
+              { "wait":10, "loopTo":0 }
+            ]
+          }
+        },
+        {
+          "name":"fireFast",
+          "like":{ "_":[ "stencil", "playerBehaviour" ] },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              {
+                "object":{ "_":[ "stencil", "playerBullet" ] },
+                "as":{ "_":"that" },
+                "set":{ "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] }, "forceY":-4 },
+                "wait":7, "loop":1, "cycles":5
+              },
+              { "wait":10, "loopTo":0 }
+            ]
+          }
+        },
+        {
+          "name":"fireTriple",
+          "like":{ "_":[ "stencil", "playerBehaviour" ] },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              {
+                "object":{ "_":[ "stencil", "playerBullet" ] },
+                "as":{ "_":"that" },
+                "set":{ "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] }, "forceY":-4 }
+              },
+              {
+                "object":{ "_":[ "stencil", "playerBullet" ] },
+                "as":{ "_":"that" },
+                "set":{ "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] }, "angle":355 },
+                "applyVector":{ "angle":355, "length":4 }
+              },
+              {
+                "object":{ "_":[ "stencil", "playerBullet" ] },
+                "as":{ "_":"that" },
+                "set":{ "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] }, "angle":5 },
+                "applyVector":{ "angle":5, "length":4 }
+              },
+              { "wait":7, "cycles":2, "loopTo":0 },
+              { "wait":10, "loopTo":0 }
+            ]
+          }
+        },
+        {
+          "name":"hit",
+          "set":{ "removeType":"player", "visible":0, "forceX":0, "forceY":0 },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "when":{ "_":[ "cheat", "unlimitedLives", "not" ] }, "subtract":1, "to":{ "_":[ "variable", "lives" ] } },
+              {
+                "times":3,
+                "object":{ "_":[ "stencil", "spark" ] },
+                "execute":[
+                  { "sum":{ "_":[ "randomNumber", [ { "_":[ "this", "width", "/", -2 ] }, { "_":[ "this", "width", "/", 2 ] } ] ] }, "to":{ "_":[ "that", "x" ] } },
+                  { "sum":{ "_":[ "randomNumber", [ { "_":[ "this", "height", "/", -2 ] }, { "_":[ "this", "height", "/", 2 ] } ] ] }, "to":{ "_":[ "that", "y" ] } },
+                  { "as":{ "_":"that" }, "set":{ "forceY":3 } }
+                ]
+              },
+              { "wait":20 },
+              {
+                "when":{ "_":[ "variable", "lives", "isEqualTo", 0 ] },
+                "as":{ "_":"scene" },
+                "executeAction":"gameover",
+                "elseExecute":{ "set":{ "state":"default" } }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "playerBehaviour":{
+      "code":[
+        {
+          "name":"Sequence",
+          "data":[
+            { "wait":1, "loop":1, "until":{ "_":[ "this", "invulnerability", "isGreaterThan", 0 ] } },
+            { "set":{ "visible":0 }, "wait":1 },
+            { "subtract":1, "to":{ "_":[ "this", "invulnerability" ] }, "set":{ "visible":1 }, "loopTo":0 }
+          ]
+        },
+        { "name":"Player", "data":{ "horizontal":{ "control":1, "gotoZero":1 }, "vertical":{ "control":1, "gotoZero":1 } } },
+        {
+          "name":"Physics",
+          "data":{ "walls":{ "area":{ "width":160, "height":192, "x":0, "y":0 }, "restitution":0 }, "limitX":[ -3, 3 ], "limitY":[ -3, 3 ] }
+        },
+        { "_":[ "stencil", "animationRoll" ] },
+        {
+          "name":"Execute",
+          "data":{
+            "when":{ "_":[ "keyA", "isHit" ] },
+            "execute":[ { "set":{ "fireCounter":5 } }, { "when":{ "_":[ "this", "state", "isEqualTo", "fly" ] }, "set":{ "state":{ "_":[ "this", "weapon" ] } } } ],
+            "elseExecute":{
+              "when":{ "_":[ "this", "state", "isNotEqualTo", "fly" ] },
+              "execute":{
+                "when":{ "_":[ "this", "fireCounter", "isGreaterThan", 0 ] },
+                "subtract":1,
+                "to":{ "_":[ "this", "fireCounter" ] },
+                "elseExecute":{ "set":{ "state":"fly" } }
+              }
+            }
+          }
+        }
+      ],
+      "actions":{ "name":"hit", "execute":{ "when":{ "_":[ "this", "invulnerability", "isLessThan", 1 ] }, "set":{ "state":"hit" } } }
+    },
+    "playerBullet":{
+      "image":"defaultsprites", "tileX":112, "tileY":96, "width":8, "height":8,
+      "zIndex":20,
+      "states":{
+        "code":[
+          { "name":"Physics", "data":{ "walls":{ "area":{ "width":176, "height":212, "x":-8, "y":-8 }, "execute":{ "remove":1 } } } },
+          {
+            "name":"Execute",
+            "data":{
+              "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "foe" ] } ] },
+              "execute":[ { "as":{ "_":"that" }, "executeAction":"hit" }, { "_":[ "stencil", "removeWithSpark" ] } ]
+            }
+          }
+        ]
+      }
+    },
+    "foeBullet":{
+      "type":"foeBullet",
+      "image":"defaultsprites", "tileX":96, "tileY":96, "width":8, "height":8,
+      "zIndex":20,
+      "animations":{ "idle":{ "frames":2, "loopTo":0 } },
+      "animation":"idle",
+      "states":{
+        "code":[
+          { "name":"Execute", "data":{ "set":{ "angle":{ "_":[ "this", "angle", "+", 30, "%", 360 ] } } } },
+          { "name":"Physics", "data":{ "walls":{ "area":{ "width":176, "height":212, "x":-8, "y":-8 }, "execute":{ "remove":1 } } } },
+          {
+            "name":"Execute",
+            "data":{
+              "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "player" ] } ] },
+              "execute":[ { "as":{ "_":"that" }, "executeAction":"hit" }, { "remove":1 } ]
+            }
+          }
+        ]
+      }
+    },
+    "foeModel":{
+      "type":"foe",
+      "image":"defaultsprites", "tileX":256, "tileY":16, "width":16, "height":16,
+      "zIndex":10,
+      "flipY":1,
+      "health":0,
+      "states":{
+        "code":[
+          { "name":"Physics", "data":{ "walls":{ "area":{ "width":240, "height":272, "x":-40, "y":-40 }, "execute":{ "remove":1 } } } },
+          {
+            "name":"Execute",
+            "data":{ "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "player" ] } ] }, "execute":{ "as":{ "_":"that" }, "executeAction":"hit" } }
+          }
+        ],
+        "actions":[
+          {
+            "name":"hit",
+            "execute":[
+              { "subtract":1, "to":{ "_":[ "this", "health" ] } },
+              {
+                "when":{ "_":[ "this", "health", "isLessThan", 0 ] },
+                "execute":[
+                  {
+                    "when":{ "_":[ { "_":[ "randomValue", [ 0, 1 ] ] }, "and", { "_":[ "object", "bonus", "count", "isLessThan", 3 ] } ] },
+                    "object":{ "_":[ "stencil", "bonus" ] }
+                  },
+                  { "executeAction":"destroy" }
+                ]
+              }
+            ]
+          },
+          {
+            "name":"destroy",
+            "execute":[ { "sum":{ "_":[ "this", "score" ] }, "to":{ "_":[ "variable", "score" ] } }, { "_":[ "stencil", "removeWithSparks" ] } ]
+          }
+        ]
+      }
+    },
+    "foeJet":{
+      "set":{ "_":[ "stencil", "foeModel" ] },
+      "y":-16, "frame":0,
+      "health":2,
+      "score":100,
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[
+            { "set":{ "forceY":2 } },
+            { "wait":60 },
+            { "set":{ "forceX":{ "_":[ "this", "steerSide" ] }, "forceY":-1 } },
+            { "wait":40 },
+            { "set":{ "forceX":0, "forceY":2 } }
+          ]
+        }
+      }
+    },
+    "foeJetFiring":{
+      "set":{ "_":[ "stencil", "foeJet" ] },
+      "frame":2,
+      "score":200,
+      "states":{ "code":{ "_":[ "stencil", "bulletEmitter40" ] }, "actions":{ "name":"fire1", "execute":{ "_":[ "stencil", "bulletStraight" ] } } }
+    },
+    "foePopup":{
+      "set":{ "_":[ "stencil", "foeModel" ] },
+      "tileX":320, "tileY":16, "width":32,
+      "y":-16,
+      "health":20,
+      "score":500,
+      "states":{
+        "code":[
+          {
+            "name":"Sequence",
+            "data":[
+              { "set":{ "forceY":2 } },
+              { "wait":20 },
+              { "subtract":0.2, "to":{ "_":[ "this", "forceY" ] }, "wait":1, "loop":1, "until":{ "_":[ "this", "forceY", "isLessThan", 0 ] } },
+              { "set":{ "forceY":0 } },
+              { "sum":0.2, "to":{ "_":[ "this", "forceX" ] }, "wait":1, "loop":1, "until":{ "_":[ "this", "forceX", "isGreaterThan", 1 ] } },
+              { "wait":1, "until":{ "_":[ "this", "x", "isGreaterThan", 116 ] } },
+              { "subtract":0.2, "to":{ "_":[ "this", "forceX" ] }, "wait":1, "loop":1, "until":{ "_":[ "this", "forceX", "isLessThan", -1 ] } },
+              { "wait":1, "until":{ "_":[ "this", "x", "isLessThan", 15 ] } },
+              { "cycles":2, "loopTo":4 },
+              { "sum":0.2, "to":{ "_":[ "this", "forceX" ] }, "wait":1, "loop":1, "until":{ "_":[ "this", "forceX", "isGreaterThan", 0 ] } },
+              { "set":{ "forceX":0 } },
+              { "subtract":0.2, "to":{ "_":[ "this", "forceY" ] }, "wait":1, "loop":1 }
+            ]
+          },
+          { "_":[ "stencil", "bulletEmitter4040" ] }
+        ],
+        "actions":[ { "name":"fire1", "execute":{ "_":[ "stencil", "bulletRadial" ] } }, { "name":"fire2", "execute":{ "_":[ "stencil", "bulletStraight" ] } } ]
+      }
+    },
+    "foeStraight":{
+      "set":{ "_":[ "stencil", "foeModel" ] },
+      "frame":1,
+      "flipY":0,
+      "speed":4,
+      "health":1,
+      "score":50,
+      "states":{ "code":{ "name":"Execute", "data":{ "applyVector":{ "angle":{ "_":[ "this", "angle" ] }, "length":{ "_":[ "this", "speed" ] } } } } }
+    },
+    "animationRoll":{
+      "name":"Sequence",
+      "data":[
+        {
+          "when":{ "_":[ "this", "forceX", "isLessThan", 0 ] },
+          "execute":{ "when":{ "_":[ "this", "frame", "isGreaterThan", 0 ] }, "subtract":1, "to":{ "_":[ "this", "frame" ] } },
+          "elseExecute":{
+            "when":{ "_":[ "this", "forceX", "isGreaterThan", 0 ] },
+            "execute":{ "when":{ "_":[ "this", "frame", "isLessThan", 4 ] }, "sum":1, "to":{ "_":[ "this", "frame" ] } },
+            "elseExecute":{
+              "when":{ "_":[ "this", "frame", "isGreaterThan", 2 ] },
+              "subtract":1,
+              "to":{ "_":[ "this", "frame" ] },
+              "elseExecute":{ "when":{ "_":[ "this", "frame", "isLessThan", 2 ] }, "sum":1, "to":{ "_":[ "this", "frame" ] } }
+            }
+          }
+        },
+        { "wait":3 },
+        { "loopTo":0 }
+      ]
+    },
+    "bonus":{
+      "type":"bonus",
+      "image":"defaultsprites", "tileX":160, "tileY":32, "width":16, "height":16,
+      "zIndex":5,
+      "forceX":{ "_":[ "randomValue", [ -1, 1 ] ] }, "forceY":{ "_":[ "randomValue", [ -1, 1 ] ] },
+      "execute":[
+        { "set":{ "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] } } },
+        {
+          "object":{ "image":"defaultsprites", "tileX":224, "tileY":32, "width":8, "height":8, "x":4, "y":4, "frame":{ "_":[ "that", "bonusType" ] } },
+          "into":{ "_":"this" }
+        }
+      ],
+      "animations":{ "idle":{ "frames":4, "speed":2, "loopTo":0 } },
+      "animation":"idle",
+      "bonusType":{ "_":[ "randomNumber", [ 0, 3 ] ] },
+      "states":{
+        "code":[
+          { "name":"Physics", "data":{ "walls":{ "area":{ "width":160, "height":192, "x":0, "y":0 }, "restitution":1 } } },
+          { "name":"Sequence", "data":[ { "wait":200 }, { "_":[ "stencil", "removeWithSpark" ] } ] },
+          {
+            "name":"Execute",
+            "data":{
+              "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "player" ] } ] },
+              "execute":[
+                { "when":{ "_":[ "this", "bonusType", "isEqualTo", 0 ] }, "as":{ "_":[ "objectTyped", "player" ] }, "set":{ "weapon":"fireSingle", "state":"fly" } },
+                { "when":{ "_":[ "this", "bonusType", "isEqualTo", 1 ] }, "as":{ "_":[ "objectTyped", "player" ] }, "set":{ "weapon":"fireFast", "state":"fly" } },
+                { "when":{ "_":[ "this", "bonusType", "isEqualTo", 2 ] }, "as":{ "_":[ "objectTyped", "player" ] }, "set":{ "weapon":"fireTriple", "state":"fly" } },
+                {
+                  "when":{ "_":[ "this", "bonusType", "isEqualTo", 3 ] },
+                  "execute":{ "when":{ "_":[ "variable", "lives", "isLessThan", 3 ] }, "sum":1, "to":{ "_":[ "variable", "lives" ] } }
+                },
+                { "sum":100, "to":{ "_":[ "variable", "score" ] } },
+                { "remove":1 }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "bossFiring1":{
+      "name":"Sequence",
+      "data":[
+        {
+          "object":{ "_":[ "stencil", "foeBullet" ] },
+          "as":{ "_":"that" },
+          "set":{ "x":{ "_":[ "this", "xCenteredWith", { "_":"that" }, "-", 15 ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" }, "+", 10 ] }, "forceY":2 }
+        },
+        {
+          "object":{ "_":[ "stencil", "foeBullet" ] },
+          "as":{ "_":"that" },
+          "set":{ "x":{ "_":[ "this", "xCenteredWith", { "_":"that" }, "+", 15 ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" }, "+", 10 ] }, "forceY":2 }
+        },
+        { "wait":20, "loopTo":0 }
+      ]
+    },
+    "bossFiring2":{
+      "name":"Sequence",
+      "data":[
+        {
+          "times":2,
+          "object":{ "_":[ "stencil", "foeBullet" ] },
+          "as":{ "_":"that" },
+          "set":{
+            "x":{ "_":[ "this", "xCenteredWith", { "_":"that" }, "+", { "_":[ "randomNumber", [ -15, 15 ] ] } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" }, "+", 10 ] },
+            "forceY":1
+          }
+        },
+        { "wait":40, "loopTo":0 }
+      ]
+    },
+    "bossModel":{
+      "code":{
+        "name":"Sequence",
+        "data":{ "subtract":1, "to":{ "_":[ "this", "invulnerability" ] }, "wait":1, "loop":1, "until":{ "_":[ "this", "invulnerability", "isEqualTo", 0 ] } }
+      },
+      "actions":{
+        "name":"hit",
+        "execute":{
+          "when":{ "_":[ "this", "invulnerability", "not" ] },
+          "execute":[
+            { "subtract":1, "to":{ "_":[ "this", "health" ] } },
+            {
+              "when":{ "_":[ "this", "health", "isLessThan", 0 ] },
+              "execute":[
+                { "object":{ "_":[ "stencil", "bonus" ] } },
+                {
+                  "times":20,
+                  "object":{ "_":[ "stencil", "spark" ] },
+                  "execute":[
+                    { "sum":{ "_":[ "randomNumber", [ { "_":[ "this", "width", "/", -2 ] }, { "_":[ "this", "width", "/", 2 ] } ] ] }, "to":{ "_":[ "that", "x" ] } },
+                    { "sum":{ "_":[ "randomNumber", [ { "_":[ "this", "height", "/", -2 ] }, { "_":[ "this", "height", "/", 2 ] } ] ] }, "to":{ "_":[ "that", "y" ] } },
+                    { "as":{ "_":"that" }, "set":{ "forceY":{ "_":[ "randomNumber", [ 0, -4 ] ] } } }
+                  ]
+                },
+                { "sum":1, "to":{ "_":[ "this", "phase" ] } },
+                { "set":{ "invulnerability":20, "state":{ "_":[ "this", "phase" ] } } }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "bossStage1":{
+      "type":"foe",
+      "image":"defaultsprites", "tileX":352, "tileY":0, "width":48, "height":32,
+      "zIndex":10, "x":56, "y":-32,
+      "flipY":1,
+      "phase":1,
+      "states":[
+        {
+          "set":{ "forceY":4 },
+          "code":[
+            {
+              "name":"Sequence",
+              "data":[
+                { "subtract":0.5, "to":{ "_":[ "this", "forceY" ] }, "wait":5, "loop":1, "until":{ "_":[ "this", "forceY", "isEqualTo", 0 ] } },
+                { "set":{ "state":{ "_":[ "this", "phase" ] } } }
+              ]
+            },
+            { "name":"Physics" }
+          ]
+        },
+        {
+          "name":"1",
+          "like":{ "_":[ "stencil", "bossModel" ] },
+          "set":{ "forceX":3, "health":20 },
+          "code":[
+            { "_":[ "stencil", "bossFiring1" ] },
+            {
+              "name":"Sequence",
+              "data":[
+                { "wait":1, "until":{ "_":[ "this", "x", "isGreaterThan", 100 ] } },
+                { "subtract":1, "to":{ "_":[ "this", "forceX" ] }, "wait":3, "loop":1, "until":{ "_":[ "this", "forceX", "isEqualTo", -3 ] } },
+                { "wait":1, "until":{ "_":[ "this", "x", "isLessThan", 12 ] } },
+                { "sum":1, "to":{ "_":[ "this", "forceX" ] }, "wait":3, "loop":1, "until":{ "_":[ "this", "forceX", "isEqualTo", 3 ] } },
+                { "loopTo":0 }
+              ]
+            },
+            { "name":"Physics" }
+          ]
+        },
+        {
+          "name":"2",
+          "like":{ "_":[ "stencil", "bossModel" ] },
+          "set":{ "forceX":3, "forceY":3, "health":40 },
+          "code":[
+            { "_":[ "stencil", "bossFiring1" ] },
+            {
+              "name":"Sequence",
+              "data":[
+                { "wait":1, "until":{ "_":[ "this", "x", "isGreaterThan", 100 ] } },
+                { "subtract":1, "to":{ "_":[ "this", "forceX" ] }, "wait":3, "loop":1, "until":{ "_":[ "this", "forceX", "isEqualTo", -3 ] } },
+                { "wait":1, "until":{ "_":[ "this", "x", "isLessThan", 12 ] } },
+                { "sum":1, "to":{ "_":[ "this", "forceX" ] }, "wait":3, "loop":1, "until":{ "_":[ "this", "forceX", "isEqualTo", 3 ] } },
+                { "loopTo":0 }
+              ]
+            },
+            {
+              "name":"Sequence",
+              "data":[
+                { "wait":1, "until":{ "_":[ "this", "y", "isGreaterThan", 60 ] } },
+                { "subtract":1, "to":{ "_":[ "this", "forceY" ] }, "wait":3, "loop":1, "until":{ "_":[ "this", "forceY", "isEqualTo", -3 ] } },
+                { "wait":1, "until":{ "_":[ "this", "y", "isLessThan", 12 ] } },
+                { "sum":1, "to":{ "_":[ "this", "forceY" ] }, "wait":3, "loop":1, "until":{ "_":[ "this", "forceY", "isEqualTo", 3 ] } },
+                { "loopTo":0 }
+              ]
+            },
+            { "name":"Physics" }
+          ]
+        },
+        {
+          "name":"3",
+          "like":{ "_":[ "stencil", "bossModel" ] },
+          "set":{ "forceX":1, "forceY":-1, "health":20 },
+          "code":[
+            { "_":[ "stencil", "bossFiring2" ] },
+            {
+              "name":"Sequence",
+              "data":{
+                "times":2,
+                "object":{ "_":[ "stencil", "spark" ] },
+                "execute":[
+                  { "sum":{ "_":[ "randomNumber", [ { "_":[ "this", "width", "/", -2 ] }, { "_":[ "this", "width", "/", 2 ] } ] ] }, "to":{ "_":[ "that", "x" ] } },
+                  { "sum":{ "_":[ "randomNumber", [ { "_":[ "this", "height", "/", -2 ] }, { "_":[ "this", "height", "/", 2 ] } ] ] }, "to":{ "_":[ "that", "y" ] } },
+                  { "as":{ "_":"that" }, "set":{ "forceY":{ "_":[ "randomNumber", [ 0, -4 ] ] } } }
+                ],
+                "wait":20, "loop":1
+              }
+            },
+            { "name":"Sequence", "data":[ { "wait":1, "until":{ "_":[ "this", "y", "isLessThan", 15 ] } }, { "set":{ "forceY":0 } } ] },
+            {
+              "name":"Sequence",
+              "data":[
+                { "wait":1, "until":{ "_":[ "this", "x", "isGreaterThan", 100 ] } },
+                { "subtract":1, "to":{ "_":[ "this", "forceX" ] }, "wait":2, "loop":1, "until":{ "_":[ "this", "forceX", "isEqualTo", -1 ] } },
+                { "wait":1, "until":{ "_":[ "this", "x", "isLessThan", 12 ] } },
+                { "sum":1, "to":{ "_":[ "this", "forceX" ] }, "wait":2, "loop":1, "until":{ "_":[ "this", "forceX", "isEqualTo", 1 ] } },
+                { "loopTo":0 }
+              ]
+            },
+            { "name":"Physics" }
+          ]
+        },
+        {
+          "name":"4",
+          "set":{ "removeType":"foe", "forceX":0, "forceY":0.5 },
+          "code":[
+            {
+              "name":"Sequence",
+              "data":[
+                {
+                  "times":5,
+                  "object":{ "_":[ "stencil", "spark" ] },
+                  "execute":[
+                    { "sum":{ "_":[ "randomNumber", [ { "_":[ "this", "width", "/", -2 ] }, { "_":[ "this", "width", "/", 2 ] } ] ] }, "to":{ "_":[ "that", "x" ] } },
+                    { "sum":{ "_":[ "randomNumber", [ { "_":[ "this", "height", "/", -2 ] }, { "_":[ "this", "height", "/", 2 ] } ] ] }, "to":{ "_":[ "that", "y" ] } },
+                    { "as":{ "_":"that" }, "set":{ "forceY":{ "_":[ "randomNumber", [ 0, -4 ] ] } } }
+                  ],
+                  "wait":10, "loop":1, "cycles":7
+                },
+                { "_":[ "stencil", "removeWithSparks" ] },
+                { "as":{ "_":"scene" }, "executeAction":"endstage" }
+              ]
+            },
+            { "name":"Physics" }
+          ]
+        }
+      ]
+    },
+    "bulletEmitter40":{ "name":"Sequence", "data":[ { "wait":40 }, { "executeAction":"fire1" }, { "loopTo":0 } ] },
+    "bulletEmitter4040":{ "name":"Sequence", "data":[ { "wait":40 }, { "executeAction":"fire1" }, { "wait":40 }, { "executeAction":"fire2" }, { "loopTo":0 } ] },
+    "bulletRadial":[
+      {
+        "object":{ "_":[ "stencil", "foeBullet" ] },
+        "as":{ "_":"that" },
+        "set":{ "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] } },
+        "applyVector":{ "angle":160, "length":2 }
+      },
+      {
+        "object":{ "_":[ "stencil", "foeBullet" ] },
+        "as":{ "_":"that" },
+        "set":{ "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] } },
+        "applyVector":{ "angle":200, "length":2 }
+      }
+    ],
+    "bulletStraight":{
+      "object":{ "_":[ "stencil", "foeBullet" ] },
+      "as":{ "_":"that" },
+      "set":{ "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] }, "forceY":2 }
+    },
+    "panelTypeStatic":{
+      "image":"background", "width":160, "height":48,
+      "x":0, "y":-48,
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[ { "wait":1 }, { "sum":1, "to":{ "_":[ "this", "y" ] } }, { "when":{ "_":[ "this", "y", "isGreaterThan", 192 ] }, "remove":1 }, { "loopTo":0 } ]
+        }
+      }
+    },
+    "panelCity":{ "set":{ "_":[ "stencil", "panelTypeStatic" ] }, "tileX":0, "tileY":144 },
+    "panelCity2":{ "set":{ "_":[ "stencil", "panelTypeStatic" ] }, "tileX":160, "tileY":144 },
+    "panelCity2Mirror":{ "set":{ "_":[ "stencil", "panelCity2" ] }, "flipX":1 },
+    "panelCityEmpty":{ "set":{ "_":[ "stencil", "panelTypeStatic" ] }, "tileX":320, "tileY":144 },
+    "panelCityEmptyMirror":{ "set":{ "_":[ "stencil", "panelCityEmpty" ] }, "flipX":1 },
+    "panelCoast":{ "set":{ "_":[ "stencil", "panelTypeStatic" ] }, "tileY":96 },
+    "panelOffroad":{ "set":{ "_":[ "stencil", "panelTypeStatic" ] }, "tileX":0, "tileY":192 },
+    "panelRaw":{ "set":{ "_":[ "stencil", "panelTypeStatic" ] }, "tileX":160, "tileY":192 },
+    "panelRawMirror":{ "set":{ "_":[ "stencil", "panelRaw" ] }, "flipX":1 },
+    "panelRaw2":{ "set":{ "_":[ "stencil", "panelTypeStatic" ] }, "tileX":320, "tileY":192 },
+    "panelRaw2Mirror":{ "set":{ "_":[ "stencil", "panelRaw2" ] }, "flipX":1 },
+    "panelRoadside":{ "set":{ "_":[ "stencil", "panelTypeStatic" ] }, "tileX":320, "tileY":96 },
+    "panelTypeAnimated":{ "set":{ "_":[ "stencil", "panelTypeStatic" ] }, "animations":{ "idle":{ "frames":3, "speed":5, "loopTo":0 } }, "animation":"idle" },
+    "panelSea":{ "set":{ "_":[ "stencil", "panelTypeAnimated" ] } },
+    "panelSeaMirror":{ "set":{ "_":[ "stencil", "panelSea" ] }, "flipX":1 },
+    "panelSeaShipLeft":{
+      "set":{ "_":[ "stencil", "panelTypeAnimated" ] },
+      "execute":{
+        "object":{
+          "image":"defaultsprites", "tileX":224, "tileY":16, "width":16, "height":16,
+          "x":-16, "y":16,
+          "forceX":1,
+          "animations":{ "idle":{ "frames":2, "speed":10, "loopTo":0 } },
+          "animation":"idle",
+          "states":{ "code":{ "name":"Physics" } }
+        },
+        "into":{ "_":"this" }
+      }
+    },
+    "panelSeaside":{ "set":{ "_":[ "stencil", "panelTypeAnimated" ] }, "tileY":48 },
+    "panelWoodline":{ "set":{ "_":[ "stencil", "panelTypeStatic" ] }, "tileX":160, "tileY":96 },
+    "transitionLeftPanel":{
+      "type":"transitionLeftPanel",
+      "image":"doorssprites", "tileX":0, "tileY":0, "width":84, "height":192,
+      "zIndex":100, "x":0, "y":0,
+      "states":[
+        {
+          "code":{ "name":"Physics", "data":{ "walls":{ "area":{ "width":168, "height":192, "x":-84, "y":0 }, "restitutionX":0.3, "restitutionY":0 }, "gravityX":-1 } }
+        },
+        {
+          "name":"close",
+          "code":{ "name":"Physics", "data":{ "walls":{ "area":{ "width":168, "height":192, "x":-84, "y":0 }, "restitutionX":0.3, "restitutionY":0 }, "gravityX":1 } }
+        }
+      ]
+    },
+    "transitionRightPanel":{
+      "type":"transitionRightPanel",
+      "image":"doorssprites", "tileX":84, "tileY":0, "width":84, "height":192,
+      "zIndex":100, "x":76, "y":0,
+      "states":[
+        {
+          "code":{ "name":"Physics", "data":{ "walls":{ "area":{ "width":169, "height":192, "x":76, "y":0 }, "restitutionX":0.3, "restitutionY":0 }, "gravityX":1 } }
+        },
+        {
+          "name":"close",
+          "code":{ "name":"Physics", "data":{ "walls":{ "area":{ "width":169, "height":192, "x":76, "y":0 }, "restitutionX":0.3, "restitutionY":0 }, "gravityX":-1 } }
+        }
+      ]
+    }
+  },
+  "execute":{
+    "object":[
+      { "image":"embossbox", "width":96, "height":208, "x":160, "y":0, "bgcolor":"#00ffff" },
+      { "image":"smalllogo", "width":64, "height":20, "zIndex":1, "x":177, "y":24 },
+      {
+        "box":"label", "width":74, "height":30,
+        "zIndex":1, "x":171, "y":70,
+        "bgcolor":"#000000", "color":"#ffffff",
+        "font":"spectrum", "fontSize":20, "lineHeight":15, "html":"SCORE"
+      },
+      {
+        "type":"hud",
+        "hudType":"label", "label":"%number|variable.score%",
+        "box":"label", "width":60,
+        "zIndex":2, "x":179, "y":84,
+        "color":"#ffffff",
+        "font":"spectrum", "fontSize":20, "lineHeight":15
+      },
+      {
+        "box":"label", "width":74, "height":30,
+        "zIndex":1, "x":171, "y":120,
+        "bgcolor":"#000000", "color":"#ffffff",
+        "font":"spectrum", "fontSize":20, "lineHeight":15, "html":"LIVES"
+      },
+      {
+        "type":"hud",
+        "hudType":"label", "label":"%repeat|variable.lives|&#94;%",
+        "box":"label", "width":60,
+        "zIndex":2, "x":179, "y":134,
+        "color":"#ffffff",
+        "font":"pixeldingbats", "fontSize":8, "lineHeight":15
+      }
+    ],
+    "into":{ "_":"hud" }
+  },
+  "scenes":{
+    "intro":{
+      "object":[
+        { "image":"logo", "width":104, "height":56, "zIndex":2, "x":28, "y":40 },
+        { "set":{ "_":[ "stencil", "panelSea" ] }, "y":-1 },
+        { "set":{ "_":[ "stencil", "panelSea" ] }, "y":47 },
+        { "set":{ "_":[ "stencil", "panelSea" ] }, "y":95 },
+        { "set":{ "_":[ "stencil", "panelSea" ] }, "y":143 },
+        {
+          "box":"label", "width":160,
+          "zIndex":2, "x":0, "y":90,
+          "color":"#ff0000",
+          "font":"spectrum", "outline":"#000000", "textAlign":"center", "html":"PRESS START",
+          "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "visible":0 }, "wait":10 }, { "set":{ "visible":1 }, "wait":10, "loopTo":0 } ] } }
+        }
+      ],
+      "set":{ "_":[ "stencil", "modelTransition" ] },
+      "execute":{ "as":{ "_":"variable" }, "set":{ "_todo":"togli", "lives":3, "score":0 } },
+      "states":{
+        "code":[
+          { "name":"Sequence", "data":{ "object":{ "set":{ "_":[ "stencil", "panelSea" ] } }, "wait":48, "loop":1 } },
+          { "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "set":{ "nextScene":"1" }, "executeAction":"gotoScene" } }
+        ]
+      }
+    },
+    "gameover":{
+      "object":{
+        "width":160, "height":192,
+        "x":0, "y":0,
+        "color":"#0ff",
+        "font":"spectrum", "fontSize":35, "lineHeight":192, "textAlign":"center", "html":"GAME OVER"
+      },
+      "set":{ "_":[ "stencil", "modelTransition" ] },
+      "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "set":{ "nextScene":"intro" }, "executeAction":"gotoScene" } } }
+    },
+    "1":{
+      "object":[
+        { "set":{ "_":[ "stencil", "panelSea" ] }, "y":-1 },
+        { "set":{ "_":[ "stencil", "panelSea" ] }, "y":47 },
+        { "set":{ "_":[ "stencil", "panelSea" ] }, "y":95 },
+        { "set":{ "_":[ "stencil", "panelSea" ] }, "y":143 }
+      ],
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "execute":{ "as":{ "_":"variable" }, "set":{ "nextStage":"gameover" } },
+      "states":{
+        "code":[
+          {
+            "name":"Sequence",
+            "data":[
+              { "object":{ "set":{ "_":[ "stencil", "panelSea" ] } }, "wait":48, "loop":1, "cycles":4 },
+              { "object":{ "set":{ "_":[ "stencil", "panelSeaShipLeft" ] } }, "wait":48 },
+              { "object":{ "set":{ "_":[ "stencil", "panelSeaMirror" ] } }, "wait":48, "loop":1, "cycles":4 },
+              { "object":{ "set":{ "_":[ "stencil", "panelSea" ] } }, "wait":48, "loop":1, "cycles":4 },
+              { "object":{ "set":{ "_":[ "stencil", "panelSeaMirror" ] } }, "wait":48, "loop":1, "cycles":4 },
+              { "object":{ "set":{ "_":[ "stencil", "panelSeaShipLeft" ] } }, "wait":48 },
+              { "object":{ "set":{ "_":[ "stencil", "panelSeaside" ] } }, "wait":48 },
+              { "object":{ "set":{ "_":[ "stencil", "panelCoast" ] } }, "wait":48 },
+              { "object":{ "set":{ "_":[ "stencil", "panelWoodline" ] } }, "wait":48, "loop":1, "cycles":4 },
+              { "object":{ "set":{ "_":[ "stencil", "panelRoadside" ] } }, "wait":48 },
+              { "object":{ "set":{ "_":[ "stencil", "panelCityEmpty" ] } }, "wait":48, "loop":1, "cycles":3 },
+              { "object":{ "set":{ "_":[ "stencil", "panelCity" ] } }, "wait":48, "loop":1, "cycles":5 },
+              { "object":{ "set":{ "_":[ "stencil", "panelCity2" ] } }, "wait":48, "loop":1, "cycles":2 },
+              { "object":{ "set":{ "_":[ "stencil", "panelCity" ] } }, "wait":48, "loop":1, "cycles":2 },
+              { "object":{ "set":{ "_":[ "stencil", "panelCity2Mirror" ] } }, "wait":48 },
+              { "object":{ "set":{ "_":[ "stencil", "panelCity" ] } }, "wait":48, "loop":1, "cycles":2 },
+              { "object":{ "set":{ "_":[ "stencil", "panelCityEmptyMirror" ] } }, "wait":48, "loop":1, "cycles":2 },
+              { "object":{ "set":{ "_":[ "stencil", "panelCity2" ] } }, "wait":48, "loop":1, "cycles":2 },
+              { "object":{ "set":{ "_":[ "stencil", "panelCity2Mirror" ] } }, "wait":48, "loop":1, "cycles":2 },
+              { "cycles":2, "loopTo":-2 },
+              { "object":{ "set":{ "_":[ "stencil", "panelCityEmpty" ] } }, "wait":48 },
+              { "object":{ "set":{ "_":[ "stencil", "panelCityEmptyMirror" ] } }, "wait":48, "loop":1, "cycles":4 },
+              { "object":{ "set":{ "_":[ "stencil", "panelOffroad" ] } }, "wait":48 },
+              { "object":{ "set":{ "_":[ "stencil", "panelRaw" ] } }, "wait":48 },
+              { "object":{ "set":{ "_":[ "stencil", "panelRawMirror" ] } }, "wait":48 },
+              { "object":{ "set":{ "_":[ "stencil", "panelRaw2" ] } }, "wait":48, "loop":1, "cycles":3 },
+              { "object":{ "set":{ "_":[ "stencil", "panelRaw2Mirror" ] } }, "wait":48, "loop":1, "cycles":3 },
+              { "object":{ "set":{ "_":[ "stencil", "panelCityEmpty" ] } }, "wait":48, "loop":1, "cycles":2 },
+              { "object":{ "set":{ "_":[ "stencil", "panelOffroad" ] } }, "wait":48 },
+              { "object":{ "set":{ "_":[ "stencil", "panelRaw" ] } }, "wait":48, "loop":1, "cycles":5 },
+              { "object":{ "set":{ "_":[ "stencil", "panelCityEmpty" ] } }, "wait":48, "loop":1, "cycles":2 },
+              { "object":{ "set":{ "_":[ "stencil", "panelCity" ] } }, "wait":48, "loop":1, "cycles":2 },
+              { "object":{ "set":{ "_":[ "stencil", "panelCityEmpty" ] } }, "wait":48 },
+              { "object":{ "set":{ "_":[ "stencil", "panelCity2" ] } }, "wait":48 },
+              { "object":{ "set":{ "_":[ "stencil", "panelCity2Mirror" ] } }, "wait":48 },
+              { "object":{ "set":{ "_":[ "stencil", "panelOffroad" ] } }, "wait":48 },
+              { "object":{ "set":{ "_":[ "stencil", "panelRaw" ] } }, "wait":48, "loop":1 }
+            ]
+          },
+          {
+            "name":"Sequence",
+            "data":[
+              { "wait":150 },
+              { "object":{ "_":[ "stencil", "foeJet" ] }, "as":{ "_":"that" }, "set":{ "x":10, "steerSide":1 }, "wait":25, "loop":1, "cycles":3 },
+              { "wait":100 },
+              { "object":{ "_":[ "stencil", "foeJet" ] }, "as":{ "_":"that" }, "set":{ "x":134, "steerSide":-1 }, "wait":25, "loop":1, "cycles":3 },
+              { "wait":100 },
+              { "object":{ "_":[ "stencil", "foeStraight" ] }, "as":{ "_":"that" }, "set":{ "x":-16, "y":50, "angle":105 }, "wait":25, "loop":1, "cycles":3 },
+              { "wait":25 },
+              { "object":{ "_":[ "stencil", "foeStraight" ] }, "as":{ "_":"that" }, "set":{ "x":176, "y":50, "angle":255 }, "wait":25, "loop":1, "cycles":3 },
+              { "wait":25 },
+              { "object":{ "_":[ "stencil", "foeStraight" ] }, "as":{ "_":"that" }, "set":{ "x":-16, "y":50, "angle":90 }, "wait":25 },
+              { "object":{ "_":[ "stencil", "foeStraight" ] }, "as":{ "_":"that" }, "set":{ "x":-16, "y":70, "angle":90 }, "wait":25 },
+              { "object":{ "_":[ "stencil", "foeStraight" ] }, "as":{ "_":"that" }, "set":{ "x":-16, "y":90, "angle":90 }, "wait":25 },
+              { "wait":25 },
+              { "object":{ "_":[ "stencil", "foeStraight" ] }, "as":{ "_":"that" }, "set":{ "x":176, "y":50, "angle":270 }, "wait":25 },
+              { "object":{ "_":[ "stencil", "foeStraight" ] }, "as":{ "_":"that" }, "set":{ "x":176, "y":70, "angle":270 }, "wait":25 },
+              { "object":{ "_":[ "stencil", "foeStraight" ] }, "as":{ "_":"that" }, "set":{ "x":176, "y":90, "angle":270 }, "wait":25 },
+              { "wait":25 },
+              { "wait":100 },
+              { "object":{ "_":[ "stencil", "foePopup" ] }, "as":{ "_":"that" }, "set":{ "x":10 }, "wait":25 },
+              { "wait":100 },
+              { "object":{ "_":[ "stencil", "foePopup" ] }, "as":{ "_":"that" }, "set":{ "x":10 }, "wait":25 },
+              { "wait":100 },
+              { "object":{ "_":[ "stencil", "foeJet" ] }, "as":{ "_":"that" }, "set":{ "x":10, "steerSide":2 }, "wait":25, "loop":1, "cycles":3 },
+              { "wait":25 },
+              { "object":{ "_":[ "stencil", "foeJet" ] }, "as":{ "_":"that" }, "set":{ "x":134, "steerSide":-2 }, "wait":25, "loop":1, "cycles":3 },
+              { "wait":25 },
+              { "object":{ "_":[ "stencil", "foeJet" ] }, "as":{ "_":"that" }, "set":{ "x":10, "steerSide":2 } },
+              { "wait":25 },
+              { "object":{ "_":[ "stencil", "foeJet" ] }, "as":{ "_":"that" }, "set":{ "x":10, "steerSide":1 } },
+              { "wait":25 },
+              { "object":{ "_":[ "stencil", "foeJet" ] }, "as":{ "_":"that" }, "set":{ "x":10, "steerSide":2 } },
+              { "wait":25 },
+              { "wait":25 },
+              { "object":{ "_":[ "stencil", "foeJet" ] }, "as":{ "_":"that" }, "set":{ "x":134, "steerSide":-2 } },
+              { "wait":25 },
+              { "object":{ "_":[ "stencil", "foeJet" ] }, "as":{ "_":"that" }, "set":{ "x":134, "steerSide":-1 } },
+              { "wait":25 },
+              { "object":{ "_":[ "stencil", "foeJet" ] }, "as":{ "_":"that" }, "set":{ "x":134, "steerSide":-2 } },
+              { "wait":25 },
+              { "wait":25 },
+              { "object":{ "_":[ "stencil", "foePopup" ] }, "as":{ "_":"that" }, "set":{ "x":10 } },
+              { "object":{ "_":[ "stencil", "foePopup" ] }, "as":{ "_":"that" }, "set":{ "x":100 } },
+              { "wait":100 },
+              { "object":{ "_":[ "stencil", "foeStraight" ] }, "as":{ "_":"that" }, "set":{ "x":-16, "y":50, "angle":105 }, "wait":10, "loop":1, "cycles":5 },
+              { "wait":100 },
+              { "object":{ "_":[ "stencil", "foeStraight" ] }, "as":{ "_":"that" }, "set":{ "x":176, "y":50, "angle":255 }, "wait":10, "loop":1, "cycles":5 },
+              { "wait":100 },
+              { "object":{ "_":[ "stencil", "foeStraight" ] }, "as":{ "_":"that" }, "set":{ "x":-16, "y":50, "angle":105 }, "wait":10, "loop":1, "cycles":5 },
+              { "wait":100 },
+              { "object":{ "_":[ "stencil", "foeStraight" ] }, "as":{ "_":"that" }, "set":{ "x":176, "y":50, "angle":255 }, "wait":10, "loop":1, "cycles":5 },
+              { "wait":100 },
+              { "object":{ "_":[ "stencil", "foeStraight" ] }, "as":{ "_":"that" }, "set":{ "x":10, "y":-16, "angle":180 }, "wait":25 },
+              { "object":{ "_":[ "stencil", "foeStraight" ] }, "as":{ "_":"that" }, "set":{ "x":30, "y":-16, "angle":180 }, "wait":25 },
+              { "object":{ "_":[ "stencil", "foeStraight" ] }, "as":{ "_":"that" }, "set":{ "x":50, "y":-16, "angle":180 }, "wait":25 },
+              { "object":{ "_":[ "stencil", "foeStraight" ] }, "as":{ "_":"that" }, "set":{ "x":70, "y":-16, "angle":180 }, "wait":25 },
+              { "object":{ "_":[ "stencil", "foeStraight" ] }, "as":{ "_":"that" }, "set":{ "x":90, "y":-16, "angle":180 }, "wait":25 },
+              { "object":{ "_":[ "stencil", "foeStraight" ] }, "as":{ "_":"that" }, "set":{ "x":110, "y":-16, "angle":180 }, "wait":25 },
+              { "object":{ "_":[ "stencil", "foeStraight" ] }, "as":{ "_":"that" }, "set":{ "x":130, "y":-16, "angle":180 }, "wait":25 },
+              { "wait":100 },
+              { "object":{ "_":[ "stencil", "foePopup" ] }, "as":{ "_":"that" }, "set":{ "x":10 } },
+              { "object":{ "_":[ "stencil", "foePopup" ] }, "as":{ "_":"that" }, "set":{ "x":55 } },
+              { "object":{ "_":[ "stencil", "foePopup" ] }, "as":{ "_":"that" }, "set":{ "x":100 } },
+              { "wait":100 },
+              { "object":{ "_":[ "stencil", "foeStraight" ] }, "as":{ "_":"that" }, "set":{ "x":10, "y":-16, "angle":180 }, "wait":25 },
+              { "object":{ "_":[ "stencil", "foeStraight" ] }, "as":{ "_":"that" }, "set":{ "x":30, "y":-16, "angle":180 }, "wait":25 },
+              { "object":{ "_":[ "stencil", "foeStraight" ] }, "as":{ "_":"that" }, "set":{ "x":50, "y":-16, "angle":180 }, "wait":25 },
+              { "object":{ "_":[ "stencil", "foeStraight" ] }, "as":{ "_":"that" }, "set":{ "x":70, "y":-16, "angle":180 }, "wait":25 },
+              { "object":{ "_":[ "stencil", "foeStraight" ] }, "as":{ "_":"that" }, "set":{ "x":90, "y":-16, "angle":180 }, "wait":25 },
+              { "object":{ "_":[ "stencil", "foeStraight" ] }, "as":{ "_":"that" }, "set":{ "x":110, "y":-16, "angle":180 }, "wait":25 },
+              { "object":{ "_":[ "stencil", "foeStraight" ] }, "as":{ "_":"that" }, "set":{ "x":130, "y":-16, "angle":180 }, "wait":25 },
+              { "wait":200 },
+              { "object":{ "_":[ "stencil", "foeJetFiring" ] }, "as":{ "_":"that" }, "set":{ "x":10, "steerSide":2 }, "wait":25, "loop":1, "cycles":3 },
+              { "wait":150 },
+              { "object":{ "_":[ "stencil", "foeJetFiring" ] }, "as":{ "_":"that" }, "set":{ "x":134, "steerSide":-2 }, "wait":25, "loop":1, "cycles":3 },
+              { "wait":150 },
+              { "object":{ "_":[ "stencil", "foeJetFiring" ] }, "as":{ "_":"that" }, "set":{ "x":10, "steerSide":2 }, "wait":25, "loop":1, "cycles":3 },
+              { "wait":150 },
+              { "object":{ "_":[ "stencil", "foeJetFiring" ] }, "as":{ "_":"that" }, "set":{ "x":134, "steerSide":-2 }, "wait":25, "loop":1, "cycles":3 },
+              { "wait":150 },
+              { "object":{ "_":[ "stencil", "foePopup" ] }, "as":{ "_":"that" }, "set":{ "x":10 } },
+              { "object":{ "_":[ "stencil", "foePopup" ] }, "as":{ "_":"that" }, "set":{ "x":55 } },
+              { "object":{ "_":[ "stencil", "foePopup" ] }, "as":{ "_":"that" }, "set":{ "x":100 } },
+              { "wait":100 },
+              { "object":{ "_":[ "stencil", "foeJetFiring" ] }, "as":{ "_":"that" }, "set":{ "x":10, "steerSide":2 }, "wait":10, "loop":1, "cycles":5 },
+              { "wait":150 },
+              { "object":{ "_":[ "stencil", "foeJetFiring" ] }, "as":{ "_":"that" }, "set":{ "x":134, "steerSide":-2 }, "wait":10, "loop":1, "cycles":5 },
+              { "wait":150 },
+              { "wait":200 },
+              { "object":{ "_":[ "stencil", "bossStage1" ] } }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}

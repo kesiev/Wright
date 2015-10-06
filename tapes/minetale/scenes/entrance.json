@@ -1,0 +1,99 @@
+{
+  "object":[
+    { "type":"doorEntrance", "set":{ "_":[ "stencil", "door" ] }, "x":64, "y":128 },
+    {
+      "set":{ "_":[ "stencil", "npcSign" ] },
+      "x":144, "y":80,
+      "dialogue":[
+        { "as":{ "_":[ "objectTyped", "dialoguePortrait" ] }, "set":{ "visible":1, "animations":{ "idle":{ "frame":1 } } } },
+        { "as":{ "_":[ "objectTyped", "dialogueText" ] }, "set":{ "html":"Dangerous area! Save regularly!" } },
+        { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } }
+      ]
+    },
+    { "set":{ "_":[ "stencil", "foeGreenSlime" ] }, "x":336, "y":320 },
+    { "set":{ "_":[ "stencil", "foeGreenSlime" ] }, "x":176, "y":320 },
+    { "type":"checkPoint2", "set":{ "_":[ "stencil", "savePoint" ] }, "x":352, "y":400, "spawnPoint":"checkPoint2" },
+    {
+      "set":{ "_":[ "stencil", "npcSign" ] },
+      "x":368, "y":128,
+      "dialogue":[
+        { "as":{ "_":[ "objectTyped", "dialoguePortrait" ] }, "set":{ "visible":1, "animations":{ "idle":{ "frame":1 } } } },
+        { "as":{ "_":[ "objectTyped", "dialogueText" ] }, "set":{ "html":"Blobs ahead! Make sure to have a gun with you - or RUN!" } },
+        { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } }
+      ]
+    },
+    { "set":{ "_":[ "stencil", "foeGreenSlime" ] }, "x":48, "y":400 },
+    { "set":{ "_":[ "stencil", "bonusGun" ] }, "x":384, "y":400 },
+    {
+      "set":{ "_":[ "stencil", "npcSign" ] },
+      "x":144, "y":576,
+      "dialogue":[
+        { "as":{ "_":[ "objectTyped", "dialoguePortrait" ] }, "set":{ "visible":1, "animations":{ "idle":{ "frame":1 } } } },
+        { "as":{ "_":[ "objectTyped", "dialogueText" ] }, "set":{ "html":"To the village. Make sure blobs aren't following you." } },
+        { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } }
+      ]
+    },
+    { "set":{ "_":[ "stencil", "foeGreenSlime" ] }, "x":288, "y":544 },
+    { "set":{ "_":[ "stencil", "foeGreenSlime" ] }, "x":368, "y":544 },
+    { "set":{ "_":[ "stencil", "foeGreenSlime" ] }, "x":208, "y":464 },
+    { "type":"checkPoint", "set":{ "_":[ "stencil", "savePoint" ] }, "x":256, "y":112, "spawnPoint":"checkPoint" },
+    { "set":{ "_":[ "stencil", "door" ] }, "x":112, "y":576, "spawnPoint":"doorEntrance", "spawnScene":"village" },
+    {
+      "set":{ "_":[ "stencil", "npcSign" ] },
+      "x":320, "y":400,
+      "dialogue":[
+        { "as":{ "_":[ "objectTyped", "dialoguePortrait" ] }, "set":{ "visible":1, "animations":{ "idle":{ "frame":1 } } } },
+        { "as":{ "_":[ "objectTyped", "dialogueText" ] }, "set":{ "html":"Spare safety gun - and savepoint. Please return ASAP!" } },
+        { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } }
+      ]
+    }
+  ],
+  "execute":{ "_":[ "stencil", "stageInitialize" ] },
+  "tileColor":"#7f0000",
+  "titleLabel":"Entrance",
+  "tilemap":{
+    "tileWidth":16,
+    "tileHeight":16,
+    "map":[
+      "   #qqqqqqqqq#               ",
+      "  #@rrrrrrrrrr#q#            ",
+      " #@#           #@#           ",
+      "#@#             #rqqqqqqq#   ",
+      "ew             H  #rrrrrrr#  ",
+      "ew                        e# ",
+      "ew   H  ###               e@#",
+      "ew     #### ##            e@w",
+      "e@#         ## ### #q#    e@w",
+      "#@@qq#         ###  #@q#  e@w",
+      " #@@@@#              e@w  e@w",
+      "  e@@@@qqqqqq#       e@#  e@w",
+      "  e@rrrrrrrrr@qqq#   ew  He@w",
+      " #@#         #rrrr#qq@w   e@w",
+      " e#   H            #rr#   e@w",
+      "#w                        e@w",
+      "ew         H             #@@w",
+      "ew    ##             H   e@@w",
+      "ew H  ew        #       #@@@w",
+      "ew    e@#      #@#      e@@@w",
+      "e@#   #@@#    #@@@#    #@@@@w",
+      "e@#    #@@qqqq@@@@@qqqq@r@@@w",
+      "ew      #rrrrrr@@@rrrrr# #@@w",
+      "ew  H          #@w        e@w",
+      "ew          H   ew        e@w",
+      "ew    #qq#      ew        e@w",
+      "e@qqqqrr@w      ew #######r@w",
+      "e@@@@#H ew    H #w         ew",
+      "e@@@#H Hew       ##     H  ew",
+      "#@@wH H #@#       ##       ew",
+      " #@w H H #rqqqq#   ####    ew",
+      " e@wH H H H#####      ##   ew",
+      " e@w H H H H Hdd   H   ##  ew",
+      " e@wH H     H dd           ew",
+      " #@w          ##    ##    #@#",
+      "  #@#        #@@#        #@w ",
+      "   #@#      #@@#@#      #@@# ",
+      "    #r#qqqqq@r# #@qqqqqq@@#  ",
+      "       #rrrr#    #rrrrrrr#   "
+    ]
+  }
+}

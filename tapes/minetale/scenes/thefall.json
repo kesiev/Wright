@@ -1,0 +1,60 @@
+{
+  "object":[
+    { "set":{ "_":[ "stencil", "door" ] }, "x":208, "y":512, "spawnPoint":"doorEntrance", "spawnScene":"entrance" },
+    {
+      "set":{ "_":[ "stencil", "npcSign" ] },
+      "x":176, "y":512,
+      "dialogue":[
+        { "as":{ "_":[ "objectTyped", "dialoguePortrait" ] }, "set":{ "visible":1, "animations":{ "idle":{ "frame":1 } } } },
+        { "as":{ "_":[ "objectTyped", "dialogueText" ] }, "set":{ "html":"Cave Entrance - Beware the blobs!" } },
+        { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } }
+      ]
+    },
+    { "set":{ "_":[ "stencil", "player" ] }, "x":112, "y":0, "state":"falling" }
+  ],
+  "execute":{ "_":[ "stencil", "stageInitialize" ] },
+  "tileColor":"#7f0000",
+  "titleLabel":"The Fall",
+  "tilemap":{
+    "tileWidth":16,
+    "tileHeight":16,
+    "map":[
+      "@@w          e@@@",
+      "@@w         #e@@@",
+      "@$w         #e@@@",
+      "@@w##        e@@@",
+      "@@w###    H  e@$@",
+      "@@w          e@@@",
+      "@@w          e@@@",
+      "@@w#         e@@@",
+      "@@w#         e@@@",
+      "@@w          e@@@",
+      "$@w   H      e@@@",
+      "@@w          e$@@",
+      "@@w          e@@@",
+      "@@w          e@@@",
+      "@@w          e@@@",
+      "@@w         #e@@@",
+      "@@w#       ##e@$@",
+      "@@w##      ##e@@@",
+      "@@w##        e@@@",
+      "@@w#         e@@@",
+      "@$w          e@@$",
+      "@@w    H     e@@@",
+      "@@w        ##e@@@",
+      "@@w       ###e$@@",
+      "@@w          e@@@",
+      "$@w          e@@@",
+      "@@w   H      e@@@",
+      "@@w          #rrr",
+      "@@w            e@",
+      "@@w      H     #e",
+      "@@w            e@",
+      "@$w H          #e",
+      "@@w            e@",
+      "@@@qqqqqqqqqqqqqq",
+      "@@@@@@@@$@@@@@@@@",
+      "$@@@@@@@@@@@@@$@@"
+    ]
+  }
+}

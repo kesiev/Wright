@@ -1,0 +1,60 @@
+{
+  "object":[
+    { "type":"doorEntrance", "set":{ "_":[ "stencil", "door" ] }, "x":48, "y":144, "spawnPoint":"doorUnderground", "spawnScene":"village" },
+    { "set":{ "_":[ "stencil", "bonusSpring" ] }, "x":1504, "y":64 },
+    { "set":{ "_":[ "stencil", "foeGreenSlime" ] }, "x":112, "y":144 },
+    { "set":{ "_":[ "stencil", "foeGreenSlime" ] }, "x":160, "y":128 },
+    { "set":{ "_":[ "stencil", "foeGreenSlime" ] }, "x":224, "y":64 },
+    { "set":{ "_":[ "stencil", "foeGreenSlime" ] }, "x":320, "y":80 },
+    { "set":{ "_":[ "stencil", "foeGreenSlime" ] }, "x":432, "y":80 },
+    { "set":{ "_":[ "stencil", "foeGreenSlime" ] }, "x":384, "y":144 },
+    { "set":{ "_":[ "stencil", "foeGreenSlime" ] }, "x":384, "y":48 },
+    { "set":{ "_":[ "stencil", "foeGreenSlime" ] }, "x":496, "y":48 },
+    { "set":{ "_":[ "stencil", "foeRedSlime" ] }, "x":688, "y":80 },
+    { "set":{ "_":[ "stencil", "foeRedSlime" ] }, "x":672, "y":96 },
+    { "set":{ "_":[ "stencil", "foeRedSlime" ] }, "x":832, "y":96 },
+    { "set":{ "_":[ "stencil", "foeRedSlime" ] }, "x":1008, "y":96 },
+    { "set":{ "_":[ "stencil", "foeRedSlime" ] }, "x":1184, "y":96 },
+    { "set":{ "_":[ "stencil", "foeRedSlime" ] }, "x":1360, "y":96 },
+    { "set":{ "_":[ "stencil", "foeGreenSlime" ] }, "x":1264, "y":96 },
+    { "set":{ "_":[ "stencil", "foeGreenSlime" ] }, "x":1088, "y":96 },
+    { "set":{ "_":[ "stencil", "foeGreenSlime" ] }, "x":912, "y":96 },
+    { "set":{ "_":[ "stencil", "foeGreenSlime" ] }, "x":736, "y":96 },
+    { "set":{ "_":[ "stencil", "foeGreenSlime" ] }, "x":1472, "y":80 },
+    { "set":{ "_":[ "stencil", "foeGreenSlime" ] }, "x":1536, "y":80 },
+    {
+      "set":{ "_":[ "stencil", "npcSign" ] },
+      "x":208, "y":64,
+      "dialogue":[
+        { "as":{ "_":[ "objectTyped", "dialoguePortrait" ] }, "set":{ "visible":1, "animations":{ "idle":{ "frame":1 } } } },
+        { "as":{ "_":[ "objectTyped", "dialogueText" ] }, "set":{ "html":"Life analysis rooms are accessable by biologists only." } },
+        { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+        { "as":{ "_":[ "objectTyped", "dialogueText" ] }, "set":{ "html":"Please don't open them without authorization." } },
+        { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } }
+      ]
+    },
+    { "type":"checkPointCorridor1", "set":{ "_":[ "stencil", "savePoint" ] }, "x":80, "y":144, "spawnPoint":"checkPointCorridor1" },
+    { "type":"checkPointCorridor2", "set":{ "_":[ "stencil", "savePoint" ] }, "x":1408, "y":80, "spawnPoint":"checkPointCorridor2" }
+  ],
+  "execute":{ "_":[ "stencil", "stageInitialize" ] },
+  "tileColor":"#007f7f",
+  "titleLabel":"Corridor",
+  "tilemap":{
+    "tileWidth":16,
+    "tileHeight":16,
+    "map":[
+      "####                   TT       ####                                                             ooo",
+      "###                    TT        ##          ooooooooo  ooooooooo  ooooooooo  ooooooooo           oo",
+      "##                     TT        dd          oo     oo -oo     oo -oo     oo -oo     ooo           o",
+      "#                      TT        dd          o       o- o       o- o       o- o       ooo          o",
+      "#               ##     ##     ## ##          d       d  d       d  d       d  d       d            o",
+      "#            ## UU            UU ##Q         d       d  d       d  d       d  d       d      ooo   o",
+      "#           ### UU ###    ### UU ###       o o       o  o       o  o       o  o       ooo   ooooo  o",
+      "#          Q#####U ####  #### UU##o##     oo-ooYYYYYoo- ooYYYYYoo- ooYYYYYoo- ooYYYYYooooo  YYYYY oo",
+      "##IPO      ######U U  U  U  U UU#o#o#    ooo ooooooooo -ooooooooo -ooooooooo -ooooooooo ooo YYYYYooo",
+      "##M N Q  ######### U  U  U  U U#o#o#o###oooo    ###        ###        ###        ###    ooooYYYYoooo",
+      "########o#o#o#o#oooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo",
+      "#########o#o#o#ooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooooo"
+    ]
+  }
+}

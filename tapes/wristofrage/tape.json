@@ -1,0 +1,803 @@
+{
+  "name":"Wrist Of Rage",
+  "author":"KesieV",
+  "year":2015,
+  "genre":"Beat'em up",
+  "description":"In the nineties, arcade plus summer equals beat'em ups. Mostly in co-op. My favourite was Final Fight, mostly because of the pretty graphics, the straightforward gameplay and Haggar! No co-op here, but real scrolling, camera handling and food! You've decided to open a clock shop but local bad guys stolen everything! And without any logic reason! You can't stand it! Move your fighter with UP/DOWN/LEFT/RIGHT and fight with the A BUTTON!",
+  "screenshots":["wristofrage-1.png","wristofrage-2.png"],
+  "hardware":{
+    "width":256,
+    "height":192,
+    "texture":"scanlines"
+  },
+  "cheats":{
+    "unlimitedLives":"Unlimited lives",
+    "weakEnemies":"Weak enemies"
+  },
+  "resources":{
+    "backgroundtiles":"wor-bg.png",
+    "gamesprites":"sprites.png",
+    "logoimage":"logo.png",
+    "defaultsprites":"../default/sprites.png",
+    "scanlines":"../default/scanlines.png"
+  },
+  "stencils":{
+    "modelContainer":{
+      "type":[ "foe", "wall" ],
+      "object":{ "_":[ "stencil", "shadow" ] },
+      "image":"gamesprites", "tileX":0, "tileY":208, "width":48, "height":48,
+      "frame":0,
+      "hitbox":{ "width":32, "height":16, "x":8, "y":40 },
+      "content":0,
+      "showminihealth":1,
+      "states":[
+        { "like":{ "_":[ "stencil", "modelFighterHitable" ] }, "code":{ "_":[ "stencil", "modelFoeStand" ] } },
+        {
+          "name":"hit",
+          "set":{ "forceX":0, "forceY":0, "animation":"hit" },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "sum":1, "to":{ "_":[ "this", "x" ] }, "wait":1 },
+              { "subtract":1, "to":{ "_":[ "this", "x" ] }, "wait":1 },
+              { "cycles":5, "loopTo":0 },
+              { "set":{ "state":"default" } }
+            ]
+          }
+        },
+        {
+          "name":"ground",
+          "set":{ "removeType":"wall", "angle":0, "forceX":0, "forceY":0, "forceZ":-5, "animation":"hit", "bouncetimes":0 },
+          "execute":[
+            { "when":{ "_":[ "randomValue", [ 0, 1 ] ] }, "set":{ "angle":-90, "forceX":2 }, "elseExecute":{ "set":{ "angle":-90, "forceX":-2 } } },
+            {
+              "when":{ "_":[ "this", "content" ] },
+              "execute":{
+                "object":{ "_":[ "stencil", { "_":[ "this", "content" ] } ] },
+                "as":{ "_":"that" },
+                "set":{ "x":{ "_":[ "that", "x", "+", 16 ] }, "y":{ "_":[ "that", "y", "+", 33 ] } }
+              }
+            }
+          ],
+          "code":[
+            {
+              "name":"Sequence",
+              "data":[
+                { "wait":1, "loop":1, "until":{ "_":[ "this", "bouncetimes", "isGreaterThan", 4 ] } },
+                { "set":{ "forceX":0, "forceZ":0 } },
+                { "set":{ "visible":0 }, "wait":1 },
+                { "set":{ "visible":1 }, "wait":1 },
+                { "cycles":5, "loopTo":0 },
+                { "remove":1 }
+              ]
+            },
+            {
+              "name":"Physics",
+              "data":{
+                "walls":[ { "type":"wall", "restitution":0 }, { "z":13, "restitution":0.5, "execute":{ "sum":1, "to":{ "_":[ "this", "bouncetimes" ] } } } ],
+                "gravityZ":1
+              }
+            },
+            { "name":"ZPerspective" }
+          ]
+        }
+      ]
+    },
+    "modelFighter":{
+      "object":{ "_":[ "stencil", "shadow" ] },
+      "image":"gamesprites", "tileX":0, "tileY":16, "width":48, "height":48,
+      "hitbox":{ "width":32, "height":16, "x":8, "y":40 },
+      "animations":{
+        "attack1":{ "frame":7 },
+        "attack2":{ "frame":8 },
+        "down":{ "frame":10 },
+        "fall":{ "frame":11 },
+        "hit":{ "frame":9 },
+        "prepare":{ "frame":6 },
+        "still":{ "frames":[ 0, 1, 2, 1 ], "speed":5, "loopTo":0 },
+        "walk":{ "frames":[ 3, 4, 5, 4 ], "speed":5, "loopTo":0 }
+      },
+      "animation":"still",
+      "score":0,
+      "stamina":4,
+      "states":[
+        {
+          "like":{ "_":[ "stencil", "modelFighterHitable" ] },
+          "code":{
+            "name":"Execute",
+            "data":[
+              { "when":{ "_":[ "this", "forceX", "isLessThan", 0 ] }, "set":{ "flipX":1 } },
+              { "when":{ "_":[ "this", "forceX", "isGreaterThan", 0 ] }, "set":{ "flipX":0 } },
+              {
+                "when":{ "_":[ "this", "forceZ", "isEqualTo", 0 ] },
+                "execute":{
+                  "when":{ "_":[ "this", "forceX", "isEqualTo", 0, "and", { "_":[ "this", "forceY", "isEqualTo", 0 ] } ] },
+                  "set":{ "animation":"still" },
+                  "elseExecute":{ "set":{ "animation":"walk" } }
+                },
+                "elseExecute":{ "set":{ "animation":"fall" } }
+              }
+            ]
+          }
+        },
+        {
+          "name":"attack",
+          "like":{ "_":[ "stencil", "modelFighterHitable" ] },
+          "set":{ "animation":"prepare" },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "wait":4 },
+              { "set":{ "animation":{ "_":[ "randomValue", [ "attack1", "attack2" ] ] } } },
+              {
+                "when":{ "_":[ "this", "flipX" ] },
+                "execute":{
+                  "when":{
+                    "_":[
+                      "this",
+                      "complexCollidesWith",
+                      { "subject":{ "_":[ "object", { "_":[ "this", "attackHits" ] } ] }, "hitbox":{ "width":20, "height":20, "x":-3, "y":37 } }
+                    ]
+                  },
+                  "as":{ "_":"that" },
+                  "executeAction":"hit"
+                },
+                "elseExecute":{
+                  "when":{
+                    "_":[
+                      "this",
+                      "complexCollidesWith",
+                      { "subject":{ "_":[ "object", { "_":[ "this", "attackHits" ] } ] }, "hitbox":{ "width":20, "height":20, "x":33, "y":37 } }
+                    ]
+                  },
+                  "as":{ "_":"that" },
+                  "executeAction":"hit"
+                }
+              },
+              { "wait":4 },
+              { "set":{ "animation":"prepare" } },
+              { "wait":4 },
+              { "set":{ "state":"default" } }
+            ]
+          }
+        },
+        {
+          "name":"hit",
+          "set":{ "forceX":0, "forceY":0, "animation":"hit" },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "sum":1, "to":{ "_":[ "this", "x" ] }, "wait":1 },
+              { "subtract":1, "to":{ "_":[ "this", "x" ] }, "wait":1 },
+              { "cycles":5, "loopTo":0 },
+              { "set":{ "state":"default" } }
+            ]
+          }
+        },
+        {
+          "name":"pick",
+          "like":{ "_":[ "stencil", "modelFighterHitable" ] },
+          "set":{ "forceX":0, "forceY":0, "animation":"down" },
+          "code":{ "name":"Sequence", "data":[ { "wait":5 }, { "set":{ "state":"default" } } ] }
+        },
+        {
+          "name":"ground",
+          "set":{ "angle":0, "forceX":0, "forceY":0, "forceZ":-5, "animation":"hit", "bouncetimes":0 },
+          "execute":{ "when":{ "_":[ "that", "flipX" ] }, "set":{ "angle":-90, "forceX":2 }, "elseExecute":{ "set":{ "angle":-90, "forceX":-2 } } },
+          "code":[
+            {
+              "name":"Sequence",
+              "data":[
+                { "wait":1, "loop":1, "until":{ "_":[ "this", "bouncetimes", "isGreaterThan", 4 ] } },
+                { "set":{ "forceX":0, "forceZ":0 } },
+                { "when":{ "_":[ "this", "health", "isLessThan", 1 ] }, "set":{ "state":"dead" } },
+                { "wait":10 },
+                { "set":{ "state":"backup" } }
+              ]
+            },
+            { "name":"ZPerspective" }
+          ]
+        },
+        {
+          "name":"backup",
+          "set":{ "z":0, "angle":0, "forceX":0, "forceY":0, "forceZ":0, "animation":"down", "stamina":4 },
+          "code":{ "name":"Sequence", "data":[ { "wait":10 }, { "set":{ "state":"default" } } ] }
+        },
+        {
+          "name":"dead",
+          "code":{
+            "name":"Sequence",
+            "data":[ { "set":{ "visible":0 }, "wait":1 }, { "set":{ "visible":1 }, "wait":1 }, { "cycles":5, "loopTo":0 }, { "set":{ "state":"removed" } } ]
+          }
+        }
+      ]
+    },
+    "modelBasicFoe":{
+      "type":[ "foe", "enemy" ],
+      "set":{ "_":[ "stencil", "modelFighter" ] },
+      "attackHits":"player",
+      "states":[
+        {
+          "execute":{ "when":{ "_":[ "cheat", "weakEnemies" ] }, "set":{ "health":1 } },
+          "code":[
+            {
+              "name":"Sequence",
+              "data":[
+                {
+                  "when":{ "_":[ "randomValue", { "_":[ "this", "fightReactivity" ] } ] },
+                  "execute":{
+                    "when":{ "_":[ "this", "flipX" ] },
+                    "execute":{
+                      "when":{
+                        "_":[
+                          "this",
+                          "complexCollidesWith",
+                          { "subject":{ "_":[ "object", { "_":[ "this", "attackHits" ] } ] }, "hitbox":{ "width":20, "height":20, "x":-3, "y":37 } }
+                        ]
+                      },
+                      "set":{ "state":"attack" }
+                    },
+                    "elseExecute":{
+                      "when":{
+                        "_":[
+                          "this",
+                          "complexCollidesWith",
+                          { "subject":{ "_":[ "object", { "_":[ "this", "attackHits" ] } ] }, "hitbox":{ "width":20, "height":20, "x":33, "y":37 } }
+                        ]
+                      },
+                      "set":{ "state":"attack" }
+                    }
+                  }
+                },
+                {
+                  "when":{ "_":[ "objectTyped", "player" ] },
+                  "applyVector":{ "toward":{ "_":[ "objectTyped", "player" ] }, "length":{ "_":[ "this", "walkSpeed" ] } }
+                },
+                { "wait":{ "_":[ "randomNumber", { "_":[ "this", "walkReactivity" ] } ] } },
+                { "set":{ "forceX":0, "forceY":0 } },
+                { "wait":{ "_":[ "randomNumber", { "_":[ "this", "waitReactivity" ] } ] } },
+                { "loopTo":0 }
+              ]
+            },
+            { "_":[ "stencil", "modelFoeStand" ] }
+          ]
+        },
+        {
+          "name":"ground",
+          "code":{
+            "name":"Physics",
+            "data":{
+              "walls":[ { "type":"wall", "restitution":0 }, { "z":13, "restitution":0.5, "execute":{ "sum":1, "to":{ "_":[ "this", "bouncetimes" ] } } } ],
+              "gravityZ":1
+            }
+          }
+        },
+        { "name":"removed", "execute":{ "remove":1 } }
+      ]
+    },
+    "modelFighterHitable":{
+      "actions":{
+        "name":"hit",
+        "execute":[
+          { "subtract":1, "to":{ "_":[ "this", "stamina" ] } },
+          { "subtract":1, "to":{ "_":[ "this", "health" ] } },
+          {
+            "when":{ "_":[ "this", "showminihealth" ] },
+            "as":{ "_":"variable" },
+            "set":{
+              "foename":{ "_":[ "that", "foename" ] },
+              "health":{ "_":[ "that", "health" ] },
+              "maxhealth":{ "_":[ "that", "maxhealth" ] },
+              "portrait":{ "_":[ "that", "foeportrait" ] }
+            }
+          },
+          { "when":{ "_":[ "this", "showplayerhealth" ] }, "execute":{ "as":{ "_":"variable" }, "set":{ "playerhealth":{ "_":[ "that", "health" ] } } } },
+          {
+            "when":{ "_":[ "this", "health", "isLessThan", 1 ] },
+            "sum":{ "_":[ "this", "score" ] },
+            "to":{ "_":[ "variable", "score" ] },
+            "set":{ "stamina":0 }
+          },
+          { "when":{ "_":[ "this", "stamina", "isGreaterThan", 0 ] }, "set":{ "state":"hit" }, "elseExecute":{ "set":{ "state":"ground" } } }
+        ]
+      }
+    },
+    "modelFoeStand":[
+      { "name":"Physics", "data":{ "walls":[ { "type":"wall", "restitution":0 }, { "z":0, "restitution":0 } ], "gravityZ":1 } },
+      { "name":"ZPerspective" }
+    ],
+    "modelPickable":{
+      "type":"pickable",
+      "image":"defaultsprites", "tileX":0, "tileY":160, "width":16, "height":16,
+      "frame":0,
+      "hitbox":{ "width":16, "height":8, "x":0, "y":8 },
+      "forceZ":-6,
+      "health":0,
+      "score":0,
+      "states":{
+        "code":[
+          {
+            "name":"Sequence",
+            "data":[ { "wait":500 }, { "set":{ "visible":0 }, "wait":1 }, { "set":{ "visible":1 }, "wait":1 }, { "cycles":5, "loopTo":-2 }, { "remove":1 } ]
+          },
+          { "name":"Physics", "data":{ "walls":[ { "type":"wall", "restitution":0 }, { "z":0, "restitution":0.5 } ], "gravityZ":1 } },
+          { "name":"ZPerspective" }
+        ],
+        "actions":{
+          "name":"dopick",
+          "execute":[
+            {
+              "as":{ "_":"variable" },
+              "set":{ "foename":{ "_":[ "that", "foename" ] }, "health":0, "maxhealth":0, "portrait":{ "_":[ "that", "foeportrait" ] } }
+            },
+            { "sum":{ "_":[ "this", "health" ] }, "to":{ "_":[ "that", "health" ] } },
+            { "when":{ "_":[ "that", "health", "isGreaterThan", 15 ] }, "as":{ "_":"that" }, "set":{ "health":15 } },
+            { "sum":{ "_":[ "this", "score" ] }, "to":{ "_":[ "variable", "score" ] } },
+            { "remove":1 }
+          ]
+        }
+      }
+    },
+    "modelPlayerStand":[
+      {
+        "name":"Physics",
+        "data":{
+          "walls":[ { "restitution":0, "cameraBound":1 }, { "type":"wall", "restitution":0 }, { "z":0, "restitution":0 } ],
+          "gravityZ":1,
+          "limitX":[ -2, 2 ],
+          "limitY":[ -2, 2 ]
+        }
+      },
+      { "name":"ZPerspective" }
+    ],
+    "modelStage":{
+      "object":{ "_":[ "stencil", "player" ] },
+      "cameraBound":1, "cameraSmoothness":0.1, "cameraY":32, "cameraHeight":160, "cameraFocusY":26, "cameraFocusHeight":104,
+      "states":[
+        {
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "object":{ "_":[ "stencil", "goSign" ] }, "into":{ "_":"scenehud" } },
+              { "as":{ "_":"variable" }, "set":{ "section":{ "_":[ "camera", "count", "-", 1 ] } } },
+              { "wait":5 },
+              { "wait":1, "loop":1, "until":{ "_":[ "object", "enemy", "count", "isEqualTo", 0 ] } },
+              { "subtract":1, "to":{ "_":[ "variable", "section" ] } },
+              {
+                "when":{ "_":[ "variable", "section", "isEqualTo", -1 ] },
+                "set":{ "state":"stageended" },
+                "elseExecute":[
+                  { "as":{ "_":[ "camera", { "_":[ "variable", "section" ] } ] }, "set":{ "disabled":0 } },
+                  { "object":{ "_":[ "stencil", "goSign" ] }, "into":{ "_":"scenehud" } }
+                ]
+              },
+              { "wait":1, "loop":1, "until":{ "_":[ "camera", { "_":[ "variable", "section" ] }, "isEqualTo", { "_":"currentCamera" } ] } },
+              { "loopTo":2 }
+            ]
+          }
+        },
+        {
+          "name":"stageended",
+          "code":{
+            "name":"Sequence",
+            "data":[
+              {
+                "object":[
+                  {
+                    "box":"label", "width":256, "height":80,
+                    "zIndex":5000, "x":0, "y":32,
+                    "color":"#fff",
+                    "font":"spectrum", "fontSize":30, "lineHeight":80, "outline":"#000000", "textAlign":"center", "html":"WELL DONE!"
+                  },
+                  {
+                    "box":"label", "width":256, "height":48,
+                    "zIndex":5000, "x":0, "y":64,
+                    "color":"#fff",
+                    "font":"spectrum", "lineHeight":48, "outline":"#000000", "textAlign":"center", "html":"NOW OPEN YOUR CLOCK SHOP!",
+                    "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "visible":0 }, "wait":10 }, { "set":{ "visible":1 }, "wait":10, "loopTo":0 } ] } }
+                  }
+                ],
+                "into":{ "_":"scenehud" }
+              },
+              { "wait":200 },
+              { "gotoScene":"gameover" }
+            ]
+          }
+        }
+      ]
+    },
+    "player":{
+      "type":"player",
+      "follow":1,
+      "set":{ "_":[ "stencil", "modelFighter" ] },
+      "x":30, "y":90,
+      "attackHits":"foe",
+      "health":15,
+      "showplayerhealth":1,
+      "states":[
+        {
+          "execute":{ "as":{ "_":"variable" }, "set":{ "playerhealth":{ "_":[ "that", "health" ] } } },
+          "code":[
+            { "name":"Player", "data":{ "horizontal":{ "control":1, "gotoZero":1 }, "vertical":{ "control":1, "gotoZero":1 } } },
+            {
+              "name":"Execute",
+              "data":{
+                "when":{ "_":[ "keyA", "isHit" ] },
+                "execute":{
+                  "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "pickable" ] }, "hitbox":{ "width":32, "height":8, "x":8, "y":44 } } ] },
+                  "execute":[ { "as":{ "_":"that" }, "executeAction":"dopick" }, { "set":{ "state":"pick" } } ],
+                  "elseExecute":{ "set":{ "state":"attack" } }
+                }
+              }
+            },
+            { "_":[ "stencil", "modelPlayerStand" ] }
+          ]
+        },
+        {
+          "name":"ground",
+          "code":{
+            "name":"Physics",
+            "data":{
+              "walls":[
+                { "restitution":0, "cameraBound":1 },
+                { "type":"wall", "restitution":0 },
+                { "z":13, "restitution":0.5, "execute":{ "sum":1, "to":{ "_":[ "this", "bouncetimes" ] } } }
+              ],
+              "gravityZ":1
+            }
+          }
+        },
+        {
+          "name":"removed",
+          "set":{ "removeType":"player", "visible":0 },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "when":{ "_":[ "cheat", "unlimitedLives", "not" ] }, "subtract":1, "to":{ "_":[ "variable", "lives" ] } },
+              { "wait":20 },
+              {
+                "when":{ "_":[ "variable", "lives", "isGreaterThan", 0 ] },
+                "execute":[
+                  { "set":{ "type":"player", "z":-192, "visible":1, "angle":0, "health":15, "stamina":4, "state":"default" } },
+                  { "as":{ "_":[ "object", "enemy" ] }, "set":{ "state":"ground" } }
+                ],
+                "elseExecute":{ "gotoScene":"gameover" }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "foeBlade":{
+      "set":{ "_":[ "stencil", "modelBasicFoe" ] },
+      "tileY":112,
+      "fightReactivity":1,
+      "foename":"Blade",
+      "foeportrait":3,
+      "health":8,
+      "maxhealth":9,
+      "score":200,
+      "showminihealth":1,
+      "waitReactivity":[ 30, 50 ],
+      "walkReactivity":[ 10, 30 ],
+      "walkSpeed":2
+    },
+    "foeBull":{
+      "set":{ "_":[ "stencil", "modelBasicFoe" ] },
+      "tileY":160,
+      "fightReactivity":[ 0, 1 ],
+      "foename":"Bull",
+      "foeportrait":4,
+      "health":10,
+      "maxhealth":10,
+      "score":400,
+      "showminihealth":1,
+      "waitReactivity":[ 20, 30 ],
+      "walkReactivity":[ 10, 20 ],
+      "walkSpeed":1
+    },
+    "foeJoe":{
+      "set":{ "_":[ "stencil", "modelBasicFoe" ] },
+      "tileY":64,
+      "fightReactivity":[ 0, 1 ],
+      "foename":"Joe",
+      "foeportrait":2,
+      "health":4,
+      "maxhealth":5,
+      "score":100,
+      "showminihealth":1,
+      "waitReactivity":[ 30, 30 ],
+      "walkReactivity":[ 10, 30 ],
+      "walkSpeed":2
+    },
+    "goSign":{
+      "image":"defaultsprites", "tileX":240, "tileY":48, "width":64, "height":32,
+      "x":160, "y":48,
+      "states":{
+        "code":[
+          { "name":"Physics", "data":{ "walls":{ "area":{ "absolute":1, "width":80, "height":32, "x":160, "y":48 }, "restitution":1 }, "gravityX":0.5 } },
+          { "name":"Sequence", "data":[ { "wait":100 }, { "remove":1 } ] }
+        ]
+      }
+    },
+    "containerBarrel":{ "set":{ "_":[ "stencil", "modelContainer" ] }, "frame":1, "foename":"Barrel", "foeportrait":5, "health":5, "maxhealth":5, "score":50, "stamina":5 },
+    "containerTrashcan":{ "set":{ "_":[ "stencil", "modelContainer" ] }, "foename":"Trash", "foeportrait":5, "health":3, "maxhealth":3, "score":50, "stamina":3 },
+    "pickableCan":{ "set":{ "_":[ "stencil", "modelPickable" ] }, "frame":3, "foename":"Can", "foeportrait":6, "health":5, "score":100 },
+    "pickableMilk":{ "set":{ "_":[ "stencil", "modelPickable" ] }, "frame":1, "foename":"Milk", "foeportrait":6, "health":10 },
+    "pickableRice":{ "set":{ "_":[ "stencil", "modelPickable" ] }, "frame":4, "foename":"Rice", "foeportrait":6, "health":5, "score":200 },
+    "pickableSteak":{ "set":{ "_":[ "stencil", "modelPickable" ] }, "frame":0, "foename":"Steak", "foeportrait":6, "health":15 },
+    "pickableWatch":{ "set":{ "_":[ "stencil", "modelPickable" ] }, "frame":2, "foename":"Watch", "foeportrait":7, "score":1000 },
+    "shadow":{
+      "into":{ "_":[ "this", "parent" ] },
+      "image":"gamesprites", "tileX":0, "tileY":0, "width":32, "height":8,
+      "zIndex":500,
+      "attachedTo":{ "_":"that" },
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":[
+            {
+              "set":{
+                "x":{ "_":[ "this", "attachedTo", "x", "+", 8 ] }, "y":{ "_":[ "this", "attachedTo", "y", "+", { "_":[ "this", "attachedTo", "height" ] }, "-", 4 ] },
+                "visible":{ "_":[ "this", "attachedTo", "visible" ] }
+              }
+            },
+            { "when":{ "_":[ "this", "attachedTo", "removed" ] }, "remove":1 }
+          ]
+        }
+      }
+    },
+    "I":{ "set":{ "_":[ "stencil", "W" ] }, "tileX":32, "tileY":16 },
+    "W":{ "image":"backgroundtiles", "tileX":0, "tileY":0, "width":16, "height":16, "zIndex":1 },
+    "!":{ "set":{ "_":[ "stencil", "W" ] }, "tileX":64, "tileY":32 },
+    "#":{ "set":{ "_":[ "stencil", "W" ] }, "tileX":16, "tileY":32 },
+    "-":{ "type":"wall", "set":{ "_":[ "stencil", "W" ] }, "tileX":0, "tileY":16 },
+    ".":{ "set":{ "_":[ "stencil", "W" ] }, "tileX":48, "tileY":32 },
+    "=":{ "set":{ "_":[ "stencil", "W" ] }, "tileX":48, "tileY":0 },
+    "@":{ "set":{ "_":[ "stencil", "W" ] }, "tileX":64, "tileY":16 },
+    "J":{ "set":{ "_":[ "stencil", "W" ] }, "tileX":32, "tileY":32 },
+    "L":{ "set":{ "_":[ "stencil", "W" ] }, "tileX":0, "tileY":32 },
+    "T":{ "set":{ "_":[ "stencil", "W" ] }, "tileX":32, "tileY":0 },
+    "[":{ "set":{ "_":[ "stencil", "W" ] }, "tileX":64, "tileY":0 },
+    "i":{ "set":{ "_":[ "stencil", "W" ] }, "tileX":16, "tileY":16 },
+    "z":{ "set":{ "_":[ "stencil", "W" ] }, "tileX":48, "tileY":16 },
+    "|":{ "set":{ "_":[ "stencil", "W" ] }, "tileX":16, "tileY":0 }
+  },
+  "execute":{
+    "object":[
+      {
+        "type":"hud",
+        "hudType":"label", "label":"1UP %number|variable.score%",
+        "box":"label", "width":140,
+        "x":5, "y":5,
+        "font":"spectrum", "outline":"#000000"
+      },
+      {
+        "type":"hud",
+        "hudType":"label", "label":"%repeatPercent|variable.playerhealth|15|15|<span style='font-family:pixeldingbats;font-size:6px;color:#ff0'>h</span>|<span style='font-family:pixeldingbats;font-size:6px;color:#f00'>h</span>% x%number|variable.lives%",
+        "box":"label", "width":140,
+        "x":5, "y":15,
+        "font":"spectrum", "outline":"#000000"
+      },
+      {
+        "type":"hud",
+        "image":"gamesprites", "tileX":48, "tileY":0, "width":16, "height":16,
+        "x":235, "y":13,
+        "states":{ "code":{ "name":"Execute", "data":{ "set":{ "frame":{ "_":[ "variable", "portrait" ] } } } } }
+      },
+      {
+        "type":"hud",
+        "hudType":"label", "label":"%text|variable.foename%",
+        "box":"label", "width":100,
+        "x":131, "y":5,
+        "font":"spectrum", "outline":"#000000", "textAlign":"right"
+      },
+      {
+        "type":"hud",
+        "hudType":"label", "label":"%repeatPercent|variable.health|variable.maxhealth|variable.maxhealth|<span style='font-family:pixeldingbats;font-size:6px;color:#ff0'>h</span>|<span style='font-family:pixeldingbats;font-size:6px;color:#f00'>h</span>%",
+        "box":"label", "width":100,
+        "x":131, "y":15,
+        "font":"spectrum", "outline":"#000000", "textAlign":"right"
+      }
+    ],
+    "into":{ "_":"hud" }
+  },
+  "scenes":{
+    "intro":{
+      "object":[
+        { "type":"flash", "width":256, "height":192, "zIndex":10, "x":0, "y":0, "bgcolor":"#fff" },
+        {
+          "box":"label", "width":256,
+          "zIndex":3000, "x":0, "y":150,
+          "font":"spectrum", "fontSize":20, "lineHeight":20, "outline":"#ff0000", "textAlign":"center", "html":"PRESS START",
+          "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "visible":0 }, "wait":10 }, { "set":{ "visible":1 }, "wait":10, "loopTo":0 } ] } }
+        }
+      ],
+      "execute":{ "as":{ "_":"variable" }, "set":{ "foename":"", "health":0, "lives":3, "maxhealth":0, "playerhealth":15, "portrait":0, "score":0 } },
+      "states":{
+        "code":[
+          {
+            "name":"Sequence",
+            "data":[
+              { "object":{ "image":"logoimage", "tileX":0, "tileY":0, "width":160, "height":80, "x":48, "y":50 } },
+              {
+                "subtract":0.1,
+                "to":{ "_":[ "objectTyped", "flash", "alpha" ] },
+                "wait":1, "loop":1,
+                "until":{ "_":[ "objectTyped", "flash", "alpha", "isLessThan", 0 ] }
+              },
+              { "wait":10 },
+              { "as":{ "_":[ "objectTyped", "flash" ] }, "set":{ "alpha":1 } },
+              { "object":{ "image":"logoimage", "tileX":0, "tileY":80, "width":160, "height":80, "zIndex":1, "x":48, "y":100 } },
+              {
+                "subtract":0.1,
+                "to":{ "_":[ "objectTyped", "flash", "alpha" ] },
+                "wait":1, "loop":1,
+                "until":{ "_":[ "objectTyped", "flash", "alpha", "isLessThan", 0 ] }
+              }
+            ]
+          },
+          { "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"1" } }
+        ]
+      }
+    },
+    "gameover":{
+      "object":[
+        {
+          "type":"labelGame",
+          "box":"label", "width":100, "height":30,
+          "x":78, "y":-30,
+          "color":"#fff",
+          "font":"spectrum", "fontSize":50, "lineHeight":30, "outline":"#000000", "textAlign":"center", "html":"GAME",
+          "states":{ "code":{ "name":"Physics", "data":{ "walls":{ "area":{ "width":128, "height":142, "x":50, "y":-30 }, "restitutionY":0.3 }, "gravityY":1 } } }
+        },
+        {
+          "type":"labelOver",
+          "box":"label", "width":100, "height":30,
+          "x":78, "y":222,
+          "color":"#fff",
+          "font":"spectrum", "fontSize":50, "lineHeight":30, "outline":"#000000", "textAlign":"center", "html":"OVER",
+          "states":{ "code":{ "name":"Physics", "data":{ "walls":{ "area":{ "width":128, "height":142, "x":78, "y":112 }, "restitutionY":0.3 }, "gravityY":-1 } } }
+        }
+      ],
+      "states":{
+        "code":[
+          {
+            "name":"Sequence",
+            "data":[
+              { "wait":30 },
+              { "as":{ "_":[ "objectTyped", "labelGame" ] }, "set":{ "forceX":-1 } },
+              { "as":{ "_":[ "objectTyped", "labelOver" ] }, "set":{ "forceX":1 } }
+            ]
+          },
+          { "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"intro" } }
+        ]
+      }
+    },
+    "1":{
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "cameras":[
+        {
+          "width":384, "height":160,
+          "bound":1, "disabled":1,
+          "x":896, "y":0,
+          "onEnterExecute":{
+            "object":[
+              { "set":{ "_":[ "stencil", "pickableWatch" ] }, "x":1184, "y":96 },
+              { "set":{ "_":[ "stencil", "pickableWatch" ] }, "x":1168, "y":112 },
+              { "set":{ "_":[ "stencil", "pickableWatch" ] }, "x":1200, "y":112 },
+              { "set":{ "_":[ "stencil", "pickableWatch" ] }, "x":1184, "y":112 },
+              { "set":{ "_":[ "stencil", "foeBull" ] }, "x":1248, "y":64 },
+              { "set":{ "_":[ "stencil", "foeBull" ] }, "x":1248, "y":96 },
+              { "set":{ "_":[ "stencil", "foeJoe" ] }, "x":720, "y":64 },
+              { "set":{ "_":[ "stencil", "foeJoe" ] }, "x":720, "y":96 },
+              { "set":{ "_":[ "stencil", "foeBlade" ] }, "x":672, "y":80 },
+              { "set":{ "_":[ "stencil", "pickableWatch" ] }, "x":1184, "y":128 }
+            ]
+          }
+        },
+        {
+          "width":384, "height":160,
+          "bound":1, "disabled":1,
+          "x":752, "y":0,
+          "onEnterExecute":{
+            "object":[
+              { "set":{ "_":[ "stencil", "containerBarrel" ] }, "x":1056, "y":64, "content":"pickableCan" },
+              {
+                "set":{ "_":[ "stencil", "containerBarrel" ] },
+                "x":1072, "y":80,
+                "content":{ "_":[ "randomValue", [ "pickableWatch", "pickableSteak", "pickableRice" ] ] }
+              },
+              { "set":{ "_":[ "stencil", "containerBarrel" ] }, "x":1088, "y":96, "content":"pickableCan" },
+              { "set":{ "_":[ "stencil", "foeBull" ] }, "x":1136, "y":64 },
+              { "set":{ "_":[ "stencil", "foeBull" ] }, "x":1152, "y":80 },
+              { "set":{ "_":[ "stencil", "foeBlade" ] }, "x":576, "y":64 },
+              { "set":{ "_":[ "stencil", "foeBlade" ] }, "x":576, "y":96 }
+            ]
+          }
+        },
+        {
+          "width":384, "height":160,
+          "bound":1, "disabled":1,
+          "x":624, "y":0,
+          "onEnterExecute":{
+            "object":[
+              { "set":{ "_":[ "stencil", "foeBull" ] }, "x":960, "y":64 },
+              { "set":{ "_":[ "stencil", "foeJoe" ] }, "x":464, "y":64 },
+              { "set":{ "_":[ "stencil", "foeJoe" ] }, "x":464, "y":96 },
+              { "set":{ "_":[ "stencil", "foeJoe" ] }, "x":960, "y":96 }
+            ]
+          }
+        },
+        {
+          "width":384, "height":160,
+          "bound":1, "disabled":1,
+          "x":512, "y":0,
+          "onEnterExecute":{
+            "object":[
+              { "set":{ "_":[ "stencil", "containerBarrel" ] }, "x":800, "y":64, "content":"pickableWatch" },
+              { "set":{ "_":[ "stencil", "containerBarrel" ] }, "x":848, "y":96, "content":"pickableMilk" },
+              { "set":{ "_":[ "stencil", "foeBlade" ] }, "x":880, "y":80 },
+              { "set":{ "_":[ "stencil", "foeBlade" ] }, "x":352, "y":64 },
+              { "set":{ "_":[ "stencil", "foeBlade" ] }, "x":352, "y":96 }
+            ]
+          }
+        },
+        {
+          "width":384, "height":160,
+          "bound":1, "disabled":1,
+          "x":384, "y":0,
+          "onEnterExecute":{
+            "object":[
+              { "set":{ "_":[ "stencil", "foeJoe" ] }, "x":208, "y":64 },
+              { "set":{ "_":[ "stencil", "foeJoe" ] }, "x":208, "y":80 },
+              { "set":{ "_":[ "stencil", "foeJoe" ] }, "x":208, "y":96 },
+              { "set":{ "_":[ "stencil", "containerTrashcan" ] }, "x":688, "y":80, "content":{ "_":[ "randomValue", [ "pickableMilk", "pickableWatch" ] ] } },
+              { "set":{ "_":[ "stencil", "foeBlade" ] }, "x":736, "y":96 }
+            ]
+          }
+        },
+        {
+          "width":384, "height":160,
+          "bound":1, "disabled":1,
+          "x":256, "y":0,
+          "onEnterExecute":{
+            "object":[
+              { "set":{ "_":[ "stencil", "foeBlade" ] }, "x":592, "y":64 },
+              { "set":{ "_":[ "stencil", "foeJoe" ] }, "x":80, "y":64 },
+              { "set":{ "_":[ "stencil", "foeJoe" ] }, "x":80, "y":96 }
+            ]
+          }
+        },
+        {
+          "width":384, "height":160,
+          "bound":1, "disabled":1,
+          "x":128, "y":0,
+          "onEnterExecute":{ "object":[ { "set":{ "_":[ "stencil", "foeBlade" ] }, "x":480, "y":80 }, { "set":{ "_":[ "stencil", "foeJoe" ] }, "x":432, "y":64 } ] }
+        },
+        {
+          "width":384, "height":160,
+          "bound":1,
+          "x":0, "y":0,
+          "onEnterExecute":{ "object":[ { "set":{ "_":[ "stencil", "foeJoe" ] }, "x":320, "y":80 }, { "set":{ "_":[ "stencil", "foeJoe" ] }, "x":272, "y":64 } ] }
+        }
+      ],
+      "tilemap":{
+        "tileWidth":16,
+        "tileHeight":16,
+        "map":[
+          "W#TzzzzzTWWWWWWWWW#TzzzzzTWWWW#WWW-----WWW#I#I#I#I#I#I#WWWW#I#I#I#I#I#I#WTzzzzzT",
+          "W#I=====IWWWWWWWWW#I=====IW[[W#WWWTL##TWWW#I#I#I#I#I#I#WWWW#I#I#I#I#I#I#WI=====I",
+          "W#I...!.IW[WW[WW[W#I=====IWWWW#W@WI...IWWW#I#I#I#I#I#I#WW@W#I#I#I#I#I#I#@I...!.I",
+          "W#I...!.IWWWWWWWWW#I=====IW[[W#WWWI...IW@W#I#I#I#I#I#I#W@WW#I#I#I#I#I#I#WI...!.I",
+          "WLJ...!.JWWWWWWWWWLJ=====JWWWWLWWWJ===JWWWLJLJLJLJLJLJ#WWWW#JLJLJLJLJLJLWJ...!.J",
+          "--------------------------------------------------------------------------------",
+          "iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",
+          "||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||",
+          "iiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii",
+          "||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||"
+        ]
+      }
+    }
+  }
+}

@@ -1,0 +1,455 @@
+{
+  "name":"Bwall",
+  "author":"KesieV",
+  "year":2015,
+  "genre":"Wall breaker",
+  "description":"There is a crucial difference between the original Breakout (1976) and modern wall breakers like Arkanoid (1986). It's ball control: modern wall breakers allow to change the ball bounce angle hitting it with different parts of the bat. So, hitting the ball from the middle part will bounce it vertically and from the right or left sides will change the angle accordingly. When I tried making a wall breaker clone, inspired by the great Batty (1987) for ZX Spectrum, I knew that I was going to add better physics to Wright!, make it more complex than I wanted and leave its platformer-only purpose but... can you really say you can make a retro game without putting together a wall breaker? Plot! I've always thought that the original Arkanoid plot and all the Doh thing sucked a lot but I never imagined that thinking a good plot of a wall breaker game was so hard. So. No plot for you. Use LEFT/RIGHT to move the bat. That's all.",
+  "screenshots":["bwall-1.png","bwall-2.png"],
+  "hardware":{
+    "width":256,
+    "height":192,
+    "texture":"scanlines"
+  },
+  "cheats":{
+    "unlimitedLives":"Unlimited lives"
+  },
+  "resources":{
+    "logo":"logo.png",
+    "smalllogo":"small-logo.png",
+    "defaultsprites":"../default/sprites.png",
+    "embossbox":"../default/embossbox.png",
+    "scanlines":"../default/scanlines.png"
+  },
+  "stencils":{
+    "modelStage":{
+      "object":{ "set":{ "_":[ "stencil", "bat" ] } },
+      "x":-8, "y":-8,
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":[
+            { "when":{ "_":[ "variable", "lives", "isEqualTo", 0 ] }, "gotoScene":"gameover" },
+            {
+              "when":{ "_":[ "object", "brick", "count", "isEqualTo", 0 ] },
+              "execute":[
+                { "sum":1, "to":{ "_":[ "variable", "nextStage" ] } },
+                {
+                  "when":{ "_":[ "variable", "nextStage", "isGreaterThan", 5 ] },
+                  "execute":{ "gotoScene":"ending" },
+                  "elseExecute":{ "gotoScene":{ "_":[ "variable", "nextStage" ] } }
+                }
+              ]
+            }
+          ]
+        }
+      },
+      "tilemap":{
+        "map":[
+          "T=========,",
+          "#.........#",
+          "#.........#",
+          "#.........#",
+          "#.........#",
+          "#.........#",
+          "#.........#",
+          "#.........#",
+          "#.........#",
+          "#.........#",
+          "#.........#",
+          "#.........#",
+          "#.........#",
+          "#xxxxxxxxx#"
+        ]
+      }
+    },
+    "enemy":{
+      "image":"defaultsprites", "tileX":304, "tileY":0, "width":16, "height":16,
+      "zIndex":2,
+      "animations":{ "idle":{ "frames":3, "loopTo":0 } },
+      "animation":"idle",
+      "states":[
+        {
+          "set":{ "removeType":"enemy", "visible":0 },
+          "code":{ "name":"Sequence", "data":[ { "wait":{ "_":[ "randomNumber", [ 30, 60 ] ] } }, { "set":{ "state":"spawn" } } ] }
+        },
+        {
+          "name":"spawn",
+          "set":{
+            "x":{ "_":[ "randomNumber", [ 24, 136 ] ] }, "y":{ "_":[ "randomNumber", [ 24, 120 ] ] },
+            "visible":1, "scale":0,
+            "forceX":{ "_":[ "randomValue", [ -1, 1 ] ] }, "forceY":{ "_":[ "randomValue", [ -1, 1 ] ] }
+          },
+          "code":{ "name":"Sequence", "data":[ { "sum":0.1, "to":{ "_":[ "this", "scale" ] }, "wait":1, "loop":1, "cycles":10 }, { "set":{ "state":"roam" } } ] }
+        },
+        {
+          "name":"roam",
+          "set":{ "type":"enemy" },
+          "code":{ "name":"Physics", "data":{ "walls":{ "area":{ "width":144, "height":144, "x":16, "y":16 }, "restitution":1 } } },
+          "actions":{ "name":"hit", "set":{ "state":"remove" }, "execute":{ "sum":100, "to":{ "_":[ "variable", "score" ] } } }
+        },
+        {
+          "name":"remove",
+          "set":{ "removeType":"enemy", "forceX":0, "forceY":0 },
+          "code":{
+            "name":"Sequence",
+            "data":[ { "subtract":0.1, "to":{ "_":[ "this", "scale" ] }, "wait":1, "loop":1, "cycles":10 }, { "set":{ "state":"default" } } ]
+          }
+        }
+      ]
+    },
+    "ball":{
+      "type":"ball",
+      "image":"defaultsprites", "tileX":280, "tileY":0, "width":7, "height":7,
+      "zIndex":1, "x":78, "y":160,
+      "forceX":0, "forceY":1,
+      "speed":4,
+      "states":{
+        "code":[
+          {
+            "name":"Physics",
+            "data":{
+              "walls":[
+                { "type":"wall", "restitution":1 },
+                { "type":"hitable", "restitution":1, "execute":{ "as":{ "_":"that" }, "executeAction":"hit" } },
+                {
+                  "type":"bat",
+                  "execute":{
+                    "applyVector":{
+                      "angle":{ "_":[ "proportionalValue", { "proportion":[ { "_":[ "that", "x" ] }, { "_":[ "that", "x", "+", { "_":[ "that", "width" ] } ] }, -60, 60 ], "value":{ "_":[ "this", "x" ] } } ] },
+                      "length":{ "_":[ "this", "speed" ] }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          {
+            "name":"Execute",
+            "data":[
+              { "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "killBall" ] } ] }, "remove":1 },
+              {
+                "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "enemy" ] } ] },
+                "execute":[
+                  { "as":{ "_":"that" }, "executeAction":"hit" },
+                  { "multiply":{ "_":[ "randomValue", [ -1, 1 ] ] }, "to":{ "_":[ "this", "forceX" ] } },
+                  { "multiply":{ "_":[ "randomValue", [ -1, 1 ] ] }, "to":{ "_":[ "this", "forceY" ] } }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "randomBall":{
+      "set":{ "_":[ "stencil", "ball" ] },
+      "x":{ "_":[ "randomNumber", [ 24, 120 ] ] }, "y":{ "_":[ "randomNumber", [ 24, 120 ] ] },
+      "execute":{ "applyVector":{ "angle":{ "_":[ "randomNumber", [ 0, 360 ] ] }, "length":4 } }
+    },
+    "bat":{
+      "image":"defaultsprites", "tileX":144, "tileY":0, "width":24, "height":8,
+      "zIndex":1,
+      "animations":{ "dead":{ "frame":1, "frames":4, "speed":2 }, "idle":{ "frames":0 } },
+      "states":[
+        {
+          "set":{ "removeType":"bat", "x":68, "y":210, "angle":0, "forceY":-10, "animation":"idle" },
+          "code":[
+            { "name":"Physics", "data":{ "gravityY":1 } },
+            {
+              "name":"Sequence",
+              "data":[
+                {
+                  "when":{ "_":[ "this", "forceY", "isEqualTo", 6 ] },
+                  "execute":[ { "object":{ "set":{ "_":[ "stencil", "ball" ] } } }, { "set":{ "state":"active" } } ]
+                },
+                { "goto":0, "wait":1 }
+              ]
+            }
+          ]
+        },
+        {
+          "name":"active",
+          "set":{ "type":"bat", "forceY":0 },
+          "code":[
+            { "name":"Player", "data":{ "horizontal":{ "control":1, "gotoZero":1 } } },
+            { "name":"Physics", "data":{ "walls":{ "type":"wall", "restitution":0 }, "limitX":[ -5, 5 ] } },
+            { "name":"Execute", "data":{ "when":{ "_":[ "object", "ball", "count", "isEqualTo", 0 ] }, "set":{ "state":"killed" } } }
+          ],
+          "actions":{ "name":"kill", "set":{ "state":"killed" } }
+        },
+        {
+          "name":"killed",
+          "set":{ "removeType":"bat", "forceX":0, "forceY":-1, "animation":"dead", "spinSide":{ "_":[ "randomNumber", [ -5, 5 ] ] } },
+          "code":[
+            { "name":"Physics" },
+            { "name":"Execute", "data":{ "set":{ "angle":{ "_":[ "this", "angle", "+", { "_":[ "this", "spinSide" ] }, "%", 360 ] } } } },
+            {
+              "name":"Sequence",
+              "data":[
+                { "when":{ "_":[ "cheat", "unlimitedLives", "not" ] }, "subtract":1, "to":{ "_":[ "variable", "lives" ] } },
+                { "wait":50 },
+                { "set":{ "state":"default" } }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "#":{ "type":"wall", "image":"defaultsprites", "tileX":112, "tileY":0 },
+    "=":{ "set":{ "_":[ "stencil", "#" ] }, "angle":90 },
+    "-":{ "set":{ "_":[ "stencil", "=" ] }, "flipY":1 },
+    ".":{ "image":"defaultsprites", "tileX":288, "tileY":0 },
+    "1":{
+      "type":[ "brick", "hitable" ],
+      "image":"defaultsprites", "tileX":144, "tileY":8,
+      "zIndex":1, "frame":0,
+      "states":{ "actions":{ "name":"hit", "execute":{ "sum":10, "to":{ "_":[ "variable", "score" ] }, "remove":1 } } }
+    },
+    "2":{ "set":{ "_":[ "stencil", "1" ] }, "frame":1 },
+    "3":{ "set":{ "_":[ "stencil", "1" ] }, "frame":2 },
+    "4":{ "set":{ "_":[ "stencil", "1" ] }, "frame":3 },
+    "5":{ "set":{ "_":[ "stencil", "1" ] }, "frame":4 },
+    "6":{ "set":{ "_":[ "stencil", "1" ] }, "frame":5 },
+    "T":{ "type":"wall", "image":"defaultsprites", "tileX":128, "tileY":0 },
+    ",":{ "set":{ "_":[ "stencil", "T" ] }, "flipX":1 },
+    "J":{ "set":{ "_":[ "stencil", "," ] }, "flipY":1 },
+    "L":{ "set":{ "_":[ "stencil", "T" ] }, "flipY":1 },
+    "x":{ "type":"killBall" }
+  },
+  "execute":{
+    "object":[
+      { "image":"embossbox", "width":96, "height":208, "x":160, "y":0, "bgcolor":"#00ffff" },
+      { "image":"smalllogo", "width":64, "height":20, "zIndex":1, "x":177, "y":24 },
+      {
+        "box":"label", "width":74, "height":30,
+        "zIndex":1, "x":171, "y":70,
+        "bgcolor":"#000000", "color":"#ffffff",
+        "font":"spectrum", "fontSize":20, "lineHeight":15, "html":"SCORE"
+      },
+      {
+        "type":"hud",
+        "hudType":"label", "label":"%number|variable.score%",
+        "box":"label", "width":60,
+        "zIndex":2, "x":179, "y":84,
+        "color":"#ffffff",
+        "font":"spectrum", "fontSize":20, "lineHeight":15
+      },
+      {
+        "box":"label", "width":74, "height":30,
+        "zIndex":1, "x":171, "y":120,
+        "bgcolor":"#000000", "color":"#ffffff",
+        "font":"spectrum", "fontSize":20, "lineHeight":15, "html":"LIVES"
+      },
+      {
+        "type":"hud",
+        "hudType":"label", "label":"%repeat|variable.lives|Â%",
+        "box":"label", "width":60,
+        "zIndex":2, "x":179, "y":134,
+        "color":"#ffffff",
+        "font":"pixeldingbats", "fontSize":8, "lineHeight":15
+      }
+    ],
+    "into":{ "_":"hud" }
+  },
+  "scenes":{
+    "intro":{
+      "object":[
+        { "image":"logo", "width":104, "height":56, "zIndex":2, "x":36, "y":40 },
+        {
+          "box":"label", "width":160,
+          "zIndex":2, "x":8, "y":90,
+          "color":"#ff0000",
+          "font":"spectrum", "outline":"#000000", "textAlign":"center", "html":"PRESS START",
+          "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "visible":0 }, "wait":10 }, { "set":{ "visible":1 }, "wait":10, "loopTo":0 } ] } }
+        },
+        { "_":[ "stencil", "randomBall" ] },
+        { "_":[ "stencil", "randomBall" ] },
+        { "_":[ "stencil", "randomBall" ] },
+        { "_":[ "stencil", "randomBall" ] },
+        { "_":[ "stencil", "randomBall" ] }
+      ],
+      "x":-8, "y":-8,
+      "execute":{ "as":{ "_":"variable" }, "set":{ "lives":3, "nextStage":1, "score":0 } },
+      "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":{ "_":[ "variable", "nextStage" ] } } } },
+      "tilemap":{
+        "map":[
+          "T=========,",
+          "#.........#",
+          "#.........#",
+          "#.........#",
+          "#.........#",
+          "#.........#",
+          "#.........#",
+          "#.........#",
+          "#.........#",
+          "#.........#",
+          "#.........#",
+          "#.........#",
+          "L---------J"
+        ]
+      }
+    },
+    "ending":{
+      "object":[
+        {
+          "image":"logo", "width":104, "height":56,
+          "zIndex":2, "x":36, "y":40,
+          "forceX":1,
+          "states":{ "code":{ "name":"Physics", "data":{ "walls":{ "type":"wall", "restitution":1 }, "gravityY":1 } } }
+        },
+        { "_":[ "stencil", "randomBall" ] },
+        { "_":[ "stencil", "randomBall" ] },
+        { "_":[ "stencil", "randomBall" ] },
+        { "_":[ "stencil", "randomBall" ] },
+        {
+          "box":"label", "width":160,
+          "zIndex":10, "x":32, "y":100,
+          "color":"#ff0000",
+          "font":"spectrum", "fontSize":30, "outline":"#000000", "html":"WELL DONE!",
+          "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "visible":0 }, "wait":10 }, { "set":{ "visible":1 }, "wait":10, "loopTo":0 } ] } }
+        }
+      ],
+      "x":-8, "y":-8,
+      "execute":{ "sum":{ "_":[ 1000, "*", { "_":[ "variable", "lives" ] } ] }, "to":{ "_":[ "variable", "score" ] } },
+      "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"intro" } } },
+      "tilemap":{
+        "map":[
+          "T=========,",
+          "#.........#",
+          "#.........#",
+          "#.........#",
+          "#.........#",
+          "#.........#",
+          "#.........#",
+          "#.........#",
+          "#.........#",
+          "#.........#",
+          "#.........#",
+          "#.........#",
+          "L---------J"
+        ]
+      }
+    },
+    "gameover":{
+      "y":8,
+      "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"intro" } } },
+      "tilemap":{
+        "map":[
+          "T,T=,T=,T, ",
+          "# # #####  ",
+          "# #-## ### ",
+          "#,# ## ##  ",
+          "LJ# ## #LJ ",
+          "           ",
+          "T,# #T-T, ",
+          "### ## # ,",
+          "### ##-# J",
+          "##L J# T- ",
+          "LJ # L-# ,"
+        ]
+      }
+    },
+    "1":{
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "tilemap":{
+        "width":176, "height":200,
+        "x":16, "y":16,
+        "tileHeight":8,
+        "map":[
+          "         ",
+          "         ",
+          "         ",
+          "111111111",
+          "222222222",
+          "333333333",
+          "444444444"
+        ]
+      }
+    },
+    "2":{
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "tilemap":{
+        "width":176, "height":200,
+        "x":16, "y":16,
+        "tileHeight":8,
+        "map":[
+          "         ",
+          "         ",
+          "         ",
+          "   555   ",
+          "  56665  ",
+          " 5662665 ",
+          " 562 265 ",
+          " 562 265 ",
+          "562   265",
+          "562   265"
+        ]
+      }
+    },
+    "3":{
+      "object":{ "set":{ "_":[ "stencil", "enemy" ] } },
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "tilemap":{
+        "width":176, "height":200,
+        "x":16, "y":16,
+        "tileHeight":8,
+        "map":[
+          "         ",
+          "         ",
+          "         ",
+          "515   626",
+          "151   262",
+          "515333626",
+          "151333262",
+          "515   626"
+        ]
+      }
+    },
+    "4":{
+      "object":{ "set":{ "_":[ "stencil", "enemy" ] } },
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "tilemap":{
+        "width":176, "height":200,
+        "x":16, "y":16,
+        "tileHeight":8,
+        "map":[
+          "         ",
+          "         ",
+          "         ",
+          "1  2 3 4 ",
+          "112 23 4 ",
+          "112 23 4 ",
+          "112223 4 ",
+          "1 2 23 4 ",
+          "112 23 4 ",
+          "112 23 4 ",
+          "1 2 23344"
+        ]
+      }
+    },
+    "5":{
+      "object":[ { "set":{ "_":[ "stencil", "enemy" ] } }, { "set":{ "_":[ "stencil", "enemy" ] } } ],
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "tilemap":{
+        "width":176, "height":200,
+        "x":16, "y":16,
+        "tileHeight":8,
+        "map":[
+          "         ",
+          "         ",
+          "         ",
+          "111111111",
+          "1        ",
+          "222222222",
+          "        2",
+          "333333333",
+          "3        ",
+          "444444444",
+          "        4",
+          "555555555",
+          "5        ",
+          "666666666"
+        ]
+      }
+    }
+  }
+}

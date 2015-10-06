@@ -1,0 +1,2019 @@
+{
+  "name":"Hero's Journey",
+  "author":"KesieV",
+  "year":2015,
+  "genre":"Role Playing Game",
+  "description":"During my 8-bit era, I've been a SEGA fan: I had both the SEGA Master System and its portable version, the Game Gear. JRPGs were lacking but that wasn't a problem at all: I hated the genre and the most complex RPG I liked to play was Wonder Boy III: The Dragon's Trap (1989), which pratically isn't an RPG at all! Probably someone will kill me now but I remember me at 18, alone in my living room playing Final Fantasy VII (1997) on the original Sony Playstation getting extremely boring. When I started thinking that my story with turn based JRPGs was closed, I played Final Fantasy XIII (2010). It wasn't better than the other JRPGs but, unlikely the other times, I had someone to talk about: my girlfriend Bianca. From that, I started playing good RPGs, discovering masterpieces like Chrono Trigger (1995). Are RPGs effective when you've someone for sharing your thoughts? Time to try menus, turn handling and improve game saves with Wright! Plot! You wake up in a mysterious forest. Go playing the game, dammit! Use UP/DOWN/LEFT/RIGHT for moving your hero. Press A BUTTON to interact with things and people and the B BUTTON for the party setup menu. In menus use UP/DOWN for selecting options, the A BUTTON for confirming and the B BUTTON for cancel. During battles use UP/DOWN/LEFT/RIGHT for selecting an enemy on the battlefield.",
+  "screenshots":["herosjourney-1.png","herosjourney-2.png"],
+  "hardware":{
+    "width":256,
+    "height":192,
+    "texture":"scanlines"
+  },
+  "cheats":{
+    "energy99999":"99999 HP"
+  },
+  "resources":{
+    "backgrounds":"backgrounds.png",
+    "objects":"objects.png",
+    "portraits":"portraits.png",
+    "smallportraits":"smallportraits.png",
+    "sprites":"sprites.png",
+    "tiles":"tiles.png",
+    "title":"title.png",
+    "ais":"databases/ais.json",
+    "characters":"databases/characters.json",
+    "defaultsprites":"../default/sprites.png",
+    "foes":"databases/foes.json",
+    "items":"databases/items.json",
+    "scanlines":"../default/scanlines.png",
+    "spells":"databases/spells.json"
+  },
+  "stencils":{
+    "codeBattleGoto":[
+      {
+        "as":{ "_":"variable" },
+        "set":{
+          "inBattleBackground":{ "_":[ "scene", "battleBackground" ] },
+          "spawnMap":{ "_":[ "variable", "idScene" ] },
+          "spawnPointX":{ "_":[ "objectTyped", "player", "x" ] },
+          "spawnPointY":{ "_":[ "objectTyped", "player", "y" ] }
+        }
+      },
+      { "gotoScene":"battle" }
+    ],
+    "codeEntityXpGain":[
+      { "sum":{ "_":[ "variable", "outXp" ] }, "to":{ "_":[ "variable", "outEntity", "xp" ] } },
+      {
+        "times":10,
+        "execute":{
+          "when":{
+            "_":[
+              { "_":[ "variable", "outEntity", "xp", "isGreaterThan", { "_":[ "variable", "outEntity", "nextLevelXp" ] } ] },
+              "and",
+              { "_":[ "variable", "outEntity", "progression", { "_":[ "variable", "outEntity", "level", "+", 1 ] } ] }
+            ]
+          },
+          "execute":[
+            { "sum":1, "to":{ "_":[ "variable", "outEntity", "level" ] } },
+            { "as":{ "_":[ "variable", "outEntity" ] }, "set":{ "_":[ "variable", "outEntity", "progression", { "_":[ "variable", "outEntity", "level" ] } ] } }
+          ]
+        }
+      },
+      { "as":{ "_":[ "variable", "outEntity" ] }, "set":{ "spells":{ "_":[ "new", [] ] } } },
+      {
+        "foreach":{ "_":[ "variable", "outEntity", "setSpells" ] },
+        "as":{ "_":[ "resource", "spells", { "_":"this" } ] },
+        "pushInto":{ "_":[ "variable", "outEntity", "spells" ] }
+      },
+      { "when":{ "_":[ "cheat", "energy99999" ] }, "as":{ "_":[ "variable", "outEntity" ] }, "set":{ "attrHp":99999, "hp":99999 } }
+    ],
+    "codeFightDoDefault":[
+      {
+        "as":{ "_":"variable" },
+        "set":{
+          "outDamage":{
+            "_":[
+              "variable",
+              "currentTurnEntity",
+              "curAttack",
+              "+",
+              { "_":[ "randomNumber", [ 0, { "_":[ "variable", "currentTurnEntity", "equipment", "attrAttack" ] } ] ] }
+            ]
+          },
+          "thenAction":{ "_":[ "variable", "getFightMethod" ] }
+        }
+      },
+      { "as":{ "_":[ "objectTyped", { "_":[ "variable", "currentTurnEntity", "type" ] } ] }, "set":{ "state":"fight" } }
+    ],
+    "codeFightGetDefault":[
+      { "subtract":{ "_":[ "variable", "selectedEntity", "curDefense" ] }, "to":{ "_":[ "variable", "outDamage" ] } },
+      {
+        "when":{ "_":[ "variable", "outDamage", "isLessEqualThan", 0, "and", { "_":[ "randomValue", [ 0, 1 ] ] } ] },
+        "as":{ "_":"variable" },
+        "set":{ "outDamage":1 }
+      },
+      {
+        "when":{ "_":[ "variable", "outDamage", "isLessEqualThan", 0 ] },
+        "execute":{ "as":{ "_":[ "objectTyped", { "_":[ "variable", "selectedEntity", "type" ] } ] }, "set":{ "state":"miss" } },
+        "elseExecute":[
+          { "subtract":{ "_":[ "variable", "outDamage" ] }, "to":{ "_":[ "variable", "selectedEntity", "hp" ] } },
+          { "when":{ "_":[ "variable", "selectedEntity", "hp", "isLessThan", 0 ] }, "assign":0, "to":{ "_":[ "variable", "selectedEntity", "hp" ] } },
+          { "as":{ "_":[ "objectTyped", { "_":[ "variable", "selectedEntity", "type" ] } ] }, "set":{ "state":"hit" } }
+        ]
+      }
+    ],
+    "codeGameLoad":{
+      "when":{ "_":[ "storage", "party" ] },
+      "as":{ "_":"variable" },
+      "set":{
+        "flags":{ "_":[ "storage", "flags" ] },
+        "gold":{ "_":[ "storage", "gold" ] },
+        "inventory":{ "_":[ "storage", "inventory" ] },
+        "party":{ "_":[ "storage", "party" ] },
+        "spawnMap":{ "_":[ "storage", "spawnMap" ] },
+        "spawnPointX":{ "_":[ "storage", "spawnPointX" ] },
+        "spawnPointY":{ "_":[ "storage", "spawnPointY" ] },
+        "tension":{ "_":[ "storage", "tension" ] }
+      },
+      "elseExecute":{ "_":[ "stencil", "codeGameNew" ] }
+    },
+    "codeGameNew":[
+      {
+        "as":{ "_":"variable" },
+        "set":{
+          "flags":{ "_":[ "new", {} ] },
+          "gold":0,
+          "inventory":{ "_":[ "new", [] ] },
+          "party":{ "_":[ "new", [] ] },
+          "spawnMap":"forest",
+          "spawnPointX":80,
+          "spawnPointY":640,
+          "tension":0
+        }
+      },
+      { "as":{ "_":[ "resource", "characters", "Warrior", "merged" ] }, "pushInto":{ "_":[ "variable", "party" ] } },
+      {
+        "foreach":{ "_":[ "variable", "party" ] },
+        "as":{ "_":"variable" },
+        "set":{ "outEntity":{ "_":"that" }, "outXp":0 },
+        "execute":{ "_":[ "stencil", "codeEntityXpGain" ] }
+      }
+    ],
+    "codeHealGetDefault":{
+      "when":{ "_":[ "variable", "selectedEntity", "hp" ] },
+      "execute":[
+        { "sum":{ "_":[ "variable", "outHeal" ] }, "to":{ "_":[ "variable", "selectedEntity", "hp" ] } },
+        {
+          "when":{ "_":[ "variable", "selectedEntity", "hp", "isGreaterThan", { "_":[ "variable", "selectedEntity", "curHp" ] } ] },
+          "assign":{ "_":[ "variable", "selectedEntity", "curHp" ] },
+          "to":{ "_":[ "variable", "selectedEntity", "hp" ] }
+        },
+        { "as":{ "_":[ "objectTyped", { "_":[ "variable", "selectedEntity", "type" ] } ] }, "set":{ "state":"heal" } }
+      ],
+      "elseExecute":[
+        { "assign":0, "to":{ "_":[ "variable", "outHeal" ] } },
+        { "as":{ "_":[ "objectTyped", { "_":[ "variable", "selectedEntity", "type" ] } ] }, "set":{ "state":"miss" } }
+      ]
+    },
+    "codeInventoryDraw":{
+      "object":{
+        "type":"inventory",
+        "width":120, "height":192,
+        "zIndex":10,
+        "bgcolor":"#000", "border":"#fff",
+        "execute":[
+          { "as":{ "_":"variable" }, "set":{ "inventoryCycle":0, "inventorySelection":0 } },
+          {
+            "times":{ "_":[ { "_":[ "variable", "inventoryList" ] }, "count" ] },
+            "execute":[
+              {
+                "object":{
+                  "width":112, "height":14,
+                  "x":10, "y":{ "_":[ "variable", "inventoryCycle", "*", 14, "+", 4 ] },
+                  "font":"spectrum", "lineHeight":12, "html":{ "_":[ { "_":[ "variable", "inventoryList" ] }, { "_":[ "variable", "inventoryCycle" ] }, "label", ".", " x", ".", { "_":[ { "_":[ "variable", "inventoryList" ] }, { "_":[ "variable", "inventoryCycle" ] }, "quantity" ] } ] }
+                },
+                "into":{ "_":"this" }
+              },
+              { "sum":1, "to":{ "_":[ "variable", "inventoryCycle" ] } }
+            ]
+          },
+          {
+            "object":{
+              "image":"defaultsprites", "tileX":216, "tileY":96, "width":8, "height":8,
+              "x":1, "y":7,
+              "states":[
+                { "code":{ "name":"Sequence", "data":[ { "wait":1 }, { "set":{ "state":"select" } } ] } },
+                {
+                  "name":"select",
+                  "code":{
+                    "name":"Execute",
+                    "data":[
+                      {
+                        "when":{ "_":[ "keyUp", "isHit", "and", { "_":[ "variable", "inventorySelection", "isGreaterThan", 0 ] } ] },
+                        "subtract":1,
+                        "to":{ "_":[ "variable", "inventorySelection" ] }
+                      },
+                      {
+                        "when":{
+                          "_":[
+                            "keyDown",
+                            "isHit",
+                            "and",
+                            { "_":[ "variable", "inventorySelection", "isLessThan", { "_":[ { "_":[ "variable", "inventoryList" ] }, "count", "-", 1 ] } ] }
+                          ]
+                        },
+                        "sum":1,
+                        "to":{ "_":[ "variable", "inventorySelection" ] }
+                      },
+                      { "when":{ "_":[ "keyA", "isHit" ] }, "set":{ "state":"selected" } },
+                      { "when":{ "_":[ "keyB", "isHit" ] }, "execute":{ "_":[ "variable", "inventoryCancel" ] } },
+                      { "assign":{ "_":[ "variable", "inventorySelection", "*", 14, "+", 7 ] }, "to":{ "_":[ "this", "y" ] } }
+                    ]
+                  }
+                },
+                {
+                  "name":"selected",
+                  "code":{
+                    "name":"Sequence",
+                    "data":[
+                      { "set":{ "visible":0 }, "wait":1 },
+                      { "set":{ "visible":1 }, "wait":1, "cycles":5, "loopTo":-1 },
+                      {
+                        "when":{ "_":[ "variable", "inventoryOnAction" ] },
+                        "execute":{ "_":[ "variable", "inventoryOnAction" ] },
+                        "elseExecute":{ "_":[ { "_":[ "variable", "inventoryList" ] }, { "_":[ "variable", "inventorySelection" ] }, { "_":[ "variable", "inventoryAction" ] } ] }
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "into":{ "_":"this" }
+          }
+        ]
+      },
+      "into":{ "_":"scenehud" }
+    },
+    "codeItemAdd":{
+      "when":{ "_":[ { "_":[ "variable", "inInventory" ] }, "search", { "label":{ "_":[ "variable", "inItem", "label" ] } } ] },
+      "sum":1,
+      "to":{ "_":[ "that", "quantity" ] },
+      "elseExecute":{ "as":{ "_":[ "variable", "inItem" ] }, "pushInto":{ "_":[ "variable", "inInventory" ] }, "set":{ "quantity":1 } }
+    },
+    "codeItemRemove":{
+      "when":{ "_":[ { "_":[ "variable", "outInventory" ] }, "search", { "label":{ "_":[ "variable", "outItem", "label" ] } } ] },
+      "execute":[
+        { "subtract":1, "to":{ "_":[ "that", "quantity" ] } },
+        { "when":{ "_":[ "that", "quantity", "not" ] }, "unpush":{ "_":"that" }, "from":{ "_":[ "variable", "outInventory" ] } }
+      ]
+    },
+    "codeMapGoto":{ "gotoScene":{ "_":[ "variable", "spawnMap" ] } },
+    "codeMenuDraw":{
+      "object":{
+        "type":{ "_":[ "variable", "menuId" ] },
+        "width":70, "height":{ "_":[ "variable", "menuOptions", "count", "*", 14, "+", 8 ] },
+        "zIndex":10,
+        "bgcolor":"#000", "border":"#fff",
+        "execute":[
+          { "as":{ "_":"variable" }, "set":{ "menuCycle":0, "menuSelection":0 } },
+          {
+            "times":{ "_":[ "variable", "menuOptions", "count" ] },
+            "execute":[
+              {
+                "object":{
+                  "width":54, "height":14,
+                  "x":10, "y":{ "_":[ "variable", "menuCycle", "*", 14, "+", 4 ] },
+                  "font":"spectrum", "lineHeight":12, "html":{ "_":[ "variable", "menuOptions", { "_":[ "variable", "menuCycle" ] }, "label" ] }
+                },
+                "into":{ "_":"this" }
+              },
+              { "sum":1, "to":{ "_":[ "variable", "menuCycle" ] } }
+            ]
+          },
+          {
+            "object":{
+              "image":"defaultsprites", "tileX":216, "tileY":96, "width":8, "height":8,
+              "x":1, "y":7,
+              "states":[
+                { "code":{ "name":"Sequence", "data":[ { "wait":1 }, { "set":{ "state":"select" } } ] } },
+                {
+                  "name":"select",
+                  "code":{
+                    "name":"Execute",
+                    "data":[
+                      {
+                        "when":{ "_":[ "keyUp", "isHit", "and", { "_":[ "variable", "menuSelection", "isGreaterThan", 0 ] } ] },
+                        "subtract":1,
+                        "to":{ "_":[ "variable", "menuSelection" ] }
+                      },
+                      {
+                        "when":{ "_":[ "keyDown", "isHit", "and", { "_":[ "variable", "menuSelection", "isLessThan", { "_":[ "variable", "menuOptions", "count", "-", 1 ] } ] } ] },
+                        "sum":1,
+                        "to":{ "_":[ "variable", "menuSelection" ] }
+                      },
+                      { "when":{ "_":[ "keyA", "isHit" ] }, "set":{ "state":"selected" } },
+                      { "when":{ "_":[ "keyB", "isHit" ] }, "execute":{ "_":[ "variable", "menuCancel" ] } },
+                      { "assign":{ "_":[ "variable", "menuSelection", "*", 14, "+", 7 ] }, "to":{ "_":[ "this", "y" ] } }
+                    ]
+                  }
+                },
+                {
+                  "name":"selected",
+                  "code":{
+                    "name":"Sequence",
+                    "data":[
+                      { "set":{ "visible":0 }, "wait":1 },
+                      { "set":{ "visible":1 }, "wait":1, "cycles":5, "loopTo":-1 },
+                      {
+                        "when":{ "_":[ "variable", "menuOnAction" ] },
+                        "execute":{ "_":[ "variable", "menuOnAction" ] },
+                        "elseExecute":{ "_":[ "variable", "menuOptions", { "_":[ "variable", "menuSelection" ] }, { "_":[ "variable", "menuAction" ] } ] }
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            "into":{ "_":"this" }
+          }
+        ]
+      },
+      "into":{ "_":"scenehud" }
+    },
+    "codeMenuIntro":[
+      { "as":{ "_":[ "objectTyped", "introselector" ] }, "remove":1 },
+      {
+        "as":{ "_":"variable" },
+        "set":{
+          "menuAction":"execute",
+          "menuCancel":{ "_":[ "stencil", "codeMenuIntro" ] },
+          "menuId":"introselector",
+          "menuOnAction":0,
+          "menuOptions":[
+            {
+              "label":"Resume",
+              "execute":[ { "as":{ "_":[ "objectTyped", "introselector" ] }, "remove":1 }, { "_":[ "stencil", "codeGameLoad" ] }, { "_":[ "stencil", "codeMapGoto" ] } ]
+            },
+            {
+              "label":"New",
+              "execute":[ { "as":{ "_":[ "objectTyped", "introselector" ] }, "remove":1 }, { "_":[ "stencil", "codeGameNew" ] }, { "_":[ "stencil", "codeMapGoto" ] } ]
+            }
+          ]
+        }
+      },
+      { "_":[ "stencil", "codeMenuDraw" ] },
+      { "as":{ "_":[ "objectTyped", "introselector" ] }, "set":{ "x":94, "y":130 } }
+    ],
+    "codeRoundNext":[
+      { "as":{ "_":"variable" }, "set":{ "currentTurn":0, "turns":{ "_":[ "new", [] ] } } },
+      { "foreach":[ { "_":[ "variable", "foes" ] }, { "_":[ "variable", "party" ] } ], "pushInto":{ "_":[ "variable", "turns" ] } },
+      { "reversed":1, "sort":{ "_":[ "variable", "turns" ] }, "by":"curSpeed" }
+    ],
+    "codeSelectorObject":[
+      { "as":{ "_":"variable" }, "set":{ "selectedEntity":0, "selectedObject":{ "_":[ "objectTyped", { "_":[ "variable", "objectSelectorStart" ] } ] } } },
+      {
+        "object":{
+          "type":[ "objectselector", "objectdetails" ],
+          "width":176, "height":64,
+          "zIndex":10, "x":4, "y":125,
+          "bgcolor":"#000", "border":"#fff",
+          "execute":{
+            "object":{
+              "type":"hud",
+              "hudType":"label", "label":"Lv.%number|variable.selectedEntity.level% %text|variable.selectedObject.label%<br>HP: %number|variable.selectedEntity.hp%<br>%text|variable.selectedEntity.description%",
+              "width":168, "height":54,
+              "x":4, "y":4,
+              "font":"spectrum", "lineHeight":12
+            },
+            "into":{ "_":"this" }
+          }
+        }
+      },
+      {
+        "object":{
+          "type":[ "objectselector", "objectselectorarrow" ],
+          "image":"defaultsprites", "tileX":216, "tileY":96, "width":8, "height":8,
+          "x":-8, "y":-8,
+          "states":[
+            { "code":{ "name":"Sequence", "data":[ { "wait":1 }, { "set":{ "state":"select" } } ] } },
+            {
+              "name":"select",
+              "code":{
+                "name":"Execute",
+                "data":[
+                  {
+                    "when":{ "_":[ "keyRight", "isHit" ] },
+                    "execute":[
+                      { "sum":32, "to":{ "_":[ "this", "x" ] } },
+                      {
+                        "times":256,
+                        "execute":{
+                          "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "selectable" ] }, "not" ] },
+                          "execute":[ { "sum":1, "to":{ "_":[ "this", "x" ] } }, { "when":{ "_":[ "this", "x", "isGreaterThan", 256 ] }, "set":{ "x":0 } } ]
+                        }
+                      },
+                      { "assign":{ "_":[ "this", "collidesWith", { "_":[ "object", "selectable" ] } ] }, "to":{ "_":[ "variable", "selectedObject" ] } }
+                    ]
+                  },
+                  {
+                    "when":{ "_":[ "keyLeft", "isHit" ] },
+                    "execute":[
+                      {
+                        "times":256,
+                        "execute":{
+                          "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "selectable" ] }, "not" ] },
+                          "execute":[ { "subtract":1, "to":{ "_":[ "this", "x" ] } }, { "when":{ "_":[ "this", "x", "isLessThan", 0 ] }, "set":{ "x":256 } } ]
+                        }
+                      },
+                      { "assign":{ "_":[ "this", "collidesWith", { "_":[ "object", "selectable" ] } ] }, "to":{ "_":[ "variable", "selectedObject" ] } }
+                    ]
+                  },
+                  {
+                    "when":{ "_":[ "keyDown", "isHit" ] },
+                    "execute":[
+                      { "sum":8, "to":{ "_":[ "this", "x" ] } },
+                      { "sum":32, "to":{ "_":[ "this", "y" ] } },
+                      {
+                        "times":192,
+                        "execute":{
+                          "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "selectable" ] }, "not" ] },
+                          "execute":[ { "sum":1, "to":{ "_":[ "this", "y" ] } }, { "when":{ "_":[ "this", "y", "isGreaterThan", 192 ] }, "set":{ "y":0 } } ]
+                        }
+                      },
+                      { "assign":{ "_":[ "this", "collidesWith", { "_":[ "object", "selectable" ] } ] }, "to":{ "_":[ "variable", "selectedObject" ] } }
+                    ]
+                  },
+                  {
+                    "when":{ "_":[ "keyUp", "isHit" ] },
+                    "execute":[
+                      { "sum":8, "to":{ "_":[ "this", "x" ] } },
+                      { "subtract":8, "to":{ "_":[ "this", "y" ] } },
+                      {
+                        "times":192,
+                        "execute":{
+                          "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "selectable" ] }, "not" ] },
+                          "execute":[ { "subtract":1, "to":{ "_":[ "this", "y" ] } }, { "when":{ "_":[ "this", "y", "isLessThan", 0 ] }, "set":{ "y":192 } } ]
+                        }
+                      },
+                      { "assign":{ "_":[ "this", "collidesWith", { "_":[ "object", "selectable" ] } ] }, "to":{ "_":[ "variable", "selectedObject" ] } }
+                    ]
+                  },
+                  { "assign":{ "_":[ "variable", "selectedObject", "relatedEntity" ] }, "to":{ "_":[ "variable", "selectedEntity" ] } },
+                  { "set":{ "x":{ "_":[ "variable", "selectedObject", "x", "-", 8 ] }, "y":{ "_":[ "variable", "selectedObject", "y" ] } } },
+                  { "when":{ "_":[ "keyA", "isHit" ] }, "set":{ "state":"selected" } },
+                  {
+                    "when":{ "_":[ "keyB", "isHit" ] },
+                    "execute":[ { "as":{ "_":[ "objectTyped", "objectdetails" ] }, "remove":1 }, { "remove":1 }, { "_":[ "variable", "objectSelectorCancel" ] } ]
+                  }
+                ]
+              }
+            },
+            {
+              "name":"selected",
+              "code":{
+                "name":"Sequence",
+                "data":[
+                  { "set":{ "visible":0 }, "wait":1 },
+                  { "set":{ "visible":1 }, "wait":1, "cycles":5, "loopTo":-1 },
+                  { "execute":{ "_":[ "variable", "objectSelectorExecute" ] } }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "codeShop":[
+      { "as":{ "_":[ "objectTyped", "actionselector" ] }, "remove":1 },
+      { "as":{ "_":[ "objectTyped", "inventory" ] }, "remove":1 },
+      { "as":{ "_":[ "objectTyped", "confirmation" ] }, "remove":1 },
+      {
+        "as":{ "_":"variable" },
+        "set":{
+          "menuAction":"execute",
+          "menuCancel":[ { "as":{ "_":[ "objectTyped", "actionselector" ] }, "remove":1 }, { "gotoScene":{ "_":[ "variable", "spawnMap" ] } } ],
+          "menuId":"actionselector",
+          "menuOnAction":0,
+          "menuOptions":[ { "label":"BUY", "execute":[ { "_":[ "stencil", "codeShopBuy" ] } ] }, { "label":"SELL", "execute":[ { "_":[ "stencil", "codeShopSell" ] } ] } ]
+        }
+      },
+      { "_":[ "stencil", "codeMenuDraw" ] },
+      { "as":{ "_":[ "objectTyped", "actionselector" ] }, "set":{ "x":8, "y":8 } }
+    ],
+    "codeShopBuy":[
+      { "as":{ "_":[ "objectTyped", "inventory" ] }, "remove":1 },
+      { "as":{ "_":[ "objectTyped", "confirmation" ] }, "remove":1 },
+      { "as":{ "_":"variable" }, "set":{ "inventoryList":{ "_":[ "new", [] ] } } },
+      {
+        "foreach":{ "_":[ "variable", "inShop" ] },
+        "as":{ "_":[ "resource", "items", { "_":"this" }, "merged" ] },
+        "pushInto":{ "_":[ "variable", "inventoryList" ] }
+      },
+      {
+        "when":{ "_":[ "variable", "inventoryList", "count", "isEqualTo", 0 ] },
+        "execute":[
+          { "object":{ "set":{ "_":[ "stencil", "modelMessage" ] }, "html":"I have nothing to sell!" }, "into":{ "_":"scenehud" } },
+          { "_":[ "stencil", "codeShop" ] }
+        ],
+        "elseExecute":[
+          {
+            "as":{ "_":"variable" },
+            "set":{
+              "inventoryCancel":{ "_":[ "stencil", "codeShop" ] },
+              "inventoryOnAction":[
+                { "as":{ "_":[ "objectTyped", "inventory" ] }, "remove":1 },
+                {
+                  "as":{ "_":"variable" },
+                  "set":{
+                    "inInventory":{ "_":[ "variable", "inventory" ] },
+                    "inItem":{ "_":[ "variable", "inventoryList", { "_":[ "variable", "inventorySelection" ] } ] },
+                    "outInventory":{ "_":[ "variable", "inventory" ] }
+                  }
+                },
+                {
+                  "object":{
+                    "type":"confirmation",
+                    "object":{
+                      "type":"hud",
+                      "hudType":"label", "label":"Buy %text|variable.inItem.label% for %number|variable.inItem.goldValue% G?<br>&nbsp;(A) YES<br>&nbsp;(B) NO",
+                      "width":232, "height":40,
+                      "x":4, "y":4,
+                      "font":"spectrum", "lineHeight":10
+                    },
+                    "width":240, "height":48,
+                    "zIndex":100, "x":8, "y":136,
+                    "bgcolor":"#000", "border":"#fff",
+                    "states":{
+                      "code":{
+                        "name":"Execute",
+                        "data":{
+                          "when":{ "_":[ "keyA", "isHit" ] },
+                          "execute":[
+                            {
+                              "when":{ "_":[ "variable", "gold", "isGreaterEqualThan", { "_":[ "variable", "inItem", "goldValue" ] } ] },
+                              "execute":[
+                                { "_":[ "stencil", "codeItemAdd" ] },
+                                {
+                                  "when":{ "_":[ "variable", "inventory", "count", "isGreaterThan", 13 ] },
+                                  "execute":[
+                                    { "as":{ "_":"variable" }, "set":{ "outItem":{ "_":[ "variable", "inItem" ] } } },
+                                    { "_":[ "stencil", "codeItemRemove" ] },
+                                    { "object":{ "set":{ "_":[ "stencil", "modelMessage" ] }, "html":"Can't buy. Inventory full." }, "into":{ "_":"scenehud" } }
+                                  ],
+                                  "elseExecute":[
+                                    { "subtract":{ "_":[ "variable", "inItem", "goldValue" ] }, "to":{ "_":[ "variable", "gold" ] } },
+                                    { "object":{ "set":{ "_":[ "stencil", "modelMessage" ] }, "html":"Thank you!" }, "into":{ "_":"scenehud" } }
+                                  ]
+                                }
+                              ],
+                              "elseExecute":{ "object":{ "set":{ "_":[ "stencil", "modelMessage" ] }, "html":"Not enough gold! Sorry!" }, "into":{ "_":"scenehud" } }
+                            },
+                            { "as":{ "_":[ "objectTyped", "confirmation" ] }, "remove":1 },
+                            { "_":[ "stencil", "codeShopBuy" ] }
+                          ],
+                          "elseExecute":{ "when":{ "_":[ "keyB", "isHit" ] }, "execute":{ "_":[ "stencil", "codeShopBuy" ] } }
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          { "_":[ "stencil", "codeInventoryDraw" ] },
+          { "as":{ "_":[ "objectTyped", "inventory" ] }, "set":{ "x":55, "y":0 } }
+        ]
+      }
+    ],
+    "codeShopGoto":[
+      {
+        "as":{ "_":"variable" },
+        "set":{
+          "spawnMap":{ "_":[ "variable", "idScene" ] },
+          "spawnPointX":{ "_":[ "objectTyped", "player", "x" ] },
+          "spawnPointY":{ "_":[ "objectTyped", "player", "y" ] }
+        }
+      },
+      { "gotoScene":"shop" }
+    ],
+    "codeShopSell":[
+      { "as":{ "_":[ "objectTyped", "inventory" ] }, "remove":1 },
+      { "as":{ "_":[ "objectTyped", "confirmation" ] }, "remove":1 },
+      { "as":{ "_":"variable" }, "set":{ "inventoryList":{ "_":[ "variable", "inventory" ] } } },
+      {
+        "when":{ "_":[ "variable", "inventoryList", "count", "isEqualTo", 0 ] },
+        "execute":[
+          { "object":{ "set":{ "_":[ "stencil", "modelMessage" ] }, "html":"You don't have anything!" }, "into":{ "_":"scenehud" } },
+          { "_":[ "stencil", "codeShop" ] }
+        ],
+        "elseExecute":[
+          {
+            "as":{ "_":"variable" },
+            "set":{
+              "inventoryCancel":{ "_":[ "stencil", "codeShop" ] },
+              "inventoryOnAction":[
+                { "as":{ "_":[ "objectTyped", "inventory" ] }, "remove":1 },
+                {
+                  "as":{ "_":"variable" },
+                  "set":{
+                    "outInventory":{ "_":[ "variable", "inventory" ] },
+                    "outItem":{ "_":[ "variable", "inventoryList", { "_":[ "variable", "inventorySelection" ] } ] }
+                  }
+                },
+                { "as":{ "_":"variable" }, "set":{ "outPrice":{ "_":[ "variable", "outItem", "goldValue", "*", 0.8, "floor" ] } } },
+                {
+                  "object":{
+                    "type":"confirmation",
+                    "object":{
+                      "type":"hud",
+                      "hudType":"label", "label":"Sell %text|variable.inItem.label% for %number|variable.outPrice% G?<br>&nbsp;(A) YES<br>&nbsp;(B) NO",
+                      "width":232, "height":40,
+                      "x":4, "y":4,
+                      "font":"spectrum", "lineHeight":10
+                    },
+                    "width":240, "height":48,
+                    "zIndex":100, "x":8, "y":136,
+                    "bgcolor":"#000", "border":"#fff",
+                    "states":{
+                      "code":{
+                        "name":"Execute",
+                        "data":{
+                          "when":{ "_":[ "keyA", "isHit" ] },
+                          "execute":[
+                            { "_":[ "stencil", "codeItemRemove" ] },
+                            { "sum":{ "_":[ "variable", "outPrice" ] }, "to":{ "_":[ "variable", "gold" ] } },
+                            { "object":{ "set":{ "_":[ "stencil", "modelMessage" ] }, "html":"Thank you!" }, "into":{ "_":"scenehud" } },
+                            { "as":{ "_":[ "objectTyped", "confirmation" ] }, "remove":1 },
+                            { "_":[ "stencil", "codeShopSell" ] }
+                          ],
+                          "elseExecute":{ "when":{ "_":[ "keyB", "isHit" ] }, "execute":{ "_":[ "stencil", "codeShopSell" ] } }
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          },
+          { "_":[ "stencil", "codeInventoryDraw" ] },
+          { "as":{ "_":[ "objectTyped", "inventory" ] }, "set":{ "x":55, "y":0 } }
+        ]
+      }
+    ],
+    "codeSpellGetDefault":[
+      { "subtract":{ "_":[ "variable", "selectedEntity", "curMagicDefense" ] }, "to":{ "_":[ "variable", "outDamage" ] } },
+      {
+        "when":{ "_":[ "variable", "outDamage", "isLessEqualThan", "0" ] },
+        "execute":{ "as":{ "_":[ "objectTyped", { "_":[ "variable", "selectedEntity", "type" ] } ] }, "set":{ "state":"miss" } },
+        "elseExecute":[
+          { "subtract":{ "_":[ "variable", "outDamage" ] }, "to":{ "_":[ "variable", "selectedEntity", "hp" ] } },
+          { "when":{ "_":[ "variable", "selectedEntity", "hp", "isLessThan", 0 ] }, "assign":0, "to":{ "_":[ "variable", "selectedEntity", "hp" ] } },
+          { "as":{ "_":[ "objectTyped", { "_":[ "variable", "selectedEntity", "type" ] } ] }, "set":{ "state":"hit" } }
+        ]
+      }
+    ],
+    "codeTurnDoFight":[
+      {
+        "as":{ "_":"variable" },
+        "set":{
+          "doAction":{ "_":[ "variable", "selectedEntity", "doFight" ] },
+          "getFightMethod":{ "_":[ "variable", "selectedEntity", "getFight" ] },
+          "getHealMethod":{ "_":[ "variable", "selectedEntity", "getHeal" ] },
+          "getSpellMethod":{ "_":[ "variable", "selectedEntity", "getSpell" ] }
+        }
+      },
+      {
+        "object":{ "set":{ "_":[ "stencil", "modelMessage" ] }, "html":{ "_":[ "variable", "currentTurnEntity", "equipment", "label" ] } },
+        "into":{ "_":"scenehud" }
+      },
+      { "as":{ "_":[ "objectTyped", { "_":[ "variable", "currentTurnEntity", "type" ] } ] }, "set":{ "state":"startaction" } }
+    ],
+    "codeTurnDoItem":[
+      { "_":[ "stencil", "codeItemRemove" ] },
+      {
+        "as":{ "_":"variable" },
+        "set":{
+          "doAction":{ "_":[ "variable", "outItem", "battleUse" ] },
+          "getFightMethod":{ "_":[ "variable", "selectedEntity", "getFight" ] },
+          "getHealMethod":{ "_":[ "variable", "selectedEntity", "getHeal" ] },
+          "getSpellMethod":{ "_":[ "variable", "selectedEntity", "getSpell" ] }
+        }
+      },
+      { "object":{ "set":{ "_":[ "stencil", "modelMessage" ] }, "html":{ "_":[ "variable", "outItem", "label" ] } }, "into":{ "_":"scenehud" } },
+      { "as":{ "_":[ "objectTyped", { "_":[ "variable", "currentTurnEntity", "type" ] } ] }, "set":{ "state":"startaction" } }
+    ],
+    "codeTurnDoMagic":[
+      { "subtract":{ "_":[ "variable", "outSpell", "mpRequired" ] }, "to":{ "_":[ "variable", "currentTurnEntity", "mp" ] } },
+      {
+        "as":{ "_":"variable" },
+        "set":{
+          "doAction":{ "_":[ "variable", "outSpell", "cast" ] },
+          "getFightMethod":{ "_":[ "variable", "selectedEntity", "getFight" ] },
+          "getHealMethod":{ "_":[ "variable", "selectedEntity", "getHeal" ] },
+          "getSpellMethod":{ "_":[ "variable", "selectedEntity", "getSpell" ] }
+        }
+      },
+      { "object":{ "set":{ "_":[ "stencil", "modelMessage" ] }, "html":{ "_":[ "variable", "outSpell", "label" ] } }, "into":{ "_":"scenehud" } },
+      { "as":{ "_":[ "objectTyped", { "_":[ "variable", "currentTurnEntity", "type" ] } ] }, "set":{ "state":"startaction" } }
+    ],
+    "codeTurnDoPass":[
+      {
+        "object":{ "set":{ "_":[ "stencil", "modelMessage" ] }, "html":{ "_":[ "variable", "currentTurnEntity", "label", ".", " does nothing." ] } },
+        "into":{ "_":"scenehud" }
+      },
+      { "as":{ "_":[ "objectTyped", { "_":[ "variable", "currentTurnEntity", "type" ] } ] }, "set":{ "state":"pass" } }
+    ],
+    "codeTurnDoRun":[
+      {
+        "object":{ "set":{ "_":[ "stencil", "modelMessage" ] }, "html":{ "_":[ "variable", "currentTurnEntity", "label", ".", " run away..." ] } },
+        "into":{ "_":"scenehud" }
+      },
+      { "as":{ "_":[ "variable", "currentTurnEntity" ] }, "set":{ "curEscaped":1 } },
+      { "as":{ "_":[ "objectTyped", { "_":[ "variable", "currentTurnEntity", "type" ] } ] }, "set":{ "state":"run" } }
+    ],
+    "codeTurnNext":[
+      { "sum":1, "to":{ "_":[ "variable", "currentTurn" ] } },
+      {
+        "times":20,
+        "execute":[
+          {
+            "when":{ "_":[ "variable", "currentTurn", "isEqualTo", -1, "or", { "_":[ "variable", "turns", { "_":[ "variable", "currentTurn" ] }, "not" ] } ] },
+            "execute":{ "_":[ "stencil", "codeRoundNext" ] }
+          },
+          {
+            "when":{
+              "_":[
+                "variable",
+                "turns",
+                { "_":[ "variable", "currentTurn" ] },
+                "hp",
+                "not",
+                "and",
+                { "_":[ "variable", "turns", { "_":[ "variable", "currentTurn" ] }, "curEscaped", "not" ] }
+              ]
+            },
+            "sum":1,
+            "to":{ "_":[ "variable", "currentTurn" ] }
+          }
+        ]
+      },
+      { "assign":{ "_":[ "variable", "turns", { "_":[ "variable", "currentTurn" ] } ] }, "to":{ "_":[ "variable", "currentTurnEntity" ] } },
+      { "as":{ "_":"variable" }, "set":{ "foeLeft":0, "partyAlive":0, "partyEscaped":0 } },
+      {
+        "foreach":{ "_":[ "variable", "turns" ] },
+        "execute":{
+          "when":{ "_":[ "this", "isPlayed" ] },
+          "execute":{
+            "when":{ "_":[ "this", "curEscaped" ] },
+            "sum":1,
+            "to":{ "_":[ "variable", "partyEscaped" ] },
+            "elseExecute":{ "when":{ "_":[ "this", "hp" ] }, "sum":1, "to":{ "_":[ "variable", "partyAlive" ] } }
+          },
+          "elseExecute":{ "when":{ "_":[ "this", "hp", "and", { "_":[ "this", "curEscaped", "not" ] } ] }, "sum":1, "to":{ "_":[ "variable", "foeLeft" ] } }
+        }
+      },
+      {
+        "when":{ "_":[ "variable", "partyAlive", "not" ] },
+        "execute":{
+          "when":{ "_":[ "variable", "partyEscaped" ] },
+          "as":{ "_":"scene" },
+          "set":{ "set":{ "state":"escaped" } },
+          "elseExecute":{ "as":{ "_":"scene" }, "set":{ "state":"defeat" } }
+        },
+        "elseExecute":{
+          "when":{ "_":[ "variable", "foeLeft" ] },
+          "execute":{
+            "when":{ "_":[ "variable", "currentTurnEntity", "isPlayed" ] },
+            "execute":{ "_":[ "stencil", "codeTurnPlayer" ] },
+            "elseExecute":{ "_":[ "variable", "currentTurnEntity", "ai" ] }
+          },
+          "elseExecute":{ "as":{ "_":"scene" }, "set":{ "state":"win" } }
+        }
+      }
+    ],
+    "codeTurnPlayer":[
+      { "_":[ "stencil", "codeUiRemove" ] },
+      {
+        "as":{ "_":"variable" },
+        "set":{
+          "menuAction":"execute",
+          "menuCancel":[ { "as":{ "_":[ "object", "objectselector" ] }, "remove":1 }, { "_":[ "stencil", "codeUiRemove" ] }, { "_":[ "stencil", "codeTurnDoPass" ] } ],
+          "menuId":"actionselector",
+          "menuOnAction":0,
+          "menuOptions":[
+            {
+              "label":"FIGHT",
+              "execute":[
+                {
+                  "as":{ "_":"variable" },
+                  "set":{
+                    "objectSelectorCancel":{ "_":[ "stencil", "codeTurnPlayer" ] },
+                    "objectSelectorExecute":[ { "as":{ "_":[ "object", "objectselector" ] }, "remove":1 }, { "_":[ "stencil", "codeUiRemove" ] }, { "_":[ "stencil", "codeTurnDoFight" ] } ],
+                    "objectSelectorStart":"foe"
+                  }
+                },
+                { "_":[ "stencil", "codeSelectorObject" ] }
+              ]
+            },
+            {
+              "label":"MAGIC",
+              "execute":{
+                "when":{ "_":[ "variable", "currentTurnEntity", "spells", "count", "not" ] },
+                "execute":[
+                  { "object":{ "set":{ "_":[ "stencil", "modelMessage" ] }, "html":"No spells available." }, "into":{ "_":"scenehud" } },
+                  { "_":[ "stencil", "codeTurnPlayer" ] }
+                ],
+                "elseExecute":[
+                  {
+                    "as":{ "_":"variable" },
+                    "set":{
+                      "menuCancel":{ "_":[ "stencil", "codeTurnPlayer" ] },
+                      "menuId":"spellselector",
+                      "menuOnAction":[
+                        { "as":{ "_":"variable" }, "set":{ "outSpell":{ "_":[ "variable", "currentTurnEntity", "spells", { "_":[ "variable", "menuSelection" ] } ] } } },
+                        { "as":{ "_":[ "objectTyped", "spellselector" ] }, "remove":1 },
+                        {
+                          "when":{ "_":[ "variable", "currentTurnEntity", "mp", "isLessThan", { "_":[ "variable", "outSpell", "mpRequired" ] } ] },
+                          "execute":[
+                            { "object":{ "set":{ "_":[ "stencil", "modelMessage" ] }, "html":"Not enough Magic Power." }, "into":{ "_":"scenehud" } },
+                            { "_":[ "stencil", "codeTurnPlayer" ] }
+                          ],
+                          "elseExecute":[
+                            {
+                              "as":{ "_":"variable" },
+                              "set":{
+                                "objectSelectorCancel":{ "_":[ "stencil", "codeTurnPlayer" ] },
+                                "objectSelectorExecute":[ { "as":{ "_":[ "object", "objectselector" ] }, "remove":1 }, { "_":[ "stencil", "codeUiRemove" ] }, { "_":[ "stencil", "codeTurnDoMagic" ] } ],
+                                "objectSelectorStart":{ "_":[ "variable", "outSpell", "selectorStart" ] }
+                              }
+                            },
+                            { "_":[ "stencil", "codeSelectorObject" ] }
+                          ]
+                        }
+                      ],
+                      "menuOptions":{ "_":[ "variable", "currentTurnEntity", "spells" ] }
+                    }
+                  },
+                  { "_":[ "stencil", "codeMenuDraw" ] },
+                  { "as":{ "_":[ "objectTyped", "spellselector" ] }, "set":{ "x":110, "y":125 } }
+                ]
+              }
+            },
+            {
+              "label":"ITEM",
+              "execute":{
+                "when":{ "_":[ "variable", "inventory", "count", "not" ] },
+                "execute":[
+                  { "object":{ "set":{ "_":[ "stencil", "modelMessage" ] }, "html":"Inventory is empty." }, "into":{ "_":"scenehud" } },
+                  { "_":[ "stencil", "codeTurnPlayer" ] }
+                ],
+                "elseExecute":[
+                  {
+                    "as":{ "_":"variable" },
+                    "set":{
+                      "inventoryCancel":{ "_":[ "stencil", "codeTurnPlayer" ] },
+                      "inventoryList":{ "_":[ "variable", "inventory" ] },
+                      "inventoryOnAction":[
+                        {
+                          "as":{ "_":"variable" },
+                          "set":{ "outInventory":{ "_":[ "variable", "inventory" ] }, "outItem":{ "_":[ "variable", "inventory", { "_":[ "variable", "inventorySelection" ] } ] } }
+                        },
+                        { "as":{ "_":[ "objectTyped", "inventory" ] }, "remove":1 },
+                        {
+                          "when":{ "_":[ "variable", "outItem", "usableInMap" ] },
+                          "execute":[
+                            {
+                              "as":{ "_":"variable" },
+                              "set":{
+                                "objectSelectorCancel":{ "_":[ "stencil", "codeTurnPlayer" ] },
+                                "objectSelectorExecute":[ { "as":{ "_":[ "object", "objectselector" ] }, "remove":1 }, { "_":[ "stencil", "codeUiRemove" ] }, { "_":[ "stencil", "codeTurnDoItem" ] } ],
+                                "objectSelectorStart":{ "_":[ "variable", "currentTurnEntity", "type" ] }
+                              }
+                            },
+                            { "_":[ "stencil", "codeSelectorObject" ] }
+                          ],
+                          "elseExecute":[
+                            { "object":{ "set":{ "_":[ "stencil", "modelMessage" ] }, "html":"Can't use it now." }, "into":{ "_":"scenehud" } },
+                            { "_":[ "stencil", "codeTurnPlayer" ] }
+                          ]
+                        }
+                      ]
+                    }
+                  },
+                  { "_":[ "stencil", "codeInventoryDraw" ] },
+                  { "as":{ "_":[ "objectTyped", "inventory" ] }, "set":{ "x":60, "y":0 } }
+                ]
+              }
+            },
+            { "label":"RUN", "execute":[ { "_":[ "stencil", "codeUiRemove" ] }, { "_":[ "stencil", "codeTurnDoRun" ] } ] }
+          ]
+        }
+      },
+      { "_":[ "stencil", "codeMenuDraw" ] },
+      { "as":{ "_":[ "objectTyped", "actionselector" ] }, "set":{ "x":182, "y":125 } }
+    ],
+    "codeUiRemove":[
+      { "as":{ "_":[ "objectTyped", "actionselector" ] }, "remove":1 },
+      { "as":{ "_":[ "objectTyped", "spellselector" ] }, "remove":1 },
+      { "as":{ "_":[ "objectTyped", "inventory" ] }, "remove":1 }
+    ],
+    "modelDialogueBox":{
+      "type":"dialogueBox",
+      "object":[
+        { "type":"dialogueText", "into":{ "_":"this" }, "width":184, "height":32, "x":48, "y":8, "font":"spectrum", "lineHeight":10 },
+        { "type":"dialoguePortrait", "into":{ "_":"this" }, "image":"portraits", "width":32, "height":32, "x":8, "y":8, "visible":0, "animation":"idle" }
+      ],
+      "width":240, "height":48,
+      "x":8, "y":136,
+      "bgcolor":"#000", "border":"#fff"
+    },
+    "modelInteractive":{
+      "states":[
+        {
+          "execute":{
+            "when":{ "_":[ "variable", "flags", { "_":[ "this", "flagId" ] }, "or", { "_":[ "variable", "flags", { "_":[ "this", "checkId" ] } ] } ] },
+            "remove":1
+          },
+          "actions":{
+            "name":"interact",
+            "execute":{
+              "when":{ "_":[ "this", "trigger" ] },
+              "execute":{ "as":{ "_":[ "objectTyped", { "_":[ "this", "trigger" ] } ] }, "executeAction":"interact" },
+              "elseExecute":{
+                "when":{ "_":[ "this", "dialogue" ] },
+                "set":{ "state":"dialogue" },
+                "elseExecute":{
+                  "when":{ "_":[ "this", "battle" ] },
+                  "as":{ "_":"variable" },
+                  "set":{ "inBattle":{ "_":[ "that", "battle" ] }, "inDialogue":{ "_":[ "that", "thenDialogue" ] }, "inFlag":{ "_":[ "that", "flagId" ] } },
+                  "execute":{ "_":[ "stencil", "codeBattleGoto" ] },
+                  "elseExecute":{
+                    "when":{ "_":[ "this", "shop" ] },
+                    "as":{ "_":"variable" },
+                    "set":{ "inDialogue":{ "_":[ "that", "thenDialogue" ] }, "inShop":{ "_":[ "that", "shop" ] } },
+                    "execute":{ "_":[ "stencil", "codeShopGoto" ] },
+                    "elseExecute":{
+                      "when":{ "_":[ "this", "spawnMap" ] },
+                      "as":{ "_":"variable" },
+                      "set":{ "spawnMap":{ "_":[ "that", "spawnMap" ] }, "spawnPointX":{ "_":[ "that", "spawnPointX" ] }, "spawnPointY":{ "_":[ "that", "spawnPointY" ] } },
+                      "execute":{ "_":[ "stencil", "codeMapGoto" ] }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "name":"dialogue",
+          "code":{
+            "name":"Sequence",
+            "data":{
+              "object":{
+                "set":{ "_":[ "stencil", "modelDialogueBox" ] },
+                "emitter":{ "_":"that" },
+                "states":{
+                  "code":{
+                    "name":"Sequence",
+                    "data":[
+                      { "as":{ "_":[ "objectTyped", "player" ] }, "set":{ "state":"paused" } },
+                      { "wait":10 },
+                      { "subsequence":{ "_":[ "this", "emitter", "dialogue" ] } },
+                      { "as":{ "_":[ "object", "dialogueBox" ] }, "remove":1 },
+                      {
+                        "when":{ "_":[ "this", "emitter", "battle" ] },
+                        "execute":[
+                          {
+                            "when":{ "_":[ "this", "emitter", "removeMember" ] },
+                            "execute":{
+                              "when":{ "_":[ { "_":[ "variable", "party" ] }, "search", { "label":{ "_":[ "this", "emitter", "removeMember" ] } } ] },
+                              "unpush":{ "_":"that" },
+                              "from":{ "_":[ "variable", "party" ] }
+                            }
+                          },
+                          {
+                            "as":{ "_":"variable" },
+                            "set":{
+                              "inBattle":{ "_":[ "that", "emitter", "battle" ] },
+                              "inDialogue":{ "_":[ "that", "emitter", "thenDialogue" ] },
+                              "inFlag":{ "_":[ "that", "emitter", "flagId" ] }
+                            },
+                            "execute":{ "_":[ "stencil", "codeBattleGoto" ] }
+                          }
+                        ],
+                        "elseExecute":{
+                          "when":{ "_":[ "this", "emitter", "shop" ] },
+                          "execute":{
+                            "as":{ "_":"variable" },
+                            "set":{ "inDialogue":{ "_":[ "that", "emitter", "thenDialogue" ] }, "inShop":{ "_":[ "that", "emitter", "shop" ] } },
+                            "execute":{ "_":[ "stencil", "codeShopGoto" ] }
+                          },
+                          "elseExecute":[
+                            { "when":{ "_":[ "this", "emitter", "flagId" ] }, "assign":1, "to":{ "_":[ "variable", "flags", { "_":[ "this", "emitter", "flagId" ] } ] } },
+                            {
+                              "when":{ "_":[ "this", "emitter", "addMember" ] },
+                              "as":{ "_":[ "resource", "characters", { "_":[ "this", "emitter", "addMember" ] }, "merged" ] },
+                              "execute":[
+                                { "pushInto":{ "_":[ "variable", "party" ] } },
+                                { "as":{ "_":"variable" }, "set":{ "outEntity":{ "_":"that" }, "outXp":0 }, "execute":{ "_":[ "stencil", "codeEntityXpGain" ] } },
+                                { "object":{ "set":{ "_":[ "stencil", "modelMessage" ] }, "html":{ "_":[ "that", "label", ".", " joined the party." ] } }, "into":{ "_":"scenehud" } }
+                              ]
+                            },
+                            {
+                              "when":{ "_":[ "this", "emitter", "removeMember" ] },
+                              "execute":{
+                                "when":{ "_":[ { "_":[ "variable", "party" ] }, "search", { "label":{ "_":[ "this", "emitter", "removeMember" ] } } ] },
+                                "as":{ "_":"that" },
+                                "execute":[
+                                  { "object":{ "set":{ "_":[ "stencil", "modelMessage" ] }, "html":{ "_":[ "that", "label", ".", " left the party." ] } }, "into":{ "_":"scenehud" } },
+                                  { "unpush":{ "_":"this" }, "from":{ "_":[ "variable", "party" ] } }
+                                ]
+                              }
+                            },
+                            {
+                              "when":{ "_":[ "this", "emitter", "refreshMap" ] },
+                              "execute":[
+                                { "as":{ "_":"variable" }, "set":{ "spawnPointX":{ "_":[ "objectTyped", "player", "x" ] }, "spawnPointY":{ "_":[ "objectTyped", "player", "y" ] } } },
+                                { "gotoScene":{ "_":[ "variable", "idScene" ] } }
+                              ],
+                              "elseExecute":{
+                                "when":{ "_":[ "this", "emitter", "spawnMap" ] },
+                                "execute":{
+                                  "as":{ "_":"variable" },
+                                  "set":{
+                                    "spawnMap":{ "_":[ "that", "emitter", "spawnMap" ] },
+                                    "spawnPointX":{ "_":[ "that", "spawnPointX" ] },
+                                    "spawnPointY":{ "_":[ "that", "spawnPointY" ] }
+                                  },
+                                  "execute":{ "_":[ "stencil", "codeMapGoto" ] }
+                                },
+                                "elseExecute":[ { "as":{ "_":[ "objectTyped", "player" ] }, "set":{ "state":"default" } }, { "as":{ "_":[ "this", "emitter" ] }, "set":{ "state":"default" } } ]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              },
+              "into":{ "_":"scenehud" }
+            }
+          }
+        }
+      ]
+    },
+    "modelNpc":{
+      "type":[ "block", "activable" ],
+      "set":{ "_":[ "stencil", "modelInteractive" ] },
+      "image":"objects", "width":16, "height":16,
+      "zIndex":10,
+      "states":{ "actions":{ "name":"activate", "execute":{ "executeAction":"interact" } } }
+    },
+    "modelMovingNpc":{
+      "set":{ "_":[ "stencil", "modelNpc" ] },
+      "states":[
+        { "code":{ "name":"Sequence", "data":[ { "set":{ "flipX":1 }, "wait":30 }, { "set":{ "flipX":0 }, "wait":30, "loopTo":-1 } ] } },
+        { "name":"dialogue", "code":{ "name":"Sequence", "data":[ { "set":{ "flipX":1 }, "wait":30 }, { "set":{ "flipX":0 }, "wait":30, "loopTo":-1 } ] } }
+      ]
+    },
+    "modelRoadblock":{ "type":[ "block", "activable" ], "set":{ "_":[ "stencil", "modelInteractive" ] }, "image":"objects", "width":16, "height":16, "zIndex":10 },
+    "modelMessage":{
+      "width":248, "height":20,
+      "zIndex":100, "x":4, "y":4,
+      "bgcolor":"#000", "border":"#fff",
+      "font":"spectrum", "lineHeight":18, "textAlign":"center",
+      "states":{ "code":{ "name":"Sequence", "data":[ { "wait":50 }, { "remove":1 } ] } }
+    },
+    "modelPopupLabel":{
+      "width":100, "height":12,
+      "zIndex":1000000, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "that", "y", "-", 5 ] },
+      "color":"#fff",
+      "font":"spectrum", "lineHeight":10, "outline":"#000", "textAlign":"center",
+      "speed":0.5,
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[ { "subtract":{ "_":[ "this", "speed" ] }, "to":{ "_":[ "this", "y" ] }, "wait":2, "loop":1, "cycles":7 }, { "remove":1 } ]
+        }
+      }
+    },
+    "modelStandardAnimations":{
+      "stilldown":{ "frame":0 },
+      "stillleft":"stillright",
+      "stillright":{ "frame":6 },
+      "stillup":{ "frame":3 },
+      "walkdown":{ "frame":1, "frames":2, "loopTo":0 },
+      "walkleft":"walkright",
+      "walkright":{ "frame":7, "frames":2, "loopTo":0 },
+      "walkup":{ "frame":4, "frames":2, "loopTo":0 }
+    },
+    "stageInitialize":[
+      { "as":{ "_":[ "object", "colored" ] }, "set":{ "bgcolor":{ "_":[ "scene", "tileColor" ] } } },
+      {
+        "when":{ "_":[ "objectTyped", "player", "not" ] },
+        "object":{ "set":{ "_":[ "stencil", "playerMap" ] }, "x":{ "_":[ "variable", "spawnPointX" ] }, "y":{ "_":[ "variable", "spawnPointY" ] } }
+      },
+      { "when":{ "_":[ "variable", "inDialogue" ] }, "set":{ "state":"dialogue" } }
+    ],
+    "stageModel":{
+      "states":{
+        "name":"dialogue",
+        "code":{
+          "name":"Sequence",
+          "data":{
+            "object":{
+              "set":{ "_":[ "stencil", "modelDialogueBox" ] },
+              "emitter":{ "_":"that" },
+              "states":{
+                "code":{
+                  "name":"Sequence",
+                  "data":[
+                    { "as":{ "_":[ "objectTyped", "player" ] }, "set":{ "state":"paused" } },
+                    { "wait":10 },
+                    { "subsequence":{ "_":[ "variable", "inDialogue" ] } },
+                    { "as":{ "_":[ "object", "dialogueBox" ] }, "remove":1 },
+                    { "as":{ "_":"variable" }, "set":{ "inDialogue":0 } },
+                    { "as":{ "_":[ "objectTyped", "player" ] }, "set":{ "state":"default" } },
+                    { "as":{ "_":[ "this", "emitter" ] }, "set":{ "state":"default" } }
+                  ]
+                }
+              }
+            },
+            "into":{ "_":"scenehud" }
+          }
+        }
+      }
+    },
+    "playerMap":{
+      "type":"player",
+      "follow":1,
+      "image":"defaultsprites", "tileX":0, "tileY":464, "width":16, "height":16,
+      "hitbox":{ "width":14, "height":8, "x":1, "y":8 },
+      "animations":{ "_":[ "stencil", "modelStandardAnimations" ] },
+      "animation":"stilldown",
+      "pointingSide":"down",
+      "states":[
+        {
+          "code":[
+            { "name":"Player", "data":{ "horizontal":{ "control":1, "gotoZero":1 }, "vertical":{ "control":1, "gotoZero":1 } } },
+            {
+              "name":"Execute",
+              "data":[
+                {
+                  "when":{ "_":[ "keyA", "isHit" ] },
+                  "execute":[
+                    {
+                      "when":{ "_":[ "this", "pointingSide", "isEqualTo", "down" ] },
+                      "as":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "activable" ] }, "hitbox":{ "width":8, "height":8, "x":4, "y":16 } } ] },
+                      "executeAction":{ "_":"activate" }
+                    },
+                    {
+                      "when":{ "_":[ "this", "pointingSide", "isEqualTo", "up" ] },
+                      "as":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "activable" ] }, "hitbox":{ "width":8, "height":8, "x":4, "y":-8 } } ] },
+                      "executeAction":{ "_":"activate" }
+                    },
+                    {
+                      "when":{ "_":[ "this", "pointingSide", "isEqualTo", "right" ] },
+                      "as":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "activable" ] }, "hitbox":{ "width":8, "height":8, "x":16, "y":4 } } ] },
+                      "executeAction":{ "_":"activate" }
+                    },
+                    {
+                      "when":{ "_":[ "this", "pointingSide", "isEqualTo", "left" ] },
+                      "as":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "activable" ] }, "hitbox":{ "width":8, "height":8, "x":-8, "y":4 } } ] },
+                      "executeAction":{ "_":"activate" }
+                    }
+                  ]
+                },
+                { "when":{ "_":[ "keyB", "isHit" ] }, "execute":{ "_":[ "stencil", "pauseMenu" ] } }
+              ]
+            },
+            {
+              "name":"Physics",
+              "data":{ "walls":[ { "camera":1, "restitution":0 }, { "type":"block", "restitution":0 } ], "limitX":[ -2, 2 ], "limitY":[ -2, 2 ] }
+            },
+            {
+              "name":"Execute",
+              "data":{
+                "when":{ "_":[ { "_":[ "this", "forceX", "isNotEqualTo", 0 ] }, "or", { "_":[ "this", "forceY", "isNotEqualTo", 0 ] } ] },
+                "execute":{
+                  "when":{ "_":[ "this", "collidesWith", "randomEncounter" ] },
+                  "execute":[
+                    { "sum":1, "to":{ "_":[ "variable", "tension" ] } },
+                    {
+                      "when":{ "_":[ "variable", "tension", "isGreaterThan", 50 ] },
+                      "as":{ "_":"that" },
+                      "execute":{
+                        "as":{ "_":"variable" },
+                        "set":{ "inBattle":{ "_":[ "randomValue", { "_":[ "that", "battle" ] } ] }, "tension":0 },
+                        "execute":{ "_":[ "stencil", "codeBattleGoto" ] }
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            { "_":[ "stencil", "topViewAnimation" ] },
+            { "name":"ZPerspective" }
+          ]
+        },
+        { "name":"paused", "set":{ "forceX":0, "forceY":0 }, "code":{ "_":[ "stencil", "topViewAnimation" ] } }
+      ]
+    },
+    "hotspot":{
+      "set":{ "_":[ "stencil", "modelInteractive" ] },
+      "zIndex":2000,
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":{ "when":{ "_":[ "this", "collidesWith", { "_":[ "objectTyped", "player" ] } ] }, "set":{ "state":"idle" }, "executeAction":"interact" }
+        }
+      }
+    },
+    "npc":{ "set":{ "_":[ "stencil", "modelMovingNpc" ] }, "tileX":0, "tileY":32 },
+    "npcBlamage":{ "set":{ "_":[ "stencil", "modelMovingNpc" ] }, "tileX":16, "tileY":48 },
+    "npcBlob":{ "set":{ "_":[ "stencil", "modelMovingNpc" ] }, "tileX":16, "tileY":32 },
+    "npcElder":{ "set":{ "_":[ "stencil", "modelMovingNpc" ] }, "tileX":48, "tileY":48 },
+    "npcFire":{ "set":{ "_":[ "stencil", "modelMovingNpc" ] }, "tileX":0, "tileY":48 },
+    "npcGoblin":{ "set":{ "_":[ "stencil", "modelMovingNpc" ] }, "tileX":48, "tileY":32 },
+    "npcKesiev":{ "set":{ "_":[ "stencil", "modelMovingNpc" ] }, "tileX":0, "tileY":64 },
+    "npcRogue":{ "set":{ "_":[ "stencil", "modelMovingNpc" ] }, "tileX":64, "tileY":32 },
+    "npcWhimage":{ "set":{ "_":[ "stencil", "modelMovingNpc" ] }, "tileX":32, "tileY":48 },
+    "npcWolf":{ "set":{ "_":[ "stencil", "modelMovingNpc" ] }, "tileX":32, "tileY":32 },
+    "npcPaper":{ "set":{ "_":[ "stencil", "modelNpc" ] }, "tileX":64, "tileY":48 },
+    "npcRock":{ "set":{ "_":[ "stencil", "modelRoadblock" ] }, "tileX":64, "tileY":0 },
+    "pauseMenu":[
+      { "as":{ "_":[ "objectTyped", "player" ] }, "set":{ "state":"paused" } },
+      { "as":{ "_":[ "object", "goldindicator" ] }, "remove":1 },
+      {
+        "object":{
+          "type":"goldindicator",
+          "width":70, "height":37,
+          "zIndex":10, "x":178, "y":8,
+          "bgcolor":"#000", "border":"#fff",
+          "execute":{
+            "object":{
+              "type":"hud",
+              "hudType":"label", "label":"GOLD<br>%number|variable.gold%",
+              "width":62, "height":29,
+              "x":4, "y":4,
+              "font":"spectrum", "lineHeight":12
+            },
+            "into":{ "_":"this" }
+          }
+        },
+        "into":{ "_":"scenehud" }
+      },
+      {
+        "as":{ "_":"variable" },
+        "set":{
+          "menuCancel":[
+            { "as":{ "_":[ "object", "characterselector" ] }, "remove":1 },
+            { "as":{ "_":[ "object", "goldindicator" ] }, "remove":1 },
+            { "as":{ "_":[ "objectTyped", "player" ] }, "set":{ "state":"default" } }
+          ],
+          "menuId":"characterselector",
+          "menuOnAction":[
+            { "as":{ "_":[ "object", "characterselector" ] }, "remove":1 },
+            { "as":{ "_":"variable" }, "set":{ "currentTurnEntity":{ "_":[ "variable", "party", { "_":[ "variable", "menuSelection" ] } ] } } },
+            { "_":[ "stencil", "pauseMenuProfile" ] }
+          ],
+          "menuOptions":{ "_":[ "variable", "party" ] }
+        }
+      },
+      { "_":[ "stencil", "codeMenuDraw" ] },
+      { "as":{ "_":[ "objectTyped", "characterselector" ] }, "set":{ "x":8, "y":8 } }
+    ],
+    "pauseMenuProfile":[
+      { "as":{ "_":[ "object", "actionselector" ] }, "remove":1 },
+      { "as":{ "_":[ "object", "characterselector" ] }, "remove":1 },
+      { "as":{ "_":[ "object", "profilebox" ] }, "remove":1 },
+      { "as":{ "_":[ "object", "spellselector" ] }, "remove":1 },
+      { "as":{ "_":[ "object", "inventory" ] }, "remove":1 },
+      { "as":{ "_":[ "object", "goldindicator" ] }, "remove":1 },
+      {
+        "object":{
+          "type":"goldindicator",
+          "width":70, "height":37,
+          "zIndex":10, "x":178, "y":8,
+          "bgcolor":"#000", "border":"#fff",
+          "execute":{
+            "object":{
+              "type":"hud",
+              "hudType":"label", "label":"GOLD<br>%number|variable.gold%",
+              "width":62, "height":29,
+              "x":4, "y":4,
+              "font":"spectrum", "lineHeight":12
+            },
+            "into":{ "_":"this" }
+          }
+        }
+      },
+      {
+        "object":{
+          "type":"profilebox",
+          "width":240, "height":136,
+          "x":8, "y":8,
+          "bgcolor":"#000", "border":"#fff",
+          "execute":{
+            "object":[
+              { "image":"smallportraits", "tileX":{ "_":[ "variable", "currentTurnEntity", "portraitX" ] }, "width":24, "height":24, "x":4, "y":4 },
+              {
+                "type":"hud",
+                "hudType":"label", "label":"%text|variable.currentTurnEntity.label%<br>Lv. %number|variable.currentTurnEntity.level%",
+                "width":100, "height":26,
+                "x":32, "y":4,
+                "font":"spectrum", "lineHeight":12
+              },
+              {
+                "type":"hud",
+                "hudType":"label", "label":"Equipment:<br>%text|variable.currentTurnEntity.equipment.label%",
+                "width":100, "height":26,
+                "x":136, "y":4,
+                "font":"spectrum", "lineHeight":12
+              },
+              {
+                "type":"hud",
+                "hudType":"label", "label":"&nbsp;&nbsp;HP:%number|variable.currentTurnEntity.hp%/%number|variable.currentTurnEntity.attrHp%<br>&nbsp;&nbsp;MP:%number|variable.currentTurnEntity.mp%/%number|variable.currentTurnEntity.attrMp%<br>&nbsp;ATK:%number|variable.currentTurnEntity.attrAttack%<br>&nbsp;DEF:%number|variable.currentTurnEntity.attrDefense%<br>MATK:%number|variable.currentTurnEntity.attrMagic%<br>MDEF:%number|variable.currentTurnEntity.attrMagicDefense%<br>&nbsp;&nbsp;XP:%number|variable.currentTurnEntity.xp%<br>NEXT:%number|variable.currentTurnEntity.nextLevelXp%",
+                "width":128, "height":98,
+                "x":4, "y":32,
+                "font":"spectrum", "lineHeight":12
+              }
+            ],
+            "into":{ "_":"this" }
+          }
+        },
+        "into":{ "_":"scenehud" }
+      },
+      {
+        "as":{ "_":"variable" },
+        "set":{
+          "menuAction":"execute",
+          "menuCancel":[
+            { "as":{ "_":[ "object", "profilebox" ] }, "remove":1 },
+            { "as":{ "_":[ "object", "actionselector" ] }, "remove":1 },
+            { "_":[ "stencil", "pauseMenu" ] }
+          ],
+          "menuId":"actionselector",
+          "menuOnAction":0,
+          "menuOptions":[
+            {
+              "label":"ITEM",
+              "execute":{
+                "when":{ "_":[ "variable", "inventory", "count", "not" ] },
+                "execute":[
+                  { "object":{ "set":{ "_":[ "stencil", "modelMessage" ] }, "html":"Inventory is empty." }, "into":{ "_":"scenehud" } },
+                  { "_":[ "stencil", "pauseMenuProfile" ] }
+                ],
+                "elseExecute":[
+                  {
+                    "as":{ "_":"variable" },
+                    "set":{
+                      "inventoryCancel":{ "_":[ "stencil", "pauseMenuProfile" ] },
+                      "inventoryList":{ "_":[ "variable", "inventory" ] },
+                      "inventoryOnAction":[
+                        {
+                          "as":{ "_":"variable" },
+                          "set":{
+                            "inInventory":{ "_":[ "variable", "inventory" ] },
+                            "outInventory":{ "_":[ "variable", "inventory" ] },
+                            "outItem":{ "_":[ "variable", "inventory", { "_":[ "variable", "inventorySelection" ] } ] },
+                            "selectedEntity":{ "_":[ "variable", "currentTurnEntity" ] },
+                            "tempItem":{ "_":[ "variable", "inventory", { "_":[ "variable", "inventorySelection" ] } ] }
+                          }
+                        },
+                        {
+                          "when":{ "_":[ "variable", "outItem", "usableInMap" ] },
+                          "execute":[
+                            { "as":{ "_":[ "objectTyped", "inventory" ] }, "remove":1 },
+                            { "_":[ "stencil", "codeTurnDoItem" ] },
+                            { "_":[ "variable", "doAction" ] },
+                            { "_":[ "variable", "thenAction" ] },
+                            { "_":[ "stencil", "pauseMenuProfile" ] }
+                          ],
+                          "elseExecute":{
+                            "when":{ "_":[ "variable", "outItem", "usableInEquip" ] },
+                            "execute":[
+                              { "as":{ "_":"variable" }, "set":{ "inItem":{ "_":[ "variable", "currentTurnEntity", "equipment" ] } } },
+                              { "_":[ "stencil", "codeItemAdd" ] },
+                              { "_":[ "stencil", "codeItemRemove" ] },
+                              {
+                                "when":{ "_":[ "variable", "inventory", "count", "isGreaterThan", 13 ] },
+                                "execute":[
+                                  { "as":{ "_":"variable" }, "set":{ "outItem":{ "_":[ "variable", "inItem" ] } } },
+                                  { "as":{ "_":"variable" }, "set":{ "inItem":{ "_":[ "variable", "tempItem" ] } } },
+                                  { "_":[ "stencil", "codeItemRemove" ] },
+                                  { "_":[ "stencil", "codeItemAdd" ] },
+                                  { "object":{ "set":{ "_":[ "stencil", "modelMessage" ] }, "html":"Can't equip. Inventory full." }, "into":{ "_":"scenehud" } },
+                                  { "_":[ "stencil", "pauseMenuProfile" ] }
+                                ],
+                                "elseExecute":[
+                                  {
+                                    "object":{ "set":{ "_":[ "stencil", "modelMessage" ] }, "html":{ "_":[ { "_":[ "variable", "outItem", "label" ] }, ".", " equipped." ] } },
+                                    "into":{ "_":"scenehud" }
+                                  },
+                                  { "as":{ "_":[ "variable", "currentTurnEntity" ] }, "set":{ "equipment":{ "_":[ "variable", "outItem" ] } } },
+                                  { "_":[ "stencil", "pauseMenuProfile" ] }
+                                ]
+                              }
+                            ],
+                            "elseExecute":[
+                              { "object":{ "set":{ "_":[ "stencil", "modelMessage" ] }, "html":"Can't use it now." }, "into":{ "_":"scenehud" } },
+                              { "_":[ "stencil", "pauseMenuProfile" ] }
+                            ]
+                          }
+                        }
+                      ]
+                    }
+                  },
+                  { "_":[ "stencil", "codeInventoryDraw" ] },
+                  { "as":{ "_":[ "objectTyped", "inventory" ] }, "set":{ "x":55, "y":0 } }
+                ]
+              }
+            },
+            {
+              "label":"MAGIC",
+              "execute":{
+                "when":{ "_":[ "variable", "currentTurnEntity", "spells", "count", "not" ] },
+                "execute":[
+                  { "object":{ "set":{ "_":[ "stencil", "modelMessage" ] }, "html":"No spells available." }, "into":{ "_":"scenehud" } },
+                  { "_":[ "stencil", "pauseMenuProfile" ] }
+                ],
+                "elseExecute":[
+                  {
+                    "as":{ "_":"variable" },
+                    "set":{
+                      "menuCancel":{ "_":[ "stencil", "pauseMenuProfile" ] },
+                      "menuId":"spellselector",
+                      "menuOnAction":[
+                        { "as":{ "_":"variable" }, "set":{ "outSpell":{ "_":[ "variable", "currentTurnEntity", "spells", { "_":[ "variable", "menuSelection" ] } ] } } },
+                        { "as":{ "_":[ "objectTyped", "spellselector" ] }, "remove":1 },
+                        {
+                          "when":{ "_":[ "variable", "currentTurnEntity", "mp", "isLessThan", { "_":[ "variable", "outSpell", "mpRequired" ] } ] },
+                          "execute":[
+                            { "object":{ "set":{ "_":[ "stencil", "modelMessage" ] }, "html":"Not enough Magic Power." }, "into":{ "_":"scenehud" } },
+                            { "_":[ "stencil", "pauseMenuProfile" ] }
+                          ],
+                          "elseExecute":{
+                            "when":{ "_":[ "variable", "outSpell", "usableInMap" ] },
+                            "execute":[
+                              {
+                                "as":{ "_":"variable" },
+                                "set":{
+                                  "menuCancel":{ "_":[ "stencil", "pauseMenuProfile" ] },
+                                  "menuId":"characterselector",
+                                  "menuOnAction":[
+                                    { "as":{ "_":[ "object", "characterselector" ] }, "remove":1 },
+                                    { "as":{ "_":"variable" }, "set":{ "selectedEntity":{ "_":[ "variable", "party", { "_":[ "variable", "menuSelection" ] } ] } } },
+                                    { "_":[ "stencil", "codeTurnDoMagic" ] },
+                                    { "_":[ "variable", "doAction" ] },
+                                    { "_":[ "variable", "thenAction" ] },
+                                    { "_":[ "stencil", "pauseMenuProfile" ] }
+                                  ],
+                                  "menuOptions":{ "_":[ "variable", "party" ] }
+                                }
+                              },
+                              { "_":[ "stencil", "codeMenuDraw" ] },
+                              { "as":{ "_":[ "objectTyped", "characterselector" ] }, "set":{ "x":105, "y":125 } }
+                            ],
+                            "elseExecute":[
+                              { "object":{ "set":{ "_":[ "stencil", "modelMessage" ] }, "html":"Can't cast now." }, "into":{ "_":"scenehud" } },
+                              { "_":[ "stencil", "pauseMenuProfile" ] }
+                            ]
+                          }
+                        }
+                      ],
+                      "menuOptions":{ "_":[ "variable", "currentTurnEntity", "spells" ] }
+                    }
+                  },
+                  { "_":[ "stencil", "codeMenuDraw" ] },
+                  { "as":{ "_":[ "objectTyped", "spellselector" ] }, "set":{ "x":105, "y":125 } }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      { "_":[ "stencil", "codeMenuDraw" ] },
+      { "as":{ "_":[ "objectTyped", "actionselector" ] }, "set":{ "x":178, "y":150 } }
+    ],
+    "savePoint":{
+      "type":[ "block", "activable", "colored" ],
+      "image":"objects", "tileX":0, "tileY":0, "width":16, "height":16,
+      "zIndex":10,
+      "animations":{ "idle":{ "frames":2, "loopTo":0 } },
+      "animation":"idle",
+      "states":{
+        "actions":{
+          "name":"activate",
+          "execute":[
+            { "foreach":{ "_":[ "variable", "party" ] }, "set":{ "hp":{ "_":[ "this", "attrHp" ] }, "mp":{ "_":[ "this", "attrMp" ] } } },
+            {
+              "as":{ "_":"storage" },
+              "set":{
+                "flags":{ "_":[ "variable", "flags" ] },
+                "gold":{ "_":[ "variable", "gold" ] },
+                "inventory":{ "_":[ "variable", "inventory" ] },
+                "party":{ "_":[ "variable", "party" ] },
+                "spawnMap":{ "_":[ "variable", "idScene" ] },
+                "spawnPointX":{ "_":[ "objectTyped", "player", "x" ] },
+                "spawnPointY":{ "_":[ "objectTyped", "player", "y" ] },
+                "tension":{ "_":[ "variable", "tension" ] }
+              }
+            },
+            { "object":{ "set":{ "_":[ "stencil", "modelMessage" ] }, "html":"HP/MP Restored. Game saved." }, "into":{ "_":"scenehud" } }
+          ]
+        }
+      }
+    },
+    "sceneobject":{
+      "image":"sprites", "width":24, "height":24,
+      "zIndex":10,
+      "animations":{
+        "attack":{ "frames":[ 0, 1, 2, 1, 0 ], "speed":1 },
+        "dead":{ "frame":4 },
+        "standing":{ "frame":0 },
+        "use":{ "frame":2 },
+        "walk":{ "frames":[ 0, 1 ], "speed":1, "loopTo":0 },
+        "win":{ "frames":[ 0, 3 ], "loopTo":0 }
+      },
+      "states":[
+        {
+          "execute":{
+            "when":{ "_":[ "this", "relatedEntity", "hp", "isEqualTo", 0 ] },
+            "execute":{ "when":{ "_":[ "this", "removeOnDead" ] }, "set":{ "state":"dead" }, "elseExecute":{ "set":{ "animation":"dead" } } },
+            "elseExecute":{ "set":{ "animation":"standing" } }
+          }
+        },
+        {
+          "name":"startaction",
+          "set":{ "animation":"walk" },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "sum":{ "_":[ "this", "enterSpeed" ] }, "to":{ "_":[ "this", "x" ] }, "wait":1, "loop":1, "cycles":5 },
+              { "set":{ "animation":"stand" } },
+              { "wait":5 },
+              { "set":{ "state":"default" } },
+              { "_":[ "variable", "doAction" ] }
+            ]
+          }
+        },
+        {
+          "name":"fight",
+          "set":{ "animation":"attack" },
+          "code":{ "name":"Sequence", "data":[ { "wait":10 }, { "set":{ "state":"default" } }, { "_":[ "variable", "thenAction" ] } ] }
+        },
+        {
+          "name":"use",
+          "set":{ "animation":"use" },
+          "code":{ "name":"Sequence", "data":[ { "wait":10 }, { "set":{ "state":"default" } }, { "_":[ "variable", "thenAction" ] } ] }
+        },
+        {
+          "name":"magic",
+          "set":{ "animation":"use" },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "set":{ "visible":0 }, "wait":1 },
+              { "set":{ "visible":1 }, "wait":1, "cycles":5, "loopTo":-1 },
+              { "set":{ "state":"default" } },
+              { "_":[ "variable", "thenAction" ] }
+            ]
+          }
+        },
+        {
+          "name":"endaction",
+          "set":{ "animation":"walk" },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "subtract":{ "_":[ "this", "enterSpeed" ] }, "to":{ "_":[ "this", "x" ] }, "wait":1, "loop":1, "cycles":5 },
+              { "animation":"stand" },
+              { "set":{ "state":"default" } },
+              { "_":[ "stencil", "codeTurnNext" ] }
+            ]
+          }
+        },
+        {
+          "name":"hit",
+          "set":{ "alpha":1 },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "execute":{ "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "html":{ "_":[ "variable", "outDamage" ] }, "speed":1 } } },
+              { "sum":1, "to":{ "_":[ "this", "x" ] }, "wait":1 },
+              { "subtract":1, "to":{ "_":[ "this", "x" ] }, "wait":1, "cycles":5, "loopTo":-1 },
+              { "set":{ "state":"default" } },
+              { "as":{ "_":[ "objectTyped", { "_":[ "variable", "currentTurnEntity", "type" ] } ] }, "set":{ "state":"endaction" } }
+            ]
+          }
+        },
+        {
+          "name":"miss",
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "execute":{ "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "html":"MISS", "speed":1 } } },
+              { "wait":10 },
+              { "set":{ "state":"default" } },
+              { "as":{ "_":[ "objectTyped", { "_":[ "variable", "currentTurnEntity", "type" ] } ] }, "set":{ "state":"endaction" } }
+            ]
+          }
+        },
+        {
+          "name":"heal",
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "execute":{ "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "color":"#0f0", "html":{ "_":[ "variable", "outHeal" ] }, "speed":1 } } },
+              { "set":{ "state":"default" } },
+              { "as":{ "_":[ "objectTyped", { "_":[ "variable", "currentTurnEntity", "type" ] } ] }, "set":{ "state":"endaction" } }
+            ]
+          }
+        },
+        {
+          "name":"pass",
+          "set":{ "alpha":1 },
+          "code":{ "name":"Sequence", "data":[ { "wait":10 }, { "set":{ "state":"default" } }, { "_":[ "stencil", "codeTurnNext" ] } ] }
+        },
+        {
+          "name":"run",
+          "set":{ "flipX":{ "_":[ "this", "flipX", "not" ] }, "animation":"walk" },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "sum":{ "_":[ "this", "runSpeed" ] }, "to":{ "_":[ "this", "x" ] }, "wait":1, "loop":1, "cycles":20 },
+              { "remove":1 },
+              { "_":[ "stencil", "codeTurnNext" ] }
+            ]
+          }
+        },
+        {
+          "name":"dead",
+          "set":{ "animation":"dead" },
+          "execute":[
+            { "sum":{ "_":[ "this", "gainXp" ] }, "to":{ "_":[ "variable", "outXp" ] } },
+            { "sum":{ "_":[ "this", "gainGold" ] }, "to":{ "_":[ "variable", "outGold" ] } }
+          ],
+          "code":{ "name":"Sequence", "data":[ { "set":{ "visible":1 }, "wait":1 }, { "set":{ "visible":0 }, "wait":1, "cycles":5, "loopTo":-1 }, { "remove":1 } ] }
+        },
+        { "name":"win", "set":{ "animation":"win" } }
+      ]
+    },
+    "topViewAnimation":{
+      "name":"Execute",
+      "data":[
+        { "when":{ "_":[ "this", "forceX", "isLessThan", 0 ] }, "set":{ "flipX":1, "pointingSide":"left" } },
+        { "when":{ "_":[ "this", "forceX", "isGreaterThan", 0 ] }, "set":{ "flipX":0, "pointingSide":"right" } },
+        { "when":{ "_":[ "this", "forceY", "isLessThan", 0 ] }, "set":{ "pointingSide":"up" } },
+        { "when":{ "_":[ "this", "forceY", "isGreaterThan", 0 ] }, "set":{ "pointingSide":"down" } },
+        {
+          "when":{ "_":[ "this", "forceY", "isEqualTo", 0, "and", { "_":[ "this", "forceX", "isEqualTo", 0 ] } ] },
+          "execute":{ "set":{ "animation":{ "_":[ "still", ".", { "_":[ "this", "pointingSide" ] } ] } } },
+          "elseExecute":{ "set":{ "animation":{ "_":[ "walk", ".", { "_":[ "this", "pointingSide" ] } ] } } }
+        }
+      ]
+    },
+    "tresaureChest":{
+      "type":[ "block", "activable" ],
+      "image":"objects", "tileX":32, "tileY":0, "width":16, "height":16,
+      "zIndex":10,
+      "states":{
+        "execute":{ "when":{ "_":[ "variable", "flags", { "_":[ "this", "flagId" ] } ] }, "set":{ "frame":1 } },
+        "actions":{
+          "name":"activate",
+          "execute":{
+            "when":{ "_":[ "this", "frame", "not" ] },
+            "execute":[
+              {
+                "as":{ "_":"variable" },
+                "set":{
+                  "inInventory":{ "_":[ "variable", "inventory" ] },
+                  "inItem":{ "_":[ "resource", "items", { "_":[ "that", "content" ] }, "merged" ] },
+                  "outInventory":{ "_":[ "variable", "inventory" ] }
+                }
+              },
+              { "_":[ "stencil", "codeItemAdd" ] },
+              {
+                "when":{ "_":[ "variable", "inventory", "count", "isGreaterThan", 13 ] },
+                "execute":[
+                  { "as":{ "_":"variable" }, "set":{ "outItem":{ "_":[ "variable", "inItem" ] } } },
+                  { "_":[ "stencil", "codeItemRemove" ] },
+                  { "object":{ "set":{ "_":[ "stencil", "modelMessage" ] }, "html":"Inventory full." }, "into":{ "_":"scenehud" } }
+                ],
+                "elseExecute":[
+                  { "object":{ "set":{ "_":[ "stencil", "modelMessage" ] }, "html":{ "_":[ "variable", "inItem", "label" ] } }, "into":{ "_":"scenehud" } },
+                  { "set":{ "frame":1 } },
+                  { "assign":1, "to":{ "_":[ "variable", "flags", { "_":[ "this", "flagId" ] } ] } }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    "turnpointer":{
+      "type":"turnpointer",
+      "image":"defaultsprites", "tileX":216, "tileY":96, "width":8, "height":8,
+      "x":1, "y":7,
+      "bounce":10,
+      "states":{
+        "code":[
+          {
+            "name":"Execute",
+            "data":[
+              {
+                "assign":{ "_":[ "objectTyped", { "_":[ "variable", "currentTurnEntity", "type" ] }, "x", "-", { "_":[ "this", "bounce" ] } ] },
+                "to":{ "_":[ "this", "x" ] }
+              },
+              { "assign":{ "_":[ "objectTyped", { "_":[ "variable", "currentTurnEntity", "type" ] }, "y", "+", 10 ] }, "to":{ "_":[ "this", "y" ] } }
+            ]
+          },
+          { "name":"Sequence", "data":[ { "set":{ "bounce":10 }, "wait":10 }, { "set":{ "bounce":8 }, "wait":10, "loopTo":0 } ] }
+        ]
+      }
+    },
+    "C":{ "set":{ "_":[ "stencil", "T" ] }, "tileX":32, "tileY":16 },
+    "D":{ "set":{ "_":[ "stencil", "T" ] }, "tileX":16, "tileY":32 },
+    "J":{ "set":{ "_":[ "stencil", "T" ] }, "tileX":0, "tileY":32 },
+    "M":{ "set":{ "_":[ "stencil", "T" ] }, "tileX":0, "tileY":16 },
+    "T":{ "type":[ "colored", "block" ], "image":"tiles", "tileX":0, "tileY":0, "width":16, "height":16 },
+    "N":{ "set":{ "_":[ "stencil", "T" ] }, "tileX":64, "tileY":32 },
+    "P":{ "set":{ "_":[ "stencil", "T" ] }, "tileX":48, "tileY":16 },
+    "R":{ "set":{ "_":[ "stencil", "T" ] }, "tileX":48, "tileY":32 },
+    "W":{ "set":{ "_":[ "stencil", "T" ] }, "tileX":32, "tileY":32 },
+    "g":{ "type":"colored", "image":"tiles", "tileX":16, "tileY":0, "width":16, "height":16 },
+    "b":{ "set":{ "_":[ "stencil", "g" ] }, "tileX":16, "tileY":16 },
+    "r":{ "set":{ "_":[ "stencil", "g" ] }, "tileX":64, "tileY":16 },
+    "w":{ "image":"tiles", "tileX":32, "tileY":0, "width":16, "height":16 },
+    "~":{
+      "type":"block",
+      "image":"tiles", "tileX":48, "tileY":0, "width":16, "height":16,
+      "animations":{ "idle":{ "frames":2, "loopTo":0 } },
+      "animation":"idle"
+    }
+  },
+  "scenes":{
+    "intro":{
+      "execute":[
+        {
+          "object":{
+            "width":256, "height":192,
+            "alpha":0,
+            "bgcolor":"#0ff",
+            "states":{
+              "code":{
+                "name":"Sequence",
+                "data":[
+                  { "sum":0.1, "to":{ "_":[ "this", "alpha" ] }, "wait":1, "loop":1, "cycles":10 },
+                  {
+                    "object":{
+                      "image":"title", "width":184, "height":85,
+                      "zIndex":1, "x":36, "y":10,
+                      "alpha":0,
+                      "waitcounter":1,
+                      "states":{
+                        "code":{
+                          "name":"Sequence",
+                          "data":[
+                            { "wait":{ "_":[ "this", "waitcounter" ] } },
+                            { "sum":0.5, "to":{ "_":[ "this", "waitcounter" ] } },
+                            { "sum":0.1, "to":{ "_":[ "this", "alpha" ] } },
+                            { "sum":1, "to":{ "_":[ "this", "y" ] } },
+                            { "cycles":10, "loopTo":0 },
+                            {
+                              "object":{
+                                "image":"defaultsprites", "tileX":208, "tileY":104, "width":8, "height":8,
+                                "zIndex":10,
+                                "alpha":0,
+                                "states":{
+                                  "code":{
+                                    "name":"Sequence",
+                                    "data":[
+                                      {
+                                        "set":{ "x":{ "_":[ "randomNumber", [ 36, 220 ] ] }, "y":{ "_":[ "randomNumber", [ 10, 95 ] ] }, "alpha":1, "angle":{ "_":[ "randomNumber", [ 0, 90 ] ] } }
+                                      },
+                                      { "sum":5, "to":{ "_":[ "this", "angle" ] } },
+                                      { "subtract":0.01, "to":{ "_":[ "this", "alpha" ] } },
+                                      { "wait":1, "cycles":50, "loopTo":-2 },
+                                      { "loopTo":0 }
+                                    ]
+                                  }
+                                }
+                              },
+                              "wait":20, "loop":1, "cycles":5
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        { "_":[ "stencil", "codeMenuIntro" ] }
+      ]
+    },
+    "battle":{
+      "execute":[
+        { "as":{ "_":"variable" }, "set":{ "foes":{ "_":[ "new", [] ] } } },
+        {
+          "foreach":{ "_":[ "variable", "inBattle" ] },
+          "as":{ "_":[ "resource", "foes", { "_":"this" }, "merged" ] },
+          "execute":[ { "sum":{ "_":[ "randomNumber", [ 0, 2 ] ] }, "to":{ "_":[ "this", "attrSpeed" ] } }, { "pushInto":{ "_":[ "variable", "foes" ] } } ]
+        },
+        {
+          "foreach":[ { "_":[ "variable", "foes" ] }, { "_":[ "variable", "party" ] } ],
+          "execute":[
+            { "assign":{ "_":[ "this", "attrHp" ] }, "to":{ "_":[ "this", "curHp" ] } },
+            { "assign":{ "_":[ "this", "attrMp" ] }, "to":{ "_":[ "this", "curMp" ] } },
+            { "assign":{ "_":[ "this", "attrSpeed" ] }, "to":{ "_":[ "this", "curSpeed" ] } },
+            { "assign":{ "_":[ "this", "attrAttack" ] }, "to":{ "_":[ "this", "curAttack" ] } },
+            { "assign":{ "_":[ "this", "attrDefense" ] }, "to":{ "_":[ "this", "curDefense" ] } },
+            { "assign":{ "_":[ "this", "attrMagic" ] }, "to":{ "_":[ "this", "curMagic" ] } },
+            { "assign":{ "_":[ "this", "attrMagicDefense" ] }, "to":{ "_":[ "this", "curMagicDefense" ] } },
+            { "assign":{ "_":[ "this", "attrSpeed" ] }, "to":{ "_":[ "this", "curSpeed" ] } }
+          ]
+        },
+        { "object":{ "image":"backgrounds", "width":256, "height":30, "frame":{ "_":[ "variable", "inBattleBackground" ] } } },
+        { "as":{ "_":"variable" }, "set":{ "currentTurn":-2, "cycle":0, "outGold":0, "outXp":0 } },
+        {
+          "times":{ "_":[ "variable", "party", "count" ] },
+          "execute":[
+            { "as":{ "_":[ "variable", "party", { "_":[ "variable", "cycle" ] } ] }, "set":{ "curEscaped":0 } },
+            {
+              "object":[
+                {
+                  "type":[ "player", "selectable" ],
+                  "set":[ { "_":[ "stencil", "sceneobject" ] }, { "_":[ "variable", "party", { "_":[ "variable", "cycle" ] } ] } ],
+                  "x":148, "y":{ "_":[ "variable", "cycle", "*", 29, "+", 35 ] },
+                  "flipX":1,
+                  "enterSpeed":-2,
+                  "listindex":{ "_":[ "variable", "cycle" ] },
+                  "relatedEntity":{ "_":[ "variable", "party", { "_":[ "variable", "cycle" ] } ] },
+                  "runSpeed":3
+                },
+                {
+                  "type":"hud",
+                  "hudType":"label", "label":"",
+                  "width":70, "height":27,
+                  "zIndex":20, "x":180, "y":{ "_":[ "variable", "cycle", "*", 29, "+", 35 ] },
+                  "font":"spectrum", "lineHeight":8,
+                  "execute":{
+                    "set":{
+                      "label":{ "_":[ "%text|variable.party.", ".", { "_":[ "this", "partyid" ] }, ".", ".label%<br>HP:%number|variable.party.", ".", { "_":[ "this", "partyid" ] }, ".", ".hp%<br>MP:%number|variable.party.", ".", { "_":[ "this", "partyid" ] }, ".", ".mp%" ] }
+                    }
+                  },
+                  "partyid":{ "_":[ "variable", "cycle" ] }
+                }
+              ]
+            },
+            { "sum":1, "to":{ "_":[ "variable", "cycle" ] } }
+          ]
+        },
+        { "as":{ "_":"variable" }, "set":{ "col":42, "cycle":0, "row":35 } },
+        {
+          "times":6,
+          "execute":[
+            {
+              "when":{ "_":[ "variable", "foes", { "_":[ "variable", "cycle" ] } ] },
+              "execute":[
+                { "assign":{ "_":[ "foe", ".", { "_":[ "variable", "cycle" ] } ] }, "to":{ "_":[ "variable", "foes", { "_":[ "variable", "cycle" ] }, "type" ] } },
+                {
+                  "object":{
+                    "type":[ "foe", "selectable" ],
+                    "set":[ { "_":[ "stencil", "sceneobject" ] }, { "_":[ "variable", "foes", { "_":[ "variable", "cycle" ] } ] } ],
+                    "x":{ "_":[ "variable", "col" ] }, "y":{ "_":[ "variable", "row" ] },
+                    "enterSpeed":2,
+                    "listindex":{ "_":[ "variable", "cycle" ] },
+                    "relatedEntity":{ "_":[ "variable", "foes", { "_":[ "variable", "cycle" ] } ] },
+                    "runSpeed":-3
+                  }
+                }
+              ]
+            },
+            { "sum":1, "to":{ "_":[ "variable", "cycle" ] } },
+            { "sum":29, "to":{ "_":[ "variable", "row" ] } },
+            {
+              "when":{ "_":[ "variable", "row", "isGreaterThan", 100 ] },
+              "execute":[ { "sum":40, "to":{ "_":[ "variable", "col" ] } }, { "assign":35, "to":{ "_":[ "variable", "row" ] } } ]
+            }
+          ]
+        },
+        { "_":[ "stencil", "codeTurnNext" ] },
+        { "object":{ "_":[ "stencil", "turnpointer" ] } }
+      ],
+      "states":[
+        {
+          "name":"win",
+          "execute":[
+            { "_":[ "stencil", "codeUiRemove" ] },
+            {
+              "foreach":{ "_":[ "variable", "foes" ] },
+              "execute":{
+                "when":{ "_":[ "this", "removeOnDead", "not" ] },
+                "execute":[
+                  { "sum":{ "_":[ "this", "gainXp" ] }, "to":{ "_":[ "variable", "outXp" ] } },
+                  { "sum":{ "_":[ "this", "gainGold" ] }, "to":{ "_":[ "variable", "outGold" ] } }
+                ]
+              }
+            },
+            { "as":{ "_":[ "objectTyped", "turnpointer" ] }, "remove":1 },
+            { "object":{ "set":{ "_":[ "stencil", "modelMessage" ] }, "html":"Victory!" }, "into":{ "_":"scenehud" } },
+            {
+              "when":{ "_":[ "variable", "inFlag" ] },
+              "execute":[ { "assign":1, "to":{ "_":[ "variable", "flags", { "_":[ "variable", "inFlag" ] } ] } }, { "as":{ "_":"variable" }, "set":{ "inFlag":0 } } ]
+            },
+            { "as":{ "_":[ "object", "player" ] }, "execute":{ "when":{ "_":[ "this", "relatedEntity", "hp", "isGreaterThan", 0 ] }, "set":{ "state":"win" } } }
+          ],
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "wait":50 },
+              { "as":{ "_":"variable" }, "set":{ "cycle":0, "debrief":"" } },
+              {
+                "object":{
+                  "type":"debrief",
+                  "width":248, "height":64,
+                  "zIndex":10, "x":4, "y":120,
+                  "bgcolor":"#000", "border":"#fff",
+                  "execute":{
+                    "object":{ "type":"hud", "hudType":"label", "label":"%text|variable.debrief%", "width":238, "height":54, "x":4, "y":4, "font":"spectrum", "lineHeight":12 },
+                    "into":{ "_":"this" }
+                  }
+                }
+              },
+              { "as":{ "_":"variable" }, "set":{ "outEntity":{ "_":[ "variable", "party", { "_":[ "variable", "cycle" ] } ] } } },
+              {
+                "when":{ "_":[ "variable", "outEntity", "hp", "and", { "_":[ "variable", "outEntity", "curEscaped", "not" ] } ] },
+                "execute":[
+                  {
+                    "as":{ "_":"variable" },
+                    "set":{
+                      "debrief":{
+                        "_":[
+                          "variable",
+                          "debrief",
+                          ".",
+                          { "_":[ "variable", "outEntity", "label" ] },
+                          ".",
+                          " +",
+                          ".",
+                          { "_":[ "variable", "outXp" ] },
+                          ".",
+                          "XP Lv.",
+                          ".",
+                          { "_":[ "variable", "outEntity", "level" ] }
+                        ]
+                      }
+                    }
+                  },
+                  { "_":[ "stencil", "codeEntityXpGain" ] },
+                  {
+                    "as":{ "_":"variable" },
+                    "set":{ "debrief":{ "_":[ "variable", "debrief", ".", " &gt; ", ".", { "_":[ "variable", "outEntity", "level" ] }, ".", "<br>" ] } }
+                  }
+                ]
+              },
+              { "wait":10 },
+              { "sum":1, "to":{ "_":[ "variable", "cycle" ] }, "cycles":3, "loopTo":-3 },
+              {
+                "as":{ "_":"variable" },
+                "set":{ "debrief":{ "_":[ "variable", "debrief", ".", "Earned ", ".", { "_":[ "variable", "outGold" ] }, ".", " Gold." ] } }
+              },
+              { "sum":{ "_":[ "variable", "outGold" ] }, "to":{ "_":[ "variable", "gold" ] } },
+              { "wait":10 },
+              { "when":{ "_":[ "keyA", "isHit" ] }, "execute":{ "_":[ "stencil", "codeMapGoto" ] } },
+              { "wait":1, "loopTo":-1 }
+            ]
+          }
+        },
+        {
+          "name":"defeat",
+          "execute":[
+            { "_":[ "stencil", "codeUiRemove" ] },
+            { "as":{ "_":[ "objectTyped", "turnpointer" ] }, "remove":1 },
+            { "object":{ "set":{ "_":[ "stencil", "modelMessage" ] }, "html":"Defeat." }, "into":{ "_":"scenehud" } }
+          ],
+          "code":{ "name":"Sequence", "data":[ { "wait":50 }, { "gotoScene":"intro" } ] }
+        },
+        {
+          "name":"escaped",
+          "execute":[
+            { "_":[ "stencil", "codeUiRemove" ] },
+            { "as":{ "_":[ "objectTyped", "turnpointer" ] }, "remove":1 },
+            { "object":{ "set":{ "_":[ "stencil", "modelMessage" ] }, "html":"The party ran away." }, "into":{ "_":"scenehud" } },
+            { "as":{ "_":"variable" }, "set":{ "inDialogue":0, "inFlag":0 } }
+          ],
+          "code":{ "name":"Sequence", "data":[ { "wait":50 }, { "_":[ "stencil", "codeMapGoto" ] } ] }
+        }
+      ]
+    },
+    "shop":{
+      "execute":[
+        {
+          "object":{
+            "width":70, "height":37,
+            "zIndex":10, "x":178, "y":8,
+            "bgcolor":"#000", "border":"#fff",
+            "execute":{
+              "object":{
+                "type":"hud",
+                "hudType":"label", "label":"GOLD<br>%number|variable.gold%",
+                "width":62, "height":29,
+                "x":4, "y":4,
+                "font":"spectrum", "lineHeight":12
+              },
+              "into":{ "_":"this" }
+            }
+          }
+        },
+        { "_":[ "stencil", "codeShop" ] }
+      ]
+    }
+  }
+}

@@ -1,0 +1,1525 @@
+{
+  "name":"The Legend Of Sadness pt.2",
+  "author":"KesieV",
+  "year":2015,
+  "genre":"Adventure",
+  "description":"All the titles of The Legend Of Zelda series are stunningly aging very well, mostly because of their design, which hardly ages, but what surprises me is that there are few titles still around with the same genre. People loves the Zelda formula - there are many indies lookalikes out there and one of the most successful demos of Akihabara, back to 2010, was The Legend Of Sadness, a very quick implementation of the Zelda mechanics. Anyway, nothing is better than that game for improving again camera management with multiple scrolling directions and give to The Legend Of Sadness a second chapter! I've heavily used the excellent Tiled for making the dungeon, and a code generator for converting everything for Wright!. Plot? No! This time I've prepared a nice scroller after the title screen! Move Klin with UP/DOWN/LEFT/RIGHT, attack with A BUTTON and switch weapon (when you've found that) with the B BUTTON!",
+  "screenshots":["tlos2-1.png","tlos2-2.png"],
+  "hardware":{
+    "width":256,
+    "height":192,
+    "texture":"scanlines"
+  },
+  "hardware":{
+    "width":256,
+    "height":192,
+    "texture":"scanlines"
+  },
+  "cheats":{
+    "startWithBossKey":"Start with boss key",
+    "unlimitedEnergy":"Unlimited energy"
+  },
+  "resources":{
+    "logo":"logo.png",
+    "tlos-bg":"tlos-bg.png",
+    "defaultsprites":"../default/sprites.png",
+    "frameh":"../default/frame-h.png",
+    "framev":"../default/frame-v.png",
+    "scanlines":"../default/scanlines.png"
+  },
+  "stencils":{
+    "spark":{
+      "image":"defaultsprites", "tileX":64, "tileY":144, "width":16, "height":16,
+      "zIndex":10000, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "animations":{ "spark":{ "frames":4, "speed":0 } },
+      "animation":"spark",
+      "states":{ "code":{ "name":"Sequence", "data":[ { "wait":4 }, { "remove":1 } ] } }
+    },
+    "removeWithCloud":[
+      {
+        "times":20,
+        "object":{ "_":[ "stencil", "smoke" ] },
+        "execute":[
+          { "sum":{ "_":[ "randomNumber", [ { "_":[ "this", "width", "/", -2 ] }, { "_":[ "this", "width", "/", 2 ] } ] ] }, "to":{ "_":[ "that", "x" ] } },
+          { "sum":{ "_":[ "randomNumber", [ { "_":[ "this", "height", "/", -2 ] }, { "_":[ "this", "height", "/", 2 ] } ] ] }, "to":{ "_":[ "that", "y" ] } }
+        ]
+      },
+      { "remove":1 }
+    ],
+    "removeWithSmoke":[ { "object":{ "set":{ "_":[ "stencil", "smoke" ] }, "forceY":-1 } }, { "remove":1 } ],
+    "removeWithSpark":[ { "object":{ "_":[ "stencil", "spark" ] } }, { "remove":1 } ],
+    "modelBlinkWhenInvulnerable":{
+      "code":{
+        "name":"Sequence",
+        "data":[
+          { "wait":1, "loop":1, "until":{ "_":[ "this", "invulnerability", "isGreaterThan", 0 ] } },
+          { "set":{ "visible":0 }, "wait":1 },
+          { "set":{ "visible":1 }, "wait":1 },
+          { "subtract":1, "to":{ "_":[ "this", "invulnerability" ] } },
+          { "loopTo":-3, "until":{ "_":[ "this", "invulnerability", "isEqualTo", 0 ] } },
+          { "set":{ "visible":1 }, "loopTo":0 }
+        ]
+      }
+    },
+    "modelBlobAnimations":{
+      "attackdown":"stilldown",
+      "attackleft":"stilldown",
+      "attackright":"stilldown",
+      "attackup":"stilldown",
+      "stilldown":{ "frames":[ 0, 1, 0, 2 ], "loopTo":0 },
+      "stillleft":"stilldown",
+      "stillright":"stilldown",
+      "stillup":"stilldown",
+      "walkdown":"stilldown",
+      "walkleft":"stilldown",
+      "walkright":"stilldown",
+      "walkup":"stilldown"
+    },
+    "modelDualStateObject":{
+      "type":"roomElement",
+      "width":16, "height":16,
+      "currentState":-1,
+      "statesMap":[ "setoff", "seton" ],
+      "states":{
+        "like":{ "_":[ "stencil", "modelPerspectiveObject" ] },
+        "code":{
+          "name":"Sequence",
+          "data":[
+            {
+              "when":{ "_":[ "variable", { "_":[ "this", "checkVariable" ] } ] },
+              "executeAction":{ "_":[ "this", "statesMap", 1 ] },
+              "elseExecute":{ "executeAction":{ "_":[ "this", "statesMap", 0 ] } }
+            },
+            { "as":{ "_":"this" }, "set":{ "currentState":{ "_":[ "variable", { "_":[ "this", "checkVariable" ] } ] } } },
+            { "wait":1, "loop":1, "until":{ "_":[ "this", "currentState", "isEqualTo", { "_":[ "variable", { "_":[ "this", "checkVariable" ] } ] }, "not" ] } },
+            { "when":{ "_":[ "this", "sparkType" ] }, "object":{ "_":[ "stencil", { "_":[ "this", "sparkType" ] } ] } },
+            { "loopTo":0 }
+          ]
+        }
+      }
+    },
+    "modelFake":{
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[
+            { "wait":1, "loop":1, "until":{ "_":[ "this", "distanceTo", { "_":[ "objectTyped", "player" ] }, "isLessThan", 32 ] } },
+            { "_":[ "stencil", "removeWithSmoke" ] }
+          ]
+        }
+      }
+    },
+    "modelFoe":{
+      "type":[ "roomElement", "foe", "hitable", "roomLocking", "minion" ],
+      "image":"defaultsprites", "width":16, "height":16,
+      "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "hitbox":{ "width":16, "height":8, "x":0, "y":8 },
+      "damage":1,
+      "health":1,
+      "invulnerability":0,
+      "states":{ "name":"dead", "execute":{ "_":[ "stencil", "removeWithSmoke" ] } }
+    },
+    "modelRoamingFoe":{
+      "set":{ "_":[ "stencil", "modelFoe" ] },
+      "pointingSide":"down",
+      "states":[
+        {
+          "like":[ { "_":[ "stencil", "modelFoeHitable" ] }, { "_":[ "stencil", "modelFoeHitting" ] } ],
+          "code":[
+            {
+              "name":"Sequence",
+              "data":[
+                {
+                  "when":{ "_":[ "randomValue", [ 0, 1 ] ] },
+                  "execute":{
+                    "when":{ "_":[ "randomValue", [ 0, 1 ] ] },
+                    "set":{ "forceY":{ "_":[ "this", "moveSpeed" ] } },
+                    "elseExecute":{ "set":{ "forceY":{ "_":[ "this", "moveSpeed", "*", -1 ] } } }
+                  },
+                  "elseExecute":{
+                    "when":{ "_":[ "randomValue", [ 0, 1 ] ] },
+                    "set":{ "forceX":{ "_":[ "this", "moveSpeed" ] } },
+                    "elseExecute":{ "set":{ "forceX":{ "_":[ "this", "moveSpeed", "*", -1 ] } } }
+                  }
+                },
+                { "wait":{ "_":[ "randomValue", { "_":[ "this", "walkLength" ] } ] } },
+                { "when":{ "_":[ "randomValue", { "_":[ "this", "aggressivity" ] } ] }, "set":{ "state":"attack" } },
+                { "set":{ "forceX":0, "forceY":0 }, "wait":{ "_":[ "randomValue", { "_":[ "this", "roaming" ] } ] } },
+                { "loopTo":0 }
+              ]
+            },
+            { "name":"Physics", "data":{ "walls":[ { "z":0, "restitution":0.5 }, { "type":"block", "restitution":1 } ], "gravityZ":1 } },
+            { "_":[ "stencil", "topViewAnimation" ] },
+            { "name":"ZPerspective" }
+          ]
+        },
+        {
+          "name":"attack",
+          "like":[ { "_":[ "stencil", "modelFoeHitable" ] }, { "_":[ "stencil", "modelFoeHitting" ] } ],
+          "code":[
+            {
+              "name":"Sequence",
+              "data":[
+                { "set":{ "animation":{ "_":[ "attack", ".", { "_":[ "this", "pointingSide" ] } ] } } },
+                { "object":{ "set":{ "_":[ "stencil", { "_":[ "that", "weapon" ] } ] }, "hitting":"player" } },
+                { "forceX":0, "forceY":0, "wait":5 },
+                { "set":{ "state":"default" } }
+              ]
+            },
+            { "name":"Physics", "data":{ "walls":[ { "z":0, "restitution":0.5 }, { "type":"block", "restitution":1 } ], "gravityZ":1 } }
+          ]
+        }
+      ]
+    },
+    "modelFoeHitable":{
+      "like":{ "_":[ "stencil", "modelBlinkWhenInvulnerable" ] },
+      "actions":{
+        "name":"hit",
+        "execute":{
+          "when":{ "_":[ "this", "invulnerability", "isEqualTo", 0 ] },
+          "execute":[
+            { "subtract":{ "_":[ "that", "damage" ] }, "to":{ "_":[ "this", "health" ] } },
+            {
+              "when":{ "_":[ "this", "health", "isLessThan", 0 ] },
+              "execute":[ { "_":[ "stencil", "spawnBonus" ] }, { "set":{ "state":"dead" } } ],
+              "elseExecute":{ "set":{ "forceZ":-4, "invulnerability":10 } }
+            }
+          ]
+        }
+      }
+    },
+    "modelFoeHitting":{
+      "code":{ "name":"Execute", "data":{ "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "player" ] } ] }, "as":{ "_":"that" }, "executeAction":"hit" } }
+    },
+    "modelKeyDoor":{
+      "type":"roomElement",
+      "image":"tlos-bg", "width":16, "height":16,
+      "sparkType":"smoke",
+      "states":{
+        "execute":{ "when":{ "_":[ "variable", { "_":[ "this", "checkVariable" ] } ] }, "executeAction":"open", "elseExecute":{ "executeAction":"close" } },
+        "code":{ "name":"ZPerspective" },
+        "actions":[
+          {
+            "name":"push",
+            "execute":{
+              "when":{ "_":[ "variable", { "_":[ "this", "keyItem" ] }, "isGreaterThan", 0 ] },
+              "execute":[
+                { "subtract":1, "to":{ "_":[ "variable", { "_":[ "this", "keyItem" ] } ] } },
+                { "assign":1, "to":{ "_":[ "variable", { "_":[ "this", "checkVariable" ] } ] } },
+                { "when":{ "_":[ "this", "sparkType" ] }, "object":{ "_":[ "stencil", { "_":[ "this", "sparkType" ] } ] } },
+                { "executeAction":"open" }
+              ]
+            }
+          },
+          { "name":"close", "set":{ "type":[ "block", "wall" ], "visible":1 } },
+          { "name":"open", "set":{ "removeType":[ "block", "wall" ], "visible":0 } }
+        ]
+      }
+    },
+    "modelPerspectiveObject":{ "code":{ "name":"ZPerspective" } },
+    "modelPickable":{
+      "type":"roomElement",
+      "image":"defaultsprites", "width":16, "height":16,
+      "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "hitbox":{ "width":16, "height":8, "x":0, "y":8 },
+      "forceZ":-4,
+      "states":{
+        "execute":{ "when":{ "_":[ { "_":[ "this", "checkVariable" ] }, "and", { "_":[ "variable", { "_":[ "this", "checkVariable" ] } ] } ] }, "remove":1 },
+        "code":[
+          {
+            "name":"Execute",
+            "data":{
+              "when":{ "_":[ "this", "collidesWith", { "_":[ "objectTyped", "player" ] } ] },
+              "execute":[
+                { "executeAction":"picked" },
+                { "sum":1, "to":{ "_":[ "variable", { "_":[ "this", "itemType" ] } ] } },
+                {
+                  "when":{ "_":[ "this", "maxItemType" ] },
+                  "execute":[
+                    {
+                      "when":{ "_":[ "variable", { "_":[ "this", "maxItemType" ] }, "not" ] },
+                      "assign":3,
+                      "to":{ "_":[ "variable", { "_":[ "this", "maxItemType" ] } ] }
+                    },
+                    {
+                      "when":{ "_":[ "variable", { "_":[ "this", "itemType" ] }, "isGreaterThan", { "_":[ "variable", { "_":[ "this", "maxItemType" ] } ] } ] },
+                      "assign":{ "_":[ "variable", { "_":[ "this", "maxItemType" ] } ] },
+                      "to":{ "_":[ "variable", { "_":[ "this", "itemType" ] } ] }
+                    }
+                  ]
+                },
+                { "when":{ "_":[ "this", "checkVariable" ] }, "assign":1, "to":{ "_":[ "variable", { "_":[ "this", "checkVariable" ] } ] } },
+                { "_":[ "stencil", "removeWithSpark" ] }
+              ]
+            }
+          },
+          { "name":"Physics", "data":{ "walls":{ "z":0 }, "gravityZ":1 } },
+          { "name":"ZPerspective" }
+        ]
+      }
+    },
+    "modelPlayerHitable":{
+      "actions":{
+        "name":"hit",
+        "execute":{
+          "when":{ "_":[ "this", "invulnerability", "isEqualTo", 0 ] },
+          "execute":[
+            { "when":{ "_":[ "cheat", "unlimitedEnergy", "not" ] }, "subtract":{ "_":[ "that", "damage" ] }, "to":{ "_":[ "variable", "health" ] } },
+            {
+              "when":{ "_":[ "variable", "health", "isLessThan", 1 ] },
+              "execute":[ { "as":{ "_":"variable" }, "set":{ "health":0 } }, { "set":{ "state":"dead" } } ],
+              "elseExecute":{ "set":{ "forceZ":-4, "invulnerability":10 } }
+            }
+          ]
+        }
+      }
+    },
+    "modelStandardAnimations":{
+      "attackdown":{ "frame":9 },
+      "attackleft":"attackright",
+      "attackright":{ "frame":11 },
+      "attackup":{ "frame":10 },
+      "stilldown":{ "frame":0 },
+      "stillleft":"stillright",
+      "stillright":{ "frame":6 },
+      "stillup":{ "frame":3 },
+      "walkdown":{ "frame":1, "frames":2, "loopTo":0 },
+      "walkleft":"walkright",
+      "walkright":{ "frame":7, "frames":2, "loopTo":0 },
+      "walkup":{ "frame":4, "frames":2, "loopTo":0 }
+    },
+    "modelTutorialBox":{
+      "type":"dialogueBox",
+      "object":{ "type":"dialogueText", "into":{ "_":"this" }, "width":208, "height":48, "x":8, "y":3, "font":"spectrum", "lineHeight":10 },
+      "width":224, "height":48,
+      "x":8, "y":120,
+      "bgcolor":"#000", "border":"#fff"
+    },
+    "stageModel":{ "cameraY":16, "cameraWidth":240, "cameraHeight":160, "cameraFocusX":64, "cameraFocusY":64, "cameraFocusWidth":112, "cameraFocusHeight":32 },
+    "player":{
+      "type":[ "player", "hitable" ],
+      "follow":1,
+      "image":"defaultsprites", "tileX":0, "tileY":176, "width":16, "height":16,
+      "hitbox":{ "width":14, "height":8, "x":1, "y":8 },
+      "animations":{ "_":[ "stencil", "modelStandardAnimations" ] },
+      "animation":"stilldown",
+      "invulnerability":0,
+      "pointingSide":"down",
+      "states":[
+        {
+          "like":[ { "_":[ "stencil", "modelBlinkWhenInvulnerable" ] }, { "_":[ "stencil", "modelPlayerHitable" ] } ],
+          "code":[
+            { "name":"Player", "data":{ "horizontal":{ "control":1, "gotoZero":1 }, "vertical":{ "control":1, "gotoZero":1 } } },
+            {
+              "name":"Execute",
+              "data":[
+                { "when":{ "_":[ "keyA", "isHit" ] }, "set":{ "state":"attack" } },
+                {
+                  "when":{ "_":[ "keyB", "isHit" ] },
+                  "sum":1,
+                  "to":{ "_":[ "variable", "currentItem" ] },
+                  "execute":{
+                    "times":10,
+                    "execute":[
+                      {
+                        "when":{ "_":[ "variable", "currentItem", "isEqualTo", 1, "and", { "_":[ "variable", "maxBombs", "isEqualTo", 0 ] } ] },
+                        "sum":1,
+                        "to":{ "_":[ "variable", "currentItem" ] }
+                      },
+                      { "when":{ "_":[ "variable", "currentItem", "isEqualTo", 2 ] }, "assign":0, "to":{ "_":[ "variable", "currentItem" ] } }
+                    ]
+                  }
+                }
+              ]
+            },
+            {
+              "name":"Physics",
+              "data":{
+                "walls":[ { "z":0, "restitution":0.5 }, { "type":"block", "restitution":0, "execute":{ "as":{ "_":"that" }, "executeAction":"push" } } ],
+                "gravityZ":1,
+                "limitX":[ -2, 2 ],
+                "limitY":[ -2, 2 ]
+              }
+            },
+            { "_":[ "stencil", "topViewAnimation" ] },
+            { "name":"ZPerspective" }
+          ]
+        },
+        {
+          "name":"dead",
+          "set":{ "visible":1, "flipX":0, "animation":"none" },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "set":{ "frame":3 }, "wait":3 },
+              { "set":{ "frame":6, "flipX":0 }, "wait":3 },
+              { "set":{ "frame":0 }, "wait":3 },
+              { "set":{ "frame":6, "flipX":1 }, "wait":3 },
+              { "cycles":3, "loopTo":0 },
+              { "set":{ "frame":12 }, "wait":8 },
+              { "set":{ "frame":13 }, "wait":15 },
+              { "object":{ "_":[ "stencil", "spark" ] } },
+              { "set":{ "visible":0 } },
+              { "wait":20 },
+              { "gotoScene":"gameover" }
+            ]
+          }
+        },
+        {
+          "name":"auto",
+          "code":[
+            {
+              "name":"Physics",
+              "data":{
+                "walls":[ { "z":0, "restitution":0.5 }, { "type":"block", "restitution":0, "execute":{ "as":{ "_":"that" }, "executeAction":"push" } } ],
+                "gravityZ":1
+              }
+            },
+            { "_":[ "stencil", "topViewAnimation" ] },
+            { "name":"ZPerspective" }
+          ]
+        },
+        {
+          "name":"attack",
+          "like":[ { "_":[ "stencil", "modelBlinkWhenInvulnerable" ] }, { "_":[ "stencil", "modelPlayerHitable" ] } ],
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "set":{ "animation":{ "_":[ "attack", ".", { "_":[ "this", "pointingSide" ] } ] } } },
+              { "when":{ "_":[ "variable", "currentItem", "isEqualTo", 0 ] }, "object":{ "set":{ "_":[ "stencil", "sword" ] }, "hitting":"foe" } },
+              {
+                "when":{ "_":[ "variable", "currentItem", "isEqualTo", 1, "and", { "_":[ "variable", "bombs", "isGreaterThan", 0 ] } ] },
+                "object":{ "set":{ "_":[ "stencil", "bomb" ] } },
+                "subtract":1,
+                "to":{ "_":[ "variable", "bombs" ] }
+              },
+              { "forceX":0, "forceY":0, "wait":5 },
+              { "set":{ "state":"default" } }
+            ]
+          }
+        }
+      ]
+    },
+    "foeGreenSlime":{
+      "set":{ "_":[ "stencil", "modelRoamingFoe" ] },
+      "tileX":0, "tileY":192,
+      "animations":{ "_":[ "stencil", "modelBlobAnimations" ] },
+      "aggressivity":0,
+      "moveSpeed":1,
+      "roaming":50,
+      "walkLength":20
+    },
+    "foeOcto":{
+      "set":{ "_":[ "stencil", "modelRoamingFoe" ] },
+      "tileX":0, "tileY":208,
+      "animations":{ "_":[ "stencil", "modelStandardAnimations" ] },
+      "aggressivity":[ 0, 0, 1 ],
+      "moveSpeed":1,
+      "roaming":[ 30, 40 ],
+      "walkLength":[ 10, 20 ],
+      "weapon":"bullet"
+    },
+    "foeRedSlime":{
+      "set":{ "_":[ "stencil", "modelRoamingFoe" ] },
+      "tileX":48, "tileY":192,
+      "animations":{ "_":[ "stencil", "modelBlobAnimations" ] },
+      "aggressivity":0,
+      "moveSpeed":2,
+      "roaming":20,
+      "walkLength":20
+    },
+    "foeStatue":{
+      "set":{ "_":[ "stencil", "modelRoamingFoe" ] },
+      "tileX":0, "tileY":224,
+      "animations":{ "_":[ "stencil", "modelStandardAnimations" ] },
+      "aggressivity":[ 0, 1 ],
+      "health":3,
+      "moveSpeed":1,
+      "roaming":[ 30, 40 ],
+      "walkLength":[ 20, 30 ],
+      "weapon":"sword",
+      "state":"waiting",
+      "states":{
+        "name":"waiting",
+        "like":{ "_":[ "stencil", "modelFoeHitting" ] },
+        "code":[
+          {
+            "name":"Sequence",
+            "data":[
+              { "wait":1, "loop":1, "until":{ "_":[ "this", "distanceTo", { "_":[ "objectTyped", "player" ] }, "isLessThan", 24 ] } },
+              { "sum":1, "to":{ "_":[ "this", "x" ] }, "wait":1 },
+              { "subtract":1, "to":{ "_":[ "this", "x" ] }, "wait":1 },
+              { "cycles":5, "loopTo":-2 },
+              { "set":{ "state":"default" } }
+            ]
+          },
+          { "name":"ZPerspective" }
+        ]
+      }
+    },
+    "M1Boss":{
+      "type":[ "roomElement", "foe", "hitable", "roomLocking", "boss" ],
+      "image":"defaultsprites", "tileX":192, "tileY":208, "width":32, "height":32,
+      "hitbox":{ "width":16, "height":16, "x":8, "y":16 },
+      "damage":1,
+      "health":3,
+      "invulnerability":0,
+      "states":[
+        { "name":"default", "code":{ "name":"ZPerspective" } },
+        {
+          "name":"start",
+          "like":[ { "_":[ "stencil", "modelBlinkWhenInvulnerable" ] }, { "_":[ "stencil", "modelFoeHitting" ] } ],
+          "set":{ "forceX":-2, "forceY":-2, "forceZ":-4 },
+          "code":[
+            {
+              "name":"Physics",
+              "data":{
+                "walls":[
+                  { "type":"block", "restitution":1 },
+                  {
+                    "z":0,
+                    "restitution":1,
+                    "execute":{
+                      "when":{ "_":[ "object", "foe", "count", "isLessThan", 2 ] },
+                      "execute":{
+                        "when":{ "_":[ "variable", "health", "isLessThan", 2 ] },
+                        "object":{ "set":{ "_":[ "stencil", "foeGreenSlime" ] }, "contains":"bonusHeart" },
+                        "elseExecute":{ "when":{ "_":[ "variable", "bombs", "isEqualTo", 0 ] }, "object":{ "set":{ "_":[ "stencil", "foeGreenSlime" ] }, "contains":"bonusBomb" } }
+                      }
+                    }
+                  }
+                ],
+                "gravityZ":0.5
+              }
+            },
+            { "name":"ZPerspective" }
+          ],
+          "actions":{
+            "name":"hit",
+            "set":{ "visible":1 },
+            "execute":{
+              "when":{ "_":[ "that", "explosion" ] },
+              "execute":{
+                "when":{ "_":[ "this", "invulnerability", "isEqualTo", 0 ] },
+                "execute":[
+                  { "subtract":{ "_":[ "that", "damage" ] }, "to":{ "_":[ "this", "health" ] } },
+                  { "when":{ "_":[ "this", "health", "isLessThan", 0 ] }, "set":{ "state":"dead" }, "elseExecute":{ "set":{ "forceZ":-4, "invulnerability":10 } } }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "name":"dead",
+          "execute":{ "as":{ "_":[ "object", "minion" ] }, "execute":{ "_":[ "stencil", "removeWithSmoke" ] } },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              {
+                "times":3,
+                "object":{ "_":[ "stencil", "smoke" ] },
+                "execute":[
+                  { "sum":{ "_":[ "randomNumber", [ { "_":[ "this", "width", "/", -2 ] }, { "_":[ "this", "width", "/", 2 ] } ] ] }, "to":{ "_":[ "that", "x" ] } },
+                  { "sum":{ "_":[ "randomNumber", [ { "_":[ "this", "height", "/", -2 ] }, { "_":[ "this", "height", "/", 2 ] } ] ] }, "to":{ "_":[ "that", "y" ] } },
+                  { "as":{ "_":"that" }, "set":{ "forceY":{ "_":[ "randomNumber", [ 0, -4 ] ] } } }
+                ],
+                "wait":10, "loop":1, "cycles":7
+              },
+              { "object":{ "_":[ "stencil", "bonusTrivenge" ] } },
+              { "_":[ "stencil", "removeWithCloud" ] }
+            ]
+          }
+        }
+      ]
+    },
+    "bomb":{
+      "type":"roomElement",
+      "image":"defaultsprites", "tileX":96, "tileY":192, "width":16, "height":16,
+      "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "animations":{ "idle":{ "frames":[ 0, 1, 0, 2 ], "loopTo":0 } },
+      "animation":"idle",
+      "states":{
+        "code":[
+          {
+            "name":"Sequence",
+            "data":[
+              { "wait":60 },
+              { "object":{ "set":{ "_":[ "stencil", "bombFire" ] } } },
+              { "object":{ "set":{ "_":[ "stencil", "bombFire" ] } }, "subtract":16, "to":{ "_":[ "that", "y" ] } },
+              { "object":{ "set":{ "_":[ "stencil", "bombFire" ] } }, "subtract":16, "to":{ "_":[ "that", "x" ] } },
+              { "object":{ "set":{ "_":[ "stencil", "bombFire" ] } }, "sum":16, "to":{ "_":[ "that", "y" ] } },
+              { "object":{ "set":{ "_":[ "stencil", "bombFire" ] } }, "sum":16, "to":{ "_":[ "that", "x" ] } },
+              { "remove":1 }
+            ]
+          },
+          { "name":"ZPerspective" }
+        ]
+      }
+    },
+    "bombFire":{
+      "image":"defaultsprites", "tileX":80, "tileY":16, "width":16, "height":16,
+      "zIndex":10000, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "animations":{ "spark":{ "frames":4, "speed":1 } },
+      "animation":"spark",
+      "damage":1,
+      "explosion":1,
+      "states":{
+        "code":[
+          { "name":"Sequence", "data":[ { "wait":8 }, { "remove":1 } ] },
+          {
+            "name":"Execute",
+            "data":{ "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "hitable" ] } ] }, "execute":{ "as":{ "_":"that" }, "executeAction":"hit" } }
+          }
+        ]
+      }
+    },
+    "bossEntrance":{
+      "image":"tlos-bg", "tileX":0, "tileY":32, "width":16, "height":16,
+      "visible":0,
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[
+            { "wait":1, "loop":1, "until":{ "_":[ "this", "collidesWith", { "_":[ "objectTyped", "player" ] } ] } },
+            { "as":{ "_":[ "objectTyped", "player" ] }, "set":{ "forceX":0, "forceY":-2, "forceZ":0, "state":"auto" } },
+            { "wait":10 },
+            { "set":{ "type":[ "wall", "block" ], "visible":1 } },
+            { "object":{ "_":[ "stencil", "smoke" ] } },
+            { "as":{ "_":[ "objectTyped", "player" ] }, "set":{ "forceY":0 } },
+            { "sum":1, "to":{ "_":[ "objectTyped", "boss", "x" ] }, "wait":1 },
+            { "subtract":1, "to":{ "_":[ "objectTyped", "boss", "x" ] }, "wait":1, "cycles":10, "loopTo":-1 },
+            { "wait":10 },
+            { "as":{ "_":[ "object", "boss" ] }, "set":{ "state":"start" } },
+            { "as":{ "_":[ "objectTyped", "player" ] }, "set":{ "state":"default" } }
+          ]
+        }
+      }
+    },
+    "break":[
+      { "remove":1 },
+      {
+        "object":[
+          {
+            "image":{ "_":[ "that", "image" ] }, "tileX":{ "_":[ "that", "tileX" ] }, "tileY":{ "_":[ "that", "tileY" ] }, "width":{ "_":[ "that", "width", "/", 2 ] }, "height":{ "_":[ "that", "height", "/", 2 ] },
+            "zIndex":{ "_":[ "that", "zIndex" ] }, "x":{ "_":[ "that", "x" ] }, "y":{ "_":[ "that", "y" ] },
+            "forceZ":{ "_":[ "randomNumber", [ -3, -7 ] ] },
+            "bounceFloor":{ "_":[ "that", "height", "/", 2 ] },
+            "states":{
+              "code":[
+                { "name":"Physics", "data":{ "walls":{ "z":{ "_":[ "this", "bounceFloor" ] }, "restitution":0.5 }, "gravityZ":1 } },
+                { "name":"Sequence", "data":[ { "wait":30 }, { "remove":1 } ] }
+              ]
+            }
+          },
+          {
+            "image":{ "_":[ "that", "image" ] }, "tileX":{ "_":[ "that", "tileX", "+", { "_":[ "that", "width", "/", 2 ] } ] }, "tileY":{ "_":[ "that", "tileY" ] }, "width":{ "_":[ "that", "width", "/", 2 ] }, "height":{ "_":[ "that", "height", "/", 2 ] },
+            "zIndex":{ "_":[ "that", "zIndex" ] }, "x":{ "_":[ "that", "x", "+", { "_":[ "that", "width", "/", 2 ] } ] }, "y":{ "_":[ "that", "y" ] },
+            "forceZ":{ "_":[ "randomNumber", [ -3, -7 ] ] },
+            "bounceFloor":{ "_":[ "that", "height", "/", 2 ] },
+            "states":{
+              "code":[
+                { "name":"Physics", "data":{ "walls":{ "z":{ "_":[ "this", "bounceFloor" ] }, "restitution":0.5 }, "gravityZ":1 } },
+                { "name":"Sequence", "data":[ { "wait":30 }, { "remove":1 } ] }
+              ]
+            }
+          },
+          {
+            "image":{ "_":[ "that", "image" ] }, "tileX":{ "_":[ "that", "tileX" ] }, "tileY":{ "_":[ "that", "tileY", "+", { "_":[ "that", "height", "/", 2 ] } ] }, "width":{ "_":[ "that", "width", "/", 2 ] }, "height":{ "_":[ "that", "height", "/", 2 ] },
+            "zIndex":{ "_":[ "that", "zIndex" ] }, "x":{ "_":[ "that", "x" ] }, "y":{ "_":[ "that", "y", "+", { "_":[ "that", "height", "/", 2 ] } ] },
+            "forceZ":{ "_":[ "randomNumber", [ -3, -7 ] ] },
+            "states":{
+              "code":[
+                { "name":"Physics", "data":{ "walls":{ "z":0, "restitution":0.5 }, "gravityZ":1 } },
+                { "name":"Sequence", "data":[ { "wait":30 }, { "remove":1 } ] }
+              ]
+            }
+          },
+          {
+            "image":{ "_":[ "that", "image" ] }, "tileX":{ "_":[ "that", "tileX", "+", { "_":[ "that", "width", "/", 2 ] } ] }, "tileY":{ "_":[ "that", "tileY", "+", { "_":[ "that", "height", "/", 2 ] } ] }, "width":{ "_":[ "that", "width", "/", 2 ] }, "height":{ "_":[ "that", "height", "/", 2 ] },
+            "zIndex":{ "_":[ "that", "zIndex" ] }, "x":{ "_":[ "that", "x", "+", { "_":[ "that", "width", "/", 2 ] } ] }, "y":{ "_":[ "that", "y", "+", { "_":[ "that", "height", "/", 2 ] } ] },
+            "forceZ":{ "_":[ "randomNumber", [ -3, -8 ] ] },
+            "states":{
+              "code":[
+                { "name":"Physics", "data":{ "walls":{ "z":0, "restitution":0.5 }, "gravityZ":1 } },
+                { "name":"Sequence", "data":[ { "wait":30 }, { "remove":1 } ] }
+              ]
+            }
+          }
+        ]
+      }
+    ],
+    "bullet":{
+      "type":"roomElement",
+      "image":"defaultsprites", "tileX":96, "tileY":96, "width":8, "height":8,
+      "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "forceX":-1, "forceY":0,
+      "execute":[
+        { "when":{ "_":[ "that", "pointingSide", "isEqualTo", "up" ] }, "set":{ "forceX":0, "forceY":-2 } },
+        { "when":{ "_":[ "that", "pointingSide", "isEqualTo", "down" ] }, "set":{ "forceX":0, "forceY":2 } },
+        { "when":{ "_":[ "that", "pointingSide", "isEqualTo", "left" ] }, "set":{ "forceX":-2, "forceY":0 } },
+        { "when":{ "_":[ "that", "pointingSide", "isEqualTo", "right" ] }, "set":{ "forceX":2, "forceY":0 } }
+      ],
+      "animations":{ "idle":{ "frames":2, "loopTo":0 } },
+      "animation":"idle",
+      "damage":1,
+      "hitting":"player",
+      "spinSpeed":30,
+      "states":{
+        "code":[
+          {
+            "name":"Execute",
+            "data":[
+              { "sum":{ "_":[ "this", "spinSpeed" ] }, "to":{ "_":[ "this", "angle" ] } },
+              {
+                "when":{ "_":[ "this", "collidesWith", { "_":[ "object", { "_":[ "this", "hitting" ] } ] } ] },
+                "execute":{ "as":{ "_":"that" }, "executeAction":"hit" }
+              },
+              { "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "wall" ] } ] }, "executeAction":"remove" }
+            ]
+          },
+          { "name":"ZPerspective" },
+          { "name":"Physics", "data":{ "walls":{ "camera":1, "execute":{ "remove":1 } } } }
+        ],
+        "actions":{ "name":"remove", "execute":{ "_":[ "stencil", "removeWithSpark" ] } }
+      }
+    },
+    "breakableWall":{
+      "set":{ "_":[ "stencil", "modelDualStateObject" ] },
+      "image":"tlos-bg", "tileX":48, "tileY":32,
+      "sparkType":"smoke",
+      "states":{
+        "actions":[
+          { "name":"setoff", "set":{ "type":[ "wall", "block", "hitable" ], "visible":1 } },
+          { "name":"seton", "set":{ "removeType":[ "wall", "block", "hitable" ], "visible":0 } },
+          { "name":"hit", "execute":{ "when":{ "_":[ "that", "explosion" ] }, "assign":1, "to":{ "_":[ "variable", { "_":[ "this", "checkVariable" ] } ] } } }
+        ]
+      }
+    },
+    "darkBreakableWall":{ "set":{ "_":[ "stencil", "breakableWall" ] }, "tileX":64 },
+    "door":{
+      "set":{ "_":[ "stencil", "modelDualStateObject" ] },
+      "image":"tlos-bg", "tileX":0, "tileY":32,
+      "sparkType":"smoke",
+      "states":{
+        "actions":[
+          { "name":"setoff", "set":{ "type":[ "wall", "block" ], "visible":1 } },
+          { "name":"seton", "set":{ "removeType":[ "wall", "block" ], "visible":0 } }
+        ]
+      }
+    },
+    "switch":{
+      "type":[ "wall", "block", "foe", "hitable" ],
+      "set":{ "_":[ "stencil", "modelDualStateObject" ] },
+      "image":"defaultsprites", "tileX":96, "tileY":160,
+      "states":{
+        "actions":[
+          { "name":"setoff", "set":{ "frame":0 } },
+          { "name":"seton", "set":{ "frame":1 } },
+          {
+            "name":"hit",
+            "execute":[
+              { "as":{ "_":"that" }, "execute":{ "_":[ "stencil", "removeWithSpark" ] } },
+              {
+                "when":{ "_":[ "variable", { "_":[ "this", "checkVariable" ] } ] },
+                "assign":0,
+                "to":{ "_":[ "variable", { "_":[ "this", "checkVariable" ] } ] },
+                "elseExecute":{ "assign":1, "to":{ "_":[ "variable", { "_":[ "this", "checkVariable" ] } ] } }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "bossKeyDoor":{ "set":{ "_":[ "stencil", "modelKeyDoor" ] }, "tileX":32, "tileY":32, "keyItem":"bossKeys" },
+    "smallKeyDoor":{ "set":{ "_":[ "stencil", "modelKeyDoor" ] }, "tileX":16, "tileY":32, "keyItem":"smallKeys" },
+    "bonusBomb":{
+      "set":{ "_":[ "stencil", "modelPickable" ] },
+      "tileX":160, "tileY":160,
+      "itemType":"bombs",
+      "maxItemType":"maxBombs",
+      "states":{ "actions":{ "name":"picked", "execute":{ "when":{ "_":[ "variable", "maxBombs", "not" ] }, "execute":{ "_":[ "stencil", "tutorialBomb" ] } } } }
+    },
+    "bonusGold":{ "set":{ "_":[ "stencil", "modelPickable" ] }, "tileX":192, "tileY":160, "itemType":"gold" },
+    "bonusHeart":{ "set":{ "_":[ "stencil", "modelPickable" ] }, "tileX":176, "tileY":160, "itemType":"health", "maxItemType":"maxHealth" },
+    "bonusTrivenge":{
+      "set":{ "_":[ "stencil", "modelPickable" ] },
+      "tileX":208, "tileY":160,
+      "itemType":"trivenge",
+      "states":{ "actions":{ "name":"picked", "execute":{ "gotoScene":"ending" } } }
+    },
+    "bossKey":{ "set":{ "_":[ "stencil", "modelPickable" ] }, "tileX":144, "tileY":160, "itemType":"bossKeys" },
+    "smallKey":{ "set":{ "_":[ "stencil", "modelPickable" ] }, "tileX":128, "tileY":160, "itemType":"smallKeys" },
+    "pot":{
+      "type":[ "wall", "block", "roomElement", "foe", "hitable" ],
+      "image":"defaultsprites", "tileX":80, "tileY":160, "width":16, "height":16,
+      "states":{
+        "like":{ "_":[ "stencil", "modelPerspectiveObject" ] },
+        "actions":{
+          "name":"hit",
+          "execute":[ { "_":[ "stencil", "break" ] }, { "_":[ "stencil", "spawnBonus" ] }, { "as":{ "_":"that" }, "execute":{ "_":[ "stencil", "removeWithSpark" ] } } ]
+        }
+      }
+    },
+    "roomLocker":{
+      "type":[ "roomElement", "roomLocker" ],
+      "image":"tlos-bg", "tileX":0, "tileY":32, "width":16, "height":16,
+      "visible":0,
+      "states":[
+        {
+          "like":{ "_":[ "stencil", "modelPerspectiveObject" ] },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "when":{ "_":[ "variable", { "_":[ "this", "checkVariable" ] } ] }, "remove":1 },
+              { "wait":2 },
+              { "wait":1, "loop":1, "until":{ "_":[ "this", "collidesWith", { "_":[ "objectTyped", "player" ] } ] } },
+              { "wait":1, "loop":1, "until":{ "_":[ "this", "collidesWith", { "_":[ "objectTyped", "player" ] }, "not" ] } },
+              { "as":{ "_":[ "object", "roomLocker" ] }, "set":{ "state":"locked" } }
+            ]
+          }
+        },
+        {
+          "name":"locked",
+          "set":{ "type":[ "wall", "block" ], "visible":1 },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "object":{ "_":[ "stencil", "smoke" ] } },
+              { "wait":1, "loop":1, "until":{ "_":[ "object", "roomLocking", "count", "isEqualTo", 0 ] } },
+              { "when":{ "_":[ "this", "checkVariable" ] }, "assign":1, "to":{ "_":[ "variable", { "_":[ "this", "checkVariable" ] } ] } },
+              { "_":[ "stencil", "removeWithSmoke" ] }
+            ],
+            "like":{ "_":[ "stencil", "modelPerspectiveObject" ] }
+          }
+        }
+      ]
+    },
+    "smoke":{
+      "image":"defaultsprites", "tileX":80, "tileY":16, "width":16, "height":16,
+      "zIndex":{ "_":[ "that", "zIndex", "+", 1 ] }, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "animations":{ "spark":{ "frames":4, "speed":1 } },
+      "animation":"spark",
+      "states":{ "code":[ { "name":"Physics" }, { "name":"Sequence", "data":[ { "wait":8 }, { "remove":1 } ] } ] }
+    },
+    "spawnBonus":{
+      "when":{ "_":[ "this", "contains" ] },
+      "object":{ "_":[ "stencil", { "_":[ "this", "contains" ] } ] },
+      "elseExecute":{
+        "when":{ "_":[ "randomValue", [ 0, 1 ] ] },
+        "object":{
+          "_":[
+            "stencil",
+            { "_":[ "decide", [ { "options":[ "bonusGold", "bonusHeart" ] }, { "when":{ "_":[ "variable", "maxBombs" ] }, "options":"bonusBomb" } ] ] }
+          ]
+        }
+      }
+    },
+    "sword":{
+      "type":"roomElement",
+      "image":"defaultsprites", "tileX":128, "tileY":96, "width":8, "height":8,
+      "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "forceX":-1, "forceY":0,
+      "execute":[
+        { "when":{ "_":[ "that", "pointingSide", "isEqualTo", "up" ] }, "subtract":4, "to":{ "_":[ "this", "y" ] }, "set":{ "forceX":0, "forceY":-3 } },
+        { "when":{ "_":[ "that", "pointingSide", "isEqualTo", "down" ] }, "sum":4, "to":{ "_":[ "this", "y" ] }, "set":{ "flipY":1, "forceX":0, "forceY":3 } },
+        {
+          "when":{ "_":[ "that", "pointingSide", "isEqualTo", "left" ] },
+          "subtract":4,
+          "to":{ "_":[ "this", "x" ] },
+          "set":{ "angle":-90, "forceX":-3, "forceY":0 }
+        },
+        {
+          "when":{ "_":[ "that", "pointingSide", "isEqualTo", "right" ] },
+          "sum":4,
+          "to":{ "_":[ "this", "x" ] },
+          "set":{ "angle":90, "forceX":3, "forceY":0 }
+        }
+      ],
+      "damage":1,
+      "hitting":"player",
+      "states":{
+        "code":[
+          { "name":"Physics" },
+          {
+            "name":"Execute",
+            "data":[
+              {
+                "when":{ "_":[ "this", "collidesWith", { "_":[ "object", { "_":[ "this", "hitting" ] } ] } ] },
+                "execute":{ "as":{ "_":"that" }, "executeAction":"hit" }
+              },
+              { "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "wall" ] } ] }, "executeAction":"remove" }
+            ]
+          },
+          { "name":"Sequence", "data":[ { "wait":3 }, { "remove":1 } ] },
+          { "name":"ZPerspective" }
+        ],
+        "actions":{ "name":"remove", "execute":{ "_":[ "stencil", "removeWithSpark" ] } }
+      }
+    },
+    "topViewAnimation":{
+      "name":"Execute",
+      "data":[
+        { "when":{ "_":[ "this", "forceX", "isLessThan", 0 ] }, "set":{ "flipX":1, "pointingSide":"left" } },
+        { "when":{ "_":[ "this", "forceX", "isGreaterThan", 0 ] }, "set":{ "flipX":0, "pointingSide":"right" } },
+        { "when":{ "_":[ "this", "forceY", "isLessThan", 0 ] }, "set":{ "pointingSide":"up" } },
+        { "when":{ "_":[ "this", "forceY", "isGreaterThan", 0 ] }, "set":{ "pointingSide":"down" } },
+        {
+          "when":{ "_":[ "this", "forceY", "isEqualTo", 0, "and", { "_":[ "this", "forceX", "isEqualTo", 0 ] } ] },
+          "execute":{ "set":{ "animation":{ "_":[ "still", ".", { "_":[ "this", "pointingSide" ] } ] } } },
+          "elseExecute":{ "set":{ "animation":{ "_":[ "walk", ".", { "_":[ "this", "pointingSide" ] } ] } } }
+        }
+      ]
+    },
+    "tutorialBomb":{
+      "object":{
+        "set":{ "_":[ "stencil", "modelTutorialBox" ] },
+        "states":{
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "as":{ "_":[ "objectTyped", "player" ] }, "set":{ "forceX":0, "forceY":0, "forceZ":0, "state":"auto" } },
+              { "wait":10 },
+              { "as":{ "_":[ "objectTyped", "dialogueText" ] }, "set":{ "html":"YOU'VE FOUND THE BOMBS! NOW YOU CAN BREAK CRUMBLED WALLS!" } },
+              { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+              { "as":{ "_":[ "objectTyped", "dialogueText" ] }, "set":{ "html":"PRESS B TO SWITCH ITEM AND A FOR USING IT." } },
+              { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+              { "as":{ "_":[ "object", "dialogueBox" ] }, "remove":1 },
+              { "as":{ "_":[ "objectTyped", "player" ] }, "set":{ "state":"default" } }
+            ]
+          }
+        }
+      },
+      "into":{ "_":"scenehud" }
+    },
+    "-":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":0, "tileY":16 },
+    "@":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":64, "tileY":16 },
+    "T":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":32, "tileY":16 },
+    "X":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":32, "tileY":0 },
+    "|":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":16, "tileY":16 },
+    "#":{ "type":[ "wall", "block" ], "image":"tlos-bg", "tileX":0, "tileY":0, "width":16, "height":16 },
+    "~":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":48, "tileY":0, "animations":{ "idle":{ "frames":2, "loopTo":0 } }, "animation":"idle" },
+    ".":{ "image":"tlos-bg", "tileX":16, "tileY":0, "width":16, "height":16 },
+    "=":{ "set":{ "_":[ "stencil", "." ] }, "tileX":48, "tileY":16 },
+    "L":{ "set":{ "_":[ "stencil", "." ] }, "tileX":0, "tileY":48 },
+    "o":{ "type":"block", "image":"tlos-bg", "tileX":16, "tileY":48, "width":16, "height":16 },
+    "v":{ "set":{ "_":[ "stencil", "o" ] }, "tileX":32, "tileY":48 }
+  },
+  "execute":[
+    {
+      "object":[
+        { "image":"frameh", "width":128, "height":16, "x":0, "y":0, "bgcolor":"#007f00" },
+        { "image":"frameh", "width":128, "height":16, "x":128, "y":0, "flipX":1, "bgcolor":"#007f00" },
+        { "image":"frameh", "width":128, "height":16, "x":0, "y":176, "flipY":1, "bgcolor":"#007f00" },
+        { "image":"frameh", "width":128, "height":16, "x":128, "y":176, "flipX":1, "flipY":1, "bgcolor":"#007f00" },
+        { "image":"framev", "width":16, "height":96, "x":240, "y":0, "bgcolor":"#007f00" },
+        { "image":"framev", "width":16, "height":96, "x":240, "y":96, "flipY":1, "bgcolor":"#007f00" },
+        { "image":"defaultsprites", "tileX":176, "tileY":160, "width":16, "height":16, "zIndex":1, "x":240, "y":32, "bgcolor":"#000" },
+        {
+          "type":"hud",
+          "hudType":"label", "label":"%number|variable.health%",
+          "box":"label", "width":16, "height":10,
+          "zIndex":2, "x":240, "y":40,
+          "font":"spectrum", "lineHeight":10, "outline":"#000", "textAlign":"right"
+        },
+        {
+          "object":{
+            "type":"hud",
+            "hudType":"label", "label":"%number|variable.gold%",
+            "box":"label", "width":16, "height":10,
+            "zIndex":2, "x":0, "y":6,
+            "font":"spectrum", "lineHeight":10, "outline":"#000", "textAlign":"right"
+          },
+          "image":"defaultsprites", "tileX":192, "tileY":160, "width":16, "height":16,
+          "zIndex":1, "x":240, "y":56,
+          "bgcolor":"#000"
+        },
+        {
+          "object":{
+            "type":"hud",
+            "hudType":"label", "label":"%number|variable.smallKeys%",
+            "box":"label", "width":16, "height":10,
+            "zIndex":2, "x":0, "y":6,
+            "font":"spectrum", "lineHeight":10, "outline":"#000", "textAlign":"right"
+          },
+          "image":"defaultsprites", "tileX":128, "tileY":160, "width":16, "height":16,
+          "zIndex":1, "x":240, "y":80,
+          "bgcolor":"#000"
+        },
+        {
+          "object":{
+            "type":"hud",
+            "hudType":"label", "label":"%number|variable.bossKeys%",
+            "box":"label", "width":16, "height":10,
+            "zIndex":2, "x":0, "y":6,
+            "font":"spectrum", "lineHeight":10, "outline":"#000", "textAlign":"right"
+          },
+          "image":"defaultsprites", "tileX":144, "tileY":160, "width":16, "height":16,
+          "zIndex":1, "x":240, "y":104,
+          "bgcolor":"#000"
+        },
+        {
+          "image":"defaultsprites", "tileX":224, "tileY":160, "width":16, "height":16,
+          "zIndex":1, "x":240, "y":128,
+          "bgcolor":"#000",
+          "states":{
+            "code":{
+              "name":"Execute",
+              "data":{ "when":{ "_":[ "variable", "currentItem", "isEqualTo", 0 ] }, "set":{ "visible":1 }, "elseExecute":{ "set":{ "visible":0 } } }
+            }
+          }
+        },
+        {
+          "image":"defaultsprites", "tileX":224, "tileY":160, "width":16, "height":16,
+          "zIndex":1, "x":240, "y":128,
+          "bgcolor":"#000",
+          "states":{
+            "code":{
+              "name":"Execute",
+              "data":{ "when":{ "_":[ "variable", "currentItem", "isEqualTo", 0 ] }, "set":{ "visible":1 }, "elseExecute":{ "set":{ "visible":0 } } }
+            }
+          }
+        },
+        {
+          "object":{
+            "type":"hud",
+            "hudType":"label", "label":"%number|variable.bombs%",
+            "box":"label", "width":16, "height":10,
+            "zIndex":2, "x":0, "y":6,
+            "font":"spectrum", "lineHeight":10, "outline":"#000", "textAlign":"right"
+          },
+          "image":"defaultsprites", "tileX":160, "tileY":160, "width":16, "height":16,
+          "zIndex":1, "x":240, "y":128,
+          "bgcolor":"#000",
+          "states":{
+            "code":{
+              "name":"Execute",
+              "data":{ "when":{ "_":[ "variable", "currentItem", "isEqualTo", 1 ] }, "set":{ "visible":1 }, "elseExecute":{ "set":{ "visible":0 } } }
+            }
+          }
+        }
+      ],
+      "into":{ "_":"hud" }
+    },
+    { "as":{ "_":"variable" }, "set":{ "bossKeys":0, "maxBombs":0, "maxHealth":5, "smallKeys":0, "trivenge":0 } }
+  ],
+  "scenes":{
+    "intro":{
+      "object":[
+        { "image":"logo", "width":200, "height":89, "x":20, "y":32 },
+        {
+          "width":200, "height":20,
+          "zIndex":1, "x":20, "y":110,
+          "font":"spectrum", "lineHeight":"20", "outline":"#000", "textAlign":"right", "html":"PART II"
+        },
+        {
+          "box":"label", "width":240,
+          "zIndex":1, "x":0, "y":140,
+          "font":"spectrum", "lineHeight":20, "textAlign":"center", "html":"PRESS START",
+          "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "visible":0 }, "wait":10 }, { "set":{ "visible":1 }, "wait":10, "loopTo":0 } ] } }
+        }
+      ],
+      "execute":{ "as":{ "_":"variable" }, "set":{ "bombs":0, "currentItem":0, "gold":0, "health":5 } },
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":{
+            "when":{ "_":[ "keyA", "isHit" ] },
+            "execute":[ { "when":{ "_":[ "cheat", "startWithBossKey" ] }, "as":{ "_":"variable" }, "set":{ "bossKeys":1 } }, { "gotoScene":"story" } ]
+          }
+        }
+      }
+    },
+    "story":{
+      "object":{
+        "width":208, "height":1000,
+        "x":16, "y":176,
+        "font":"spectrum", "textAlign":"center", "html":"LONG LONG TIME AGO, A YOUNG BOY NAMED KLIN, WAS SENT BY ITS VILLAGE TO THE DARK CAVE IN ORDER TO SLAY A MENACING MONSTER.<br><br>BUT A TERRIBLE TRICK WAS PLAYED TO HIM AND HE WAS SEALED IN THE DUNGEON FOREVER.<br><br>A DARK SPIRIT DECIDED TO HELP HIM AND REVEALED WHERE THE FIRST PIECE OF THE TRIVENGE, A POWERFUL ITEM THAT CAN GRANT ANY WISH, WAS HIDDEN.",
+        "forceY":-0.5,
+        "states":{ "code":{ "name":"Physics" } }
+      },
+      "states":{
+        "code":[
+          { "name":"Sequence", "data":[ { "wait":990 }, { "gotoScene":"dungeon1" } ] },
+          { "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"dungeon1" } }
+        ]
+      }
+    },
+    "ending":{
+      "object":{
+        "width":208, "height":1000,
+        "x":16, "y":176,
+        "font":"spectrum", "textAlign":"center", "html":"WHEN KLIN TOUCHED THE TRIVENGE PIECE, EVERYTHING BECAME BLACK AND FAINTED.<br><br>'THE TRIVENGE OF LIFE' SAID THE DARK SPIRIT 'WILL LET YOU DIE'.<br><br>KLIN HEART STARTED SLOWING DOWN LITTLE BY LITTLE.<br><br>'SHOW HIM ALL YOUR RAGE. SHOW HIM YOU WANT TO LIVE AND GET YOUR REVENGE'.<br><br>KLIN FACE BECAME PALE. HIS HEART STOPPED.<br><br><br><br>BUT THEN...",
+        "forceY":-0.5,
+        "states":{ "code":{ "name":"Physics" } }
+      },
+      "states":{
+        "code":[
+          { "name":"Sequence", "data":[ { "wait":1200 }, { "gotoScene":"gameover" } ] },
+          { "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"gameover" } }
+        ]
+      }
+    },
+    "gameover":{
+      "object":{ "width":240, "height":160, "x":0, "y":16, "font":"spectrum", "lineHeight":160, "textAlign":"center", "html":"GAME OVER" },
+      "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"intro" } } }
+    },
+    "dungeon1":{
+      "object":{ "set":{ "_":[ "stencil", "player" ] }, "x":592, "y":752 },
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "cameras":[
+        {
+          "width":480, "height":160,
+          "x":720, "y":320,
+          "onEnterExecute":{
+            "object":[
+              { "set":{ "_":[ "stencil", "switch" ] }, "x":752, "y":432, "checkVariable":"M1LakeDoor" },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":752, "y":352 },
+              { "set":{ "_":[ "stencil", "foeOcto" ] }, "x":976, "y":384 },
+              { "set":{ "_":[ "stencil", "foeOcto" ] }, "x":880, "y":400 },
+              { "set":{ "_":[ "stencil", "foeOcto" ] }, "x":816, "y":384 },
+              { "set":{ "_":[ "stencil", "foeOcto" ] }, "x":752, "y":400 },
+              { "set":{ "_":[ "stencil", "foeGreenSlime" ] }, "x":1056, "y":384 },
+              { "set":{ "_":[ "stencil", "foeGreenSlime" ] }, "x":1072, "y":400 },
+              { "set":{ "_":[ "stencil", "smallKeyDoor" ] }, "x":1072, "y":320, "checkVariable":"M1RightDoor" },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":1152, "y":432 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":1152, "y":352 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":976, "y":352 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":976, "y":432 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":800, "y":416 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":848, "y":352 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":880, "y":432 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":928, "y":368 }
+            ]
+          },
+          "onExitExecute":{ "as":{ "_":[ "object", "roomElement" ] }, "remove":1 }
+        },
+        {
+          "width":240, "height":160,
+          "x":480, "y":640,
+          "onEnterExecute":{
+            "object":[
+              { "set":{ "_":[ "stencil", "door" ] }, "x":592, "y":640, "checkVariable":"M1MainDoor" },
+              { "set":{ "_":[ "stencil", "switch" ] }, "x":672, "y":672, "checkVariable":"M1MainDoor" },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":656, "y":656 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":672, "y":656 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":688, "y":656 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":688, "y":672 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":688, "y":688 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":672, "y":688 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":656, "y":688 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":656, "y":672 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":496, "y":656 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":496, "y":672 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":496, "y":688 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":512, "y":688 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":528, "y":688 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":528, "y":672 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":528, "y":656 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":512, "y":656 }
+            ]
+          },
+          "onExitExecute":{ "as":{ "_":[ "object", "roomElement" ] }, "remove":1 }
+        },
+        {
+          "width":240, "height":320,
+          "x":0, "y":160,
+          "onEnterExecute":{
+            "object":[
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":176, "y":320 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":176, "y":432 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":176, "y":416 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":192, "y":416 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":192, "y":432 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":32, "y":432 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":32, "y":416 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":48, "y":416 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":48, "y":432 },
+              { "set":{ "_":[ "stencil", "foeGreenSlime" ] }, "x":112, "y":192 },
+              { "set":{ "_":[ "stencil", "foeOcto" ] }, "x":48, "y":320 },
+              { "set":{ "_":[ "stencil", "foeOcto" ] }, "x":80, "y":416 }
+            ]
+          },
+          "onExitExecute":{ "as":{ "_":[ "object", "roomElement" ] }, "remove":1 }
+        },
+        {
+          "width":240, "height":160,
+          "x":0, "y":0,
+          "onEnterExecute":{
+            "object":[
+              { "set":{ "_":[ "stencil", "roomLocker" ] }, "width":16, "height":16, "x":112, "y":144, "checkVariable":"M1KeyDoor" },
+              { "set":{ "_":[ "stencil", "foeOcto" ] }, "x":32, "y":80 },
+              { "set":{ "_":[ "stencil", "foeOcto" ] }, "x":192, "y":80 },
+              { "set":{ "_":[ "stencil", "foeOcto" ] }, "x":112, "y":80 },
+              { "set":{ "_":[ "stencil", "smallKey" ] }, "x":112, "y":48, "checkVariable":"M1SmallKey1" }
+            ]
+          },
+          "onExitExecute":{ "as":{ "_":[ "object", "roomElement" ] }, "remove":1 }
+        },
+        {
+          "width":240, "height":160,
+          "x":480, "y":320,
+          "onEnterExecute":{
+            "object":[
+              { "set":{ "_":[ "stencil", "M1Boss" ] }, "x":584, "y":352 },
+              { "set":{ "_":[ "stencil", "bossEntrance" ] }, "width":16, "height":16, "x":592, "y":464 }
+            ]
+          },
+          "onExitExecute":{ "as":{ "_":[ "object", "roomElement" ] }, "remove":1 }
+        },
+        {
+          "width":240, "height":160,
+          "x":960, "y":480,
+          "onEnterExecute":{
+            "object":[
+              { "set":{ "_":[ "stencil", "roomLocker" ] }, "width":16, "height":16, "x":960, "y":544 },
+              { "set":{ "_":[ "stencil", "roomLocker" ] }, "width":16, "height":16, "x":1072, "y":480 },
+              { "set":{ "_":[ "stencil", "roomLocker" ] }, "width":16, "height":16, "x":1072, "y":624 },
+              { "set":{ "_":[ "stencil", "foeRedSlime" ] }, "x":1024, "y":544 },
+              { "set":{ "_":[ "stencil", "foeRedSlime" ] }, "x":1072, "y":560 },
+              { "set":{ "_":[ "stencil", "foeRedSlime" ] }, "x":1120, "y":544 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":992, "y":544 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":992, "y":560 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":1072, "y":512 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":1072, "y":592 }
+            ]
+          },
+          "onExitExecute":{ "as":{ "_":[ "object", "roomElement" ] }, "remove":1 }
+        },
+        {
+          "width":240, "height":160,
+          "x":240, "y":480,
+          "onEnterExecute":{
+            "object":[
+              { "set":{ "_":[ "stencil", "foeGreenSlime" ] }, "x":352, "y":528 },
+              { "set":{ "_":[ "stencil", "foeGreenSlime" ] }, "x":352, "y":576 },
+              { "set":{ "_":[ "stencil", "foeGreenSlime" ] }, "x":320, "y":560 },
+              { "set":{ "_":[ "stencil", "foeGreenSlime" ] }, "x":384, "y":544 },
+              { "set":{ "_":[ "stencil", "darkBreakableWall" ] }, "x":352, "y":480, "checkVariable":"M1GoBackWall" },
+              { "set":{ "_":[ "stencil", "door" ] }, "x":464, "y":544, "checkVariable":"M1MainDoor", "statesMap":[ "seton", "setoff" ] },
+              { "set":{ "_":[ "stencil", "breakableWall" ] }, "x":352, "y":624, "checkVariable":"M1WrongWall" }
+            ]
+          },
+          "onExitExecute":{ "as":{ "_":[ "object", "roomElement" ] }, "remove":1 }
+        },
+        {
+          "width":240, "height":160,
+          "x":480, "y":480,
+          "onEnterExecute":{
+            "object":[
+              { "set":{ "_":[ "stencil", "switch" ] }, "x":672, "y":592, "checkVariable":"M1MainDoor" },
+              { "set":{ "_":[ "stencil", "door" ] }, "x":592, "y":624, "checkVariable":"M1MainDoor" },
+              { "set":{ "_":[ "stencil", "door" ] }, "x":480, "y":544, "checkVariable":"M1MainDoor", "statesMap":[ "seton", "setoff" ] },
+              { "set":{ "_":[ "stencil", "smallKeyDoor" ] }, "x":704, "y":544, "checkVariable":"M1S23RightDoor" },
+              { "set":{ "_":[ "stencil", "bossKeyDoor" ] }, "x":592, "y":480, "checkVariable":"M1BossDoor" }
+            ]
+          },
+          "onExitExecute":{ "as":{ "_":[ "object", "roomElement" ] }, "remove":1 }
+        },
+        {
+          "width":240, "height":160,
+          "x":720, "y":480,
+          "onEnterExecute":{
+            "object":[
+              { "set":{ "_":[ "stencil", "foeOcto" ] }, "x":832, "y":528 },
+              { "set":{ "_":[ "stencil", "foeOcto" ] }, "x":832, "y":576 },
+              { "set":{ "_":[ "stencil", "foeGreenSlime" ] }, "x":800, "y":544 },
+              { "set":{ "_":[ "stencil", "foeGreenSlime" ] }, "x":864, "y":560 }
+            ]
+          },
+          "onExitExecute":{ "as":{ "_":[ "object", "roomElement" ] }, "remove":1 }
+        },
+        {
+          "width":240, "height":160,
+          "x":960, "y":640,
+          "onEnterExecute":{
+            "object":[
+              { "set":{ "_":[ "stencil", "door" ] }, "x":960, "y":672, "checkVariable":"M1LakeDoor" },
+              { "set":{ "_":[ "stencil", "foeGreenSlime" ] }, "x":1024, "y":672 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":1152, "y":672 }
+            ]
+          },
+          "onExitExecute":{ "as":{ "_":[ "object", "roomElement" ] }, "remove":1 }
+        },
+        {
+          "width":240, "height":160,
+          "x":720, "y":640,
+          "onEnterExecute":{
+            "object":[
+              { "set":{ "_":[ "stencil", "smallKey" ] }, "x":816, "y":736, "checkVariable":"M1LakeKey" },
+              { "set":{ "_":[ "stencil", "foeOcto" ] }, "x":896, "y":672 },
+              { "set":{ "_":[ "stencil", "foeOcto" ] }, "x":752, "y":672 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":768, "y":768 }
+            ]
+          },
+          "onExitExecute":{ "as":{ "_":[ "object", "roomElement" ] }, "remove":1 }
+        },
+        {
+          "width":240, "height":160,
+          "x":0, "y":480,
+          "onEnterExecute":{
+            "object":[
+              { "set":{ "_":[ "stencil", "roomLocker" ] }, "width":16, "height":16, "x":224, "y":544 },
+              { "set":{ "_":[ "stencil", "roomLocker" ] }, "width":16, "height":16, "x":112, "y":480 },
+              { "set":{ "_":[ "stencil", "foeGreenSlime" ] }, "x":80, "y":528 },
+              { "set":{ "_":[ "stencil", "foeGreenSlime" ] }, "x":48, "y":560 },
+              { "set":{ "_":[ "stencil", "foeGreenSlime" ] }, "x":144, "y":528 },
+              { "set":{ "_":[ "stencil", "foeGreenSlime" ] }, "x":176, "y":560 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":112, "y":496 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":112, "y":608 },
+              { "set":{ "_":[ "stencil", "breakableWall" ] }, "x":112, "y":624, "checkVariable":"M1RightWall" }
+            ]
+          },
+          "onExitExecute":{ "as":{ "_":[ "object", "roomElement" ] }, "remove":1 }
+        },
+        {
+          "width":240, "height":160,
+          "x":960, "y":0,
+          "onEnterExecute":{ "object":{ "set":{ "_":[ "stencil", "smallKeyDoor" ] }, "x":960, "y":64, "checkVariable":"M1MazeDoor2" } },
+          "onExitExecute":{ "as":{ "_":[ "object", "roomElement" ] }, "remove":1 }
+        },
+        {
+          "width":240, "height":160,
+          "x":720, "y":0,
+          "onEnterExecute":{
+            "object":[
+              { "set":{ "_":[ "stencil", "door" ] }, "x":720, "y":64, "checkVariable":"M1LakeDoor", "statesMap":[ "seton", "setoff" ] },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":768, "y":96 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":768, "y":32 }
+            ]
+          },
+          "onExitExecute":{ "as":{ "_":[ "object", "roomElement" ] }, "remove":1 }
+        },
+        {
+          "width":240, "height":160,
+          "x":720, "y":160,
+          "onEnterExecute":{
+            "object":[
+              { "set":{ "_":[ "stencil", "roomLocker" ] }, "width":16, "height":16, "x":944, "y":224, "checkVariable":"M1MazeRoom1" },
+              { "set":{ "_":[ "stencil", "roomLocker" ] }, "width":16, "height":16, "x":720, "y":224, "checkVariable":"M1MazeRoom1" },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":896, "y":224 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":896, "y":240 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":768, "y":224 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":768, "y":240 },
+              { "set":{ "_":[ "stencil", "foeRedSlime" ] }, "x":800, "y":192 },
+              { "set":{ "_":[ "stencil", "foeRedSlime" ] }, "x":864, "y":272 },
+              { "set":{ "_":[ "stencil", "foeOcto" ] }, "x":800, "y":272 },
+              { "set":{ "_":[ "stencil", "foeOcto" ] }, "x":864, "y":192 },
+              { "set":{ "_":[ "stencil", "smallKey" ] }, "x":736, "y":176, "checkVariable":"M1MazeSmallKey1" }
+            ]
+          },
+          "onExitExecute":{ "as":{ "_":[ "object", "roomElement" ] }, "remove":1 }
+        },
+        {
+          "width":240, "height":160,
+          "x":480, "y":160,
+          "onEnterExecute":{
+            "object":[
+              { "set":{ "_":[ "stencil", "roomLocker" ] }, "width":16, "height":16, "x":704, "y":224, "checkVariable":"M1MazeRoom2" },
+              { "set":{ "_":[ "stencil", "smallKey" ] }, "x":576, "y":224, "checkVariable":"M1MazeSmallKey2" },
+              { "set":{ "_":[ "stencil", "foeGreenSlime" ] }, "x":592, "y":240 },
+              { "set":{ "_":[ "stencil", "foeStatue" ] }, "x":512, "y":192 }
+            ]
+          },
+          "onExitExecute":{ "as":{ "_":[ "object", "roomElement" ] }, "remove":1 }
+        },
+        {
+          "width":240, "height":160,
+          "x":960, "y":160,
+          "onEnterExecute":{ "object":{ "set":{ "_":[ "stencil", "smallKeyDoor" ] }, "x":1072, "y":160, "checkVariable":"M1MazeDoor1" } },
+          "onExitExecute":{ "as":{ "_":[ "object", "roomElement" ] }, "remove":1 }
+        },
+        {
+          "width":240, "height":160,
+          "x":480, "y":0,
+          "onEnterExecute":{
+            "object":[
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":624, "y":64 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":624, "y":80 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":544, "y":16 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":560, "y":16 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":576, "y":16 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":544, "y":128 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":560, "y":128 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":576, "y":128 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":496, "y":80 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":496, "y":64 },
+              { "set":{ "_":[ "stencil", "breakableWall" ] }, "x":480, "y":64, "checkVariable":"M1UpperWall" },
+              { "set":{ "_":[ "stencil", "breakableWall" ] }, "x":480, "y":80, "checkVariable":"M1UpperWall" },
+              { "set":{ "_":[ "stencil", "bonusBomb" ] }, "x":560, "y":64 }
+            ]
+          },
+          "onExitExecute":{ "as":{ "_":[ "object", "roomElement" ] }, "remove":1 }
+        },
+        {
+          "width":240, "height":320,
+          "x":240, "y":0,
+          "onEnterExecute":{
+            "object":[
+              { "set":{ "_":[ "stencil", "foeStatue" ] }, "x":384, "y":224 },
+              { "set":{ "_":[ "stencil", "foeStatue" ] }, "x":432, "y":224 },
+              { "set":{ "_":[ "stencil", "foeOcto" ] }, "x":272, "y":144 },
+              { "set":{ "_":[ "stencil", "foeOcto" ] }, "x":320, "y":144 },
+              { "set":{ "_":[ "stencil", "foeGreenSlime" ] }, "x":384, "y":32 },
+              { "set":{ "_":[ "stencil", "foeGreenSlime" ] }, "x":384, "y":80 },
+              { "set":{ "_":[ "stencil", "foeRedSlime" ] }, "x":272, "y":32 },
+              { "set":{ "_":[ "stencil", "breakableWall" ] }, "x":352, "y":32, "checkVariable":"M1MazeWall1" },
+              { "set":{ "_":[ "stencil", "breakableWall" ] }, "x":352, "y":144, "checkVariable":"M1MazeWall3" },
+              { "set":{ "_":[ "stencil", "breakableWall" ] }, "x":352, "y":224, "checkVariable":"M1MazeWall4" },
+              { "set":{ "_":[ "stencil", "darkBreakableWall" ] }, "x":288, "y":80, "checkVariable":"M1MazeWall2" },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":368, "y":16, "contains":"bonusBomb" },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":336, "y":64, "contains":"bonusBomb" },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":336, "y":96, "contains":"bonusBomb" },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":368, "y":128, "contains":"bonusBomb" },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":432, "y":272 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":432, "y":288 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":448, "y":288 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":448, "y":272 }
+            ]
+          },
+          "onExitExecute":{ "as":{ "_":[ "object", "roomElement" ] }, "remove":1 }
+        },
+        {
+          "width":240, "height":160,
+          "x":240, "y":320,
+          "onEnterExecute":{
+            "object":[
+              { "set":{ "_":[ "stencil", "breakableWall" ] }, "x":352, "y":464, "checkVariable":"M1GoBackWall" },
+              { "set":{ "_":[ "stencil", "foeStatue" ] }, "x":272, "y":416 },
+              { "set":{ "_":[ "stencil", "foeStatue" ] }, "x":288, "y":432 },
+              { "set":{ "_":[ "stencil", "foeStatue" ] }, "x":416, "y":432 },
+              { "set":{ "_":[ "stencil", "foeStatue" ] }, "x":432, "y":416 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":256, "y":336 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":448, "y":336, "contains":"bonusBomb" },
+              { "set":[ { "_":[ "stencil", "bossKey" ] }, { "_":[ "stencil", "modelFake" ] } ], "x":336, "y":416, "checkVariable":"fake" },
+              { "set":{ "_":[ "stencil", "roomLocker" ] }, "width":16, "height":16, "x":352, "y":320, "checkVariable":"M1FakeRoom" },
+              { "set":{ "_":[ "stencil", "switch" ] }, "x":368, "y":416, "checkVariable":"M1MainDoor" },
+              { "set":{ "_":[ "stencil", "roomLocker" ] }, "width":16, "height":16, "x":352, "y":448, "checkVariable":"M1FakeRoom" }
+            ]
+          },
+          "onExitExecute":{ "as":{ "_":[ "object", "roomElement" ] }, "remove":1 }
+        },
+        {
+          "width":240, "height":160,
+          "x":0, "y":640,
+          "onEnterExecute":{
+            "object":[
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":48, "y":720 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":80, "y":688 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":112, "y":720 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":144, "y":688 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":176, "y":720 },
+              { "set":[ { "_":[ "stencil", "bossKey" ] }, { "_":[ "stencil", "modelFake" ] } ], "x":16, "y":768, "checkVariable":"fake" },
+              { "set":[ { "_":[ "stencil", "bossKey" ] }, { "_":[ "stencil", "modelFake" ] } ], "x":16, "y":656, "checkVariable":"fake" },
+              { "set":[ { "_":[ "stencil", "bossKey" ] }, { "_":[ "stencil", "modelFake" ] } ], "x":208, "y":768, "checkVariable":"fake" },
+              { "set":[ { "_":[ "stencil", "bossKey" ] }, { "_":[ "stencil", "modelFake" ] } ], "x":112, "y":768, "checkVariable":"fake" },
+              { "set":{ "_":[ "stencil", "bossKey" ] }, "x":208, "y":656 },
+              { "set":{ "_":[ "stencil", "foeOcto" ] }, "x":192, "y":672 },
+              { "set":{ "_":[ "stencil", "foeGreenSlime" ] }, "x":192, "y":752 },
+              { "set":{ "_":[ "stencil", "foeRedSlime" ] }, "x":112, "y":752 },
+              { "set":{ "_":[ "stencil", "foeStatue" ] }, "x":32, "y":752 },
+              { "set":{ "_":[ "stencil", "bonusBomb" ] }, "x":32, "y":672 },
+              { "set":{ "_":[ "stencil", "darkBreakableWall" ] }, "x":112, "y":640, "checkVariable":"M1RightWall" }
+            ]
+          },
+          "onExitExecute":{ "as":{ "_":[ "object", "roomElement" ] }, "remove":1 }
+        },
+        {
+          "width":240, "height":160,
+          "x":240, "y":640,
+          "onEnterExecute":{
+            "object":[
+              { "set":[ { "_":[ "stencil", "bossKey" ] }, { "_":[ "stencil", "modelFake" ] } ], "x":272, "y":752, "checkVariable":"fake" },
+              { "set":[ { "_":[ "stencil", "bossKey" ] }, { "_":[ "stencil", "modelFake" ] } ], "x":352, "y":752, "checkVariable":"fake" },
+              { "set":[ { "_":[ "stencil", "bossKey" ] }, { "_":[ "stencil", "modelFake" ] } ], "x":432, "y":752, "checkVariable":"fake" },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":256, "y":768 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":256, "y":752 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":256, "y":736 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":272, "y":736 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":288, "y":736 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":288, "y":752 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":288, "y":768 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":272, "y":768 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":336, "y":736 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":336, "y":752 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":336, "y":768 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":352, "y":768 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":368, "y":768 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":368, "y":752 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":368, "y":736 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":352, "y":736 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":416, "y":736 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":416, "y":752 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":416, "y":768 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":432, "y":768 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":448, "y":768 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":448, "y":752 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":448, "y":736 },
+              { "set":{ "_":[ "stencil", "pot" ] }, "x":432, "y":736 },
+              { "set":{ "_":[ "stencil", "foeStatue" ] }, "x":304, "y":736 },
+              { "set":{ "_":[ "stencil", "foeStatue" ] }, "x":400, "y":736 },
+              { "set":{ "_":[ "stencil", "darkBreakableWall" ] }, "x":352, "y":640, "checkVariable":"M1WrongWall" },
+              { "set":{ "_":[ "stencil", "roomLocker" ] }, "width":16, "height":16, "x":352, "y":656 }
+            ]
+          },
+          "onExitExecute":{ "as":{ "_":[ "object", "roomElement" ] }, "remove":1 }
+        }
+      ],
+      "tilemap":{
+        "tileWidth":16,
+        "tileHeight":16,
+        "map":[
+          "####-------#####------#------##-------------##-------------##-------------#",
+          "#XX#.......#XX##......#......##XXX...XXXXXXX##.............##........X.X.X#",
+          "#XX#..|.|..#XX##.............##XX.....XXX..X##...~.........##...=.....X.X.#",
+          "#---.......---##......#......##X.......X....##..~~~~~~~~~~.##..=====...X.X#",
+          "#.....|.|.....##......#........................===========....=======...X.#",
+          "#.............##--.---#.....................##..~~~~~~~~~~.##..======....X#",
+          "#.............##......#......##X.......X....##...~.........##...=.===.....#",
+          "#.............##......#------##XX.....XXX..X##.............##.....===.....#",
+          "#.............##......#......##XXX...XXXXXXX##.............##.............#",
+          "#######.########.............######################################.#######",
+          "vvvv---.---vvvv#......#......##-------------##-------------##------.------#",
+          "oooov.....voooo#------#......##.............##..|.......|..##.............#",
+          "ooooo.....ooooo#......#......##..@.||||.@@..##..|.......|..##......=......#",
+          "ooooo.....ooooo#......#......##.@@......@@..##..|.......|..##.....===.....#",
+          "ooooov===vooooo#.............##..................................=====....#",
+          "ooLLLL===LLLLoo#......#......##.............##.............##.....===.....#",
+          "oo...........oo#......-------##.@@......@@..##..|.......|..##.....===.....#",
+          "oov==vvvvvvvvoo#.............##.@@.||||.@@..##..|.......|..##.....===.....#",
+          "ooo==oooooooooo#.............##.............##..|.......|..##.............#",
+          "ooL==LoooLLLLoo######|.|###########################################.#######",
+          "oo....ooo....oo#------.------##-------------##---------------------.------#",
+          "oo....ooo....oo#.....===.....##|...........|##......X...X.................#",
+          "oov==vooov==voo#.||..===..||.##.............##...XX.X...X.XX.....|..|.....#",
+          "ooo==ooooo==ooo#.||..===..||.##.............##...X..XX.XX..X....|....|....#",
+          "oLL==LLLLL==LLo#.....===.....##.............##............................#",
+          "o.............o#....=...=....##.............##............................#",
+          "o.............o#..@.=...=.@..##.............##...X...X.XX.XX....|....|....#",
+          "o.............o#.@..=...=..@.##.............##...XX.XX..X.X......|..|.....#",
+          "o.............o#....|#.#|....##|...........|##..........X.X...............#",
+          "ovvvvv|.|vvvvvo#######.#############|.|############################.#######",
+          "#-----|.|-----##------.------##-----|.|-----##-------------##------.------#",
+          "#.............##.............##.............##.............##.............#",
+          "#......#......##.##.......##.##....|...|....##.XX.......XX.##.XXXXX.XXXXX.#",
+          "#......#......##.-.........-.##.............##.X.........X.##.X.........X.#",
+          "#......#...........................|...|................................X.#",
+          "#......#......##.............##.............##.............##...........X.#",
+          "#......#......##.#.........#.##....|...|....##.X.........X.##.X.........X.#",
+          "#......-......##.--.......--.##.............##.XX.......XX.##.XXXXX.XXXXX.#",
+          "#.............##.............##.............##.............##.............#",
+          "#######.##############.#############|.|############################.#######",
+          "#------.------##-----#.#-----##-----|.|-----##-------------##------.------#",
+          "#====X===X====##.....-.-.....##.............##.............##.............#",
+          "#====X===X====##....T...T....##.-...........##............................#",
+          "#=============##.............##.............##....~~~......##.............#",
+          "#====X===X====##.............##.............##..~~~~~~~....vvvvvvvvvvvvvvvv",
+          "#XX=XXX=XXX=XX##.............##..##.....##..##..~~~~~~~...voooooooooooooooo",
+          "#====X===X====##.............##..--.....--..##..====~~~~~~~~~~~~~~~~~~~~~~~",
+          "#====X===X====##.............##.............##..~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+          "#====X===X====##.............##.............##...~~~~~...vvvvvvvvvvvvvvvvvv",
+          "----------------------------------------------vvvvv~vvvvvoooooooooooooooooo"
+        ]
+      }
+    }
+  }
+}

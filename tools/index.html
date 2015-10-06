@@ -1,0 +1,1343 @@
+<html>
+	<head>
+		<title>Wright! Tools</title>
+		<style>
+			BODY {
+				font-family: sans-serif;
+			}
+			.tabs {
+				white-space:nowrap;
+				overflow:auto;
+			}
+			.tabs .tab {
+				display: inline-block;
+				padding: 10px;
+				background-color: #ece;
+				border-radius: 5px 5px 0 0;
+				cursor: pointer;
+			}
+			.tabs .tab-selected {
+				background-color: #cee;
+			}
+
+			.pages .page {
+				padding: 10px;
+				background-color: #cee;
+				display: none;
+			}
+
+			.pages .page-selected {
+				display: block;
+			}
+			
+			.page TEXTAREA {
+				width:100%;
+				height:100px;
+			}
+			
+			.log.error { font-weight:bold; color:red;}
+			.log.warn{color:red;}
+
+			.scene {
+				background-color: #f00;
+				color:#fff;
+			}
+
+			.mission {
+				background-color: #0f0;
+				color:#000;
+			}
+		</style>
+	</head>
+	<body onload="onl()">
+		<div class="tabs">
+			<div class="tab" page="settings">Settings</div>
+			<div class="tab" page="wrightprettifier">Wright prettifier</div>
+			<div class="tab" page="tiledtool">Tiled tool</div>
+			<div class="tab" page="rpgprogression">RPG Progression</div>
+			<div class="tab" page="savegame">Save game</div>
+		</div>
+		<div class="pages">
+			<div class="page" id="settings">
+			<p>Tapes root: <input type="text" class="state" id="settingstapesroot"></P>
+			<p>Tiled JSON maps root: <input type="text" class="state" id="settingstiledroot"></P>
+			</div>
+			<div class="page" id="wrightprettifier">
+				<p>
+					File name: <input class="state" type="text" id="wrightprettifierformatfile">
+				</p>
+				<p><input type="button" value="Prettify" id="wrightprettifierprettify"></p>
+				<p>
+					Output:
+				</p>
+				<textarea id="wrightprettifierout"></textarea>
+				<p>
+					Logs:
+				</p>
+				<p id="wrightprettifierlogs"></p>
+			</div>
+			<div class="page" id="tiledtool">
+				<p>
+					File name: <input class="state" type="text" id="tiledtoolfile">
+				</p>
+				<p><input type="button" value="Load" id="tiledtoolload"></p>
+				<p>
+					Output:
+				</p>
+				<p id="tiledtoolresources"></p>
+				<p id="tiledtoolresource"></p>
+				<p>
+					Logs:
+				</p>
+				<p id="tiledtoollogs"></p>
+			</div>
+			<div class="page" id="rpgprogression">
+				<p>
+					Copy/Paste from OpenOffice:
+					<textarea class="state" id="rpgprogressiontext"></textarea>
+				</p>
+				<p><input type="button" value="Make progression" id="rpgprogressionmake"></p>
+				<p>
+					Output:
+				</p>
+				Character
+				<textarea id="rpgprogressioncharacter"></textarea>
+				Foes
+				<textarea id="rpgprogressionfoes"></textarea>
+				Weapons
+				<textarea id="rpgprogressionweapons"></textarea>
+				<p>
+					Logs:
+				</p>
+				<p id="rpgprogressionlogs"></p>
+			</div>
+			<div class="page" id="savegame">
+				<p>
+					Game name: <input class="state" type="text" id="savegamename">
+				</p>
+				<p><input type="button" value="Get data" id="savegamegetdata"></p>
+				<p>
+					Data:
+				</p>
+				<textarea id="savegamedata"></textarea>
+				<p><input type="button" value="Set data" id="savegamesetdata"></p>
+				<p>
+					Logs:
+				</p>
+				<p id="savegamelogs"></p>
+			</div>
+		</div>
+	</body>
+<script>
+
+function WrightTools() {
+
+	var logs,lv,processing;
+	
+	// UTILITY
+
+	function ajax(data){
+
+	  var senddata="";
+	  var processing;
+	  var http=(window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP") ? new ActiveXObject("Msxml2.XMLHTTP") : null;
+
+	  if (http) {
+	    if (data.data) for(var a in data.data)
+	      senddata += a + "=" + (data.data[a] === undefined ? "" : encodeURIComponent(data.data[a]) ) + "&";
+	      senddata=senddata.substr(0,senddata.length-1);
+	      http.open(data.method=="POST"?"POST":"GET", data.url+(senddata&&(data.method!="POST")?(data.url.indexOf("?")>=0?"&":"?")+senddata:""), true);
+	      if(data.method == "POST") http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	      http.onreadystatechange = function() {
+	        if(http.readyState == 4)
+	          if (((http.status == 200) && http.getAllResponseHeaders().length) || (http.status == 0))
+	            data.callback(data.isJson?JSON.parse(this.responseText):this.responseText,http.status);
+	            else data.callback(false,http.status);
+	      }
+	        try {
+	          http.send(senddata&&(data.method=="POST")?senddata:null);
+	        } catch(err) {
+	          data.callback(false,-1);
+	        }
+	 } else data.callback(false,-1);
+	};
+
+	function objectEquals(x,y,path,result) {
+		if (x === null || x === undefined || y === null || y === undefined) {
+			if (x !== y) result.push(path+": null/undefined difference.");
+			return x === y;
+		}
+		if (x === y || x.valueOf() === y.valueOf()) return true;
+		if (Array.isArray(x) && x.length !== y.length) {
+			result.push(path+": array length is different.");
+			return false;
+		}
+		if (!(x instanceof Object)) {
+			result.push(path+": original version type is not an object.")
+			return false;
+		}
+		if (!(y instanceof Object)) {
+			result.push(path+": processed version type is not an object.")
+			return false;
+		}
+		var p1 = Object.keys(x);
+		var p2= Object.keys(y);
+		for (var a=0;a<p2.length;a++) {
+			if (p1.indexOf(p2[a]) == -1) {
+				result.push(path+": key '"+p2[a]+"' is missing in original version.");
+				return false;
+			} else if (!objectEquals(x[p2[a]],y[p2[a]],path+"."+p2[a],result)) return false;
+		}
+		for (var a=0;a<p1.length;a++) {
+			if (p2.indexOf(p1[a]) == -1) {
+				result.push(path+": key '"+p1[a]+"' is missing in processed version.");
+				return false;
+			}
+		}
+		return true;	
+	}
+
+	function clone(obj) {
+		if(obj == null || typeof(obj) != 'object') return obj;
+		var temp = obj.constructor();
+		for(var key in obj) if(obj.hasOwnProperty(key)) temp[key] = clone(obj[key]);
+		return temp;
+	}
+
+	// LOGGING
+
+	function logLine(pri,text,stack,content) {
+		var line="";
+		if (stack!==undefined) line+=clone(stack).reverse().join(".")+": ";
+		line+=text;
+		if (content!==undefined) line+=" ("+JSON.stringify(content).substr(0,50)+"...)";
+		if (logs[pri].indexOf(line)==-1) logs[pri].push(line);
+	}
+
+	// STRING
+
+	function tabs(sameline){
+		if (sameline) return "";
+		var ret="";
+		for (var i=0;i<lv;i++) ret+="  ";
+		return ret;
+	}
+
+	function tryOneline(mode,obj){
+		if (!mode.sameline) {
+			var tmp=clone(mode);
+			tmp.sameline=1;
+			var ret=processObject(tmp,obj);
+			if (ret.length>150) return mode;
+			else return tmp;
+		} else return mode;
+	}
+
+	function startsWith(str,sub) {
+		return str.toLowerCase().substr(0,sub.length)==sub;
+	}
+
+	function endsWith(str,sub) {
+		return str.toLowerCase().substr(str.length-sub.length)==sub;
+	}
+
+	function getKeys(obj) {
+		var keys=[];
+		for (var a in obj) keys.push(a);
+		return keys;
+	}
+
+	// WRIGHT PRETTIFIER
+	
+	function jsonparse(text) {
+	  try {
+		return JSON.parse(text);
+	  } catch(e) {
+		logLine("error","Can't parse JSON: "+text);
+	  }
+	}
+
+	function getInheritance(node,pre) { // Calculate parents of objects. Chain in "pre".
+		if (!pre) pre=[];
+		if (node.set&&node.set._&&node.set._[0]=="stencil") {
+			pre.splice(1,0,node.set._[1]);
+			getInheritance(processing.stencils[node.set._[1]],pre);
+		}
+		return pre;
+	}
+
+  function getNextMode(prevmode,key,node) {
+	var mode=jsonparse(JSON.stringify(prevmode));
+	delete mode.model;
+	delete mode.nodeWeight;
+	delete mode.skipsymbols;
+	mode.stack.unshift(key);
+	var stack=mode.stack,obj=node[key];
+	var keys=[];
+	for (var a in node[key]) keys.push(a);
+
+	if (stack[1]=="<root>") { // Sort root elements
+	  mode.model=[
+		"name",
+		"author",
+		"year",
+  		"genre",
+  		"description",
+  		"screenshots",
+		"hardware",
+		"cheats",
+		"resources",
+		"stencils",
+		"execute",
+		"scenes",
+		0
+	  ];
+	} else if (stack[0]=="stencils") { // Stencil are sorted with tiles at last
+	  mode.nodeWeight=function(key,obj) {
+		var cur=obj[key],pri=-10000;
+		if (startsWith(key,"code")) pri=140;
+		else if (startsWith(key,"spark")) pri=130;
+		else if (startsWith(key,"remove")) pri=120;		
+		else if (startsWith(key,"model")) pri=110;
+		else if (startsWith(key,"stage")) pri=100;
+		else if (startsWith(key,"player")) pri=90;
+		else if (startsWith(key,"foe")) pri=80;
+		else if (startsWith(key,"enemy")) pri=79;
+		return getInheritance(cur,[pri-(key.length==1?50000:0),key]);
+	  };
+	} else if (stack[0]=="hardware") { // Hardware specs are sorted by name
+	// Force format
+	mode.model=[
+		"width",
+		"height",
+		"texture",
+		"scenes",
+		0
+	  ];
+	} else if (stack[0]=="resources") { // Stencil are sorted with tiles at last
+	  mode.nodeWeight=function(key,obj) {
+		var cur=obj[key],pri=-10000;
+		if (cur.indexOf("/")===-1) pri=100;
+		return getInheritance(cur,[pri,key]);
+	  };
+	  mode.skipsymbols=1;
+	} else if (stack[0]=="scenes") { // Scenes are sorted by key name
+	  mode.nodeWeight=function(key,obj) {
+		var cur=obj[key];
+		if (startsWith(key,"intro")) return [100,key];
+		else if (startsWith(key,"story")) return [90,key];
+		else if (startsWith(key,"ending")) return [80,key];
+		else if (startsWith(key,"gameover")) return [70,key];
+		else return [0,key];
+	  };
+	} else if ((stack[0]=="states")&&(obj instanceof Array)) { // States are sorted by name or prefix
+	  mode.nodeWeight=function(key,obj) {
+		var cur=obj[key],ret;
+		if (cur.name===undefined)
+		  ret=[1000,key];
+		else if (startsWith(cur.name,"run")) ret=[900,key];
+		else if (startsWith(cur.name,"end")) ret=[800,key];
+		else ret=[0,key];
+		return ret;
+	  };
+	} else if ((typeof obj=="object")&&(obj._!==undefined)) {// Variable references and conditions as oneliners
+	  var single=1;
+	  for (var i=0;i<obj._.length;i++)
+		if (typeof obj._[i]=="object") single=0;
+	  if (single) {
+		mode.model=["_",0];
+		mode.sameline=1;
+	  }
+	} else { // Object structure
+	  mode.model=[
+		["name","type"], // Generical
+		"log", // All
+
+		// SINGLE STATEMENT REPEAT
+		"times", // Execute
+
+		// CONDITION
+		"when", // Execute
+		
+		// CONTEXT DECISION
+		"object", // Execute / Assignment
+		"subject", // complexCollidesWith subject
+		"foreach", // Execute
+		"as", // Execute
+
+		"distance","distanceX","distanceY","all","covering","sortBy", // complexCollidesWith attributes
+
+		"reversed","sort","shuffle","by", // sorting
+		"data", // Code
+		"area","camera","walls", // Code -> Physics (camerabound used later... :()
+		"z","gravityX","gravityY","gravityZ","limitX","limitY","limitZ","restitution","restitutionX","restitutionY","friction","frictionX","frictionY", "firstExecute", "only", // Code -> Physics -> Wall
+		"top","bottom","left","right", // Code -> Physics -> Wall -> Only
+
+		"follow", // Camera
+		"horizontal","vertical","control","gotoZero", // Code -> Player
+		"cut","count", // Code -> Player -> Jump
+
+		"proportion", "value", // _ -> proportionalValue
+		"like", // Actions
+
+		"assign","sum","subtract","multiply","to", // Execute
+		"pushInto","unpush", // Execute -> Array manipulation
+		"placeInto", // Execute -> Object placement
+
+		"into", // Execute
+
+		"with", // Execute
+		"set", // State / Execute / Assignment
+
+		["hudType","label"], // Assignment
+		["removeType"], // Assignment
+		["absolute","box","image","tileX","tileY","width","height"], // Assignment
+		["bound","disabled"], // Camera attributes
+
+		["cameraBound","cameraSmoothness","cameraX","cameraY","cameraWidth","cameraHeight","cameraFocusX","cameraFocusY","cameraFocusWidth","cameraFocusHeight"], // Camera
+		"cameras", // Camera
+
+		["zIndex","at","size","x","y","frame"], // Assignment / Scene
+		["hitbox"], // Assignment
+		["priority","visible","alpha","originX","originY","flipX","flipY","angle","scale"], // Assignment / Execute -> then part -> applyVector
+		"toward","length", // Execute -> then part -> applyVector
+		["bgcolor","border","color"], // Assignment
+		["font","fontSize","lineHeight","outline","textAlign","html"], // Assignment
+		["forceX","forceY","forceZ"], // Assignment, Code -> Player -> Jump (forceY)
+
+		"applyVector", // Execute -> then part
+		"remove","gotoScene", "withTransition", // Execute -> then part
+		"execute","onEnterExecute","executeAction", "elseExecute","subsequence", // State / Execute -> then part
+		"switch","case", // Switch/cases
+		"code", "actions", // State
+
+
+		"tileWidth", "tileHeight", // Scene
+
+		"frames","speed",// Animations
+
+		// Assigment
+		"animations",
+		"animation",
+
+		// --- BODY
+
+		0,
+
+
+		"state",
+		"states",
+
+
+		["wait","loop","cycles"], // Code -> Sequence loops
+		"loopTo", // Object -> Animations
+		"until","then", // Code -> Sequence
+
+
+
+
+		// --- FOOTER
+
+
+
+		// Scene
+		"tilemap","map"
+		];
+	}
+	if (stack[0]=="screenshots") console.log(stack);
+	if ((stack.length==3)&&(stack[0]=="screenshots")) // Screenshots list
+		mode.sameline=1; // Always on the same line
+	else if (
+		(stack.length<4)|| // First JSON levels
+		((stack[0]=="map")&&(obj  instanceof Array)) // Maps of tilemaps
+	) mode.sameline=0; else // Always formatted
+	mode=tryOneline(mode,obj); // ...else try to make an oneliner
+	return mode;
+  }
+
+	function processObject(mode,node){
+
+		var newnode,lastitem,pos,i,j,curmode,k,block,done,keys,localgridize,nextmode,lastsameline,empty=1,ret="";
+
+		var samelinemode=clone(mode);
+		samelinemode.sameline=1;
+
+		// Serialize primitives
+		if (typeof node == "boolean") ret=node?"true":"false";
+		else if (typeof node == "string") {
+			// TODO togli riga sotto
+			if ((mode.stack[0]=="name")&&(["Spin","Scale","Fade","Cycle"].indexOf(node)!=-1)) logLine("error","Uses removed action '"+node+"'");
+			ret="\""+node.replace(/\"/g,"\\\"")+"\"";
+		} else if (typeof node == "number") ret=node+"";
+		else if (node instanceof Array) {
+
+			// Warn on single element arrays. Wright! engine supports single elements array as single elements
+			if (node.length==1) logLine("warn","Array with single element is not probably needed. Replace with single element instead.",mode.stack,node);
+
+			// Tries to create a grid of values TODO ci sono un sacco di variabili ripetute
+		  	var gridize=!mode.sameline;
+			lastsameline=mode.sameline;
+		  	ret+="["+(gridize?"\n":" ");
+		  	if (gridize) lv++;
+		  	for (i=0;i<node.length;i++) {
+				curmode=mode;
+				localgridize=gridize;
+				nextmode=getNextMode(curmode,i,node);
+				lastsameline=nextmode.sameline;
+				ret+=tabs(!localgridize)+processObject(nextmode,node[i])+","+(gridize?"\n":" ");
+				empty=0;
+		  	}
+			if (gridize) lv--;
+			if (empty) ret="[]";
+			else {
+				ret=ret.substr(0,ret.length-2);
+				ret+=(gridize?"\n":" ")+tabs(!gridize)+"]";
+			}
+		} else if (typeof node == "object") {
+			// Indents
+			lv++;
+
+			// Open object
+		 	ret+="{"+(mode.sameline?" ":"\n");
+
+			// Prepares keys
+			keys=[];
+
+			for (var a in node) keys.push({name:a,weight:[-1,a]});
+		 	// If current mode supports weighted nodes, applies that.
+		  	if (mode.nodeWeight)
+		  		for (i=0;i<keys.length;i++) keys[i].weight=mode.nodeWeight(keys[i].name,node);
+
+			keys.sort(function(a,b){
+				// First weight level TODO forse non serve
+				if (a.weight[0]==b.weight[0]) {
+				for (var j=1;j<a.weight.length;j++)
+					// Missing weight on a and b
+				if ((a.weight[j]===undefined)&&(b.weight[j]===undefined)) return 0;
+				// Missing weight on a or b
+				else if (a.weight[j]===undefined) return -1;
+				else if (b.weight[j]===undefined) return 1;
+				// Compare weights
+				else if (a.weight[j]!=b.weight[j]) return a.weight[j]==b.weight[j]?0:a.weight[j]>b.weight[j]?1:-1;
+				// If no more weight comparison, are the same
+				return 0;
+			  } else return a.weight[0]>b.weight[0]?-1:1;
+			});
+
+			// Restore sorted keys
+			for (i=0;i<keys.length;i++) keys[i]=keys[i].name;
+
+			// Prepare default formatting model (keys to be formatted in a specific sequence)
+			if (!mode.model) mode.model=[0];
+
+			// Format output
+			for (i=0;i<mode.model.length;i++) {
+				k=mode.model[i];
+				if (typeof k == "number") { // "The rest of the keys"
+					switch (k) {
+						case 0: // Unsorted keys
+						case 1:{  // Unsorted keys, forced as inline
+							for (j=i+1;j<mode.model.length;j++) // Remove future processed keys from keyset
+								if (typeof mode.model[j] == "string") { // Single string key
+									if ((mode.model[j].length>1)&&((pos=keys.indexOf(mode.model[j]))!=-1)) keys.splice(pos,1);
+								} else // Forced inlined sequence
+									for (q=0;q<mode.model[j].length;q++)
+										if ((pos=keys.indexOf(mode.model[j][q]))!=-1) keys.splice(pos,1);  // If the field is already listed for being printed
+								if (k==1) { // Force inline formatted for model=1
+									tabs(mode.sameline);
+									curmode=samelinemode;
+								} else curmode=mode;
+								for (j=0;j<keys.length;j++) { // Iterate and format remaining keys
+									if (!curmode.skipsymbols) logLine("info","Custom key '"+keys[j]+"'"); // Log the custom field
+									ret+=tabs(curmode.sameline)+"\""+keys[j]+"\":"+processObject(getNextMode(curmode,keys[j],node),node[keys[j]])+","+(curmode.sameline?" ":"\n"); // Format subkeys
+									empty=0;
+								}
+							break;
+						}
+					}
+				} else {
+					block="";
+					done=0;
+					block+=tabs(mode.sameline);
+					if (typeof k=="string") { // Single field
+						curmode=mode;
+						k=[k]; // Fake set with single field
+					} else curmode=samelinemode; // Multiple fields on the same line
+					for (j=0;j<k.length;j++)
+						if (node[k[j]]!==undefined) { // If the specified field is a defined key of the parsed object...
+							if ((pos=keys.indexOf(k[j]))!=-1) keys.splice(pos,1); // Remove the key to be processed...
+							block+="\""+k[j]+"\":"+processObject(getNextMode(curmode,k[j],node),node[k[j]])+", "; // Renders
+							done=1; // Mark as done.
+						}
+					if (!mode.sameline) block=block.substr(0,block.length-1)+"\n"; // Next line
+					if (done) {
+						ret+=block;					
+						empty=0;
+					}
+				}
+			}
+
+			lv--; // De-indent
+			if (empty) ret="{}";
+			else {
+				ret=ret.substr(0,ret.length-2)+(curmode.sameline?" ":"\n"); // Next line
+				ret+=tabs(mode.sameline)+"}"; // Close object
+			}
+
+		} else logLine("error","Unsupported node type '"+(typeof node)+"'"); // Unsupported node type :(
+		return ret;
+	}
+	
+	
+	function runtidy(data,prestack) {
+		lv=0;
+		processing=data;
+		var mode=getNextMode({stack:["<root>"]},0,0);
+		if (prestack) {
+		  processing=prestack[0](processing);
+		  for (var i=0;i<prestack[1].length;i++) {
+		    mode=getNextMode(mode,prestack[1][i],processing);
+		    processing=processing[prestack[1][i]];
+		  }
+		}
+    	return processObject(mode,processing);
+  	}
+	
+	// TILED TOOL
+	
+	function startsWith(str,sub) {
+    return str.toLowerCase().substr(0,sub.length)==sub;
+  }
+
+
+  function findTile(set,tile) {
+    for (var i=set.tilesets.length-1;i>=0;i--)
+      if (tile>=set.tilesets[i].firstgid)
+        return {id:i,set:set.tilesets[i],properties:set.tilesets[i].tileproperties[tile-set.tilesets[i].firstgid]||{}};
+  }
+
+  function getLayer(a,name) {
+    for (var i=0;i<a.layers.length;i++)
+      if (a.layers[i].name==name) return a.layers[i];
+    console.warn("Layer",name,"not found");
+    return 0;
+  }
+
+  function makeDialogue(text) {
+     var lines=[],set=text.split("|");
+      for (var x=0;x<set.length;x++)
+        switch (set[x][0]) {
+            case "#":{
+              var frames=set[x].substr(1).split(",");
+              var anim=[];
+              for (var y=0;y<frames.length;y++) anim.push(frames[y]*1);
+              var line={ "as":{ "_":[ "objectTyped", "dialoguePortrait" ] }, set:{"visible":1,"animations":{ idle:{} } } };
+              if (anim.length>1) {
+                line.set.animations.idle.loopTo=0;
+                line.set.animations.idle.frames=anim;
+              } else line.set.animations.idle.frame=anim[0];
+              lines.push(line);
+              break;
+            }
+            default:{
+              lines.push({ "as":{ "_":[ "objectTyped", "dialogueText" ] }, "set":{ "html":set[x] } });
+              lines.push({ "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } });
+              break;
+            }
+        }
+      return lines;
+  }
+
+  function solveMacro(val) {
+    if ((typeof val=="string")&&(val.substr(0,1)=="#")) {
+      var id=val.split("#");
+      switch (id[1]) {
+        case "DIALOGUE":{
+          return makeDialogue(val.substr(10));
+          break;
+        }
+        default:{
+          return val;
+        }
+      }     
+    } else return jsonparse(val);
+  }
+
+
+  var MERGE_SUM=1,MERGE_OBJECT=2,MERGE_FIRST;
+  function getProperty(out,mode,name,list) {
+    var p,v;
+    for (var i=0;i<list.length;i++) {
+      p=list[i];
+      if (p&&(p[name]!==undefined)) {
+        v=solveMacro(p[name]);
+        switch (mode) {
+            case MERGE_FIRST:{
+              return v;
+            }
+            case MERGE_SUM:{
+              if (out===undefined) out=v;
+              else out+=v;
+              break;
+            }
+            case MERGE_OBJECT:{
+              if (out===undefined) out=v;
+              else if (v instanceof Array)
+                if (out instanceof Array) out=out.concat(v);
+                else out=[out].concat(v);
+                else if (out instanceof Array)
+                  out.push(v);
+                  else
+                    out=[out,v];
+              break;
+            }
+        }
+      }
+    }
+    return out;
+  }
+
+  var MERGE_POSITION={
+    x:MERGE_SUM,
+    y:MERGE_SUM
+  };
+  var MERGE_SIZE={
+    width:MERGE_SUM,
+    height:MERGE_SUM
+  };
+  var MERGE_DEFAULT={
+
+  };
+  var MERGE_ALL=1,MERGE_SELECTED=2;
+
+  function mergeProperties(out,mode,modes,list) {
+    var b,done=[];
+    switch (mode) {
+      case MERGE_ALL:{
+        for (var i=0;i<list.length;i++)
+          if (list[i])
+          for (b in list[i])
+            if ((b[0]!="#")&&(done.indexOf(b)==-1)) {
+              done.push(b);
+              out[b]=getProperty(out[b],modes[b]||MERGE_OBJECT,b,list);
+            }
+            break;
+      }
+      case MERGE_SELECTED:{
+        for (b in modes)
+            out[b]=getProperty(out[b],modes[b],b,list);
+          break;
+      }
+    }
+    return out;
+  }
+
+  function getCrop(l) {
+    var x,y,cut=0,sx,sy,ex,ey;
+    for (y=0;y<l.height;y++) {
+      for ( x=0;x<l.width;x++)
+        if (l.data[(l.width*y)+x]) { cut=1; break;}
+        if (cut) {sy=y; break;}
+      }
+      cut=0;
+      for ( y=l.height-1;y>-1;y--) {
+        for ( x=0;x<l.width;x++)
+          if (l.data[(l.width*y)+x]) { cut=1; break;}
+          if (cut) {ey=y; break;}
+        }
+        cut=0;
+        for (x=0;x<l.width;x++) {
+          for ( y=sy;y<=ey;y++)
+            if (l.data[(l.width*y)+x]) { cut=1; break;}
+            if (cut) {sx=x; break;}
+          }
+          cut=0;
+          for (x=l.width-1;x>=sx;x--) {
+            for ( y=sy;y<=ey;y++)
+              if (l.data[(l.width*y)+x]) { cut=1; break;}
+              if (cut) {ex=x; break;}
+            }
+    return {ex:ex,ey:ey,sx:sx,sy:sy};
+  }
+  
+	function convertTileset(a,s) {
+		var pcs,t,p,out={},r=Math.floor(s.imagewidth/s.tilewidth),liked;
+		for (var i in s.tileproperties) {
+		  t=s.tileproperties[i];
+		  if (t["#stencil"]&&(t["#stencil"].length==1)) {
+
+			var obj={};
+			liked=0;
+			p=i*1;
+			mergeProperties(obj,MERGE_ALL,MERGE_DEFAULT,[t,a.properties]);
+
+			if (t["#like"]) {
+			  liked=1;
+			  pcs=t["#like"].split(",");
+			  obj.set=[];
+			  for (x=0;x<pcs.length;x++)
+				obj.set.push({_:["stencil",pcs[x]]});
+			  if (obj.set.length==1) obj.set=obj.set[0];
+			}
+			if (t["#frames"]) {
+			  obj.animations={idle:{frames:t["#frames"]*1,loopTo:0}};
+			  if (t["#speed"]) obj.animations.idle.speed=t["#speed"]*1;
+			  obj.animation="idle";
+			}
+
+			if (!liked&&!obj.image) obj.image=s.name;
+			if (!liked&&!obj.width) obj.width=s.tilewidth;
+			if (!liked&&!obj.height) obj.height=s.tileheight;
+
+			obj.tileX=(p%r)*s.tilewidth;
+			obj.tileY=Math.floor(p/r)*s.tileheight;
+			out[t["#stencil"]]=obj;
+		  }
+		}
+		return out;
+	  }
+	  
+	  
+  function convertLayer(a,l) {	
+	logLine("info","Converting layer "+l.name);
+    var p,pr,chunk=0,tile,cam,html="",i,j,entry,objs,dx=0,dy=0,lprop={},dx,dy;
+    if (startsWith(l.name,"scene")) {
+      chunk={};
+      if (l.properties) {
+        if (l.properties["#tile"]) {
+          var set=l.properties["#tile"].split(",");
+          chunk.tilemap=[];
+          for (var i=0;i<set.length;i++)
+            chunk.tilemap.push(convertLayer(a,getLayer(a,set[i])));
+        }
+        if (l.properties["#camera"]) {
+          var set=l.properties["#camera"].split(",");
+          if (!chunk.cameras) chunk.cameras=[];
+          for (var i=0;i<set.length;i++) chunk.cameras=chunk.cameras.concat(convertLayer(a,getLayer(a,set[i])));
+        }
+        if (l.properties["#stencil"]) {
+          var set=l.properties["#stencil"].split(",");
+          if (!chunk.object) chunk.object=[];
+          for (var i=0;i<set.length;i++) chunk.object=chunk.object.concat(convertLayer(a,getLayer(a,set[i])));
+        }
+        if (chunk.tilemap&&(chunk.tilemap.length==1)) chunk.tilemap=chunk.tilemap[0];
+        if (chunk.object&&(chunk.object.length==1)) chunk.object=chunk.object[0];
+        if (chunk.cameras&&(chunk.cameras.length==1)) chunk.cameras=chunk.cameras[0];
+        mergeProperties(chunk,MERGE_ALL,MERGE_DEFAULT,[l.properties]);
+        chunk=runtidy(chunk,[function(a){return {scenes:{foo:a}}},["scenes","foo"]]);
+      }
+
+    } else if (startsWith(l.name,"camera")) {
+      chunk=[];
+      l.objects.sort(function(a,b){if(a.name==b.name) return 0; else return a.name<b.name?-1:1;});
+
+      for (i=0;i<l.objects.length;i++) {
+        cam={};
+        dx=dy=0;
+
+
+        mergeProperties(cam,MERGE_SELECTED,MERGE_SIZE,[l.objects[i]]);
+        mergeProperties(cam,MERGE_SELECTED,MERGE_POSITION,[l,l.objects[i]]);
+
+        // CODE GENERATORS
+        var onEnterExecute=[];
+        var onExitExecute=[];
+
+        var spawn=getProperty([],MERGE_OBJECT,"#spawn",[l.objects[i].properties,l.properties]);
+        if (spawn.length) {
+          entry={object:[]};
+          for (j=0;j<spawn.length;j++) {
+            objs=getLayer(a,spawn[j]);
+            if (objs)
+              entry.object=entry.object.concat(convertLayer(a,objs));
+              else
+                logLine("warn","Layer "+l.name+" relates "+spawn[j]+" but is missing.");
+          }
+          if (entry.object.length) {
+            if (entry.object.length==1) entry.object=entry.object[0];
+            onEnterExecute.push(entry);
+          }
+        }
+
+        var remove=getProperty([],MERGE_OBJECT,"#remove",[l.objects[i].properties,l.properties]);
+        if (remove.length)
+          for (j=0;j<remove.length;j++)
+            onExitExecute.push({as:{_:["object",remove[j]]},remove:1});
+
+        if (onEnterExecute.length) {
+          if (onEnterExecute.length==1) onEnterExecute=onEnterExecute[0];
+          cam.onEnterExecute=onEnterExecute;
+        }
+
+        if (onExitExecute.length) {
+          if (onExitExecute.length==1) onExitExecute=onExitExecute[0];
+          cam.onExitExecute=onExitExecute;
+        }
+
+        // BASIC PROPERTIES
+        mergeProperties(cam,MERGE_ALL,MERGE_DEFAULT,[l.objects[i].properties,l.properties]);
+
+          chunk.push(cam);
+        }
+
+          if (chunk.length==1) chunk=chunk[0];
+        } else if (startsWith(l.name,"stencil")||startsWith(l.name,"mission")) {
+
+          chunk=[];
+          for (i=0;i<l.objects.length;i++) {
+            var obj={set:[]},cur=l.objects[i];
+            tile=0;
+            names=[];
+            if (cur.gid!==undefined) {
+              tile=findTile(a,cur.gid);
+              if (tile&&tile.properties["#stencil"]) names.push(tile.properties["#stencil"]);
+              else if (!cur.name) logLine("warn","Object '"+i+"' ("+cur.name+") code("+JSON.stringify(cur)+") in "+l.name+" not mapped to stencil.");
+            } else {
+              obj.width=cur.width;
+              obj.height=cur.height;              
+            }
+            if (cur.name) names.push(cur.name);
+            stencil=getProperty([],MERGE_OBJECT,"#stencil",[cur.properties,l.properties]);
+            if (stencil.length) names=names.concat(stencil);
+
+            if (names.length) {
+              for (j=0;j<names.length;j++)
+                obj.set.push({_:["stencil",names[j]]});
+              if (obj.set.length===1) obj.set=obj.set[0];
+            } else {
+              logLine("warn","Object '"+i+"' code("+JSON.stringify(cur)+") in "+l.name+" don't have any name. Assuming raw/logical object.");
+            }
+
+
+
+            mergeProperties(obj,MERGE_SELECTED,MERGE_POSITION,[l,cur]);
+            if (tile) obj.y-=tile.set.tileheight;
+
+            mergeProperties(obj,MERGE_ALL,MERGE_DEFAULT,[cur.properties,l.properties]);
+
+
+            // CODE GENERATORS
+            if (l.properties&&l.properties["#crop"]) {
+              var layer=getLayer(a,l.properties["#crop"]);
+              var crop=getCrop(layer);
+              var tileset;
+              for (x=0;x<layer.data.length;x++)
+                if (layer.data[x]) {
+                  tileset=findTile(a,layer.data[x]);
+                  break;
+                }
+              obj.x-=crop.sx*tileset.set.tilewidth;
+              obj.y-=crop.sy*tileset.set.tileheight;
+            }
+
+
+            if (cur.properties&&cur.properties["#dialogue"]) {             
+              obj.dialogue=makeDialogue(cur.properties["#dialogue"]);
+              if (obj.dialogue.length==1) obj.dialogue=obj.dialogue[0];
+            }
+            if (obj.set.length==0) delete obj.set;
+            
+              chunk.push(obj);
+            }
+            if (chunk.length==1) chunk=chunk[0];
+
+
+            if (startsWith(l.name,"mission")) {
+              var chunk={name:"mission", execute:{object:chunk},set:{data:{}}};
+              for (var k in l.properties) {
+                if (startsWith(k,"#data-"))
+                  chunk.set.data[k.substr(6)]=solveMacro(l.properties[k]);
+              }
+              chunk=runtidy(chunk,[function(a){return {scenes:{foo:{states:a}}}},["scenes","foo","states"]]);
+            }
+
+          } else if (startsWith(l.name,"tile")) {
+
+            var ch,line="",tw,th,sx=0,ex=l.width-1,sy=0,ey=l.height-1,x,y;
+            chunk={ map:[]};
+
+            if (l.properties&&l.properties["#crop"]) {
+              var crop=getCrop(l);
+              sx=crop.sx;
+              sy=crop.sy;
+              ex=crop.ex;
+              ey=crop.ey;
+            }
+
+            for (y=sy;y<=ey;y++) {
+              line="";
+              for ( x=sx;x<=ex;x++) {
+                ch=l.data[(l.width*y)+x];
+                if (ch) {
+                  tile=findTile(a,ch);
+                  if (tile&&tile.properties["#stencil"]) {
+                    line+=tile.properties["#stencil"];
+                    tw=tile.set.tilewidth;
+                    th=tile.set.tileheight;
+                  } else {
+                    logLine("warn","Tile '"+ch+"' ("+x+","+y+") in "+l.name+" not mapped to stencil.");
+                    line+=" ";
+                  }
+                } else
+                line+=" ";
+              }
+              chunk.map.push(line);
+            }
+            chunk.tileWidth=tw;
+            chunk.tileHeight=th;
+
+
+            if (l.properties&&l.properties["#center"]) {
+              var display=l.properties["#center"].split(",");
+              chunk.x=Math.floor(((display[0]*1)-(tw*(ex-sx)))/2);
+              chunk.y=Math.floor(((display[1]*1)-(th*(ey-sy)))/2);
+            }
+
+            if (lprop.width!==undefined)
+            if (lprop.width=="auto") chunk.width=l.width*tw; else chunk.width=jsonparse(lprop.width);
+            if (lprop.height!==undefined)
+            if (lprop.height=="auto") chunk.height=l.height*tw; else chunk.height=jsonparse(lproplprop.height);
+
+            if (dx) chunk.x+=(chunk.x||0)+dx;
+            if (dy) chunk.y+=(chunk.y||0)+dy;
+
+          }
+          return chunk;
+  }
+  
+  // RPG PROGRESSION
+  
+function makeRpgProgression(a) {
+    var player={
+        "isPlayed":1,
+        "equipment":0, // TODO prima arma
+        "label":"",
+        "bgcolor":"",
+        "level":0,
+        "xp":0,
+        "nextLevelXp":-1,
+        "type":"",
+        "progression":[0],
+        "doFight":{"_":["stencil","codeFightDoDefault"]},
+        "getFight":{"_":["stencil","codeFightGetDefault"]},         
+        "getSpell":{"_":["stencil","codeSpellGetDefault"]},
+        "getHeal":{"_":["stencil","codeHealGetDefault"]}        
+    };
+    var foes={};
+    var weapons={};
+    a=a.split("\n");
+    var legend=a[0].split("\t");
+    function get(line,col) {
+      for (var i=0;i<legend.length;i++)
+        if (legend[i]==col)
+          return line[i]||"";
+      return "";
+    }
+
+    for (var i=1;i<a.length;i++) {
+      var line=a[i].split("\t");
+      if (!player.label) {
+        player.label=get(line,"NAME-P");
+        player.bgcolor=get(line,"COLOR-P");
+        player.type=get(line,"ID-P");
+        player.equipment={"_":["resource","items",get(line,"WEAP-NAME")]};
+        player.tileY=get(line,"TILE-P")*24;
+        player.portraitX=get(line,"PORTRAIT-P")*24;
+      }
+      var toadd={
+        "nextLevelXp":get(line,"XP-NEXT")*1,
+        "attrHp":get(line,"HP-P")*1,
+        "attrMp":get(line,"MP-P")*1,
+        "attrSpeed":i,
+        "attrAttack":get(line,"DMG-P")*1,
+        "attrMagic":get(line,"MDMG-P")*1,
+        "attrDefense":get(line,"DEF-P")*1,
+        "attrMagicDefense":get(line,"MDEF-P")*1,
+        "setSpells":get(line,"SPELLS").split(",")
+      };
+      if (!toadd.setSpells[0]) toadd.setSpells=[];
+      toadd.hp=toadd.attrHp;
+      toadd.mp=toadd.attrMp;
+      player.progression.push(toadd);
+
+      toadd={
+        "label":get(line,"NAME-F"),
+        "description":get(line,"DESCRIPTION-F"),
+        "bgcolor":get(line,"COLOR-F"),
+        "tileY":get(line,"TILE-F")*24,
+        "equipment":{
+          "label":get(line,"WEAPON-F"),
+          "attrAttack":0,
+          "attrMagic":0
+        },
+        "removeOnDead":get(line,"REMOVEONDEAD-F")*1,
+        "gainGold":get(line,"GOLD-F")*1,
+        "gainXp":get(line,"XP-F")*1,
+        "attrHp":get(line,"HP-F")*1,
+        "attrSpeed":i,
+        "attrAttack":get(line,"DMG-F")*1,
+        "attrDefense":get(line,"DEF-F")*1,
+        "attrMagicDefense":get(line,"MDEF-F")*1,
+        "attrMagic":get(line,"MDMG-F")*1,
+        "level":get(line,"LV")*1,
+        "spells":[],
+        "inventory":[],
+        "ai":{"_":["resource","ais","Random"]},
+        "doFight":{"_":["stencil","codeFightDoDefault"]},
+        "getFight":{"_":["stencil","codeFightGetDefault"]},
+        "getSpell":{"_":["stencil","codeSpellGetDefault"]},
+        "getHeal":{"_":["stencil","codeHealGetDefault"]}
+      };
+      var spells=get(line,"SPELLS-F").split(",");
+      for (var j=0;j<spells.length;j++)
+        if (spells[j])
+          toadd.spells.push({"_":["resource","spells",spells[j]]});
+      var items=get(line,"ITEMS-F").split(",");
+      for (var j=0;j<items.length;j++)
+        if (items[j])
+          toadd.inventory.push({"_":["resource","items",items[j]]});
+        toadd.hp=toadd.attrHp;
+        foes[get(line,"NAME-F")]=toadd;
+
+        toadd={
+          label:get(line,"WEAP-NAME"),
+          goldValue:get(line,"WEAP-PRICE")*1,
+          usableInMap:0,
+          usableInBattle:0,
+          usableInEquip:1,
+          attrAttack:get(line,"WEAP-DMG")*1,
+          attrMagic:get(line,"WEAP-MDMG")*1,
+          quantity:1
+        };
+        
+        weapons[get(line,"WEAP-NAME")]=toadd;
+
+
+
+    };
+
+    
+	return {
+		character:JSON.stringify(player),
+		foes:JSON.stringify(foes),
+		weapons:JSON.stringify(weapons)
+	}
+}
+
+	// SAVE GAME TOOL
+
+	function getSavegame(game){
+	  var key="GAME_"+game+"_",out={};
+	  for (var a in localStorage) {
+		if (a.substr(0,key.length)==key) {
+		  out[a]=JSON.parse(localStorage[a]);
+		}
+	  }
+	  return JSON.stringify(out);
+	}
+	
+	function setSavegame(data){
+	  data=jsonparse(data);
+	  for (var a in data)
+        localStorage[a]=JSON.stringify(data[a]);
+	}
+
+	// PUBLIC INTERFACE
+
+	this.ajax=ajax;
+	this.output="";
+	this.tidy=function(text) {
+		this.logs=logs={error:[],warn:[],info:[]};
+		this.output=runtidy(jsonparse(text));
+		var differences=[];
+		if (!objectEquals(processing,jsonparse(this.output),"<root>",differences)) {
+			logLine("error","Tidy error. Objects are not the equal.");
+			for (var i=0;i<differences.length;i++)
+				logLine("error",differences[i]);
+		}
+  	}
+	this.tiledGetResources=function(text){
+		this.logs=logs={error:[],warn:[],info:[]};
+		this.output=[];
+		var a=jsonparse(text);
+		if (a&&a.layers) {
+			this.output.push("(Tilesets)");
+			for (var j=0;j<a.layers.length;j++) 
+				this.output.push(a.layers[j].name);
+		}
+		this.output.sort();
+	}
+	this.tiledConvertResource=function(text,resource){
+		this.logs=logs={error:[],warn:[],info:[]};
+		this.output=[];
+		var a=jsonparse(text);
+		if (resource=="(Tilesets)") {
+		    for (var j=0;j<a.tilesets.length;j++)
+			  this.output[a.tilesets[j].name]=JSON.stringify(convertTileset(a,a.tilesets[j]));
+		} else
+			for (var j=0;j<a.layers.length;j++) 
+				if (a.layers[j].name==resource) {
+					chunk=convertLayer(a,a.layers[j]);
+					this.output[resource]=typeof chunk=="string"?chunk:JSON.stringify(chunk);
+				}
+	}
+	this.makeRpgProgression=function(text){
+		this.logs=logs={error:[],warn:[],info:[]};
+		this.output=makeRpgProgression(text);
+	}
+	this.getSavegame=function(game){
+		this.logs=logs={error:[],warn:[],info:[]};
+		this.output=getSavegame(game);
+	}
+	this.setSavegame=function(data){
+		this.logs=logs={error:[],warn:[],info:[]};
+		this.output=setSavegame(data);
+	}
+}
+
+function onl() {
+
+	function saveState() {
+		var state={
+			currenttab:document.getElementsByClassName("page-selected")[0].id,
+			data:{}
+		};
+		var fields=document.getElementsByClassName("state");
+		for (var i=0;i<fields.length;i++)
+			switch (fields[i].nodeType) {
+				case 1: { // INPUT
+					state.data[fields[i].id]=fields[i].value;
+					break;
+				}
+			}
+		localStorage.wrightTools=JSON.stringify(state);
+	}
+
+	function restoreState() {
+		var value;
+		var state=localStorage.wrightTools?JSON.parse(localStorage.wrightTools):{
+			data:{
+				settingstapesroot:"../tapes/",
+				settingstiledroot:"../assets/tilemaps/"
+			}
+		};
+		var tab=state.currenttab||"settings";
+		var tabs=document.getElementsByClassName("tab");
+		for (var j=0;j<tabs.length;j++)
+			tabs[j].className="tab "+(tabs[j].getAttribute("page")==tab?"tab-selected":"");
+		var pages=document.getElementsByClassName("page");
+		for (var j=0;j<pages.length;j++)
+			pages[j].className="page "+(pages[j].id==tab?"page-selected":"");
+		var fields=document.getElementsByClassName("state");
+		for (var i=0;i<fields.length;i++)
+			if (state.data&&((value=state.data[fields[i].id])!==undefined))
+			switch (fields[i].nodeType) {
+				case 1: { // INPUT
+					fields[i].value=value;
+					break;
+				}
+			}
+	}
+	
+	function gid(id) { return document.getElementById(id); }
+	function val(id) { return gid(id).value; }
+	
+	function putlogs(w,id) {
+		var html="";
+		for (var a in w.logs)
+			for (var i=0;i<w.logs[a].length;i++)
+				html+="<div class='log "+a+"'>"+w.logs[a][i].replace(/</g,"&lt;").replace(/>/g,"&gt;")+"</div>";
+		gid(id).innerHTML=html;
+	}
+
+	var tabs=document.getElementsByClassName("tab");
+	for (var i=0;i<tabs.length;i++)
+		tabs[i].onclick=function(){
+			var tabs=document.getElementsByClassName("tab");
+			for (var j=0;j<tabs.length;j++)
+				tabs[j].className="tab "+(tabs[j]==this?"tab-selected":"");
+			var pages=document.getElementsByClassName("page");
+			for (var j=0;j<pages.length;j++)
+				pages[j].className="page "+(pages[j].id==this.getAttribute("page")?"page-selected":"");
+			saveState();
+		}
+	var fields=document.getElementsByClassName("state");
+	for (var i=0;i<fields.length;i++)
+		switch (fields[i].nodeType) {
+			case 1: { // INPUT
+				fields[i].onkeyup=saveState;
+				break;
+			}
+		}
+		
+		
+	gid("wrightprettifierprettify").onclick=function(){
+		var w=new WrightTools();
+		w.ajax({
+			url:val("settingstapesroot")+val("wrightprettifierformatfile")+"?r="+Math.random(),
+			callback:function(text){
+				w.tidy(text);
+				gid("wrightprettifierout").value=w.output;
+				putlogs(w,"wrightprettifierlogs");
+			}
+		});
+	};
+	
+	gid("tiledtoolload").onclick=function(){
+		var w=new WrightTools();
+		w.ajax({
+			url:val("settingstiledroot")+val("tiledtoolfile")+"?r="+Math.random(),
+			callback:function(text){
+				var css,html="";
+				w.tiledGetResources(text);
+				putlogs(w,"tiledtoollogs");
+				gid("tiledtoolresource").innerHTML="";
+				for (var i=0;i<w.output.length;i++) {
+					if (w.output[i].substr(0,5)=="scene") css="scene"; else
+					if (w.output[i].substr(0,7)=="mission") css="mission"; else
+					css="";
+					html+="<input type='button' value='"+w.output[i]+"' class='tiledtoolbutton "+css+"'> ";
+				}
+				gid("tiledtoolresources").innerHTML=html;
+				var buttons=document.getElementsByClassName("tiledtoolbutton");
+				for (var i=0;i<buttons.length;i++)
+					buttons[i].onclick=function(){
+						w.tiledConvertResource(text,this.getAttribute("value"));
+						putlogs(w,"tiledtoollogs");
+						var html="";
+						for (var a in w.output)
+							html+="<b>"+a+"</b><br><textarea>"+w.output[a]+"</textarea>";
+						gid("tiledtoolresource").innerHTML=html;	
+					}
+			}
+		});
+	};
+	
+	gid("rpgprogressionmake").onclick=function(){
+		var w=new WrightTools();
+		w.makeRpgProgression(val("rpgprogressiontext"));
+		gid("rpgprogressioncharacter").value=w.output.character;
+		gid("rpgprogressionweapons").value=w.output.weapons;
+		gid("rpgprogressionfoes").value=w.output.foes;
+		putlogs(w,"rpgprogressionlogs");
+	}
+	
+	gid("savegamegetdata").onclick=function(){
+		var w=new WrightTools();
+		w.getSavegame(val("savegamename"));
+		gid("savegamedata").value=w.output;
+		putlogs(w,"savegamelogs");
+	}
+
+	gid("savegamesetdata").onclick=function(){
+		var w=new WrightTools();
+		w.setSavegame(val("savegamedata"));
+		putlogs(w,"savegamelogs");
+		alert("Done.");
+	}
+	
+	restoreState();
+}
+
+</script>
+</html>

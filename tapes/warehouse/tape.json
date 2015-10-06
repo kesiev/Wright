@@ -1,0 +1,523 @@
+{
+  "name":"Warehouse",
+  "author":"KesieV",
+  "year":2015,
+  "genre":"Puzzle",
+  "description":"Tetris (1984) is probably the first 'Pop culture puzzle' for most of the youngsters of 90's but, for the others, it's Sokoban (1982) and its PC version (1988). I'm one of them but, despite the game rules are pretty simple, I wasn't able to play without breaking the keyboard over the monitor, mostly because of the 'strategical thinking' needed by the game. Or because it was simply hard as nails. I decided to make a little Sokoban in Wright! as its first puzzle - living the paradox of the developer who can't complete the game he's working on. Plot! Time to work, Sketchy Man! Push (but don't pull...) all the crates to their places in every floor, get your salary and freedom! Use UP/DOWN/LEFT/RIGHT for moving Sketchy Man and pushing crates, press B BUTTON twice for resetting the floor if you're stuck.",
+  "screenshots":["warehouse-1.png","warehouse-2.png"],
+  "hardware":{
+    "width":256,
+    "height":192,
+    "texture":"scanlines"
+  },
+  "resources":{
+    "defaultsprites":"../default/sprites.png",
+    "scanlines":"../default/scanlines.png"
+  },
+  "stencils":{
+    "modelMoving":{
+      "states":[
+        {
+          "name":"moveRight",
+          "code":{ "name":"Sequence", "data":[ { "sum":1, "to":{ "_":[ "this", "x" ] }, "wait":1, "loop":1, "cycles":8 }, { "set":{ "state":"moving" } } ] }
+        },
+        {
+          "name":"moveLeft",
+          "code":{ "name":"Sequence", "data":[ { "subtract":1, "to":{ "_":[ "this", "x" ] }, "wait":1, "loop":1, "cycles":8 }, { "set":{ "state":"moving" } } ] }
+        },
+        {
+          "name":"moveDown",
+          "code":{ "name":"Sequence", "data":[ { "sum":1, "to":{ "_":[ "this", "y" ] }, "wait":1, "loop":1, "cycles":8 }, { "set":{ "state":"moving" } } ] }
+        },
+        {
+          "name":"moveUp",
+          "code":{ "name":"Sequence", "data":[ { "subtract":1, "to":{ "_":[ "this", "y" ] }, "wait":1, "loop":1, "cycles":8 }, { "set":{ "state":"moving" } } ] }
+        },
+        {
+          "name":"blocked",
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "sum":1, "to":{ "_":[ "this", "x" ] }, "wait":1 },
+              { "subtract":1, "to":{ "_":[ "this", "x" ] }, "wait":1 },
+              { "cycles":5, "loopTo":0 },
+              { "set":{ "state":"moving" } }
+            ]
+          }
+        }
+      ]
+    },
+    "modelStage":{
+      "states":{
+        "execute":{ "as":{ "_":"variable" }, "set":{ "moves":0, "pushes":0 } },
+        "code":{
+          "name":"Sequence",
+          "data":[
+            {
+              "object":{
+                "type":"label",
+                "box":"label", "width":256, "height":192,
+                "zIndex":2, "x":0, "y":0,
+                "color":"#fff",
+                "font":"spectrum", "fontSize":30, "lineHeight":192, "outline":"#000", "textAlign":"center", "html":{ "_":[ "FLOOR ", ".", { "_":[ "variable", "idScene" ] } ] }
+              },
+              "into":{ "_":"scenehud" }
+            },
+            { "wait":50 },
+            { "as":{ "_":[ "object", "label" ] }, "remove":1 },
+            {
+              "object":{
+                "type":"label",
+                "box":"label", "width":256, "height":20,
+                "zIndex":2, "x":0, "y":172,
+                "color":"#fff",
+                "font":"spectrum", "lineHeight":20, "outline":"#000", "textAlign":"center", "html":"PRESS B TO RESET FLOOR."
+              },
+              "into":{ "_":"scenehud" }
+            },
+            { "as":{ "_":[ "object", "player" ] }, "set":{ "state":"moving" } },
+            { "wait":1, "loop":1, "until":{ "_":[ "object", "misplaced", "length", "not" ] } },
+            { "as":{ "_":[ "object", "label" ] }, "remove":1 },
+            { "as":{ "_":[ "object", "player" ] }, "set":{ "animation":"happy", "state":"default" } },
+            {
+              "object":{
+                "type":"label",
+                "box":"label", "width":256, "height":192,
+                "zIndex":2, "x":0, "y":0,
+                "color":"#fff",
+                "font":"spectrum", "fontSize":30, "lineHeight":192, "outline":"#000", "textAlign":"center", "html":"FLOOR CLEAR!",
+                "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "color":"#ff0" } }, { "wait":5 }, { "set":{ "color":"#fff" } }, { "wait":5 }, { "loopTo":0 } ] } }
+              },
+              "into":{ "_":"scenehud" }
+            },
+            { "wait":50 },
+            { "sum":1, "to":{ "_":[ "variable", "nextStage" ] } },
+            {
+              "when":{ "_":[ "variable", "nextStage", "isEqualTo", 6 ] },
+              "gotoScene":"ending",
+              "elseExecute":{ "gotoScene":{ "_":[ "variable", "nextStage" ] } }
+            }
+          ]
+        }
+      }
+    },
+    "#":{ "type":[ "wall", "block" ], "image":"defaultsprites", "tileX":176, "tileY":104, "width":8, "height":8 },
+    "(":{ "image":"defaultsprites", "tileX":192, "tileY":96, "width":8, "height":8 },
+    ")":{ "image":"defaultsprites", "tileX":200, "tileY":96, "width":8, "height":8 },
+    ".":{
+      "type":"dock",
+      "image":"defaultsprites", "tileX":160, "tileY":104, "width":8, "height":8,
+      "animations":{ "idle":{ "frames":2, "loopTo":0 } },
+      "animation":"idle"
+    },
+    ":":{ "image":"defaultsprites", "tileX":192, "tileY":104, "width":8, "height":8 },
+    "=":{ "image":"defaultsprites", "tileX":176, "tileY":96, "width":8, "height":8 },
+    "A":{ "image":"defaultsprites", "tileX":184, "tileY":96, "width":8, "height":8 },
+    "!":{
+      "type":"player",
+      "set":{ "_":[ "stencil", "modelMoving" ] },
+      "image":"defaultsprites", "tileX":144, "tileY":96, "width":8, "height":8,
+      "zIndex":10,
+      "animations":{ "happy":{ "frame":2, "frames":2, "loopTo":0 }, "idle":{ "frames":2, "loopTo":0 } },
+      "animation":"idle",
+      "states":[
+        {
+          "name":"resetting",
+          "execute":{
+            "object":{
+              "type":"alert",
+              "box":"label", "width":256, "height":192,
+              "zIndex":2, "x":0, "y":132,
+              "color":"#fff",
+              "font":"spectrum", "lineHeight":12, "outline":"#000", "textAlign":"center", "html":"ARE YOU SURE?<br>PRESS B TO RESET FLOOR.<br>PRESS A TO CANCEL.",
+              "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "color":"#ff0" } }, { "wait":5 }, { "set":{ "color":"#fff" } }, { "wait":5 }, { "loopTo":0 } ] } }
+            },
+            "into":{ "_":"scenehud" }
+          },
+          "code":{
+            "name":"Execute",
+            "data":{
+              "when":{ "_":[ "keyA", "isHit" ] },
+              "execute":[ { "as":{ "_":[ "object", "alert" ] }, "remove":1 }, { "set":{ "state":"moving" } } ],
+              "elseExecute":{
+                "when":{ "_":[ "keyB", "isHit" ] },
+                "execute":[ { "as":{ "_":[ "object", "alert" ] }, "remove":1 }, { "gotoScene":{ "_":[ "variable", "nextStage" ] } } ]
+              }
+            }
+          }
+        },
+        {
+          "name":"moving",
+          "code":{
+            "name":"Sequence",
+            "data":[
+              {
+                "when":{ "_":[ "keyB", "isHit" ] },
+                "set":{ "state":"resetting" },
+                "elseExecute":[
+                  {
+                    "when":{ "_":[ "keyRight", "isDown" ] },
+                    "execute":{
+                      "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "wall" ] }, "hitbox":{ "width":8, "height":8, "x":8, "y":0 } } ] },
+                      "set":{ "state":"blocked" },
+                      "elseExecute":{
+                        "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "crate" ] }, "hitbox":{ "width":8, "height":8, "x":8, "y":0 } } ] },
+                        "execute":{
+                          "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "block" ] }, "hitbox":{ "width":8, "height":8, "x":16, "y":0 } } ] },
+                          "set":{ "state":"blocked" },
+                          "elseExecute":[
+                            { "sum":1, "to":{ "_":[ "variable", "moves" ] } },
+                            { "sum":1, "to":{ "_":[ "variable", "pushes" ] } },
+                            { "set":{ "state":"moveRight" } },
+                            { "as":{ "_":"that" }, "set":{ "state":"moveRight" } }
+                          ]
+                        },
+                        "elseExecute":[ { "set":{ "state":"moveRight" } }, { "sum":1, "to":{ "_":[ "variable", "moves" ] } } ]
+                      }
+                    }
+                  },
+                  {
+                    "when":{ "_":[ "keyLeft", "isDown" ] },
+                    "execute":{
+                      "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "wall" ] }, "hitbox":{ "width":8, "height":8, "x":-8, "y":0 } } ] },
+                      "set":{ "state":"blocked" },
+                      "elseExecute":{
+                        "when":{
+                          "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "crate" ] }, "hitbox":{ "width":8, "height":8, "x":-8, "y":0 }, "__debugcollides":1 } ]
+                        },
+                        "execute":{
+                          "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "block" ] }, "hitbox":{ "width":8, "height":8, "x":-16, "y":0 } } ] },
+                          "set":{ "state":"blocked" },
+                          "elseExecute":[
+                            { "sum":1, "to":{ "_":[ "variable", "moves" ] } },
+                            { "sum":1, "to":{ "_":[ "variable", "pushes" ] } },
+                            { "set":{ "state":"moveLeft" } },
+                            { "as":{ "_":"that" }, "set":{ "state":"moveLeft" } }
+                          ]
+                        },
+                        "elseExecute":[ { "set":{ "state":"moveLeft" } }, { "sum":1, "to":{ "_":[ "variable", "moves" ] } } ]
+                      }
+                    }
+                  },
+                  {
+                    "when":{ "_":[ "keyDown", "isDown" ] },
+                    "execute":{
+                      "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "wall" ] }, "hitbox":{ "width":8, "height":8, "x":0, "y":8 } } ] },
+                      "set":{ "state":"blocked" },
+                      "elseExecute":{
+                        "when":{
+                          "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "crate" ] }, "hitbox":{ "width":8, "height":8, "x":0, "y":8 }, "__debugcollides":1 } ]
+                        },
+                        "execute":{
+                          "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "block" ] }, "hitbox":{ "width":8, "height":8, "x":0, "y":16 } } ] },
+                          "set":{ "state":"blocked" },
+                          "elseExecute":[
+                            { "sum":1, "to":{ "_":[ "variable", "moves" ] } },
+                            { "sum":1, "to":{ "_":[ "variable", "pushes" ] } },
+                            { "set":{ "state":"moveDown" } },
+                            { "as":{ "_":"that" }, "set":{ "state":"moveDown" } }
+                          ]
+                        },
+                        "elseExecute":[ { "set":{ "state":"moveDown" } }, { "sum":1, "to":{ "_":[ "variable", "moves" ] } } ]
+                      }
+                    }
+                  },
+                  {
+                    "when":{ "_":[ "keyUp", "isDown" ] },
+                    "execute":{
+                      "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "wall" ] }, "hitbox":{ "width":8, "height":8, "x":0, "y":-8 } } ] },
+                      "set":{ "state":"blocked" },
+                      "elseExecute":{
+                        "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "crate" ] }, "hitbox":{ "width":8, "height":8, "x":0, "y":-8 } } ] },
+                        "execute":{
+                          "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "block" ] }, "hitbox":{ "width":8, "height":8, "x":0, "y":-16 } } ] },
+                          "set":{ "state":"blocked" },
+                          "elseExecute":[
+                            { "sum":1, "to":{ "_":[ "variable", "moves" ] } },
+                            { "sum":1, "to":{ "_":[ "variable", "pushes" ] } },
+                            { "set":{ "state":"moveUp" } },
+                            { "as":{ "_":"that" }, "set":{ "state":"moveUp" } }
+                          ]
+                        },
+                        "elseExecute":[ { "set":{ "state":"moveUp" } }, { "sum":1, "to":{ "_":[ "variable", "moves" ] } } ]
+                      }
+                    }
+                  }
+                ]
+              },
+              { "wait":1, "loopTo":0 }
+            ]
+          }
+        }
+      ]
+    },
+    "*":{
+      "type":[ "crate", "block", "misplaced" ],
+      "set":{ "_":[ "stencil", "modelMoving" ] },
+      "image":"defaultsprites", "tileX":144, "tileY":104, "width":8, "height":8,
+      "zIndex":5,
+      "bgcolor":"#ff0",
+      "states":{
+        "name":"moving",
+        "code":{
+          "name":"Execute",
+          "data":{
+            "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "dock" ] } ] },
+            "execute":{ "set":{ "removeType":"misplaced", "frame":" 1" } },
+            "elseExecute":{ "set":{ "type":"misplaced", "frame":"0" } }
+          }
+        }
+      }
+    },
+    "~":{ "image":"defaultsprites", "tileX":184, "tileY":104, "width":8, "height":8 }
+  },
+  "execute":{
+    "object":[
+      {
+        "type":"hud",
+        "hudType":"label", "label":"MOVES %number|variable.moves%",
+        "box":"label", "width":100,
+        "x":5, "y":5,
+        "font":"spectrum", "outline":"#000000"
+      },
+      {
+        "type":"hud",
+        "hudType":"label", "label":"PUSHES %number|variable.pushes%",
+        "box":"label", "width":100,
+        "x":95, "y":5,
+        "font":"spectrum", "outline":"#000000"
+      },
+      {
+        "type":"hud",
+        "hudType":"label", "label":"FLOOR %number|variable.idScene|1%",
+        "box":"label", "width":70,
+        "x":181, "y":5,
+        "font":"spectrum", "outline":"#000000", "textAlign":"right"
+      }
+    ],
+    "into":{ "_":"hud" }
+  },
+  "scenes":{
+    "intro":{
+      "object":[
+        { "width":88, "height":16, "x":128, "y":96, "font":"spectrum", "lineHeight":16, "textAlign":"center", "html":"WAREHOUSE" },
+        {
+          "image":"defaultsprites", "tileX":144, "tileY":96, "width":8, "height":8,
+          "zIndex":10, "x":-8, "y":136,
+          "animations":{ "idle":{ "frames":2, "loopTo":0 } },
+          "animation":"idle",
+          "states":{
+            "code":{
+              "name":"Sequence",
+              "data":[
+                { "sum":1, "to":{ "_":[ "this", "x" ] }, "wait":1, "loop":1, "cycles":128 },
+                { "wait":20 },
+                { "subtract":0.1, "to":{ "_":[ "this", "alpha" ] }, "wait":1, "loop":1, "cycles":10 },
+                { "remove":1 }
+              ]
+            }
+          }
+        },
+        {
+          "box":"label", "width":256,
+          "zIndex":3000, "x":0, "y":165,
+          "font":"spectrum", "fontSize":20, "lineHeight":20, "textAlign":"center", "html":"PRESS START",
+          "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "visible":0 }, "wait":10 }, { "set":{ "visible":1 }, "wait":10, "loopTo":0 } ] } }
+        }
+      ],
+      "execute":{ "as":{ "_":"variable" }, "set":{ "nextStage":1 } },
+      "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":{ "_":[ "variable", "nextStage" ] } } } },
+      "tilemap":{
+        "height":192,
+        "tileWidth":8,
+        "tileHeight":8,
+        "map":[
+          "           ()                   ",
+          "                                ",
+          "                                ",
+          "   ()                   ()      ",
+          "                                ",
+          "                              ()",
+          "                                ",
+          ")         ()                    ",
+          "              ===============   ",
+          "              ===============)  ",
+          "              ===============   ",
+          "AAAAAAAAAAAAAA###############AAA",
+          "              ##           ##   ",
+          "              ##           ##   ",
+          "              ###############   ",
+          "              ###############   ",
+          "              ##########*####   ",
+          "              # ####*##***##**  ",
+          "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+          "::::::::::::::::::::::::::::::::"
+        ]
+      }
+    },
+    "ending":{
+      "object":[
+        {
+          "image":"defaultsprites", "tileX":144, "tileY":96, "width":8, "height":8,
+          "zIndex":10, "x":-8, "y":136,
+          "animations":{ "happy":{ "frame":2, "frames":2, "loopTo":0 }, "idle":{ "frames":2, "loopTo":0 } },
+          "animation":"idle",
+          "states":{
+            "code":{ "name":"Sequence", "data":[ { "sum":1, "to":{ "_":[ "this", "x" ] }, "wait":1, "loop":1, "cycles":132 }, { "set":{ "animation":"happy" } } ] }
+          }
+        },
+        {
+          "image":"defaultsprites", "tileX":144, "tileY":96, "width":8, "height":8,
+          "zIndex":10, "x":150, "y":136,
+          "forceY":-5,
+          "animations":{ "idle":{ "frame":2, "frames":2, "loopTo":0 } },
+          "animation":"idle",
+          "states":{ "code":{ "name":"Physics", "data":{ "walls":{ "area":{ "width":200, "height":144, "x":0, "y":0 }, "restitution":1 }, "gravityY":1 } } }
+        },
+        {
+          "image":"defaultsprites", "tileX":144, "tileY":96, "width":8, "height":8,
+          "zIndex":10, "x":170, "y":136,
+          "forceY":-6,
+          "animations":{ "idle":{ "frame":2, "frames":2, "loopTo":0 } },
+          "animation":"idle",
+          "states":{ "code":{ "name":"Physics", "data":{ "walls":{ "area":{ "width":200, "height":144, "x":0, "y":0 }, "restitution":1 }, "gravityY":1 } } }
+        },
+        {
+          "image":"defaultsprites", "tileX":144, "tileY":96, "width":8, "height":8,
+          "zIndex":10, "x":190, "y":136,
+          "forceY":-3,
+          "animations":{ "idle":{ "frame":2, "frames":2, "loopTo":0 } },
+          "animation":"idle",
+          "states":{ "code":{ "name":"Physics", "data":{ "walls":{ "area":{ "width":200, "height":144, "x":0, "y":0 }, "restitution":1 }, "gravityY":1 } } }
+        },
+        {
+          "box":"label", "width":256,
+          "zIndex":3000, "x":0, "y":165,
+          "font":"spectrum", "fontSize":20, "lineHeight":20, "textAlign":"center", "html":"NOW LET'S HAVE FUN!",
+          "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "color":"#ff0" } }, { "wait":5 }, { "set":{ "color":"#fff" } }, { "wait":5 }, { "loopTo":0 } ] } }
+        }
+      ],
+      "execute":{ "as":{ "_":"variable" }, "set":{ "nextStage":1 } },
+      "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"intro" } } },
+      "tilemap":{
+        "height":192,
+        "tileWidth":8,
+        "tileHeight":8,
+        "map":[
+          "                    ()          ",
+          "                                ",
+          "          ()                    ",
+          "                            ()  ",
+          "                                ",
+          "                      ()        ",
+          "                                ",
+          ")              ()               ",
+          "===                             ",
+          "===)                            ",
+          "===                             ",
+          "###AAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+          " ##                             ",
+          " ##                             ",
+          "###                             ",
+          "###                             ",
+          "###                             ",
+          "##**                            ",
+          "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+          "::::::::::::::::::::::::::::::::"
+        ]
+      }
+    },
+    "1":{
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "tilemap":{
+        "x":104, "y":72,
+        "tileWidth":8,
+        "tileHeight":8,
+        "map":[
+          " ######",
+          " #    #",
+          "##* . #",
+          "#  !  #",
+          "# *#. #",
+          "#  ####",
+          "####   "
+        ]
+      }
+    },
+    "2":{
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "tilemap":{
+        "x":100, "y":76,
+        "tileWidth":8,
+        "tileHeight":8,
+        "map":[
+          "####    ",
+          "#  #####",
+          "# .  * #",
+          "# *  .!#",
+          "###  ###",
+          "  ####  "
+        ]
+      }
+    },
+    "3":{
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "tilemap":{
+        "x":104, "y":72,
+        "tileWidth":8,
+        "tileHeight":8,
+        "map":[
+          "#######",
+          "#.   .#",
+          "#.***.#",
+          "##*!*##",
+          "#.***.#",
+          "#.   .#",
+          "#######"
+        ]
+      }
+    },
+    "4":{
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "tilemap":{
+        "x":56, "y":52,
+        "tileWidth":8,
+        "tileHeight":8,
+        "map":[
+          "    #####          ",
+          "    #   #          ",
+          "    #   #          ",
+          "    #   #          ",
+          "  ###   ##         ",
+          "  #      #         ",
+          "### # ## #   ######",
+          "#   # ## #####    #",
+          "# *  *           .#",
+          "#####*### #!##  ..#",
+          "    #     #########",
+          "    #######        "
+        ]
+      }
+    },
+    "5":{
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "tilemap":{
+        "x":80, "y":60,
+        "tileWidth":8,
+        "tileHeight":8,
+        "map":[
+          "####         ",
+          "#! ##        ",
+          "# * ##       ",
+          "#*   ########",
+          "#.# * * *  .#",
+          "###    *   .#",
+          "  #   *   ###",
+          "  #  ###  #  ",
+          "  #..# #..#  ",
+          "  #### ####  "
+        ]
+      }
+    }
+  }
+}
