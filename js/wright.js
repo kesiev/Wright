@@ -427,6 +427,7 @@ function Box(parent, type, sub, statemanager) {
 		};
 		box.unscheduleObjectChange = function(obj) { delete this.changes[obj.uid]; };
 		box.isOnScreen=function(obj){
+			if (obj.unoptimize) return true;
 			var rect=obj.getRects().screen;
 			return !((rect.x+this.gridcoords.x>=this.width)||((rect.x+this.gridcoords.x+rect.width)<1)||(rect.y+this.gridcoords.y>=this.height)||((rect.y+this.gridcoords.y+rect.height)<1));
 		};
@@ -1767,6 +1768,19 @@ function Wright(gameId,container,mods) {
 				local.done = 1;
 			} else local.as.setAlpha(local.as.alpha + (local.speed * (local.as.alpha < local.to ? 1 : -1)));
 		},
+		Delay: function(data, local) {
+			if (local.delay === undefined) {
+				local.delay = data.delay;
+				local.then=data.then;
+			}
+			if (local.done) {
+				if (local.done == 1) {
+					if (local.then) execute(this, this, local.then);
+					local.done = 2;
+				}
+			} else if (local.delay) local.delay--;
+			else local.done=1;
+		},
 		GameManager: function() {
 			updateHud();
 			if (scene && camera && camera.follow) {
@@ -1970,6 +1984,15 @@ function Wright(gameId,container,mods) {
 					case "storage":{ ret=Storage; break; }
 					case "merged":{ ret=merge(from,tox,ret); break; }
 					case "new":{ ret = Box.clone(get(from, tox, struct[++id])); break; }
+					case "arrayOf":{
+						p = get(from, tox, struct[++id]);
+						ret = [];
+						if (typeof p == "object") {
+							if (p.typeId !== undefined) p=p.items;
+							for (var a in p) ret.push(p[a]);
+						}  // @TODO: Handle arrays, once needed.
+						break;
+					}
 					case "then":{
 						p = get(from, tox, struct[++id]);
 						if (ret) {
@@ -2592,6 +2615,19 @@ function Wright(gameId,container,mods) {
 					then: function() {
 						game.undo(Code.Fade);
 						plugTape(-1, idscene, curtape);
+					}
+				});
+				break;
+			}
+			// case 2: // Seamless transition
+			case 3:{ // Fake load/unpacking
+				gamerunning = 0;
+				scene.setAlpha(0);
+				game.undo(Code.Delay).do(Code.Delay,{
+					delay: Math.ceil(game.fps/2),
+					then: function() {
+						game.undo(Code.Delay);
+						plugTape(-2, idscene, curtape);
 					}
 				});
 				break;
