@@ -187,6 +187,7 @@ function Box(parent, type, sub, statemanager) {
 
 	// INIT - Style
 	var a,model=Box._[type] || Box._.basic;
+	for (a in Box._.common.css) box.node.style[a] = Box._.common.css[a];
 	if (model.set) for (a in model.set) box[a] = model.set[a];
 	if (model.css) for (a in model.css) box.node.style[a] = model.css[a];
 
@@ -958,6 +959,9 @@ Box._baserects = {
 	}
 };
 Box._ = {
+	common:{
+		css:{} // CSS fixes applied everywhere
+	},
 	game: {
 		css: {
 			display: "none",
@@ -1002,6 +1006,15 @@ Box._ = {
 		}
 	}
 };
+
+if(navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
+    Box._.common.css.imageRendering="-moz-crisp-edges";
+    Box._.common.css.MozOsxFontSmoothing="grayscale";
+} else {
+	Box._.common.css.imageRendering="pixelated";
+	Box._.common.css.webkitFontSmoothing="none";
+}
+
 // DOM events
 Box.on=function(evt,elm,cb) {
 	if (elm.addEventListener) elm.addEventListener(evt, cb, false);
@@ -2623,6 +2636,7 @@ function Wright(gameId,container,mods) {
 			case 3:{ // Fake load/unpacking
 				gamerunning = 0;
 				scene.setAlpha(0);
+				scenehud.setAlpha(0);
 				game.undo(Code.Delay).do(Code.Delay,{
 					delay: Math.ceil(game.fps/2),
 					then: function() {
