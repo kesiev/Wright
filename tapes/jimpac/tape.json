@@ -58,7 +58,7 @@
         "times":{ "_":[ "variable", "len" ] },
         "object":{
           "type":"wall",
-          "image":"defaultsprites", "tileX":40, "tileY":560, "width":8, "height":8,
+          "image":"defaultsprites", "tileX":40, "tileY":576, "width":8, "height":8,
           "x":{ "_":[ "variable", "x", "+", { "_":[ "variable", "pos" ] }, "*", 8 ] }, "y":{ "_":[ "variable", "y", "*", 8 ] },
           "bgcolor":{ "_":[ "variable", "bgcolor" ] }
         },
@@ -86,7 +86,7 @@
     "removeWithSmoke":[ { "object":{ "set":{ "_":[ "stencil", "smoke" ] }, "forceY":-1 } }, { "remove":1 } ],
     "player":{
       "type":[ "player", "gameobjects" ],
-      "image":"defaultsprites", "tileX":16, "tileY":528, "width":16, "height":24,
+      "image":"defaultsprites", "tileX":16, "tileY":544, "width":16, "height":24,
       "zIndex":10, "x":120, "y":160,
       "animations":{ "fly":{ "frame":0 }, "still":{ "frame":1 }, "walk":{ "frames":[ 1, 2 ], "loopTo":0 } },
       "animation":"still",
@@ -234,15 +234,15 @@
     },
     "rocket":{
       "type":"rocket",
-      "image":"defaultsprites", "tileX":0, "tileY":560, "width":16, "height":16,
+      "image":"defaultsprites", "tileX":0, "tileY":576, "width":16, "height":16,
       "zIndex":7, "x":200, "y":168,
       "bgcolor":"#fff",
       "states":[
         { "actions":{ "name":"evolve", "set":{ "state":"stage2" } } },
-        { "name":"stage2", "set":{ "tileY":544, "height":32, "y":152 }, "actions":{ "name":"evolve", "set":{ "state":"stage3" } } },
+        { "name":"stage2", "set":{ "tileY":560, "height":32, "y":152 }, "actions":{ "name":"evolve", "set":{ "state":"stage3" } } },
         {
           "name":"stage3",
-          "set":{ "tileY":528, "height":48, "y":136, "hitbox":{ "width":16, "height":1, "x":0, "y":46 }, "bgcolor":"transparent" },
+          "set":{ "tileY":544, "height":48, "y":136, "hitbox":{ "width":16, "height":1, "x":0, "y":46 }, "bgcolor":"transparent" },
           "execute":{
             "object":[
               { "type":[ "color", "full" ], "width":16, "height":0, "zIndex":5, "x":{ "_":[ "that", "x" ] }, "y":184, "bgcolor":"#f0f" },
@@ -278,7 +278,7 @@
         },
         {
           "name":"landing",
-          "set":{ "tileY":528, "height":48, "y":-50 },
+          "set":{ "tileY":544, "height":48, "y":-50 },
           "code":[
             {
               "name":"Execute",
@@ -381,12 +381,12 @@
           "code":{
             "name":"Sequence",
             "data":[
-              { "object":{ "set":[ { "_":[ "stencil", "part" ] }, { "_":[ "variable", "spawnpoints", 0 ] } ], "tileX":0, "tileY":544, "bgcolor":"#fff" } },
+              { "object":{ "set":[ { "_":[ "stencil", "part" ] }, { "_":[ "variable", "spawnpoints", 0 ] } ], "tileX":0, "tileY":560, "bgcolor":"#fff" } },
               {
                 "object":{
                   "type":"disabled",
                   "set":[ { "_":[ "stencil", "part" ] }, { "_":[ "variable", "spawnpoints", 1 ] } ],
-                  "tileX":0, "tileY":528,
+                  "tileX":0, "tileY":544,
                   "bgcolor":"#fff",
                   "state":"disabled"
                 }
@@ -429,7 +429,7 @@
           "code":{
             "name":"Sequence",
             "data":[
-              { "object":{ "set":{ "_":[ "stencil", "part" ] }, "tileX":16, "tileY":560, "x":{ "_":[ "randomNumber", [ 0, 224 ] ] }, "y":16 } },
+              { "object":{ "set":{ "_":[ "stencil", "part" ] }, "tileX":16, "tileY":576, "x":{ "_":[ "randomNumber", [ 0, 224 ] ] }, "y":16 } },
               { "wait":1, "loop":1, "until":{ "_":[ "objectTyped", "part", "not" ] } },
               { "wait":1, "loopTo":-2, "until":{ "_":[ "objectTyped", "rocket", "state", "isEqualTo", "ready" ] } },
               { "set":{ "state":"liftoff" } }
