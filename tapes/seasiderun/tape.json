@@ -1,0 +1,614 @@
+{
+  "name":"Seaside Run",
+  "author":"KesieV",
+  "year":2015,
+  "genre":"Racing",
+  "description":"Popular home computers started to spread around 1980 but the first 3D videogames started to come out about ten years before: the world wanted 3D videogames so much it hurted - quite literally. The first documented 3D game is Spasim (1974), which was a quite inscrutable space exploration game with very slowly refreshed vector-based graphics. Today we take for granted an online mode in games but it looks like that it has been always like that: Spasim is also one of the first online videogames in history. The first 3D videogame for a home computer is 3D Monster Maze (1981) for the Sinclair ZX81. The effort for making a first-person videogame on a such limited machine, at its launch and using text symbols only, was probably huge but its success was proportionally big. Nowadays its graphics looks chunky and worthless - but 3D Monster Maze is the first survival horror (https://goo.gl/BmzNE2). The most common (and playable) 3D game of history is Battle Zone (1980), with its fine and recognizable vector graphics and straightforward but refined gameplay. It was also the first game with 'virtual reality goggles', making it the first virtual reality videogame ever made. Wrapping up, graphics and above all 3D graphics makes videogames old very fast, burying them in the past together with their timeless elements, which is a pity. Anyway, which is my favourite 3D game from the past? Surely Out Run (1986), which had many brave 8-bit ports and - well - it was one of the first racing game with a plot and multiple endings, that's something very rare still today! So, let's get inspired by its careless atmosphere, its fancy pseudo-3D algorithm and make a raw 3D racing game with HTML DIVs and a game engine which doesn't handle 3D at all. Because we want 3D so hard too. Plot! Is there a soul mate for you? Where is she/he? You'll find her/him one day? While your life is still waiting for an answer, nothing is better than a long race along the seaside on a purple car with your faithful dog aside and beat down your loneliness! Watch out for hills, turns and traffic and feel just the breeze! Hold UP for accelerating, use the A BUTTON for switching gear, and LEFT/RIGHT for steering. PS: Firefox don't like this game, I think because of its fast z-index DIV switching.",
+  "screenshots":[ "seasiderun-1.png", "seasiderun-2.png" ],
+  "hardware":{
+    "width":256,
+    "height":192,
+    "texture":"scanlines"
+  },
+  "cheats":{},
+  "resources":{
+    "road-objects":"road-objects.png",
+    "seaside-strips":"seaside-strips.png",
+    "title":"title.png",
+    "defaultsprites":"../default/sprites.png",
+    "gameover":"../default/gameover.png",
+    "scanlines":"../default/scanlines.png"
+  },
+  "stencils":{
+    "codeRoadHandle":[
+      {
+        "when":{ "_":[ "variable", "currentCurve", "isNotEqualTo", { "_":[ "variable", "destinationCurve" ] } ] },
+        "execute":{
+          "when":{ "_":[ "variable", "currentCurve", "-", { "_":[ "variable", "destinationCurve" ] }, "abs", "isLessThan", 0.2 ] },
+          "as":{ "_":"variable" },
+          "set":{ "currentCurve":{ "_":[ "variable", "destinationCurve" ] } },
+          "elseExecute":{
+            "when":{ "_":[ "variable", "currentCurve", "isLessThan", { "_":[ "variable", "destinationCurve" ] } ] },
+            "sum":{ "_":[ "variable", "speed", "/", 5 ] },
+            "to":{ "_":[ "variable", "currentCurve" ] },
+            "elseExecute":{ "subtract":{ "_":[ "variable", "speed", "/", 5 ] }, "to":{ "_":[ "variable", "currentCurve" ] } }
+          }
+        }
+      },
+      {
+        "when":{ "_":[ "variable", "currentInclination", "isNotEqualTo", { "_":[ "variable", "destinationInclination" ] } ] },
+        "execute":{
+          "when":{ "_":[ "variable", "currentInclination", "-", { "_":[ "variable", "destinationInclination" ] }, "abs", "isLessThan", 0.5 ] },
+          "as":{ "_":"variable" },
+          "set":{ "currentInclination":{ "_":[ "variable", "destinationInclination" ] } },
+          "elseExecute":{
+            "when":{ "_":[ "variable", "currentInclination", "isLessThan", { "_":[ "variable", "destinationInclination" ] } ] },
+            "sum":{ "_":[ "variable", "speed", "/", 5 ] },
+            "to":{ "_":[ "variable", "currentInclination" ] },
+            "elseExecute":{ "subtract":{ "_":[ "variable", "speed", "/", 5 ] }, "to":{ "_":[ "variable", "currentInclination" ] } }
+          }
+        }
+      },
+      {
+        "when":{ "_":[ "variable", "position", "isGreaterThan", { "_":[ "variable", "nextrow" ] } ] },
+        "execute":[
+          {
+            "as":{ "_":"variable" },
+            "set":{
+              "horizon":{ "_":[ "variable", "currentInclination", "*", { "_":[ "variable", "currentInclination" ] }, "*", 0.01 ] },
+              "nextrow":{ "_":[ "variable", "position", "+", 1 ] }
+            }
+          },
+          {
+            "object":{
+              "set":{ "_":[ "stencil", "row" ] },
+              "curve":{ "_":[ "variable", "currentCurve" ] },
+              "inclination":{ "_":[ "variable", "currentInclination" ] },
+              "position":{ "_":[ "variable", "position" ] }
+            },
+            "execute":{
+              "when":{ "_":[ "variable", "position", "isGreaterThan", { "_":[ "variable", "nextCheckpoint", "-", 100 ] } ] },
+              "execute":{ "_":[ "stencil", "codeRouteCheckpoint" ] },
+              "elseExecute":{ "_":[ "stencil", "codeRouteSeaside" ] }
+            }
+          }
+        ]
+      }
+    ],
+    "codeRouteCheckpoint":[
+      {
+        "object":[
+          { "unoptimize":1, "image":"seaside-strips", "width":1175, "height":30, "x":0, "y":90 },
+          { "unoptimize":1, "width":1175, "height":30, "x":1325, "y":90, "bgcolor":"#7f7f7f" }
+        ],
+        "into":{ "_":"that" }
+      },
+      {
+        "when":{ "_":[ "variable", "position", "isGreaterThan", { "_":[ "variable", "nextCheckpoint" ] } ] },
+        "execute":[
+          { "object":{ "unoptimize":1, "image":"road-objects", "tileY":400, "width":256, "height":120, "zIndex":20, "x":1122, "y":0 }, "into":{ "_":"that" } },
+          {
+            "as":{ "_":"that" },
+            "set":{
+              "states":{
+                "actions":{
+                  "name":"crossed",
+                  "execute":[
+                    { "sum":1, "to":{ "_":[ "variable", "stage" ] } },
+                    { "sum":{ "_":[ "variable", "time", "*", 100 ] }, "to":{ "_":[ "variable", "score" ] } },
+                    { "as":{ "_":"variable" }, "set":{ "time":80 } },
+                    {
+                      "object":{
+                        "box":"label", "width":258, "height":25,
+                        "zIndex":10000, "x":-1, "y":30,
+                        "bgcolor":"#fff", "border":"#0f0", "color":"#f00",
+                        "font":"spectrum", "lineHeight":26, "textAlign":"center", "html":"EXTEND PLAY!",
+                        "states":{
+                          "code":{ "name":"Sequence", "data":[ { "set":{ "visible":0 }, "wait":8 }, { "set":{ "visible":1 }, "wait":8, "cycles":5, "loopTo":0 }, { "remove":1 } ] }
+                        }
+                      },
+                      "into":{ "_":"scenehud" }
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          { "as":{ "_":"variable" }, "set":{ "nextCheckpoint":{ "_":[ "variable", "nextCheckpoint", "+", 3000 ] } } }
+        ]
+      },
+      {
+        "when":{ "_":[ "variable", "position", "isGreaterThan", { "_":[ "variable", "nextLeftSide" ] } ] },
+        "execute":[
+          {
+            "object":{ "unoptimize":1, "image":"road-objects", "width":80, "height":120, "zIndex":2, "x":1140, "y":0, "frame":{ "_":[ "randomValue", [ 0, 2 ] ] } },
+            "into":{ "_":"that" }
+          },
+          { "as":{ "_":"variable" }, "set":{ "nextLeftSide":{ "_":[ "variable", "position", "+", 10 ] } } }
+        ]
+      },
+      {
+        "when":{ "_":[ "variable", "position", "isGreaterThan", { "_":[ "variable", "nextRightSide" ] } ] },
+        "execute":[
+          {
+            "object":{ "unoptimize":1, "image":"road-objects", "tileY":120, "width":162, "height":120, "zIndex":2, "x":1330, "y":0, "frame":1 },
+            "into":{ "_":"that" }
+          },
+          { "as":{ "_":"variable" }, "set":{ "nextRightSide":{ "_":[ "variable", "position", "+", 10 ] } } }
+        ]
+      }
+    ],
+    "codeRouteSeaside":[
+      {
+        "object":[
+          { "unoptimize":1, "image":"seaside-strips", "width":1175, "height":30, "x":0, "y":90 },
+          { "unoptimize":1, "width":1175, "height":30, "x":1325, "y":90, "bgcolor":"#7f7f7f" }
+        ],
+        "into":{ "_":"that" }
+      },
+      {
+        "when":{ "_":[ "variable", "position", "isGreaterThan", { "_":[ "variable", "nextStart" ] } ] },
+        "execute":[
+          { "object":{ "unoptimize":1, "image":"road-objects", "tileY":280, "width":256, "height":120, "zIndex":20, "x":1122, "y":0 }, "into":{ "_":"that" } },
+          { "as":{ "_":"variable" }, "set":{ "nextStart":"off" } }
+        ]
+      },
+      {
+        "when":{ "_":[ "variable", "position", "isGreaterThan", { "_":[ "variable", "nextLeftSide" ] } ] },
+        "execute":[
+          {
+            "object":{
+              "unoptimize":1,
+              "image":"road-objects", "width":80, "height":120,
+              "zIndex":2, "x":1140, "y":0, "frame":{ "_":[ "randomValue", [ 0, 0, 0, 0, 1, 2 ] ] }
+            },
+            "into":{ "_":"that" }
+          },
+          { "as":{ "_":"variable" }, "set":{ "nextLeftSide":{ "_":[ "variable", "position", "+", 30 ] } } }
+        ]
+      },
+      {
+        "when":{ "_":[ "variable", "position", "isGreaterThan", { "_":[ "variable", "nextRightSide" ] } ] },
+        "execute":[
+          {
+            "object":{
+              "unoptimize":1,
+              "image":"road-objects", "tileY":120, "width":162, "height":120,
+              "zIndex":2, "x":1330, "y":0, "frame":{ "_":[ "randomNumber", [ 0, 1 ] ] }
+            },
+            "into":{ "_":"that" }
+          },
+          { "as":{ "_":"variable" }, "set":{ "nextRightSide":{ "_":[ "variable", "position", "+", 90 ] } } }
+        ]
+      },
+      {
+        "when":{ "_":[ "variable", "position", "isGreaterThan", { "_":[ "variable", "nextObstacle" ] } ] },
+        "execute":[
+          {
+            "object":{
+              "unoptimize":1,
+              "image":"road-objects", "tileX":156, "tileY":240, "width":52, "height":40,
+              "zIndex":10, "x":{ "_":[ "randomValue", [ 1178, 1273 ] ] }, "y":80, "frame":{ "_":[ "randomNumber", [ 0, 2 ] ] },
+              "states":[
+                {
+                  "actions":[
+                    {
+                      "name":"enableCollisions",
+                      "execute":{
+                        "object":{ "type":"obstacle", "width":46, "height":40, "zIndex":100000, "x":{ "_":[ "that", "x", "-", 1112 ] }, "y":148, "collider":{ "_":"that" } },
+                        "execute":{ "set":{ "collider":{ "_":"that" } } }
+                      }
+                    },
+                    { "name":"disableCollisions", "execute":{ "as":{ "_":[ "this", "collider" ] }, "remove":1 } },
+                    { "name":"collide", "execute":[ { "executeAction":"disableCollisions" }, { "set":{ "state":"hit" } } ] }
+                  ]
+                },
+                {
+                  "name":"hit",
+                  "set":{ "forceY":-4 },
+                  "code":[
+                    {
+                      "name":"Execute",
+                      "data":[
+                        { "when":{ "_":[ "this", "visible" ] }, "set":{ "visible":0 }, "elseExecute":{ "set":{ "visible":1 } } },
+                        { "sum":1, "to":{ "_":[ "this", "forceY" ] } },
+                        { "sum":{ "_":[ "this", "forceY" ] }, "to":{ "_":[ "this", "y" ] } },
+                        { "when":{ "_":[ "this", "y", "isGreaterThan", 80 ] }, "set":{ "y":80, "forceY":{ "_":[ "this", "forceY", "-", 1, "*", -1 ] } } }
+                      ]
+                    },
+                    { "name":"Sequence", "data":[ { "wait":20 }, { "remove":1 } ] }
+                  ]
+                }
+              ]
+            },
+            "into":{ "_":"that" }
+          },
+          { "as":{ "_":"variable" }, "set":{ "nextObstacle":{ "_":[ "variable", "position", "+", 550, "-", { "_":[ "variable", "stage", "*", 50 ] } ] } } }
+        ]
+      }
+    ],
+    "player":{
+      "type":[ "player", "gameElement" ],
+      "image":"road-objects", "tileY":240, "width":52, "height":40,
+      "zIndex":10000, "x":102, "y":148,
+      "forceX":0,
+      "speed":0,
+      "bounce":0,
+      "gear":0,
+      "gears":[ { "acceleration":0.014, "maxspeed":2, "skidUnder":0 }, { "acceleration":0.005, "maxspeed":3, "skidUnder":1.5 } ],
+      "maxspeed":0,
+      "shake":0,
+      "skid":0,
+      "speedkmh":0,
+      "steering":0,
+      "states":{
+        "code":[
+          {
+            "name":"Execute",
+            "data":[
+              { "set":{ "skid":0 } },
+              {
+                "when":{ "_":[ "keyA", "isHit" ] },
+                "execute":{ "when":{ "_":[ "this", "gear", "isEqualTo", 0 ] }, "set":{ "gear":1 }, "elseExecute":{ "set":{ "gear":0 } } }
+              },
+              { "set":{ "geardata":{ "_":[ "this", "gears", { "_":[ "this", "gear" ] } ] } } },
+              { "set":{ "maxspeed":{ "_":[ "this", "geardata", "maxspeed" ] } } },
+              { "when":{ "_":[ "this", "x", "isLessThan", 36, "or", { "_":[ "this", "x", "isGreaterThan", 162 ] } ] }, "set":{ "maxspeed":0.5, "skid":1 } },
+              {
+                "when":{ "_":[ "scene", "state", "isEqualTo", "default", "not" ] },
+                "execute":[
+                  {
+                    "when":{ "_":[ "keyRight", "isDown", "and", { "_":[ "this", "steering", "isLessThan", 2 ] } ] },
+                    "sum":0.1,
+                    "to":{ "_":[ "this", "steering" ] },
+                    "elseExecute":{
+                      "when":{ "_":[ "keyLeft", "isDown", "and", { "_":[ "this", "steering", "isGreaterThan", -2 ] } ] },
+                      "subtract":0.1,
+                      "to":{ "_":[ "this", "steering" ] }
+                    }
+                  },
+                  {
+                    "when":{ "_":[ "this", "steering", "isLessThan", -0.5 ] },
+                    "set":{ "frame":2 },
+                    "elseExecute":{ "when":{ "_":[ "this", "steering", "isGreaterThan", 0.5 ] }, "set":{ "frame":1 }, "elseExecute":{ "set":{ "frame":0 } } }
+                  }
+                ]
+              },
+              { "when":{ "_":[ "this", "steering", "isLessThan", -1.5, "or", { "_":[ "this", "steering", "isGreaterThan", 1.5 ] } ] }, "set":{ "skid":1 } },
+              {
+                "when":{ "_":[ "this", "speed", "isGreaterThan", { "_":[ "this", "maxspeed" ] } ] },
+                "subtract":0.2,
+                "to":{ "_":[ "this", "speed" ] },
+                "elseExecute":{
+                  "when":{ "_":[ "keyUp", "isDown" ] },
+                  "sum":{ "_":[ "this", "geardata", "acceleration" ] },
+                  "to":{ "_":[ "this", "speed" ] },
+                  "elseExecute":{ "subtract":0.1, "to":{ "_":[ "this", "speed" ] } }
+                }
+              },
+              { "when":{ "_":[ "this", "speed", "isLessThan", { "_":[ "this", "geardata", "skidUnder" ] } ] }, "set":{ "skid":1 } },
+              { "when":{ "_":[ "scene", "state", "isEqualTo", "default" ] }, "set":{ "skid":1 } },
+              {
+                "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "obstacle" ] } ] },
+                "execute":[ { "set":{ "speed":0, "shake":10 } }, { "as":{ "_":[ "that", "collider" ] }, "executeAction":"collide" } ]
+              },
+              { "when":{ "_":[ "this", "speed", "isLessThan", 0 ] }, "set":{ "speed":0 } },
+              { "set":{ "forceX":{ "_":[ "variable", "currentCurve", "/", 10, "+", { "_":[ "this", "steering" ] }, "*", { "_":[ "variable", "speed" ] } ] } } },
+              { "as":{ "_":"variable" }, "set":{ "speed":{ "_":[ "that", "speed", "*", 10, "floor", "/", 10 ] } } },
+              { "set":{ "speedkmh":{ "_":[ "this", "speed", "*", 93.33, "floor" ] } } }
+            ]
+          },
+          { "name":"Physics", "data":{ "walls":{ "area":{ "width":256, "height":192, "x":0, "y":0 } } } },
+          {
+            "name":"Sequence",
+            "data":[
+              { "sum":{ "_":[ "this", "speed" ] }, "to":{ "_":[ "this", "bounce" ] }, "wait":1, "loop":1, "until":{ "_":[ "this", "bounce", "isGreaterThan", 5 ] } },
+              { "subtract":1, "to":{ "_":[ "this", "y" ] } },
+              {
+                "sum":{ "_":[ "this", "speed" ] },
+                "to":{ "_":[ "this", "bounce" ] },
+                "wait":1, "loop":1,
+                "until":{ "_":[ "this", "bounce", "isGreaterThan", 10 ] }
+              },
+              { "sum":1, "to":{ "_":[ "this", "y" ] } },
+              { "set":{ "bounce":0 } },
+              { "loopTo":0 }
+            ]
+          },
+          {
+            "name":"Sequence",
+            "data":[
+              { "wait":1, "loop":1, "until":{ "_":[ "this", "skid", "and", { "_":[ "this", "speed" ] } ] } },
+              { "object":{ "set":{ "_":[ "stencil", "smoke" ] }, "x":{ "_":[ "that", "x", "+", { "_":[ "randomNumber", [ -8, 44 ] ] } ] }, "y":180 } },
+              { "loopTo":0 }
+            ]
+          },
+          {
+            "name":"Execute",
+            "data":{
+              "when":{ "_":[ "this", "shake" ] },
+              "execute":[
+                { "subtract":1, "to":{ "_":[ "this", "shake" ] } },
+                { "when":{ "_":[ "this", "shake", "%", 2 ] }, "sum":1, "to":{ "_":[ "this", "x" ] }, "elseExecute":{ "subtract":1, "to":{ "_":[ "this", "x" ] } } }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "background":{
+      "type":"gameElement",
+      "image":"road-objects", "tileY":520, "width":256, "height":32,
+      "zIndex":5, "y":87,
+      "priority":10,
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":[
+            { "set":{ "y":{ "_":[ "variable", "horizon", "-", 13 ] } } },
+            { "sum":{ "_":[ "variable", "speed", "*", { "_":[ "variable", "currentCurve" ] }, "/", 20 ] }, "to":{ "_":[ "this", "x" ] } },
+            {
+              "when":{ "_":[ "this", "x", "isLessThan", -256 ] },
+              "set":{ "x":{ "_":[ 512, "+", { "_":[ "this", "x" ] } ] } },
+              "elseExecute":{ "when":{ "_":[ "this", "x", "isGreaterThan", 256 ] }, "set":{ "x":{ "_":[ -512, "+", { "_":[ "this", "x" ] } ] } } }
+            }
+          ]
+        }
+      }
+    },
+    "row":{
+      "type":"row",
+      "width":2500, "height":120,
+      "originX":0, "originY":0,
+      "waitCollision":0,
+      "states":{
+        "execute":{ "when":{ "_":[ "this", "curve", "isLessThan", 0 ] }, "set":{ "curvesign":1 }, "elseExecute":{ "set":{ "curvesign":-1 } } },
+        "code":{ "name":"Execute", "data":{ "executeAction":"move" } },
+        "actions":{
+          "name":"move",
+          "execute":[
+            { "set":{ "newposition":{ "_":[ 100, "-", { "_":[ "variable", "position" ] }, "+", { "_":[ "this", "position" ] } ] } } },
+            {
+              "when":{ "_":[ "this", "newposition", "isLessThan", 1 ] },
+              "remove":1,
+              "elseExecute":[
+                { "set":{ "scale":{ "_":[ "proportionalValue", { "proportion":[ 0, 100, 2, 0.195 ], "value":{ "_":[ "this", "newposition" ] } } ] } } },
+                {
+                  "when":{ "_":[ "this", "waitCollision", "isEqualTo", 0, "and", { "_":[ "this", "scale", "isGreaterEqualThan", 1 ] } ] },
+                  "execute":[ { "set":{ "waitCollision":1 } }, { "as":{ "_":[ "this", "childs" ] }, "executeAction":"enableCollisions" }, { "executeAction":"crossed" } ],
+                  "elseExecute":{
+                    "when":{ "_":[ "this", "waitCollision", "isEqualTo", 1, "and", { "_":[ "this", "scale", "isGreaterEqualThan", 1.1 ] } ] },
+                    "execute":[ { "set":{ "waitCollision":2 } }, { "as":{ "_":[ "this", "childs" ] }, "executeAction":"disableCollisions" } ]
+                  }
+                },
+                {
+                  "set":{
+                    "realCurve":{ "_":[ "proportionalValue", { "proportion":[ 50, 100, 0, { "_":[ "this", "curve" ] } ], "value":{ "_":[ "this", "newposition" ] } } ] },
+                    "realInclination":{ "_":[ "proportionalValue", { "proportion":[ 0, 100, 30, { "_":[ "this", "inclination" ] } ], "value":{ "_":[ "this", "newposition" ] } } ] },
+                    "realWidth":{ "_":[ "this", "width", "*", { "_":[ "this", "scale" ] } ] }
+                  }
+                },
+                {
+                  "set":{
+                    "zIndex":{ "_":[ "proportionalValue", { "proportion":[ 0, 100, 1000, 0 ], "value":{ "_":[ "this", "newposition" ] } }, "floor" ] }, "x":{ "_":[ 128, "-", { "_":[ "this", "realWidth", "/", 2 ] }, "+", { "_":[ "this", "realCurve", "*", { "_":[ "this", "realCurve" ] }, "*", { "_":[ "this", "curvesign" ] } ] } ] }, "y":{ "_":[ "this", "realInclination", "*", { "_":[ "this", "realInclination" ] }, "*", 0.01 ] }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "semaphore":{ "type":"semaphore", "image":"defaultsprites", "tileX":0, "tileY":496, "width":16, "height":16, "bgcolor":"#7f7f7f" },
+    "sky":{
+      "width":256,
+      "zIndex":1, "x":0, "y":0,
+      "bgcolor":"#0ff",
+      "states":{ "code":{ "name":"Execute", "data":{ "set":{ "height":{ "_":[ "variable", "horizon", "+", 18 ] } } } } }
+    },
+    "smoke":{
+      "image":"defaultsprites", "tileX":80, "tileY":16, "width":16, "height":16,
+      "zIndex":{ "_":[ "that", "zIndex", "+", 1 ] }, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "animations":{ "spark":{ "frames":4, "speed":1 } },
+      "animation":"spark",
+      "states":{ "code":[ { "name":"Physics" }, { "name":"Sequence", "data":[ { "wait":8 }, { "remove":1 } ] } ] }
+    }
+  },
+  "scenes":{
+    "intro":{
+      "object":[
+        { "width":256, "height":192, "x":0, "y":0, "bgcolor":"#0ff" },
+        { "image":"title", "width":181, "height":79, "zIndex":1, "x":36, "y":20 },
+        {
+          "image":"title", "tileY":79, "width":137, "height":109,
+          "zIndex":1, "x":147, "y":192,
+          "forceY":-0.5,
+          "states":{ "code":{ "name":"Physics", "data":{ "walls":{ "area":{ "width":256, "height":1000, "x":0, "y":83 } } } } }
+        },
+        {
+          "box":"label", "width":256,
+          "zIndex":1, "x":0, "y":130,
+          "color":"#fff",
+          "font":"spectrum", "fontSize":20, "lineHeight":20, "outline":"#000", "textAlign":"center", "html":"PRESS START",
+          "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "visible":0 }, "wait":10 }, { "set":{ "visible":1 }, "wait":10, "loopTo":0 } ] } }
+        }
+      ],
+      "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"run", "withTransition":3 } } }
+    },
+    "run":{
+      "object":[
+        { "_":[ "stencil", "sky" ] },
+        { "set":{ "_":[ "stencil", "background" ] }, "x":0 },
+        { "set":{ "_":[ "stencil", "background" ] }, "x":256 },
+        { "_":[ "stencil", "player" ] }
+      ],
+      "execute":[
+        {
+          "as":{ "_":"variable" },
+          "set":{
+            "speed":0,
+            "currentCurve":0,
+            "currentInclination":100,
+            "destinationCurve":7,
+            "destinationInclination":100,
+            "nextCheckpoint":3000,
+            "nextLeftSide":0,
+            "nextObstacle":100,
+            "nextRightSide":30,
+            "nextStart":20,
+            "nextrow":0,
+            "position":0,
+            "score":0,
+            "segmentLeft":0,
+            "stage":1,
+            "time":80
+          }
+        },
+        {
+          "times":80,
+          "execute":[
+            { "sum":1, "to":{ "_":[ "variable", "position" ] } },
+            { "as":{ "_":[ "objectTyped", "row" ] }, "executeAction":"move" },
+            { "_":[ "stencil", "codeRoadHandle" ] }
+          ]
+        },
+        {
+          "object":[
+            {
+              "type":"hud",
+              "hudType":"label", "label":"STAGE %number|variable.stage%",
+              "box":"label", "width":80,
+              "x":171, "y":172,
+              "font":"spectrum", "outline":"#000000", "textAlign":"right"
+            },
+            {
+              "type":"hud",
+              "hudType":"label", "label":"%number|objectTyped.player.speedkmh%",
+              "box":"label", "width":45, "height":20,
+              "x":0, "y":172,
+              "color":"#f00",
+              "font":"spectrum", "fontSize":30, "lineHeight":20, "outline":"#000000", "textAlign":"right"
+            },
+            { "box":"label", "width":45, "zIndex":1, "x":45, "y":170, "font":"spectrum", "outline":"#000000", "html":"km/h" },
+            {
+              "image":"defaultsprites", "tileY":592, "width":16, "height":16,
+              "x":8, "y":156,
+              "states":{ "code":{ "name":"Execute", "data":{ "set":{ "frame":{ "_":[ "objectTyped", "player", "gear" ] } } } } }
+            },
+            { "box":"label", "width":50, "x":5, "y":5, "font":"spectrum", "outline":"#000000", "html":"TIME" },
+            {
+              "type":"hud",
+              "hudType":"label", "label":"%number|variable.time%",
+              "box":"label", "width":45, "height":20,
+              "x":23, "y":5,
+              "color":"#f00",
+              "font":"spectrum", "fontSize":30, "lineHeight":20, "outline":"#000000", "textAlign":"right"
+            },
+            {
+              "type":"hud",
+              "hudType":"label", "label":"SCORE %number|variable.score%",
+              "box":"label", "width":256,
+              "x":100, "y":5,
+              "font":"spectrum", "outline":"#000000"
+            }
+          ],
+          "into":{ "_":"scenehud" }
+        }
+      ],
+      "states":[
+        {
+          "execute":{
+            "object":[
+              { "type":"line1", "set":{ "_":[ "stencil", "semaphore" ] }, "x":104, "y":88 },
+              { "type":"line2", "set":{ "_":[ "stencil", "semaphore" ] }, "x":120, "y":88 },
+              {
+                "type":"line3",
+                "set":{ "_":[ "stencil", "semaphore" ] },
+                "x":136, "y":88,
+                "states":{
+                  "code":{
+                    "name":"Sequence",
+                    "data":[
+                      { "wait":25 },
+                      { "as":{ "_":[ "object", "line1" ] }, "set":{ "bgcolor":"#f00" } },
+                      { "wait":25 },
+                      { "as":{ "_":[ "object", "line2" ] }, "set":{ "bgcolor":"#ff0" } },
+                      { "wait":25 },
+                      { "as":{ "_":[ "object", "line3" ] }, "set":{ "bgcolor":"#0f0" } },
+                      { "as":{ "_":"scene" }, "set":{ "state":"go" } },
+                      { "wait":50 },
+                      { "as":{ "_":[ "object", "semaphore" ] }, "remove":1 }
+                    ]
+                  }
+                }
+              }
+            ],
+            "into":{ "_":"scenehud" }
+          }
+        },
+        {
+          "name":"go",
+          "execute":{ "when":{ "_":[ "objectTyped", "player", "speed", "isGreaterThan", 0.5 ] }, "as":{ "_":[ "objectTyped", "player" ] }, "set":{ "speed":0 } },
+          "code":[
+            {
+              "name":"Sequence",
+              "data":[
+                { "wait":1, "loop":1, "until":{ "_":[ "variable", "segmentLeft", "isLessThan", 0 ] } },
+                {
+                  "as":{ "_":"variable" },
+                  "set":{
+                    "destinationCurve":{ "_":[ "randomValue", [ -12, -8, 0, 0, 8, 12 ] ] },
+                    "destinationInclination":{ "_":[ "randomValue", [ 80, 100, 100, 110 ] ] },
+                    "segmentLeft":{ "_":[ "randomNumber", [ 100, 200 ] ] }
+                  }
+                },
+                { "loopTo":0 }
+              ]
+            },
+            {
+              "name":"Sequence",
+              "data":[
+                { "_":[ "stencil", "codeRoadHandle" ] },
+                { "wait":1 },
+                { "sum":{ "_":[ "variable", "speed" ] }, "to":{ "_":[ "variable", "position" ] } },
+                { "subtract":{ "_":[ "variable", "speed" ] }, "to":{ "_":[ "variable", "segmentLeft" ] } },
+                { "loopTo":0 }
+              ]
+            },
+            {
+              "name":"Sequence",
+              "data":[
+                { "wait":25 },
+                { "when":{ "_":[ "variable", "time" ] }, "subtract":1, "to":{ "_":[ "variable", "time" ] }, "elseExecute":{ "set":{ "state":"gameover" } } },
+                { "loopTo":0 }
+              ]
+            },
+            {
+              "name":"Sequence",
+              "data":[ { "sum":{ "_":[ "variable", "speed", "*", 10, "floor" ] }, "to":{ "_":[ "variable", "score" ] } }, { "wait":10, "loopTo":0 } ]
+            }
+          ]
+        },
+        {
+          "name":"gameover",
+          "execute":[
+            { "as":{ "_":[ "object", "gameElement" ] }, "set":{ "state":"idle" } },
+            {
+              "object":{
+                "box":"label", "width":256, "height":20,
+                "x":0, "y":86,
+                "bgcolor":"#fff", "color":"#f00",
+                "font":"spectrum", "fontSize":30, "lineHeight":20, "outline":"#000000", "textAlign":"center", "html":"GAME OVER"
+              },
+              "into":{ "_":"scenehud" }
+            }
+          ],
+          "code":{
+            "name":"Sequence",
+            "data":[ { "wait":25 }, { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } }, { "gotoScene":"intro", "withTransition":3 } ]
+          }
+        }
+      ]
+    }
+  }
+}
