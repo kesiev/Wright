@@ -561,6 +561,22 @@
       "animation":"stilldown",
       "states":{ "name":"running", "code":{ "_":[ "stencil", "topViewAnimation" ] } }
     },
+    "modelCrate":{
+      "type":[ "foe", "block" ],
+      "set":{ "_":[ "stencil", "modelOffscreenIdle" ] },
+      "image":"tiles", "tileX":48, "tileY":80, "width":16, "height":16,
+      "zIndex":100,
+      "hitbox":{ "width":16, "height":8, "x":0, "y":8 },
+      "state":"idle",
+      "states":{
+        "name":"running",
+        "code":{ "name":"ZPerspective", "data":{ "add":2 } },
+        "actions":{
+          "name":"hit",
+          "execute":[ { "_":[ "stencil", "codeGeneratorLoot" ] }, { "_":[ "stencil", "removeWithSpark" ] }, { "as":{ "_":"that" }, "executeAction":"remove" } ]
+        }
+      }
+    },
     "modelOffscreenIdle":{
       "states":[
         {
@@ -578,22 +594,6 @@
           }
         }
       ]
-    },
-    "modelCrate":{
-      "type":[ "foe", "block" ],
-      "set":{ "_":[ "stencil", "modelOffscreenIdle" ] },
-      "image":"tiles", "tileX":48, "tileY":80, "width":16, "height":16,
-      "zIndex":100,
-      "hitbox":{ "width":16, "height":8, "x":0, "y":8 },
-      "state":"idle",
-      "states":{
-        "name":"running",
-        "code":{ "name":"ZPerspective", "data":{ "add":2 } },
-        "actions":{
-          "name":"hit",
-          "execute":[ { "_":[ "stencil", "codeGeneratorLoot" ] }, { "_":[ "stencil", "removeWithSpark" ] }, { "as":{ "_":"that" }, "executeAction":"remove" } ]
-        }
-      }
     },
     "modelFoe":{
       "type":"foe",
@@ -1527,244 +1527,248 @@
             }
           },
           "into":{ "_":"scenehud" }
-        }
-      ],
-      "dungeon":{
-        "tileWidth":16,
-        "tileHeight":16,
-        "minRoomSize":{ "_":[ "variable", "environment", "minRoomSize" ] },
-        "maxRoomSize":{ "_":[ "variable", "environment", "maxRoomSize" ] },
-        "complexity":{ "_":[ "variable", "environment", "complexity" ] },
-        "separateRooms":{ "_":[ "variable", "environment", "separateRooms" ] },
-        "allowRoomOverlap":{ "_":[ "variable", "environment", "allowRoomOverlap" ] },
-        "roomWallRenderer":{ "_":[ "variable", "environment", "roomWallRenderer" ] },
-        "roomFloorRenderer":{ "_":[ "variable", "environment", "roomFloorRenderer" ] },
-        "corridorWallRenderer":{ "_":[ "variable", "environment", "corridorWallRenderer" ] },
-        "corridorFloorRenderer":{ "_":[ "variable", "environment", "corridorFloorRenderer" ] },
-        "backgroundRenderer":{ "_":[ "variable", "environment", "backgroundRenderer" ] },
-        "environmentRenderer":[
-          { "shuffle":{ "_":[ "this", "rooms" ] } },
-          {
-            "as":{ "_":"variable" },
-            "set":{
-              "bigLoot":0,
-              "currentRoom":0,
-              "keyAssignment":0,
-              "keysToPlace":{ "_":[ "variable", "keysLeft" ] },
-              "midLoot":0,
-              "roomsIntensity":{ "_":[ "variable", "dungeonIntensity", "/", { "_":[ "that", "rooms", "count" ] }, "ceil" ] }
-            }
-          },
-          {
-            "as":{ "_":[ "this", "rooms" ] },
-            "execute":[
-              { "sum":1, "to":{ "_":[ "variable", "currentRoom" ] } },
-              {
-                "when":{ "_":[ "variable", "currentRoom", "isEqualTo", 1 ] },
-                "execute":{
-                  "object":{
-                    "set":{ "_":[ "stencil", "player" ] },
-                    "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] }
+        },
+        {
+          "set":{
+            "dungeon":{
+              "tileWidth":16,
+              "tileHeight":16,
+              "minRoomSize":{ "_":[ "variable", "environment", "minRoomSize" ] },
+              "maxRoomSize":{ "_":[ "variable", "environment", "maxRoomSize" ] },
+              "complexity":{ "_":[ "variable", "environment", "complexity" ] },
+              "separateRooms":{ "_":[ "variable", "environment", "separateRooms" ] },
+              "allowRoomOverlap":{ "_":[ "variable", "environment", "allowRoomOverlap" ] },
+              "roomWallRenderer":{ "_":[ "variable", "environment", "roomWallRenderer" ] },
+              "roomFloorRenderer":{ "_":[ "variable", "environment", "roomFloorRenderer" ] },
+              "corridorWallRenderer":{ "_":[ "variable", "environment", "corridorWallRenderer" ] },
+              "corridorFloorRenderer":{ "_":[ "variable", "environment", "corridorFloorRenderer" ] },
+              "backgroundRenderer":{ "_":[ "variable", "environment", "backgroundRenderer" ] },
+              "environmentRenderer":[
+                { "shuffle":{ "_":[ "this", "rooms" ] } },
+                {
+                  "as":{ "_":"variable" },
+                  "set":{
+                    "bigLoot":0,
+                    "currentRoom":0,
+                    "keyAssignment":0,
+                    "keysToPlace":{ "_":[ "variable", "keysLeft" ] },
+                    "midLoot":0,
+                    "roomsIntensity":{ "_":[ "variable", "dungeonIntensity", "/", { "_":[ "that", "rooms", "count" ] }, "ceil" ] }
                   }
                 },
-                "elseExecute":[
-                  { "as":{ "_":"variable" }, "set":{ "roomIntensity":{ "_":[ "variable", "roomsIntensity" ] }, "walkable":0 } },
-                  {
-                    "when":{ "_":[ "variable", "currentRoom", "isEqualTo", 2 ] },
-                    "execute":[
-                      {
-                        "as":{ "_":[ "randomValue", { "_":[ "this", "walkables" ] } ] },
-                        "execute":{ "object":{ "set":{ "_":[ "stencil", "exit" ] }, "x":{ "_":[ "that", "x" ] }, "y":{ "_":[ "that", "y" ] } } }
+                {
+                  "as":{ "_":[ "this", "rooms" ] },
+                  "execute":[
+                    { "sum":1, "to":{ "_":[ "variable", "currentRoom" ] } },
+                    {
+                      "when":{ "_":[ "variable", "currentRoom", "isEqualTo", 1 ] },
+                      "execute":{
+                        "object":{
+                          "set":{ "_":[ "stencil", "player" ] },
+                          "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] }
+                        }
                       },
-                      {
-                        "when":{ "_":[ "variable", "bossDungeon" ] },
-                        "execute":[
-                          {
-                            "object":{
-                              "set":{ "_":[ "stencil", "boss" ] },
-                              "tileY":176,
-                              "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
-                              "speed":[ -1, 1 ],
-                              "aggro":100,
-                              "hasKey":1,
-                              "health":40,
-                              "lootSize":{ "_":[ "variable", "lootIntensity", "*", 1.8, "ceil" ] },
-                              "sight":120,
-                              "weapon":{
-                                "bulletPerFire":5,
-                                "bulletSpeed":1,
-                                "bulletsLoaded":100,
-                                "clipSize":100,
-                                "damage":2,
-                                "fireRatio":5,
-                                "hits":"player",
-                                "range":100,
-                                "reloadSpeed":100,
-                                "spread":180,
-                                "spriteFrame":4,
-                                "weight":1
+                      "elseExecute":[
+                        { "as":{ "_":"variable" }, "set":{ "roomIntensity":{ "_":[ "variable", "roomsIntensity" ] }, "walkable":0 } },
+                        {
+                          "when":{ "_":[ "variable", "currentRoom", "isEqualTo", 2 ] },
+                          "execute":[
+                            {
+                              "as":{ "_":[ "randomValue", { "_":[ "this", "walkables" ] } ] },
+                              "execute":{ "object":{ "set":{ "_":[ "stencil", "exit" ] }, "x":{ "_":[ "that", "x" ] }, "y":{ "_":[ "that", "y" ] } } }
+                            },
+                            {
+                              "when":{ "_":[ "variable", "bossDungeon" ] },
+                              "execute":[
+                                {
+                                  "object":{
+                                    "set":{ "_":[ "stencil", "boss" ] },
+                                    "tileY":176,
+                                    "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+                                    "speed":[ -1, 1 ],
+                                    "aggro":100,
+                                    "hasKey":1,
+                                    "health":40,
+                                    "lootSize":{ "_":[ "variable", "lootIntensity", "*", 1.8, "ceil" ] },
+                                    "sight":120,
+                                    "weapon":{
+                                      "bulletPerFire":5,
+                                      "bulletSpeed":1,
+                                      "bulletsLoaded":100,
+                                      "clipSize":100,
+                                      "damage":2,
+                                      "fireRatio":5,
+                                      "hits":"player",
+                                      "range":100,
+                                      "reloadSpeed":100,
+                                      "spread":180,
+                                      "spriteFrame":4,
+                                      "weight":1
+                                    }
+                                  }
+                                },
+                                { "subtract":1, "to":{ "_":[ "variable", "keysToPlace" ] } },
+                                { "as":{ "_":"variable" }, "set":{ "roomIntensity":0 } }
+                              ]
+                            }
+                          ]
+                        },
+                        { "shuffle":{ "_":[ "this", "walkables" ] } },
+                        {
+                          "times":{ "_":[ "variable", "roomIntensity" ] },
+                          "decide":[
+                            {
+                              "when":{ "_":[ "variable", "roomIntensity", "isGreaterEqualThan", 1 ] },
+                              "options":{
+                                "execute":[
+                                  {
+                                    "object":{
+                                      "set":{ "_":[ "stencil", "modelCrate" ] },
+                                      "x":{ "_":[ "that", "walkables", { "_":[ "variable", "walkable" ] }, "x" ] }, "y":{ "_":[ "that", "walkables", { "_":[ "variable", "walkable" ] }, "y" ] },
+                                      "lootSize":{ "_":[ "variable", "lootIntensity", "*", 0.5, "ceil" ] }
+                                    }
+                                  },
+                                  { "sum":1, "to":{ "_":[ "variable", "walkable" ] } },
+                                  { "subtract":1, "to":{ "_":[ "variable", "roomIntensity" ] } }
+                                ]
+                              }
+                            },
+                            {
+                              "when":{ "_":[ "variable", "roomIntensity", "isGreaterEqualThan", 2 ] },
+                              "options":{
+                                "execute":[
+                                  {
+                                    "as":{ "_":"variable" },
+                                    "set":{ "weaponValue":{ "_":[ "variable", "weaponIntensity", "*", 0.4, "ceil" ] } },
+                                    "execute":{ "_":[ "stencil", "codeWeaponGenerator" ] }
+                                  },
+                                  {
+                                    "object":{
+                                      "set":{ "_":[ "stencil", "foe" ] },
+                                      "tileY":144,
+                                      "x":{ "_":[ "that", "walkables", { "_":[ "variable", "walkable" ] }, "x" ] }, "y":{ "_":[ "that", "walkables", { "_":[ "variable", "walkable" ] }, "y" ] },
+                                      "speed":[ -1.6, 1.6 ],
+                                      "health":3,
+                                      "lootSize":{ "_":[ "variable", "lootIntensity", "*", 0.6, "ceil" ] },
+                                      "weapon":{ "_":[ "variable", "newWeapon" ] }
+                                    }
+                                  },
+                                  { "sum":1, "to":{ "_":[ "variable", "walkable" ] } },
+                                  { "subtract":2, "to":{ "_":[ "variable", "roomIntensity" ] } }
+                                ]
+                              }
+                            },
+                            {
+                              "when":{ "_":[ "variable", "roomIntensity", "isGreaterEqualThan", 3 ] },
+                              "options":{
+                                "execute":[
+                                  {
+                                    "as":{ "_":"variable" },
+                                    "set":{ "weaponValue":{ "_":[ "variable", "weaponIntensity", "*", 0.8, "ceil" ] } },
+                                    "execute":{ "_":[ "stencil", "codeWeaponGenerator" ] }
+                                  },
+                                  {
+                                    "object":{
+                                      "set":{ "_":[ "stencil", "foe" ] },
+                                      "tileY":128,
+                                      "x":{ "_":[ "that", "walkables", { "_":[ "variable", "walkable" ] }, "x" ] }, "y":{ "_":[ "that", "walkables", { "_":[ "variable", "walkable" ] }, "y" ] },
+                                      "speed":[ -1.5, 1.5 ],
+                                      "health":5,
+                                      "lootSize":{ "_":[ "variable", "lootIntensity", "*", 1, "ceil" ] },
+                                      "weapon":{ "_":[ "variable", "newWeapon" ] }
+                                    }
+                                  },
+                                  { "sum":1, "to":{ "_":[ "variable", "walkable" ] } },
+                                  { "subtract":3, "to":{ "_":[ "variable", "roomIntensity" ] } }
+                                ]
+                              }
+                            },
+                            {
+                              "when":{ "_":[ "variable", "roomIntensity", "isGreaterEqualThan", 6 ] },
+                              "options":{
+                                "execute":[
+                                  {
+                                    "as":{ "_":"variable" },
+                                    "set":{ "weaponValue":{ "_":[ "variable", "weaponIntensity", "*", 0.8, "ceil" ] } },
+                                    "execute":{ "_":[ "stencil", "codeWeaponGenerator" ] }
+                                  },
+                                  {
+                                    "object":{
+                                      "set":{ "_":[ "stencil", "foe" ] },
+                                      "tileY":160,
+                                      "x":{ "_":[ "that", "walkables", { "_":[ "variable", "walkable" ] }, "x" ] }, "y":{ "_":[ "that", "walkables", { "_":[ "variable", "walkable" ] }, "y" ] },
+                                      "speed":[ -1.1, 1.1 ],
+                                      "health":7,
+                                      "lootSize":{ "_":[ "variable", "lootIntensity", "*", 1.1, "ceil" ] },
+                                      "weapon":{ "_":[ "variable", "newWeapon" ] }
+                                    }
+                                  },
+                                  { "sum":1, "to":{ "_":[ "variable", "walkable" ] } },
+                                  { "subtract":6, "to":{ "_":[ "variable", "roomIntensity" ] } }
+                                ]
+                              }
+                            },
+                            {
+                              "when":{ "_":[ "variable", "roomIntensity", "isGreaterEqualThan", 5, "and", { "_":[ "variable", "midLoot", "not" ] } ] },
+                              "options":{
+                                "execute":[
+                                  {
+                                    "object":{
+                                      "set":{ "_":[ "stencil", "modelCrate" ] },
+                                      "x":{ "_":[ "that", "walkables", { "_":[ "variable", "walkable" ] }, "x" ] }, "y":{ "_":[ "that", "walkables", { "_":[ "variable", "walkable" ] }, "y" ] },
+                                      "lootSize":{ "_":[ "variable", "lootIntensity", "*", 1, "ceil" ] }
+                                    }
+                                  },
+                                  { "sum":1, "to":{ "_":[ "variable", "walkable" ] } },
+                                  { "as":{ "_":"variable" }, "set":{ "midLoot":1 } },
+                                  { "subtract":5, "to":{ "_":[ "variable", "roomIntensity" ] } }
+                                ]
+                              }
+                            },
+                            {
+                              "when":{ "_":[ "variable", "roomIntensity", "isGreaterEqualThan", 8, "and", { "_":[ "variable", "bigLoot", "not" ] } ] },
+                              "options":{
+                                "execute":[
+                                  {
+                                    "as":{ "_":"variable" },
+                                    "set":{ "weaponValue":{ "_":[ "variable", "weaponIntensity", "*", 1.5, "ceil" ] } },
+                                    "execute":{ "_":[ "stencil", "codeWeaponGenerator" ] }
+                                  },
+                                  {
+                                    "object":{
+                                      "set":{ "_":[ "stencil", "modelCrate" ] },
+                                      "x":{ "_":[ "that", "walkables", { "_":[ "variable", "walkable" ] }, "x" ] }, "y":{ "_":[ "that", "walkables", { "_":[ "variable", "walkable" ] }, "y" ] },
+                                      "lootSize":{ "_":[ "variable", "lootIntensity", "*", 1.5, "ceil" ] },
+                                      "weapon":{ "_":[ "variable", "newWeapon" ] }
+                                    }
+                                  },
+                                  { "sum":1, "to":{ "_":[ "variable", "walkable" ] } },
+                                  { "as":{ "_":"variable" }, "set":{ "bigLoot":1 } },
+                                  { "subtract":8, "to":{ "_":[ "variable", "roomIntensity" ] } }
+                                ]
                               }
                             }
-                          },
-                          { "subtract":1, "to":{ "_":[ "variable", "keysToPlace" ] } },
-                          { "as":{ "_":"variable" }, "set":{ "roomIntensity":0 } }
-                        ]
-                      }
-                    ]
-                  },
-                  { "shuffle":{ "_":[ "this", "walkables" ] } },
-                  {
-                    "times":{ "_":[ "variable", "roomIntensity" ] },
-                    "decide":[
-                      {
-                        "when":{ "_":[ "variable", "roomIntensity", "isGreaterEqualThan", 1 ] },
-                        "options":{
-                          "execute":[
-                            {
-                              "object":{
-                                "set":{ "_":[ "stencil", "modelCrate" ] },
-                                "x":{ "_":[ "that", "walkables", { "_":[ "variable", "walkable" ] }, "x" ] }, "y":{ "_":[ "that", "walkables", { "_":[ "variable", "walkable" ] }, "y" ] },
-                                "lootSize":{ "_":[ "variable", "lootIntensity", "*", 0.5, "ceil" ] }
-                              }
-                            },
-                            { "sum":1, "to":{ "_":[ "variable", "walkable" ] } },
-                            { "subtract":1, "to":{ "_":[ "variable", "roomIntensity" ] } }
                           ]
                         }
-                      },
-                      {
-                        "when":{ "_":[ "variable", "roomIntensity", "isGreaterEqualThan", 2 ] },
-                        "options":{
-                          "execute":[
-                            {
-                              "as":{ "_":"variable" },
-                              "set":{ "weaponValue":{ "_":[ "variable", "weaponIntensity", "*", 0.4, "ceil" ] } },
-                              "execute":{ "_":[ "stencil", "codeWeaponGenerator" ] }
-                            },
-                            {
-                              "object":{
-                                "set":{ "_":[ "stencil", "foe" ] },
-                                "tileY":144,
-                                "x":{ "_":[ "that", "walkables", { "_":[ "variable", "walkable" ] }, "x" ] }, "y":{ "_":[ "that", "walkables", { "_":[ "variable", "walkable" ] }, "y" ] },
-                                "speed":[ -1.6, 1.6 ],
-                                "health":3,
-                                "lootSize":{ "_":[ "variable", "lootIntensity", "*", 0.6, "ceil" ] },
-                                "weapon":{ "_":[ "variable", "newWeapon" ] }
-                              }
-                            },
-                            { "sum":1, "to":{ "_":[ "variable", "walkable" ] } },
-                            { "subtract":2, "to":{ "_":[ "variable", "roomIntensity" ] } }
-                          ]
-                        }
-                      },
-                      {
-                        "when":{ "_":[ "variable", "roomIntensity", "isGreaterEqualThan", 3 ] },
-                        "options":{
-                          "execute":[
-                            {
-                              "as":{ "_":"variable" },
-                              "set":{ "weaponValue":{ "_":[ "variable", "weaponIntensity", "*", 0.8, "ceil" ] } },
-                              "execute":{ "_":[ "stencil", "codeWeaponGenerator" ] }
-                            },
-                            {
-                              "object":{
-                                "set":{ "_":[ "stencil", "foe" ] },
-                                "tileY":128,
-                                "x":{ "_":[ "that", "walkables", { "_":[ "variable", "walkable" ] }, "x" ] }, "y":{ "_":[ "that", "walkables", { "_":[ "variable", "walkable" ] }, "y" ] },
-                                "speed":[ -1.5, 1.5 ],
-                                "health":5,
-                                "lootSize":{ "_":[ "variable", "lootIntensity", "*", 1, "ceil" ] },
-                                "weapon":{ "_":[ "variable", "newWeapon" ] }
-                              }
-                            },
-                            { "sum":1, "to":{ "_":[ "variable", "walkable" ] } },
-                            { "subtract":3, "to":{ "_":[ "variable", "roomIntensity" ] } }
-                          ]
-                        }
-                      },
-                      {
-                        "when":{ "_":[ "variable", "roomIntensity", "isGreaterEqualThan", 6 ] },
-                        "options":{
-                          "execute":[
-                            {
-                              "as":{ "_":"variable" },
-                              "set":{ "weaponValue":{ "_":[ "variable", "weaponIntensity", "*", 0.8, "ceil" ] } },
-                              "execute":{ "_":[ "stencil", "codeWeaponGenerator" ] }
-                            },
-                            {
-                              "object":{
-                                "set":{ "_":[ "stencil", "foe" ] },
-                                "tileY":160,
-                                "x":{ "_":[ "that", "walkables", { "_":[ "variable", "walkable" ] }, "x" ] }, "y":{ "_":[ "that", "walkables", { "_":[ "variable", "walkable" ] }, "y" ] },
-                                "speed":[ -1.1, 1.1 ],
-                                "health":7,
-                                "lootSize":{ "_":[ "variable", "lootIntensity", "*", 1.1, "ceil" ] },
-                                "weapon":{ "_":[ "variable", "newWeapon" ] }
-                              }
-                            },
-                            { "sum":1, "to":{ "_":[ "variable", "walkable" ] } },
-                            { "subtract":6, "to":{ "_":[ "variable", "roomIntensity" ] } }
-                          ]
-                        }
-                      },
-                      {
-                        "when":{ "_":[ "variable", "roomIntensity", "isGreaterEqualThan", 5, "and", { "_":[ "variable", "midLoot", "not" ] } ] },
-                        "options":{
-                          "execute":[
-                            {
-                              "object":{
-                                "set":{ "_":[ "stencil", "modelCrate" ] },
-                                "x":{ "_":[ "that", "walkables", { "_":[ "variable", "walkable" ] }, "x" ] }, "y":{ "_":[ "that", "walkables", { "_":[ "variable", "walkable" ] }, "y" ] },
-                                "lootSize":{ "_":[ "variable", "lootIntensity", "*", 1, "ceil" ] }
-                              }
-                            },
-                            { "sum":1, "to":{ "_":[ "variable", "walkable" ] } },
-                            { "as":{ "_":"variable" }, "set":{ "midLoot":1 } },
-                            { "subtract":5, "to":{ "_":[ "variable", "roomIntensity" ] } }
-                          ]
-                        }
-                      },
-                      {
-                        "when":{ "_":[ "variable", "roomIntensity", "isGreaterEqualThan", 8, "and", { "_":[ "variable", "bigLoot", "not" ] } ] },
-                        "options":{
-                          "execute":[
-                            {
-                              "as":{ "_":"variable" },
-                              "set":{ "weaponValue":{ "_":[ "variable", "weaponIntensity", "*", 1.5, "ceil" ] } },
-                              "execute":{ "_":[ "stencil", "codeWeaponGenerator" ] }
-                            },
-                            {
-                              "object":{
-                                "set":{ "_":[ "stencil", "modelCrate" ] },
-                                "x":{ "_":[ "that", "walkables", { "_":[ "variable", "walkable" ] }, "x" ] }, "y":{ "_":[ "that", "walkables", { "_":[ "variable", "walkable" ] }, "y" ] },
-                                "lootSize":{ "_":[ "variable", "lootIntensity", "*", 1.5, "ceil" ] },
-                                "weapon":{ "_":[ "variable", "newWeapon" ] }
-                              }
-                            },
-                            { "sum":1, "to":{ "_":[ "variable", "walkable" ] } },
-                            { "as":{ "_":"variable" }, "set":{ "bigLoot":1 } },
-                            { "subtract":8, "to":{ "_":[ "variable", "roomIntensity" ] } }
-                          ]
-                        }
-                      }
-                    ]
-                  }
-                ]
-              }
-            ]
-          },
-          { "as":{ "_":"variable" }, "set":{ "foes":{ "_":[ "arrayOf", { "_":[ "object", "foe" ] } ] } } },
-          { "shuffle":{ "_":[ "variable", "foes" ] } },
-          {
-            "times":{ "_":[ "variable", "keysToPlace" ] },
-            "execute":[
-              { "as":{ "_":[ "variable", "foes", { "_":[ "variable", "keyAssignment" ] } ] }, "set":{ "hasKey":1 } },
-              { "sum":1, "to":{ "_":[ "variable", "keyAssignment" ] } }
-            ]
+                      ]
+                    }
+                  ]
+                },
+                { "as":{ "_":"variable" }, "set":{ "foes":{ "_":[ "arrayOf", { "_":[ "object", "foe" ] } ] } } },
+                { "shuffle":{ "_":[ "variable", "foes" ] } },
+                {
+                  "times":{ "_":[ "variable", "keysToPlace" ] },
+                  "execute":[
+                    { "as":{ "_":[ "variable", "foes", { "_":[ "variable", "keyAssignment" ] } ] }, "set":{ "hasKey":1 } },
+                    { "sum":1, "to":{ "_":[ "variable", "keyAssignment" ] } }
+                  ]
+                }
+              ],
+              "doorRenderer":{ "_":[ "variable", "environment", "doorRenderer" ] }
+            }
           }
-        ],
-        "doorRenderer":{ "_":[ "variable", "environment", "doorRenderer" ] }
-      },
+        }
+      ],
       "states":[
         {
           "name":"complete",

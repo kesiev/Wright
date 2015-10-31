@@ -2763,8 +2763,8 @@ function Wright(gameId,container,mods) {
 					}, get(from, tox, template[a]));
 				}
 			}			
-		if (template.execute) execute(from, tox, get(from, tox, template.execute));
 		for (var a in SceneGenerators) if (template[a]!==undefined) SceneGenerators[a](template,father,from,tox);		
+		if (template.execute) execute(from, tox, get(from, tox, template.execute));
 		return from;
 	}
 
