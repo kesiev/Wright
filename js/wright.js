@@ -6,6 +6,20 @@ var PREC = 1000000;
 var PAD = 10 / PREC;
 function FIX(value) { return Math.round(value * PREC) / PREC; }
 
+var Supports = (function(){
+	var vendors=["Khtml","ms","O","Moz","Webkit"],div=document.createElement('div');
+	return {
+		css:function(prop){
+			var len=vendors.length;
+			if (prop in div.style) return prop;
+			prop=prop.replace(/^[a-z]/, function(val) { return val.toUpperCase(); });
+			while (len--) if (vendors[len]+prop in div.style) return vendors[len]+prop;	
+		},
+		setCss:function(obj,prop,value) { if (prop=this.css(prop)) obj[prop]=value; },
+		browser:function(substr){ return navigator.userAgent.toLowerCase().indexOf('firefox') > -1; }
+	}
+})();
+ 
 /*
  * GAME LIBRARY
  */
@@ -180,9 +194,7 @@ function Box(parent, type, sub, statemanager) {
 			this.running = run;
 			return this;
 		},
-		run: function() {
-			return this.stop(1);
-		}
+		run: function() { return this.stop(1); }
 	};
 
 	// INIT - Style
@@ -509,19 +521,7 @@ function Box(parent, type, sub, statemanager) {
 						obj.cleanprops.textAlign = 1;
 						this.stats.changesCount++;
 					}
-					if (!obj.cleanprops.x || !obj.cleanprops.y || !obj.cleanprops.z || !obj.cleanprops.scale  || !obj.cleanprops.flipX || !obj.cleanprops.flipY || !obj.cleanprops.angle) {
-						node.style.webkitTransform = node.style.mozTransform = node.style.transform =
-							"translate3d(" + Math.floor(obj.x) + "px," + Math.floor(obj.y + obj.z) +
-							"px,0) scale(" + (obj.flipX ? -obj.scale : obj.scale) + "," + (obj.flipY ?
-								-obj.scale : obj.scale) + ") rotate(" + obj.angle + "deg)";
-						obj.cleanprops.x = obj.cleanprops.y = obj.cleanprops.z = obj.cleanprops.flipX = obj.cleanprops.flipY = obj.cleanprops.angle = 1;
-						this.stats.changesCount++;
-					}
-					if (!obj.cleanprops.originX || !obj.cleanprops.originY) {
-						node.style.webkitTransformOrigin = node.style.mozTransformOrigin =node.style.transformOrigin = obj.originX + " " + obj.originY;
-						obj.cleanprops.originX = obj.cleanprops.originY = 1;
-						this.stats.changesCount++;
-					}
+					Box._translator(this,node,obj);					
 					if (!obj.cleanprops.alpha) {
 						node.style.opacity = obj.alpha;
 						obj.cleanprops.alpha = 1;
@@ -1007,12 +1007,48 @@ Box._ = {
 	}
 };
 
-if(navigator.userAgent.toLowerCase().indexOf('firefox') > -1) {
+Box._transform=Supports.css("transform");
+Box._transformOrigin=Supports.css("transformOrigin");
+
+if (Box._transform&&Box._transformOrigin) {
+	Box.supportsScaling=1;
+	Box._translator=function(self,node,obj) {
+		if (!obj.cleanprops.x || !obj.cleanprops.y || !obj.cleanprops.z || !obj.cleanprops.scale  || !obj.cleanprops.flipX || !obj.cleanprops.flipY || !obj.cleanprops.angle) {
+			node.style[Box._transform] =
+				"translate("+Math.floor(obj.x) + "px," + Math.floor(obj.y + obj.z) +
+				"px"+") scale(" + (obj.flipX ? -obj.scale : obj.scale) + "," + (obj.flipY ?
+					-obj.scale : obj.scale) + ") rotate(" + obj.angle + "deg)";
+			obj.cleanprops.x = obj.cleanprops.y = obj.cleanprops.z = obj.cleanprops.flipX = obj.cleanprops.flipY = obj.cleanprops.angle = 1;
+			self.stats.changesCount++;
+		}
+		if (!obj.cleanprops.originX || !obj.cleanprops.originY) {
+			node.style[Box._transformOrigin] = obj.originX + " " + obj.originY;
+			obj.cleanprops.originX = obj.cleanprops.originY = 1;
+			self.stats.changesCount++;
+		}
+	}
+} else {
+	Box.supportsScaling=0;
+	Box._translator=function(self,node,obj) {
+		if (!obj.cleanprops.x || !obj.cleanprops.y || !obj.cleanprops.z || !obj.cleanprops.scale  || !obj.cleanprops.flipX || !obj.cleanprops.flipY || !obj.cleanprops.angle) {
+			node.style.left = obj.x+"px";
+			node.style.top = obj.y+"px";
+			obj.cleanprops.x = obj.cleanprops.y = obj.cleanprops.z = obj.cleanprops.flipX = obj.cleanprops.flipY = obj.cleanprops.angle = 1;
+			self.stats.changesCount++;
+		}
+		if (!obj.cleanprops.originX || !obj.cleanprops.originY) {
+			obj.cleanprops.originX = obj.cleanprops.originY = 1;
+			self.stats.changesCount++;
+		}
+	}
+}
+
+if (Supports.browser("firefox")) {
     Box._.common.css.imageRendering="-moz-crisp-edges";
     Box._.common.css.MozOsxFontSmoothing="grayscale";
 } else {
-	Box._.common.css.imageRendering="pixelated";
-	Box._.common.css.webkitFontSmoothing="none";
+	Supports.setCss(Box._.common.css,"imageRendering","pixelated");
+	Supports.setCss(Box._.common.css,"fontSmoothing","none");
 }
 
 // DOM events
@@ -1080,6 +1116,12 @@ Box.angleTo=function(a,b) {
 	var dx = b.x + ((b.width||0) / 2) - a.x - ((a.width||0) / 2),
 		dy = a.y + ((a.height||0) / 2) - b.y - ((b.height||0) / 2),
 		ang = (Math.atan2(dx, dy) * 180 / Math.PI);
+	if (ang < 0) ang = 360 + ang;
+	return ang;
+}
+// UTILS - Angle toward
+Box.angleToward=function(v) {
+	var ang = (Math.atan2(v.forceX, -v.forceY) * 180 / Math.PI);
 	if (ang < 0) ang = 360 + ang;
 	return ang;
 }
@@ -1842,6 +1884,200 @@ function Wright(gameId,container,mods) {
 		}
 	};
 
+	var SceneGenerators={
+
+		tilemap:function(template,father,from,tox) {
+			iterateComposedList(from, tox, get(from, tox, template.tilemap), function(tilemap) {
+				var map = get(from, tox, tilemap.map),
+					tile = mw = mh = 0,
+					tilewidth = get(from, tox, tilemap.tileWidth) || 16,
+					tileheight = get(from, tox, tilemap.tileHeight) || 16,
+					atx = get(from, tox, tilemap.x) || 0,
+					aty = get(from, tox, tilemap.y) || 0,
+					tilez = tilemap.zIndex ? get(from, tox, tilemap.zIndex) : undefined;
+				for (var y = 0; y < map.length; y++)
+					for (var x = 0; x < map[y].length; x++)
+						if (curtape.stencils[map[y][x]]) {
+							tile = father.add(0, StateManager).setWidth(tilewidth).setHeight(tileheight).at({
+								x: (tilewidth * x) + atx,
+								y: (tileheight * y) + aty
+							});
+							if (tilez !== undefined) from.setZIndex(tilez);
+							applyStencil(tile, tox, curtape.stencils[map[y][x]]);
+							if (tile.x + tile.width > mw) mw = tile.x + tile.width;
+							if (tile.y + tile.height > mh) mh = tile.y + tile.height;
+						}
+				from.size({
+					width: atx + (tilemap.width || mw),
+					height: aty + (tilemap.height || mh)
+				});
+			});
+		},
+
+		// From TLOA: https://github.com/kesiev/TheLastOfAt
+		// A (bad) dungeon generator thought for code golfing but it fits the purpose and has a lot of parameters :)
+		dungeon:function(template,father,from,tox) {
+
+			function random(n) { return Math.floor(Math.random()*n); }
+
+			var args={
+				gridWidth:get(from, tox, template.dungeon.gridWidth)||1,
+				gridHeight:get(from, tox, template.dungeon.gridHeight)||1,
+				mapWidth:get(from, tox, template.dungeon.mapWidth)||64,
+				mapHeight:get(from, tox, template.dungeon.mapHeight)||64,
+				minRoomSize:get(from, tox, template.dungeon.minRoomSize)||6,
+				maxRoomSize:get(from, tox, template.dungeon.maxRoomSize)||16,
+				complexity:get(from, tox, template.dungeon.complexity)||6,
+				separateRooms:get(from, tox, template.dungeon.separateRooms),
+				allowRoomOverlap:get(from, tox, template.dungeon.allowRoomOverlap),
+
+				tileWidth:get(from, tox, template.dungeon.tileWidth)||16,
+				tileHeight:get(from, tox, template.dungeon.tileHeight)||16,
+				x:get(from, tox, template.dungeon.x)||0,
+				y:get(from, tox, template.dungeon.y)||0,
+				width:get(from, tox, template.dungeon.width),
+				height:get(from, tox, template.dungeon.height),
+
+
+				roomWallRenderer:get(from, tox, template.dungeon.roomWallRenderer)||0,
+				roomFloorRenderer:get(from, tox, template.dungeon.roomFloorRenderer)||0,
+				corridorWallRenderer:get(from, tox, template.dungeon.corridorWallRenderer)||0,
+				corridorFloorRenderer:get(from, tox, template.dungeon.corridorFloorRenderer)||0,
+				backgroundRenderer:get(from, tox, template.dungeon.backgroundRenderer)||0,
+				environmentRenderer:get(from, tox, template.dungeon.environmentRenderer)||0,
+				doorRenderer:get(from, tox, template.dungeon.doorRenderer)||0,
+				zIndex:get(from, tox, template.dungeon.zIndex)||0
+			};
+
+			var sidemargin=args.separateRooms?0:1;
+			var roomborder=args.separateRooms?1:0;
+			var minwidth=Math.floor((args.minRoomSize+(roomborder*2))/args.gridWidth)*args.gridWidth;
+			var minheight=Math.floor((args.minRoomSize+(roomborder*2))/args.gridHeight)*args.gridHeight;
+			var roomwidthdelta=Math.floor((args.maxRoomSize-args.minRoomSize)/args.gridWidth);
+			var roomheightdelta=Math.floor((args.maxRoomSize-args.minRoomSize)/args.gridHeight);
+			var roomleftdelta=Math.floor((args.mapWidth-minwidth-roomwidthdelta-(sidemargin*2))/args.gridWidth);
+			var roomtopdelta=Math.floor((args.mapHeight-minheight-roomheightdelta-(sidemargin*2))/args.gridHeight);
+			var mw=args.mapWidth*args.tileWidth,mh=args.mapHeight*args.tileHeight;
+
+			var map = [];
+	        for (var y = 0; y < args.mapHeight; y++) {
+	        	map[y] = [];
+	        	for (var x = 0; x < args.mapWidth; x++)
+	        		map[y][x]={mapX:x,mapY:y,x:(args.tileWidth * x) + args.x,y:(args.tileHeight * y) + args.y, height:args.tileHeight, width: args.tileWidth,data:{cellType:0}};
+	        }
+
+	        // Make rooms
+	        var rw,rh,rx,ry,ok,room,roomId=0,env={rooms:[]},stopper=500;
+	    	for (var i=0;i<1+args.complexity;i++) {
+				rh=minheight+(random(1+roomheightdelta)*args.gridHeight);				
+				rw=minwidth+(random(1+roomwidthdelta)*args.gridWidth);
+				rx=(random(1+roomleftdelta)*args.gridWidth)+sidemargin;
+				ry=(random(1+roomtopdelta)*args.gridHeight)+sidemargin;
+				ok=true;
+				room={mapX:rx+roomborder,mapY:ry+roomborder,mapWidth:rw-(roomborder*2),mapHeight:rh-(roomborder*2),walkables:[]};
+				for (var y=0;y<rh;y++)
+					for (var x=0;x<rw;x++)
+						ok&=!map[ry+y][rx+x].data.cellType;
+				if (!args.allowRoomOverlap&&!ok) {
+					i--;
+					if (!stopper--) break;
+				} else {
+					room.x=(args.tileWidth * room.mapX) + args.x;
+					room.y=(args.tileWidth * room.mapY) + args.y;
+					room.width=args.tileWidth * room.mapWidth;
+					room.height=args.tileWidth * room.mapHeight;
+					for (var y=0;y<rh;y++)
+						for (var x=0;x<rw;x++) {
+							if (args.separateRooms&&((y==0)||(x==0)||(x==rw-1)||(y==rh-1)))
+								map[ry+y][rx+x].data={cellType:2,isRoom:1,isWall:1,isRoomWall:1,roomId:roomId,mapX:x,mapY:y} // Wall
+							else {
+								room.walkables.push(map[ry+y][rx+x]);
+								map[ry+y][rx+x].data={cellType:1,isRoom:1,isFloor:1,isRoomFloor:1,roomId:roomId,mapX:x,mapY:y}; // Floor
+							}
+						}
+					env.rooms[roomId++]=room;
+				}
+			}
+
+			// Add corridors
+			var prev,start,end,gap,startroom,endroom,door,doors=[];
+			for (var i=0;i<env.rooms.length-1;i++) {
+				startroom=i;
+				endroom=i+1;
+				door=0;
+				start={x:env.rooms[startroom].mapX+sidemargin+random(env.rooms[startroom].mapWidth-(sidemargin*2)),y:env.rooms[startroom].mapY+sidemargin+random(env.rooms[startroom].mapHeight-(sidemargin*2))};
+				end={x:env.rooms[endroom].mapX+sidemargin+random(env.rooms[endroom].mapWidth-(sidemargin*2)),y:env.rooms[endroom].mapY+sidemargin+random(env.rooms[endroom].mapHeight-(sidemargin*2))};
+				while ((start.x!=end.x)||(start.y!=end.y)) {
+					if (start.y!=end.y) {
+						gap=start.y>end.y?-1:1;
+						if ((start.y+gap>0)&&(start.y+gap<args.mapHeight-1)) start.y+=gap; else gap=0;
+					} else {
+						gap=start.x>end.x?-1:1;
+						if ((start.x+gap>0)&&(start.x+gap<args.mapWidth-1)) start.x+=gap; else gap=0;
+					}
+					if (gap) {
+						for (var y=start.y-1;y<start.y+2;y++)
+							for (var x=start.x-1;x<start.x+2;x++)
+								if (!map[y][x].data.cellType) map[y][x].data={cellType:3,isCorridor:1,isWall:1,isCorridorWall:1,mapX:x,mapY:y,fromRoom:startroom,toRoom:endroom};
+						if (map[start.y][start.x].data.cellType!=1) {						
+								if (!map[start.y][start.x].data.isRoom)
+									door=0;
+								else if (!door)
+									door=doors.push({
+										mapX:start.x,mapY:start.y,x:(args.tileWidth * start.x) + args.x,y:(args.tileHeight * start.y) + args.y, height:args.tileHeight, width: args.tileWidth,data:{fromRoom:startroom,toRoom:endroom}
+									});
+							map[start.y][start.x].data={cellType:4,isFloor:1,isCorridor:1,isCorridorFloor:1,fromRoom:startroom,toRoom:endroom}; // Corridor
+							prev={x:start.x,y:start.y};
+						} else door=0;
+					}
+				}
+			}
+
+			// Render
+			var cell,renderer;
+			for (var x = 0; x < args.mapWidth; x++)
+	 			for (var y = 0; y < args.mapHeight; y++) {
+	 				cell=map[y][x];
+	 				renderer=0;
+	 				cell.data.maskSides=
+	 					(map[y-1]&&map[y-1][x]&&(map[y-1][x].data.cellType==cell.data.cellType)&&1)|
+	 					(map[y][x+1]&&(map[y][x+1].data.cellType==cell.data.cellType)&&2)|
+	 					(map[y+1]&&map[y+1][x]&&(map[y+1][x].data.cellType==cell.data.cellType)&&4)|
+	 					(map[y][x-1]&&(map[y][x-1].data.cellType==cell.data.cellType)&&8);
+	 				cell.data.maskCorners=
+	 					(map[y-1]&&map[y-1][x-1]&&(map[y-1][x-1].data.cellType==cell.data.cellType)&&1)|
+	 					(map[y-1]&&map[y-1][x+1]&&(map[y-1][x+1].data.cellType==cell.data.cellType)&&2)|
+	 					(map[y+1]&&map[y+1][x+1]&&(map[y+1][x+1].data.cellType==cell.data.cellType)&&4)|
+	 					(map[y+1]&&map[y+1][x-1]&&(map[y+1][x-1].data.cellType==cell.data.cellType)&&8);
+	 				cell.data.room=env.rooms[cell.data.roomId];
+	 				renderer=0;
+	 				switch (cell.data.cellType) {
+	 					case 0:{renderer=args.backgroundRenderer; break;}
+	 					case 1:{renderer=args.roomFloorRenderer; break;}
+	 					case 2:{renderer=args.roomWallRenderer; break;}
+	 					case 3:{renderer=args.corridorWallRenderer; break;}
+	 					case 4:{renderer=args.corridorFloorRenderer; break;}
+	 				}
+	 				if (renderer) execute(cell, tox, get(cell, tox, renderer));
+		 		}
+
+		 	if (args.doorRenderer)
+		 		for (var d = 0; d < doors.length; d++)
+		 			execute(doors[d], tox, get(cell, tox, args.doorRenderer));
+
+		 	if (args.environmentRenderer)
+		 		execute(env, tox, get(env, tox, args.environmentRenderer));
+
+			from.size({
+				width: args.x + (args.width || mw),
+				height: args.y + (args.height || mh)
+			});
+
+
+		}
+
+	}
+
 	var Storage={
 		initialize:function(tap){ this.id=tap.name; },
 		setter:function(key,value) { if (window.localStorage) localStorage["GAME_"+this.id+"_"+key]=JSON.stringify(value); },
@@ -2002,7 +2238,8 @@ function Wright(gameId,container,mods) {
 						ret = [];
 						if (typeof p == "object") {
 							if (p.typeId !== undefined) p=p.items;
-							for (var a in p) ret.push(p[a]);
+							for (var a in p)
+								if ((typeof p[a]!="object")||!p[a].removed) ret.push(p[a]);
 						}  // @TODO: Handle arrays, once needed.
 						break;
 					}
@@ -2090,17 +2327,17 @@ function Wright(gameId,container,mods) {
 						});
 						break;
 					}
-					case "angleTo":{ ret=Box.angleTo(ret,get(from, tox, struct[++id])); break; }
+					case "angleTo":{ ret=FIX(Box.angleTo(ret,get(from, tox, struct[++id]))); break; }
+					case "angleToward":{ret=FIX(Box.angleToward(get(from, tox, struct[++id]))); break; }
 					case "shortestAngleTo":{
-						var ang=ret,dang=get(from, tox, struct[++id]);
-						ret=(Math.abs(ang-dang))%360;
-						if (ret>180) ret=360-ret;
-						if (Math.abs((((ang+ret)%360)-dang))>2) ret*=-1; // @TODO: Works. Could be better :)
+				        p=((get(from,tox,struct[++id])-ret)%360)+180;
+				        ret=FIX((p-Math.floor(p/360)*360)-180);
 						break;
 					}
 					case "objectTyped":{ ret = game.getObjectTyped(get(from, tox, struct[++id]))||0; break; }
 					case "abs":{ ret = FIX(Math.abs(ret)); break; }
 					case "floor":{ ret = FIX(Math.floor(ret)); break; }
+					case "ceil":{ ret = FIX(Math.ceil(ret)); break; }
 					case "pointAt":{
 						p=get(from, tox, struct[++id]);
 						ret= {x:ret.x+(p&&p.x?p.x:0),y:ret.y+(p&&p.y?p.y:0),width:1,height:1};
@@ -2311,10 +2548,7 @@ function Wright(gameId,container,mods) {
 							linelocal: []
 						});
 					}
-					if (line.set) iterateComposedList(item, curtox, get(item, curtox, line.set),
-						function(subitem) {
-							applyStencil(item, curtox, subitem);
-						});
+					if (line.set) iterateComposedList(item, curtox, get(item, curtox, line.set), function(subitem) { applyStencil(item, curtox, subitem); });
 					if (line.sum !== undefined) set(item, curtox, line.to, FIX(get(item, curtox, line.to) + get(item, curtox, line.sum)));
 					if (line.subtract !== undefined) set(item, curtox, line.to, FIX(get(item, curtox, line.to) - get(item, curtox, line.subtract)));
 					if (line.multiply !== undefined) set(item, curtox, line.to, FIX(get(item, curtox, line.to) * get(item, curtox, line.multiply)));
@@ -2378,8 +2612,8 @@ function Wright(gameId,container,mods) {
 						else angle = Box.angleTo(item,get(item, curtox, line.applyVector.toward));
 						angle *=  Math.PI /180;
 						var length = get(item, curtox, line.applyVector.length);
-						item.forceX = angle == 180 ? 0 : length * Math.sin(angle);
-						item.forceY = angle == 270 ? 0 : -length * Math.cos(angle);
+						item.forceX = FIX(angle == 180 ? 0 : length * Math.sin(angle));
+						item.forceY = FIX(angle == 270 ? 0 : -length * Math.cos(angle));
 					}
 					if (line.executeAction !== undefined) {
 						var statedata = item.getState();
@@ -2399,7 +2633,10 @@ function Wright(gameId,container,mods) {
 						if (cases[value]) execute(item, curtox, get(item, curtox, cases[value]));
 					}
 					if (line.execute !== undefined) execute(item, curtox, get(item, curtox, line.execute));
-					if (line.decide !== undefined) execute(item, curtox, decide(item,curtox, get(item, curtox, line.decide)));
+					if (line.decide !== undefined) {
+						var decision=decide(item,curtox, get(item, curtox, line.decide));
+						if (decision) execute(item, curtox, decision);
+					}
 				});
 
 			if (line.restartScene !== undefined) plugTape(1, variables.idScene);
@@ -2466,34 +2703,6 @@ function Wright(gameId,container,mods) {
 				case "set":
 				case "box":{ break; }
 				case "log":{ printLog(from,tox,template.log); break; }
-				case "tilemap":{
-					iterateComposedList(from, tox, get(from, tox, template.tilemap), function(tilemap) {
-						var map = get(from, tox, tilemap.map),
-							tile = mw = mh = 0,
-							tilewidth = get(from, tox, tilemap.tileWidth) || 16,
-							tileheight = get(from, tox, tilemap.tileHeight) || 16,
-							atx = get(from, tox, tilemap.x) || 0,
-							aty = get(from, tox, tilemap.y) || 0,
-							tilez = tilemap.zIndex ? get(from, tox, tilemap.zIndex) : undefined;
-						for (var y = 0; y < map.length; y++)
-							for (var x = 0; x < map[y].length; x++)
-								if (curtape.stencils[map[y][x]]) {
-									tile = father.add(0, StateManager).setWidth(tilewidth).setHeight(tileheight).at({
-										x: (tilewidth * x) + atx,
-										y: (tileheight * y) + aty
-									});
-									if (tilez !== undefined) from.setZIndex(tilez);
-									applyStencil(tile, tox, curtape.stencils[map[y][x]]);
-									if (tile.x + tile.width > mw) mw = tile.x + tile.width;
-									if (tile.y + tile.height > mh) mh = tile.y + tile.height;
-								}
-						from.size({
-							width: atx + (tilemap.width || mw),
-							height: aty + (tilemap.height || mh)
-						});
-					});
-					break;
-				}
 				case "object":{
 					iterateComposedList(from, tox, get(from, tox, template.object), function(item) {
 						subfather = item.into === undefined ? father : get(from, tox, item.into);
@@ -2553,8 +2762,9 @@ function Wright(gameId,container,mods) {
 						_: ["this", a]
 					}, get(from, tox, template[a]));
 				}
-			}
+			}			
 		if (template.execute) execute(from, tox, get(from, tox, template.execute));
+		for (var a in SceneGenerators) if (template[a]!==undefined) SceneGenerators[a](template,father,from,tox);		
 		return from;
 	}
 
@@ -2822,7 +3032,7 @@ function Wright(gameId,container,mods) {
 	function runGame(scale) {	
 		tv.innerHTML="";
 		game = Box(tv, "game");
-		//game.setStatsManager(Monitor); // Uncomment for stats.
+		// game.setStatsManager(Monitor); // Uncomment for stats.
 		game.setKeys(controls).setColor("#fff").setBgcolor("#000").size(hardware).setFps(hardware.fps||25).setScale(scale).setOriginX(0).setOriginY(0).do(Code.GameManager);
 		tv.style.width = (game.width * game.scale) + "px";
 		tv.style.height = (game.height * game.scale) + "px";			
@@ -2850,6 +3060,7 @@ function Wright(gameId,container,mods) {
 		else controls={};
 		for (var a in controlsset) if (controls[a]===undefined) controls[a]=controlsset[a].keyCode;
 		var scale=mods.scale||(localStorage["wrightScale"]*1)||3;
+		if (!Box.supportsScaling) scale=1;
 		if (mods.noui) runGame(scale);
 		else {
 			var havecheats,row,itm,magazine=node(tv,"div","magazine");
@@ -2874,8 +3085,8 @@ function Wright(gameId,container,mods) {
 			}
 			row=node(article,"p");
 			node(row,"span","label","Resolution:");
-			var resolution=node(row,"select","input");
-			for (var i=1;i<7;i++) {
+			var resolution=node(row,"select","input"),resolutions=Box.supportsScaling?7:1;
+			for (var i=1;i<resolutions;i++) {
 				itm=node(resolution,"option",0,(hardware.width*i)+"x"+(hardware.height*i)+" (x"+i+")");
 				if (i==scale) itm.setAttribute("selected","selected");
 			}
@@ -2890,8 +3101,7 @@ function Wright(gameId,container,mods) {
 				node(row,"span",0,cheatslist[a]);
 			}
 			if (!havecheats) node(article,"p",0,"Sorry, no cheats for this game. Is all up to you!");
-			itm=node(node(article,"p","runner"),"input");
-			itm.value="Start game";
+			itm=node(node(article,"p","runner"),"button",0,"Start game");
 			Box.on("click",itm,function(){
 				scale=localStorage["wrightScale"]=resolution.selectedIndex+1;
 				Box.off("keydown",document,waitKey);
