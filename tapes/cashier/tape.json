@@ -1,0 +1,716 @@
+{
+  "name":"Cashier",
+  "author":"KesieV",
+  "year":2015,
+  "genre":"Gambling (NSFW)",
+  "description":"Playboy in 2015 decided to abandon his nude 'bunnies' due to the high availability of sexy - and sexual - contents online. That's shocking, conscious and emblematic. The acceptance of sexy and sensuality grew so much that it isn't an 'elitary subversive market' anymore - moreover, it's so saturated that big names are leaving. But since when? I clearly remember an arcade cabinet of Pocket Gal (1988) - which was a nice game - or Gals Panic (1990), both featuring explicit pixelated nudity, pretty everywhere in '90s seaside arcades in Italy. A lot of people, from 3 years old kids to their 30-40 years old parents, were around looking at these arcade machines with curiosity and - sooner than I could image - malice and wish. And I remember some people playing them too, mostly in groups and laughing. No scandalized mothers or luddite fathers shouting against these devilish machines. I also remember Artworx Strip Poker (1982) and its widely spread Commodore 64 version (1983) played freely in living room and, some friends of mine, a little younger or older than me, had the same experience. Sensuality and games, despite their huge differences in terms of common acceptance, have a long story together, mostly dragging each other along history. Strip poker itself, for instance, according to Wikipedia, was probably born together with the Poker game in 19th century, but it was played in brothels of New Orleans instead. So, It's for their laughable pixelated graphics that we've accepted sexy games in our arcades and living rooms? It's pure sexism? Or, as early gamers, we were experimenting the role of erotic contents in interactive medias? Who knows. Meanwhile... plot! At Pepper Casino we play video poker in a new spicy way: win all of our cashiers money and... undress them! But lose everything and it's game over! Use LEFT or RIGHT for choosing a cashier and start the game. Use LEFT and RIGHT for selecting a card from the bottom side of the screen and the A BUTTON for placing your bet or holding/unholding a card. While you're playing, you can confirm your hand selecting the 'thumb up' option with the A BUTTON - it is on the left of your first card and on the right of your last one.",
+  "screenshots":[ "cashier-1.png", "cashier-2.png" ],
+  "hardware":{
+    "width":256,
+    "height":192,
+    "texture":"scanlines"
+  },
+  "cheats":{
+    "unlimitedMoney":"Unlimited money"
+  },
+  "resources":{
+    "backdrops":"backdrops.png",
+    "title":"title.png",
+    "defaultsprites":"../default/sprites.png",
+    "gameover":"../default/gameover.png",
+    "scanlines":"../default/scanlines.png"
+  },
+  "stencils":{
+    "codeCardsDraw":[
+      { "as":{ "_":"variable" }, "set":{ "deckTop":0, "hand":{ "_":[ "new", [] ] } } },
+      { "shuffle":{ "_":[ "variable", "deck" ] } },
+      {
+        "times":5,
+        "execute":[
+          { "as":{ "_":[ "variable", "deck", { "_":[ "variable", "deckTop" ] } ] }, "pushInto":{ "_":[ "variable", "hand" ] } },
+          { "sum":1, "to":{ "_":[ "variable", "deckTop" ] } }
+        ]
+      }
+    ],
+    "codeHanddataGet":[
+      {
+        "as":{ "_":"variable" },
+        "set":{
+          "counter":0,
+          "handData":{
+            "_":[
+              "new",
+              {
+                "betterthanjack":0,
+                "flush":0,
+                "highestcard":-1,
+                "kind2":0,
+                "kind3":0,
+                "kind4":0,
+                "prize":{ "name":"Nothing...", "cashout":[ 0, 0, 0, 0, 0 ] },
+                "straight":1
+              }
+            ]
+          },
+          "straightCheck":-1,
+          "tempHand":{ "_":[ "arrayOf", { "_":[ "variable", "hand" ] } ] }
+        }
+      },
+      { "sort":{ "_":[ "variable", "tempHand" ] }, "by":"value" },
+      {
+        "times":5,
+        "execute":[
+          {
+            "when":{ "_":[ "variable", "straightCheck", "isEqualTo", -1 ] },
+            "as":{ "_":"variable" },
+            "set":{ "straightCheck":{ "_":[ "variable", "tempHand", { "_":[ "variable", "counter" ] }, "value" ] } },
+            "elseExecute":{
+              "when":{ "_":[ "variable", "straightCheck", "+", 1, "isEqualTo", { "_":[ "variable", "tempHand", { "_":[ "variable", "counter" ] }, "value" ] } ] },
+              "sum":1,
+              "to":{ "_":[ "variable", "straightCheck" ] },
+              "elseExecute":{ "as":{ "_":[ "variable", "handData" ] }, "set":{ "straight":0 } }
+            }
+          },
+          {
+            "when":{ "_":[ "variable", "handData", "highestcard", "isLessThan", { "_":[ "variable", "tempHand", { "_":[ "variable", "counter" ] }, "value" ] } ] },
+            "as":{ "_":[ "variable", "handData" ] },
+            "set":{ "highestcard":{ "_":[ "variable", "tempHand", { "_":[ "variable", "counter" ] }, "value" ] } }
+          },
+          { "sum":1, "to":{ "_":[ "variable", "counter" ] } }
+        ]
+      },
+      { "as":{ "_":"variable" }, "set":{ "counter":0 } },
+      {
+        "times":14,
+        "execute":[
+          { "as":{ "_":"variable" }, "set":{ "currentlist":{ "_":[ "new", [] ] }, "subcounter":0 } },
+          {
+            "times":5,
+            "execute":[
+              {
+                "when":{ "_":[ "variable", "hand", { "_":[ "variable", "subcounter" ] }, "value", "isEqualTo", { "_":[ "variable", "counter" ] } ] },
+                "as":{ "_":[ "variable", "hand", { "_":[ "variable", "subcounter" ] } ] },
+                "pushInto":{ "_":[ "variable", "currentlist" ] }
+              },
+              { "sum":1, "to":{ "_":[ "variable", "subcounter" ] } }
+            ]
+          },
+          {
+            "when":{ "_":[ "variable", "currentlist", "count", "isEqualTo", 2 ] },
+            "execute":[
+              { "sum":1, "to":{ "_":[ "variable", "handData", "kind2" ] } },
+              { "when":{ "_":[ "variable", "counter", "isGreaterThan", 8 ] }, "as":{ "_":[ "variable", "handData" ] }, "set":{ "betterthanjack":1 } }
+            ]
+          },
+          { "when":{ "_":[ "variable", "currentlist", "count", "isEqualTo", 3 ] }, "sum":1, "to":{ "_":[ "variable", "handData", "kind3" ] } },
+          { "when":{ "_":[ "variable", "currentlist", "count", "isEqualTo", 4 ] }, "sum":1, "to":{ "_":[ "variable", "handData", "kind4" ] } },
+          { "sum":1, "to":{ "_":[ "variable", "counter" ] } }
+        ]
+      },
+      { "as":{ "_":"variable" }, "set":{ "counter":0 } },
+      {
+        "times":4,
+        "execute":[
+          { "as":{ "_":"variable" }, "set":{ "currentlist":{ "_":[ "new", [] ] }, "subcounter":0 } },
+          {
+            "times":5,
+            "execute":[
+              {
+                "when":{ "_":[ "variable", "hand", { "_":[ "variable", "subcounter" ] }, "sign", "isEqualTo", { "_":[ "variable", "counter" ] } ] },
+                "as":{ "_":[ "variable", "hand", { "_":[ "variable", "subcounter" ] } ] },
+                "pushInto":{ "_":[ "variable", "currentlist" ] }
+              },
+              { "sum":1, "to":{ "_":[ "variable", "subcounter" ] } }
+            ]
+          },
+          { "when":{ "_":[ "variable", "currentlist", "count", "isEqualTo", 5 ] }, "as":{ "_":[ "variable", "handData" ] }, "set":{ "flush":1 } },
+          { "sum":1, "to":{ "_":[ "variable", "counter" ] } }
+        ]
+      },
+      {
+        "when":{ "_":[ "variable", "handData", "kind2", "isEqualTo", 1, "and", { "_":[ "variable", "handData", "betterthanjack", "isEqualTo", 1 ] } ] },
+        "as":{ "_":[ "variable", "handData" ] },
+        "set":{ "prize":{ "name":"Jacks or better", "cashout":[ 1, 2, 3, 4, 5 ] } }
+      },
+      {
+        "when":{ "_":[ "variable", "handData", "kind2", "isEqualTo", 2 ] },
+        "as":{ "_":[ "variable", "handData" ] },
+        "set":{ "prize":{ "name":"Two pairs", "cashout":[ 2, 4, 6, 8, 10 ] } }
+      },
+      {
+        "when":{ "_":[ "variable", "handData", "kind3", "isEqualTo", 1 ] },
+        "as":{ "_":[ "variable", "handData" ] },
+        "set":{ "prize":{ "name":"3 of a kind", "cashout":[ 3, 6, 9, 12, 15 ] } }
+      },
+      {
+        "when":{ "_":[ "variable", "handData", "straight", "isEqualTo", 1 ] },
+        "as":{ "_":[ "variable", "handData" ] },
+        "set":{ "prize":{ "name":"Straight", "cashout":[ 4, 8, 12, 16, 20 ] } }
+      },
+      {
+        "when":{ "_":[ "variable", "handData", "flush", "isEqualTo", 1 ] },
+        "as":{ "_":[ "variable", "handData" ] },
+        "set":{ "prize":{ "name":"Flush", "cashout":[ 5, 10, 15, 20, 25 ] } }
+      },
+      {
+        "when":{ "_":[ "variable", "handData", "kind3", "isEqualTo", 1, "and", { "_":[ "variable", "handData", "kind2", "isEqualTo", 1 ] } ] },
+        "as":{ "_":[ "variable", "handData" ] },
+        "set":{ "prize":{ "name":"Full house", "cashout":[ 8, 16, 24, 32, 40 ] } }
+      },
+      {
+        "when":{ "_":[ "variable", "handData", "kind4", "isEqualTo", 1 ] },
+        "as":{ "_":[ "variable", "handData" ] },
+        "set":{ "prize":{ "name":"4 of a kind", "cashout":[ 25, 50, 75, 100, 125 ] } }
+      },
+      {
+        "when":{ "_":[ "variable", "handData", "straight", "isEqualTo", 1, "and", { "_":[ "variable", "handData", "flush", "isEqualTo", 1 ] } ] },
+        "as":{ "_":[ "variable", "handData" ] },
+        "set":{ "prize":{ "name":"Straight flush!", "cashout":[ 50, 100, 150, 200, 250 ] } }
+      },
+      {
+        "when":{
+          "_":[
+            "variable",
+            "handData",
+            "straight",
+            "isEqualTo",
+            1,
+            "and",
+            { "_":[ "variable", "handData", "flush", "isEqualTo", 1 ] },
+            "and",
+            { "_":[ "variable", "handData", "highestcard", "isEqualTo", 12 ] }
+          ]
+        },
+        "as":{ "_":[ "variable", "handData" ] },
+        "set":{ "prize":{ "name":"ROYAL FLUSH!!", "cashout":[ 250, 500, 750, 1000, 4000 ] } }
+      }
+    ],
+    "betCursor":{
+      "type":"cursor",
+      "image":"defaultsprites", "tileX":304, "tileY":96, "width":16, "height":16,
+      "zIndex":15, "x":17, "y":160,
+      "states":{
+        "code":[
+          {
+            "name":"Execute",
+            "data":[
+              {
+                "when":{ "_":[ "keyA", "isHit" ] },
+                "execute":[ { "as":{ "_":"variable" }, "set":{ "cashoutTier":{ "_":[ "that", "x", "-", 17, "/", 51 ] } } }, { "remove":1 } ]
+              },
+              { "when":{ "_":[ "keyRight", "isHit" ] }, "sum":51, "to":{ "_":[ "this", "x" ] } },
+              { "when":{ "_":[ "keyLeft", "isHit" ] }, "subtract":51, "to":{ "_":[ "this", "x" ] } },
+              { "when":{ "_":[ "this", "x", "isGreaterThan", 256 ] }, "set":{ "x":17 } },
+              { "when":{ "_":[ "this", "x", "isLessThan", 0 ] }, "set":{ "x":221 } }
+            ]
+          },
+          {
+            "name":"Sequence",
+            "data":[ { "sum":1, "to":{ "_":[ "this", "y" ] }, "wait":5 }, { "subtract":1, "to":{ "_":[ "this", "y" ] }, "wait":5, "loopTo":0 } ]
+          }
+        ]
+      }
+    },
+    "card":{
+      "type":"card",
+      "image":"title", "tileX":0, "tileY":162, "width":50, "height":30,
+      "zIndex":10, "y":192,
+      "state":"back",
+      "states":[
+        {
+          "name":"back",
+          "set":{ "frame":1 },
+          "execute":{ "as":{ "_":[ "this", "childs" ] }, "remove":1 },
+          "actions":[ { "name":"flip", "set":{ "state":"front" } }, { "name":"swap", "set":{ "state":"swap" } } ]
+        },
+        {
+          "name":"front",
+          "set":{ "frame":0 },
+          "execute":{
+            "object":[
+              {
+                "width":20, "height":20,
+                "x":5, "y":0,
+                "color":{ "_":[ "that", "card", "htmlColor" ] },
+                "font":"spectrum", "fontSize":20, "html":{ "_":[ "that", "card", "htmlValue" ] }
+              },
+              {
+                "width":20, "height":20,
+                "x":25, "y":0,
+                "color":{ "_":[ "that", "card", "htmlColor" ] },
+                "font":"pixeldingbats", "fontSize":10, "textAlign":"right", "html":{ "_":[ "that", "card", "htmlSign" ] }
+              }
+            ],
+            "into":{ "_":"this" }
+          },
+          "actions":{ "name":"flip", "set":{ "state":"back" } }
+        },
+        {
+          "name":"swap",
+          "set":{ "type":"busy" },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "wait":{ "_":[ "this", "waitDelta" ] } },
+              { "sum":3, "to":{ "_":[ "this", "y" ] }, "wait":1, "loop":1, "cycles":7 },
+              { "set":{ "card":{ "_":[ "variable", "deck", { "_":[ "variable", "deckTop" ] } ] } } },
+              { "sum":1, "to":{ "_":[ "variable", "deckTop" ] } },
+              { "assign":{ "_":[ "this", "card" ] }, "to":{ "_":[ "variable", "hand", { "_":[ "this", "handSlot" ] } ] } },
+              { "set":{ "state":"show" } }
+            ]
+          }
+        },
+        {
+          "name":"hide",
+          "set":{ "type":"busy" },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "wait":{ "_":[ "this", "waitDelta" ] } },
+              { "sum":3, "to":{ "_":[ "this", "y" ] }, "wait":1, "loop":1, "cycles":7 },
+              { "set":{ "removeType":"busy" } }
+            ]
+          }
+        },
+        {
+          "name":"show",
+          "set":{ "type":"busy", "frame":1 },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "wait":{ "_":[ "this", "waitDelta" ] } },
+              { "subtract":3, "to":{ "_":[ "this", "y" ] }, "wait":1, "loop":1, "cycles":7 },
+              { "set":{ "removeType":"busy", "state":"front" } }
+            ]
+          }
+        }
+      ]
+    },
+    "cursor":{
+      "type":"cursor",
+      "image":"defaultsprites", "tileX":304, "tileY":96, "width":16, "height":16,
+      "zIndex":15, "x":17, "y":160, "frame":0,
+      "states":{
+        "code":[
+          {
+            "name":"Execute",
+            "data":{
+              "when":{ "_":[ "this", "y", "isLessThan", 155 ] },
+              "execute":[
+                { "when":{ "_":[ "keyRight", "isHit" ] }, "set":{ "x":17, "y":160, "frame":0 } },
+                { "when":{ "_":[ "keyLeft", "isHit" ] }, "set":{ "x":221, "y":160, "frame":0 } },
+                { "when":{ "_":[ "keyA", "isHit" ] }, "remove":1 }
+              ],
+              "elseExecute":[
+                { "when":{ "_":[ "keyA", "isHit" ] }, "as":{ "_":[ "this", "collidesWith", { "_":[ "object", "card" ] } ] }, "executeAction":"flip" },
+                { "when":{ "_":[ "keyRight", "isHit" ] }, "sum":51, "to":{ "_":[ "this", "x" ] } },
+                { "when":{ "_":[ "keyLeft", "isHit" ] }, "subtract":51, "to":{ "_":[ "this", "x" ] } },
+                { "when":{ "_":[ "this", "x", "isLessThan", 0, "or", { "_":[ "this", "x", "isGreaterThan", 256 ] } ] }, "set":{ "x":235, "y":150, "frame":1 } }
+              ]
+            }
+          },
+          {
+            "name":"Sequence",
+            "data":[ { "sum":1, "to":{ "_":[ "this", "y" ] }, "wait":5 }, { "subtract":1, "to":{ "_":[ "this", "y" ] }, "wait":5, "loopTo":0 } ]
+          }
+        ]
+      }
+    },
+    "dataColors":[ "#f00", "#f00", "#000", "#000" ],
+    "dataSigns":[ "&#91;", "&#94;", "&#92;", "&#93;" ],
+    "dataStages":[
+      0,
+      { "cardsCount":5, "cashierMoney":100, "playerMoney":20 },
+      { "cardsCount":7, "cashierMoney":150, "playerMoney":20 },
+      { "cardsCount":9, "cashierMoney":200, "playerMoney":20 },
+      { "cardsCount":13, "cashierMoney":250, "playerMoney":20 }
+    ],
+    "dataValues":[ "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A" ],
+    "message":{
+      "type":"message",
+      "width":256, "height":30,
+      "zIndex":5, "x":0, "y":192,
+      "color":"#ffr",
+      "font":"spectrum", "fontSize":25, "lineHeight":30, "outline":"#000", "textAlign":"center",
+      "spin":11,
+      "states":[
+        {
+          "code":{
+            "name":"Execute",
+            "data":{
+              "when":{ "_":[ "this", "spin" ] },
+              "execute":[ { "subtract":{ "_":[ "this", "spin" ] }, "to":{ "_":[ "this", "y" ] } }, { "subtract":1, "to":{ "_":[ "this", "spin" ] } } ],
+              "elseExecute":{ "when":{ "_":[ "this", "temporary" ] }, "set":{ "state":"temporary" } }
+            }
+          }
+        },
+        {
+          "name":"leave",
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "subtract":1, "to":{ "_":[ "this", "y" ] }, "set":{ "visible":{ "_":[ "this", "visible", "not" ] } }, "wait":1, "loop":1, "cycles":6 },
+              { "remove":1 }
+            ]
+          }
+        },
+        { "name":"temporary", "code":{ "name":"Sequence", "data":[ { "wait":15 }, { "set":{ "state":"leave" } } ] } }
+      ]
+    },
+    "selectorCursor":{
+      "type":"cursor",
+      "image":"defaultsprites", "tileX":304, "tileY":96, "width":16, "height":16,
+      "zIndex":15,
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[ { "sum":1, "to":{ "_":[ "this", "x" ] }, "wait":5 }, { "subtract":1, "to":{ "_":[ "this", "x" ] }, "wait":5, "loopTo":0 } ]
+        }
+      }
+    }
+  },
+  "scenes":{
+    "intro":{
+      "object":[
+        { "width":256, "height":192, "x":0, "y":0, "bgcolor":"#f0f" },
+        { "image":"title", "tileX":0, "tileY":192, "width":193, "height":56, "zIndex":5, "x":31, "y":50 },
+        {
+          "box":"label", "width":256,
+          "zIndex":5, "x":0, "y":130,
+          "color":"#fff",
+          "font":"spectrum", "fontSize":20, "lineHeight":20, "outline":"#000", "textAlign":"center", "html":"PRESS START",
+          "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "visible":0 }, "wait":10 }, { "set":{ "visible":1 }, "wait":10, "loopTo":0 } ] } }
+        }
+      ],
+      "execute":[
+        { "as":{ "_":"variable" }, "set":{ "backgroundX":0, "backgroundY":0, "cashoutTier":2, "stage":1 } },
+        {
+          "times":5,
+          "object":{
+            "image":"defaultsprites", "tileX":176, "tileY":160, "width":16, "height":16,
+            "zIndex":1, "y":195,
+            "states":{
+              "code":{
+                "name":"Execute",
+                "data":[
+                  {
+                    "when":{ "_":[ "this", "y", "isGreaterThan", 192 ] },
+                    "set":{
+                      "x":{ "_":[ "randomNumber", [ 0, 248 ] ] }, "y":-8,
+                      "fallspeedx":{ "_":[ "randomValue", [ -0.3, -0.2, -0.1, 0, 0.1, 0.2, 0.3 ] ] },
+                      "fallspeedy":{ "_":[ "randomValue", [ 0.3, 0.5, 1 ] ] }
+                    }
+                  },
+                  { "sum":{ "_":[ "this", "fallspeedy" ] }, "to":{ "_":[ "this", "y" ] } },
+                  { "sum":{ "_":[ "this", "fallspeedx" ] }, "to":{ "_":[ "this", "x" ] } }
+                ]
+              }
+            }
+          }
+        }
+      ],
+      "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"selector" } } }
+    },
+    "game":{
+      "object":{
+        "type":"background",
+        "image":"backdrops", "tileX":{ "_":[ "variable", "backgroundX" ] }, "tileY":{ "_":[ "variable", "backgroundY" ] }, "width":256, "height":192,
+        "x":0, "y":0
+      },
+      "execute":{
+        "object":[
+          {
+            "type":"hud",
+            "hudType":"label", "label":"1UP<br>%number|variable.playerMoney%$",
+            "box":"label", "width":100, "height":50,
+            "x":5, "y":5,
+            "font":"spectrum", "lineHeight":10, "outline":"#000"
+          },
+          {
+            "type":"hud",
+            "hudType":"label", "label":"Cashier<br>%number|variable.cashierMoney%$",
+            "box":"label", "width":100, "height":50,
+            "x":151, "y":5,
+            "font":"spectrum", "lineHeight":10, "outline":"#000", "textAlign":"right"
+          }
+        ],
+        "into":{ "_":"scenehud" }
+      },
+      "states":[
+        {
+          "execute":[
+            { "as":{ "_":"variable" }, "set":{ "counter":0, "deck":{ "_":[ "new", [] ] } } },
+            {
+              "times":4,
+              "execute":[
+                { "as":{ "_":"variable" }, "set":[ { "_":[ "stencil", "dataStages", { "_":[ "variable", "stage" ] } ] }, { "subcounter":12 } ] },
+                {
+                  "times":{ "_":[ "variable", "cardsCount" ] },
+                  "execute":[
+                    { "as":{ "_":"variable" }, "set":{ "newCard":{ "_":[ "new", {} ] } } },
+                    {
+                      "as":{ "_":[ "variable", "newCard" ] },
+                      "set":{
+                        "value":{ "_":[ "variable", "subcounter" ] },
+                        "htmlColor":{ "_":[ "stencil", "dataColors", { "_":[ "variable", "counter" ] } ] },
+                        "htmlSign":{ "_":[ "stencil", "dataSigns", { "_":[ "variable", "counter" ] } ] },
+                        "htmlValue":{ "_":[ "stencil", "dataValues", { "_":[ "variable", "subcounter" ] } ] },
+                        "sign":{ "_":[ "variable", "counter" ] }
+                      }
+                    },
+                    { "as":{ "_":[ "variable", "newCard" ] }, "pushInto":{ "_":[ "variable", "deck" ] } },
+                    { "subtract":1, "to":{ "_":[ "variable", "subcounter" ] } }
+                  ]
+                },
+                { "sum":1, "to":{ "_":[ "variable", "counter" ] } }
+              ]
+            },
+            {
+              "object":[
+                {
+                  "type":"message",
+                  "width":256, "height":30,
+                  "zIndex":10, "x":0, "y":81,
+                  "color":"#ff0",
+                  "font":"spectrum", "fontSize":30, "lineHeight":30, "outline":"#000", "textAlign":"center", "html":"BEAT THE CASHIER!",
+                  "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "color":"#f00" }, "wait":2 }, { "set":{ "color":"#ff0" }, "wait":2, "loopTo":0 } ] } }
+                },
+                {
+                  "type":"message",
+                  "width":256, "height":30,
+                  "zIndex":10, "x":0, "y":68,
+                  "color":"#fff",
+                  "font":"spectrum", "fontSize":20, "lineHeight":30, "outline":"#000", "textAlign":"center", "html":{ "_":[ "STAGE ", ".", { "_":[ "variable", "stage" ] } ] }
+                }
+              ]
+            }
+          ],
+          "code":{ "name":"Sequence", "data":[ { "wait":50 }, { "as":{ "_":[ "object", "message" ] }, "remove":1 }, { "set":{ "state":"play" } } ] }
+        },
+        {
+          "name":"play",
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "as":{ "_":[ "object", "card" ] }, "remove":1 },
+              {
+                "object":[
+                  {
+                    "set":{ "_":[ "stencil", "card" ] },
+                    "x":1,
+                    "card":{ "htmlColor":"#000", "htmlSign":"$", "htmlValue":1 },
+                    "handSlot":0,
+                    "waitDelta":0,
+                    "state":"front"
+                  },
+                  {
+                    "set":{ "_":[ "stencil", "card" ] },
+                    "x":52,
+                    "card":{ "htmlColor":"#000", "htmlSign":"$", "htmlValue":2 },
+                    "handSlot":1,
+                    "waitDelta":2,
+                    "state":"front"
+                  },
+                  {
+                    "set":{ "_":[ "stencil", "card" ] },
+                    "x":103,
+                    "card":{ "htmlColor":"#000", "htmlSign":"$", "htmlValue":3 },
+                    "handSlot":2,
+                    "waitDelta":4,
+                    "state":"front"
+                  },
+                  {
+                    "set":{ "_":[ "stencil", "card" ] },
+                    "x":154,
+                    "card":{ "htmlColor":"#000", "htmlSign":"$", "htmlValue":4 },
+                    "handSlot":3,
+                    "waitDelta":6,
+                    "state":"front"
+                  },
+                  {
+                    "set":{ "_":[ "stencil", "card" ] },
+                    "x":205,
+                    "card":{ "htmlColor":"#000", "htmlSign":"$", "htmlValue":5 },
+                    "handSlot":4,
+                    "waitDelta":8,
+                    "state":"front"
+                  }
+                ]
+              },
+              { "as":{ "_":[ "object", "card" ] }, "set":{ "state":"show" } },
+              { "wait":5 },
+              { "wait":1, "until":{ "_":[ "objectTyped", "busy", "not" ] } },
+              { "object":{ "set":{ "_":[ "stencil", "message" ] }, "html":"Place your bet!" } },
+              { "object":{ "set":{ "_":[ "stencil", "betCursor" ] }, "x":{ "_":[ 17, "+", { "_":[ "variable", "cashoutTier", "*", 51 ] } ] } } },
+              { "wait":1, "loop":1, "until":{ "_":[ "objectTyped", "cursor", "not" ] } },
+              {
+                "when":{ "_":[ "variable", "cashoutTier", "+", 1, "isGreaterThan", { "_":[ "variable", "playerMoney" ] } ] },
+                "object":{ "set":{ "_":[ "stencil", "message" ] }, "zIndex":6, "y":207, "color":"#ff0", "fontSize":20, "html":"Sorry, not enough money!", "temporary":1 }
+              },
+              { "loopTo":-3, "until":{ "_":[ "variable", "cashoutTier", "+", 1, "isLessEqualThan", { "_":[ "variable", "playerMoney" ] } ] } },
+              {
+                "when":{ "_":[ "cheat", "unlimitedMoney", "not" ] },
+                "subtract":{ "_":[ "variable", "cashoutTier", "+", 1 ] },
+                "to":{ "_":[ "variable", "playerMoney" ] }
+              },
+              { "sum":{ "_":[ "variable", "cashoutTier", "+", 1 ] }, "to":{ "_":[ "variable", "cashierMoney" ] } },
+              { "as":{ "_":[ "object", "card" ] }, "set":{ "state":"hide" } },
+              { "as":{ "_":[ "object", "message" ] }, "set":{ "state":"leave" } },
+              { "wait":5 },
+              { "wait":1, "until":{ "_":[ "objectTyped", "busy", "not" ] } },
+              { "as":{ "_":[ "object", "card" ] }, "remove":1 },
+              { "_":[ "stencil", "codeCardsDraw" ] },
+              {
+                "object":[
+                  { "set":{ "_":[ "stencil", "card" ] }, "x":1, "card":{ "_":[ "variable", "hand", 0 ] }, "handSlot":0, "waitDelta":0, "state":"front" },
+                  { "set":{ "_":[ "stencil", "card" ] }, "x":52, "card":{ "_":[ "variable", "hand", 1 ] }, "handSlot":1, "waitDelta":2, "state":"front" },
+                  { "set":{ "_":[ "stencil", "card" ] }, "x":103, "card":{ "_":[ "variable", "hand", 2 ] }, "handSlot":2, "waitDelta":4, "state":"front" },
+                  { "set":{ "_":[ "stencil", "card" ] }, "x":154, "card":{ "_":[ "variable", "hand", 3 ] }, "handSlot":3, "waitDelta":6, "state":"front" },
+                  { "set":{ "_":[ "stencil", "card" ] }, "x":205, "card":{ "_":[ "variable", "hand", 4 ] }, "handSlot":4, "waitDelta":8, "state":"front" }
+                ]
+              },
+              { "as":{ "_":[ "object", "card" ] }, "set":{ "state":"show" } },
+              { "wait":5 },
+              { "wait":1, "until":{ "_":[ "objectTyped", "busy", "not" ] } },
+              { "_":[ "stencil", "codeHanddataGet" ] },
+              {
+                "object":[ { "_":[ "stencil", "cursor" ] }, { "set":{ "_":[ "stencil", "message" ] }, "html":{ "_":[ "variable", "handData", "prize", "name" ] } } ]
+              },
+              { "wait":1, "loop":1, "until":{ "_":[ "objectTyped", "cursor", "not" ] } },
+              { "as":{ "_":[ "object", "message" ] }, "set":{ "state":"leave" } },
+              { "as":{ "_":[ "object", "card" ] }, "executeAction":"swap" },
+              { "wait":5 },
+              { "wait":1, "until":{ "_":[ "objectTyped", "busy", "not" ] } },
+              { "_":[ "stencil", "codeHanddataGet" ] },
+              { "as":{ "_":"variable" }, "set":{ "cashout":{ "_":[ "variable", "handData", "prize", "cashout", { "_":[ "variable", "cashoutTier" ] } ] } } },
+              { "object":{ "set":{ "_":[ "stencil", "message" ] }, "html":{ "_":[ "variable", "handData", "prize", "name" ] } } },
+              { "wait":5 },
+              { "object":{ "set":{ "_":[ "stencil", "message" ] }, "zIndex":6, "y":207, "color":"#ff0", "html":{ "_":[ "variable", "cashout", ".", "$" ] } } },
+              { "sum":{ "_":[ "variable", "cashout" ] }, "to":{ "_":[ "variable", "playerMoney" ] } },
+              { "subtract":{ "_":[ "variable", "cashout" ] }, "to":{ "_":[ "variable", "cashierMoney" ] } },
+              { "when":{ "_":[ "variable", "cashierMoney", "isLessThan", 0 ] }, "as":{ "_":"variable" }, "set":{ "cashierMoney":0 } },
+              { "wait":50 },
+              { "as":{ "_":[ "object", "message" ] }, "set":{ "state":"leave" } },
+              { "as":{ "_":[ "object", "card" ] }, "set":{ "state":"hide" } },
+              { "wait":5 },
+              { "wait":1, "until":{ "_":[ "objectTyped", "busy", "not" ] } },
+              {
+                "when":{ "_":[ "variable", "playerMoney", "isEqualTo", 0 ] },
+                "set":{ "state":"gameover" },
+                "elseExecute":{ "when":{ "_":[ "variable", "cashierMoney", "isEqualTo", 0 ] }, "set":{ "state":"beaten" } }
+              },
+              { "wait":1 },
+              { "loopTo":0 }
+            ]
+          }
+        },
+        {
+          "name":"gameover",
+          "execute":{
+            "object":{
+              "type":"message",
+              "width":256, "height":30,
+              "zIndex":10, "x":0, "y":81,
+              "color":"#f00",
+              "font":"spectrum", "fontSize":30, "lineHeight":30, "outline":"#000", "textAlign":"center", "html":"GAME OVER",
+              "states":{
+                "code":{
+                  "name":"Sequence",
+                  "data":[ { "sum":1, "to":{ "_":[ "this", "x" ] } }, { "wait":1 }, { "subtract":1, "to":{ "_":[ "this", "x" ] } }, { "wait":1, "cycles":10, "loopTo":-3 } ]
+                }
+              }
+            },
+            "into":{ "_":"scenehud" }
+          },
+          "code":{ "name":"Sequence", "data":[ { "wait":25 }, { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } }, { "gotoScene":"intro" } ] }
+        },
+        {
+          "name":"beaten",
+          "execute":{
+            "object":{
+              "type":"message",
+              "width":256, "height":30,
+              "zIndex":10, "x":0, "y":81,
+              "color":"#ff0",
+              "font":"spectrum", "fontSize":30, "lineHeight":30, "outline":"#000", "textAlign":"center", "html":"CASHIER BEATEN!",
+              "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "color":"#00f" }, "wait":1 }, { "set":{ "color":"#fff" }, "wait":1, "loopTo":0 } ] } }
+            }
+          },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "wait":50 },
+              { "sum":192, "to":{ "_":[ "variable", "backgroundY" ] } },
+              { "as":{ "_":[ "object", "message" ] }, "remove":1 },
+              { "as":{ "_":"variable" }, "set":{ "counter":0 } },
+              {
+                "times":16,
+                "execute":[
+                  {
+                    "object":{
+                      "type":"strip",
+                      "image":"backdrops", "tileX":{ "_":[ "variable", "backgroundX", "+", { "_":[ "variable", "counter" ] } ] }, "tileY":{ "_":[ "variable", "backgroundY" ] }, "width":16, "height":0,
+                      "zIndex":1, "x":{ "_":[ "variable", "counter" ] }, "y":0,
+                      "speed":{ "_":[ "randomNumber", [ 2, 4 ] ] },
+                      "states":{
+                        "code":{
+                          "name":"Sequence",
+                          "data":[
+                            { "wait":{ "_":[ "randomNumber", [ 0, 10 ] ] } },
+                            { "sum":{ "_":[ "this", "speed" ] }, "to":{ "_":[ "this", "height" ] }, "wait":1, "loop":1, "until":{ "_":[ "height", "isGreaterThan", 192 ] } }
+                          ]
+                        }
+                      }
+                    }
+                  },
+                  { "sum":16, "to":{ "_":[ "variable", "counter" ] } }
+                ]
+              },
+              { "wait":110 },
+              { "as":{ "_":[ "objectTyped", "background" ] }, "set":{ "tileY":{ "_":[ "variable", "backgroundY" ] } } },
+              { "as":{ "_":[ "object", "strip" ] }, "remove":1 },
+              { "wait":25 },
+              { "sum":1, "to":{ "_":[ "variable", "stage" ] } },
+              {
+                "when":{ "_":[ "stencil", "dataStages", { "_":[ "variable", "stage" ] } ] },
+                "set":{ "state":"default" },
+                "elseExecute":{ "set":{ "state":"ending" } }
+              }
+            ]
+          }
+        },
+        {
+          "name":"ending",
+          "execute":{ "object":{ "set":{ "_":[ "stencil", "message" ] }, "y":230, "html":"You win! &lt;3" } },
+          "code":{ "name":"Sequence", "data":[ { "wait":25 }, { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } }, { "gotoScene":"intro" } ] }
+        }
+      ]
+    },
+    "selector":{
+      "object":[
+        {
+          "width":256, "height":30,
+          "x":0, "y":0,
+          "color":"#fff",
+          "font":"spectrum", "fontSize":30, "lineHeight":30, "textAlign":"center", "html":"SELECT A CASHIER"
+        },
+        { "image":"title", "tileX":0, "tileY":0, "width":128, "height":162, "x":0, "y":30 },
+        { "image":"title", "tileX":128, "tileY":0, "width":128, "height":162, "x":128, "y":30 },
+        { "set":{ "_":[ "stencil", "selectorCursor" ] }, "x":104, "y":170, "flipX":1, "angle":270 },
+        { "set":{ "_":[ "stencil", "selectorCursor" ] }, "x":136, "y":170, "angle":270 }
+      ],
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":{
+            "when":{ "_":[ "keyLeft", "isHit" ] },
+            "as":{ "_":"variable" },
+            "set":{ "backgroundX":0 },
+            "gotoScene":"game",
+            "elseExecute":{ "when":{ "_":[ "keyRight", "isHit" ] }, "as":{ "_":"variable" }, "set":{ "backgroundX":256 }, "gotoScene":"game" }
+          }
+        }
+      }
+    }
+  }
+}
