@@ -375,7 +375,7 @@ function WrightTools() {
 		"top","bottom","left","right", // Code -> Physics -> Wall -> Only
 
 		"follow", // Camera
-		"horizontal","vertical","control","gotoZero", // Code -> Player
+		"horizontal","vertical","control","zeroValue","gotoZero", // Code -> Player
 		"cut","count", // Code -> Player -> Jump
 
 		"proportion", "value", // _ -> proportionalValue
@@ -794,8 +794,8 @@ function WrightTools() {
 			if (!liked&&!obj.width) obj.width=s.tilewidth;
 			if (!liked&&!obj.height) obj.height=s.tileheight;
 
-			obj.tileX=(p%r)*s.tilewidth;
-			obj.tileY=Math.floor(p/r)*s.tileheight;
+			if (obj.tileX===undefined) obj.tileX=(p%r)*s.tilewidth;
+			if (obj.tileY===undefined) obj.tileY=Math.floor(p/r)*s.tileheight;
 			out[t["#stencil"]]=obj;
 		  }
 		}
@@ -805,7 +805,7 @@ function WrightTools() {
 	  
   function convertLayer(a,l) {	
 	logLine("info","Converting layer "+l.name);
-    var p,pr,chunk=0,tile,cam,html="",i,j,entry,objs,dx=0,dy=0,lprop={},dx,dy;
+    var p,pr,chunk=0,tile,cam,html="",i,j,entry,objs,dx=0,dy=0,dx,dy;
     if (startsWith(l.name,"scene")) {
       chunk={};
       if (l.properties) {
@@ -903,6 +903,7 @@ function WrightTools() {
             }
             if (cur.name) names.push(cur.name);
             stencil=getProperty([],MERGE_OBJECT,"#stencil",[cur.properties,l.properties]);
+
             if (stencil.length) names=names.concat(stencil);
 
             if (names.length) {
@@ -918,7 +919,7 @@ function WrightTools() {
             mergeProperties(obj,MERGE_SELECTED,MERGE_POSITION,[l,cur]);
             if (tile) obj.y-=tile.set.tileheight;
 
-            mergeProperties(obj,MERGE_ALL,MERGE_DEFAULT,[cur.properties,l.properties]);
+            mergeProperties(obj,MERGE_ALL,MERGE_DEFAULT,[tile?tile.properties:{},cur.properties,l.properties]);
 
 
             // CODE GENERATORS
@@ -998,10 +999,12 @@ function WrightTools() {
               chunk.y=Math.floor(((display[1]*1)-(th*(ey-sy)))/2);
             }
 
-            if (lprop.width!==undefined)
-            if (lprop.width=="auto") chunk.width=l.width*tw; else chunk.width=jsonparse(lprop.width);
-            if (lprop.height!==undefined)
-            if (lprop.height=="auto") chunk.height=l.height*tw; else chunk.height=jsonparse(lproplprop.height);
+            if (l.properties) {
+	            if (l.properties.width!==undefined)
+	            	if (l.properties.width=="auto") chunk.width=l.width*tw; else chunk.width=jsonparse(l.properties.width);
+	            if (l.properties.height!==undefined)
+	            	if (l.properties.height=="auto") chunk.height=l.height*tw; else chunk.height=jsonparse(l.properties.height);
+	        }
 
             if (dx) chunk.x+=(chunk.x||0)+dx;
             if (dy) chunk.y+=(chunk.y||0)+dy;
