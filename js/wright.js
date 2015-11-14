@@ -1670,24 +1670,26 @@ function Wright(gameId,container,mods) {
 					if (typeof horizontal == "object") {
 						var control = get(this, this, horizontal.control),
 							speed = get(this, this, horizontal.speed),
-							gotoZero = get(this, this, horizontal.gotoZero);
+							gotoZero = get(this, this, horizontal.gotoZero),
+							zeroValue = get(this, this, horizontal.zeroValue) || 0;
 						if (control) d = _Code.pad("keyLeft", "keyRight") * (speed === undefined ? 1 : speed);
 						else d = 0;
 						if (gotoZero && !d)
-							if (Math.abs(this.forceX) < gotoZero) d = -this.forceX;
-							else d = gotoZero * (this.forceX > 0 ? -1 : 1);
+							if (Math.abs(zeroValue-this.forceX) < gotoZero) d = zeroValue-this.forceX;
+							else d = gotoZero * (this.forceX-zeroValue > 0 ? -1 : 1);
 						this.forceX += d;
 					} else this.forceX += _Code.pad("keyLeft", "keyRight");
 				if (vertical)
 					if (typeof vertical == "object") {
 						var control = get(this, this, vertical.control),
 							speed = get(this, this, vertical.speed),
-							gotoZero = get(this, this, vertical.gotoZero);
+							gotoZero = get(this, this, vertical.gotoZero),
+							zeroValue = get(this, this, horizontal.zeroValue) || 0;
 						if (control) d = _Code.pad("keyUp", "keyDown") * (speed === undefined ? 1 : speed);
 						else d = 0;
 						if (gotoZero && !d)
-							if (Math.abs(this.forceY) < gotoZero) d = -this.forceY;
-							else d = gotoZero * (this.forceY > 0 ? -1 : 1);
+							if (Math.abs(zeroValue-this.forceY) < gotoZero) d = zeroValue-this.forceY;
+							else d = gotoZero * (this.forceY-zeroValue > 0 ? -1 : 1);
 						this.forceY += d;
 					} else this.forceY += _Code.pad("keyUp", "keyDown");
 				if (jump) {
@@ -2405,7 +2407,7 @@ function Wright(gameId,container,mods) {
 									}
 								}
 								sub=game.iterateCollisions(rect,list,0,0,0,0,args,_Code.collision);
-								if (args&&args.all) sub=args.all;
+								if (args&&args.all) sub=args.all.length?args.all:0;
 							}
 						}
 						ret = sub;
