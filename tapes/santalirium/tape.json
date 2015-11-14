@@ -1,0 +1,633 @@
+{
+  "name":"Santalirium",
+  "author":"KesieV",
+  "year":2015,
+  "genre":"Platformer",
+  "description":"The Wright! project started from a simple idea: not only games but gamers and the videogames (software, probably?) industry of 80s/90s too were drastically different from now. Probably Bug-Byte's Manic Miner (1983), which won a number of prizes, is the most emblematic title for a very large number of reasons. At a first look, It's your typical old-school single-screen frustrating platformer, got old fast and badly like any of the early ZX Spectrum games. But the devil is in the detail. First. Willy, the main character, have to explore 20 caves full of aliens, penguins, ostriches and - obviously - toilets. Cave names are pretty crazy too: 'Processing plant' hosts long-legged Pac-Mans and tiny ghosts, 'Attack of the Mutant Telephones' speaks for itself. What I've found disturbing in games like that, Blagger (1983), Henry's House (1984) and many other platformers of these years were the lack of context in mostly anything: a so grave and disorienting design mistake we used to accept that is quite extinct. Second. Manic Miner was the first ZX Spectrum game to have background music and sound effects, on a machine that - as coders knew few months after the machine release - was able to draw something on the screen OR playing a tone. It literally was miracle of coding, despite its stuttering music is just annoying today. Third. Most of the ports of the game on the other platforms featured a number of relevant differences, like 40 new caves for the SAM Coupe' version, modified stages in the BBC Micro one, renamed (?) caves for the Amstrad CPC version and a rushed bad and nearly unplayable version for the Commodore 16. Just think about the role of contents exclusivity, ports differences and rushed software on nowadays videogames and videogame industry. Last. Remember that 8-bit home computers used to ask you to code something when booted up? The ZX Spectrum version of Manic Miner manual closes with this sentence: 'Think you can write a better game than this? We'd love to see it. Send a copy of the cassette to (Bug-Byte's mailbox)'. Simply stunning: were a relevant part of gamers into game development that Bug-Byte decided to 'hire' some of them from a game manual? Were gamers more technological aware, despite we've internet today? A portrtait of a generation in a single title! Plot! Santa is in trouble and only YOU can help him! Collect all of the keys and reach the exit before the time runs out but don't hit anything pointy or moving and don't fall from too high! Use LEFT/RIGHT for moving and UP for jumping. And, since we're in November... happy holidays!",
+  "screenshots":[ "santalirium-1.png", "santalirium-2.png" ],
+  "hardware":{
+    "width":256,
+    "height":192,
+    "texture":"scanlines"
+  },
+  "cheats":{
+    "unlimitedLives":"Unlimited lives"
+  },
+  "resources":{
+    "foot":"foot.png",
+    "logo":"logo.png",
+    "sprites":"sprites.png",
+    "tiles":"tiles.png",
+    "defaultsprites":"../default/sprites.png",
+    "scanlines":"../default/scanlines.png"
+  },
+  "stencils":{
+    "codeHighscoreUpdate":{
+      "when":{ "_":[ "variable", "score", "isGreaterThan", { "_":[ "variable", "highscore" ] } ] },
+      "as":{ "_":"variable" },
+      "set":{ "highscore":{ "_":[ "variable", "score" ] } }
+    },
+    "modelPartLogo":{
+      "states":{
+        "code":[
+          {
+            "name":"Physics",
+            "data":{
+              "walls":{ "area":{ "width":256, "height":120, "x":0, "y":-30 }, "execute":{ "set":{ "forceY":{ "_":[ "randomNumber", [ -10, -5 ] ] } } } },
+              "gravityY":1
+            }
+          },
+          {
+            "name":"Sequence",
+            "data":[ { "wait":4 }, { "set":{ "bgcolor":{ "_":[ "randomValue", [ "#f00", "#0f0", "#00f", "#ff0", "#0ff", "#fff" ] ] } } }, { "loopTo":0 } ]
+          }
+        ]
+      }
+    },
+    "modelStage":{
+      "states":[
+        {
+          "execute":[
+            { "as":{ "_":"variable" }, "set":{ "counter":0 } },
+            { "as":{ "_":[ "object", "colored" ] }, "set":{ "bgcolor":{ "_":[ "scene", { "_":[ "this", "colorId" ] } ] } } },
+            {
+              "object":[
+                {
+                  "width":256, "height":8,
+                  "x":0, "y":128,
+                  "bgcolor":"#ff0", "color":"#000",
+                  "font":"spectrum", "fontSize":20, "lineHeight":8, "textAlign":"center", "html":{ "_":[ "that", "roomName" ] }
+                },
+                { "width":72, "height":8, "x":0, "y":136, "bgcolor":"#f00", "color":"#fff", "font":"spectrum", "fontSize":20, "lineHeight":8, "html":"TIME" },
+                { "width":184, "height":8, "x":72, "y":136, "bgcolor":"#0f0" },
+                {
+                  "type":[ "animatedObject", "timer" ],
+                  "width":208, "height":4,
+                  "zIndex":10, "x":40, "y":138,
+                  "bgcolor":"#fff",
+                  "states":{
+                    "code":{
+                      "name":"Sequence",
+                      "data":[
+                        { "subtract":1, "to":{ "_":[ "this", "width" ] }, "wait":15, "loop":1, "until":{ "_":[ "this", "width", "not" ] } },
+                        { "as":{ "_":"scene" }, "set":{ "state":"dead" } }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "type":"hud",
+                  "hudType":"label", "label":"High Score %number|variable.highscore|0|6% &nbsp;&nbsp;Score %number|variable.score|0|6%",
+                  "width":256, "height":16,
+                  "x":0, "y":152,
+                  "color":"#ff0",
+                  "font":"spectrum", "fontSize":20, "lineHeight":8
+                }
+              ],
+              "into":{ "_":"scenehud" }
+            },
+            {
+              "times":{ "_":[ "variable", "lives" ] },
+              "execute":[
+                {
+                  "object":{
+                    "type":[ "sceneObject", "animatedObject" ],
+                    "image":"sprites", "tileX":0, "tileY":0, "width":16, "height":16,
+                    "x":{ "_":[ "variable", "counter", "*", 24 ] }, "y":168,
+                    "animations":{ "moving":{ "frames":2, "loopTo":0 } },
+                    "animation":"moving",
+                    "states":{
+                      "code":{
+                        "name":"Sequence",
+                        "data":[ { "sum":1, "to":{ "_":[ "this", "x" ] }, "wait":3, "loop":1, "cycles":8 }, { "subtract":8, "to":{ "_":[ "this", "x" ] } }, { "loopTo":0 } ]
+                      }
+                    }
+                  },
+                  "into":{ "_":"scenehud" }
+                },
+                { "sum":1, "to":{ "_":[ "variable", "counter" ] } }
+              ]
+            }
+          ]
+        },
+        {
+          "name":"completed",
+          "execute":{ "as":{ "_":[ "object", "animatedObject" ] }, "set":{ "animation":"none", "state":"idle" } },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "as":{ "_":"variable" }, "set":{ "blinkColor":{ "_":[ "randomValue", [ "#f00", "#0f0", "#00f", "#ff0", "#0ff", "#fff" ] ] } } },
+              { "set":{ "bgcolor":{ "_":[ "randomValue", [ "#f00", "#0f0", "#00f", "#ff0", "#0ff", "#fff" ] ] } } },
+              { "as":{ "_":[ "object", "colored" ] }, "set":{ "bgcolor":{ "_":[ "variable", "blinkColor" ] } }, "wait":1, "cycles":25, "loopTo":-2 },
+              { "set":{ "bgcolor":"#000" } },
+              { "as":{ "_":[ "object", "colored" ] }, "set":{ "bgcolor":"#00f" } },
+              {
+                "execute":[
+                  { "sum":1, "to":{ "_":[ "variable", "score" ] } },
+                  { "_":[ "stencil", "codeHighscoreUpdate" ] },
+                  { "subtract":2, "to":{ "_":[ "objectTyped", "timer", "width" ] } }
+                ],
+                "wait":1, "loop":1,
+                "until":{ "_":[ "objectTyped", "timer", "width", "isLessEqualThan", 0 ] }
+              },
+              { "wait":25 },
+              { "sum":1, "to":{ "_":[ "variable", "stage" ] } },
+              { "when":{ "_":[ "scene", "lastScene" ] }, "set":{ "state":"ending" }, "elseExecute":{ "gotoScene":{ "_":[ "variable", "stage" ] }, "withTransition":2 } }
+            ]
+          }
+        },
+        {
+          "name":"dead",
+          "execute":{ "as":{ "_":[ "object", "animatedObject" ] }, "set":{ "animation":"none", "state":"idle" } },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "as":{ "_":[ "object", "colored" ] }, "set":{ "bgcolor":"#fff" }, "wait":2 },
+              { "as":{ "_":[ "object", "colored" ] }, "set":{ "bgcolor":"#0ff" }, "wait":2 },
+              { "as":{ "_":[ "object", "colored" ] }, "set":{ "bgcolor":"#ff0" }, "wait":2 },
+              { "as":{ "_":[ "object", "colored" ] }, "set":{ "bgcolor":"#f00" }, "wait":2 },
+              { "as":{ "_":[ "object", "colored" ] }, "set":{ "bgcolor":"#000" }, "wait":2 },
+              { "when":{ "_":[ "cheat", "unlimitedLives", "not" ] }, "subtract":1, "to":{ "_":[ "variable", "lives" ] } },
+              {
+                "when":{ "_":[ "variable", "lives" ] },
+                "gotoScene":{ "_":[ "variable", "stage" ] },
+                "withTransition":2,
+                "elseExecute":{ "set":{ "state":"gameover" } }
+              }
+            ]
+          }
+        },
+        {
+          "name":"gameover",
+          "execute":[
+            { "as":{ "_":[ "object", "sceneObject" ] }, "remove":1 },
+            {
+              "object":[
+                {
+                  "image":"foot", "width":16, "height":112,
+                  "zIndex":5, "x":120, "y":-140,
+                  "bgcolor":"#f00",
+                  "states":{
+                    "code":{
+                      "name":"Sequence",
+                      "data":[
+                        { "sum":2, "to":{ "_":[ "this", "y" ] }, "wait":1, "loop":1, "until":{ "_":[ "this", "y", "isEqualTo", 0 ] } },
+                        {
+                          "object":{ "width":112, "height":32, "x":0, "y":57, "color":"#f00", "font":"spectrum", "fontSize":30, "lineHeight":32, "textAlign":"right", "html":"GAME" }
+                        },
+                        { "object":{ "width":112, "height":32, "x":144, "y":57, "color":"#f00", "font":"spectrum", "fontSize":30, "lineHeight":32, "html":"OVER" } },
+                        { "wait":25 },
+                        { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+                        { "gotoScene":"intro", "withTransition":3 }
+                      ]
+                    }
+                  }
+                },
+                { "image":"foot", "tileX":0, "tileY":112, "width":16, "height":16, "x":120, "y":112 },
+                { "image":"sprites", "tileX":0, "tileY":0, "width":16, "height":16, "x":120, "y":96 }
+              ]
+            }
+          ]
+        },
+        {
+          "name":"ending",
+          "execute":[
+            { "sum":{ "_":[ "variable", "lives", "*", 200 ] }, "to":{ "_":[ "variable", "score" ] } },
+            { "_":[ "stencil", "codeHighscoreUpdate" ] },
+            { "as":{ "_":[ "object", "sceneObject" ] }, "remove":1 },
+            {
+              "set":{
+                "tilemap":{
+                  "y":112,
+                  "tileWidth":8,
+                  "tileHeight":8,
+                  "map":[
+                    "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+                    "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
+                  ]
+                }
+              }
+            },
+            { "as":{ "_":[ "object", "colored" ] }, "set":{ "bgcolor":"#f00" } },
+            { "as":{ "_":"variable" }, "set":{ "counter":0 } },
+            {
+              "object":[
+                {
+                  "image":"sprites", "tileX":0, "tileY":0, "width":16, "height":16,
+                  "x":-16, "y":96,
+                  "animations":{ "moving":{ "frames":2, "loopTo":0 } },
+                  "animation":"moving",
+                  "states":{
+                    "code":{
+                      "name":"Execute",
+                      "data":{
+                        "when":{ "_":[ "this", "collidesWith", { "_":[ "objectTyped", "train" ] } ] },
+                        "execute":[ { "as":{ "_":"that" }, "set":{ "state":"leave" } }, { "remove":1 } ],
+                        "elseExecute":{ "sum":2, "to":{ "_":[ "this", "x" ] } }
+                      }
+                    }
+                  }
+                },
+                {
+                  "type":"train",
+                  "image":"sprites", "tileX":0, "tileY":80, "width":16, "height":16,
+                  "x":160, "y":96,
+                  "animations":{ "moving":{ "frames":2, "loopTo":0 } },
+                  "states":{
+                    "name":"leave",
+                    "set":{ "animation":"moving" },
+                    "code":{
+                      "name":"Sequence",
+                      "data":[
+                        { "sum":3, "to":{ "_":[ "this", "x" ] }, "wait":1, "loop":1, "until":{ "_":[ "this", "x", "isGreaterThan", 256 ] } },
+                        { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+                        { "gotoScene":"intro", "withTransition":3 }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "width":256, "height":32,
+                  "x":0, "y":27,
+                  "color":"#ff0",
+                  "font":"spectrum", "fontSize":30, "lineHeight":32, "textAlign":"center", "html":"WELL DONE!"
+                }
+              ]
+            },
+            {
+              "times":5,
+              "execute":[
+                {
+                  "object":{
+                    "image":"sprites", "tileX":32, "tileY":{ "_":[ "variable", "counter", "*", 16 ] }, "width":16, "height":16,
+                    "x":{ "_":[ "variable", "counter", "*", 24, "-", 210 ] }, "y":96,
+                    "animations":{ "moving":{ "frames":2, "loopTo":0 } },
+                    "animation":"moving",
+                    "states":{
+                      "code":{
+                        "name":"Execute",
+                        "data":{ "when":{ "_":[ "this", "x", "isGreaterThan", 256 ] }, "remove":1, "elseExecute":{ "sum":3, "to":{ "_":[ "this", "x" ] } } }
+                      }
+                    }
+                  }
+                },
+                { "sum":1, "to":{ "_":[ "variable", "counter" ] } }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "player":{
+      "type":[ "player", "animatedObject", "sceneObject" ],
+      "image":"sprites", "tileX":0, "tileY":0, "width":16, "height":16,
+      "zIndex":1,
+      "animations":{ "moving":{ "frames":2, "loopTo":0 }, "still":{ "frame":1 } },
+      "animation":"still",
+      "fallingCount":0,
+      "stillForceX":0,
+      "states":{
+        "code":[
+          {
+            "name":"Physics",
+            "data":{
+              "walls":[
+                { "type":"wall", "restitution":0 },
+                { "type":"passunder", "restitution":0, "only":{ "top":1 } },
+                {
+                  "type":"conveyor",
+                  "restitution":0,
+                  "only":{ "top":1 },
+                  "execute":{ "assign":{ "_":[ "that", "conveyorSide" ] }, "to":{ "_":[ "this", "stillForceX" ] } }
+                }
+              ],
+              "gravityX":0,
+              "gravityY":0.15,
+              "limitX":[ -1, 1 ],
+              "limitY":[ -9, 5 ]
+            }
+          },
+          { "name":"Player", "data":{ "horizontal":{ "control":1, "zeroValue":{ "_":[ "this", "stillForceX" ] }, "gotoZero":1 }, "jump":{ "forceY":-2.5 } } },
+          {
+            "name":"Execute",
+            "data":[
+              { "set":{ "stillForceX":0 } },
+              {
+                "when":{ "_":[ "this", "forceY", "isGreaterThan", 0 ] },
+                "sum":1,
+                "to":{ "_":[ "this", "fallingCount" ] },
+                "elseExecute":{
+                  "when":{ "_":[ "this", "forceY", "isEqualTo", 0 ] },
+                  "execute":[ { "when":{ "_":[ "this", "fallingCount", "isGreaterThan", 25 ] }, "as":{ "_":"scene" }, "set":{ "state":"dead" } }, { "set":{ "fallingCount":0 } } ]
+                }
+              },
+              {
+                "when":{ "_":[ "this", "forceX" ] },
+                "execute":[
+                  { "set":{ "animation":"moving" } },
+                  { "when":{ "_":[ "this", "forceX", "isGreaterThan", 0 ] }, "set":{ "flipX":0 }, "elseExecute":{ "set":{ "flipX":1 } } }
+                ],
+                "elseExecute":{ "set":{ "animation":"still" } }
+              },
+              {
+                "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "key" ] } ] },
+                "execute":[ { "as":{ "_":"that" }, "sum":100, "to":{ "_":[ "variable", "score" ] }, "remove":1 }, { "_":[ "stencil", "codeHighscoreUpdate" ] } ]
+              },
+              {
+                "as":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "crumble" ] }, "all":1, "hitbox":{ "width":8, "height":1, "x":4, "y":16 } } ] },
+                "execute":[ { "sum":1, "to":{ "_":[ "this", "frame" ] } }, { "when":{ "_":[ "this", "frame", "isEqualTo", 8 ] }, "remove":1 } ]
+              },
+              { "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "kill" ] } ] }, "as":{ "_":"scene" }, "set":{ "state":"dead" } }
+            ]
+          }
+        ]
+      }
+    },
+    "enemy":{
+      "type":[ "animatedObject", "sceneObject", "kill" ],
+      "image":"sprites", "width":16, "height":16,
+      "zIndex":2,
+      "hitbox":{ "width":12, "height":12, "x":2, "y":2 },
+      "animations":{ "idle":{ "frames":2, "loopTo":0 } },
+      "animation":"idle",
+      "states":{
+        "code":[
+          { "name":"Execute", "data":{ "when":{ "_":[ "this", "forceX", "isLessThan", 0 ] }, "set":{ "flipX":1 }, "elseExecute":{ "set":{ "flipX":0 } } } },
+          { "name":"Physics", "data":{ "walls":{ "type":"enemyWall", "restitution":1 } } }
+        ]
+      }
+    },
+    "exit":{
+      "type":[ "animatedObject", "sceneObject" ],
+      "image":"sprites", "tileX":32, "tileY":80, "width":16, "height":16,
+      "zIndex":5,
+      "animations":{ "closed":{ "frame":0 }, "opened":{ "frames":2, "loopTo":0 } },
+      "states":[
+        { "set":{ "animation":"closed" }, "code":{ "name":"Execute", "data":{ "when":{ "_":[ "objectTyped", "key", "not" ] }, "set":{ "state":"opened" } } } },
+        {
+          "name":"opened",
+          "set":{ "animation":"opened" },
+          "code":{
+            "name":"Execute",
+            "data":{ "when":{ "_":[ "this", "collidesWith", { "_":[ "objectTyped", "player" ] } ] }, "as":{ "_":"scene" }, "set":{ "state":"completed" } }
+          }
+        }
+      ]
+    },
+    "#":{ "type":[ "colored", "wall", "sceneObject", "enemyWall" ], "image":"tiles", "tileX":0, "tileY":8, "width":8, "height":8, "colorId":"color0" },
+    "W":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":8, "tileY":8 },
+    "$":{
+      "type":[ "key", "animatedObject", "colored", "sceneObject", "enemyWall" ],
+      "image":"tiles", "tileX":0, "tileY":48, "width":8, "height":8,
+      "states":{ "code":{ "name":"Execute", "data":{ "set":{ "bgcolor":{ "_":[ "randomValue", [ "#f00", "#0f0", "#00f", "#ff0", "#0ff", "#fff" ] ] } } } } }
+    },
+    "(":{
+      "type":[ "colored", "passunder", "animatedObject", "sceneObject", "enemyWall" ],
+      "image":"tiles", "tileX":24, "tileY":40, "width":8, "height":8,
+      "animations":{ "idle":{ "frames":2, "loopTo":0 } },
+      "animation":"idle",
+      "colorId":"color2"
+    },
+    ")":{ "set":{ "_":[ "stencil", "(" ] }, "tileX":40, "tileY":40 },
+    "-":{ "type":[ "colored", "passunder", "sceneObject", "enemyWall" ], "image":"tiles", "tileX":0, "tileY":16, "width":8, "height":8, "colorId":"color1" },
+    "<":{
+      "type":[ "colored", "conveyor", "animatedObject", "sceneObject", "enemyWall" ],
+      "image":"tiles", "tileX":0, "tileY":40, "width":8, "height":8,
+      "animations":{ "idle":{ "frames":[ 0, 1, 2 ], "speed":2, "loopTo":0 } },
+      "animation":"idle",
+      "colorId":"color2",
+      "conveyorSide":-0.4
+    },
+    ">":{
+      "type":[ "colored", "conveyor", "animatedObject", "sceneObject", "enemyWall" ],
+      "image":"tiles", "tileX":0, "tileY":40, "width":8, "height":8,
+      "animations":{ "idle":{ "frames":[ 2, 1, 0 ], "speed":2, "loopTo":0 } },
+      "animation":"idle",
+      "colorId":"color2",
+      "conveyorSide":0.4
+    },
+    "^":{ "type":[ "colored", "kill", "sceneObject", "enemyWall" ], "image":"tiles", "tileX":0, "tileY":32, "width":8, "height":8, "colorId":"color4" },
+    "v":{ "set":{ "_":[ "stencil", "^" ] }, "tileX":8, "tileY":32 },
+    "x":{ "type":[ "enemyWall", "sceneObject" ], "image":"tiles", "tileX":16, "tileY":0, "width":8, "height":8, "visible":0 },
+    "~":{
+      "type":[ "colored", "crumble", "passunder", "sceneObject", "enemyWall" ],
+      "image":"tiles", "tileX":0, "tileY":24, "width":8, "height":8,
+      "colorId":"color3"
+    }
+  },
+  "execute":{
+    "as":{ "_":"variable" },
+    "set":{ "highscore":0 }
+  },
+  "scenes":{
+    "intro":{
+      "object":[
+        { "set":{ "_":[ "stencil", "modelPartLogo" ] }, "image":"logo", "tileX":0, "tileY":0, "width":104, "height":18, "x":10, "y":-20, "bgcolor":"#f00" },
+        { "set":{ "_":[ "stencil", "modelPartLogo" ] }, "image":"logo", "tileX":104, "tileY":0, "width":124, "height":18, "x":114, "y":-20, "bgcolor":"#f00" },
+        {
+          "box":"label", "width":256,
+          "zIndex":5, "x":0, "y":130,
+          "color":"#fff",
+          "font":"spectrum", "fontSize":20, "lineHeight":20, "outline":"#000", "textAlign":"center", "html":"PRESS START",
+          "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "visible":0 }, "wait":10 }, { "set":{ "visible":1 }, "wait":10, "loopTo":0 } ] } }
+        }
+      ],
+      "execute":{ "as":{ "_":"variable" }, "set":{ "lives":3, "score":0, "stage":1 } },
+      "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":{ "_":[ "variable", "stage" ] }, "withTransition":3 } } }
+    },
+    "1":{
+      "object":[
+        { "set":{ "_":[ "stencil", "player" ] }, "x":8, "y":104 },
+        { "set":{ "_":[ "stencil", "exit" ] }, "x":232, "y":104 },
+        { "set":{ "_":[ "stencil", "enemy" ] }, "tileX":32, "tileY":0, "x":104, "y":56, "forceX":-1 }
+      ],
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "color0":"#f00",
+      "color1":"#0f0",
+      "color2":"#00f",
+      "color3":"#0ff",
+      "color4":"#f00",
+      "roomName":"Retrogaming Calls",
+      "tilemap":{
+        "tileWidth":8,
+        "tileHeight":8,
+        "map":[
+          "W         $ v    v           $ W",
+          "W                $             W",
+          "W                              W",
+          "W                              W",
+          "W                      ^$  ^   W",
+          "W-------------~~~~-~~~~--------W",
+          "W                             $W",
+          "W---   x                       W",
+          "W      x       WWW ^           W",
+          "W----  (>>>>>>>>>>>>>>>>)      W",
+          "W                            --W",
+          "W                              W",
+          "W           ^       WWWW~~~~---W",
+          "W    ---------------           W",
+          "W                              W",
+          "W------------------------------W"
+        ]
+      }
+    },
+    "2":{
+      "object":[
+        { "set":{ "_":[ "stencil", "exit" ] }, "x":232, "y":104 },
+        { "set":{ "_":[ "stencil", "enemy" ] }, "tileX":0, "tileY":16, "x":192, "y":104, "forceX":-1 },
+        { "set":{ "_":[ "stencil", "enemy" ] }, "tileX":32, "tileY":16, "x":104, "y":24, "forceX":-1 },
+        { "set":{ "_":[ "stencil", "player" ] }, "x":8, "y":104 }
+      ],
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "color0":"#ff0",
+      "color1":"#f0f",
+      "color2":"#0f0",
+      "color3":"#7f007f",
+      "color4":"#007f7f",
+      "roomName":"The Beast Friends",
+      "tilemap":{
+        "tileWidth":8,
+        "tileHeight":8,
+        "map":[
+          "W                  WWWWWWWWWWWWW",
+          "W      $                $     vW",
+          "W                              W",
+          "W                   x~~~-      W",
+          "W                   x          W",
+          "W-------------------        W  W",
+          "W                    ----W~~W  W",
+          "W-~~~~~                  W$ W  W",
+          "W                        W~~W  W",
+          "W  $     -------         W~~W  W",
+          "W                  ~~~~  W~~W  W",
+          "W  (>>)                  W~~W  W",
+          "W             ---- $     W~~W  W",
+          "W       ~~~~                   W",
+          "W                              W",
+          "W------------------------------W"
+        ]
+      }
+    },
+    "3":{
+      "object":[
+        { "set":{ "_":[ "stencil", "exit" ] }, "x":120, "y":104 },
+        { "set":{ "_":[ "stencil", "player" ] }, "x":8, "y":104 },
+        { "set":{ "_":[ "stencil", "enemy" ] }, "tileX":0, "tileY":32, "x":80, "y":64, "forceX":-1 },
+        { "set":{ "_":[ "stencil", "enemy" ] }, "tileX":32, "tileY":32, "x":144, "y":8, "forceX":1 },
+        { "set":{ "_":[ "stencil", "enemy" ] }, "tileX":32, "tileY":32, "x":144, "y":104, "forceX":1 }
+      ],
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "color0":"#00f",
+      "color1":"#ff0",
+      "color2":"#0f0",
+      "color3":"#7f0000",
+      "color4":"#ff0",
+      "roomName":"Made in Sweden",
+      "tilemap":{
+        "tileWidth":8,
+        "tileHeight":8,
+        "map":[
+          "W             WWWWWWWWWWWWWWWWWW",
+          "W                x             W",
+          "W                x             W",
+          "W              --W~~~~~~~~~~~~$W",
+          "W                W~~~~~~~~~~~~~W",
+          "W      WWWWW  ---W~~~~~~~~~~^~~W",
+          "W---             W~~$~~~~~~~~~~W",
+          "W                W~~~~~~~~~$~~~W",
+          "W-          x    W~~~~~^~~~~~~~W",
+          "W           x ---W~~~~~~~~~~~~~W",
+          "W-----------     W~$~~~~~~~~^~~W",
+          "W                W~~~~~~~~~~~~$W",
+          "W             WWWW~~~~~^~~~~~~~W",
+          "W        ---  W                W",
+          "W             W                W",
+          "W-------------WWWWWWWWWWWWWWWWWW"
+        ]
+      }
+    },
+    "4":{
+      "object":[
+        { "set":{ "_":[ "stencil", "player" ] }, "x":232, "y":104, "flipX":1 },
+        { "set":{ "_":[ "stencil", "enemy" ] }, "tileX":0, "tileY":48, "x":200, "y":24, "forceY":-1 },
+        { "set":{ "_":[ "stencil", "enemy" ] }, "tileX":0, "tileY":48, "x":160, "y":48, "forceY":1 },
+        { "set":{ "_":[ "stencil", "enemy" ] }, "tileX":0, "tileY":48, "x":80, "y":72, "forceY":-1 },
+        { "set":{ "_":[ "stencil", "enemy" ] }, "tileX":0, "tileY":48, "x":40, "y":96, "forceY":1 },
+        { "set":{ "_":[ "stencil", "enemy" ] }, "tileX":32, "tileY":48, "x":136, "y":16, "forceX":1 },
+        { "set":{ "_":[ "stencil", "enemy" ] }, "tileX":32, "tileY":48, "x":104, "y":48, "forceX":-1 },
+        { "set":{ "_":[ "stencil", "enemy" ] }, "tileX":32, "tileY":48, "x":136, "y":80, "forceX":1 },
+        { "set":{ "_":[ "stencil", "enemy" ] }, "tileX":32, "tileY":48, "x":120, "y":104, "forceX":1 },
+        { "set":{ "_":[ "stencil", "exit" ] }, "x":232, "y":0 }
+      ],
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "color0":"#f00",
+      "color1":"#f00",
+      "color2":"#f00",
+      "color3":"#f00",
+      "color4":"#f00",
+      "roomName":"Mike's fine oil",
+      "tilemap":{
+        "tileWidth":8,
+        "tileHeight":8,
+        "map":[
+          "W    xx   xx        xx   xx W  W",
+          "W              $               W",
+          "W           x      x           W",
+          "W           x      x           W",
+          "W           --------           W",
+          "W  --  ---            ---  ----W",
+          "W           x      x           W",
+          "W--         x      x           W",
+          "W           --------  ---  --  W",
+          "W  --  ---  x      x           W",
+          "W           x      x         --W",
+          "W           x      x           W",
+          "W  --  ---  --------  ---  --  W",
+          "W--                            W",
+          "W                              W",
+          "--------------------------------"
+        ]
+      }
+    },
+    "5":{
+      "object":[
+        { "set":{ "_":[ "stencil", "player" ] }, "x":224, "y":104, "flipX":1 },
+        { "set":{ "_":[ "stencil", "enemy" ] }, "tileX":32, "tileY":64, "x":160, "y":104, "forceX":-1 },
+        { "set":{ "_":[ "stencil", "exit" ] }, "x":152, "y":64 },
+        { "set":{ "_":[ "stencil", "enemy" ] }, "tileX":0, "tileY":64, "x":192, "y":72, "forceY":1 },
+        { "set":{ "_":[ "stencil", "enemy" ] }, "tileX":32, "tileY":64, "x":112, "y":32, "forceX":1, "forceY":1 },
+        { "set":{ "_":[ "stencil", "enemy" ] }, "tileX":0, "tileY":64, "x":40, "y":24, "forceX":-1, "forceY":1 }
+      ],
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "color0":"#0f0",
+      "color1":"#f00",
+      "color2":"#0ff",
+      "color3":"#7f0000",
+      "color4":"#0f0",
+      "lastScene":1,
+      "roomName":"Deploying on Friday",
+      "tilemap":{
+        "tileWidth":8,
+        "tileHeight":8,
+        "map":[
+          "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+          "x                              x",
+          "x                              x",
+          "x                              x",
+          "x                    WWWWWWWWWWW",
+          "x                    W $       W",
+          "WWWWWWWWWWWWWWWWWWWWWW        $W",
+          "W                              W",
+          "W                            --W",
+          "W                              W",
+          "W(<<<<<<<<<<<<<<<<<<<<)   ~    W",
+          "W      v$  v $  v $ v       -  W",
+          "W--                            W",
+          "W   --                         W",
+          "W                              W",
+          "W------------------------------W"
+        ]
+      }
+    }
+  }
+}
