@@ -1,0 +1,1445 @@
+{
+  "name":"Battlefield",
+  "author":"KesieV",
+  "year":2015,
+  "genre":"Tower Defense",
+  "description":"The term 'Real time strategy game' was born with the game Dune II (1992), which - as usual - wasn't the first real time strategy in history but it was the most refined one at his time, defining the foundations for the future titles of the genre. For sure the declared influence of computer desktop interfaces for the interactions and the consequent use of the mouse as input device had a key role in its success, compensating the complexity of the performed tasks with a faster access. The 'Tower defense' subgenre is now considered the 'dumb brother' of real time strategy games, mostly because of its tight bond with mobile and casual gaming. But history tells us another story. The first recognized tower defense game in history is Rampart (1990), labelled as combination of shoot'em up and puzzle games. Each round was split in two repeating phases: an attacking phase, in which enemy units attacks the player structures and a repair phase, in which the player builds new structures in order to defend himself. These well splitted phases are genre-defining for tower defense games and gives them its simplified gameplay, but we've to consider that Rampart was a game usually played on an arcades with a joystick, two buttons and no scrolling, at least 2-3 years far from for the wide spread of graphic user interfaces on computers. So the tower defense genre is more a precursor of the RTS genre that cleverly worked around the limits of controls and the lack of familiar human user interface elements instead of a stripped down version of 'hardcore gamers'! Now, plot! The evil Red Team is trying to destroy our headquarters! We can't let them pass! Build, repair and evolve defense towers around the battlefield, take down enemy units, earn money and try to survive! Use UP/DOWN/LEFT/RIGHT for moving your cursor around the battlefield, hold down the A BUTTON while on a buildable area for opening the build menu. While holding the A BUTTON use the LEFT/RIGHT button to choose a structure and release the A BUTTON for building it. Hold the A BUTTON down on a structure of yours for seeing its stats and changing them: hit UP for upgrading it, DOWN for removing it and earning some money and LEFT or RIGHT for repairing it. Hold the A BUTTON down on your base for seeing its stats and hit LEFT or RIGHT for starting immediately the next wave.",
+  "screenshots":[ "battlefield-1.png", "battlefield-2.png" ],
+  "hardware":{
+    "width":256,
+    "height":192,
+    "texture":"scanlines"
+  },
+  "cheats":{
+    "unlimitedMoney":"Unlimited money"
+  },
+  "resources":{
+    "intro":"intro.png",
+    "tiles":"tiles.png",
+    "defaultsprites":"../default/sprites.png",
+    "scanlines":"../default/scanlines.png"
+  },
+  "stencils":{
+    "codeTimer":[
+      {
+        "object":[
+          {
+            "type":[ "hud", "wavetimer" ],
+            "hudType":"label", "label":"TIME %number|variable.timer|0|2%s: %text|variable.waveName%",
+            "width":240, "height":30,
+            "zIndex":20, "x":8, "y":19,
+            "font":"spectrum", "lineHeight":8, "outline":"#000"
+          },
+          {
+            "type":"intromessage",
+            "width":256, "height":10,
+            "zIndex":20, "x":0, "y":91,
+            "font":"spectrum", "lineHeight":10, "outline":"#000", "textAlign":"center", "html":"GET READY!",
+            "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "color":"#f00" }, "wait":1 }, { "set":{ "color":"#ff0" }, "wait":1, "loopTo":0 } ] } }
+          }
+        ]
+      },
+      { "wait":25 },
+      { "as":{ "_":[ "object", "intromessage" ] }, "remove":1 },
+      { "wait":25 },
+      { "when":{ "_":[ "variable", "timer", "isGreaterThan", 0 ] }, "subtract":1, "to":{ "_":[ "variable", "timer" ] } },
+      { "loopTo":-2, "until":{ "_":[ "variable", "timer", "not" ] } },
+      { "as":{ "_":[ "object", "wavetimer" ] }, "remove":1 },
+      {
+        "object":{
+          "type":"wavetimer",
+          "width":256, "height":10,
+          "zIndex":20, "x":0, "y":91,
+          "font":"spectrum", "lineHeight":10, "outline":"#000", "textAlign":"center", "html":"THEY'RE COMING!",
+          "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "color":"#f00" }, "wait":1 }, { "set":{ "color":"#ff0" }, "wait":1, "loopTo":0 } ] } }
+        }
+      },
+      { "wait":25 },
+      { "as":{ "_":[ "object", "wavetimer" ] }, "remove":1 }
+    ],
+    "codeWaveWait":[ { "wait":25 }, { "wait":1, "loop":1, "until":{ "_":[ "objectTyped", "enemy", "not" ] } }, { "wait":25 } ],
+    "removeWithCloud":[
+      {
+        "times":20,
+        "object":{ "_":[ "stencil", "smoke" ] },
+        "execute":[
+          { "sum":{ "_":[ "randomNumber", [ { "_":[ "this", "width", "/", -2 ] }, { "_":[ "this", "width", "/", 2 ] } ] ] }, "to":{ "_":[ "that", "x" ] } },
+          { "sum":{ "_":[ "randomNumber", [ { "_":[ "this", "height", "/", -2 ] }, { "_":[ "this", "height", "/", 2 ] } ] ] }, "to":{ "_":[ "that", "y" ] } }
+        ]
+      },
+      { "remove":1 }
+    ],
+    "removeWithSmoke":[ { "object":{ "set":{ "_":[ "stencil", "smoke" ] }, "forceY":-1 } }, { "remove":1 } ],
+    "modelEnemy":{
+      "type":"enemy",
+      "image":"tiles", "width":16, "height":16,
+      "zIndex":1,
+      "states":{
+        "execute":{ "set":{ "x":{ "_":[ "this", "startAt", "x" ] }, "y":{ "_":[ "this", "startAt", "y" ] }, "walkAngle":{ "_":[ "this", "startAt", "walkAngle" ] } } },
+        "code":{
+          "name":"Execute",
+          "data":{
+            "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "tower" ] } ] },
+            "execute":[
+              { "subtract":{ "_":[ "this", "damage" ] }, "to":{ "_":[ "variable", "towerHealth" ] } },
+              {
+                "when":{ "_":[ "variable", "towerHealth", "isLessEqualThan", 0 ] },
+                "execute":[ { "as":{ "_":[ "objectTyped", "tower" ] }, "set":{ "animation":"destroyed" } }, { "as":{ "_":"scene" }, "set":{ "state":"gameover" } } ]
+              },
+              { "as":{ "_":[ "this", "cannonObject" ] }, "remove":1 },
+              { "_":[ "stencil", "removeWithCloud" ] }
+            ]
+          }
+        },
+        "actions":{
+          "name":"hit",
+          "execute":[
+            { "subtract":{ "_":[ "that", "damage" ] }, "to":{ "_":[ "this", "health" ] } },
+            {
+              "when":{ "_":[ "this", "health", "isLessEqualThan", 0 ] },
+              "execute":[
+                { "_":[ "stencil", "removeWithSmoke" ] },
+                { "when":{ "_":[ "this", "cannonObject" ] }, "as":{ "_":"that" }, "remove":1 },
+                { "sum":{ "_":[ "this", "value" ] }, "to":{ "_":[ "variable", "money" ] } },
+                { "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "color":"#fff", "html":{ "_":[ "that", "value", ".", "$" ] } } }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "modelPopupLabel":{
+      "width":100, "height":10,
+      "zIndex":10000, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "that", "y", "-", 5 ] },
+      "color":"#fff",
+      "font":"spectrum", "lineHeight":12, "outline":"#000", "textAlign":"center",
+      "speed":0.5,
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[ { "subtract":{ "_":[ "this", "speed" ] }, "to":{ "_":[ "this", "y" ] }, "wait":1, "loop":1, "cycles":15 }, { "remove":1 } ]
+        }
+      }
+    },
+    "modelStage":{
+      "states":[
+        {
+          "execute":{ "as":{ "_":"variable" }, "set":{ "money":{ "_":[ "scene", "startingMoney" ] }, "towerHealth":{ "_":[ "scene", "towerHealth" ] } } },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              {
+                "object":{
+                  "type":"intro",
+                  "box":"label", "width":256,
+                  "zIndex":100, "x":0, "y":60,
+                  "color":"#fff",
+                  "font":"spectrum", "outline":"#000", "textAlign":"center", "html":{ "_":[ "STAGE ", ".", { "_":[ "variable", "stage" ] } ] }
+                }
+              },
+              { "wait":25 },
+              {
+                "object":{
+                  "type":"intro",
+                  "box":"label", "width":256,
+                  "zIndex":100, "x":0, "y":80,
+                  "color":"#f00",
+                  "font":"spectrum", "outline":"#000", "textAlign":"center", "html":{ "_":[ "scene", "stageName" ] }
+                }
+              },
+              { "wait":50 },
+              { "as":{ "_":[ "object", "intro" ] }, "remove":1 },
+              {
+                "object":[
+                  {
+                    "type":"hud",
+                    "hudType":"label", "label":"TURRETS: %number|object.playerstructure.count|0%/%number|scene.maxStructures% MONEY: %number|variable.money%$",
+                    "width":240, "height":30,
+                    "zIndex":20, "x":8, "y":8,
+                    "font":"spectrum", "lineHeight":8, "outline":"#000"
+                  },
+                  { "_":[ "stencil", "cursor" ] }
+                ]
+              },
+              { "subsequence":{ "_":[ "stencil", "dataWaves", { "_":[ "scene", "wave" ] } ] } },
+              { "subsequence":{ "_":[ "stencil", "codeWaveWait" ] } },
+              { "as":{ "_":[ "object", "gameElement" ] }, "remove":1 },
+              { "sum":{ "_":[ "variable", "towerHealth", "*", 10 ] }, "to":{ "_":[ "variable", "score" ] } },
+              { "sum":{ "_":[ "variable", "money" ] }, "to":{ "_":[ "variable", "score" ] } },
+              {
+                "object":{
+                  "type":"wavetimer",
+                  "width":256, "height":10,
+                  "zIndex":20, "x":0, "y":91,
+                  "font":"spectrum", "lineHeight":10, "outline":"#000", "textAlign":"center", "html":"STAGE CLEAR!",
+                  "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "color":"#fff" }, "wait":5 }, { "set":{ "color":"#0f0" }, "wait":5, "loopTo":0 } ] } }
+                }
+              },
+              { "wait":25 },
+              { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+              {
+                "when":{ "_":[ "scene", "lastScene" ] },
+                "set":{ "state":"ending" },
+                "elseExecute":[ { "sum":1, "to":{ "_":[ "variable", "stage" ] } }, { "gotoScene":{ "_":[ "variable", "stage" ] } } ]
+              }
+            ]
+          }
+        },
+        {
+          "name":"gameover",
+          "execute":[
+            { "as":{ "_":[ "object", "gameElement" ] }, "remove":1 },
+            {
+              "object":{
+                "type":"wavetimer",
+                "width":256, "height":10,
+                "zIndex":20, "x":0, "y":91,
+                "font":"spectrum", "lineHeight":10, "outline":"#000", "textAlign":"center", "html":"GAME OVER",
+                "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "color":"#00f" }, "wait":5 }, { "set":{ "color":"#fff" }, "wait":5, "loopTo":0 } ] } }
+              }
+            }
+          ],
+          "code":{ "name":"Sequence", "data":[ { "wait":25 }, { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } }, { "gotoScene":"intro" } ] }
+        },
+        {
+          "name":"ending",
+          "execute":[
+            { "as":{ "_":[ "object", "wavetimer" ] }, "remove":1 },
+            {
+              "object":[
+                {
+                  "width":256, "height":30,
+                  "zIndex":100, "x":0, "y":80,
+                  "color":"#fff",
+                  "font":"spectrum", "fontSize":40, "lineHeight":30, "outline":"#000", "textAlign":"center", "html":"YOU SURVIVED!",
+                  "states":{
+                    "code":{
+                      "name":"Execute",
+                      "data":{ "when":{ "_":[ "this", "color", "isEqualTo", "#fff" ] }, "set":{ "color":"#0f0" }, "elseExecute":{ "set":{ "color":"#fff" } } }
+                    }
+                  }
+                },
+                {
+                  "box":"label", "width":256,
+                  "zIndex":100, "x":0, "y":100,
+                  "color":"#fff",
+                  "font":"spectrum", "outline":"#000", "textAlign":"center", "html":{ "_":[ "Final score: ", ".", { "_":[ "variable", "score" ] }, ".", "pts." ] }
+                }
+              ]
+            }
+          ],
+          "code":[
+            {
+              "name":"Sequence",
+              "data":[
+                {
+                  "as":{ "_":[ "randomObject", { "_":[ "object", "fireworks" ] } ] },
+                  "execute":{
+                    "object":{
+                      "image":"defaultsprites", "tileX":216, "tileY":104, "width":8, "height":8,
+                      "zIndex":50, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+                      "forceY":-3,
+                      "states":{
+                        "code":[
+                          { "name":"Physics", "data":{ "gravityY":0.1 } },
+                          { "name":"Execute", "data":{ "when":{ "_":[ "this", "forceY", "not" ] }, "execute":{ "_":[ "stencil", "removeWithCloud" ] } } }
+                        ]
+                      }
+                    }
+                  }
+                },
+                { "wait":25, "loopTo":0 }
+              ]
+            },
+            { "name":"Sequence", "data":[ { "wait":25 }, { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } }, { "gotoScene":"intro" } ] }
+          ]
+        }
+      ]
+    },
+    "modelStateIdle":{ "execute":{ "as":{ "_":[ "object", "gui" ] }, "remove":1 } },
+    "modelStateMenu":{
+      "execute":[
+        { "as":{ "_":"variable" }, "set":{ "option":0 } },
+        { "as":{ "_":[ "object", "gui" ] }, "remove":1 },
+        {
+          "when":{ "_":[ "this", "y", "isGreaterThan", 96 ] },
+          "object":{ "type":[ "box", "gui", "gameElement" ], "width":240, "height":52, "x":8, "y":8, "bgcolor":"#000", "border":"#fff" },
+          "into":{ "_":"scenehud" },
+          "elseExecute":{
+            "object":{ "type":[ "box", "gui", "gameElement" ], "width":240, "height":52, "x":8, "y":132, "bgcolor":"#000", "border":"#fff" },
+            "into":{ "_":"scenehud" }
+          }
+        }
+      ]
+    },
+    "modelStructurePlayer":{
+      "type":[ "playerstructure", "fireworks" ],
+      "changeLabel":"",
+      "states":[
+        {
+          "set":{ "type":{ "_":[ "this", "structureType" ] }, "visible":1, "health":{ "_":[ "this", "maxHealth" ] } },
+          "actions":{
+            "name":"hit",
+            "execute":[
+              { "subtract":{ "_":[ "that", "damage" ] }, "to":{ "_":[ "this", "health" ] } },
+              {
+                "when":{ "_":[ "this", "health", "isLessEqualThan", 0 ] },
+                "execute":[ { "_":[ "stencil", "removeWithSmoke" ] }, { "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "color":"#f00", "html":"KILLED!" } } ]
+              }
+            ]
+          }
+        },
+        {
+          "name":"changing",
+          "set":{ "removeType":{ "_":[ "this", "structureType" ] }, "visible":0 },
+          "execute":[
+            { "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "color":"#ff0", "html":"WAIT" } },
+            {
+              "object":{
+                "image":"tiles", "tileX":80, "tileY":64, "width":16, "height":16,
+                "zIndex":2, "x":{ "_":[ "that", "x" ] }, "y":{ "_":[ "that", "y" ] },
+                "states":{ "code":{ "name":"Execute", "data":{ "sum":16, "to":{ "_":[ "this", "angle" ] } } } }
+              },
+              "execute":{ "set":{ "hourglass":{ "_":"that" } } }
+            }
+          ],
+          "code":{
+            "name":"Execute",
+            "data":{
+              "when":{ "_":[ "this", "timer" ] },
+              "execute":[ { "subtract":1, "to":{ "_":[ "this", "timer" ] } }, { "set":{ "seconds":{ "_":[ "this", "timer", "/", 25, "ceil" ] } } } ],
+              "elseExecute":[
+                { "when":{ "_":[ "this", "change" ] }, "set":{ "_":[ "this", "change" ] } },
+                { "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "color":"#0f0", "html":"READY!" } },
+                { "as":{ "_":[ "this", "hourglass" ] }, "remove":1 },
+                { "set":{ "change":0, "changeLabel":"", "state":"default" } }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "bullet":{
+      "image":"defaultsprites", "width":9, "height":8,
+      "zIndex":5, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "states":{
+        "execute":{ "applyVector":{ "angle":{ "_":[ "this", "bulletAngle" ] }, "length":{ "_":[ "this", "bulletSpeed" ] } } },
+        "code":[
+          {
+            "name":"Execute",
+            "data":[
+              { "sum":{ "_":[ "this", "spinSpeed" ] }, "to":{ "_":[ "this", "angle" ] } },
+              { "when":{ "_":[ "this", "distanceTo", { "_":[ "this", "emitter" ] }, "isGreaterEqualThan", { "_":[ "this", "range" ] } ] }, "remove":1 },
+              {
+                "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "wall" ] } ] },
+                "remove":1,
+                "elseExecute":{
+                  "when":{ "_":[ "this", "collidesWith", { "_":[ "object", { "_":[ "this", "hits" ] } ] } ] },
+                  "execute":[ { "as":{ "_":"that" }, "executeAction":"hit" }, { "remove":1 } ]
+                }
+              }
+            ]
+          },
+          { "name":"Physics" }
+        ]
+      }
+    },
+    "cursor":{
+      "type":"gameElement",
+      "image":"defaultsprites", "tileX":288, "tileY":32, "width":16, "height":16,
+      "zIndex":15, "x":128, "y":96,
+      "animations":{ "idle":{ "frames":2, "loopTo":0 } },
+      "animation":"idle",
+      "states":[
+        {
+          "like":{ "_":[ "stencil", "modelStateIdle" ] },
+          "execute":{ "as":{ "_":"variable" }, "set":{ "subject":0 } },
+          "code":{
+            "name":"Execute",
+            "data":[
+              {
+                "when":{ "_":[ "keyRight", "isHit" ] },
+                "sum":16,
+                "to":{ "_":[ "this", "x" ] },
+                "elseExecute":{
+                  "when":{ "_":[ "keyLeft", "isHit" ] },
+                  "subtract":16,
+                  "to":{ "_":[ "this", "x" ] },
+                  "elseExecute":{
+                    "when":{ "_":[ "keyDown", "isHit" ] },
+                    "sum":16,
+                    "to":{ "_":[ "this", "y" ] },
+                    "elseExecute":{ "when":{ "_":[ "keyUp", "isHit" ] }, "subtract":16, "to":{ "_":[ "this", "y" ] } }
+                  }
+                }
+              },
+              { "when":{ "_":[ "this", "x", "isLessThan", 0 ] }, "set":{ "x":240 } },
+              { "when":{ "_":[ "this", "x", "isGreaterThan", 255 ] }, "set":{ "x":0 } },
+              { "when":{ "_":[ "this", "y", "isLessThan", 0 ] }, "set":{ "y":176 } },
+              { "when":{ "_":[ "this", "y", "isGreaterThan", 191 ] }, "set":{ "y":0 } },
+              {
+                "when":{ "_":[ "keyA", "isDown" ] },
+                "execute":{
+                  "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "playerstructure" ] } ] },
+                  "execute":[ { "assign":{ "_":"that" }, "to":{ "_":[ "variable", "subject" ] } }, { "set":{ "state":"editStructure" } } ],
+                  "elseExecute":{
+                    "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "buildable" ] } ] },
+                    "set":{ "state":"build" },
+                    "elseExecute":{ "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "tower" ] } ] }, "set":{ "state":"towerStatus" } }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name":"editStructure",
+          "like":{ "_":[ "stencil", "modelStateMenu" ] },
+          "set":{ "subjectState":"" },
+          "execute":{
+            "object":{
+              "type":"hud",
+              "hudType":"label", "label":"%text|variable.subject.label% (%number|variable.subject.health%/%number|variable.subject.maxHealth%)",
+              "width":224, "height":20,
+              "x":8, "y":5,
+              "font":"spectrum", "lineHeight":8
+            },
+            "into":{ "_":[ "objectTyped", "box" ] }
+          },
+          "code":{
+            "name":"Execute",
+            "data":{
+              "when":{ "_":[ "variable", "subject", "removed" ] },
+              "set":{ "state":"default" },
+              "elseExecute":[
+                {
+                  "when":{ "_":[ "variable", "subject", "state", "isNotEqualTo", { "_":[ "this", "subjectState" ] } ] },
+                  "execute":[
+                    { "as":{ "_":[ "object", "boxcontent" ] }, "remove":1 },
+                    { "set":{ "subjectState":{ "_":[ "variable", "subject", "state" ] } } },
+                    {
+                      "when":{ "_":[ "this", "subjectState", "isEqualTo", "changing" ] },
+                      "object":{
+                        "type":[ "hud", "boxcontent" ],
+                        "hudType":"label", "label":"%text|variable.subject.changeLabel%... (%number|variable.subject.seconds%s left)",
+                        "width":224, "height":20,
+                        "x":8, "y":13,
+                        "font":"spectrum", "lineHeight":8
+                      },
+                      "into":{ "_":[ "objectTyped", "box" ] },
+                      "elseExecute":{
+                        "when":{ "_":[ "this", "subjectState", "isEqualTo", "default" ] },
+                        "execute":[
+                          {
+                            "object":[
+                              {
+                                "type":[ "hud", "boxcontent" ],
+                                "hudType":"label", "label":"&lt;-&gt; Repair (%number|variable.subject.repairPrice%$/%number|variable.money%$)",
+                                "width":224, "height":20,
+                                "x":8, "y":13,
+                                "color":"#ff0",
+                                "font":"spectrum", "lineHeight":8
+                              },
+                              {
+                                "type":[ "hud", "boxcontent" ],
+                                "hudType":"label", "label":"DOWN Remove (+%number|variable.subject.removeEarn%$)",
+                                "width":224, "height":20,
+                                "x":8, "y":21,
+                                "color":"#f00",
+                                "font":"spectrum", "lineHeight":8
+                              }
+                            ],
+                            "into":{ "_":[ "objectTyped", "box" ] }
+                          },
+                          {
+                            "when":{ "_":[ "variable", "subject", "improvement" ] },
+                            "object":{
+                              "type":[ "hud", "boxcontent" ],
+                              "hudType":"label", "label":"UP (%text|variable.subject.improvement.price%$/%number|variable.money%$)<br>%text|variable.subject.improvement.label%",
+                              "width":224, "height":20,
+                              "x":8, "y":29,
+                              "color":"#0f0",
+                              "font":"spectrum", "lineHeight":8
+                            },
+                            "into":{ "_":[ "objectTyped", "box" ] }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                },
+                {
+                  "when":{ "_":[ "this", "subjectState", "isEqualTo", "default" ] },
+                  "execute":{
+                    "when":{ "_":[ "keyRight", "isHit", "or", { "_":[ "keyLeft", "isHit" ] } ] },
+                    "execute":[
+                      {
+                        "when":{ "_":[ "variable", "money", "isGreaterEqualThan", { "_":[ "variable", "subject", "repairPrice" ] } ] },
+                        "execute":[
+                          {
+                            "when":{ "_":[ "cheat", "unlimitedMoney", "not" ] },
+                            "subtract":{ "_":[ "variable", "subject", "repairPrice" ] },
+                            "to":{ "_":[ "variable", "money" ] }
+                          },
+                          {
+                            "as":{ "_":[ "variable", "subject" ] },
+                            "set":{ "changeLabel":"Repairing", "timer":{ "_":[ "variable", "subject", "repairTimer" ] }, "state":"changing" }
+                          }
+                        ],
+                        "elseExecute":{ "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "color":"#ff0", "html":"NO MONEY" } }
+                      },
+                      { "set":{ "state":"default" } }
+                    ],
+                    "elseExecute":{
+                      "when":{ "_":[ "keyUp", "isHit", "and", { "_":[ "variable", "subject", "improvement" ] } ] },
+                      "execute":[
+                        {
+                          "when":{ "_":[ "variable", "money", "isGreaterEqualThan", { "_":[ "variable", "subject", "improvement", "price" ] } ] },
+                          "execute":[
+                            {
+                              "when":{ "_":[ "cheat", "unlimitedMoney", "not" ] },
+                              "subtract":{ "_":[ "variable", "subject", "improvement", "price" ] },
+                              "to":{ "_":[ "variable", "money" ] }
+                            },
+                            {
+                              "as":{ "_":[ "variable", "subject" ] },
+                              "set":{
+                                "change":{ "_":[ "variable", "subject", "improvement" ] },
+                                "changeLabel":"Upgrading",
+                                "timer":{ "_":[ "variable", "subject", "improvement", "timer" ] },
+                                "state":"changing"
+                              }
+                            }
+                          ],
+                          "elseExecute":{ "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "color":"#ff0", "html":"NO MONEY" } }
+                        },
+                        { "set":{ "state":"default" } }
+                      ],
+                      "elseExecute":{
+                        "when":{ "_":[ "keyDown", "isHit" ] },
+                        "execute":[
+                          { "when":{ "_":[ "cheat", "unlimitedMoney", "not" ] }, "sum":{ "_":[ "variable", "subject", "removeEarn" ] }, "to":{ "_":[ "variable", "money" ] } },
+                          { "as":{ "_":[ "variable", "subject" ] }, "execute":{ "_":[ "stencil", "removeWithSmoke" ] } },
+                          { "set":{ "state":"default" } }
+                        ]
+                      }
+                    }
+                  }
+                },
+                { "when":{ "_":[ "keyA", "isUp" ] }, "set":{ "state":"default" } }
+              ]
+            }
+          }
+        },
+        {
+          "name":"build",
+          "like":{ "_":[ "stencil", "modelStateMenu" ] },
+          "execute":[
+            { "as":{ "_":"variable" }, "set":{ "currentStructure":{ "_":[ "stencil", "dataStructures", { "_":[ "variable", "option" ] } ] } } },
+            {
+              "object":[
+                {
+                  "type":"hud",
+                  "hudType":"label", "label":"&lt;-&gt; %text|variable.currentStructure.label%",
+                  "width":224, "height":20,
+                  "x":8, "y":5,
+                  "color":"#ff0",
+                  "font":"spectrum", "lineHeight":8
+                },
+                {
+                  "type":"hud",
+                  "hudType":"label", "label":"Price: %number|variable.currentStructure.price%$/%number|variable.money%$",
+                  "width":224, "height":20,
+                  "x":32, "y":16,
+                  "font":"spectrum", "lineHeight":8
+                },
+                {
+                  "type":"hud",
+                  "hudType":"label", "label":"%text|variable.currentStructure.description%",
+                  "width":224, "height":20,
+                  "x":32, "y":24,
+                  "font":"spectrum", "lineHeight":8
+                },
+                { "image":"tiles", "tileX":64, "tileY":32, "width":16, "height":16, "x":8, "y":16 },
+                {
+                  "image":"tiles", "width":16, "height":16,
+                  "zIndex":2, "x":8, "y":16,
+                  "states":{
+                    "code":{
+                      "name":"Execute",
+                      "data":{ "set":{ "tileX":{ "_":[ "variable", "currentStructure", "tileX" ] }, "tileY":{ "_":[ "variable", "currentStructure", "tileY" ] } } }
+                    }
+                  }
+                }
+              ],
+              "into":{ "_":[ "objectTyped", "box" ] }
+            }
+          ],
+          "code":{
+            "name":"Execute",
+            "data":{
+              "when":{ "_":[ "keyRight", "isHit" ] },
+              "execute":[
+                { "sum":1, "to":{ "_":[ "variable", "option" ] } },
+                {
+                  "when":{ "_":[ "stencil", "dataStructures", { "_":[ "variable", "option" ] } ] },
+                  "as":{ "_":"variable" },
+                  "set":{ "currentStructure":{ "_":[ "stencil", "dataStructures", { "_":[ "variable", "option" ] } ] } },
+                  "elseExecute":{ "as":{ "_":"variable" }, "set":{ "currentStructure":{ "_":[ "stencil", "dataStructures", 0 ] }, "option":0 } }
+                }
+              ],
+              "elseExecute":{
+                "when":{ "_":[ "keyLeft", "isHit" ] },
+                "execute":[
+                  { "subtract":1, "to":{ "_":[ "variable", "option" ] } },
+                  {
+                    "when":{ "_":[ "stencil", "dataStructures", { "_":[ "variable", "option" ] } ] },
+                    "as":{ "_":"variable" },
+                    "set":{ "currentStructure":{ "_":[ "stencil", "dataStructures", { "_":[ "variable", "option" ] } ] } },
+                    "elseExecute":{
+                      "as":{ "_":"variable" },
+                      "set":{
+                        "currentStructure":{ "_":[ "stencil", "dataStructures", { "_":[ "stencil", "dataStructures", "count", "-", 1 ] } ] },
+                        "option":{ "_":[ "stencil", "dataStructures", "count", "-", 1 ] }
+                      }
+                    }
+                  }
+                ],
+                "elseExecute":{
+                  "when":{ "_":[ "keyA", "isUp" ] },
+                  "execute":[
+                    {
+                      "when":{ "_":[ "variable", "currentStructure", "isCancel", "not" ] },
+                      "execute":{
+                        "when":{ "_":[ "variable", "currentStructure", "price", "isLessEqualThan", { "_":[ "variable", "money" ] } ] },
+                        "execute":{
+                          "when":{ "_":[ "object", "playerstructure", "count", "isLessThan", { "_":[ "scene", "maxStructures" ] } ] },
+                          "execute":[
+                            {
+                              "when":{ "_":[ "cheat", "unlimitedMoney", "not" ] },
+                              "subtract":{ "_":[ "variable", "currentStructure", "price" ] },
+                              "to":{ "_":[ "variable", "money" ] }
+                            },
+                            { "as":{ "_":[ "this", "collidesWith", { "_":[ "object", "buildable" ] } ] }, "remove":1 },
+                            {
+                              "object":[
+                                { "type":"buildable", "image":"tiles", "tileX":64, "tileY":32, "width":16, "height":16, "x":{ "_":[ "that", "x" ] }, "y":{ "_":[ "that", "y" ] } },
+                                {
+                                  "set":{ "_":[ "variable", "currentStructure" ] },
+                                  "x":{ "_":[ "that", "x" ] }, "y":{ "_":[ "that", "y" ] },
+                                  "changeLabel":"Building",
+                                  "state":"changing"
+                                }
+                              ]
+                            }
+                          ],
+                          "elseExecute":{ "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "color":"#ff0", "html":"TOO MANY" } }
+                        },
+                        "elseExecute":{ "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "color":"#ff0", "html":"NO MONEY" } }
+                      }
+                    },
+                    { "set":{ "state":"default" } }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "name":"towerStatus",
+          "like":{ "_":[ "stencil", "modelStateMenu" ] },
+          "execute":[
+            {
+              "object":{
+                "type":"hud",
+                "hudType":"label", "label":"Your tower (%number|variable.towerHealth%/%number|scene.towerHealth%)",
+                "width":224, "height":20,
+                "x":8, "y":5,
+                "font":"spectrum", "lineHeight":8
+              },
+              "into":{ "_":[ "objectTyped", "box" ] }
+            },
+            {
+              "when":{ "_":[ "variable", "timer" ] },
+              "object":{ "width":224, "height":20, "x":8, "y":13, "color":"#ff0", "font":"spectrum", "lineHeight":8, "html":"&lt;-&gt; Next wave" },
+              "into":{ "_":[ "objectTyped", "box" ] }
+            }
+          ],
+          "code":{
+            "name":"Execute",
+            "data":{
+              "when":{ "_":[ "keyLeft", "isHit", "or", { "_":[ "keyRight", "isHit" ] }, "and", { "_":[ "variable", "timer" ] } ] },
+              "execute":[ { "as":{ "_":"variable" }, "set":{ "timer":0 } }, { "set":{ "state":"default" } } ],
+              "elseExecute":{ "when":{ "_":[ "keyA", "isUp" ] }, "set":{ "state":"default" } }
+            }
+          }
+        }
+      ]
+    },
+    "dataAttackers":{
+      "airplane":{ "value":80, "set":{ "_":[ "stencil", "airplane" ] }, "tileX":32, "tileY":112, "speed":1, "damage":30, "health":8, "hits":"playerturret" },
+      "hypertank":{
+        "value":400,
+        "set":{ "_":[ "stencil", "tank" ] },
+        "speed":0.2,
+        "damage":30,
+        "health":160,
+        "turret":{
+          "tileX":32, "tileY":96,
+          "aimSpeed":10,
+          "bulletDamage":100,
+          "bulletSpeed":3,
+          "bulletSpinSpeed":30,
+          "bulletTileX":96,
+          "bulletTileY":96,
+          "hits":"playerturret",
+          "range":48,
+          "reloadSpeed":60
+        }
+      },
+      "megatank":{
+        "value":200,
+        "set":{ "_":[ "stencil", "tank" ] },
+        "speed":0.2,
+        "damage":30,
+        "health":80,
+        "turret":{
+          "tileX":16, "tileY":96,
+          "aimSpeed":10,
+          "bulletDamage":10,
+          "bulletSpeed":3,
+          "bulletSpinSpeed":10,
+          "bulletTileX":96,
+          "bulletTileY":96,
+          "hits":"playerturret",
+          "range":48,
+          "reloadSpeed":30
+        }
+      },
+      "tank":{
+        "value":120,
+        "set":{ "_":[ "stencil", "tank" ] },
+        "speed":0.4,
+        "damage":30,
+        "health":40,
+        "turret":{
+          "tileX":0, "tileY":96,
+          "aimSpeed":10,
+          "bulletDamage":2,
+          "bulletSpeed":3,
+          "bulletSpinSpeed":20,
+          "bulletTileX":96,
+          "bulletTileY":96,
+          "hits":"playerturret",
+          "range":48,
+          "reloadSpeed":20
+        }
+      },
+      "truck":{ "value":10, "set":{ "_":[ "stencil", "truck" ] }, "tileX":0, "tileY":128, "speed":1, "damage":20, "health":15 },
+      "warplane":{
+        "value":140,
+        "set":{ "_":[ "stencil", "airplane" ] },
+        "tileX":32, "tileY":112,
+        "speed":0.5,
+        "damage":30,
+        "health":10,
+        "hits":"playerturret",
+        "turret":{
+          "tileX":0, "tileY":96,
+          "aimSpeed":10,
+          "bulletDamage":2,
+          "bulletSpeed":3,
+          "bulletSpinSpeed":10,
+          "bulletTileX":96,
+          "bulletTileY":96,
+          "hits":"playerturret",
+          "range":48,
+          "reloadSpeed":20
+        }
+      }
+    },
+    "dataStructures":[
+      { "label":"Nothing.", "tileX":64, "tileY":32, "description":"", "isCancel":1, "price":0 },
+      {
+        "set":[ { "_":[ "stencil", "turret" ] }, { "_":[ "stencil", "modelStructurePlayer" ] } ],
+        "label":"Vulcan",
+        "tileX":0, "tileY":80,
+        "aimSpeed":10,
+        "bulletDamage":1,
+        "bulletSpeed":3,
+        "bulletSpinSpeed":0,
+        "bulletTileX":216,
+        "bulletTileY":104,
+        "description":"Weak. Short range. High ratio.",
+        "hits":"grounded",
+        "improvement":{ "label":"Super Vulcan", "tileX":16, "tileY":80, "improvement":0, "maxHealth":20, "price":100, "reloadSpeed":8, "removeEarn":50, "timer":125 },
+        "maxHealth":15,
+        "price":50,
+        "range":48,
+        "reloadSpeed":10,
+        "removeEarn":20,
+        "repairPrice":25,
+        "repairTimer":75,
+        "structureType":"playerturret",
+        "timer":125
+      },
+      {
+        "set":[ { "_":[ "stencil", "turret" ] }, { "_":[ "stencil", "modelStructurePlayer" ] } ],
+        "label":"Cannon",
+        "tileX":32, "tileY":80,
+        "aimSpeed":6,
+        "bulletDamage":3,
+        "bulletSpeed":3,
+        "bulletSpinSpeed":0,
+        "bulletTileX":216,
+        "bulletTileY":104,
+        "description":"Strong. Longer range. Low ratio.",
+        "hits":"grounded",
+        "improvement":{ "label":"Mega Cannon", "tileX":48, "tileY":80, "improvement":0, "maxHealth":20, "price":100, "reloadSpeed":10, "removeEarn":50, "timer":150 },
+        "maxHealth":30,
+        "price":150,
+        "range":64,
+        "reloadSpeed":12,
+        "removeEarn":50,
+        "repairPrice":70,
+        "repairTimer":125,
+        "structureType":"playerturret",
+        "timer":150
+      },
+      {
+        "set":[ { "_":[ "stencil", "turret" ] }, { "_":[ "stencil", "modelStructurePlayer" ] } ],
+        "label":"Anti-Air",
+        "tileX":64, "tileY":80,
+        "aimSpeed":4,
+        "bulletDamage":1,
+        "bulletSpeed":3,
+        "bulletSpinSpeed":0,
+        "bulletTileX":216,
+        "bulletTileY":104,
+        "description":"Anti-air. Strong. Low ratio.",
+        "hits":"flying",
+        "improvement":{ "label":"Air Nemesis", "tileX":80, "tileY":80, "improvement":0, "maxHealth":40, "price":80, "reloadSpeed":15, "removeEarn":50, "timer":150 },
+        "maxHealth":30,
+        "price":100,
+        "range":64,
+        "reloadSpeed":20,
+        "removeEarn":50,
+        "repairPrice":60,
+        "repairTimer":125,
+        "structureType":"playerturret",
+        "timer":150
+      }
+    ],
+    "dataWaves":{
+      "1":[
+        { "as":{ "_":"variable" }, "set":{ "timer":60, "waveName":"Truck Parade" }, "subsequence":{ "_":[ "stencil", "codeTimer" ] } },
+        {
+          "object":{ "set":{ "_":[ "stencil", "dataAttackers", "truck" ] }, "startAt":{ "_":[ "objectTyped", "spawnpoint1" ] } },
+          "wait":25, "loop":1, "cycles":6
+        },
+        { "subsequence":{ "_":[ "stencil", "codeWaveWait" ] } },
+        { "as":{ "_":"variable" }, "set":{ "timer":60, "waveName":"More trucks" }, "subsequence":{ "_":[ "stencil", "codeTimer" ] } },
+        {
+          "object":{ "set":{ "_":[ "stencil", "dataAttackers", "truck" ] }, "startAt":{ "_":[ "objectTyped", "spawnpoint1" ] } },
+          "wait":25, "loop":1, "cycles":9
+        },
+        { "subsequence":{ "_":[ "stencil", "codeWaveWait" ] } },
+        { "as":{ "_":"variable" }, "set":{ "timer":60, "waveName":"Tank you" }, "subsequence":{ "_":[ "stencil", "codeTimer" ] } },
+        {
+          "object":{ "set":{ "_":[ "stencil", "dataAttackers", "tank" ] }, "startAt":{ "_":[ "objectTyped", "spawnpoint1" ] } },
+          "wait":250, "loop":1, "cycles":3
+        },
+        { "subsequence":{ "_":[ "stencil", "codeWaveWait" ] } },
+        { "as":{ "_":"variable" }, "set":{ "timer":60, "waveName":"The company" }, "subsequence":{ "_":[ "stencil", "codeTimer" ] } },
+        {
+          "object":{ "set":{ "_":[ "stencil", "dataAttackers", "truck" ] }, "startAt":{ "_":[ "objectTyped", "spawnpoint1" ] } },
+          "wait":25, "loop":1, "cycles":2
+        },
+        { "wait":125 },
+        { "object":{ "set":{ "_":[ "stencil", "dataAttackers", "tank" ] }, "startAt":{ "_":[ "objectTyped", "spawnpoint1" ] } } },
+        { "wait":125 },
+        {
+          "object":{ "set":{ "_":[ "stencil", "dataAttackers", "truck" ] }, "startAt":{ "_":[ "objectTyped", "spawnpoint1" ] } },
+          "wait":25, "loop":1, "cycles":2
+        },
+        { "subsequence":{ "_":[ "stencil", "codeWaveWait" ] } },
+        { "as":{ "_":"variable" }, "set":{ "timer":60, "waveName":"Fly around flags" }, "subsequence":{ "_":[ "stencil", "codeTimer" ] } },
+        { "object":{ "set":{ "_":[ "stencil", "dataAttackers", "airplane" ] }, "startAt":{ "_":[ "objectTyped", "spawnpoint1" ] } } },
+        { "wait":50 },
+        {
+          "object":{ "set":{ "_":[ "stencil", "dataAttackers", "truck" ] }, "startAt":{ "_":[ "objectTyped", "spawnpoint1" ] } },
+          "wait":25, "loop":1, "cycles":3
+        },
+        { "wait":50 },
+        { "object":{ "set":{ "_":[ "stencil", "dataAttackers", "airplane" ] }, "startAt":{ "_":[ "objectTyped", "spawnpoint1" ] } } },
+        { "wait":50 },
+        {
+          "object":{ "set":{ "_":[ "stencil", "dataAttackers", "truck" ] }, "startAt":{ "_":[ "objectTyped", "spawnpoint1" ] } },
+          "wait":25, "loop":1, "cycles":3
+        },
+        { "subsequence":{ "_":[ "stencil", "codeWaveWait" ] } },
+        { "as":{ "_":"variable" }, "set":{ "timer":60, "waveName":"Full scale attack" }, "subsequence":{ "_":[ "stencil", "codeTimer" ] } },
+        {
+          "object":{ "set":{ "_":[ "stencil", "dataAttackers", "tank" ] }, "startAt":{ "_":[ "objectTyped", "spawnpoint1" ] } },
+          "wait":125, "loop":1, "cycles":3
+        },
+        {
+          "object":{ "set":{ "_":[ "stencil", "dataAttackers", "airplane" ] }, "startAt":{ "_":[ "objectTyped", "spawnpoint1" ] } },
+          "wait":125, "loop":1, "cycles":2
+        },
+        {
+          "object":{ "set":{ "_":[ "stencil", "dataAttackers", "tank" ] }, "startAt":{ "_":[ "objectTyped", "spawnpoint1" ] } },
+          "wait":125, "loop":1, "cycles":3
+        },
+        {
+          "object":{ "set":{ "_":[ "stencil", "dataAttackers", "airplane" ] }, "startAt":{ "_":[ "objectTyped", "spawnpoint1" ] } },
+          "wait":25, "loop":1, "cycles":2
+        },
+        { "subsequence":{ "_":[ "stencil", "codeWaveWait" ] } }
+      ],
+      "2":[
+        { "as":{ "_":"variable" }, "set":{ "timer":60, "waveName":"We're right" }, "subsequence":{ "_":[ "stencil", "codeTimer" ] } },
+        {
+          "object":{ "set":{ "_":[ "stencil", "dataAttackers", "truck" ] }, "startAt":{ "_":[ "objectTyped", "spawnpoint2" ] } },
+          "wait":25, "loop":1, "cycles":6
+        },
+        { "subsequence":{ "_":[ "stencil", "codeWaveWait" ] } },
+        { "as":{ "_":"variable" }, "set":{ "timer":60, "waveName":"What is left" }, "subsequence":{ "_":[ "stencil", "codeTimer" ] } },
+        {
+          "object":{ "set":{ "_":[ "stencil", "dataAttackers", "truck" ] }, "startAt":{ "_":[ "objectTyped", "spawnpoint1" ] } },
+          "wait":25, "loop":1, "cycles":6
+        },
+        { "subsequence":{ "_":[ "stencil", "codeWaveWait" ] } },
+        { "as":{ "_":"variable" }, "set":{ "timer":60, "waveName":"Double delivery" }, "subsequence":{ "_":[ "stencil", "codeTimer" ] } },
+        { "object":{ "set":{ "_":[ "stencil", "dataAttackers", "truck" ] }, "startAt":{ "_":[ "objectTyped", "spawnpoint2" ] } }, "wait":25 },
+        { "object":{ "set":{ "_":[ "stencil", "dataAttackers", "truck" ] }, "startAt":{ "_":[ "objectTyped", "spawnpoint1" ] } }, "wait":25 },
+        { "cycles":6, "loopTo":-2 },
+        { "subsequence":{ "_":[ "stencil", "codeWaveWait" ] } },
+        { "as":{ "_":"variable" }, "set":{ "timer":60, "waveName":"Bothering tanks" }, "subsequence":{ "_":[ "stencil", "codeTimer" ] } },
+        { "object":{ "set":{ "_":[ "stencil", "dataAttackers", "tank" ] }, "startAt":{ "_":[ "objectTyped", "spawnpoint2" ] } }, "wait":25 },
+        {
+          "object":{ "set":{ "_":[ "stencil", "dataAttackers", "truck" ] }, "startAt":{ "_":[ "objectTyped", "spawnpoint1" ] } },
+          "wait":25, "loop":1, "cycles":6
+        },
+        { "wait":500 },
+        { "object":{ "set":{ "_":[ "stencil", "dataAttackers", "tank" ] }, "startAt":{ "_":[ "objectTyped", "spawnpoint1" ] } }, "wait":25 },
+        {
+          "object":{ "set":{ "_":[ "stencil", "dataAttackers", "truck" ] }, "startAt":{ "_":[ "objectTyped", "spawnpoint2" ] } },
+          "wait":25, "loop":1, "cycles":6
+        },
+        { "wait":500, "cycles":2, "loopTo":-2 },
+        { "subsequence":{ "_":[ "stencil", "codeWaveWait" ] } },
+        { "as":{ "_":"variable" }, "set":{ "timer":60, "waveName":"Fright left truck" }, "subsequence":{ "_":[ "stencil", "codeTimer" ] } },
+        { "object":{ "set":{ "_":[ "stencil", "dataAttackers", "airplane" ] }, "startAt":{ "_":[ "objectTyped", "spawnpoint2" ] } } },
+        { "wait":50 },
+        {
+          "object":{ "set":{ "_":[ "stencil", "dataAttackers", "truck" ] }, "startAt":{ "_":[ "objectTyped", "spawnpoint1" ] } },
+          "wait":25, "loop":1, "cycles":3
+        },
+        { "wait":50 },
+        { "object":{ "set":{ "_":[ "stencil", "dataAttackers", "airplane" ] }, "startAt":{ "_":[ "objectTyped", "spawnpoint2" ] } } },
+        { "wait":50 },
+        {
+          "object":{ "set":{ "_":[ "stencil", "dataAttackers", "truck" ] }, "startAt":{ "_":[ "objectTyped", "spawnpoint1" ] } },
+          "wait":25, "loop":1, "cycles":3
+        },
+        { "subsequence":{ "_":[ "stencil", "codeWaveWait" ] } },
+        { "as":{ "_":"variable" }, "set":{ "timer":60, "waveName":"Mega Tanks" }, "subsequence":{ "_":[ "stencil", "codeTimer" ] } },
+        { "object":{ "set":{ "_":[ "stencil", "dataAttackers", "megatank" ] }, "startAt":{ "_":[ "objectTyped", "spawnpoint1" ] } } },
+        { "wait":250 },
+        { "object":{ "set":{ "_":[ "stencil", "dataAttackers", "megatank" ] }, "startAt":{ "_":[ "objectTyped", "spawnpoint2" ] } } },
+        { "subsequence":{ "_":[ "stencil", "codeWaveWait" ] } }
+      ],
+      "3":[
+        { "as":{ "_":"variable" }, "set":{ "timer":60, "waveName":"Topleft chaos" }, "subsequence":{ "_":[ "stencil", "codeTimer" ] } },
+        {
+          "object":{ "set":{ "_":[ "stencil", "dataAttackers", "truck" ] }, "startAt":{ "_":[ "objectTyped", "spawnpoint1" ] } },
+          "wait":25, "loop":1, "cycles":6
+        },
+        { "subsequence":{ "_":[ "stencil", "codeWaveWait" ] } },
+        { "as":{ "_":"variable" }, "set":{ "timer":60, "waveName":"Bottomright mess" }, "subsequence":{ "_":[ "stencil", "codeTimer" ] } },
+        {
+          "object":{ "set":{ "_":[ "stencil", "dataAttackers", "truck" ] }, "startAt":{ "_":[ "objectTyped", "spawnpoint3" ] } },
+          "wait":25, "loop":1, "cycles":6
+        },
+        { "subsequence":{ "_":[ "stencil", "codeWaveWait" ] } },
+        { "as":{ "_":"variable" }, "set":{ "timer":60, "waveName":"The others" }, "subsequence":{ "_":[ "stencil", "codeTimer" ] } },
+        { "object":{ "set":{ "_":[ "stencil", "dataAttackers", "truck" ] }, "startAt":{ "_":[ "objectTyped", "spawnpoint2" ] } }, "wait":25 },
+        { "object":{ "set":{ "_":[ "stencil", "dataAttackers", "truck" ] }, "startAt":{ "_":[ "objectTyped", "spawnpoint4" ] } }, "wait":25 },
+        { "cycles":20, "loopTo":-2 },
+        { "subsequence":{ "_":[ "stencil", "codeWaveWait" ] } },
+        { "as":{ "_":"variable" }, "set":{ "timer":60, "waveName":"The Warplanes" }, "subsequence":{ "_":[ "stencil", "codeTimer" ] } },
+        {
+          "object":{ "set":{ "_":[ "stencil", "dataAttackers", "warplane" ] }, "startAt":{ "_":[ "objectTyped", "spawnpoint4" ] } },
+          "wait":250, "loop":1, "cycles":6
+        },
+        { "subsequence":{ "_":[ "stencil", "codeWaveWait" ] } },
+        { "as":{ "_":"variable" }, "set":{ "timer":60, "waveName":"The Mega Tanks" }, "subsequence":{ "_":[ "stencil", "codeTimer" ] } },
+        {
+          "object":{ "set":{ "_":[ "stencil", "dataAttackers", "megatank" ] }, "startAt":{ "_":[ "objectTyped", "spawnpoint2" ] } },
+          "wait":250, "loop":1, "cycles":6
+        },
+        { "subsequence":{ "_":[ "stencil", "codeWaveWait" ] } },
+        { "as":{ "_":"variable" }, "set":{ "timer":60, "waveName":"Final battle!" }, "subsequence":{ "_":[ "stencil", "codeTimer" ] } },
+        { "object":{ "set":{ "_":[ "stencil", "dataAttackers", "hypertank" ] }, "startAt":{ "_":[ "objectTyped", "spawnpoint2" ] } }, "wait":500 },
+        { "object":{ "set":{ "_":[ "stencil", "dataAttackers", "hypertank" ] }, "startAt":{ "_":[ "objectTyped", "spawnpoint4" ] } }, "wait":500 },
+        { "object":{ "set":{ "_":[ "stencil", "dataAttackers", "hypertank" ] }, "startAt":{ "_":[ "objectTyped", "spawnpoint1" ] } }, "wait":500 },
+        { "object":{ "set":{ "_":[ "stencil", "dataAttackers", "hypertank" ] }, "startAt":{ "_":[ "objectTyped", "spawnpoint3" ] } } },
+        { "subsequence":{ "_":[ "stencil", "codeWaveWait" ] } }
+      ]
+    },
+    "airplane":{
+      "type":"flying",
+      "set":{ "_":[ "stencil", "modelEnemy" ] },
+      "zIndex":9,
+      "flagId":1,
+      "states":{
+        "execute":{
+          "when":{ "_":[ "this", "turret" ] },
+          "object":{ "set":[ { "_":[ "stencil", "turret" ] }, { "_":[ "that", "turret" ] } ], "zIndex":10 },
+          "execute":{ "set":{ "cannonObject":{ "_":"that" } } }
+        },
+        "code":[
+          { "name":"Physics" },
+          {
+            "name":"Execute",
+            "data":[
+              { "when":{ "_":[ "this", "cannonObject" ] }, "as":{ "_":"that" }, "set":{ "x":{ "_":[ "that", "x" ] }, "y":{ "_":[ "that", "y" ] } } },
+              {
+                "when":{ "_":[ "this", "destination", "not" ] },
+                "set":{ "destination":{ "_":[ "randomObject", { "_":[ "object", { "_":[ "flag", ".", { "_":[ "this", "flagId" ] } ] } ] } ] } }
+              },
+              { "when":{ "_":[ "this", "destination", "not" ] }, "set":{ "destination":{ "_":[ "objectTyped", "tower" ] } } },
+              {
+                "when":{ "_":[ "this", "distanceTo", { "_":[ "this", "destination" ] }, "isLessThan", { "_":[ "this", "speed", "*", 2 ] } ] },
+                "execute":[ { "set":{ "destination":0 } }, { "sum":1, "to":{ "_":[ "this", "flagId" ] } } ],
+                "elseExecute":{ "set":{ "walkAngle":{ "_":[ "this", "angleTo", { "_":[ "this", "destination" ] } ] } } }
+              },
+              { "set":{ "angle":{ "_":[ "this", "walkAngle" ] } } },
+              { "applyVector":{ "angle":{ "_":[ "this", "walkAngle" ] }, "length":{ "_":[ "this", "speed" ] } } }
+            ]
+          }
+        ]
+      }
+    },
+    "tank":{
+      "type":"grounded",
+      "set":{ "_":[ "stencil", "modelEnemy" ] },
+      "tileX":0, "tileY":112,
+      "animations":{ "idle":{ "frames":2, "loopTo":0 } },
+      "animation":"idle",
+      "states":{
+        "execute":{ "object":{ "set":[ { "_":[ "stencil", "turret" ] }, { "_":[ "that", "turret" ] } ] }, "execute":{ "set":{ "cannonObject":{ "_":"that" } } } },
+        "code":[
+          { "name":"Physics" },
+          {
+            "name":"Execute",
+            "data":[
+              { "as":{ "_":[ "this", "cannonObject" ] }, "set":{ "x":{ "_":[ "that", "x" ] }, "y":{ "_":[ "that", "y", "-", 3 ] } } },
+              {
+                "when":{ "_":[ "this", "x", "%", 16, "isEqualTo", 0, "and", { "_":[ "this", "y", "%", 16, "isEqualTo", 0 ] } ] },
+                "as":{ "_":[ "this", "collidesWith", { "_":[ "object", "route" ] } ] },
+                "executeAction":"walk"
+              },
+              { "set":{ "angle":{ "_":[ "this", "walkAngle" ] } } },
+              { "applyVector":{ "angle":{ "_":[ "this", "walkAngle" ] }, "length":{ "_":[ "this", "speed" ] } } }
+            ]
+          }
+        ]
+      }
+    },
+    "truck":{
+      "type":"grounded",
+      "set":{ "_":[ "stencil", "modelEnemy" ] },
+      "animations":{ "horizontal":{ "frames":2, "loopTo":0 }, "down":{ "frames":[ 4, 5 ], "loopTo":0 }, "up":{ "frames":[ 2, 3 ], "loopTo":0 } },
+      "states":{
+        "code":[
+          { "name":"Physics" },
+          {
+            "name":"Execute",
+            "data":[
+              {
+                "when":{ "_":[ "this", "x", "%", 16, "isEqualTo", 0, "and", { "_":[ "this", "y", "%", 16, "isEqualTo", 0 ] } ] },
+                "as":{ "_":[ "this", "collidesWith", { "_":[ "object", "route" ] } ] },
+                "executeAction":"walk"
+              },
+              {
+                "when":{ "_":[ "this", "walkAngle", "isEqualTo", 0 ] },
+                "set":{ "flipX":0, "animation":"up" },
+                "elseExecute":{
+                  "when":{ "_":[ "this", "walkAngle", "isEqualTo", 180 ] },
+                  "set":{ "flipX":0, "animation":"down" },
+                  "elseExecute":{
+                    "when":{ "_":[ "this", "walkAngle", "isEqualTo", 90 ] },
+                    "set":{ "flipX":0, "animation":"horizontal" },
+                    "elseExecute":{ "set":{ "flipX":1, "animation":"horizontal" } }
+                  }
+                }
+              },
+              { "applyVector":{ "angle":{ "_":[ "this", "walkAngle" ] }, "length":{ "_":[ "this", "speed" ] } } }
+            ]
+          }
+        ]
+      }
+    },
+    "smoke":{
+      "image":"defaultsprites", "tileX":80, "tileY":16, "width":16, "height":16,
+      "zIndex":{ "_":[ "that", "zIndex", "+", 1 ] }, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "animations":{ "spark":{ "frames":4, "speed":1 } },
+      "animation":"spark",
+      "states":{ "code":[ { "name":"Physics" }, { "name":"Sequence", "data":[ { "wait":8 }, { "remove":1 } ] } ] }
+    },
+    "turret":{
+      "image":"tiles", "width":16, "height":16,
+      "zIndex":2,
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":{
+            "when":{ "_":[ "this", "reload" ] },
+            "subtract":1,
+            "to":{ "_":[ "this", "reload" ] },
+            "elseExecute":{
+              "when":{ "_":[ "object", { "_":[ "this", "hits" ] }, "nearestTo", { "_":"this" } ] },
+              "execute":{
+                "when":{ "_":[ "this", "distanceTo", { "_":"that" }, "isLessEqualThan", { "_":[ "this", "range" ] } ] },
+                "execute":[
+                  { "set":{ "aim":{ "_":[ "this", "angle", "shortestAngleTo", { "_":[ "this", "angleTo", { "_":"that" } ] } ] } } },
+                  {
+                    "when":{ "_":[ "this", "aim", "abs", "isLessEqualThan", { "_":[ "this", "aimSpeed" ] } ] },
+                    "execute":[
+                      { "set":{ "angle":{ "_":[ "this", "angleTo", { "_":"that" } ] } } },
+                      {
+                        "object":{
+                          "set":{ "_":[ "stencil", "bullet" ] },
+                          "tileX":{ "_":[ "that", "bulletTileX" ] }, "tileY":{ "_":[ "that", "bulletTileY" ] },
+                          "bulletAngle":{ "_":[ "that", "angle" ] },
+                          "bulletSpeed":{ "_":[ "that", "bulletSpeed" ] },
+                          "damage":{ "_":[ "that", "bulletDamage" ] },
+                          "emitter":{ "_":"that" },
+                          "hits":{ "_":[ "that", "hits" ] },
+                          "range":{ "_":[ "that", "range" ] },
+                          "spinSpeed":{ "_":[ "that", "bulletSpinSpeed" ] }
+                        }
+                      },
+                      { "set":{ "reload":{ "_":[ "this", "reloadSpeed" ] } } }
+                    ],
+                    "elseExecute":{
+                      "when":{ "_":[ "this", "aim", "isLessThan", 0 ] },
+                      "subtract":{ "_":[ "this", "aimSpeed" ] },
+                      "to":{ "_":[ "this", "angle" ] },
+                      "elseExecute":{ "sum":{ "_":[ "this", "aimSpeed" ] }, "to":{ "_":[ "this", "angle" ] } }
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      }
+    },
+    "#":{ "type":[ "notbuildable", "wall" ], "image":"tiles", "tileX":80, "tileY":16, "width":16, "height":16 },
+    "*":{
+      "type":[ "tower", "fireworks" ],
+      "image":"tiles", "tileX":0, "tileY":32, "width":16, "height":16,
+      "animations":{ "destroyed":{ "frames":[ 2, 3 ], "loopTo":0 }, "idle":{ "frames":2, "speed":12, "loopTo":0 } },
+      "animation":"idle"
+    },
+    "-":{ "type":"route", "image":"tiles", "tileX":64, "tileY":0, "width":16, "height":16 },
+    ".":{ "type":"buildable", "image":"tiles", "tileX":64, "tileY":16, "width":16, "height":16 },
+    "1":{
+      "type":"flag1",
+      "image":"tiles", "tileX":0, "tileY":48, "width":16, "height":16,
+      "animations":{ "idle":{ "frames":2, "loopTo":0 } },
+      "animation":"idle"
+    },
+    "2":{
+      "type":"flag2",
+      "image":"tiles", "tileX":32, "tileY":48, "width":16, "height":16,
+      "animations":{ "idle":{ "frames":2, "loopTo":0 } },
+      "animation":"idle"
+    },
+    "3":{
+      "type":"flag3",
+      "image":"tiles", "tileX":64, "tileY":48, "width":16, "height":16,
+      "animations":{ "idle":{ "frames":2, "loopTo":0 } },
+      "animation":"idle"
+    },
+    "<":{
+      "type":"route",
+      "image":"tiles", "tileX":32, "tileY":0, "width":16, "height":16,
+      "states":{
+        "actions":{
+          "name":"walk",
+          "execute":{
+            "as":{ "_":"that" },
+            "execute":{ "when":{ "_":[ "this", "walkAngle", "isEqualTo", 90 ] }, "set":{ "walkAngle":{ "_":[ "randomValue", [ 0, 180 ] ] } } }
+          }
+        }
+      }
+    },
+    ">":{
+      "type":"route",
+      "image":"tiles", "tileX":32, "tileY":16, "width":16, "height":16,
+      "states":{
+        "actions":{
+          "name":"walk",
+          "execute":{
+            "as":{ "_":"that" },
+            "execute":{ "when":{ "_":[ "this", "walkAngle", "isEqualTo", 270 ] }, "set":{ "walkAngle":{ "_":[ "randomValue", [ 0, 180 ] ] } } }
+          }
+        }
+      }
+    },
+    "A":{
+      "type":"route",
+      "image":"tiles", "tileX":48, "tileY":0, "width":16, "height":16,
+      "states":{
+        "actions":{
+          "name":"walk",
+          "execute":{
+            "as":{ "_":"that" },
+            "execute":{ "when":{ "_":[ "this", "walkAngle", "isEqualTo", 180 ] }, "set":{ "walkAngle":{ "_":[ "randomValue", [ 90, 270 ] ] } } }
+          }
+        }
+      }
+    },
+    "I":{ "type":"route", "image":"tiles", "tileX":80, "tileY":0, "width":16, "height":16 },
+    "J":{
+      "type":"route",
+      "image":"tiles", "tileX":16, "tileY":16, "width":16, "height":16,
+      "states":{
+        "actions":{
+          "name":"walk",
+          "execute":{
+            "as":{ "_":"that" },
+            "execute":{ "when":{ "_":[ "this", "walkAngle", "isEqualTo", 90 ] }, "set":{ "walkAngle":0 }, "elseExecute":{ "set":{ "walkAngle":270 } } }
+          }
+        }
+      }
+    },
+    "L":{
+      "type":"route",
+      "image":"tiles", "tileX":0, "tileY":16, "width":16, "height":16,
+      "states":{
+        "actions":{
+          "name":"walk",
+          "execute":{
+            "as":{ "_":"that" },
+            "execute":{ "when":{ "_":[ "this", "walkAngle", "isEqualTo", 270 ] }, "set":{ "walkAngle":0 }, "elseExecute":{ "set":{ "walkAngle":90 } } }
+          }
+        }
+      }
+    },
+    "T":{
+      "type":"route",
+      "image":"tiles", "tileX":0, "tileY":0, "width":16, "height":16,
+      "states":{
+        "actions":{
+          "name":"walk",
+          "execute":{
+            "as":{ "_":"that" },
+            "execute":{ "when":{ "_":[ "this", "walkAngle", "isEqualTo", 0 ] }, "set":{ "walkAngle":90 }, "elseExecute":{ "set":{ "walkAngle":180 } } }
+          }
+        }
+      }
+    },
+    "V":{
+      "type":"route",
+      "image":"tiles", "tileX":48, "tileY":16, "width":16, "height":16,
+      "states":{
+        "actions":{
+          "name":"walk",
+          "execute":{
+            "as":{ "_":"that" },
+            "execute":{ "when":{ "_":[ "this", "walkAngle", "isEqualTo", 0 ] }, "set":{ "walkAngle":{ "_":[ "randomValue", [ 90, 270 ] ] } } }
+          }
+        }
+      }
+    },
+    "Y":{
+      "type":"route",
+      "image":"tiles", "tileX":16, "tileY":0, "width":16, "height":16,
+      "states":{
+        "actions":{
+          "name":"walk",
+          "execute":{
+            "as":{ "_":"that" },
+            "execute":{ "when":{ "_":[ "this", "walkAngle", "isEqualTo", 90 ] }, "set":{ "walkAngle":180 }, "elseExecute":{ "set":{ "walkAngle":270 } } }
+          }
+        }
+      }
+    }
+  },
+  "execute":{},
+  "scenes":{
+    "intro":{
+      "object":[
+        { "width":256, "height":192, "x":0, "y":0, "bgcolor":"#7f7f00" },
+        { "image":"intro", "tileX":0, "tileY":0, "width":225, "height":28, "zIndex":10, "x":15, "y":50 },
+        {
+          "box":"label", "width":256,
+          "zIndex":30, "x":0, "y":130,
+          "color":"#fff",
+          "font":"spectrum", "fontSize":20, "lineHeight":20, "outline":"#000", "textAlign":"center", "html":"PRESS START",
+          "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "visible":0 }, "wait":10 }, { "set":{ "visible":1 }, "wait":10, "loopTo":0 } ] } }
+        }
+      ],
+      "execute":{
+        "times":3,
+        "object":[
+          {
+            "unoptimize":1,
+            "image":"intro", "tileX":0, "tileY":28, "width":163, "height":40,
+            "x":0, "y":195,
+            "states":{
+              "code":{
+                "name":"Execute",
+                "data":{
+                  "when":{ "_":[ "this", "y", "isGreaterThan", 292 ] },
+                  "set":{
+                    "zIndex":{ "_":[ "randomNumber", [ 1, 5 ] ] }, "x":{ "_":[ "randomNumber", [ -81, 175 ] ] }, "y":{ "_":[ "randomNumber", [ -400, -100 ] ] },
+                    "angle":{ "_":[ "randomNumber", [ -45, 45 ] ] }
+                  },
+                  "elseExecute":{ "sum":1, "to":{ "_":[ "this", "y" ] } }
+                }
+              }
+            }
+          },
+          {
+            "unoptimize":1,
+            "image":"intro", "tileX":0, "tileY":68, "width":155, "height":46,
+            "x":0, "y":195,
+            "states":{
+              "code":{
+                "name":"Execute",
+                "data":{
+                  "when":{ "_":[ "this", "y", "isGreaterThan", 292 ] },
+                  "set":{
+                    "zIndex":{ "_":[ "randomNumber", [ 1, 5 ] ] }, "x":{ "_":[ "randomNumber", [ -77, 179 ] ] }, "y":{ "_":[ "randomNumber", [ -400, -100 ] ] },
+                    "angle":{ "_":[ "randomNumber", [ -45, 45 ] ] }
+                  },
+                  "elseExecute":{ "sum":1, "to":{ "_":[ "this", "y" ] } }
+                }
+              }
+            }
+          },
+          {
+            "unoptimize":1,
+            "image":"intro", "tileX":0, "tileY":114, "width":116, "height":77,
+            "x":0, "y":195,
+            "states":{
+              "code":{
+                "name":"Execute",
+                "data":{
+                  "when":{ "_":[ "this", "y", "isGreaterThan", 292 ] },
+                  "set":{
+                    "zIndex":{ "_":[ "randomNumber", [ 1, 5 ] ] }, "x":{ "_":[ "randomNumber", [ -58, 198 ] ] }, "y":{ "_":[ "randomNumber", [ -400, -100 ] ] },
+                    "angle":{ "_":[ "randomNumber", [ -45, 45 ] ] }
+                  },
+                  "elseExecute":{ "sum":1, "to":{ "_":[ "this", "y" ] } }
+                }
+              }
+            }
+          }
+        ]
+      },
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "execute":[ { "as":{ "_":"variable" }, "set":{ "score":0, "stage":1 } }, { "gotoScene":1 } ] }
+        }
+      }
+    },
+    "1":{
+      "object":{ "type":"spawnpoint1", "width":16, "height":16, "x":-16, "y":160, "walkAngle":90 },
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "maxStructures":6,
+      "stageName":"First Encounter",
+      "startingMoney":350,
+      "towerHealth":100,
+      "wave":1,
+      "tilemap":{
+        "tileWidth":16,
+        "tileHeight":16,
+        "map":[
+          "................",
+          "..T-----------Y.",
+          "..I#1........3I.",
+          "..I.T-------Y.I.",
+          "..I.I.......I.I.",
+          ".#I.I.T-----J.I.",
+          "..I.I.I.......I.",
+          "..I.I.I...#...I.",
+          "..I.I.L-------J.",
+          "..I.I....2......",
+          "--J#L---------Y.",
+          "..............*."
+        ]
+      }
+    },
+    "2":{
+      "object":[
+        { "type":"spawnpoint1", "width":16, "height":16, "x":-16, "y":96, "walkAngle":90 },
+        { "type":"spawnpoint2", "width":16, "height":16, "x":256, "y":96, "walkAngle":270 }
+      ],
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "maxStructures":12,
+      "stageName":"Curly Roads",
+      "startingMoney":450,
+      "towerHealth":100,
+      "wave":2,
+      "tilemap":{
+        "tileWidth":16,
+        "tileHeight":16,
+        "map":[
+          ".#......1......#",
+          "..T-----------Y.",
+          "..I#.........#I.",
+          "..I.T---------J.",
+          "..I.I#.........#",
+          ".#I.I.T*#T-Y#...",
+          "--J.L-J#*J.I.T--",
+          "#.........#I.I#.",
+          ".T---------J.I..",
+          ".I#.........#I2.",
+          ".L-----------J..",
+          "#......3......#."
+        ]
+      }
+    },
+    "3":{
+      "object":[
+        { "type":"spawnpoint4", "width":16, "height":16, "x":-16, "y":160, "walkAngle":90 },
+        { "type":"spawnpoint1", "width":16, "height":16, "x":-16, "y":16, "walkAngle":90 },
+        { "type":"spawnpoint2", "width":16, "height":16, "x":256, "y":16, "walkAngle":270 },
+        { "type":"spawnpoint3", "width":16, "height":16, "x":256, "y":160, "walkAngle":270 }
+      ],
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "lastScene":1,
+      "maxStructures":20,
+      "stageName":"Last Outpost",
+      "startingMoney":1200,
+      "towerHealth":100,
+      "wave":3,
+      "tilemap":{
+        "tileWidth":16,
+        "tileHeight":16,
+        "map":[
+          "................",
+          "-Y.T--Y*.T--Y.T-",
+          ".I.I..II.I..I.I.",
+          ".L-<..II.I..>-J.",
+          "...I.2II.I2.I...",
+          "...L--IJTI--J...",
+          "...T--IJTI--Y...",
+          "...I.1I.II3.I...",
+          ".T-<..I.II..>-Y.",
+          ".I.I..I.II..I.I.",
+          "-J.L--J.*L--J.L-",
+          "................"
+        ]
+      }
+    }
+  }
+}
