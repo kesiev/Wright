@@ -1,0 +1,970 @@
+{
+  "name":"Holy Dungeon",
+  "author":"KesieV",
+  "year":2015,
+  "genre":"Role Playing Game",
+  "description":"This time we're going to make a little Role Playing Game you can play with a friend - and without a computer! Pick an A4 sheet and cut it in a half by the long side. Put the two parts over each other and cut them again by the long side. You've now 4 parts. Do the same again and you'll have 8 parts. Once more and you you'll have 16 small same sized cards. Now pick two of them: draw an object on the first one - let's say a sword - and the same object, but smaller and in the middle, on the second one. Do the same with the others: draw weapons, buildings and monsters - be creative! Done? Time to play now! You, the Master, have to shuffle the deck and put three cards in front of your friend, the Adventurer, in order to create a 3D scene of what he's seeing: big objects are near him and small one are far. Then tell your story about that place and ask him what he wants to do - create an adventure together! Need to travel to another place? Just draw three more cards from the deck. We've made our first 100% analog 3D engine! Holy Dungeon, the game included in this Wright! issue, is based on the same concept but with more complex cards. Western dungeon crawlers, well represented by Dungeon Master (1987), have even more complex graphic elements, together with real time interactions and 3D sounds, mouse oriented user interfaces and object manipulation. As in art, in games what to do is just potential, it's how you're doing it where real power and creativity lies. Am I saying that games and videogames are art? For sure! Plot! You're a farmer, suddenly kidnapped by menacing thieves. What awaits you? Use UP for moving ahead and LEFT/RIGHT for turning around. Hold down the A BUTTON for interacting with your inventory: use LEFT/RIGHT for selecting an item and UP for using it. Good luck!",
+  "screenshots":[ "holydungeon-1.png", "holydungeon-2.png" ],
+  "hardware":{
+    "width":256,
+    "height":192,
+    "texture":"scanlines"
+  },
+  "cheats":{
+    "unlimitedHealth":"Unlimited health"
+  },
+  "resources":{
+    "map":"map.png",
+    "sprites":"sprites.png",
+    "tiles":"tiles.png",
+    "title":"title.png",
+    "defaultsprites":"../default/sprites.png",
+    "scanlines":"../default/scanlines.png"
+  },
+  "stencils":{
+    "codeDeathCheck":{ "when":{ "_":[ "variable", "health", "isLessEqualThan", 0 ] }, "as":{ "_":"scene" }, "set":{ "state":"death" } },
+    "codeItemAdd":[
+      {
+        "when":{ "_":[ { "_":[ "variable", "inventory" ] }, "search", { "itemId":{ "_":[ "variable", "addItem" ] } } ] },
+        "execute":{ "sum":1, "to":{ "_":[ "that", "quantity" ] } },
+        "elseExecute":[
+          { "as":{ "_":[ "new", { "_":[ "stencil", "dataItems", { "_":[ "variable", "addItem" ] } ] } ] }, "pushInto":{ "_":[ "variable", "inventory" ] } },
+          { "when":{ "_":[ "variable", "firstLogLine" ] }, "as":{ "_":"variable" }, "set":{ "logLine":{ "_":[ "variable", "firstLogLine" ] } } }
+        ]
+      },
+      { "_":[ "stencil", "codeLogLine" ] }
+    ],
+    "codeItemConsume":{
+      "when":{ "_":[ { "_":[ "variable", "inventory" ] }, "search", { "itemId":{ "_":[ "variable", "consumeItem" ] } } ] },
+      "execute":[
+        { "subtract":1, "to":{ "_":[ "that", "quantity" ] } },
+        {
+          "when":{ "_":[ "that", "quantity", "isEqualTo", 0 ] },
+          "execute":[
+            { "unpush":{ "_":"that" }, "from":{ "_":[ "variable", "inventory" ] } },
+            {
+              "when":{ "_":[ "variable", "currentItem", "isEqualTo", { "_":"that" } ] },
+              "as":{ "_":"variable" },
+              "set":{ "currentItem":{ "_":[ "variable", "inventory", 0 ] }, "selectedItem":0 }
+            }
+          ]
+        }
+      ]
+    },
+    "codeLogLine":[
+      {
+        "as":{ "_":"variable" },
+        "execute":{
+          "when":{ "_":[ "variable", "lastLog" ] },
+          "execute":{
+            "object":{
+              "set":{ "_":[ "stencil", "logLine" ] },
+              "y":{ "_":{ "_":[ "variable", "lastLog", "y", "+", 16 ] } },
+              "html":{ "_":[ "variable", "logLine" ] },
+              "moveUp":{ "_":[ "variable", "lastLog", "moveUp" ] }
+            },
+            "into":{ "_":"scenehud" },
+            "execute":{ "set":{ "lastLog":{ "_":"that" } } }
+          },
+          "elseExecute":{
+            "object":{ "set":{ "_":[ "stencil", "logLine" ] }, "html":{ "_":[ "variable", "logLine" ] } },
+            "into":{ "_":"scenehud" },
+            "execute":{ "set":{ "lastLog":{ "_":"that" } } }
+          }
+        }
+      },
+      { "as":{ "_":[ "object", "logLine" ] }, "execute":{ "sum":16, "to":{ "_":[ "this", "moveUp" ] } } }
+    ],
+    "codeNothing":[ { "as":{ "_":"variable" }, "set":{ "logLine":"Nothing happened." } }, { "_":[ "stencil", "codeLogLine" ] } ],
+    "codeScreenUpdate":[
+      { "as":{ "_":[ "objectTyped", "currentItemSprite" ] }, "set":{ "_":[ "variable", "currentItem" ] } },
+      { "as":{ "_":[ "objectTyped", "currentItemLabel" ] }, "set":{ "html":{ "_":[ "variable", "currentItem", "label" ] } } },
+      { "as":{ "_":[ "objectTyped", "currentItemQuantity" ] }, "set":{ "html":{ "_":[ "x", ".", { "_":[ "variable", "currentItem", "quantity" ] } ] } } },
+      {
+        "as":{ "_":"variable" },
+        "set":{ "areaCounter":0, "direction":{ "_":[ "stencil", "dataDirections", { "_":[ "objectTyped", "playersign", "angle" ] } ] } }
+      },
+      {
+        "times":12,
+        "execute":[
+          {
+            "as":{ "_":"variable" },
+            "set":{
+              "curArea":{
+                "_":[
+                  "objectTyped",
+                  "playersign",
+                  "complexCollidesWith",
+                  { "subject":{ "_":[ "object", "area" ] }, "hitbox":{ "_":[ "variable", "direction", "view", { "_":[ "variable", "areaCounter" ] } ] } }
+                ]
+              },
+              "curItem":{
+                "_":[
+                  "objectTyped",
+                  "playersign",
+                  "complexCollidesWith",
+                  { "subject":{ "_":[ "object", "item" ] }, "hitbox":{ "_":[ "variable", "direction", "view", { "_":[ "variable", "areaCounter" ] } ] } }
+                ]
+              },
+              "ground":{ "_":[ "objectTyped", { "_":[ "ground", ".", { "_":[ "variable", "areaCounter" ] } ] } ] },
+              "item":{ "_":[ "objectTyped", { "_":[ "item", ".", { "_":[ "variable", "areaCounter" ] } ] } ] },
+              "row":{ "_":[ "variable", "areaCounter", "/", 3, "floor" ] },
+              "wall":{ "_":[ "objectTyped", { "_":[ "wall", ".", { "_":[ "variable", "areaCounter" ] } ] } ] }
+            }
+          },
+          {
+            "when":{ "_":[ "variable", "curArea", "visibility" ] },
+            "execute":[
+              { "as":{ "_":[ "variable", "curArea" ] }, "set":{ "visible":1 } },
+              { "as":{ "_":[ "variable", "curItem" ] }, "set":{ "visible":{ "_":[ "variable", "curItem", "visibility" ] } } }
+            ]
+          },
+          {
+            "when":{ "_":[ "variable", "areaCounter", "isLessThan", 3 ] },
+            "execute":{
+              "when":{ "_":[ "variable", "curArea", "wallStencil" ] },
+              "as":{ "_":[ "variable", "wall" ] },
+              "set":{ "frame":0, "visible":1, "bgcolor":"" },
+              "elseExecute":{ "as":{ "_":[ "variable", "wall" ] }, "set":{ "visible":0 } }
+            },
+            "elseExecute":{
+              "when":{ "_":[ "variable", "curArea", "wallStencil" ] },
+              "execute":[
+                {
+                  "as":{ "_":[ "variable", "wall" ] },
+                  "set":[
+                    { "visible":1, "bgcolor":{ "_":[ "variable", "curArea", "wallStencil", "bgcolors", { "_":[ "variable", "row" ] } ] } },
+                    { "_":[ "variable", "curArea", "wallStencil" ] }
+                  ]
+                },
+                { "as":[ { "_":[ "variable", "ground" ] }, { "_":[ "variable", "item" ] } ], "set":{ "visible":0, "state":"default" } }
+              ],
+              "elseExecute":{
+                "when":{ "_":[ "variable", "curArea", "groundStencil" ] },
+                "execute":[
+                  {
+                    "as":{ "_":[ "variable", "ground" ] },
+                    "set":[
+                      { "visible":1, "bgcolor":{ "_":[ "variable", "curArea", "groundStencil", "bgcolors", { "_":[ "variable", "row" ] } ] } },
+                      { "_":[ "variable", "curArea", "groundStencil" ] }
+                    ]
+                  },
+                  { "as":{ "_":[ "variable", "wall" ] }, "set":{ "visible":0 } },
+                  {
+                    "when":{ "_":[ "variable", "curItem" ] },
+                    "as":{ "_":[ "variable", "item" ] },
+                    "set":[ { "visible":{ "_":[ "variable", "curItem", "visibility" ] } }, { "_":[ "variable", "curItem", "itemStencil" ] } ],
+                    "elseExecute":{ "as":{ "_":[ "variable", "item" ] }, "set":{ "visible":0, "state":"default" } }
+                  }
+                ],
+                "elseExecute":{ "as":[ { "_":[ "variable", "ground" ] }, { "_":[ "variable", "object" ] }, { "_":[ "variable", "wall" ] } ], "set":{ "visible":0 } }
+              }
+            }
+          },
+          { "sum":1, "to":{ "_":[ "variable", "areaCounter" ] } }
+        ]
+      }
+    ],
+    "codeTurn":[
+      {
+        "when":{ "_":[ "variable", "inventory", "search", { "itemId":"shield" } ] },
+        "as":{ "_":"that" },
+        "execute":{ "as":{ "_":"variable" }, "set":{ "damage":{ "_":[ "that", "quantity" ] } } },
+        "elseExecute":{ "as":{ "_":"variable" }, "set":{ "damage":0 } }
+      },
+      {
+        "as":{ "_":[ "object", "foe" ] },
+        "execute":{
+          "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "objectTyped", "playersign" ] }, "hitbox":{ "width":24, "height":24, "x":-8, "y":-8 } } ] },
+          "subtract":{ "_":[ "this", "damage" ] },
+          "to":{ "_":[ "variable", "damage" ] }
+        }
+      },
+      {
+        "when":{ "_":[ "variable", "damage", "isLessThan", 0 ] },
+        "execute":[
+          { "when":{ "_":[ "cheat", "unlimitedHealth", "not" ] }, "sum":{ "_":[ "variable", "damage" ] }, "to":{ "_":[ "variable", "health" ] } },
+          { "as":{ "_":"variable" }, "set":{ "logLine":{ "_":[ "You're under attack! ", ".", { "_":[ "variable", "damage" ] }, ".", "HP" ] } } },
+          { "_":[ "stencil", "codeLogLine" ] },
+          { "_":[ "stencil", "codeDeathCheck" ] }
+        ]
+      }
+    ],
+    "modelItemTile":{
+      "image":"tiles", "tileX":0,
+      "visible":0,
+      "states":[
+        { "set":{ "flipX":0 } },
+        { "name":"flip", "code":{ "name":"Sequence", "data":[ { "set":{ "flipX":0 }, "wait":15 }, { "set":{ "flipX":1 }, "wait":15, "loopTo":0 } ] } }
+      ]
+    },
+    "modelMapArea":{ "type":"area", "zIndex":2, "visible":0 },
+    "modelDoor":{
+      "type":[ "pushable", "interactive" ],
+      "set":{ "_":[ "stencil", "modelMapItem" ] },
+      "states":{
+        "actions":[
+          {
+            "name":"push",
+            "execute":[ { "as":{ "_":"variable" }, "set":{ "logLine":{ "_":[ "that", "pushMessage" ] } } }, { "_":[ "stencil", "codeLogLine" ] } ]
+          },
+          {
+            "name":"use",
+            "execute":{
+              "when":{ "_":[ "variable", "currentItem", "itemId", "isEqualTo", { "_":[ "this", "openWith" ] } ] },
+              "execute":[
+                { "as":{ "_":"variable" }, "set":{ "consumeItem":{ "_":[ "that", "openWith" ] } } },
+                { "_":[ "stencil", "codeItemConsume" ] },
+                { "as":{ "_":"variable" }, "set":{ "happened":1, "logLine":{ "_":[ "that", "openMessage" ] } } },
+                { "_":[ "stencil", "codeLogLine" ] },
+                { "remove":1 }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "modelFoe":{
+      "type":[ "pushable", "interactive", "foe" ],
+      "set":{ "_":[ "stencil", "modelMapItem" ] },
+      "states":{
+        "actions":{
+          "name":"use",
+          "execute":{
+            "when":{ "_":[ "variable", "currentItem", "itemId", "isEqualTo", { "_":[ "this", "hitWith" ] } ] },
+            "execute":[
+              { "subtract":{ "_":[ "variable", "currentItem", "quantity" ] }, "to":{ "_":[ "this", "health" ] } },
+              {
+                "when":{ "_":[ "this", "health", "isLessEqualThan", 0 ] },
+                "execute":[
+                  { "as":{ "_":"variable" }, "set":{ "happened":1, "logLine":{ "_":[ "that", "label", ".", " died!" ] } } },
+                  { "_":[ "stencil", "codeLogLine" ] },
+                  {
+                    "when":{ "_":[ "this", "drop" ] },
+                    "object":{ "set":{ "_":[ "stencil", { "_":[ "that", "drop" ] } ] }, "x":{ "_":[ "that", "x" ] }, "y":{ "_":[ "that", "y" ] } },
+                    "elseExecute":{
+                      "when":{ "_":[ "variable", "health", "isLessThan", 4 ] },
+                      "object":{ "set":{ "_":[ "stencil", "potion" ] }, "x":{ "_":[ "that", "x" ] }, "y":{ "_":[ "that", "y" ] } },
+                      "elseExecute":{ "object":{ "set":{ "_":[ "stencil", "gold" ] }, "x":{ "_":[ "that", "x" ] }, "y":{ "_":[ "that", "y" ] } } }
+                    }
+                  },
+                  { "remove":1 }
+                ],
+                "elseExecute":[
+                  {
+                    "as":{ "_":"variable" },
+                    "set":{
+                      "happened":1,
+                      "logLine":{ "_":[ "You hit ", ".", { "_":[ "that", "label" ] }, ".", ". ", ".", { "_":[ "variable", "currentItem", "quantity" ] }, ".", "DMG" ] }
+                    }
+                  },
+                  { "_":[ "stencil", "codeLogLine" ] }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    "modelNpc":{
+      "type":"pushable",
+      "set":{ "_":[ "stencil", "modelMapItem" ] },
+      "states":{
+        "actions":{ "name":"push", "execute":[ { "as":{ "_":"variable" }, "set":{ "logLine":{ "_":[ "that", "signText" ] } } }, { "_":[ "stencil", "codeLogLine" ] } ] }
+      }
+    },
+    "modelMapItem":{ "type":"item", "image":"map", "width":8, "height":8, "zIndex":5, "visible":0, "visibility":1 },
+    "modelPickableItem":{
+      "type":"pushable",
+      "set":{ "_":[ "stencil", "modelMapItem" ] },
+      "states":{
+        "actions":{
+          "name":"push",
+          "execute":[
+            {
+              "as":{ "_":"variable" },
+              "set":{ "addItem":{ "_":[ "that", "itemId" ] }, "firstLogLine":{ "_":[ "that", "firstLogLine" ] }, "logLine":{ "_":[ "that", "logLine" ] } }
+            },
+            { "_":[ "stencil", "codeItemAdd" ] },
+            { "remove":1 }
+          ]
+        }
+      }
+    },
+    "modelSceneText":{
+      "states":{
+        "execute":[
+          {
+            "when":{ "_":[ "scene", "showScore" ] },
+            "object":{
+              "width":240, "height":20,
+              "x":8, "y":175,
+              "color":"#fff",
+              "font":"spectrum", "lineHeight":10, "textAlign":"center", "html":{ "_":[ "Your score: ", ".", { "_":[ "variable", "inventory", "search", { "itemId":"gold" }, "quantity", "or", 0 ] }, ".", "pts." ] }
+            }
+          },
+          {
+            "object":{
+              "width":240, "height":0,
+              "x":8, "y":8,
+              "color":"#fff",
+              "font":"spectrum", "lineHeight":10, "textAlign":"center", "html":{ "_":[ "scene", "text" ] },
+              "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "this", "height", "isLessThan", 174 ] }, "sum":0.5, "to":{ "_":[ "this", "height" ] } } } }
+            }
+          }
+        ],
+        "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":{ "_":[ "scene", "nextScene" ] }, "withTransition":3 } }
+      }
+    },
+    "modelStage":{
+      "cameraX":184, "cameraY":120, "cameraWidth":64, "cameraHeight":64, "cameraFocusX":32, "cameraFocusY":32, "cameraFocusWidth":8, "cameraFocusHeight":8,
+      "states":[
+        {
+          "execute":[
+            {
+              "object":[
+                { "image":"tiles", "tileX":0, "tileY":464, "width":256, "height":112, "zIndex":1, "x":0, "y":0, "frame":{ "_":[ "scene", "backgroundId" ] } },
+                { "width":184, "height":80, "zIndex":1, "x":0, "y":112, "bgcolor":"#000" },
+                { "image":"sprites", "tileX":0, "tileY":120, "width":256, "height":80, "zIndex":300, "x":0, "y":112 },
+                { "type":"currentItemSprite", "image":"sprites", "width":16, "height":16, "zIndex":10, "x":8, "y":120 },
+                {
+                  "type":"currentItemLabel",
+                  "box":"label", "width":135, "height":16,
+                  "zIndex":15, "x":40, "y":120,
+                  "color":"#fff",
+                  "font":"spectrum", "lineHeight":8
+                },
+                {
+                  "type":"currentItemQuantity",
+                  "box":"label", "width":32, "height":16,
+                  "zIndex":400, "x":0, "y":136,
+                  "color":"#fff",
+                  "font":"spectrum", "lineHeight":8, "outline":"#000", "textAlign":"center"
+                },
+                {
+                  "type":"hud",
+                  "hudType":"label", "label":"HP: %number|variable.health%/%number|variable.maxHealth%",
+                  "box":"label", "width":135, "height":16,
+                  "zIndex":15, "x":40, "y":128,
+                  "color":"#fff",
+                  "font":"spectrum", "lineHeight":8
+                },
+                { "type":"ground3", "image":"tiles", "tileX":0, "tileY":208, "width":128, "height":24, "zIndex":5, "x":-64, "y":88, "visible":0 },
+                { "type":"ground4", "image":"tiles", "tileX":0, "tileY":208, "width":128, "height":24, "zIndex":5, "x":64, "y":88, "visible":0 },
+                { "type":"ground5", "image":"tiles", "tileX":0, "tileY":208, "width":128, "height":24, "zIndex":5, "x":192, "y":88, "visible":0 },
+                { "type":"ground6", "image":"tiles", "tileX":0, "tileY":232, "width":128, "height":16, "zIndex":5, "x":-64, "y":72, "visible":0 },
+                { "type":"ground7", "image":"tiles", "tileX":0, "tileY":232, "width":128, "height":16, "zIndex":5, "x":64, "y":72, "visible":0 },
+                { "type":"ground8", "image":"tiles", "tileX":0, "tileY":232, "width":128, "height":16, "zIndex":5, "x":192, "y":72, "visible":0 },
+                { "type":"ground9", "image":"tiles", "tileX":0, "tileY":248, "width":128, "height":8, "zIndex":5, "x":-64, "y":64, "visible":0 },
+                { "type":"ground10", "image":"tiles", "tileX":0, "tileY":248, "width":128, "height":8, "zIndex":5, "x":64, "y":64, "visible":0 },
+                { "type":"ground11", "image":"tiles", "tileX":0, "tileY":248, "width":128, "height":8, "zIndex":5, "x":192, "y":64, "visible":0 },
+                { "type":"wall0", "image":"tiles", "tileX":0, "tileY":0, "width":128, "height":112, "zIndex":150, "x":-64, "y":0, "visible":0 },
+                { "type":"wall1", "image":"tiles", "tileX":0, "tileY":0, "width":128, "height":112, "zIndex":150, "x":64, "y":0, "visible":0 },
+                { "type":"wall2", "image":"tiles", "tileX":0, "tileY":0, "width":128, "height":112, "zIndex":150, "x":192, "y":0, "visible":0 },
+                { "type":"wall3", "image":"tiles", "tileX":0, "tileY":0, "width":128, "height":112, "zIndex":100, "x":-64, "y":0, "visible":0 },
+                { "type":"wall4", "image":"tiles", "tileX":0, "tileY":0, "width":128, "height":112, "zIndex":100, "x":64, "y":0, "visible":0 },
+                { "type":"wall5", "image":"tiles", "tileX":0, "tileY":0, "width":128, "height":112, "zIndex":100, "x":192, "y":0, "visible":0 },
+                { "type":"wall6", "image":"tiles", "tileX":0, "tileY":112, "width":128, "height":64, "zIndex":50, "x":-64, "y":24, "visible":0 },
+                { "type":"wall7", "image":"tiles", "tileX":0, "tileY":112, "width":128, "height":64, "zIndex":50, "x":64, "y":24, "visible":0 },
+                { "type":"wall8", "image":"tiles", "tileX":0, "tileY":112, "width":128, "height":64, "zIndex":50, "x":192, "y":24, "visible":0 },
+                { "type":"wall9", "image":"tiles", "tileX":0, "tileY":176, "width":128, "height":32, "zIndex":30, "x":-64, "y":40, "visible":0 },
+                { "type":"wall10", "image":"tiles", "tileX":0, "tileY":176, "width":128, "height":32, "zIndex":30, "x":64, "y":40, "visible":0 },
+                { "type":"wall11", "image":"tiles", "tileX":0, "tileY":176, "width":128, "height":32, "zIndex":30, "x":192, "y":40, "visible":0 },
+                { "type":"item3", "set":{ "_":[ "stencil", "modelItemTile" ] }, "tileY":256, "width":128, "height":112, "zIndex":100, "x":-64, "y":0 },
+                { "type":"item4", "set":{ "_":[ "stencil", "modelItemTile" ] }, "tileY":256, "width":128, "height":112, "zIndex":100, "x":64, "y":0 },
+                { "type":"item5", "set":{ "_":[ "stencil", "modelItemTile" ] }, "tileY":256, "width":128, "height":112, "zIndex":100, "x":192, "y":0 },
+                { "type":"item6", "set":{ "_":[ "stencil", "modelItemTile" ] }, "tileY":368, "width":128, "height":64, "zIndex":50, "x":-64, "y":24 },
+                { "type":"item7", "set":{ "_":[ "stencil", "modelItemTile" ] }, "tileY":368, "width":128, "height":64, "zIndex":50, "x":64, "y":24 },
+                { "type":"item8", "set":{ "_":[ "stencil", "modelItemTile" ] }, "tileY":368, "width":128, "height":64, "zIndex":50, "x":192, "y":24 },
+                { "type":"item9", "set":{ "_":[ "stencil", "modelItemTile" ] }, "tileY":432, "width":128, "height":32, "zIndex":30, "x":-64, "y":40 },
+                { "type":"item10", "set":{ "_":[ "stencil", "modelItemTile" ] }, "tileY":432, "width":128, "height":32, "zIndex":30, "x":64, "y":40 },
+                { "type":"item11", "set":{ "_":[ "stencil", "modelItemTile" ] }, "tileY":432, "width":128, "height":32, "zIndex":30, "x":192, "y":40 }
+              ],
+              "into":{ "_":"scenehud" }
+            },
+            { "_":[ "stencil", "codeScreenUpdate" ] },
+            { "as":{ "_":"variable" }, "set":{ "logLine":{ "_":[ "scene", "welcomeText" ] } } },
+            { "_":[ "stencil", "codeLogLine" ] }
+          ]
+        },
+        {
+          "name":"death",
+          "execute":[
+            { "as":{ "_":"variable" }, "set":{ "health":0 } },
+            { "as":{ "_":[ "objectTyped", "playersign" ] }, "set":{ "state":"idle" } },
+            {
+              "object":{
+                "image":"sprites", "tileX":0, "tileY":0, "width":256, "height":120,
+                "zIndex":250, "x":0, "y":-120,
+                "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "this", "y" ] }, "sum":0.5, "to":{ "_":[ "this", "y" ] } } } }
+              },
+              "into":{ "_":"scenehud" }
+            },
+            { "as":{ "_":"variable" }, "set":{ "logLine":"...and then you died. Game over!" } },
+            { "_":[ "stencil", "codeLogLine" ] }
+          ],
+          "code":{
+            "name":"Sequence",
+            "data":[ { "wait":120 }, { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } }, { "gotoScene":"intro", "withTransition":3 } ]
+          }
+        }
+      ]
+    },
+    "playersign":{
+      "type":"playersign",
+      "follow":1,
+      "image":"map", "tileX":0, "tileY":0, "width":8, "height":8,
+      "zIndex":15,
+      "fontSize":4, "lineHeight":4,
+      "states":[
+        {
+          "execute":{ "as":{ "_":[ "object", "inventoryHud" ] }, "remove":1 },
+          "code":{
+            "name":"Execute",
+            "data":[
+              { "set":{ "changed":1, "turn":0 } },
+              {
+                "when":{ "_":[ "keyA", "isDown" ] },
+                "set":{ "changed":0, "state":"inventory" },
+                "elseExecute":{
+                  "when":{ "_":[ "keyRight", "isHit" ] },
+                  "sum":90,
+                  "to":{ "_":[ "this", "angle" ] },
+                  "elseExecute":{
+                    "when":{ "_":[ "keyLeft", "isHit" ] },
+                    "subtract":90,
+                    "to":{ "_":[ "this", "angle" ] },
+                    "elseExecute":{
+                      "when":{ "_":[ "keyUp", "isHit" ] },
+                      "execute":[
+                        { "set":{ "turn":1 } },
+                        {
+                          "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "pushable" ] }, "hitbox":{ "_":[ "variable", "direction", "forward" ] } } ] },
+                          "execute":{ "as":{ "_":"that" }, "executeAction":"push" },
+                          "elseExecute":{
+                            "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "block" ] }, "hitbox":{ "_":[ "variable", "direction", "forward" ] } }, "not" ] },
+                            "execute":[
+                              { "sum":{ "_":[ "variable", "direction", "forward", "x" ] }, "to":{ "_":[ "this", "x" ] } },
+                              { "sum":{ "_":[ "variable", "direction", "forward", "y" ] }, "to":{ "_":[ "this", "y" ] } }
+                            ],
+                            "elseExecute":{ "set":{ "changed":0 } }
+                          }
+                        }
+                      ],
+                      "elseExecute":{ "set":{ "changed":0 } }
+                    }
+                  }
+                }
+              },
+              {
+                "when":{ "_":[ "this", "changed" ] },
+                "execute":[
+                  { "set":{ "angle":{ "_":[ "this", "angle", "%", 360 ] } } },
+                  { "when":{ "_":[ "this", "angle", "isLessThan", 0 ] }, "set":{ "angle":{ "_":[ "this", "angle", "+", 360 ] } } },
+                  { "_":[ "stencil", "codeScreenUpdate" ] }
+                ]
+              },
+              { "when":{ "_":[ "this", "turn" ] }, "execute":{ "_":[ "stencil", "codeTurn" ] } }
+            ]
+          }
+        },
+        {
+          "name":"inventory",
+          "execute":{
+            "object":[
+              {
+                "type":"inventoryHud",
+                "image":"sprites", "tileX":0, "tileY":200, "width":8, "height":8,
+                "zIndex":400, "x":0, "y":124,
+                "states":{
+                  "code":{
+                    "name":"Sequence",
+                    "data":[ { "sum":1, "to":{ "_":[ "this", "x" ] }, "wait":5 }, { "subtract":1, "to":{ "_":[ "this", "x" ] }, "wait":5, "loopTo":0 } ]
+                  }
+                }
+              },
+              {
+                "type":"inventoryHud",
+                "image":"sprites", "tileX":8, "tileY":200, "width":8, "height":8,
+                "zIndex":400, "x":24, "y":124,
+                "states":{
+                  "code":{
+                    "name":"Sequence",
+                    "data":[ { "subtract":1, "to":{ "_":[ "this", "x" ] }, "wait":5 }, { "sum":1, "to":{ "_":[ "this", "x" ] }, "wait":5, "loopTo":0 } ]
+                  }
+                }
+              },
+              {
+                "type":"inventoryHud",
+                "image":"sprites", "tileX":16, "tileY":200, "width":8, "height":8,
+                "zIndex":400, "x":12, "y":112,
+                "states":{
+                  "code":{
+                    "name":"Sequence",
+                    "data":[ { "sum":1, "to":{ "_":[ "this", "y" ] }, "wait":5 }, { "subtract":1, "to":{ "_":[ "this", "y" ] }, "wait":5, "loopTo":0 } ]
+                  }
+                }
+              }
+            ],
+            "into":{ "_":"scenehud" }
+          },
+          "code":{
+            "name":"Execute",
+            "data":[
+              { "set":{ "changed":1, "turn":0 } },
+              {
+                "when":{ "_":[ "keyA", "isUp" ] },
+                "set":{ "state":"default" },
+                "elseExecute":{
+                  "when":{ "_":[ "keyRight", "isHit" ] },
+                  "sum":1,
+                  "to":{ "_":[ "variable", "selectedItem" ] },
+                  "elseExecute":{
+                    "when":{ "_":[ "keyLeft", "isHit" ] },
+                    "subtract":1,
+                    "to":{ "_":[ "variable", "selectedItem" ] },
+                    "elseExecute":{
+                      "when":{ "_":[ "keyUp", "isHit" ] },
+                      "execute":[
+                        { "set":{ "turn":1 } },
+                        { "as":{ "_":"variable" }, "set":{ "happened":0, "logLine":{ "_":[ "You used ", ".", { "_":[ "variable", "currentItem", "label" ] }, ".", "." ] } } },
+                        { "_":[ "stencil", "codeLogLine" ] },
+                        {
+                          "when":{ "_":[ "variable", "currentItem", "onUse" ] },
+                          "execute":{ "_":[ "variable", "currentItem", "onUse" ] },
+                          "elseExecute":[
+                            {
+                              "as":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "interactive" ] }, "hitbox":{ "_":[ "variable", "direction", "forward" ] } } ] },
+                              "executeAction":"use"
+                            },
+                            { "when":{ "_":[ "variable", "happened", "not" ] }, "execute":{ "_":[ "stencil", "codeNothing" ] } }
+                          ]
+                        }
+                      ],
+                      "elseExecute":{ "set":{ "changed":0 } }
+                    }
+                  }
+                }
+              },
+              {
+                "when":{ "_":[ "this", "changed" ] },
+                "execute":[
+                  {
+                    "when":{ "_":[ "variable", "selectedItem", "isGreaterEqualThan", { "_":[ "variable", "inventory", "count" ] } ] },
+                    "as":{ "_":"variable" },
+                    "set":{ "selectedItem":0 },
+                    "elseExecute":{
+                      "when":{ "_":[ "variable", "selectedItem", "isLessThan", 0 ] },
+                      "as":{ "_":"variable" },
+                      "set":{ "selectedItem":{ "_":[ "variable", "inventory", "count", "-", 1 ] } }
+                    }
+                  },
+                  { "as":{ "_":"variable" }, "set":{ "currentItem":{ "_":[ "variable", "inventory", { "_":[ "variable", "selectedItem" ] } ] } } },
+                  { "_":[ "stencil", "codeScreenUpdate" ] }
+                ]
+              },
+              { "when":{ "_":[ "this", "turn" ] }, "execute":{ "_":[ "stencil", "codeTurn" ] } }
+            ]
+          }
+        }
+      ]
+    },
+    "dataDirections":{
+      "0":{
+        "forward":{ "x":0, "y":-8 },
+        "view":[
+          { "x":-8, "y":0 },
+          { "x":0, "y":0 },
+          { "x":8, "y":0 },
+          { "x":-8, "y":-8 },
+          { "x":0, "y":-8 },
+          { "x":8, "y":-8 },
+          { "x":-8, "y":-16 },
+          { "x":0, "y":-16 },
+          { "x":8, "y":-16 },
+          { "x":-8, "y":-24 },
+          { "x":0, "y":-24 },
+          { "x":8, "y":-24 }
+        ]
+      },
+      "180":{
+        "forward":{ "x":0, "y":8 },
+        "view":[
+          { "x":8, "y":0 },
+          { "x":0, "y":0 },
+          { "x":-8, "y":0 },
+          { "x":8, "y":8 },
+          { "x":0, "y":8 },
+          { "x":-8, "y":8 },
+          { "x":8, "y":16 },
+          { "x":0, "y":16 },
+          { "x":-8, "y":16 },
+          { "x":8, "y":24 },
+          { "x":0, "y":24 },
+          { "x":-8, "y":24 }
+        ]
+      },
+      "270":{
+        "forward":{ "x":-8, "y":0 },
+        "view":[
+          { "x":0, "y":8 },
+          { "x":0, "y":0 },
+          { "x":0, "y":-8 },
+          { "x":-8, "y":8 },
+          { "x":-8, "y":0 },
+          { "x":-8, "y":-8 },
+          { "x":-16, "y":8 },
+          { "x":-16, "y":0 },
+          { "x":-16, "y":-8 },
+          { "x":-24, "y":8 },
+          { "x":-24, "y":0 },
+          { "x":-24, "y":-8 }
+        ]
+      },
+      "90":{
+        "forward":{ "x":8, "y":0 },
+        "view":[
+          { "x":0, "y":-8 },
+          { "x":0, "y":0 },
+          { "x":0, "y":8 },
+          { "x":8, "y":-8 },
+          { "x":8, "y":0 },
+          { "x":8, "y":8 },
+          { "x":16, "y":-8 },
+          { "x":16, "y":0 },
+          { "x":16, "y":8 },
+          { "x":24, "y":-8 },
+          { "x":24, "y":0 },
+          { "x":24, "y":8 }
+        ]
+      }
+    },
+    "dataItems":{
+      "blueKey":{ "label":"Blue key", "tileX":64, "tileY":208, "itemId":"blueKey", "quantity":1 },
+      "gold":{ "label":"Gold", "tileX":112, "tileY":208, "itemId":"gold", "quantity":1 },
+      "greenKey":{ "label":"Green key", "tileX":48, "tileY":208, "itemId":"greenKey", "quantity":1 },
+      "hand":{ "label":"Hand", "tileX":0, "tileY":208, "itemId":"hand", "quantity":2 },
+      "potion":{
+        "label":"Potion",
+        "tileX":32, "tileY":208,
+        "itemId":"potion",
+        "onUse":{
+          "when":{ "_":[ "variable", "health", "isLessThan", { "_":[ "variable", "maxHealth" ] } ] },
+          "execute":[
+            { "sum":1, "to":{ "_":[ "variable", "health" ] } },
+            { "as":{ "_":"variable" }, "set":{ "consumeItem":"potion" } },
+            { "_":[ "stencil", "codeItemConsume" ] },
+            { "as":{ "_":"variable" }, "set":{ "logLine":"You feel a little better." } },
+            { "_":[ "stencil", "codeLogLine" ] }
+          ],
+          "elseExecute":[ { "as":{ "_":"variable" }, "set":{ "logLine":"You feel already good." } }, { "_":[ "stencil", "codeLogLine" ] } ]
+        },
+        "quantity":1
+      },
+      "purpleKey":{ "label":"Purple key", "tileX":80, "tileY":208, "itemId":"purpleKey", "quantity":1 },
+      "shield":{ "label":"Shield", "tileX":96, "tileY":208, "itemId":"shield", "quantity":1 },
+      "sword":{ "label":"Sword", "tileX":16, "tileY":208, "itemId":"sword", "quantity":1 }
+    },
+    "logLine":{
+      "type":"logLine",
+      "box":"label", "width":160, "height":16,
+      "zIndex":2, "x":8, "y":184,
+      "font":"spectrum", "lineHeight":8,
+      "moveUp":0,
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":{
+            "when":{ "_":[ "this", "moveUp" ] },
+            "execute":[
+              { "subtract":2, "to":{ "_":[ "this", "y" ] } },
+              { "subtract":2, "to":{ "_":[ "this", "moveUp" ] } },
+              { "when":{ "_":[ "this", "y", "isLessThan", 137 ] }, "remove":1 }
+            ]
+          }
+        }
+      }
+    },
+    "lever":{
+      "type":[ "pushable", "interactive" ],
+      "set":{ "_":[ "stencil", "modelMapItem" ] },
+      "tileX":16, "tileY":32,
+      "itemStencil":{ "frame":13, "state":"default" },
+      "leverPull":"You hear a loud click.",
+      "leverPulled":"The lever is stuck.",
+      "states":{
+        "actions":{
+          "name":"use",
+          "execute":{
+            "when":{ "_":[ "variable", "currentItem", "itemId", "isEqualTo", "hand" ] },
+            "execute":{
+              "when":{ "_":[ "this", "pulled" ] },
+              "execute":[ { "as":{ "_":"variable" }, "set":{ "happened":1, "logLine":{ "_":[ "that", "leverPulled" ] } } }, { "_":[ "stencil", "codeLogLine" ] } ],
+              "elseExecute":[
+                { "as":{ "_":[ "object", { "_":[ "this", "leverId" ] } ] }, "remove":1 },
+                { "set":{ "itemStencil":{ "frame":14, "state":"default" }, "pulled":1 } },
+                { "as":{ "_":"variable" }, "set":{ "happened":1, "logLine":{ "_":[ "that", "leverPull" ] } } },
+                { "_":[ "stencil", "codeLogLine" ] }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "blueDoor":{
+      "set":{ "_":[ "stencil", "modelDoor" ] },
+      "tileX":32, "tileY":24,
+      "itemId":"blueDoor",
+      "itemStencil":{ "frame":5, "state":"default" },
+      "openMessage":"The door creaks and opens.",
+      "openWith":"blueKey",
+      "pushMessage":"It won't open. Blue key is needed."
+    },
+    "greenDoor":{
+      "set":{ "_":[ "stencil", "modelDoor" ] },
+      "tileX":16, "tileY":24,
+      "itemId":"greenDoor",
+      "itemStencil":{ "frame":3, "state":"default" },
+      "openMessage":"The door creaks and opens.",
+      "openWith":"greenKey",
+      "pushMessage":"It won't open. Green key is needed."
+    },
+    "purpleDoor":{
+      "set":{ "_":[ "stencil", "modelDoor" ] },
+      "tileX":48, "tileY":24,
+      "itemId":"purpleDoor",
+      "itemStencil":{ "frame":7, "state":"default" },
+      "openMessage":"The door creaks and opens.",
+      "openWith":"purpleKey",
+      "pushMessage":"It won't open. Purple key is needed."
+    },
+    "blob":{
+      "set":{ "_":[ "stencil", "modelFoe" ] },
+      "label":"Blob",
+      "tileX":64, "tileY":24,
+      "damage":1,
+      "health":2,
+      "hitWith":"sword",
+      "itemStencil":{ "frame":9, "state":"flip" }
+    },
+    "skerpent":{
+      "set":{ "_":[ "stencil", "modelFoe" ] },
+      "label":"Skerpent",
+      "tileX":72, "tileY":24,
+      "damage":4,
+      "health":3,
+      "hitWith":"sword",
+      "itemStencil":{ "frame":10, "state":"flip" }
+    },
+    "troll":{
+      "set":{ "_":[ "stencil", "modelFoe" ] },
+      "label":"Troll",
+      "tileX":0, "tileY":32,
+      "damage":4,
+      "health":14,
+      "hitWith":"sword",
+      "itemStencil":{ "frame":11, "state":"flip" }
+    },
+    "bars":{
+      "set":{ "_":[ "stencil", "modelNpc" ] },
+      "tileX":48, "tileY":32,
+      "itemStencil":{ "frame":18, "state":"default" },
+      "signText":"Iron bars are blocking you."
+    },
+    "sign":{ "set":{ "_":[ "stencil", "modelNpc" ] }, "tileX":56, "tileY":24, "itemStencil":{ "frame":8, "state":"default" } },
+    "blueKey":{
+      "set":{ "_":[ "stencil", "modelPickableItem" ] },
+      "tileX":24, "tileY":24,
+      "itemId":"blueKey",
+      "itemStencil":{ "frame":4, "state":"default" },
+      "logLine":"You picked a Blue key."
+    },
+    "gold":{
+      "set":{ "_":[ "stencil", "modelPickableItem" ] },
+      "tileX":40, "tileY":32,
+      "firstLogLine":"You picked some Gold!",
+      "itemId":"gold",
+      "itemStencil":{ "frame":17, "state":"default" },
+      "logLine":"You picked more Gold."
+    },
+    "greenKey":{
+      "set":{ "_":[ "stencil", "modelPickableItem" ] },
+      "tileX":8, "tileY":24,
+      "itemId":"greenKey",
+      "itemStencil":{ "frame":2, "state":"default" },
+      "logLine":"You picked a Green key."
+    },
+    "potion":{
+      "set":{ "_":[ "stencil", "modelPickableItem" ] },
+      "tileX":0, "tileY":24,
+      "itemId":"potion",
+      "itemStencil":{ "frame":1, "state":"default" },
+      "logLine":"You picked a Potion."
+    },
+    "purpleKey":{
+      "set":{ "_":[ "stencil", "modelPickableItem" ] },
+      "tileX":40, "tileY":24,
+      "itemId":"purpleKey",
+      "itemStencil":{ "frame":6, "state":"default" },
+      "logLine":"You picked a Purple key."
+    },
+    "shield":{
+      "set":{ "_":[ "stencil", "modelPickableItem" ] },
+      "tileX":24, "tileY":32,
+      "firstLogLine":"You picked a Shield.",
+      "itemId":"shield",
+      "itemStencil":{ "frame":15, "state":"default" },
+      "logLine":"You've found a better Shield."
+    },
+    "sword":{
+      "set":{ "_":[ "stencil", "modelPickableItem" ] },
+      "tileX":32, "tileY":32,
+      "firstLogLine":"You picked a Sword.",
+      "itemId":"sword",
+      "itemStencil":{ "frame":16, "state":"default" },
+      "logLine":"You've found a better Sword."
+    },
+    "teleport":{
+      "type":"pushable",
+      "set":{ "_":[ "stencil", "modelMapItem" ] },
+      "tileX":8, "tileY":32,
+      "itemStencil":{ "frame":12, "state":"flip" },
+      "states":{
+        "actions":{
+          "name":"push",
+          "execute":{
+            "when":{ "_":[ "this", "teleportScene" ] },
+            "gotoScene":{ "_":[ "this", "teleportScene" ] },
+            "withTransition":3,
+            "elseExecute":[
+              {
+                "as":{ "_":[ "objectTyped", "playersign" ] },
+                "set":{ "x":{ "_":[ "that", "teleportX", "*", 8 ] }, "y":{ "_":[ "that", "teleportY", "*", 8 ] }, "angle":{ "_":[ "that", "teleportAngle" ] } }
+              },
+              { "as":{ "_":"variable" }, "set":{ "logLine":"Now you're somewhere else." } },
+              { "_":[ "stencil", "codeLogLine" ] }
+            ]
+          }
+        }
+      }
+    },
+    "thief":{
+      "type":[ "pushable", "interactive" ],
+      "set":{ "_":[ "stencil", "modelMapItem" ] },
+      "tileX":64, "tileY":32,
+      "itemStencil":{ "frame":19, "state":"default" },
+      "states":{
+        "actions":[
+          { "name":"push", "execute":[ { "as":{ "_":"variable" }, "set":{ "logLine":{ "_":[ "that", "voice" ] } } }, { "_":[ "stencil", "codeLogLine" ] } ] },
+          {
+            "name":"use",
+            "execute":{
+              "when":{ "_":[ "variable", "currentItem", "itemId", "isEqualTo", "hand" ] },
+              "execute":[
+                { "when":{ "_":[ "cheat", "unlimitedHealth", "not" ] }, "subtract":1, "to":{ "_":[ "variable", "health" ] } },
+                { "as":{ "_":"variable" }, "set":{ "happened":1, "logLine":"\"What are you trying to do?!\" -1HP" } },
+                { "_":[ "stencil", "codeLogLine" ] },
+                { "_":[ "stencil", "codeDeathCheck" ] }
+              ],
+              "elseExecute":{
+                "when":{ "_":[ "variable", "currentItem", "itemId", "isEqualTo", "sword" ] },
+                "gotoScene":"goodending",
+                "withTransition":3,
+                "elseExecute":{ "when":{ "_":[ "variable", "currentItem", "itemId", "isEqualTo", "gold" ] }, "gotoScene":"evilending", "withTransition":3 }
+              }
+            }
+          }
+        ]
+      }
+    },
+    "voice":{
+      "type":"pushable",
+      "set":{ "_":[ "stencil", "modelMapItem" ] },
+      "tileX":56, "tileY":32,
+      "itemStencil":{ "frame":0, "visible":0, "state":"default" },
+      "visibility":0,
+      "states":{
+        "actions":{
+          "name":"push",
+          "execute":[ { "as":{ "_":"variable" }, "set":{ "logLine":{ "_":[ "that", "voice" ] } } }, { "_":[ "stencil", "codeLogLine" ] }, { "remove":1 } ]
+        }
+      }
+    },
+    "G":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":24, "tileY":16, "wallStencil":{ "frame":1, "bgcolors":[ 0, "#0f0", "#007f00", "#007f00" ] } },
+    "O":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":8, "tileY":16, "visibility":0 },
+    "T":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":32, "tileY":16, "wallStencil":{ "frame":2, "bgcolors":[ 0, "", "", "" ] } },
+    "#":{
+      "type":"block",
+      "set":{ "_":[ "stencil", "modelMapArea" ] },
+      "image":"map", "tileX":0, "tileY":16, "width":8, "height":8,
+      "visibility":1,
+      "wallStencil":{ "frame":1, "bgcolors":[ 0, "#00f", "#00007f", "#00007f" ] }
+    },
+    "Y":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":16, "tileY":16, "wallStencil":{ "frame":1, "bgcolors":[ 0, "#ff0", "#7f7f00", "#7f7f00" ] } },
+    ".":{
+      "set":{ "_":[ "stencil", "modelMapArea" ] },
+      "image":"map", "tileX":0, "tileY":8, "width":8, "height":8,
+      "groundStencil":{ "frame":1, "bgcolors":[ 0, "#0ff", "#007f7f", "#007f7f" ] },
+      "visibility":1
+    },
+    "g":{ "set":{ "_":[ "stencil", "." ] }, "tileX":24, "tileY":8, "groundStencil":{ "frame":1, "bgcolors":[ 0, "#0f0", "#007f00", "#007f00" ] } },
+    "o":{ "set":{ "_":[ "stencil", "." ] }, "tileX":8, "tileY":8, "visibility":0 },
+    "t":{ "set":{ "_":[ "stencil", "." ] }, "tileX":32, "tileY":8, "groundStencil":{ "frame":2, "bgcolors":[ 0, "#0f0", "#007f00", "#007f00" ] } },
+    "y":{ "set":{ "_":[ "stencil", "." ] }, "tileX":16, "tileY":8, "groundStencil":{ "frame":1, "bgcolors":[ 0, "#ff0", "#7f7f00", "#7f7f00" ] } }
+  },
+  "execute":{},
+  "scenes":{
+    "intro":{
+      "object":[
+        { "image":"title", "width":256, "height":192, "zIndex":10, "x":0, "y":0 },
+        { "image":"title", "tileY":192, "width":256, "height":192, "zIndex":1, "x":0, "y":0 },
+        {
+          "image":"title", "tileY":384, "width":280, "height":192,
+          "zIndex":5, "x":-24, "y":0,
+          "states":{
+            "code":{ "name":"Sequence", "data":[ { "wait":25 }, { "sum":1, "to":{ "_":[ "this", "x" ] }, "wait":1, "loop":1, "cycles":280 }, { "remove":1 } ] }
+          }
+        },
+        {
+          "box":"label", "width":256,
+          "zIndex":50, "x":0, "y":130,
+          "color":"#fff",
+          "font":"spectrum", "fontSize":20, "lineHeight":20, "outline":"#000", "textAlign":"center", "html":"PRESS START",
+          "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "visible":0 }, "wait":10 }, { "set":{ "visible":1 }, "wait":10, "loopTo":0 } ] } }
+        }
+      ],
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":{
+            "when":{ "_":[ "keyA", "isHit" ] },
+            "execute":[
+              { "as":{ "_":"variable" }, "set":{ "health":10, "inventory":{ "_":[ "new", [] ] }, "maxHealth":10, "score":0, "selectedItem":0 } },
+              { "as":{ "_":[ "new", { "_":[ "stencil", "dataItems", "hand" ] } ] }, "pushInto":{ "_":[ "variable", "inventory" ] } },
+              { "as":{ "_":"variable" }, "set":{ "currentItem":{ "_":[ "variable", "inventory", 0 ] } } },
+              { "gotoScene":"story", "withTransition":3 }
+            ]
+          }
+        }
+      }
+    },
+    "story":{
+      "set":{ "_":[ "stencil", "modelSceneText" ] },
+      "nextScene":"begin",
+      "showScore":0,
+      "text":"THE LAST THING THAT CAME TO MY MIND WERE MY BELOVED WHEAT FIELDS AND A SUDDEN PAINFUL HIT BEHIND MY HEAD.<BR>I WOKE UP IN A FOREST, SURROUNDED BY A BUNCH OF MENACING THIEVES.<br>\"GO INSIDE THAT DUNGEON AND BRING ALL THE GOLD TO US\", SAID ONE OF THEM, \"OR WE WILL KILL YOU AND YOUR DEAR FAMILY.\".<br>WITH FEW CHOICES LEFT I DECIED TO GO IN THERE, ARMED WITH MY FAITH IN GODS ONLY..."
+    },
+    "evilending":{
+      "set":{ "_":[ "stencil", "modelSceneText" ] },
+      "nextScene":"begin",
+      "showScore":1,
+      "text":"\"YOU ARE PRETTY STRONG, FARMER.\" SAID THE THIEF WITH A GRIM SMILE, WHILE COUNTING THE GOLD I GAVE HIM.<br>I KNEW IT VERY WELL. THAT'S WHY, FEW DAYS LATER, I KILLED THEIR LEADER AND BECAME THE FEARED RULER OF THESE LANDS.<br><br>I SAID GOODBYE TO MY BELOVED FIELDS AND FAMILY. THEY ARE SAFE NOW.<br><br>THE END."
+    },
+    "goodending":{
+      "set":{ "_":[ "stencil", "modelSceneText" ] },
+      "nextScene":"begin",
+      "showScore":1,
+      "text":"I SLASHED MY SWORD ONCE AGAIN. THE THIEF SCREAMED AND FELL LIFELESS ON THE GRASS, SPLASHING IN A LITTLE RED LAKE. SILENCE FOR A WHILE AND, THEN, MORE PAIN AND BLOOD. I BECAME A HERO, MEANT TO SLAIN WHAT'S EVIL.<br><br>I SAID GOODBYE TO MY BELOVED FIELDS AND FAMILY. THEY WERE FINALLY SAFE.<br><br>THE END."
+    }
+  }
+}
