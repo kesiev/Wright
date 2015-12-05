@@ -2162,7 +2162,7 @@ function Wright(gameId,container,mods) {
 				ret = iterateComposedList(from, tox, get(from, tox, list[i]), cb);
 				if (ret !== undefined) return ret;
 			} else {
-				ret = cb(list, from, tox);
+				ret = cb(get(from, tox, list), from, tox);
 				if (ret !== undefined) return ret;
 			}
 	}
