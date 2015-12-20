@@ -199,7 +199,6 @@ function Box(parent, type, sub, statemanager) {
 
 	// INIT - Style
 	var a,model=Box._[type] || Box._.basic;
-	for (a in Box._.common.css) box.node.style[a] = Box._.common.css[a];
 	if (model.set) for (a in model.set) box[a] = model.set[a];
 	if (model.css) for (a in model.css) box.node.style[a] = model.css[a];
 
@@ -288,7 +287,110 @@ function Box(parent, type, sub, statemanager) {
 			objectChangedCount: 0,
 			objectWastedCount:0
 		};
+		box.node.innerHTML="<div style=\"font-size:12px;font-family:sans-serif;position:absolute;right:10px;bottom:10px;text-align:center;color:#ccc\">Loading...</div>";
 		box.statsmanager = 0;
+		box.aliasmode="pixelated";
+		// ALIAS
+		box.setAliasMode=function(mode) { this.aliasmode=mode; }
+		// AUDIO
+		box.enableAudio=function(volume) {
+			if (!this.audio) {
+				window.AudioContext=window.AudioContext||window.webkitAudioContext;
+				if (window.AudioContext) {
+					this.audio={
+						context: new AudioContext(),
+						channels:{},
+						defaults:{}
+					};
+					this.audio.gainNode=this.audio.context.createGain();
+					this.audio.gainNode.connect(this.audio.context.destination);
+					this.audio.gainNode.gain.value=volume;
+				}
+			}
+		};
+		box.addAudioChannel=function(name,data) {
+			if (this.audio) {
+				var channel=this.audio.channels[name]={
+					gainNode:this.audio.context.createGain(),
+					looping:data.looping,
+					playing:{},
+					volume:data.volume===undefined?1:data.volume,
+					applyEffect:function(effect) { Box.applyEffect(box,this,effect); },
+					stop:function() {
+						for (var a in this.playing) if (this.playing[a]) this.playing[a].stop();
+						this.applyEffect({name:"setvolume"});
+					},
+					destroy:function() {
+						this.stop();
+						this.gainNode.disconnect();
+					}
+				};
+				channel.gainNode.connect(this.audio.gainNode);
+				channel.gainNode.gain.value=channel.volume;
+				if (data.samples)
+					for (var i=0;i<data.samples.length;i++)
+						this.audio.defaults[data.samples[i]]=name;
+			}
+		}
+		box.getAudioChannel=function(channel) {
+			if (this.audio) return this.audio.channels[channel];
+			else return 0;
+		};
+		box.getAudio=function(name,channel) {
+			if (this.audio&&this.resources.items[name]) {
+				if (channel===undefined) channel=this.audio.defaults[name];
+				var ch=this.audio.channels[channel];
+				if (ch) return ch.playing[name];
+			} else return 0;
+		};
+		box.playAudio=function(name,channel,looping,effect) {
+			if (this.audio&&this.resources.items[name]) {
+				if (channel===undefined) channel=this.audio.defaults[name];
+				var ch=this.audio.channels[channel];
+				if (ch) {
+					var audio=this.getAudio(name,channel);
+					if (audio) audio.stop();
+					audio=ch.playing[name]={
+						source:this.audio.context.createBufferSource(),
+						gainNode:this.audio.context.createGain(),
+						initTime:this.audio.context.currentTime,
+						channel:ch,
+						volume:1,
+						looping:looping||((looping===undefined)&&ch.looping),
+						stop:function() {
+							audio.source.stop(0);
+							audio.gainNode.disconnect();
+							audio.source.disconnect();
+							audio.channel.playing[name]=0;
+						},
+						applyEffect:function(effect) { Box.applyEffect(box,this,effect); },
+						getter:function(attr){
+							switch (attr) {
+								case "position":{
+									var pos=(box.audio.context.currentTime-this.initTime)*this.source.playbackRate.value;	
+									return !this.looping&&(pos>this.source.buffer.duration)?this.source.buffer.duration:pos;
+								}
+								case "length":{
+									return this.source.buffer.duration;
+								}
+								case "times":{
+									var times=((box.audio.context.currentTime-this.initTime)*this.source.playbackRate.value)/this.source.buffer.duration;
+									return !this.looping&&(times>1)?1:times;
+								}
+							}
+						}
+					}
+					audio.source.buffer=this.resources.items[name];
+					if (audio.looping) audio.source.loop=true;
+					audio.source.connect(audio.gainNode);
+					audio.gainNode.connect(ch.gainNode);
+					audio.gainNode.gain.value=audio.volume;
+					if (effect) audio.applyEffect(effect);
+					audio.source.start(0);
+				}
+			}
+		};
+		// STATES
 		box.setStatsManager = function(obj) {
 			this.statsmanager = obj;
 			obj.initialize(this);
@@ -416,6 +518,7 @@ function Box(parent, type, sub, statemanager) {
 			this.clean();
 			if (this.node.parentNode) this.node.parentNode.removeChild(this.node);
 			if (this.timeout) clearTimeout(this.timeout);
+			if (this.audio) for (var a in this.audio.channels) this.audio.channels[a].destroy();
 			this.timeout=-1;
 		};
 		box.clean = function() {
@@ -791,8 +894,27 @@ function Box(parent, type, sub, statemanager) {
 							});
 							break;
 						}
+						case "ogg":
+						case "mp3":{
+							if (box.audio) {
+							  var request = new XMLHttpRequest();
+							  request.open('GET', file, true);
+							  request.responseType = 'arraybuffer';
+							  request.onload = function() {
+							    box.audio.context.decodeAudioData(request.response, function(buffer) {
+							      box.resources.items[box.resources.current[0]] = buffer;
+							      box.loadNextResource();
+							    }, function(e){
+							    	console.warn("Audio error with "+file,e);
+							    });
+							  }
+							  request.send();
+							} else box.loadNextResource();
+						  break;
+						}
 					}
 				} else {
+					box.node.innerHTML="";
 					box.resources.callback();
 					box.resources.callback = 0;
 				}
@@ -918,6 +1040,7 @@ function Box(parent, type, sub, statemanager) {
 		parent.appendChild(box.node);
 		box.processFrame();
 	} else {
+		for (a in Box._[parent.screen.aliasmode].css) box.node.style[a] = Box._[parent.screen.aliasmode].css[a];
 		// BOX - Finalize
 		box.screen = parent.screen;
 		box.parent = parent;
@@ -959,7 +1082,10 @@ Box._baserects = {
 	}
 };
 Box._ = {
-	common:{
+	aliased:{
+		css:{} // CSS fixes applied everywhere
+	},
+	pixelated:{
 		css:{} // CSS fixes applied everywhere
 	},
 	game: {
@@ -1044,11 +1170,11 @@ if (Box._transform&&Box._transformOrigin) {
 }
 
 if (Supports.browser("firefox")) {
-    Box._.common.css.imageRendering="-moz-crisp-edges";
-    Box._.common.css.MozOsxFontSmoothing="grayscale";
+    Box._.pixelated.css.imageRendering="-moz-crisp-edges";
+    Box._.pixelated.css.MozOsxFontSmoothing="grayscale";
 } else {
-	Supports.setCss(Box._.common.css,"imageRendering","pixelated");
-	Supports.setCss(Box._.common.css,"fontSmoothing","none");
+	Supports.setCss(Box._.pixelated.css,"imageRendering","pixelated");
+	Supports.setCss(Box._.pixelated.css,"fontSmoothing","none");
 }
 
 // DOM events
@@ -1059,6 +1185,21 @@ Box.on=function(evt,elm,cb) {
 Box.off=function(evt,elm,cb) {
 	if (elm.addEventListener) elm.removeEventListener(evt, cb, false);
 	else elm.detachEvent("on" + evt, cb);
+}
+// AUDIO
+Box.applyEffect=function(box,node,effect) {
+	var currTime = box.audio.context.currentTime+0.0001;
+	switch (effect.name) {
+		case "fade":{
+			node.gainNode.gain.linearRampToValueAtTime(effect.fromVolume===undefined?node.gainNode.gain.value:effect.fromVolume, currTime);
+			node.gainNode.gain.linearRampToValueAtTime(effect.toVolume===undefined?node.volume:effect.toVolume, currTime + (effect.length===undefined?1:effect.length));
+			break;					
+		}
+		case "setvolume":{
+			node.gainNode.gain.setValueAtTime(effect.volume===undefined?node.volume:effect.volume, currTime);
+			break;					
+		}
+	}
 }
 // UTILS
 Box.getTimestamp = function() { return (new Date()).getTime(); };
@@ -1601,7 +1742,7 @@ function Wright(gameId,container,mods) {
 					ox = this.x,
 					oy = this.y,
 					oz = this.z,
-					gap,or=this.getRects().rect;
+					or=this.getRects().rect;
 				if (limitX) limitX = [get(this, this, limitX[0]), get(this, this, limitX[1])];
 				if (limitY) limitY = [get(this, this, limitY[0]), get(this, this, limitY[1])];
 				if (limitZ) limitZ = [get(this, this, limitZ[0]), get(this, this, limitZ[1])];
@@ -1618,20 +1759,13 @@ function Wright(gameId,container,mods) {
 				this.forceY = FIX(_Code.applyLimit(this.forceY + gy, limitY));
 				this.forceZ = FIX(_Code.applyLimit(this.forceZ + gz, limitZ));
 				this.touchUp = this.touchDown = this.touchLeft = this.touchRight = this.touchZ = 0;
-				gap=Box.limit(this.forceX, -10, 10);
-				if (gap) {
-					this.x = FIX(this.x + gap);
-					this.screen.translateRect(this,"x",gap);
-				}
+				this.x = FIX(this.x + this.forceX);
+				this.screen.translateRect(this,"x", this.forceX);
 				if (walls) iterateComposedList(this, this, walls, _Code.wallsX);
-				gap=Box.limit(this.forceY, -10, 10);
-				if (gap) {
-					this.y = FIX(this.y + gap);
-					this.screen.translateRect(this,"y",gap);
-				}
+				this.y = FIX(this.y + this.forceY);
+				this.screen.translateRect(this,"y", this.forceY);
 				if (walls) iterateComposedList(this, this, walls, _Code.wallsY);
-				gap=Box.limit(this.forceZ, -10, 10);
-				if (gap) this.z = FIX(this.z + gap);
+				this.z = FIX(this.z + this.forceZ);
 				if (walls) iterateComposedList(this, this, walls, _Code.wallsZ);
 				if (this._events.firstExecute.length)
 					for (var i = 0; i < this._events.firstExecute.length; i++)
@@ -1695,10 +1829,12 @@ function Wright(gameId,container,mods) {
 				if (jump) {
 					var forceY = get(this, this, jump.forceY),
 						cut = get(this, this, jump.cut),
-						count = get(this, this, jump.count);
+						count = get(this, this, jump.count),
+						audio = get(this, this, jump.playAudio);
 					if (this.touchDown) {
 						if (game.key.keyUp == 1) {
 							this.forceY = forceY;
+							if (audio) game.playAudio(audio);
 							this.currentJump = {
 								cut: 0,
 								count: 1
@@ -1896,7 +2032,8 @@ function Wright(gameId,container,mods) {
 					tileheight = get(from, tox, tilemap.tileHeight) || 16,
 					atx = get(from, tox, tilemap.x) || 0,
 					aty = get(from, tox, tilemap.y) || 0,
-					tilez = tilemap.zIndex ? get(from, tox, tilemap.zIndex) : undefined;
+					tilez = tilemap.zIndex ? get(from, tox, tilemap.zIndex) : undefined,
+					alpha = tilemap.alpha ? get(from, tox, tilemap.alpha) : undefined;
 				for (var y = 0; y < map.length; y++)
 					for (var x = 0; x < map[y].length; x++)
 						if (curtape.stencils[map[y][x]]) {
@@ -1904,7 +2041,8 @@ function Wright(gameId,container,mods) {
 								x: (tilewidth * x) + atx,
 								y: (tileheight * y) + aty
 							});
-							if (tilez !== undefined) from.setZIndex(tilez);
+							if (tilez !== undefined) tile.setZIndex(tilez);
+							if (alpha !== undefined) tile.setAlpha(alpha);
 							applyStencil(tile, tox, curtape.stencils[map[y][x]]);
 							if (tile.x + tile.width > mw) mw = tile.x + tile.width;
 							if (tile.y + tile.height > mh) mh = tile.y + tile.height;
@@ -2233,6 +2371,15 @@ function Wright(gameId,container,mods) {
 					case "hud":{ ret = hud; break; }
 					case "scenehud":{ ret = scenehud; break; }
 					case "storage":{ ret=Storage; break; }
+					case "audio":{
+						var ch,nm=get(from, tox, struct[++id]);
+						if (struct[id+1]=="withChannel") {
+							id++;
+							ch=get(from, tox, struct[++id])
+						}
+						ret=game.getAudio(nm,ch);
+						break;
+					}
 					case "merged":{ ret=merge(from,tox,ret); break; }
 					case "new":{ ret = Box.clone(get(from, tox, struct[++id])); break; }
 					case "arrayOf":{
@@ -2351,6 +2498,8 @@ function Wright(gameId,container,mods) {
 					case "-":{ ret = FIX(ret - get(from, tox, struct[++id])); break; }
 					case "*":{ ret = FIX(ret * get(from, tox, struct[++id])); break; }
 					case "/":{ ret = FIX(ret / get(from, tox, struct[++id])); break; }
+					case "^":{ ret = Math.pow(ret,get(from, tox, struct[++id])); break; }
+					case "sin":{ ret = Math.sin(ret); break; }
 					case "not":{ ret = !ret; break; }
 					case "and":{
 						id++;
@@ -2455,6 +2604,8 @@ function Wright(gameId,container,mods) {
 						else ret=0;
 						break;
 					}
+					case "isSameOf":
+					case "isNotSameOf":
 					case "isGreaterThan":
 					case "isLessThan":
 					case "isGreaterEqualThan":
@@ -2463,6 +2614,8 @@ function Wright(gameId,container,mods) {
 					case "isEqualTo":{
 						sub = get(from, tox, struct[++id]);
 						switch (tkn) {
+							case "isSameOf":{ ret = (ret === sub ? 1 : 0); break; }
+							case "isNotSameOf":{ ret = (ret !== sub ? 1 : 0); break; }
 							case "isNotEqualTo":{ ret = (ret != sub ? 1 : 0); break; }
 							case "isEqualTo":{ ret = (ret == sub ? 1 : 0); break; }
 							case "isGreaterThan":{ ret = (ret > sub ? 1 : 0); break; }
@@ -2617,6 +2770,21 @@ function Wright(gameId,container,mods) {
 						item.forceX = FIX(angle == 180 ? 0 : length * Math.sin(angle));
 						item.forceY = FIX(angle == 270 ? 0 : -length * Math.cos(angle));
 					}
+					if (line.stopChannel) {
+						var channel=game.getAudioChannel(get(item, curtox, line.stopChannel));
+						if (channel) channel.stop();
+					}
+					if (line.stopAudio) {
+						var audio=game.getAudio(get(item,curtox,line.stopAudio),get(item,curtox,line.withChannel));
+						if (audio) audio.stop();
+					}
+					if (line.playAudio) game.playAudio(get(item,curtox,line.playAudio),get(item,curtox,line.withChannel),get(item,curtox,line.withLooping),get(item,curtox,line.withEffect));
+					if (line.applyEffect) {
+						var element;
+						if (line.toAudio!==undefined) element=game.getAudio(get(item,curtox,line.toAudio),get(item,curtox,line.withChannel));
+						else if (line.toChannel!==undefined) element=game.getAudioChannel(get(item,curtox,line.toChannel));
+						if (element) element.applyEffect(get(item,curtox,line.applyEffect));
+					}					
 					if (line.executeAction !== undefined) {
 						var statedata = item.getState();
 						iterateComposedList(item, curtox, get(item, curtox, line.executeAction),
@@ -2641,8 +2809,8 @@ function Wright(gameId,container,mods) {
 					}
 				});
 
-			if (line.restartScene !== undefined) plugTape(1, variables.idScene);
-			if (line.gotoScene !== undefined) plugTape(line.withTransition === undefined ? 1 : line.withTransition, get(curfrom, curtox, line.gotoScene));
+			if (line.restartScene !== undefined) plugTape(line.withTransition === undefined ? 1 : line.withTransition, get(curfrom, curtox, line.withChannel), variables.idScene);
+			if (line.gotoScene !== undefined) plugTape(line.withTransition === undefined ? 1 : line.withTransition, get(curfrom, curtox, line.withChannel), get(curfrom, curtox, line.gotoScene));
 			if (!gamerunning) return 1;
 		} else if (line.elseExecute !== undefined) execute(curfrom, curtox, get(curfrom,curtox, line.elseExecute));
 		return ret;
@@ -2700,6 +2868,9 @@ function Wright(gameId,container,mods) {
 		var s, subfather, father = template.into === undefined ? from : get(from, tox, template.into);
 		for (var a in template)
 			switch (a) {
+				case "withChannel":
+				case "withEffect":
+				case "withLooping":
 				case "into":
 				case "execute":
 				case "set":
@@ -2715,7 +2886,7 @@ function Wright(gameId,container,mods) {
 				case "states":{ applyStatesModel(from, tox, template.states); break; }
 				case "type":{
 					iterateComposedList(from, tox, get(from, tox, template.type), function(item) {
-							from.addType(item);
+						from.addType(item);
 					});
 					break;
 				}
@@ -2757,6 +2928,19 @@ function Wright(gameId,container,mods) {
 						hb.push(Box.clone(item));
 					});
 					from.setHitbox(hb);
+					break;
+				}
+				case "playAudio":{
+					game.playAudio(get(from, tox, template.playAudio),get(from, tox, template.withChannel),get(from, tox, template.withLooping),get(from, tox, template.withEffect));
+					break;
+				}
+				case "stopAudio":{
+					var audio=game.getAudio(get(from, tox, template.stopAudio),get(from, tox, template.withChannel));
+					if (audio) audio.stop();
+					break;
+				}
+				case "changeAnimation":{
+					from.changeAnimation(get(from, tox, template.changeAnimation));
 					break;
 				}
 				default:{
@@ -2829,17 +3013,21 @@ function Wright(gameId,container,mods) {
 
 	// BOOTSTRAPPER
 
-	function plugTape(transition, idscene, tape) {
+	function plugTape(transition, audiochannel, idscene, tape) {
 		if (!scene) transition = 0;
 		switch (transition) { // Fade out/fade in
 			case 1:{
 				gamerunning = 0;
+				iterateComposedList(scene, scene, audiochannel, function(item) {
+					var channel=game.getAudioChannel(item);
+					if (channel) channel.applyEffect({name:"fade",toVolume:0,length:game.mspf/100});
+				});
 				game.undo(Code.Fade).do(Code.Fade,{
 					as: scene,
 					to: 0,
 					then: function() {
 						game.undo(Code.Fade);
-						plugTape(-1, idscene, curtape);
+						plugTape(-1, audiochannel, idscene, curtape);
 					}
 				});
 				break;
@@ -2849,16 +3037,24 @@ function Wright(gameId,container,mods) {
 				gamerunning = 0;
 				scene.setAlpha(0);
 				scenehud.setAlpha(0);
+				iterateComposedList(scene, scene, audiochannel, function(item) {
+					var channel=game.getAudioChannel(item);
+					if (channel) channel.stop();
+				});
 				game.undo(Code.Delay).do(Code.Delay,{
 					delay: Math.ceil(game.fps/2),
 					then: function() {
 						game.undo(Code.Delay);
-						plugTape(-2, idscene, curtape);
+						plugTape(-2, audiochannel, idscene, curtape);
 					}
 				});
 				break;
 			}
 			default:{
+				iterateComposedList(scene, scene, audiochannel, function(item) {
+					var channel=game.getAudioChannel(item);
+					if (channel) channel.stop();
+				});
 				if (tape) {
 					curtape = tape;
 					Storage.initialize(tape);
@@ -3031,18 +3227,21 @@ function Wright(gameId,container,mods) {
 	tv = node(container,"div");
 	tv.style.margin="auto";
 
-	function runGame(scale) {	
+	function runGame(mode) {
 		tv.innerHTML="";
 		game = Box(tv, "game");
 		// game.setStatsManager(Monitor); // Uncomment for stats.
-		game.setKeys(controls).setColor("#fff").setBgcolor("#000").size(hardware).setFps(hardware.fps||25).setScale(scale).setOriginX(0).setOriginY(0).do(Code.GameManager);
+		game.setKeys(controls).setColor("#fff").setBgcolor("#000").size(hardware).setFps(hardware.fps||25).setScale(mode.scale).setOriginX(0).setOriginY(0).do(Code.GameManager);
+		if (hardware.aliasMode) game.setAliasMode(hardware.aliasMode);
+		if (mode.volume&&gamedata.audioChannels) game.enableAudio(mode.volume/100);
 		tv.style.width = (game.width * game.scale) + "px";
 		tv.style.height = (game.height * game.scale) + "px";			
 		game.setResourcesRoot("tapes/" + gameId + "/");
 		for (var k in gamedata.resources) game.addResource(k, gamedata.resources[k]);
+		for (var k in gamedata.audioChannels) game.addAudioChannel(k, gamedata.audioChannels[k]);
 		game.loadResources(function() {
 			if (hardware.texture) game.add("background").setZIndex(30).at({ x: 0, y: 0 }).size({ width: game.width, height: game.height }).setImage(hardware.texture).setAlpha(0.1);
-			plugTape(0, "intro", gamedata);
+			plugTape(0, 0, "intro", gamedata);
 		});
 	}
 
@@ -3056,14 +3255,16 @@ function Wright(gameId,container,mods) {
 		hardware = gamedata.hardware || DEFAULTHARDWARE;
 		if (!gamedata.scenes) gamedata.scenes = { intro: {} };
 		var cheatslist=gamedata.cheats;
+		var hasAudio=gamedata.audioChannels;
 		controlsmode=hardware.controls||"standard";
 		var controlsset=CONTROLS[controlsmode];
 		if (localStorage["wrightControls_"+controlsmode]) controls=JSON.parse(localStorage["wrightControls_"+controlsmode]);
 		else controls={};
 		for (var a in controlsset) if (controls[a]===undefined) controls[a]=controlsset[a].keyCode;
 		var scale=mods.scale||(localStorage["wrightScale"]*1)||3;
+		var volume=(mods.volume===undefined?((localStorage["wrightVolume"]||100)*1):mods.volume)||0;
 		if (!Box.supportsScaling) scale=1;
-		if (mods.noui) runGame(scale);
+		if (mods.noui) runGame({scale:scale,volume:hasAudio?volume:0});
 		else {
 			var havecheats,row,itm,magazine=node(tv,"div","magazine");
 			node(magazine,"div","logo","Wright!");
@@ -3092,6 +3293,16 @@ function Wright(gameId,container,mods) {
 				itm=node(resolution,"option",0,(hardware.width*i)+"x"+(hardware.height*i)+" (x"+i+")");
 				if (i==scale) itm.setAttribute("selected","selected");
 			}
+			if (hasAudio) {
+				row=node(article,"p");
+				node(row,"span","label","Sound:");
+				var audio=node(row,"select","input");
+				node(audio,"option",0,"Disabled");
+				for (var i=10;i<=100;i+=10) {
+					itm=node(audio,"option",0,"Volume "+i+"%");
+					if (i==volume) itm.setAttribute("selected","selected");
+				}				
+			}
 			node(article,"h3",0,"Cheats");
 			for (var a in cheatslist) {
 				havecheats=true;
@@ -3106,8 +3317,9 @@ function Wright(gameId,container,mods) {
 			itm=node(node(article,"p","runner"),"button",0,"Start game");
 			Box.on("click",itm,function(){
 				scale=localStorage["wrightScale"]=resolution.selectedIndex+1;
+				if (hasAudio) volume=localStorage["wrightVolume"]=audio.selectedIndex*10; else volume=0;
 				Box.off("keydown",document,waitKey);
-				runGame(scale);
+				runGame({scale:scale,volume:volume});
 			});
 			node(magazine,"h4",0,"Wright engine &copy;2015");
 		}

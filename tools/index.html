@@ -271,6 +271,7 @@ function WrightTools() {
 	delete mode.model;
 	delete mode.nodeWeight;
 	delete mode.skipsymbols;
+	delete mode.skiparrays;
 	mode.stack.unshift(key);
 	var stack=mode.stack,obj=node[key];
 	var keys=[];
@@ -285,6 +286,7 @@ function WrightTools() {
   		"description",
   		"screenshots",
 		"hardware",
+		"audioChannels",
 		"cheats",
 		"resources",
 		"stencils",
@@ -310,6 +312,7 @@ function WrightTools() {
 	mode.model=[
 		"width",
 		"height",
+		"aliasMode",
 		"texture",
 		"scenes",
 		0
@@ -319,6 +322,11 @@ function WrightTools() {
 		var cur=obj[key],pri=-10000;
 		if (cur.indexOf("/")===-1) pri=100;
 		return getInheritance(cur,[pri,key]);
+	  };
+	  mode.skipsymbols=1;
+	} else if (stack[0]=="audioChannels") { // audioChannels are sorted by channel volume
+	 mode.nodeWeight=function(key,obj) {
+		if (obj[key].volume) return [obj[key].volume,key]; else return [1,key];
 	  };
 	  mode.skipsymbols=1;
 	} else if (stack[0]=="scenes") { // Scenes are sorted by key name
@@ -348,6 +356,15 @@ function WrightTools() {
 		mode.model=["_",0];
 		mode.sameline=1;
 	  }
+	} else if (stack[1]=="audioChannels") { // audioChannels attributes
+		mode.model=[
+			"volume",
+			"looping",
+			"samples",
+			0
+		  ];
+	} else if (stack[2]=="audioChannels") { // audioChannels attributes can have single item arrays (samples)
+		mode.skiparrays=1;
 	} else { // Object structure
 	  mode.model=[
 	  	["unoptimize"], // Engine/bound directives
@@ -401,7 +418,8 @@ function WrightTools() {
 		["zIndex","at","size","x","y","frame"], // Assignment / Scene
 		["hitbox"], // Assignment
 		["priority","visible","alpha","originX","originY","flipX","flipY","angle","scale"], // Assignment / Execute -> then part -> applyVector
-		"toward","length", // Execute -> then part -> applyVector
+		"fromVolume","toVolume", // Audio -> effect -> *
+		"toward","length", // Execute -> then part -> applyVector, Audio -> effect -> length
 		["bgcolor","border","color"], // Assignment
 		["font","fontSize","lineHeight","outline","textAlign","html"], // Assignment
 		["forceX","forceY","forceZ"], // Assignment, Code -> Player -> Jump (forceY)
@@ -425,6 +443,11 @@ function WrightTools() {
 		// Assigment
 		"animations",
 		"animation",
+
+		// Audio
+
+		"playAudio","withEffect","withChannel","withLooping", // Audio playback (set/execution)
+		"stopAudio","stopChannel","applyEffect","toChannel", // Audio directives (execution)
 
 		// --- BODY
 
@@ -477,7 +500,7 @@ function WrightTools() {
 		else if (node instanceof Array) {
 
 			// Warn on single element arrays. Wright! engine supports single elements array as single elements
-			if (node.length==1) logLine("warn","Array with single element is not probably needed. Replace with single element instead.",mode.stack,node);
+			if (!mode.skiparrays&&(node.length==1)) logLine("warn","Array with single element is not probably needed. Replace with single element instead.",mode.stack,node);
 
 			// Tries to create a grid of values TODO ci sono un sacco di variabili ripetute
 		  	var gridize=!mode.sameline;
@@ -617,8 +640,20 @@ function WrightTools() {
 
   function findTile(set,tile) {
     for (var i=set.tilesets.length-1;i>=0;i--)
-      if (tile>=set.tilesets[i].firstgid)
-        return {id:i,set:set.tilesets[i],properties:set.tilesets[i].tileproperties[tile-set.tilesets[i].firstgid]||{}};
+      if (tile>=set.tilesets[i].firstgid) {
+      	var found=set.tilesets[i];
+      	if (found.properties&&found.properties["#stencils"]) {
+      		tile-=found.firstgid;
+      		for (var j=0;j<set.tilesets.length;j++)
+      			if (set.tilesets[j].name==found.properties["#stencils"]) {
+      				i=j;
+      				found=set.tilesets[j];
+      				tile+=found.firstgid;
+      				break;
+      			}
+      	}
+        return {id:i,set:found,properties:found.tileproperties[tile-found.firstgid]||{}};
+      }
   }
 
   function getLayer(a,name) {
@@ -991,6 +1026,8 @@ function WrightTools() {
             }
             chunk.tileWidth=tw;
             chunk.tileHeight=th;
+            if (l.properties&&l.properties["zIndex"]) chunk.zIndex=l.properties["zIndex"]*1;
+            if (l.opacity!=1) chunk.alpha=l.opacity;
 
 
             if (l.properties&&l.properties["#center"]) {
