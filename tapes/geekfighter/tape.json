@@ -1,0 +1,1689 @@
+{
+  "name":"Geek Fighter",
+  "author":"KesieV",
+  "year":2016,
+  "genre":"Beat'em up",
+  "description":"That small park, in Lambrugo. Is still there and is the same as ever. A swing, three spring animals, few sparse benches and trees. I was around 13 and I used to stay there with friends, mostly browsing magazines and talking about videogames. Marcello was living just one staircase far and he was my personal 'better gaming system' friend - a kind of relationship that any gamer should understand. I used to play Commodore 64 at home, since my father was a huge fan, but despite its good Ghost'n'Goblins conversion, it really never matched Marcello's GameBoy and its Bomber Boy cartridge. Because a GameBoy was an 'arcade in the pocket' - which mixes, in a device I liked to have, a place I liked to go - there were no arcades around, except for a bar mom said I shouldn't go into. Then he decided to invite me in his home to show me Street Fighter II on his brand new Super Nintendo, and something broke: that porting was so good that I had the same excitement I had at arcade, in full sound and colors, but in his kitchen. So something that was just envy turned into enlightmnent: can videogames break the fourth wall so much that can make you feel to be elsewhere? A bit later I discovered why that game was so crucial and well done: Sega and Nintendo battled the very crucial parts of console war on that game and its formula is so good that survived tens of years. But that's another story. For now... plot! Is cooking better than retrogaming? Is acting as good as a brand new gadget? Time to settle that! Choose a geek, inspired by some I know, and smack your opponents away! Use LEFT/RIGHT for moving, DOWN for crouching and UP for jumping. Use the A BUTTON for attacking or performing one of your character special moves. Moves are listed in selection screen, where FW is forward, BW is backward, UP and DN are up and down and ATK is the A BUTTON. Good luck!",
+  "screenshots":[ "geekfighter-1.png", "geekfighter-2.png" ],
+  "hardware":{
+    "width":256,
+    "height":192,
+    "texture":"scanlines"
+  },
+  "cheats":{
+    "unlimitedhealth":"Unlimited health"
+  },
+  "resources":{
+    "endings":"endings.png",
+    "intro":"intro.png",
+    "portraits":"portraits.png",
+    "sprites":"sprites.png",
+    "ui":"ui.png",
+    "wallpapers":"wallpapers.png",
+    "defaultsprites":"../default/sprites.png",
+    "scanlines":"../default/scanlines.png"
+  },
+  "stencils":{
+    "codeDecider":[
+      { "set":{ "cando":{ "_":[ "new", [] ] }, "commands":{ "_":[ "this", "allcommands", { "_":[ "this", "state" ] } ] }, "i":0 } },
+      {
+        "times":{ "_":[ "this", "commands", "count" ] },
+        "execute":[
+          { "set":{ "c":{ "_":[ "this", "commands", { "_":[ "this", "i" ] } ] }, "isok":1 } },
+          {
+            "when":{ "_":[ "this", "c", "area" ] },
+            "execute":{
+              "when":{ "_":[ "this", "flipX" ] },
+              "execute":{
+                "when":{
+                  "_":[
+                    "this",
+                    "complexCollidesWith",
+                    {
+                      "subject":{ "_":[ "this", "other" ] },
+                      "hitbox":{ "width":{ "_":[ "this", "c", "area", "width" ] }, "height":{ "_":[ "this", "c", "area", "height" ] }, "x":{ "_":[ "this", "width", "/", 2, "-", { "_":[ "this", "c", "area", "x" ] }, "-", { "_":[ "this", "c", "area", "width" ] } ] }, "y":{ "_":[ "this", "c", "area", "y", "+", { "_":[ "this", "height", "/", 2 ] } ] } }
+                    },
+                    "not"
+                  ]
+                },
+                "set":{ "isok":0 }
+              },
+              "elseExecute":{
+                "when":{
+                  "_":[
+                    "this",
+                    "complexCollidesWith",
+                    {
+                      "subject":{ "_":[ "this", "other" ] },
+                      "hitbox":{ "width":{ "_":[ "this", "c", "area", "width" ] }, "height":{ "_":[ "this", "c", "area", "height" ] }, "x":{ "_":[ "this", "c", "area", "x", "+", { "_":[ "this", "width", "/", 2 ] } ] }, "y":{ "_":[ "this", "c", "area", "y", "+", { "_":[ "this", "height", "/", 2 ] } ] } }
+                    },
+                    "not"
+                  ]
+                },
+                "set":{ "isok":0 }
+              }
+            }
+          },
+          { "when":{ "_":[ "this", "isok" ] }, "as":{ "_":[ "this", "c", "command" ] }, "pushInto":{ "_":[ "that", "cando" ] } },
+          { "sum":1, "to":{ "_":[ "this", "i" ] } }
+        ]
+      },
+      { "set":{ "decision":{ "_":[ "randomValue", { "_":[ "this", "cando" ] } ] } } }
+    ],
+    "codeFriction":{
+      "when":{ "_":[ "this", "forceX", "abs", "isLessThan", { "_":[ "this", "skidSpeed" ] } ] },
+      "set":{ "forceX":0 },
+      "elseExecute":{
+        "when":{ "_":[ "this", "forceX", "isGreaterThan", 0 ] },
+        "subtract":{ "_":[ "this", "skidSpeed" ] },
+        "to":{ "_":[ "this", "forceX" ] },
+        "elseExecute":{ "sum":{ "_":[ "this", "skidSpeed" ] }, "to":{ "_":[ "this", "forceX" ] } }
+      }
+    },
+    "codeHitable":{
+      "code":{ "name":"Execute", "data":{ "when":{ "_":[ "this", "stamina", "isLessThan", 50 ] }, "sum":1, "to":{ "_":[ "this", "stamina" ] } } },
+      "actions":{
+        "name":"hit",
+        "execute":[
+          {
+            "when":{ "_":[ "cheat", "unlimitedhealth" ] },
+            "execute":{ "when":{ "_":[ "this", "enemy", "isEqualTo", "player" ] }, "subtract":{ "_":[ "that", "health" ] }, "to":{ "_":[ "this", "health" ] } },
+            "elseExecute":{ "subtract":{ "_":[ "that", "health" ] }, "to":{ "_":[ "this", "health" ] } }
+          },
+          {
+            "when":{ "_":[ "this", "health", "isLessThan", 0 ] },
+            "set":{ "health":0, "stamina":-1 },
+            "elseExecute":[
+              { "subtract":{ "_":[ "that", "stamina" ] }, "to":{ "_":[ "this", "stamina" ] } },
+              { "when":{ "_":[ "this", "touchDown", "not" ] }, "set":{ "stamina":-1 } }
+            ]
+          },
+          { "when":{ "_":[ "this", "stamina", "isLessThan", 0 ] }, "set":{ "state":"bounce" }, "elseExecute":{ "set":{ "state":"hit" } } }
+        ]
+      }
+    },
+    "codeStateDefaultSet":{
+      "when":{ "_":[ "this", "touchDown" ] },
+      "execute":{ "when":{ "_":[ "this", "stickDown" ] }, "set":{ "state":"down" }, "elseExecute":{ "set":{ "state":"ground" } } },
+      "elseExecute":{ "set":{ "state":"midair" } }
+    },
+    "codeStickCommand":[
+      { "_":[ "stencil", "codeStickReset" ] },
+      {
+        "when":{ "_":[ "this", "keyDown", "isHit" ] },
+        "set":{ "command":{ "_":[ "this", "command", ".", "D" ] }, "commandTimer":4 },
+        "elseExecute":{
+          "when":{ "_":[ "this", "keyUp", "isHit" ] },
+          "set":{ "command":{ "_":[ "this", "command", ".", "U" ] }, "commandTimer":4 },
+          "elseExecute":{
+            "when":{ "_":[ "this", "keyRight", "isHit" ] },
+            "execute":{
+              "when":{ "_":[ "this", "flipX" ] },
+              "set":{ "command":{ "_":[ "this", "command", ".", "B" ] }, "commandTimer":4 },
+              "elseExecute":{ "set":{ "command":{ "_":[ "this", "command", ".", "F" ] }, "commandTimer":4 } }
+            },
+            "elseExecute":{
+              "when":{ "_":[ "this", "keyLeft", "isHit" ] },
+              "execute":{
+                "when":{ "_":[ "this", "flipX" ] },
+                "set":{ "command":{ "_":[ "this", "command", ".", "F" ] }, "commandTimer":4 },
+                "elseExecute":{ "set":{ "command":{ "_":[ "this", "command", ".", "B" ] }, "commandTimer":4 } }
+              },
+              "elseExecute":{ "when":{ "_":[ "this", "keyA", "isHit" ] }, "set":{ "command":{ "_":[ "this", "command", ".", "A" ] }, "commandTimer":4 } }
+            }
+          }
+        }
+      },
+      {
+        "when":{ "_":[ "this", "commandTimer" ] },
+        "subtract":1,
+        "to":{ "_":[ "this", "commandTimer" ] },
+        "elseExecute":{
+          "when":{ "_":[ "this", "command" ] },
+          "execute":[ { "executeAction":{ "_":[ "command", ".", { "_":[ "this", "command" ] } ] } }, { "set":{ "command":"" } } ]
+        }
+      }
+    ],
+    "codeStickReset":{ "set":{ "stickDown":0, "stickLeft":0, "stickRight":0, "stickUp":0 } },
+    "spark":{
+      "image":"defaultsprites", "tileX":64, "tileY":144, "width":16, "height":16,
+      "zIndex":10000, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "animations":{ "spark":{ "frames":4, "speed":0 } },
+      "animation":"spark",
+      "states":{ "code":{ "name":"Sequence", "data":[ { "wait":4 }, { "remove":1 } ] } }
+    },
+    "removeWithSpark":[ { "object":{ "_":[ "stencil", "spark" ] } }, { "remove":1 } ],
+    "modelBasicMoves":{
+      "limitY":[ -100, 100 ],
+      "jumpHeight":-12,
+      "jumpWidth":5,
+      "movingSpeed":[ -3, 3 ],
+      "skidSpeed":0.5,
+      "states":[
+        {
+          "name":"ground",
+          "actions":{
+            "name":"commandA",
+            "set":{ "forceX":0, "animation":"standPunch", "gravityIdle":1, "idle":10, "state":"idle" },
+            "execute":{
+              "object":{ "set":{ "_":[ "stencil", "hitbox" ] }, "anchorTo":{ "_":"that" }, "anchorX":{ "_":[ "that", "sideRatio", "*", 20 ] }, "anchorY":-10, "health":5 }
+            }
+          }
+        },
+        {
+          "name":"midair",
+          "actions":{
+            "name":"commandA",
+            "set":{ "animation":"standPunch", "gravityIdle":1, "idle":10, "state":"idle" },
+            "execute":{
+              "object":{ "set":{ "_":[ "stencil", "hitbox" ] }, "anchorTo":{ "_":"that" }, "anchorX":{ "_":[ "that", "sideRatio", "*", 20 ] }, "anchorY":10, "health":7 }
+            }
+          }
+        },
+        {
+          "name":"down",
+          "actions":{
+            "name":"commandA",
+            "set":{ "animation":"downPunch", "gravityIdle":1, "idle":10, "state":"idle" },
+            "execute":{
+              "object":{ "set":{ "_":[ "stencil", "hitbox" ] }, "anchorTo":{ "_":"that" }, "anchorX":{ "_":[ "that", "sideRatio", "*", 20 ] }, "anchorY":2, "health":5 }
+            }
+          }
+        }
+      ]
+    },
+    "modelShadow":{
+      "image":"ui", "tileX":0, "tileY":56, "width":30, "height":8,
+      "zIndex":3, "y":158,
+      "linked":{ "_":"that" },
+      "states":{ "code":{ "name":"Execute", "data":{ "set":{ "x":{ "_":[ "this", "linked", "x", "+", 5 ] } } } } }
+    },
+    "controlsComputer":{
+      "x":148,
+      "flipX":1,
+      "angerTime":-20,
+      "other":{ "_":[ "objectTyped", "player" ] },
+      "patience":40,
+      "patienceTime":40,
+      "states":[
+        {
+          "name":"midair",
+          "code":{
+            "name":"Execute",
+            "data":[
+              { "_":[ "stencil", "codeStickReset" ] },
+              { "subtract":1, "to":{ "_":[ "this", "patience" ] } },
+              {
+                "when":{ "_":[ "this", "patience", "isLessThan", 0 ] },
+                "execute":[
+                  { "set":{ "decision":"" } },
+                  { "when":{ "_":[ "this", "patience", "isLessThan", -20 ] }, "set":{ "patience":{ "_":[ "this", "patienceTime" ] } } },
+                  { "when":{ "_":[ "this", "patience", "isLessThan", -15 ] }, "execute":{ "_":[ "stencil", "codeDecider" ] } },
+                  { "when":{ "_":[ "this", "decision" ] }, "set":{ "patience":{ "_":[ "this", "patienceTime" ] } }, "executeAction":{ "_":[ "this", "decision" ] } }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name":"ground",
+          "code":{
+            "name":"Execute",
+            "data":[
+              { "_":[ "stencil", "codeStickReset" ] },
+              { "subtract":1, "to":{ "_":[ "this", "patience" ] } },
+              {
+                "when":{ "_":[ "this", "patience", "isGreaterThan", 0 ] },
+                "execute":{
+                  "when":{ "_":[ "this", "distanceTo", { "_":[ "this", "other" ] }, "isLessThan", 50 ] },
+                  "execute":[
+                    { "when":{ "_":[ "this", "other", "x", "isLessThan", 128 ] }, "set":{ "stickRight":1 }, "elseExecute":{ "set":{ "stickLeft":1 } } },
+                    { "when":{ "_":[ "randomNumber", [ 0, 10 ], "isLessThan", 2 ] }, "execute":{ "set":{ "stickUp":1 } } }
+                  ]
+                },
+                "elseExecute":[
+                  { "set":{ "decision":"" } },
+                  { "when":{ "_":[ "this", "patience", "isLessThan", { "_":[ "this", "angerTime" ] } ] }, "set":{ "patience":{ "_":[ "this", "patienceTime" ] } } },
+                  { "when":{ "_":[ "this", "patience", "isLessThan", -15 ] }, "execute":{ "_":[ "stencil", "codeDecider" ] } },
+                  {
+                    "when":{ "_":[ "this", "decision" ] },
+                    "set":{ "patience":{ "_":[ "this", "patienceTime" ] } },
+                    "executeAction":{ "_":[ "this", "decision" ] },
+                    "elseExecute":{
+                      "when":{ "_":[ "this", "x", "isLessThan", { "_":[ "this", "other", "x" ] } ] },
+                      "set":{ "stickRight":1 },
+                      "elseExecute":{ "set":{ "stickLeft":1 } }
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "controlsPlayer":{
+      "type":"player",
+      "removeType":"foe",
+      "x":68,
+      "enemy":"foe",
+      "states":[
+        { "name":"midair", "code":{ "name":"Execute", "data":[ { "_":[ "stencil", "codeStickCommand" ] } ] } },
+        {
+          "name":"ground",
+          "code":{
+            "name":"Execute",
+            "data":[
+              { "_":[ "stencil", "codeStickCommand" ] },
+              { "when":{ "_":[ "keyRight", "isDown" ] }, "set":{ "stickRight":1 } },
+              { "when":{ "_":[ "keyLeft", "isDown" ] }, "set":{ "stickLeft":1 } },
+              { "when":{ "_":[ "keyDown", "isDown" ] }, "set":{ "stickDown":1 } },
+              { "when":{ "_":[ "keyUp", "isDown" ] }, "set":{ "stickUp":1 } }
+            ]
+          }
+        },
+        {
+          "name":"down",
+          "code":{ "name":"Execute", "data":[ { "_":[ "stencil", "codeStickCommand" ] }, { "when":{ "_":[ "keyDown", "isDown" ] }, "set":{ "stickDown":1 } } ] }
+        }
+      ]
+    },
+    "fighter":{
+      "type":[ "foe", "fighter" ],
+      "image":"sprites", "width":40, "height":40,
+      "zIndex":5, "y":121,
+      "execute":{ "object":{ "_":[ "stencil", "modelShadow" ] } },
+      "animation":"stand",
+      "centerX":0,
+      "centerY":0,
+      "command":"",
+      "commandTimer":0,
+      "enemy":"player",
+      "health":100,
+      "hitAnimation":"hitStand",
+      "sideRatio":1,
+      "stamina":50,
+      "stickDown":0,
+      "stickLeft":0,
+      "stickRight":0,
+      "stickUp":0,
+      "state":"frozen",
+      "states":[
+        {
+          "name":"midair",
+          "like":{ "_":[ "stencil", "codeHitable" ] },
+          "set":{ "hitbox":{ "width":20, "height":40, "x":10, "y":0 }, "animation":"jump", "hitAnimation":"hitStand" },
+          "code":[
+            {
+              "name":"Physics",
+              "data":{
+                "walls":{ "area":{ "width":256, "height":162, "x":0, "y":0 }, "restitution":0 },
+                "gravityX":0,
+                "gravityY":1,
+                "limitX":{ "_":[ "this", "movingSpeed" ] },
+                "limitY":{ "_":[ "this", "limitY" ] }
+              }
+            },
+            { "name":"Execute", "data":{ "when":{ "_":[ "this", "touchDown" ] }, "set":{ "state":"ground" } } }
+          ]
+        },
+        {
+          "name":"ground",
+          "like":{ "_":[ "stencil", "codeHitable" ] },
+          "set":{ "hitbox":{ "width":20, "height":40, "x":10, "y":0 }, "hitAnimation":"hitStand" },
+          "code":[
+            {
+              "name":"Physics",
+              "data":{
+                "walls":{ "area":{ "width":256, "height":162, "x":0, "y":0 }, "restitution":0 },
+                "gravityX":0,
+                "gravityY":1,
+                "limitX":{ "_":[ "this", "movingSpeed" ] },
+                "limitY":{ "_":[ "this", "limitY" ] }
+              }
+            },
+            {
+              "name":"Execute",
+              "data":[
+                {
+                  "when":{ "_":[ "this", "x", "isLessThan", { "_":[ "objectTyped", { "_":[ "this", "enemy" ] }, "x" ] } ] },
+                  "set":{ "flipX":0, "sideRatio":1 },
+                  "elseExecute":{ "set":{ "flipX":1, "sideRatio":-1 } }
+                },
+                {
+                  "when":{ "_":[ "this", "stickUp" ] },
+                  "execute":[
+                    { "set":{ "forceY":{ "_":[ "this", "jumpHeight" ] }, "state":"midair" } },
+                    {
+                      "when":{ "_":[ "this", "stickRight" ] },
+                      "execute":{ "set":{ "forceX":{ "_":[ "this", "jumpWidth" ] } } },
+                      "elseExecute":{ "when":{ "_":[ "this", "stickLeft" ] }, "execute":{ "set":{ "forceX":{ "_":[ "this", "jumpWidth", "*", -1 ] } } } }
+                    }
+                  ],
+                  "elseExecute":{
+                    "when":{ "_":[ "this", "stickDown" ] },
+                    "set":{ "state":"down" },
+                    "elseExecute":{
+                      "when":{ "_":[ "this", "stickRight" ] },
+                      "sum":1,
+                      "to":{ "_":[ "this", "forceX" ] },
+                      "elseExecute":{ "when":{ "_":[ "this", "stickLeft" ] }, "subtract":1, "to":{ "_":[ "this", "forceX" ] }, "elseExecute":{ "_":[ "stencil", "codeFriction" ] } }
+                    }
+                  }
+                },
+                { "when":{ "_":[ "this", "forceX", "abs", "isLessThan", 0.1 ] }, "set":{ "animation":"stand" }, "elseExecute":{ "set":{ "animation":"walk" } } }
+              ]
+            }
+          ]
+        },
+        {
+          "name":"down",
+          "like":{ "_":[ "stencil", "codeHitable" ] },
+          "set":{ "hitbox":{ "width":30, "height":24, "x":5, "y":16 }, "animation":"down", "hitAnimation":"hitDown" },
+          "execute":{ "sum":16, "to":{ "_":[ "this", "y" ] } },
+          "code":[
+            {
+              "name":"Physics",
+              "data":{
+                "walls":{ "area":{ "width":256, "height":162, "x":0, "y":0 }, "restitution":0 },
+                "gravityX":0,
+                "gravityY":1,
+                "limitX":{ "_":[ "this", "movingSpeed" ] },
+                "limitY":{ "_":[ "this", "limitY" ] }
+              }
+            },
+            {
+              "name":"Execute",
+              "data":[
+                { "_":[ "stencil", "codeFriction" ] },
+                { "when":{ "_":[ "this", "stickDown", "not" ] }, "execute":{ "set":{ "animation":"stand", "state":"ground" } } }
+              ]
+            }
+          ]
+        },
+        {
+          "name":"idle",
+          "like":{ "_":[ "stencil", "codeHitable" ] },
+          "set":{ "hitAnimation":"hitStand" },
+          "code":[
+            {
+              "name":"Physics",
+              "data":{ "walls":{ "area":{ "width":256, "height":162, "x":0, "y":0 }, "restitution":0 }, "gravityX":0, "gravityY":{ "_":[ "this", "gravityIdle" ] } }
+            },
+            { "name":"Sequence", "data":[ { "wait":{ "_":[ "this", "idle" ] } }, { "_":[ "stencil", "codeStateDefaultSet" ] } ] }
+          ]
+        },
+        {
+          "name":"hit",
+          "set":{ "animation":{ "_":[ "this", "hitAnimation" ] } },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "sum":1, "to":{ "_":[ "this", "x" ] }, "wait":1 },
+              { "subtract":1, "to":{ "_":[ "this", "x" ] }, "wait":1, "cycles":5, "loopTo":0 },
+              { "_":[ "stencil", "codeStateDefaultSet" ] }
+            ]
+          }
+        },
+        {
+          "name":"bounce",
+          "set":{
+            "hitbox":{ "width":20, "height":40, "x":10, "y":0 },
+            "forceX":{ "_":[ "this", "sideRatio", "*", -2 ] }, "forceY":-6,
+            "animation":"hitFloat",
+            "bumps":3,
+            "stamina":50
+          },
+          "code":{
+            "name":"Physics",
+            "data":{
+              "walls":{
+                "area":{ "width":256, "height":162, "x":0, "y":0 },
+                "restitutionX":0,
+                "restitutionY":0.5,
+                "execute":{
+                  "when":{ "_":[ "this", "touchDown" ] },
+                  "execute":[
+                    { "object":{ "_":[ "stencil", "smoke" ] } },
+                    { "set":{ "animation":"hitGround" } },
+                    { "subtract":1, "to":{ "_":[ "this", "bumps" ] } },
+                    { "when":{ "_":[ "this", "bumps", "not" ] }, "set":{ "state":"afterbounce" } }
+                  ]
+                }
+              },
+              "gravityX":0,
+              "gravityY":0.8,
+              "limitX":{ "_":[ "this", "movingSpeed" ] },
+              "limitY":{ "_":[ "this", "limitY" ] }
+            }
+          }
+        },
+        {
+          "name":"afterbounce",
+          "set":{ "hitbox":{ "width":20, "height":40, "x":10, "y":0 }, "forceX":0, "forceY":0, "animation":"hitGround" },
+          "execute":{ "when":{ "_":[ "this", "health", "not" ] }, "set":{ "type":"loser", "state":"frozen" } },
+          "code":{ "name":"Sequence", "data":[ { "wait":10 }, { "set":{ "animation":"hitGettingup" } }, { "wait":10 }, { "_":[ "stencil", "codeStateDefaultSet" ] } ] }
+        },
+        {
+          "name":"stopped",
+          "set":{ "hitbox":{ "width":20, "height":40, "x":10, "y":0 }, "forceX":0, "forceY":0, "animation":"jump" },
+          "code":{
+            "name":"Physics",
+            "data":{
+              "walls":{
+                "area":{ "width":256, "height":162, "x":0, "y":0 },
+                "restitution":0,
+                "execute":{
+                  "when":{ "_":[ "this", "touchDown" ] },
+                  "execute":{
+                    "when":{ "_":[ "this", "health" ] },
+                    "set":{ "type":"done", "animation":"stand", "state":"frozen" },
+                    "elseExecute":{ "set":{ "type":"done", "animation":"hitGround", "state":"frozen" } }
+                  }
+                }
+              },
+              "gravityX":0,
+              "gravityY":0.8,
+              "limitX":{ "_":[ "this", "movingSpeed" ] },
+              "limitY":{ "_":[ "this", "limitY" ] }
+            }
+          }
+        }
+      ]
+    },
+    "fighters":[
+      {
+        "name":"KesieV",
+        "set":{ "_":[ "stencil", "modelBasicMoves" ] },
+        "tileY":0,
+        "animations":{
+          "down":{ "frame":9 },
+          "downPunch":{ "frame":14 },
+          "dragonPunch":{ "frame":15 },
+          "fireball":{ "frame":16 },
+          "hitDown":{ "frame":10 },
+          "hitFloat":{ "frame":6 },
+          "hitGettingup":{ "frame":8 },
+          "hitGround":{ "frame":7 },
+          "hitStand":{ "frame":5 },
+          "jump":{ "frame":4 },
+          "stand":{ "frames":[ 0, 1 ], "speed":8, "loopTo":0 },
+          "standPunch":{ "frame":13 },
+          "walk":{ "frames":[ 2, 3 ], "loopTo":0 },
+          "win":{ "frames":[ 11, 12 ], "speed":8, "loopTo":0 }
+        },
+        "allcommands":{
+          "ground":[
+            { "area":{ "width":10, "height":10, "x":15, "y":-5 }, "command":"commandA" },
+            { "area":{ "width":30, "height":50, "x":10, "y":-50 }, "command":"commandDFDA" },
+            { "area":{ "width":150, "height":10, "x":0, "y":-5 }, "command":"commandDFA" }
+          ],
+          "midair":[ { "area":{ "width":10, "height":10, "x":20, "y":5 }, "command":"commandA" } ]
+        },
+        "description":"Retrogamer<br><br>DN+FW+ATK<br>Marioball<br><br>DN+FW+DN+ATK<br>Bub Punch",
+        "ending":"The world started pixelating, losing colors. Its retro-power was eating everything. Is this the end?",
+        "portrait":0,
+        "winPhrases":[
+          "You're just a pirated version of me. Go away.",
+          "Polygons are still made of pixels. That's why I'll crush you forever.",
+          "New gadgets are good only just for retrogaming. I hope you've understand that now.",
+          "We both love classics, old man. But mine are way more fun.",
+          "Have a look to pixelated SNK girls. You'll find them way more sexy than your dirty artworks.",
+          "We don't need your orchestra anymore. We've chiptunes for good music now.",
+          "You act in tedious cutscenes and someone had to find a way to skip them. I'm that someone.",
+          "Chips and cola are good enough for playing videogames all night. You're unuseful."
+        ],
+        "states":[
+          {
+            "name":"ground",
+            "actions":[
+              {
+                "name":"commandDFA",
+                "set":{ "forceX":0, "animation":"fireball", "gravityIdle":1, "idle":20, "state":"idle" },
+                "execute":{ "object":{ "set":{ "_":[ "stencil", "fireball" ] }, "health":15 } }
+              },
+              {
+                "name":"commandDFDA",
+                "set":{ "forceX":{ "_":[ "that", "sideRatio", "*", 2 ] }, "forceY":-10, "animation":"dragonPunch", "gravityIdle":1, "idle":20, "state":"idle" },
+                "execute":{
+                  "object":{
+                    "set":{ "_":[ "stencil", "hitbox" ] },
+                    "height":20,
+                    "anchorTo":{ "_":"that" },
+                    "anchorX":{ "_":[ "that", "sideRatio", "*", 15 ] },
+                    "anchorY":-10,
+                    "health":25,
+                    "stamina":100
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name":"White",
+        "set":{ "_":[ "stencil", "modelBasicMoves" ] },
+        "tileY":40,
+        "animations":{
+          "assault":{ "frame":15 },
+          "down":{ "frame":9 },
+          "downPunch":{ "frame":14 },
+          "flakKick":{ "frames":[ 16, 17 ], "speed":2, "loopTo":0 },
+          "hitDown":{ "frame":10 },
+          "hitFloat":{ "frame":6 },
+          "hitGettingup":{ "frame":8 },
+          "hitGround":{ "frame":7 },
+          "hitStand":{ "frame":5 },
+          "jump":{ "frame":4 },
+          "stand":{ "frames":[ 0, 1 ], "speed":8, "loopTo":0 },
+          "standPunch":{ "frame":13 },
+          "walk":{ "frames":[ 2, 3 ], "loopTo":0 },
+          "win":{ "frames":[ 11, 12 ], "speed":8, "loopTo":0 }
+        },
+        "allcommands":{
+          "ground":[
+            { "area":{ "width":10, "height":10, "x":15, "y":-5 }, "command":"commandA" },
+            { "area":{ "width":60, "height":50, "x":10, "y":-30 }, "command":"commandFFA" },
+            { "area":{ "width":10, "height":30, "x":10, "y":-15 }, "command":"commandDAA" }
+          ],
+          "midair":[ { "area":{ "width":10, "height":10, "x":20, "y":5 }, "command":"commandA" } ]
+        },
+        "description":"Girl Gamer<br><br>FW+FW+ATK<br>RTS Assault<br><br>DN+ATK+ATK<br>Flak kick",
+        "ending":"\"Hey Kes, don't you think your retro-beat'em up is too easy?\" \"Wh---what you said?!\"",
+        "portrait":1,
+        "winPhrases":[
+          "Improved versions of your games exists. You've to accept that.",
+          "That's the best ending for player 2, my dear clone.",
+          "Don't think about gadgets. Think about better gaming systems.",
+          "Storytelling reached a new generation. Sorry, dad.",
+          "Hentai and ecchi games are insults to real modern gaming. You got what you deserve.",
+          "Go making some good soundtrack: that's the real use of music.",
+          "Videogames allow everyone to be anyone, not only for actors. Do you understand why you lost?",
+          "Food is good but gaming is way better. Sorry, pal."
+        ],
+        "states":[
+          {
+            "name":"ground",
+            "actions":[
+              {
+                "name":"commandFFA",
+                "set":{ "forceX":{ "_":[ "that", "sideRatio", "*", 5 ] }, "forceY":-3, "animation":"assault", "gravityIdle":0.5, "idle":12, "state":"idle" },
+                "execute":{
+                  "object":{
+                    "set":{ "_":[ "stencil", "hitbox" ] },
+                    "height":20,
+                    "anchorTo":{ "_":"that" },
+                    "anchorX":{ "_":[ "that", "sideRatio", "*", 15 ] },
+                    "anchorY":0,
+                    "duration":12,
+                    "health":30,
+                    "stamina":100
+                  }
+                }
+              },
+              {
+                "name":"commandDAA",
+                "set":{ "forceX":0, "forceY":-2, "animation":"flakKick", "gravityIdle":1, "idle":25, "state":"idle" },
+                "execute":{
+                  "object":{
+                    "set":{ "_":[ "stencil", "hitbox" ] },
+                    "height":20,
+                    "anchorTo":{ "_":"that" },
+                    "anchorX":{ "_":[ "that", "sideRatio", "*", 15 ] },
+                    "anchorY":0,
+                    "duration":20,
+                    "health":25,
+                    "stamina":100
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name":"Maururu",
+        "set":{ "_":[ "stencil", "modelBasicMoves" ] },
+        "tileY":80,
+        "animations":{
+          "assault":{ "frame":15 },
+          "down":{ "frame":9 },
+          "downPunch":{ "frame":14 },
+          "flakKick":{ "frames":[ 16, 17 ], "speed":2, "loopTo":0 },
+          "hitDown":{ "frame":10 },
+          "hitFloat":{ "frame":6 },
+          "hitGettingup":{ "frame":8 },
+          "hitGround":{ "frame":7 },
+          "hitStand":{ "frame":5 },
+          "jump":{ "frame":4 },
+          "stand":{ "frames":[ 0, 1 ], "speed":8, "loopTo":0 },
+          "standPunch":{ "frame":13 },
+          "walk":{ "frames":[ 2, 3 ], "loopTo":0 },
+          "win":{ "frames":[ 11, 12 ], "speed":8, "loopTo":0 }
+        },
+        "allcommands":{
+          "ground":[
+            { "area":{ "width":10, "height":10, "x":15, "y":-5 }, "command":"commandA" },
+            { "area":{ "width":60, "height":50, "x":10, "y":-30 }, "command":"commandDBA" },
+            { "area":{ "width":10, "height":30, "x":10, "y":-15 }, "command":"commandDAA" }
+          ],
+          "midair":[ { "area":{ "width":10, "height":10, "x":20, "y":5 }, "command":"commandA" } ]
+        },
+        "description":"Gadget Geek<br><br>DN+BW+ATK<br>Cloud Service<br><br>DN+ATK+ATK<br>Multitouch",
+        "ending":"With the tournament prize, Maururu founded a gadget company, in order to play with them before anyone.",
+        "portrait":2,
+        "winPhrases":[
+          "A cheap gadget can play your old games anytime. And cheap gadgets are worthless.",
+          "Videogames are a limit. Gamification is an opportunity.",
+          "You don't have to be me. You've to get the same gadgets I have.",
+          "A batteryless stylus that can write on paper? Interesting gadget. It's mine now.",
+          "You know there are gadgets for that. No need to look at that dirty images.",
+          "Sticks. Strings. Your stuff is too analogic for me. I had to destroy you and your stuff.",
+          "Your acting is totally gadget unrelated. You had to disappear.",
+          "Do you think that you can cook better than gadgets? I hope you changed your mind, now."
+        ],
+        "states":[
+          {
+            "name":"ground",
+            "actions":[
+              {
+                "name":"commandDBA",
+                "set":{ "forceX":{ "_":[ "that", "sideRatio", "*", 2 ] }, "forceY":-11, "animation":"assault", "gravityIdle":1, "idle":18, "state":"idle" },
+                "execute":{
+                  "object":{ "set":{ "_":[ "stencil", "hitbox" ] }, "width":20, "anchorTo":{ "_":"that" }, "anchorX":0, "anchorY":20, "duration":18, "health":30, "stamina":100 }
+                }
+              },
+              {
+                "name":"commandDAA",
+                "set":{ "forceX":0, "forceY":-2, "animation":"flakKick", "gravityIdle":1, "idle":25, "state":"idle" },
+                "execute":{
+                  "object":{
+                    "set":{ "_":[ "stencil", "hitbox" ] },
+                    "height":20,
+                    "anchorTo":{ "_":"that" },
+                    "anchorX":{ "_":[ "that", "sideRatio", "*", 15 ] },
+                    "anchorY":0,
+                    "duration":20,
+                    "health":25,
+                    "stamina":100
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name":"Sergey",
+        "set":{ "_":[ "stencil", "modelBasicMoves" ] },
+        "tileY":120,
+        "animations":{
+          "down":{ "frame":9 },
+          "downPunch":{ "frame":14 },
+          "explainKick":{ "frames":[ 15, 16 ], "speed":2, "loopTo":0 },
+          "hitDown":{ "frame":10 },
+          "hitFloat":{ "frame":6 },
+          "hitGettingup":{ "frame":8 },
+          "hitGround":{ "frame":7 },
+          "hitStand":{ "frame":5 },
+          "jump":{ "frame":4 },
+          "opinion":{ "frame":17 },
+          "stand":{ "frames":[ 0, 1 ], "speed":8, "loopTo":0 },
+          "standPunch":{ "frame":13 },
+          "walk":{ "frames":[ 2, 3 ], "loopTo":0 },
+          "win":{ "frames":[ 11, 12 ], "speed":8, "loopTo":0 }
+        },
+        "allcommands":{
+          "ground":[
+            { "area":{ "width":10, "height":10, "x":15, "y":-5 }, "command":"commandA" },
+            { "area":{ "width":40, "height":30, "x":10, "y":-15 }, "command":"commandDFA" },
+            { "area":{ "width":60, "height":30, "x":10, "y":-10 }, "command":"commandDBA" }
+          ],
+          "midair":[ { "area":{ "width":10, "height":10, "x":20, "y":5 }, "command":"commandA" } ]
+        },
+        "description":"Literate<br><br>DN+BW+ATK<br>Explain Kick<br><br>DN+FW+ATK<br>Opinion",
+        "ending":"\"I had an interesting experience. I'll write a book about that and I hope new generations will understand.\"",
+        "portrait":3,
+        "winPhrases":[
+          "Your games doesn't have storytelling? So what's their use?",
+          "Interactivity just compensated flawed plots. Your workarounds are now over.",
+          "Why bringing thousands of books with you when you just need a single good one?",
+          "You can cite me. But you can't be me.",
+          "Hentai stories are all the same. I can teach you how to make a good story.",
+          "Music is literature and sound. Without my art, you're just a technique.",
+          "You're pretty good on acting. But now try with some classics.",
+          "Your food is for the body. But a lot of minds are starving. I've the right food so you've to wait."
+        ],
+        "states":[
+          {
+            "name":"ground",
+            "actions":[
+              {
+                "name":"commandDBA",
+                "set":{ "forceX":{ "_":[ "that", "sideRatio", "*", 5 ] }, "forceY":0, "animation":"explainKick", "gravityIdle":0, "idle":18, "state":"idle" },
+                "execute":{
+                  "object":[
+                    {
+                      "set":{ "_":[ "stencil", "hitbox" ] },
+                      "height":20,
+                      "anchorTo":{ "_":"that" },
+                      "anchorX":20,
+                      "anchorY":0,
+                      "duration":18,
+                      "health":30,
+                      "stamina":100
+                    },
+                    {
+                      "set":{ "_":[ "stencil", "hitbox" ] },
+                      "height":20,
+                      "anchorTo":{ "_":"that" },
+                      "anchorX":-20,
+                      "anchorY":0,
+                      "duration":18,
+                      "health":30,
+                      "stamina":100
+                    }
+                  ]
+                }
+              },
+              {
+                "name":"commandDFA",
+                "set":{ "forceX":0, "animation":"opinion", "gravityIdle":1, "idle":25, "state":"idle" },
+                "execute":{ "object":{ "set":{ "_":[ "stencil", "fireball" ] }, "tileX":40, "speed":3, "duration":10, "health":30 } }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name":"Ninjoe",
+        "set":{ "_":[ "stencil", "modelBasicMoves" ] },
+        "tileY":160,
+        "animations":{
+          "down":{ "frame":9 },
+          "downPunch":{ "frame":14 },
+          "hitDown":{ "frame":10 },
+          "hitFloat":{ "frame":6 },
+          "hitGettingup":{ "frame":8 },
+          "hitGround":{ "frame":7 },
+          "hitStand":{ "frame":5 },
+          "jump":{ "frame":4 },
+          "loveletter":{ "frame":17 },
+          "stand":{ "frames":[ 0, 1 ], "speed":8, "loopTo":0 },
+          "standPunch":{ "frame":13 },
+          "tentackle":{ "frames":[ 15, 16 ], "speed":1, "loopTo":0 },
+          "walk":{ "frames":[ 2, 3 ], "loopTo":0 },
+          "win":{ "frames":[ 11, 12 ], "speed":8, "loopTo":0 }
+        },
+        "allcommands":{
+          "ground":[
+            { "area":{ "width":10, "height":10, "x":15, "y":-5 }, "command":"commandA" },
+            { "area":{ "width":90, "height":50, "x":10, "y":-30 }, "command":"commandFFA" },
+            { "area":{ "width":150, "height":10, "x":0, "y":-5 }, "command":"commandDBA" }
+          ],
+          "midair":[ { "area":{ "width":10, "height":10, "x":20, "y":5 }, "command":"commandA" } ]
+        },
+        "description":"Ecchi fan<br><br>FW+FW+ATK<br>Ten-tackle<br><br>DN+BW+ATK<br>Loveletter",
+        "ending":"\"Oh no! I won the wrong contest! Where are you my little Kasumi? I'll reach you in Dead Or Alive!\"",
+        "portrait":4,
+        "winPhrases":[
+          "Pixelation is only for censuring. And censuring is bad.",
+          "Your games don't give any feeling to the player. Mine are way better.",
+          "Gadgets are heartless. You had to be punished.",
+          "Complex plot are just a waste of time. I need real contents.",
+          "You can't move now. Very well. Now talk: where is your ecchi collection?",
+          "Is there any music other than soft jazz? I don't think so.",
+          "I've found your theatre thing interesting. But you're all acting too much dressed.",
+          "Tentacles is all you need to eat."
+        ],
+        "states":[
+          {
+            "name":"ground",
+            "actions":[
+              {
+                "name":"commandDBA",
+                "set":{ "forceX":0, "animation":"loveletter", "gravityIdle":1, "idle":20, "state":"idle" },
+                "execute":{ "object":{ "set":{ "_":[ "stencil", "fireball" ] }, "tileX":80, "health":15 } }
+              },
+              {
+                "name":"commandFFA",
+                "set":{ "forceX":{ "_":[ "that", "sideRatio", "*", 5 ] }, "forceY":-4, "animation":"tentackle", "gravityIdle":1, "idle":12, "state":"idle" },
+                "execute":{
+                  "object":{
+                    "set":{ "_":[ "stencil", "hitbox" ] },
+                    "height":20,
+                    "anchorTo":{ "_":"that" },
+                    "anchorX":{ "_":[ "that", "sideRatio", "*", 15 ] },
+                    "anchorY":0,
+                    "duration":10,
+                    "health":30,
+                    "stamina":100
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name":"Arnie",
+        "set":{ "_":[ "stencil", "modelBasicMoves" ] },
+        "tileY":200,
+        "animations":{
+          "allegro":{ "frame":16 },
+          "down":{ "frame":9 },
+          "downPunch":{ "frame":14 },
+          "fireball":{ "frame":15 },
+          "hitDown":{ "frame":10 },
+          "hitFloat":{ "frame":6 },
+          "hitGettingup":{ "frame":8 },
+          "hitGround":{ "frame":7 },
+          "hitStand":{ "frame":5 },
+          "jump":{ "frame":4 },
+          "stand":{ "frames":[ 0, 1 ], "speed":8, "loopTo":0 },
+          "standPunch":{ "frame":13 },
+          "walk":{ "frames":[ 2, 3 ], "loopTo":0 },
+          "win":{ "frames":[ 11, 12 ], "speed":8, "loopTo":0 }
+        },
+        "allcommands":{
+          "ground":[
+            { "area":{ "width":10, "height":10, "x":15, "y":-5 }, "command":"commandA" },
+            { "area":{ "width":30, "height":50, "x":10, "y":-50 }, "command":"commandDDA" },
+            { "area":{ "width":150, "height":10, "x":0, "y":-5 }, "command":"commandBFA" }
+          ],
+          "midair":[ { "area":{ "width":10, "height":10, "x":20, "y":5 }, "command":"commandA" } ]
+        },
+        "description":"Musician<br><br>BW+FW+ATK<br>Sonic Boom<br><br>DN+DN+ATK<br>Allegro",
+        "ending":"\"Is that music for YOU? Disappear from my sight!\" After the tournament music had a king.",
+        "portrait":5,
+        "winPhrases":[
+          "Making sounds using a single computer chip? You're kidding me, right?",
+          "Soundtracks is the only music you know? What a waste.",
+          "You said that music is good only for ringtones. You paid for your ignorance.",
+          "Can you hear a feeling in a book? No. That's why music is way better.",
+          "Your stupid music loops are just over now. And, please, dress up that ladies.",
+          "You tried to play my music with the wrong instruments. That's why you failed.",
+          "Without music you're just a guy jumping on a stage. You've to thank me if you're still alive.",
+          "Music and food are nearly the same. Except that food can make you fat."
+        ],
+        "states":[
+          {
+            "name":"ground",
+            "actions":[
+              {
+                "name":"commandBFA",
+                "set":{ "forceX":0, "animation":"fireball", "gravityIdle":1, "idle":20, "state":"idle" },
+                "execute":{ "object":{ "set":{ "_":[ "stencil", "fireball" ] }, "tileX":120, "health":15 } }
+              },
+              {
+                "name":"commandDDA",
+                "set":{ "forceX":{ "_":[ "that", "sideRatio", "*", 2 ] }, "forceY":-10, "animation":"allegro", "gravityIdle":1, "idle":20, "state":"idle" },
+                "execute":{
+                  "object":{
+                    "set":{ "_":[ "stencil", "hitbox" ] },
+                    "height":20,
+                    "anchorTo":{ "_":"that" },
+                    "anchorX":{ "_":[ "that", "sideRatio", "*", 15 ] },
+                    "anchorY":-10,
+                    "health":25,
+                    "stamina":100
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name":"Matt",
+        "set":{ "_":[ "stencil", "modelBasicMoves" ] },
+        "tileY":240,
+        "animations":{
+          "backstage":{ "frame":17 },
+          "dance":{ "frames":[ 15, 16 ], "speed":1, "loopTo":0 },
+          "down":{ "frame":9 },
+          "downPunch":{ "frame":14 },
+          "hitDown":{ "frame":10 },
+          "hitFloat":{ "frame":6 },
+          "hitGettingup":{ "frame":8 },
+          "hitGround":{ "frame":7 },
+          "hitStand":{ "frame":5 },
+          "jump":{ "frame":4 },
+          "stand":{ "frames":[ 0, 1 ], "speed":8, "loopTo":0 },
+          "standPunch":{ "frame":13 },
+          "walk":{ "frames":[ 2, 3 ], "loopTo":0 },
+          "win":{ "frames":[ 11, 12 ], "speed":8, "loopTo":0 }
+        },
+        "allcommands":{
+          "ground":[
+            { "area":{ "width":10, "height":10, "x":15, "y":-5 }, "command":"commandA" },
+            { "area":{ "width":30, "height":30, "x":-15, "y":-15 }, "command":"commandBBA" },
+            { "area":{ "width":50, "height":40, "x":-25, "y":-20 }, "command":"commandDDA" }
+          ],
+          "midair":[ { "area":{ "width":10, "height":10, "x":20, "y":5 }, "command":"commandA" } ]
+        },
+        "description":"Addicted Actor<br><br>DN+DN+ATK<br>Dance<br><br>BW+BW+ATK<br>Backstage",
+        "ending":"The tournament was all a play, in which theatre wins over all arts. The audience applauded for very long.",
+        "portrait":6,
+        "winPhrases":[
+          "Wh... what was that thing on the screen? Abstractism?",
+          "So you pretend to play the role of someone else with a gamepad? For real?",
+          "Your meaningless addiction is so inspiring that I'll make a play about that.",
+          "Do your thing, old man: write for me. Nothing more.",
+          "Is acting the same scene forever a real art? No. Neither for modernism.",
+          "Theatre needs music as a painting needs its frame. You're functional.",
+          "You're a good mime. Nothing more.",
+          "Cooking is an art which repeats the same message over and over again. So, it's art for real?"
+        ],
+        "states":[
+          {
+            "name":"ground",
+            "actions":[
+              {
+                "name":"commandBBA",
+                "set":{ "forceX":0, "forceY":0, "animation":"backstage", "gravityIdle":1, "idle":20, "state":"idle" },
+                "execute":{
+                  "object":[
+                    { "set":{ "_":[ "stencil", "hitbox" ] }, "width":30, "height":30, "anchorTo":{ "_":"that" }, "anchorX":0, "anchorY":0, "health":50, "stamina":100 }
+                  ]
+                }
+              },
+              {
+                "name":"commandDDA",
+                "set":{ "forceX":0, "forceY":-4, "animation":"dance", "gravityIdle":1, "idle":20, "state":"idle" },
+                "execute":{
+                  "object":[
+                    {
+                      "set":{ "_":[ "stencil", "hitbox" ] },
+                      "height":40,
+                      "anchorTo":{ "_":"that" },
+                      "anchorX":-20,
+                      "anchorY":0,
+                      "duration":20,
+                      "health":30,
+                      "stamina":100
+                    },
+                    {
+                      "set":{ "_":[ "stencil", "hitbox" ] },
+                      "height":40,
+                      "anchorTo":{ "_":"that" },
+                      "anchorX":20,
+                      "anchorY":0,
+                      "duration":20,
+                      "health":30,
+                      "stamina":100
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name":"Marsicano",
+        "set":{ "_":[ "stencil", "modelBasicMoves" ] },
+        "tileY":280,
+        "animations":{
+          "backstage":{ "frames":[ 17, 18 ], "speed":1, "loopTo":0 },
+          "down":{ "frame":9 },
+          "downPunch":{ "frame":14 },
+          "hitDown":{ "frame":10 },
+          "hitFloat":{ "frame":6 },
+          "hitGettingup":{ "frame":8 },
+          "hitGround":{ "frame":7 },
+          "hitStand":{ "frame":5 },
+          "hunger":{ "frames":[ 15, 16 ], "speed":1, "loopTo":0 },
+          "jump":{ "frame":4 },
+          "stand":{ "frames":[ 0, 1 ], "speed":8, "loopTo":0 },
+          "standPunch":{ "frame":13 },
+          "walk":{ "frames":[ 2, 3 ], "loopTo":0 },
+          "win":{ "frames":[ 11, 12 ], "speed":8, "loopTo":0 }
+        },
+        "allcommands":{
+          "ground":[
+            { "area":{ "width":10, "height":10, "x":15, "y":-5 }, "command":"commandA" },
+            { "area":{ "width":30, "height":30, "x":-15, "y":-15 }, "command":"commandDAA" },
+            { "area":{ "width":150, "height":10, "x":0, "y":-5 }, "command":"commandFFA" }
+          ],
+          "midair":[ { "area":{ "width":10, "height":10, "x":20, "y":5 }, "command":"commandA" } ]
+        },
+        "description":"Food Maniac<br><br>DN+ATK+ATK<br>Dance<br><br>FW+FW+ATK<br>Fried Roll",
+        "ending":"\"It's incredible! They are serving food on local trains too!\" \"And it's only the beginning, my dear friend.\"",
+        "portrait":7,
+        "winPhrases":[
+          "Veni. Vidi. Vici. My dear train friend.",
+          "Cooking Mama is all you know about cooking? Please.",
+          "Cooking with your own hands is cooking for real. Throw your gadgets away.",
+          "The only thing worthy to be read are recipes. And only good ones.",
+          "Your games are tasteless despite they are too much spicy. Disgusting.",
+          "We both use instruments for art. But mine can keep you alive.",
+          "You jumped for hours, should be hungry. Come to my kitchen, I'll prepare you something.",
+          "Same appearance. Wrong quantities. Wrong ingredients. Wrong timings. Disappear."
+        ],
+        "states":[
+          {
+            "name":"ground",
+            "actions":[
+              {
+                "name":"commandDAA",
+                "set":{ "forceX":0, "forceY":0, "animation":"hunger", "gravityIdle":1, "idle":20, "state":"idle" },
+                "execute":{
+                  "object":{
+                    "set":{ "_":[ "stencil", "hitbox" ] },
+                    "width":30, "height":30,
+                    "anchorTo":{ "_":"that" },
+                    "anchorX":0,
+                    "anchorY":0,
+                    "duration":20,
+                    "health":20,
+                    "stamina":40
+                  }
+                }
+              },
+              {
+                "name":"commandFFA",
+                "set":{ "forceX":{ "_":[ "that", "sideRatio", "*", 6 ] }, "forceY":0, "animation":"backstage", "gravityIdle":0, "idle":20, "state":"idle" },
+                "execute":{
+                  "object":{
+                    "set":{ "_":[ "stencil", "hitbox" ] },
+                    "width":30, "height":30,
+                    "anchorTo":{ "_":"that" },
+                    "anchorX":0,
+                    "anchorY":0,
+                    "duration":20,
+                    "health":20,
+                    "stamina":100
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "fireball":{
+      "type":"fireball",
+      "image":"ui", "tileX":0, "tileY":36, "width":20, "height":20,
+      "zIndex":10, "x":{ "_":[ "that", "x", "+", { "_":[ "that", "width", "/", 2 ] }, "-", 10 ] }, "y":{ "_":[ "that", "y", "+", { "_":[ "that", "height", "/", 2 ] }, "-", 10 ] },
+      "hitbox":{ "width":10, "height":10, "x":5, "y":5 },
+      "speed":5,
+      "animations":{ "run":{ "frames":2, "speed":2, "loopTo":0 } },
+      "animation":"run",
+      "duration":512,
+      "hits":{ "_":[ "that", "enemy" ] },
+      "sideRatio":{ "_":[ "that", "sideRatio" ] },
+      "stamina":40,
+      "states":{
+        "execute":{ "set":{ "forceX":{ "_":[ "that", "sideRatio", "*", { "_":[ "this", "speed" ] } ] } } },
+        "code":[
+          { "name":"Physics", "data":{ "walls":{ "area":{ "width":296, "height":162, "x":-20, "y":0 }, "execute":{ "remove":1 } } } },
+          {
+            "name":"Execute",
+            "data":{
+              "when":{ "_":[ "this", "duration" ] },
+              "execute":[
+                { "subtract":1, "to":{ "_":[ "this", "duration" ] } },
+                {
+                  "when":{ "_":[ "this", "collidesWith", { "_":[ "objectTyped", { "_":[ "this", "hits" ] } ] } ] },
+                  "execute":[ { "as":{ "_":"that" }, "executeAction":"hit" }, { "execute":{ "_":[ "stencil", "removeWithSpark" ] } } ]
+                },
+                {
+                  "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "fireball" ] } ] },
+                  "execute":[ { "execute":{ "_":[ "stencil", "removeWithSpark" ] } }, { "as":{ "_":"that" }, "execute":{ "_":[ "stencil", "removeWithSpark" ] } } ]
+                }
+              ],
+              "elseExecute":{ "remove":1 }
+            }
+          }
+        ]
+      }
+    },
+    "hitbox":{
+      "width":10, "height":10,
+      "zIndex":100,
+      "duration":3,
+      "hits":{ "_":[ "that", "enemy" ] },
+      "stamina":20,
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":{
+            "when":{ "_":[ "this", "duration" ] },
+            "execute":[
+              {
+                "when":{ "_":[ "this", "anchorTo" ] },
+                "set":{
+                  "x":{ "_":[ "this", "anchorTo", "x", "+", { "_":[ "this", "anchorTo", "width", "/", 2 ] }, "-", { "_":[ "this", "width", "/", 2 ] }, "+", { "_":[ "this", "anchorX" ] } ] }, "y":{ "_":[ "this", "anchorTo", "y", "+", { "_":[ "this", "anchorTo", "height", "/", 2 ] }, "-", { "_":[ "this", "height", "/", 2 ] }, "+", { "_":[ "this", "anchorY" ] } ] }
+                }
+              },
+              { "subtract":1, "to":{ "_":[ "this", "duration" ] } },
+              {
+                "when":{ "_":[ "this", "collidesWith", { "_":[ "objectTyped", { "_":[ "this", "hits" ] } ] } ] },
+                "execute":[ { "as":{ "_":"that" }, "executeAction":"hit" }, { "object":{ "_":[ "stencil", "spark" ] } } ]
+              }
+            ],
+            "elseExecute":{ "remove":1 }
+          }
+        }
+      }
+    },
+    "smoke":{
+      "image":"defaultsprites", "tileX":80, "tileY":16, "width":16, "height":16,
+      "zIndex":10000, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" }, "+", 17 ] },
+      "animations":{ "spark":{ "frames":4, "speed":1 } },
+      "animation":"spark",
+      "states":{ "code":[ { "name":"Physics" }, { "name":"Sequence", "data":[ { "wait":8 }, { "remove":1 } ] } ] }
+    }
+  },
+  "execute":[
+    { "as":{ "_":"variable" }, "set":{ "foeSequence":{ "_":[ "new", [ 0, 1, 2, 3, 4, 5, 6, 7 ] ] } } },
+    {
+      "object":{
+        "type":"hud",
+        "hudType":"label", "label":"1P %number|variable.score|0|6%",
+        "box":"label", "width":1000,
+        "zIndex":100, "x":8, "y":3,
+        "font":"spectrum", "outline":"#000"
+      },
+      "into":{ "_":"hud" }
+    }
+  ],
+  "scenes":{
+    "intro":{
+      "object":[
+        { "image":"intro", "width":186, "height":98, "x":35, "y":10 },
+        {
+          "image":"intro", "tileX":0, "tileY":98, "width":256, "height":49,
+          "x":0, "y":202,
+          "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "this", "y", "isGreaterThan", 143 ] }, "subtract":0.2, "to":{ "_":[ "this", "y" ] } } } }
+        },
+        {
+          "box":"label", "width":256,
+          "zIndex":5, "x":0, "y":115,
+          "color":"#fff",
+          "font":"spectrum", "fontSize":20, "lineHeight":20, "outline":"#000", "textAlign":"center", "html":"PRESS START",
+          "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "visible":0 }, "wait":10 }, { "set":{ "visible":1 }, "wait":10, "loopTo":0 } ] } }
+        }
+      ],
+      "execute":[
+        { "shuffle":{ "_":[ "variable", "foeSequence" ] } },
+        { "as":{ "_":"variable" }, "set":{ "foeFighter":0, "foePosition":0, "playerFighter":0, "score":0 } }
+      ],
+      "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"select" } } }
+    },
+    "ending":{
+      "object":[
+        { "width":256, "height":192, "x":0, "y":0, "bgcolor":"#007f7f" },
+        {
+          "image":"endings", "width":256, "height":90,
+          "zIndex":10, "x":0, "y":24, "frame":{ "_":[ "stencil", "fighters", { "_":[ "variable", "playerFighter" ] }, "portrait" ] }
+        },
+        {
+          "width":192, "height":50,
+          "zIndex":10, "x":32, "y":130,
+          "font":"spectrum", "fontSize":20, "lineHeight":10, "outline":"#000", "html":{ "_":[ "stencil", "fighters", { "_":[ "variable", "playerFighter" ] }, "ending" ] }
+        },
+        {
+          "width":192, "height":50,
+          "zIndex":20, "x":32, "y":130,
+          "bgcolor":"#007f7f",
+          "states":{
+            "code":{
+              "name":"Execute",
+              "data":{ "when":{ "_":[ "this", "y", "isLessThan", 192 ] }, "sum":1, "to":{ "_":[ "this", "y" ] }, "elseExecute":{ "remove":1 } }
+            }
+          }
+        }
+      ],
+      "states":{ "code":{ "name":"Sequence", "data":[ { "wait":25 }, { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } }, { "gotoScene":"gameover" } ] } }
+    },
+    "gameover":{
+      "object":[
+        {
+          "width":256, "height":192,
+          "x":0, "y":0,
+          "bgcolor":"#fff",
+          "states":{
+            "code":{
+              "name":"Execute",
+              "data":{
+                "when":{ "_":[ "this", "height", "isGreaterThan", 1 ] },
+                "execute":[ { "sum":5, "to":{ "_":[ "this", "y" ] } }, { "subtract":10, "to":{ "_":[ "this", "height" ] } } ]
+              },
+              "elseExecute":{ "remove":1 }
+            }
+          }
+        },
+        {
+          "width":256, "height":192,
+          "zIndex":10, "x":0, "y":0,
+          "color":"#fff",
+          "font":"spectrum", "fontSize":50, "lineHeight":192, "textAlign":"center", "html":"GAME OVER"
+        }
+      ],
+      "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"intro" } } }
+    },
+    "brief":{
+      "execute":[
+        {
+          "as":{ "_":"variable" },
+          "set":{ "foeFighter":{ "_":[ "variable", "foeSequence", { "_":[ "variable", "foePosition" ] } ] }, "round":1, "winFoe":0, "winPlayer":0 }
+        },
+        {
+          "object":[
+            {
+              "box":"label", "width":88, "height":192,
+              "zIndex":10, "x":84, "y":0,
+              "bgcolor":"#f00", "color":"#fff",
+              "font":"spectrum", "fontSize":80, "lineHeight":192, "outline":"#000", "textAlign":"center", "html":"VS"
+            },
+            {
+              "type":"largeportrait",
+              "image":"portraits", "width":88, "height":88,
+              "x":84, "y":48, "frame":{ "_":[ "stencil", "fighters", { "_":[ "variable", "playerFighter" ] }, "portrait" ] },
+              "forceX":-20,
+              "states":[
+                { "code":{ "name":"Physics", "data":{ "walls":{ "area":{ "width":512, "height":192, "x":-256, "y":0 } }, "gravityX":1 } } },
+                {
+                  "name":"then",
+                  "code":{ "name":"Physics", "data":{ "walls":{ "area":{ "width":350, "height":192, "x":-256, "y":0 }, "restitution":0.2 }, "gravityX":1 } }
+                }
+              ]
+            },
+            {
+              "type":"largeportrait",
+              "image":"portraits", "width":88, "height":88,
+              "x":84, "y":48, "frame":{ "_":[ "stencil", "fighters", { "_":[ "variable", "foeFighter" ] }, "portrait" ] },
+              "flipX":1,
+              "forceX":20,
+              "states":[
+                { "code":{ "name":"Physics", "data":{ "walls":{ "area":{ "width":512, "height":192, "x":0, "y":0 } }, "gravityX":-1 } } },
+                {
+                  "name":"then",
+                  "code":{ "name":"Physics", "data":{ "walls":{ "area":{ "width":512, "height":192, "x":164, "y":0 }, "restitution":0.2 }, "gravityX":-1 } }
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "states":{
+        "code":[
+          {
+            "name":"Sequence",
+            "data":[
+              { "wait":25 },
+              { "as":{ "_":[ "object", "largeportrait" ] }, "set":{ "zIndex":30, "state":"then" } },
+              {
+                "object":[
+                  {
+                    "type":"playername",
+                    "width":136, "height":25,
+                    "zIndex":100, "x":-136, "y":140,
+                    "color":"#ff0",
+                    "font":"spectrum", "fontSize":25, "lineHeight":25, "outline":"#000", "html":{ "_":[ "stencil", "fighters", { "_":[ "variable", "playerFighter" ] }, "name" ] },
+                    "states":{ "code":{ "name":"Physics", "data":{ "walls":{ "area":{ "width":280, "height":192, "x":-136, "y":0 }, "restitution":0.2 }, "gravityX":1 } } }
+                  },
+                  {
+                    "type":"playername",
+                    "width":136, "height":25,
+                    "zIndex":100, "x":256, "y":140,
+                    "color":"#ff0",
+                    "font":"spectrum", "fontSize":25, "lineHeight":25, "outline":"#000", "textAlign":"right", "html":{ "_":[ "stencil", "fighters", { "_":[ "variable", "foeFighter" ] }, "name" ] },
+                    "states":{ "code":{ "name":"Physics", "data":{ "walls":{ "area":{ "width":280, "height":192, "x":112, "y":0 }, "restitution":0.2 }, "gravityX":-1 } } }
+                  }
+                ]
+              }
+            ]
+          },
+          { "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"round" } }
+        ]
+      }
+    },
+    "round":{
+      "execute":[
+        { "as":{ "_":"variable" }, "set":{ "time":99 } },
+        {
+          "object":[
+            {
+              "image":"wallpapers", "width":256, "height":192,
+              "x":0, "y":0, "frame":{ "_":[ "stencil", "fighters", { "_":[ "variable", "foeFighter" ] }, "portrait" ] }
+            },
+            {
+              "set":[
+                { "_":[ "stencil", "fighter" ] },
+                { "_":[ "stencil", "fighters", { "_":[ "variable", "playerFighter" ] } ] },
+                { "_":[ "stencil", "controlsPlayer" ] }
+              ]
+            },
+            {
+              "set":[
+                { "_":[ "stencil", "fighter" ] },
+                { "_":[ "stencil", "fighters", { "_":[ "variable", "foeFighter" ] } ] },
+                { "_":[ "stencil", "controlsComputer" ] }
+              ]
+            }
+          ]
+        },
+        {
+          "object":[
+            { "image":"ui", "width":240, "height":20, "zIndex":150, "x":8, "y":20 },
+            {
+              "width":108, "height":12,
+              "zIndex":200, "x":10, "y":24,
+              "bgcolor":"#ff0",
+              "states":{
+                "code":{
+                  "name":"Execute",
+                  "data":[
+                    { "set":{ "width":{ "_":[ "objectTyped", "player", "health", "/", 100, "*", 108, "ceil" ] } } },
+                    { "set":{ "x":{ "_":[ 118, "-", { "_":[ "this", "width" ] } ] } } }
+                  ]
+                }
+              }
+            },
+            {
+              "width":108, "height":12,
+              "zIndex":200, "x":138, "y":24,
+              "bgcolor":"#ff0",
+              "states":{ "code":{ "name":"Execute", "data":{ "set":{ "width":{ "_":[ "objectTyped", "foe", "health", "/", 100, "*", 108, "ceil" ] } } } } }
+            },
+            { "image":"ui", "tileX":0, "tileY":20, "width":16, "height":16, "zIndex":100, "x":8, "y":45, "frame":{ "_":[ "objectTyped", "player", "portrait" ] } },
+            {
+              "image":"ui", "tileX":0, "tileY":20, "width":16, "height":16,
+              "zIndex":100, "x":232, "y":45, "frame":{ "_":[ "objectTyped", "foe", "portrait" ] },
+              "flipX":1
+            },
+            {
+              "type":"hud",
+              "hudType":"label", "label":"%text|objectTyped.player.name%<br>%repeat|variable.winPlayer|<span style='font-family:pixeldingbats;font-size:8px;color:#ff0'>&#339;</span>%",
+              "box":"label", "width":80,
+              "zIndex":100, "x":32, "y":45,
+              "font":"spectrum", "lineHeight":10, "outline":"#000"
+            },
+            {
+              "type":"hud",
+              "hudType":"label", "label":"%text|objectTyped.foe.name%<br>%repeat|variable.winFoe|<span style='font-family:pixeldingbats;font-size:8px;color:#ff0'>&#339;</span>%",
+              "box":"label", "width":80,
+              "zIndex":100, "x":144, "y":45,
+              "font":"spectrum", "lineHeight":10, "outline":"#000", "textAlign":"right"
+            },
+            {
+              "type":"hud",
+              "hudType":"label", "label":"%number|variable.time|0|2%",
+              "box":"label", "width":40, "height":20,
+              "zIndex":100, "x":107, "y":42,
+              "font":"spectrum", "fontSize":40, "lineHeight":20, "outline":"#000", "textAlign":"center"
+            }
+          ]
+        }
+      ],
+      "states":[
+        {
+          "code":{
+            "name":"Sequence",
+            "data":[
+              {
+                "object":{
+                  "type":"label",
+                  "width":256, "height":40,
+                  "zIndex":100, "x":-256, "y":76,
+                  "font":"spectrum", "fontSize":50, "lineHeight":40, "outline":"#00f", "textAlign":"center", "html":{ "_":[ "ROUND ", ".", { "_":[ "variable", "round" ] } ] },
+                  "states":[
+                    { "code":{ "name":"Physics", "data":{ "walls":{ "area":{ "width":512, "height":192, "x":-256, "y":0 }, "restitutionX":0.3 }, "gravityX":2 } } },
+                    {
+                      "name":"fight",
+                      "set":{ "html":"FIGHT!" },
+                      "code":{ "name":"Sequence", "data":[ { "set":{ "color":"#f00" }, "wait":1 }, { "set":{ "color":"#fff" }, "wait":1, "loopTo":0 } ] }
+                    }
+                  ]
+                }
+              },
+              { "wait":50 },
+              { "as":{ "_":[ "objectTyped", "label" ] }, "set":{ "state":"fight" } },
+              { "wait":25 },
+              { "as":{ "_":[ "object", "label" ] }, "remove":1 },
+              { "as":{ "_":[ "object", "fighter" ] }, "set":{ "state":"ground" } },
+              { "set":{ "state":"fighting" } }
+            ]
+          }
+        },
+        {
+          "name":"fighting",
+          "code":[
+            { "name":"Sequence", "data":[ { "wait":1, "loop":1, "until":{ "_":[ "objectTyped", "loser" ] } }, { "set":{ "state":"ended" } } ] },
+            {
+              "name":"Sequence",
+              "data":[
+                { "subtract":1, "to":{ "_":[ "variable", "time" ] }, "wait":25, "loop":1, "until":{ "_":[ "variable", "time", "not" ] } },
+                {
+                  "object":{
+                    "type":"label",
+                    "width":256, "height":40,
+                    "zIndex":100, "x":0, "y":76,
+                    "color":"#fff",
+                    "font":"spectrum", "lineHeight":40, "outline":"#00f", "textAlign":"center", "html":"TIME OVER"
+                  }
+                },
+                { "set":{ "state":"ended" } }
+              ]
+            }
+          ]
+        },
+        {
+          "name":"ended",
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "as":{ "_":[ "object", "fighter" ] }, "set":{ "state":"stopped" } },
+              { "wait":1, "loopTo":0, "until":{ "_":[ "object", "done", "count", "isEqualTo", 2 ] } },
+              { "wait":25 },
+              { "as":{ "_":[ "object", "label" ] }, "remove":1 },
+              {
+                "when":{ "_":[ "objectTyped", "player", "health", "isGreaterThan", { "_":[ "objectTyped", "foe", "health" ] } ] },
+                "execute":[
+                  { "as":{ "_":[ "objectTyped", "player" ] }, "set":{ "zIndex":30, "animation":"win" } },
+                  { "sum":1, "to":{ "_":[ "variable", "winPlayer" ] } },
+                  { "sum":{ "_":[ "variable", "time", "*", 10 ] }, "to":{ "_":[ "variable", "score" ] } },
+                  {
+                    "object":{
+                      "type":"label",
+                      "width":256, "height":40,
+                      "zIndex":100, "x":0, "y":76,
+                      "font":"spectrum", "fontSize":50, "lineHeight":40, "outline":"#00f", "textAlign":"center", "html":"YOU WIN!",
+                      "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "color":"#0f0" }, "wait":8 }, { "set":{ "color":"#fff" }, "wait":8, "loopTo":0 } ] } }
+                    }
+                  }
+                ],
+                "elseExecute":[
+                  { "as":{ "_":[ "objectTyped", "foe" ] }, "set":{ "zIndex":30, "animation":"win" } },
+                  { "sum":1, "to":{ "_":[ "variable", "winFoe" ] } },
+                  {
+                    "object":{
+                      "type":"label",
+                      "width":256, "height":40,
+                      "zIndex":100, "x":0, "y":76,
+                      "font":"spectrum", "fontSize":50, "lineHeight":40, "outline":"#00f", "textAlign":"center", "html":"YOU LOSE",
+                      "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "color":"#00f" }, "wait":8 }, { "set":{ "color":"#fff" }, "wait":8, "loopTo":0 } ] } }
+                    }
+                  }
+                ]
+              },
+              { "wait":25 },
+              { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+              {
+                "when":{ "_":[ "variable", "winFoe", "isEqualTo", 2 ] },
+                "gotoScene":"gameover",
+                "elseExecute":{
+                  "when":{ "_":[ "variable", "winPlayer", "isEqualTo", 2 ] },
+                  "gotoScene":"victory",
+                  "elseExecute":{ "sum":1, "to":{ "_":[ "variable", "round" ] }, "gotoScene":"round" }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "select":{
+      "execute":[
+        { "as":{ "_":"variable" }, "set":{ "x":96, "y":144, "i":0, "selectedplayer":0 } },
+        {
+          "times":{ "_":[ "stencil", "fighters", "count" ] },
+          "execute":[
+            {
+              "object":{
+                "type":"portrait",
+                "image":"ui", "tileX":0, "tileY":20, "width":16, "height":16,
+                "zIndex":10, "x":{ "_":[ "variable", "x" ] }, "y":{ "_":[ "variable", "y" ] }, "frame":{ "_":[ "stencil", "fighters", { "_":[ "variable", "i" ] }, "portrait" ] },
+                "fighterIndex":{ "_":[ "variable", "i" ] },
+                "index":{ "_":[ "variable", "i" ] }
+              }
+            },
+            { "sum":1, "to":{ "_":[ "variable", "i" ] } },
+            {
+              "when":{ "_":[ "variable", "i", "%", 4 ] },
+              "sum":16,
+              "to":{ "_":[ "variable", "x" ] },
+              "elseExecute":[ { "sum":16, "to":{ "_":[ "variable", "y" ] } }, { "as":{ "_":"variable" }, "set":{ "x":96 } } ]
+            }
+          ]
+        },
+        {
+          "object":[
+            { "width":256, "height":192, "x":0, "y":0, "bgcolor":"#007f7f" },
+            {
+              "type":"playerselector",
+              "width":16, "height":16,
+              "zIndex":20, "x":96, "y":144,
+              "border":"#f00",
+              "moved":1,
+              "states":{
+                "code":[
+                  { "name":"Sequence", "data":[ { "set":{ "border":"#fff" }, "wait":1 }, { "set":{ "border":"#f00" }, "wait":1, "loopTo":0 } ] },
+                  {
+                    "name":"Execute",
+                    "data":[
+                      {
+                        "when":{ "_":[ "keyUp", "isHit" ] },
+                        "execute":[ { "set":{ "moved":1 } }, { "subtract":16, "to":{ "_":[ "this", "y" ] } }, { "when":{ "_":[ "this", "y", "isLessThan", 144 ] }, "set":{ "y":160 } } ]
+                      },
+                      {
+                        "when":{ "_":[ "keyDown", "isHit" ] },
+                        "execute":[ { "set":{ "moved":1 } }, { "sum":16, "to":{ "_":[ "this", "y" ] } }, { "when":{ "_":[ "this", "y", "isGreaterThan", 160 ] }, "set":{ "y":144 } } ]
+                      },
+                      {
+                        "when":{ "_":[ "keyRight", "isHit" ] },
+                        "execute":[ { "set":{ "moved":1 } }, { "sum":16, "to":{ "_":[ "this", "x" ] } }, { "when":{ "_":[ "this", "x", "isGreaterThan", 144 ] }, "set":{ "x":96 } } ]
+                      },
+                      {
+                        "when":{ "_":[ "keyLeft", "isHit" ] },
+                        "execute":[ { "set":{ "moved":1 } }, { "subtract":16, "to":{ "_":[ "this", "x" ] } }, { "when":{ "_":[ "this", "x", "isLessThan", 96 ] }, "set":{ "x":144 } } ]
+                      },
+                      {
+                        "when":{ "_":[ "this", "moved" ] },
+                        "execute":[
+                          { "set":{ "moved":0 } },
+                          { "as":{ "_":"variable" }, "set":{ "playerFighter":{ "_":[ "that", "collidesWith", { "_":[ "object", "portrait" ] }, "index" ] } } },
+                          { "as":{ "_":[ "objectTyped", "selectedplayer" ] }, "set":{ "_":[ "stencil", "fighters", { "_":[ "variable", "playerFighter" ] } ] } },
+                          {
+                            "as":{ "_":[ "objectTyped", "largeportrait" ] },
+                            "set":{ "frame":{ "_":[ "stencil", "fighters", { "_":[ "variable", "playerFighter" ] }, "portrait" ] } }
+                          },
+                          { "as":{ "_":[ "objectTyped", "playername" ] }, "set":{ "html":{ "_":[ "stencil", "fighters", { "_":[ "variable", "playerFighter" ] }, "name" ] } } },
+                          {
+                            "as":{ "_":[ "objectTyped", "playerdescription" ] },
+                            "set":{ "html":{ "_":[ "stencil", "fighters", { "_":[ "variable", "playerFighter" ] }, "description" ] } }
+                          }
+                        ]
+                      },
+                      { "when":{ "_":[ "keyA", "isHit" ] }, "execute":{ "as":{ "_":"scene" }, "set":{ "state":"selected" } } }
+                    ]
+                  }
+                ]
+              }
+            },
+            { "type":"selectedplayer", "image":"sprites", "width":40, "height":40, "zIndex":10, "x":24, "y":144, "animation":"stand" },
+            { "type":"largeportrait", "image":"portraits", "width":88, "height":88, "zIndex":10, "x":16, "y":48 },
+            {
+              "type":"label",
+              "width":256, "height":25,
+              "zIndex":100, "x":0, "y":17,
+              "font":"spectrum", "fontSize":25, "lineHeight":25, "outline":"#000", "textAlign":"center", "html":"CHOOSE YOUR FIGHTER",
+              "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "color":"#f00" }, "wait":8 }, { "set":{ "color":"#fff" }, "wait":8, "loopTo":0 } ] } }
+            },
+            {
+              "type":"playername",
+              "width":136, "height":25,
+              "zIndex":100, "x":112, "y":41,
+              "color":"#ff0",
+              "font":"spectrum", "fontSize":25, "lineHeight":25, "outline":"#000"
+            },
+            {
+              "type":"playerdescription",
+              "width":140, "height":67,
+              "zIndex":100, "x":112, "y":66,
+              "font":"spectrum", "fontSize":20, "lineHeight":8, "outline":"#000"
+            }
+          ]
+        }
+      ],
+      "states":{
+        "name":"selected",
+        "execute":[
+          { "as":{ "_":[ "objectTyped", "playerselector" ] }, "remove":1 },
+          { "as":{ "_":[ "objectTyped", "selectedplayer" ] }, "set":{ "animation":"win" } }
+        ],
+        "code":{ "name":"Sequence", "data":[ { "wait":75 }, { "gotoScene":"brief" } ] }
+      }
+    },
+    "victory":{
+      "object":[
+        { "width":256, "height":192, "x":0, "y":0, "bgcolor":"#00f" },
+        {
+          "image":"portraits", "width":88, "height":88,
+          "zIndex":10, "x":16, "y":28, "frame":{ "_":[ "stencil", "fighters", { "_":[ "variable", "playerFighter" ] }, "portrait" ] }
+        },
+        {
+          "image":"portraits", "tileY":88, "width":88, "height":88,
+          "zIndex":10, "x":152, "y":28, "frame":{ "_":[ "stencil", "fighters", { "_":[ "variable", "foeFighter" ] }, "portrait" ] },
+          "flipX":1
+        },
+        {
+          "width":192, "height":50,
+          "zIndex":10, "x":32, "y":130,
+          "font":"spectrum", "fontSize":20, "lineHeight":10, "outline":"#000", "html":{ "_":[ "stencil", "fighters", { "_":[ "variable", "playerFighter" ] }, "winPhrases", { "_":[ "variable", "foeFighter" ] } ] }
+        },
+        {
+          "width":192, "height":50,
+          "zIndex":20, "x":32, "y":130,
+          "bgcolor":"#00f",
+          "states":{
+            "code":{
+              "name":"Execute",
+              "data":{ "when":{ "_":[ "this", "y", "isLessThan", 192 ] }, "sum":1, "to":{ "_":[ "this", "y" ] }, "elseExecute":{ "remove":1 } }
+            }
+          }
+        }
+      ],
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":{
+            "when":{ "_":[ "keyA", "isHit" ] },
+            "execute":[
+              { "sum":1, "to":{ "_":[ "variable", "foePosition" ] } },
+              {
+                "when":{ "_":[ "variable", "foePosition", "isEqualTo", { "_":[ "variable", "foeSequence", "count" ] } ] },
+                "gotoScene":"ending",
+                "elseExecute":{ "gotoScene":"brief" }
+              }
+            ]
+          }
+        }
+      }
+    }
+  }
+}
