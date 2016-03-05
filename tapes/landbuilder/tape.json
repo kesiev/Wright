@@ -1,0 +1,985 @@
+{
+  "name":"Landbuilder",
+  "author":"KesieV",
+  "year":2016,
+  "genre":"Simulation",
+  "description":"Edutainment. More than being a cacophonic portmanteau, this term describes a content designed to both entertain and educate - regardless the percentage and, obviously, the subjective meaning, of both ingredients. So edutainment ranges from the bible to sitcoms to government's mind controlling media. Today's people loves feeling smart, regardless the topic, so, despite the term lies now in the buzzword graveyard, it's surely together with the (very few) winners: today's media, including advertising, are based on forging knowledge in entertaining form and vice versa. Which, incidentally, hits one of the most ancient and basic design guideline of videogames: simulating, more or less, something realistic or plausible asking to the player to develop and test one or more skills. Being a an Asteroids (1979) player means knowing how inertia and forces works, Battlezone (1980) simulates a tank in a way that U.S. Army wanted its customized version for training, SimCity (1989) have been used by the University Of Southern California for its classes, Assassins Creed (2007) offers carefully crafted reconstructions of historic monuments, cities and scenarios used for telling its pseudo-historic tales. Are gamers unconsciously learning? But, more importantly, what the gamers are learning? Plot! You'll be a good king, indeed. But will your kingdom be the greatest ever? Are you worthy to be remembered in history? Build structures, let your people live and work, make and invest money and became the best ruler ever - within the time limit, obviously! Use UP/DOWN/LEFT/RIGHT for moving the cursor around the map and hit the A BUTTON on resources cells for seeing its type and quantity. Hold the A BUTTON on an empty space or an already built structure for opening the structure menu: follow the on-screen instructions and use UP and DOWN for interacting with an already built structure or use LEFT and RIGHT for selecting a new one and reading its description. Release the A BUTTON for building, replacing or removing a structure.",
+  "screenshots":[ "landbuilder-1.png", "landbuilder-2.png" ],
+  "hardware":{
+    "width":256,
+    "height":192,
+    "texture":"scanlines"
+  },
+  "cheats":{},
+  "resources":{
+    "icons":"icons.png",
+    "tiles":"tiles.png",
+    "title":"title.png",
+    "defaultsprites":"../default/sprites.png",
+    "scanlines":"../default/scanlines.png"
+  },
+  "stencils":{
+    "codeBlinkCursor":{ "code":{ "name":"Sequence", "data":[ { "set":{ "border":"#fff" }, "wait":5 }, { "set":{ "border":"#f00" }, "wait":5, "loopTo":0 } ] } },
+    "codeCloud":{
+      "times":20,
+      "object":{ "_":[ "stencil", "smoke" ] },
+      "execute":[
+        { "sum":{ "_":[ "randomNumber", [ { "_":[ "this", "width", "/", -2 ] }, { "_":[ "this", "width", "/", 2 ] } ] ] }, "to":{ "_":[ "that", "x" ] } },
+        { "sum":{ "_":[ "randomNumber", [ { "_":[ "this", "height", "/", -2 ] }, { "_":[ "this", "height", "/", 2 ] } ] ] }, "to":{ "_":[ "that", "y" ] } }
+      ]
+    },
+    "codeMapMake":{
+      "width":360, "height":360,
+      "execute":[
+        { "as":{ "_":"variable" }, "set":{ "money":500, "timeMinutes":5, "timeSeconds":0, "units":20 } },
+        {
+          "object":[
+            {
+              "type":"hud",
+              "hudType":"label", "label":"<span style='color:#ff0'>%number|variable.money%$</span> <span style='color:#f0f'>%number|variable.units%<span style='font-family:pixeldingbats;font-size:6px'>&#231;</span></span>",
+              "box":"label", "width":256, "height":40,
+              "zIndex":2, "x":5, "y":5,
+              "color":"#fff",
+              "font":"spectrum", "lineHeight":10, "outline":"#000"
+            },
+            {
+              "type":"hud",
+              "hudType":"label", "label":"%number|variable.timeMinutes|0|2%:%number|variable.timeSeconds|0|2% <span style='font-family:pixeldingbats;font-size:6px'>&#220;</span><br><span style='color:#ff0'>%number|storage.hiscoreMoney%$</span> <span style='color:#f0f'>%number|storage.hiscoreUnits%<span style='font-family:pixeldingbats;font-size:6px'>&#231;</span></span> <span style='font-family:pixeldingbats;font-size:6px'>&#206;</span>",
+              "box":"label", "width":251, "height":40,
+              "zIndex":2, "x":0, "y":5,
+              "color":"#fff",
+              "font":"spectrum", "lineHeight":10, "outline":"#000", "textAlign":"right"
+            }
+          ],
+          "into":{ "_":"scenehud" }
+        },
+        { "as":{ "_":"variable" }, "set":{ "areas":{ "_":[ "new", [] ] }, "areasIndex":0, "groundsIndex":0, "ty":0 } },
+        {
+          "times":15,
+          "execute":[
+            { "as":{ "_":"variable" }, "set":{ "tx":0 } },
+            {
+              "times":15,
+              "execute":[
+                {
+                  "object":{
+                    "set":{ "_":[ "stencil", "grass" ] },
+                    "width":24, "height":24,
+                    "x":{ "_":[ "variable", "tx", "*", 24 ] }, "y":{ "_":[ "variable", "ty", "*", 24 ] }
+                  },
+                  "as":{ "_":"that" },
+                  "pushInto":{ "_":[ "variable", "areas" ] }
+                },
+                { "sum":1, "to":{ "_":[ "variable", "tx" ] } }
+              ]
+            },
+            { "sum":1, "to":{ "_":[ "variable", "ty" ] } }
+          ]
+        },
+        { "shuffle":{ "_":[ "variable", "areas" ] } },
+        {
+          "times":{ "_":[ "stencil", "grounds", "count" ] },
+          "execute":[
+            {
+              "times":10,
+              "execute":[
+                {
+                  "object":{
+                    "set":{ "_":[ "stencil", "grounds", { "_":[ "variable", "groundsIndex" ] } ] },
+                    "x":{ "_":[ "variable", "areas", { "_":[ "variable", "areasIndex" ] }, "x" ] }, "y":{ "_":[ "variable", "areas", { "_":[ "variable", "areasIndex" ] }, "y" ] }
+                  }
+                },
+                { "sum":1, "to":{ "_":[ "variable", "areasIndex" ] } }
+              ]
+            },
+            { "sum":1, "to":{ "_":[ "variable", "groundsIndex" ] } }
+          ]
+        }
+      ]
+    },
+    "codeMessageShow":[
+      { "as":{ "_":[ "object", "message" ] }, "remove":1 },
+      {
+        "object":{
+          "type":"message",
+          "box":"label", "width":246, "height":20,
+          "x":5, "y":12,
+          "font":"spectrum", "outline":"#000", "html":{ "_":[ "variable", "message" ] },
+          "states":{ "code":{ "name":"Sequence", "data":[ { "wait":45 }, { "remove":1 } ] } }
+        },
+        "into":{ "_":"scenehud" }
+      }
+    ],
+    "modelPopupLabel":{
+      "width":100, "height":10,
+      "zIndex":10000, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "that", "y", "-", 5 ] },
+      "color":"#fff",
+      "font":"spectrum", "lineHeight":12, "outline":"#000", "textAlign":"center",
+      "speed":0.5,
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[ { "subtract":{ "_":[ "this", "speed" ] }, "to":{ "_":[ "this", "y" ] }, "wait":1, "loop":1, "cycles":15 }, { "remove":1 } ]
+        }
+      }
+    },
+    "modelStructure":{
+      "type":"structure",
+      "image":"tiles", "width":24, "height":24,
+      "zIndex":5,
+      "font":"spectrum", "fontSize":12, "lineHeight":8, "textAlign":"center",
+      "animations":{ "idle":{ "frames":2, "loopTo":0 }, "stopped":{ "frame":0 }, "working":{ "frames":[ 1, 2 ], "speed":10, "loopTo":0 } },
+      "age":20,
+      "check":{ "_":[ "new", {} ] },
+      "consumed":0,
+      "content":0,
+      "deaths":0,
+      "production":0,
+      "waste":0,
+      "workers":0,
+      "states":{
+        "execute":[ { "executeAction":"update" }, { "as":{ "_":[ "this", "collidesWith", { "_":[ "object", "cell" ] } ] }, "set":{ "removeType":"empty" } } ],
+        "actions":[
+          {
+            "name":"turn",
+            "execute":{
+              "when":{ "_":[ "this", "consume" ] },
+              "execute":[
+                { "set":{ "deaths":0, "effort":{ "_":[ "this", "workers" ] }, "waste":0 } },
+                { "subtract":1, "to":{ "_":[ "this", "age" ] } },
+                {
+                  "when":{ "_":[ "this", "age", "isLessEqualThan", 0 ] },
+                  "execute":[
+                    { "set":{ "age":{ "_":[ 10, "+", { "_":[ "randomNumber", [ 0, 10 ] ] } ] } } },
+                    {
+                      "when":{ "_":[ "this", "workers" ] },
+                      "execute":[ { "subtract":1, "to":{ "_":[ "this", "workers" ] } }, { "sum":1, "to":{ "_":[ "this", "deaths" ] } } ]
+                    }
+                  ]
+                },
+                {
+                  "when":{ "_":[ "this", "content", "+", { "_":[ "this", "effort" ] }, "isGreaterThan", { "_":[ "this", "maxContent" ] } ] },
+                  "set":{ "effort":{ "_":[ "this", "maxContent", "-", { "_":[ "this", "content" ] } ] } }
+                },
+                { "as":{ "_":[ "this", "check" ] }, "set":{ "width":24, "height":24, "y":{ "_":[ "that", "rangeY", "*", 24 ] } } },
+                {
+                  "times":{ "_":[ "this", "rangeHeight" ] },
+                  "execute":[
+                    { "as":{ "_":[ "this", "check" ] }, "set":{ "x":{ "_":[ "that", "rangeX", "*", 24 ] } } },
+                    {
+                      "times":{ "_":[ "this", "rangeWidth" ] },
+                      "execute":[
+                        {
+                          "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", { "_":[ "this", "consume" ] } ] }, "hitbox":{ "_":[ "this", "check" ] } } ] },
+                          "execute":{
+                            "when":{ "_":[ "that", "content", "and", { "_":[ "this", "effort" ] } ] },
+                            "execute":[
+                              { "subtract":1, "to":{ "_":[ "this", "effort" ] } },
+                              { "as":{ "_":"that" }, "executeAction":"consume" },
+                              { "sum":1, "to":{ "_":[ "this", "production" ] } }
+                            ]
+                          }
+                        },
+                        { "sum":24, "to":{ "_":[ "this", "check", "x" ] } }
+                      ]
+                    },
+                    { "sum":24, "to":{ "_":[ "this", "check", "y" ] } }
+                  ]
+                },
+                {
+                  "when":{ "_":[ "this", "andConsume" ] },
+                  "execute":[
+                    { "set":{ "effort":{ "_":[ "this", "production" ] }, "preproduced":{ "_":[ "this", "production" ] } } },
+                    { "set":{ "production":0 } },
+                    { "as":{ "_":[ "this", "check" ] }, "set":{ "width":24, "height":24, "y":{ "_":[ "that", "rangeY", "*", 24 ] } } },
+                    {
+                      "times":{ "_":[ "this", "rangeHeight" ] },
+                      "execute":[
+                        { "as":{ "_":[ "this", "check" ] }, "set":{ "x":{ "_":[ "that", "rangeX", "*", 24 ] } } },
+                        {
+                          "times":{ "_":[ "this", "rangeWidth" ] },
+                          "execute":[
+                            {
+                              "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", { "_":[ "this", "andConsume" ] } ] }, "hitbox":{ "_":[ "this", "check" ] } } ] },
+                              "execute":{
+                                "when":{ "_":[ "that", "content", "and", { "_":[ "this", "effort" ] } ] },
+                                "execute":[
+                                  { "subtract":1, "to":{ "_":[ "this", "effort" ] } },
+                                  { "as":{ "_":"that" }, "executeAction":"consume" },
+                                  { "sum":1, "to":{ "_":[ "this", "production" ] } }
+                                ]
+                              }
+                            },
+                            { "sum":24, "to":{ "_":[ "this", "check", "x" ] } }
+                          ]
+                        },
+                        { "sum":24, "to":{ "_":[ "this", "check", "y" ] } }
+                      ]
+                    },
+                    { "sum":{ "_":[ "this", "preproduced", "-", { "_":[ "this", "production" ] } ] }, "to":{ "_":[ "this", "waste" ] } }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "name":"update",
+            "execute":{
+              "when":{ "_":[ "this", "animationType", "isEqualTo", "amount" ] },
+              "execute":{ "set":{ "frame":{ "_":[ "this", "content", "/", { "_":[ "this", "maxContent" ] }, "*", 2, "floor" ] } } },
+              "elseExecute":{
+                "when":{ "_":[ "this", "animationType", "isEqualTo", "process" ] },
+                "execute":{
+                  "when":{ "_":[ "this", "workers", "and", { "_":[ "this", "production" ] } ] },
+                  "set":{ "animation":"working" },
+                  "elseExecute":{ "set":{ "animation":"stopped" } }
+                }
+              }
+            }
+          },
+          {
+            "name":"consume",
+            "execute":[
+              { "when":{ "_":[ "this", "unlimited", "not" ] }, "subtract":1, "to":{ "_":[ "this", "content" ] } },
+              { "sum":1, "to":{ "_":[ "this", "consumed" ] } }
+            ]
+          },
+          {
+            "name":"endturn",
+            "execute":[
+              { "sum":{ "_":[ "this", "production" ] }, "to":{ "_":[ "this", "content" ] } },
+              { "set":{ "delta":{ "_":[ "this", "production", "-", { "_":[ "this", "consumed" ] } ] } } },
+              {
+                "when":{ "_":[ "this", "deaths" ] },
+                "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "y":{ "_":[ "that", "y", "+", 10 ] }, "color":"#00f", "html":{ "_":[ "that", "deaths" ] } },
+                "elseExecute":{
+                  "when":{ "_":[ "this", "waste" ] },
+                  "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "y":{ "_":[ "that", "y", "+", 10 ] }, "color":"#f00", "html":{ "_":[ "that", "waste" ] } },
+                  "elseExecute":{
+                    "when":{ "_":[ "this", "delta", "and", { "_":[ "this", "unlimited", "not" ] } ] },
+                    "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "y":{ "_":[ "that", "y", "+", 10 ] }, "color":"#0f0", "html":{ "_":[ "that", "delta" ] } }
+                  }
+                }
+              },
+              { "executeAction":"update" },
+              { "set":{ "consumed":0, "delta":0, "production":0, "waste":0 } }
+            ]
+          }
+        ]
+      }
+    },
+    "cursor":{
+      "type":"cursor",
+      "follow":1,
+      "width":24, "height":24,
+      "zIndex":10, "x":120, "y":96,
+      "border":"#f00",
+      "states":[
+        {
+          "like":{ "_":[ "stencil", "codeBlinkCursor" ] },
+          "execute":[ { "as":{ "_":[ "object", "menu" ] }, "remove":1 }, { "as":{ "_":"variable" }, "set":{ "selectedStructure":0 } } ],
+          "code":{
+            "name":"Execute",
+            "data":[
+              {
+                "when":{ "_":[ "keyLeft", "isHit" ] },
+                "subtract":24,
+                "to":{ "_":[ "this", "x" ] },
+                "elseExecute":{
+                  "when":{ "_":[ "keyRight", "isHit" ] },
+                  "sum":24,
+                  "to":{ "_":[ "this", "x" ] },
+                  "elseExecute":{
+                    "when":{ "_":[ "keyUp", "isHit" ] },
+                    "subtract":24,
+                    "to":{ "_":[ "this", "y" ] },
+                    "elseExecute":{
+                      "when":{ "_":[ "keyDown", "isHit" ] },
+                      "sum":24,
+                      "to":{ "_":[ "this", "y" ] },
+                      "elseExecute":{
+                        "when":{ "_":[ "keyA", "isHit" ] },
+                        "execute":{
+                          "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "ground" ] } ] },
+                          "as":{ "_":"that" },
+                          "execute":{
+                            "as":{ "_":"variable" },
+                            "set":{ "message":{ "_":[ "that", "label", ".", " (", ".", { "_":[ "that", "content" ] }, ".", ")" ] } },
+                            "execute":{ "_":[ "stencil", "codeMessageShow" ] }
+                          },
+                          "elseExecute":{ "set":{ "state":"menu" } }
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              { "when":{ "_":[ "this", "x", "isLessThan", 0 ] }, "set":{ "x":{ "_":[ "scene", "width", "-", 24 ] } } },
+              { "when":{ "_":[ "this", "x", "isGreaterEqualThan", { "_":[ "scene", "width" ] } ] }, "set":{ "x":0 } },
+              { "when":{ "_":[ "this", "y", "isLessThan", 0 ] }, "set":{ "y":{ "_":[ "scene", "height", "-", 24 ] } } },
+              { "when":{ "_":[ "this", "y", "isGreaterEqualThan", { "_":[ "scene", "height" ] } ] }, "set":{ "y":0 } }
+            ]
+          }
+        },
+        {
+          "name":"menu",
+          "like":{ "_":[ "stencil", "codeBlinkCursor" ] },
+          "execute":[
+            { "as":{ "_":"variable" }, "set":{ "index":0, "menuOption":0 } },
+            {
+              "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "structure" ] } ] },
+              "as":{ "_":"that" },
+              "execute":[
+                { "as":{ "_":"variable" }, "set":{ "menuOption":{ "_":[ "that", "iconImage" ] }, "selectedStructure":{ "_":"that" } } },
+                {
+                  "object":{
+                    "type":[ "hud", "menu" ],
+                    "hudType":"label", "label":"<span style='color:#f00'>DOWN: Place worker.</span> <span style='color:#f0f'>%number|variable.selectedStructure.workers%/%number|variable.selectedStructure.maxWorkers%<span style='font-family:pixeldingbats;font-size:6px'>&#231;</span>",
+                    "box":"label", "width":240, "height":20,
+                    "x":8, "y":130,
+                    "font":"spectrum", "outline":"#000"
+                  },
+                  "into":{ "_":"scenehud" }
+                },
+                {
+                  "when":{ "_":[ "variable", "selectedStructure", "pickContentTo" ] },
+                  "execute":{
+                    "object":{
+                      "type":[ "hud", "menu" ],
+                      "hudType":"label", "label":"<span style='color:#f00'>&nbsp;&nbsp;UP: Pick content.</span> <span style='color:%text|variable.selectedStructure.pickContentColor%'>%number|variable.selectedStructure.content%/%number|variable.selectedStructure.maxContent%%text|variable.selectedStructure.pickContentSymbol%</span>",
+                      "box":"label", "width":240, "height":20,
+                      "x":8, "y":118,
+                      "font":"spectrum", "outline":"#000"
+                    },
+                    "into":{ "_":"scenehud" }
+                  },
+                  "elseExecute":{
+                    "object":{
+                      "type":[ "hud", "menu" ],
+                      "hudType":"label", "label":"<span style='color:#f00'>&nbsp;&nbsp;--: Content:</span> %number|variable.selectedStructure.content%/%number|variable.selectedStructure.maxContent% %text|variable.selectedStructure.contentSymbol%</span>",
+                      "box":"label", "width":240, "height":20,
+                      "x":8, "y":118,
+                      "font":"spectrum", "outline":"#000"
+                    },
+                    "into":{ "_":"scenehud" }
+                  }
+                }
+              ]
+            },
+            { "as":{ "_":"variable" }, "set":{ "currentOption":{ "_":[ "stencil", "structures", { "_":[ "variable", "menuOption" ] } ] } } },
+            {
+              "object":[
+                {
+                  "type":[ "hud", "menu" ],
+                  "hudType":"label", "label":"<span style='color:#f00'>&lt;-&gt; %text|variable.currentOption.label%</span> <span style='color:#ff0'>%number|variable.currentOption.cost%$</span> <span style='color:#f0f'>%number|variable.currentOption.maxWorkers%<span style='font-family:pixeldingbats;font-size:6px'>&#231;</span></span>",
+                  "box":"label", "width":240, "height":20,
+                  "x":8, "y":142,
+                  "font":"spectrum", "outline":"#000"
+                },
+                {
+                  "type":[ "hud", "menu" ],
+                  "hudType":"label", "label":"%text|variable.currentOption.description%",
+                  "box":"label", "width":240, "height":20,
+                  "x":8, "y":152,
+                  "font":"spectrum", "outline":"#000"
+                }
+              ],
+              "into":{ "_":"scenehud" }
+            },
+            {
+              "times":{ "_":[ "stencil", "structures", "count" ] },
+              "execute":[
+                {
+                  "object":{
+                    "type":"menu",
+                    "image":"icons", "width":16, "height":16,
+                    "x":{ "_":[ "variable", "index", "*", 16, "+", 8 ] }, "y":168, "frame":{ "_":[ "stencil", "structures", { "_":[ "variable", "index" ] }, "iconImage" ] }
+                  },
+                  "into":{ "_":"scenehud" }
+                },
+                { "sum":1, "to":{ "_":[ "variable", "index" ] } }
+              ]
+            },
+            {
+              "object":{
+                "type":"menu",
+                "image":"defaultsprites", "tileX":0, "tileY":512, "width":16, "height":8,
+                "zIndex":10, "x":{ "_":[ "variable", "menuOption", "*", 16, "+", 8 ] }, "y":184,
+                "animations":{ "idle":{ "frames":2, "loopTo":0 } },
+                "animation":"idle",
+                "states":{
+                  "code":{
+                    "name":"Execute",
+                    "data":[
+                      {
+                        "when":{ "_":[ "keyRight", "isHit" ] },
+                        "execute":[
+                          { "sum":1, "to":{ "_":[ "variable", "menuOption" ] } },
+                          {
+                            "when":{ "_":[ "variable", "menuOption", "isGreaterEqualThan", { "_":[ "stencil", "structures", "count" ] } ] },
+                            "as":{ "_":"variable" },
+                            "set":{ "menuOption":0 }
+                          },
+                          { "as":{ "_":"variable" }, "set":{ "currentOption":{ "_":[ "stencil", "structures", { "_":[ "variable", "menuOption" ] } ] } } }
+                        ],
+                        "elseExecute":{
+                          "when":{ "_":[ "keyLeft", "isHit" ] },
+                          "execute":[
+                            { "subtract":1, "to":{ "_":[ "variable", "menuOption" ] } },
+                            {
+                              "when":{ "_":[ "variable", "menuOption", "isLessThan", 0 ] },
+                              "as":{ "_":"variable" },
+                              "set":{ "menuOption":{ "_":[ "stencil", "structures", "count", "-", 1 ] } }
+                            },
+                            { "as":{ "_":"variable" }, "set":{ "currentOption":{ "_":[ "stencil", "structures", { "_":[ "variable", "menuOption" ] } ] } } }
+                          ]
+                        }
+                      },
+                      { "set":{ "x":{ "_":[ "variable", "menuOption", "*", 16, "+", 8 ] } } }
+                    ]
+                  }
+                }
+              },
+              "into":{ "_":"scenehud" }
+            }
+          ],
+          "code":{
+            "name":"Execute",
+            "data":{
+              "when":{ "_":[ "keyA", "isUp" ] },
+              "execute":[
+                {
+                  "when":{ "_":[ "variable", "selectedStructure", "iconImage", "isNotEqualTo", { "_":[ "variable", "menuOption" ] } ] },
+                  "execute":{
+                    "when":{ "_":[ "variable", "currentOption", "cost", "isLessEqualThan", { "_":[ "variable", "money" ] } ] },
+                    "execute":{
+                      "when":{ "_":[ "variable", "currentOption", "maxWorkers", "isLessEqualThan", { "_":[ "variable", "units" ] } ] },
+                      "execute":[
+                        { "as":{ "_":"that" }, "execute":{ "_":[ "stencil", "codeCloud" ] } },
+                        { "subtract":{ "_":[ "variable", "currentOption", "cost" ] }, "to":{ "_":[ "variable", "money" ] } },
+                        { "subtract":{ "_":[ "variable", "currentOption", "maxWorkers" ] }, "to":{ "_":[ "variable", "units" ] } },
+                        { "log":"rimuovi con animazione", "when":{ "_":[ "variable", "selectedStructure" ] }, "as":{ "_":[ "variable", "selectedStructure" ] }, "remove":1 },
+                        {
+                          "when":{ "_":[ "variable", "currentOption", "type" ] },
+                          "object":{ "set":{ "_":[ "variable", "currentOption" ] }, "x":{ "_":[ "that", "x" ] }, "y":{ "_":[ "that", "y" ] } }
+                        },
+                        {
+                          "as":{ "_":"variable" },
+                          "set":{ "message":{ "_":[ "variable", "currentOption", "buildMessage" ] } },
+                          "execute":{ "_":[ "stencil", "codeMessageShow" ] }
+                        }
+                      ],
+                      "elseExecute":{ "as":{ "_":"variable" }, "set":{ "message":"Not enough units." }, "execute":{ "_":[ "stencil", "codeMessageShow" ] } }
+                    },
+                    "elseExecute":{ "as":{ "_":"variable" }, "set":{ "message":"Not enough money." }, "execute":{ "_":[ "stencil", "codeMessageShow" ] } }
+                  }
+                },
+                { "set":{ "state":"default" } }
+              ],
+              "elseExecute":{
+                "when":{ "_":[ "keyDown", "isHit", "and", { "_":[ "variable", "selectedStructure" ] } ] },
+                "execute":{
+                  "when":{ "_":[ "variable", "selectedStructure", "workers", "isLessThan", { "_":[ "variable", "selectedStructure", "maxWorkers" ] } ] },
+                  "execute":{
+                    "when":{ "_":[ "variable", "units" ] },
+                    "execute":[
+                      { "sum":1, "to":{ "_":[ "variable", "selectedStructure", "workers" ] } },
+                      { "subtract":1, "to":{ "_":[ "variable", "units" ] } },
+                      {
+                        "as":{ "_":"variable" },
+                        "set":{ "message":{ "_":[ "Worker added to ", ".", { "_":[ "variable", "selectedStructure", "label" ] }, ".", "." ] } },
+                        "execute":{ "_":[ "stencil", "codeMessageShow" ] }
+                      }
+                    ],
+                    "elseExecute":{ "as":{ "_":"variable" }, "set":{ "message":"Not enough units." }, "execute":{ "_":[ "stencil", "codeMessageShow" ] } }
+                  },
+                  "elseExecute":{
+                    "as":{ "_":"variable" },
+                    "set":{ "message":{ "_":[ { "_":[ "variable", "selectedStructure", "label" ] }, ".", " full." ] } },
+                    "execute":{ "_":[ "stencil", "codeMessageShow" ] }
+                  }
+                },
+                "elseExecute":{
+                  "when":{ "_":[ "keyUp", "isHit", "and", { "_":[ "variable", "selectedStructure" ] }, "and", { "_":[ "variable", "selectedStructure", "pickContentTo" ] } ] },
+                  "execute":{
+                    "when":{ "_":[ "variable", "selectedStructure", "content" ] },
+                    "execute":[
+                      {
+                        "as":{ "_":"variable" },
+                        "set":{
+                          "message":{
+                            "_":[
+                              "Picked <span style='color:",
+                              ".",
+                              { "_":[ "variable", "selectedStructure", "pickContentColor" ] },
+                              ".",
+                              "'>",
+                              ".",
+                              { "_":[ "variable", "selectedStructure", "content" ] },
+                              ".",
+                              { "_":[ "variable", "selectedStructure", "pickContentSymbol" ] },
+                              ".",
+                              "</span>."
+                            ]
+                          }
+                        },
+                        "execute":{ "_":[ "stencil", "codeMessageShow" ] }
+                      },
+                      {
+                        "sum":{ "_":[ "variable", "selectedStructure", "content" ] },
+                        "to":{ "_":[ "variable", { "_":[ "variable", "selectedStructure", "pickContentTo" ] } ] }
+                      },
+                      { "as":{ "_":[ "variable", "selectedStructure" ] }, "set":{ "content":0 } }
+                    ],
+                    "elseExecute":{ "as":{ "_":"variable" }, "set":{ "message":"Nothing to pickup." }, "execute":{ "_":[ "stencil", "codeMessageShow" ] } }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "grass":{ "type":[ "empty", "cell" ], "image":"tiles", "tileX":0, "tileY":0, "content":100, "unlimited":1 },
+    "grounds":[
+      {
+        "type":[ "coal", "ground" ],
+        "set":{ "_":[ "stencil", "modelStructure" ] },
+        "label":"Coal",
+        "tileX":72,
+        "animationType":"amount",
+        "content":100,
+        "maxContent":100
+      },
+      {
+        "type":[ "water", "ground" ],
+        "set":{ "_":[ "stencil", "modelStructure" ] },
+        "label":"Water",
+        "tileX":24, "tileY":0,
+        "bgcolor":"#00f",
+        "animation":"idle",
+        "content":100,
+        "maxContent":100,
+        "unlimited":1
+      },
+      {
+        "type":[ "forest", "ground" ],
+        "set":{ "_":[ "stencil", "modelStructure" ] },
+        "label":"Forest",
+        "tileX":144,
+        "animationType":"amount",
+        "content":100,
+        "maxContent":100
+      },
+      {
+        "type":[ "field", "ground" ],
+        "set":{ "_":[ "stencil", "modelStructure" ] },
+        "label":"Field",
+        "tileX":216,
+        "animationType":"amount",
+        "content":100,
+        "maxContent":100
+      }
+    ],
+    "smoke":{
+      "image":"defaultsprites", "tileX":80, "tileY":16, "width":16, "height":16,
+      "zIndex":{ "_":[ "that", "zIndex", "+", 1 ] }, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "animations":{ "spark":{ "frames":4, "speed":1 } },
+      "animation":"spark",
+      "states":{ "code":[ { "name":"Physics" }, { "name":"Sequence", "data":[ { "wait":8 }, { "remove":1 } ] } ] }
+    },
+    "structures":[
+      { "label":"Remove", "buildMessage":"Strucure removed.", "cost":0, "description":"Remove structure", "iconImage":0, "maxWorkers":0 },
+      {
+        "type":"energy",
+        "set":{ "_":[ "stencil", "modelStructure" ] },
+        "label":"Mine",
+        "tileX":0, "tileY":24,
+        "animationType":"process",
+        "buildMessage":"Mine built.",
+        "consume":"coal",
+        "contentSymbol":"Energy",
+        "cost":5,
+        "description":"Convert Coal to Energy",
+        "iconImage":1,
+        "maxContent":20,
+        "maxWorkers":6,
+        "rangeHeight":3,
+        "rangeWidth":3,
+        "rangeX":-1,
+        "rangeY":-1,
+        "workers":6
+      },
+      {
+        "type":"energy",
+        "set":{ "_":[ "stencil", "modelStructure" ] },
+        "label":"Hydro plant",
+        "tileX":72, "tileY":24,
+        "animationType":"process",
+        "buildMessage":"Hydro plant built.",
+        "consume":"water",
+        "contentSymbol":"Energy",
+        "cost":25,
+        "description":"Convert Water to Energy",
+        "iconImage":2,
+        "maxContent":10,
+        "maxWorkers":3,
+        "rangeHeight":3,
+        "rangeWidth":3,
+        "rangeX":-1,
+        "rangeY":-1,
+        "workers":3
+      },
+      {
+        "type":"energy",
+        "set":{ "_":[ "stencil", "modelStructure" ] },
+        "label":"Heolic plant",
+        "tileX":144, "tileY":24,
+        "animationType":"process",
+        "buildMessage":"Heolic plant built.",
+        "consume":"empty",
+        "contentSymbol":"Energy",
+        "cost":50,
+        "description":"Convert Empty to Energy",
+        "iconImage":3,
+        "maxContent":6,
+        "maxWorkers":2,
+        "rangeHeight":3,
+        "rangeWidth":3,
+        "rangeX":-1,
+        "rangeY":-1,
+        "workers":2
+      },
+      {
+        "type":"food",
+        "set":{ "_":[ "stencil", "modelStructure" ] },
+        "label":"Hunting lodge",
+        "tileX":216, "tileY":24,
+        "animationType":"process",
+        "buildMessage":"Hunting lodge built.",
+        "consume":"forest",
+        "contentSymbol":"Food",
+        "cost":15,
+        "description":"Convert Forest to Food",
+        "iconImage":4,
+        "maxContent":20,
+        "maxWorkers":6,
+        "rangeHeight":3,
+        "rangeWidth":3,
+        "rangeX":-1,
+        "rangeY":-1,
+        "workers":6
+      },
+      {
+        "type":"food",
+        "set":{ "_":[ "stencil", "modelStructure" ] },
+        "label":"Farm",
+        "tileX":0, "tileY":48,
+        "animationType":"process",
+        "buildMessage":"Farm built.",
+        "consume":"field",
+        "contentSymbol":"Food",
+        "cost":30,
+        "description":"Convert Field to Food",
+        "iconImage":5,
+        "maxContent":10,
+        "maxWorkers":3,
+        "rangeHeight":3,
+        "rangeWidth":3,
+        "rangeX":-1,
+        "rangeY":-1,
+        "workers":3
+      },
+      {
+        "type":"food",
+        "set":{ "_":[ "stencil", "modelStructure" ] },
+        "label":"Collect",
+        "tileX":72, "tileY":48,
+        "animationType":"process",
+        "buildMessage":"Collect built.",
+        "consume":"empty",
+        "contentSymbol":"Food",
+        "cost":55,
+        "description":"Convert Empty to Food",
+        "iconImage":6,
+        "maxContent":6,
+        "maxWorkers":2,
+        "rangeHeight":3,
+        "rangeWidth":3,
+        "rangeX":-1,
+        "rangeY":-1,
+        "workers":2
+      },
+      {
+        "type":"health",
+        "set":{ "_":[ "stencil", "modelStructure" ] },
+        "label":"Factory",
+        "tileX":144, "tileY":48,
+        "andConsume":"food",
+        "animationType":"process",
+        "buildMessage":"Factory built.",
+        "consume":"energy",
+        "contentSymbol":"Health",
+        "cost":15,
+        "description":"Convert Energy+Food to Health",
+        "iconImage":7,
+        "maxContent":10,
+        "maxWorkers":3,
+        "rangeHeight":3,
+        "rangeWidth":3,
+        "rangeX":-1,
+        "rangeY":-1,
+        "workers":3
+      },
+      {
+        "type":"health",
+        "set":{ "_":[ "stencil", "modelStructure" ] },
+        "label":"Restaurant",
+        "tileX":216, "tileY":48,
+        "animationType":"process",
+        "buildMessage":"Restaurant built.",
+        "consume":"food",
+        "contentSymbol":"Health",
+        "cost":25,
+        "description":"Convert Food to Health",
+        "iconImage":8,
+        "maxContent":4,
+        "maxWorkers":2,
+        "rangeHeight":3,
+        "rangeWidth":3,
+        "rangeX":-1,
+        "rangeY":-1,
+        "workers":2
+      },
+      {
+        "type":"units",
+        "set":{ "_":[ "stencil", "modelStructure" ] },
+        "label":"House",
+        "tileX":0, "tileY":72,
+        "animationType":"process",
+        "buildMessage":"House built.",
+        "consume":"health",
+        "contentSymbol":"<span style='font-family:pixeldingbats;font-size:6px'>&#231;</span>",
+        "cost":25,
+        "description":"Convert Health to Units",
+        "iconImage":9,
+        "maxContent":10,
+        "maxWorkers":2,
+        "pickContentColor":"#f0f",
+        "pickContentSymbol":"<span style='font-family:pixeldingbats;font-size:6px'>&#231;</span>",
+        "pickContentTo":"units",
+        "rangeHeight":3,
+        "rangeWidth":3,
+        "rangeX":-1,
+        "rangeY":-1,
+        "workers":2
+      },
+      {
+        "type":"money",
+        "set":{ "_":[ "stencil", "modelStructure" ] },
+        "label":"Market",
+        "tileX":72, "tileY":72,
+        "andConsume":"food",
+        "animationType":"process",
+        "buildMessage":"Market built.",
+        "consume":"energy",
+        "contentSymbol":"$",
+        "cost":25,
+        "description":"Convert Energy+Food to Money",
+        "iconImage":10,
+        "maxContent":100,
+        "maxWorkers":4,
+        "pickContentColor":"#ff0",
+        "pickContentSymbol":"$",
+        "pickContentTo":"money",
+        "rangeHeight":3,
+        "rangeWidth":3,
+        "rangeX":-1,
+        "rangeY":-1,
+        "workers":4
+      }
+    ]
+  },
+  "execute":{},
+  "scenes":{
+    "intro":{
+      "execute":[
+        { "when":{ "_":[ "storage", "hiscoreMoney", "not" ] }, "as":{ "_":"storage" }, "set":{ "hiscoreMoney":500, "hiscoreUnits":20 } },
+        {
+          "object":[
+            { "image":"title", "tileX":0, "tileY":193, "width":226, "height":71, "zIndex":5, "x":15, "y":10 },
+            { "image":"title", "tileX":0, "tileY":0, "width":256, "height":192, "x":0, "y":0 },
+            {
+              "image":"title", "tileX":0, "tileY":264, "width":256, "height":192,
+              "zIndex":2, "x":0, "y":0,
+              "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "tileY":264 }, "wait":8 }, { "set":{ "tileY":456 }, "wait":8, "loopTo":0 } ] } }
+            },
+            {
+              "width":256, "height":192,
+              "zIndex":4, "x":0, "y":0,
+              "bgcolor":"#000",
+              "states":{
+                "code":{
+                  "name":"Sequence",
+                  "data":[ { "wait":125 }, { "subtract":0.05, "to":{ "_":[ "this", "alpha" ] }, "wait":1, "loop":1, "cycles":20 }, { "remove":1 } ]
+                }
+              }
+            },
+            {
+              "box":"label", "width":256,
+              "zIndex":5, "x":0, "y":130,
+              "color":"#fff",
+              "font":"spectrum", "fontSize":20, "lineHeight":20, "outline":"#000", "textAlign":"center", "html":"PRESS START",
+              "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "visible":0 }, "wait":10 }, { "set":{ "visible":1 }, "wait":10, "loopTo":0 } ] } }
+            }
+          ]
+        }
+      ],
+      "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"game" } } }
+    },
+    "game":{
+      "set":{ "_":[ "stencil", "codeMapMake" ] },
+      "states":[
+        {
+          "execute":{
+            "object":[
+              { "type":"intro", "width":256, "height":70, "x":0, "y":60, "bgcolor":"#000", "lineHeight":12 },
+              {
+                "type":"intro",
+                "box":"label", "width":256, "height":30,
+                "zIndex":10, "x":0, "y":100,
+                "color":"#fff",
+                "font":"spectrum", "lineHeight":12, "outline":"#000", "textAlign":"center", "html":{ "_":[ "Beat the greatest known land:<br><span style='color:#ff0'>", ".", { "_":[ "storage", "hiscoreMoney" ] }, ".", "$</span> <span style='color:#f0f'>", ".", { "_":[ "storage", "hiscoreUnits" ] }, ".", "<span style='font-family:pixeldingbats;font-size:6px'>&#231;</span>" ] }
+              },
+              {
+                "type":"intro",
+                "width":256, "height":30,
+                "zIndex":10, "x":0, "y":60,
+                "bgcolor":"#000", "color":"#fff",
+                "font":"spectrum", "fontSize":40, "lineHeight":30, "textAlign":"center", "html":"&nbsp;BE THE KING!",
+                "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "bgcolor":"#f00" }, "wait":8 }, { "set":{ "bgcolor":"#000" }, "wait":8, "loopTo":0 } ] } }
+              }
+            ],
+            "into":{ "_":"scenehud" }
+          },
+          "code":{ "name":"Sequence", "data":[ { "wait":75 }, { "as":{ "_":[ "object", "intro" ] }, "remove":1 }, { "set":{ "state":"play" } } ] }
+        },
+        {
+          "name":"play",
+          "execute":{ "object":{ "_":[ "stencil", "cursor" ] } },
+          "code":[
+            {
+              "name":"Sequence",
+              "data":[
+                { "wait":125 },
+                { "as":{ "_":[ "object", "structure" ] }, "executeAction":"turn" },
+                { "as":{ "_":[ "object", "structure" ] }, "executeAction":"endturn" },
+                { "loopTo":0 }
+              ]
+            },
+            {
+              "name":"Sequence",
+              "data":[
+                { "wait":25 },
+                {
+                  "when":{ "_":[ "variable", "timeSeconds", "isEqualTo", 0 ] },
+                  "execute":{
+                    "when":{ "_":[ "variable", "timeMinutes", "isEqualTo", 0 ] },
+                    "set":{ "state":"gameover" },
+                    "elseExecute":[ { "subtract":1, "to":{ "_":[ "variable", "timeMinutes" ] } }, { "as":{ "_":"variable" }, "set":{ "timeSeconds":59 } } ]
+                  },
+                  "elseExecute":{ "subtract":1, "to":{ "_":[ "variable", "timeSeconds" ] } }
+                },
+                { "loopTo":0 }
+              ]
+            }
+          ]
+        },
+        {
+          "name":"gameover",
+          "execute":[
+            { "as":{ "_":[ "objectTyped", "cursor" ] }, "remove":1 },
+            {
+              "when":{
+                "_":[
+                  "variable",
+                  "units",
+                  "isGreaterEqualThan",
+                  { "_":[ "storage", "hiscoreUnits" ] },
+                  "and",
+                  { "_":[ "variable", "money", "isGreaterEqualThan", { "_":[ "storage", "hiscoreMoneyz" ] } ] }
+                ]
+              },
+              "execute":[
+                { "as":{ "_":"storage" }, "set":{ "hiscoreMoney":{ "_":[ "variable", "money" ] }, "hiscoreUnits":{ "_":[ "variable", "units" ] } } },
+                {
+                  "object":[
+                    { "type":"intro", "width":256, "height":100, "x":0, "y":50, "bgcolor":"#000", "lineHeight":12 },
+                    {
+                      "type":"intro",
+                      "box":"label", "width":256, "height":30,
+                      "zIndex":10, "x":0, "y":115,
+                      "color":"#fff",
+                      "font":"spectrum", "lineHeight":12, "outline":"#000", "textAlign":"center", "html":"Your kingdom will<br>be remembered forever!"
+                    },
+                    {
+                      "type":"intro",
+                      "box":"label", "width":256,
+                      "zIndex":10, "x":0, "y":50,
+                      "color":"#fff",
+                      "font":"spectrum", "outline":"#000", "textAlign":"center", "html":"CONGRATULATIONS! YOU'RE"
+                    },
+                    {
+                      "type":"intro",
+                      "width":256, "height":30,
+                      "zIndex":10, "x":0, "y":75,
+                      "bgcolor":"#000", "color":"#fff",
+                      "font":"spectrum", "fontSize":30, "lineHeight":30, "textAlign":"center", "html":"THE GREATEST KING!",
+                      "states":{
+                        "code":{
+                          "name":"Sequence",
+                          "data":[ { "set":{ "bgcolor":"#000", "color":"#fff" }, "wait":8 }, { "set":{ "bgcolor":"#ff0", "color":"#000" }, "wait":8, "loopTo":0 } ]
+                        }
+                      }
+                    }
+                  ],
+                  "into":{ "_":"scenehud" }
+                }
+              ],
+              "elseExecute":{
+                "object":[
+                  { "type":"intro", "width":256, "height":80, "x":0, "y":60, "bgcolor":"#000", "lineHeight":12 },
+                  {
+                    "type":"intro",
+                    "box":"label", "width":256, "height":30,
+                    "zIndex":10, "x":0, "y":105,
+                    "color":"#fff",
+                    "font":"spectrum", "lineHeight":12, "outline":"#000", "textAlign":"center", "html":"You have been a good king<br>but not enough for history."
+                  },
+                  {
+                    "type":"intro",
+                    "width":256, "height":30,
+                    "zIndex":10, "x":0, "y":65,
+                    "bgcolor":"#000", "color":"#fff",
+                    "font":"spectrum", "fontSize":30, "lineHeight":30, "textAlign":"center", "html":"TIME OVER",
+                    "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "color":"#fff" }, "wait":8 }, { "set":{ "color":"#7f7f7f" }, "wait":8, "loopTo":0 } ] } }
+                  }
+                ],
+                "into":{ "_":"scenehud" }
+              }
+            }
+          ],
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "wait":25 },
+              { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+              { "as":{ "_":[ "object", "intro" ] }, "remove":1 },
+              { "gotoScene":"intro" }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}
