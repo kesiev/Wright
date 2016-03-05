@@ -3230,7 +3230,6 @@ function Wright(gameId,container,mods) {
 	function runGame(mode) {
 		tv.innerHTML="";
 		game = Box(tv, "game");
-		// game.setStatsManager(Monitor); // Uncomment for stats.
 		game.setKeys(controls).setColor("#fff").setBgcolor("#000").size(hardware).setFps(hardware.fps||25).setScale(mode.scale).setOriginX(0).setOriginY(0).do(Code.GameManager);
 		if (hardware.aliasMode) game.setAliasMode(hardware.aliasMode);
 		if (mode.volume&&gamedata.audioChannels) game.enableAudio(mode.volume/100);
@@ -3242,6 +3241,7 @@ function Wright(gameId,container,mods) {
 		game.loadResources(function() {
 			if (hardware.texture) game.add("background").setZIndex(30).at({ x: 0, y: 0 }).size({ width: game.width, height: game.height }).setImage(hardware.texture).setAlpha(0.1);
 			plugTape(0, 0, "intro", gamedata);
+		 	// game.setStatsManager(Monitor); // Uncomment for stats.
 		});
 	}
 
