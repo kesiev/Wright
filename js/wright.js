@@ -2346,6 +2346,7 @@ function Wright(gameId,container,mods) {
 					case "this": { ret=from; break; }
 					case "that": { ret=tox; break; }
 					case "scene": { ret=scene; break; }
+					case "key": { ret=game.key; break; }
 					case "stencil":{
 						p=get(from, tox, struct[++id]);
 						if (curtape.stencils[p]) ret = Box.clone(curtape.stencils[p]);
