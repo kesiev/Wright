@@ -1,0 +1,675 @@
+{
+  "name":"The Wright! Pinball",
+  "author":"KesieV",
+  "year":2016,
+  "genre":"Pinball",
+  "description":"Most of the projects I've put together during these years are mostly one-man made and overall quality usually reflects that accordingly - no Doukutsu Monogatari (Cave Story) miracles in sight, sorry. While it's easy to say that's due to my being solitary, which is weighted down by my natural repulsion for social network concepts, I think that the real reason could be another one. I love limits, evaluating them, working around them and even placing them around me. But don't mistake me for one who loves challenges and to challenge himself: I can't stand any form of contest, test and evaluation. I think them as the easel and the canvas, the hammer and the marble or the instrument and the score of an artist: creativity arise from man but is glorified by the limits of the instruments in which is passing thru. In some way I disagree with the current definition of 'art' of Wikipedia, which puts technical skill and imagination as possible alternatives in artistic expressions: creativity have to be concretized in order to becoming art, so some technical skill is always required, and it naturally merges with the final opera. So, I just like how software looks when it works around limits: remakes, demakes, chiptune, minimalism, pixelation, virtual reality are so fascinating - and I think that they're affine to art in some ways. But not everybody sees self-imposed limits as opportunities so... here am I, all alone. After all, the first pinball with flippers, Gottileb's Humpty Dumpty (1947), tried - and succeeded - to add player reflexes in a game mainly based on luck, still featuring a slope and a ball as previous games. That's creativity and technique! It's time to make a pinball game without any good physics engine! Plot! Ever wanted to know how working on Wright! is? Now's your chance! Every ball is a new lunch break: work on graphics, patch the JavaScript engine, code a new game and WIN! Press the A BUTTON for starting, LEFT/RIGHT for moving the flippers, hold DOWN for pulling the spring and release it for hitting the ball!",
+  "screenshots":[ "wrightpinball-1.png", "wrightpinball-2.png" ],
+  "hardware":{
+    "width":256,
+    "height":192,
+    "texture":"scanlines"
+  },
+  "cheats":{},
+  "resources":{
+    "logo":"logo.png",
+    "skin":"skin.png",
+    "sprites":"sprites.png",
+    "embossbox":"../default/embossbox.png",
+    "scanlines":"../default/scanlines.png"
+  },
+  "stencils":{
+    "codeMessage":[
+      { "as":{ "_":[ "object", "message" ] }, "remove":1 },
+      {
+        "object":{
+          "type":"message",
+          "width":48, "height":30,
+          "x":39, "y":110,
+          "color":"#7f7f7f",
+          "font":"spectrum", "fontSize":14, "lineHeight":8, "textAlign":"center", "html":{ "_":[ "variable", "message" ] },
+          "states":{
+            "code":{
+              "name":"Sequence",
+              "data":[
+                { "subtract":1, "to":{ "_":[ "this", "y" ] } },
+                { "wait":2, "cycles":5, "loopTo":-1 },
+                { "wait":30 },
+                { "when":{ "_":[ "this", "visible" ] }, "set":{ "visible":0 }, "elseExecute":{ "set":{ "visible":1 } } },
+                { "wait":1, "cycles":10, "loopTo":-1 },
+                { "remove":1 }
+              ]
+            }
+          }
+        }
+      }
+    ],
+    "codeNewball":[ { "object":{ "set":{ "_":[ "stencil", "ball" ] }, "x":147, "y":135 } }, { "as":{ "_":[ "object", "gatecloser" ] }, "set":{ "state":"default" } } ],
+    "modelBlinker":{
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":{ "when":{ "_":[ "this", "blink" ] }, "subtract":1, "to":{ "_":[ "this", "blink" ] }, "elseExecute":{ "set":{ "frame":0 } } }
+        },
+        "actions":{ "name":"blink", "execute":{ "set":{ "frame":1, "blink":2 } } }
+      }
+    },
+    "modelFlipper":{
+      "type":"slope",
+      "image":"sprites", "tileX":0, "tileY":8, "width":17, "height":12,
+      "giveForce":0,
+      "physicsenabled":1,
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[
+            { "set":{ "frame":0, "hitbox":{ "_":[ "this", "hitboxes", 0 ] }, "giveForce":0, "physicsenabled":1 } },
+            { "wait":1, "loop":1, "until":{ "_":[ "key", { "_":[ "this", "keyHit" ] }, "isDown" ] } },
+            { "set":{ "frame":1, "hitbox":{ "_":[ "this", "hitboxes", 1 ] }, "giveForce":8 }, "wait":1 },
+            { "set":{ "frame":2, "hitbox":{ "_":[ "this", "hitboxes", 2 ] }, "giveForce":4 }, "wait":1 },
+            { "set":{ "giveForce":0 } },
+            { "wait":1, "loop":1, "until":{ "_":[ "key", { "_":[ "this", "keyHit" ] }, "isUp" ] } },
+            { "set":{ "frame":1, "hitbox":{ "_":[ "this", "hitboxes", 1 ] } }, "wait":1 },
+            { "loopTo":0 }
+          ]
+        }
+      }
+    },
+    "ball":{
+      "type":"ball",
+      "image":"sprites", "tileX":0, "tileY":3, "width":5, "height":5,
+      "zIndex":5,
+      "states":{
+        "code":[
+          {
+            "name":"Physics",
+            "data":{
+              "walls":[
+                {
+                  "type":"slope",
+                  "execute":{
+                    "when":{ "_":[ "that", "physicsenabled" ] },
+                    "execute":[
+                      {
+                        "when":{
+                          "_":[
+                            { "_":[ "this", "forceX", "isLessThan", 0.5 ] },
+                            "and",
+                            { "_":[ "this", "forceX", "isGreaterThan", -0.5 ] },
+                            "and",
+                            { "_":[ "this", "forceY", "isLessThan", 0.5 ] },
+                            "and",
+                            { "_":[ "this", "forceY", "isGreaterThan", -0.5 ] }
+                          ]
+                        },
+                        "set":{ "forceX":{ "_":[ "that", "pendence" ] } },
+                        "elseExecute":[
+                          { "set":{ "oX":{ "_":[ "this", "forceX" ] }, "oY":{ "_":[ "this", "forceY" ] } } },
+                          { "set":{ "forceX":{ "_":[ "this", "oY", "*", { "_":[ "that", "mulX" ] } ] }, "forceY":{ "_":[ "this", "oX", "*", { "_":[ "that", "mulY" ] } ] } } }
+                        ]
+                      },
+                      {
+                        "when":{ "_":[ "that", "giveForce" ] },
+                        "execute":[ { "subtract":{ "_":[ "that", "giveForce" ] }, "to":{ "_":[ "this", "forceY" ] } }, { "as":{ "_":"that" }, "set":{ "physicsenabled":0 } } ]
+                      }
+                    ]
+                  }
+                },
+                { "type":"wall", "restitution":0.8, "execute":{ "when":{ "_":[ "that", "breakable" ] }, "as":{ "_":"that" }, "remove":1 } },
+                {
+                  "type":"roundBumper",
+                  "execute":{
+                    "when":{ "_":[ "that", "physicsenabled" ] },
+                    "execute":[
+                      { "applyVector":{ "angle":{ "_":[ "that", "angleTo", { "_":"this" }, "+", { "_":[ "randomNumber", [ -5, 5 ] ] } ] }, "length":8 } },
+                      { "when":{ "_":[ "that", "blink", "not" ] }, "sum":{ "_":[ "that", "score" ] }, "to":{ "_":[ "variable", "score" ] } },
+                      { "as":{ "_":"that" }, "executeAction":"blink" }
+                    ]
+                  }
+                },
+                {
+                  "type":"triangleBumper",
+                  "execute":{
+                    "when":{ "_":[ "that", "physicsenabled" ] },
+                    "execute":[
+                      { "applyVector":{ "angle":{ "_":[ "randomNumber", { "_":[ "that", "angleBump" ] } ] }, "length":8 } },
+                      { "when":{ "_":[ "that", "blink", "not" ] }, "sum":{ "_":[ "that", "score" ] }, "to":{ "_":[ "variable", "score" ] } },
+                      { "as":{ "_":"that" }, "executeAction":"blink" }
+                    ]
+                  }
+                }
+              ],
+              "gravityY":0.2,
+              "limitX":[ -7, 7 ],
+              "limitY":[ -7, 7 ]
+            }
+          },
+          {
+            "name":"Execute",
+            "data":{ "when":{ "_":[ "this", "y", "isGreaterThan", 200 ] }, "execute":[ { "as":{ "_":"scene" }, "set":{ "state":"balllost" } }, { "remove":1 } ] }
+          }
+        ]
+      }
+    },
+    "ballStopper":{ "type":"wall", "image":"sprites", "tileX":54, "tileY":68, "width":6, "height":6, "zIndex":2, "breakable":1 },
+    "gatecloser":{
+      "type":"gatecloser",
+      "image":"sprites", "tileX":15, "tileY":0, "width":3, "height":3,
+      "zIndex":10,
+      "giveForce":0,
+      "mulX":-0.8,
+      "mulY":0.8,
+      "pendence":-0.5,
+      "states":[
+        {
+          "set":{ "removeType":"slope", "visible":0, "physicsenabled":0 },
+          "code":{
+            "name":"Execute",
+            "data":{
+              "when":{
+                "_":[
+                  "objectTyped",
+                  "ball",
+                  "and",
+                  { "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "objectTyped", "ball" ] }, "hitbox":{ "width":3, "height":110, "x":0, "y":-3 } }, "not" ] }
+                ]
+              },
+              "set":{ "state":"closed" }
+            }
+          }
+        },
+        { "name":"closed", "execute":{ "set":{ "type":"slope", "visible":1, "physicsenabled":1 } } }
+      ]
+    },
+    "hole":{
+      "image":"sprites", "tileX":48, "tileY":68, "width":6, "height":6,
+      "zIndex":10,
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[
+            { "wait":1, "until":{ "_":[ "this", "collidesWith", { "_":[ "objectTyped", "ball" ] } ] } },
+            { "as":{ "_":[ "objectTyped", "ball" ] }, "remove":1 },
+            { "wait":25 },
+            { "sum":100, "to":{ "_":[ "variable", "score" ] } },
+            { "as":{ "_":"variable" }, "set":{ "message":"Spare<br>time!<br>100pt" }, "execute":{ "_":[ "stencil", "codeMessage" ] } },
+            { "wait":25 },
+            {
+              "when":{ "_":[ "objectTyped", "ballStopper", "not" ] },
+              "object":{ "type":"ballStopper", "set":{ "_":[ "stencil", "ballStopper" ] }, "x":60, "y":183 }
+            },
+            { "_":[ "stencil", "codeNewball" ] },
+            { "loopTo":0 }
+          ]
+        }
+      }
+    },
+    "leftTriangleBumper":{
+      "type":"triangleBumper",
+      "set":{ "_":[ "stencil", "modelBlinker" ] },
+      "image":"sprites", "tileX":0, "tileY":34, "width":15, "height":28,
+      "zIndex":10,
+      "hitbox":[ { "width":3, "height":3, "x":0, "y":0 }, { "width":3, "height":3, "x":2, "y":5 }, { "width":3, "height":3, "x":4, "y":10 }, { "width":3, "height":3, "x":7, "y":15 }, { "width":3, "height":3, "x":9, "y":20 }, { "width":3, "height":3, "x":12, "y":25 } ],
+      "angleBump":[ 10, 45 ],
+      "physicsenabled":1,
+      "score":20
+    },
+    "rightTriangleBumper":{
+      "type":"triangleBumper",
+      "set":{ "_":[ "stencil", "modelBlinker" ] },
+      "image":"sprites", "tileX":0, "tileY":34, "width":15, "height":28,
+      "zIndex":10,
+      "hitbox":[ { "width":3, "height":3, "x":12, "y":0 }, { "width":3, "height":3, "x":10, "y":5 }, { "width":3, "height":3, "x":8, "y":10 }, { "width":3, "height":3, "x":5, "y":15 }, { "width":3, "height":3, "x":3, "y":20 }, { "width":3, "height":3, "x":0, "y":25 } ],
+      "flipX":1,
+      "angleBump":[ 315, 350 ],
+      "physicsenabled":1,
+      "score":20
+    },
+    "roundBumper":{
+      "type":"roundBumper",
+      "set":{ "_":[ "stencil", "modelBlinker" ] },
+      "image":"sprites", "tileX":0, "tileY":20, "width":14, "height":14,
+      "zIndex":10,
+      "hitbox":{ "width":10, "height":10, "x":2, "y":2 },
+      "physicsenabled":1,
+      "score":10
+    },
+    "flipperleft":{
+      "set":{ "_":[ "stencil", "modelFlipper" ] },
+      "hitboxes":[
+        [
+          { "width":3, "height":3, "x":0, "y":0 },
+          { "width":3, "height":3, "x":3, "y":3 },
+          { "width":3, "height":3, "x":6, "y":6 },
+          { "width":3, "height":3, "x":9, "y":9 }
+        ],
+        [
+          { "width":3, "height":3, "x":0, "y":0 },
+          { "width":3, "height":3, "x":3, "y":2 },
+          { "width":3, "height":3, "x":6, "y":4 },
+          { "width":3, "height":3, "x":10, "y":6 }
+        ],
+        [
+          { "width":3, "height":3, "x":0, "y":0 },
+          { "width":3, "height":3, "x":4, "y":0 },
+          { "width":3, "height":3, "x":8, "y":1 },
+          { "width":3, "height":3, "x":12, "y":1 }
+        ]
+      ],
+      "keyHit":"keyLeft",
+      "mulX":0.8,
+      "mulY":-0.8
+    },
+    "flipperright":{
+      "set":{ "_":[ "stencil", "modelFlipper" ] },
+      "flipX":1,
+      "hitboxes":[
+        [
+          { "width":3, "height":3, "x":14, "y":0 },
+          { "width":3, "height":3, "x":11, "y":3 },
+          { "width":3, "height":3, "x":8, "y":6 },
+          { "width":3, "height":3, "x":5, "y":9 }
+        ],
+        [
+          { "width":3, "height":3, "x":14, "y":0 },
+          { "width":3, "height":3, "x":11, "y":2 },
+          { "width":3, "height":3, "x":8, "y":4 },
+          { "width":3, "height":3, "x":4, "y":6 }
+        ],
+        [
+          { "width":3, "height":3, "x":14, "y":0 },
+          { "width":3, "height":3, "x":10, "y":0 },
+          { "width":3, "height":3, "x":6, "y":1 },
+          { "width":3, "height":3, "x":2, "y":1 }
+        ]
+      ],
+      "keyHit":"keyRight",
+      "mulX":-0.8,
+      "mulY":0.8
+    },
+    "roller":{
+      "type":"resettable",
+      "image":"sprites", "tileX":24, "tileY":68, "width":6, "height":6,
+      "zIndex":10,
+      "states":{
+        "code":[
+          {
+            "name":"Execute",
+            "data":{ "when":{ "_":[ "this", "collidesWith", { "_":[ "objectTyped", "ball" ] } ] }, "set":{ "spin":{ "_":[ "that", "forceY", "abs", "*", 5, "ceil" ] } } }
+          },
+          {
+            "name":"Sequence",
+            "data":[
+              { "wait":1, "until":{ "_":[ "this", "spin" ] } },
+              { "sum":1, "to":{ "_":[ "this", "frame" ] } },
+              { "when":{ "_":[ "this", "frame", "isEqualTo", 4 ] }, "set":{ "frame":0 } },
+              { "sum":2, "to":{ "_":[ "variable", "score" ] } },
+              { "wait":{ "_":[ 10, "-", { "_":[ "this", "spin" ] } ] } },
+              { "subtract":0.5, "to":{ "_":[ "this", "spin" ] } },
+              { "loopTo":0 }
+            ]
+          }
+        ],
+        "actions":{ "name":"reset", "set":{ "frame":0, "spin":0 } }
+      }
+    },
+    "spring":{
+      "image":"sprites", "tileX":30, "tileY":34, "width":6, "height":28,
+      "zIndex":2, "x":147, "y":144,
+      "tension":0,
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":{
+            "when":{ "_":[ "keyDown", "isDown" ] },
+            "execute":{
+              "when":{ "_":[ "this", "tension", "isLessThan", 18 ] },
+              "execute":[ { "sum":0.4, "to":{ "_":[ "this", "tension" ] } }, { "set":{ "y":{ "_":[ 144, "+", { "_":[ "this", "tension" ] } ] } } } ]
+            },
+            "elseExecute":[
+              { "set":{ "y":144 } },
+              {
+                "when":{
+                  "_":[
+                    "this",
+                    "tension",
+                    "and",
+                    { "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "objectTyped", "ball" ] }, "hitbox":{ "width":6, "height":6, "x":0, "y":-9 } } ] }
+                  ]
+                },
+                "execute":{
+                  "as":{ "_":[ "objectTyped", "ball" ] },
+                  "set":{ "forceX":{ "_":[ "randomValue", [ -1, -0.5, 0, 0.5, 1 ] ] }, "forceY":{ "_":[ "that", "tension", "*", -1 ] } }
+                }
+              },
+              { "set":{ "tension":0 } }
+            ]
+          }
+        }
+      }
+    },
+    "target":{
+      "type":"resettable",
+      "image":"sprites", "tileX":0, "tileY":62, "width":6, "height":6,
+      "zIndex":2,
+      "states":[
+        {
+          "execute":{ "set":{ "type":{ "_":[ "this", "setType" ] }, "removeType":{ "_":[ "this", "unsetType" ] }, "frame":0 } },
+          "code":{
+            "name":"Execute",
+            "data":{
+              "when":{ "_":[ "this", "collidesWith", { "_":[ "objectTyped", "ball" ] } ] },
+              "execute":[ { "set":{ "state":"off" } }, { "sum":50, "to":{ "_":[ "variable", "score" ] } } ]
+            }
+          }
+        },
+        {
+          "name":"off",
+          "execute":{ "set":{ "type":{ "_":[ "this", "unsetType" ] }, "removeType":{ "_":[ "this", "setType" ] }, "frame":1 } },
+          "actions":{ "name":"reset", "set":{ "state":"default" } }
+        },
+        {
+          "name":"switchOn",
+          "execute":{ "set":{ "type":{ "_":[ "this", "setType" ] }, "removeType":{ "_":[ "this", "unsetType" ] } } },
+          "code":{
+            "name":"Sequence",
+            "data":[ { "set":{ "frame":1 }, "wait":2 }, { "set":{ "frame":0 }, "wait":2, "cycles":8, "loopTo":0 }, { "set":{ "state":"default" } } ]
+          }
+        }
+      ]
+    },
+    "I":{ "type":"wall", "image":"sprites", "tileX":6, "tileY":0, "visible":0, "giveForce":0, "physicsenabled":1 },
+    "J":{ "type":"slope", "image":"sprites", "tileX":3, "tileY":0, "visible":0, "giveForce":0, "mulX":-0.8, "mulY":0.8, "pendence":-0.5, "physicsenabled":1 },
+    "L":{ "type":"slope", "image":"sprites", "tileX":0, "tileY":0, "visible":0, "giveForce":0, "mulX":0.8, "mulY":-0.8, "pendence":0.5, "physicsenabled":1 },
+    "T":{
+      "type":"slope",
+      "image":"sprites", "tileX":12, "tileY":0,
+      "visible":0,
+      "giveForce":0,
+      "mulX":-0.8,
+      "mulY":-0.8,
+      "pendence":-0.5,
+      "physicsenabled":1
+    },
+    "Z":{ "type":"slope", "image":"sprites", "tileX":9, "tileY":0, "visible":0, "giveForce":0, "mulX":0.8, "mulY":0.8, "pendence":-0.5, "physicsenabled":1 }
+  },
+  "execute":[
+    { "when":{ "_":[ "storage", "hiscore", "not" ] }, "as":{ "_":"storage" }, "set":{ "hiscore":0 } },
+    { "as":{ "_":"variable" }, "set":{ "hiscore":{ "_":[ "storage", "hiscore" ] } } }
+  ],
+  "scenes":{
+    "intro":{
+      "object":[
+        { "image":"skin", "width":160, "height":192, "zIndex":100, "x":0, "y":0 },
+        { "image":"embossbox", "width":96, "height":208, "x":160, "y":0, "bgcolor":"#ff0" },
+        { "image":"logo", "width":64, "height":40, "zIndex":1, "x":177, "y":18 },
+        {
+          "box":"label", "width":74, "height":30,
+          "zIndex":1, "x":171, "y":70,
+          "bgcolor":"#000000", "color":"#ffffff",
+          "font":"spectrum", "fontSize":20, "lineHeight":15, "html":"SCORE"
+        },
+        {
+          "type":"hud",
+          "hudType":"label", "label":"%number|variable.score%",
+          "box":"label", "width":60,
+          "zIndex":2, "x":179, "y":84,
+          "color":"#ffffff",
+          "font":"spectrum", "fontSize":20, "lineHeight":15
+        },
+        {
+          "box":"label", "width":74, "height":30,
+          "zIndex":1, "x":171, "y":105,
+          "bgcolor":"#000000", "color":"#ffffff",
+          "font":"spectrum", "fontSize":20, "lineHeight":15, "html":"BALLS"
+        },
+        {
+          "type":"hud",
+          "hudType":"label", "label":"%repeat|variable.balls|&#194;%",
+          "box":"label", "width":60,
+          "zIndex":2, "x":179, "y":119,
+          "color":"#ffffff",
+          "font":"pixeldingbats", "fontSize":8, "lineHeight":15
+        },
+        {
+          "box":"label", "width":74, "height":30,
+          "zIndex":1, "x":171, "y":105,
+          "bgcolor":"#000000", "color":"#ffffff",
+          "font":"spectrum", "fontSize":20, "lineHeight":15, "html":"BALLS"
+        },
+        {
+          "type":"hud",
+          "hudType":"label", "label":"%repeat|variable.balls|&#194;%",
+          "box":"label", "width":60,
+          "zIndex":2, "x":179, "y":119,
+          "color":"#ffffff",
+          "font":"pixeldingbats", "fontSize":8, "lineHeight":15
+        },
+        {
+          "box":"label", "width":74, "height":30,
+          "zIndex":1, "x":171, "y":140,
+          "bgcolor":"#000000", "color":"#ffffff",
+          "font":"spectrum", "fontSize":20, "lineHeight":15, "html":"HI-SCORE"
+        },
+        {
+          "type":"hud",
+          "hudType":"label", "label":"%number|variable.hiscore%",
+          "box":"label", "width":60,
+          "zIndex":2, "x":179, "y":154,
+          "color":"#ffffff",
+          "font":"spectrum", "fontSize":20, "lineHeight":15
+        },
+        { "set":{ "_":[ "stencil", "flipperleft" ] }, "x":42, "y":168 },
+        { "set":{ "_":[ "stencil", "flipperleft" ] }, "x":18, "y":87 },
+        { "set":{ "_":[ "stencil", "flipperright" ] }, "x":67, "y":168 },
+        { "set":{ "_":[ "stencil", "flipperright" ] }, "x":115, "y":69 },
+        { "set":{ "_":[ "stencil", "roundBumper" ] }, "x":78, "y":48 },
+        { "set":{ "_":[ "stencil", "roundBumper" ] }, "x":93, "y":69 },
+        { "set":{ "_":[ "stencil", "roundBumper" ] }, "x":66, "y":78 },
+        { "set":{ "_":[ "stencil", "leftTriangleBumper" ] }, "x":39, "y":132 },
+        { "set":{ "_":[ "stencil", "rightTriangleBumper" ] }, "x":72, "y":132 },
+        { "set":{ "_":[ "stencil", "leftTriangleBumper" ] }, "x":12, "y":45 },
+        { "set":{ "_":[ "stencil", "target" ] }, "x":18, "y":6, "setType":"onTarget1", "unsetType":"offTarget1" },
+        { "set":{ "_":[ "stencil", "target" ] }, "x":12, "y":12, "setType":"onTarget1", "unsetType":"offTarget1" },
+        { "set":{ "_":[ "stencil", "target" ] }, "x":6, "y":18, "setType":"onTarget1", "unsetType":"offTarget1" },
+        { "set":{ "_":[ "stencil", "target" ] }, "x":63, "y":54, "setType":"onTarget2", "unsetType":"offTarget2" },
+        { "set":{ "_":[ "stencil", "target" ] }, "x":57, "y":60, "setType":"onTarget2", "unsetType":"offTarget2" },
+        { "set":{ "_":[ "stencil", "target" ] }, "x":51, "y":66, "setType":"onTarget2", "unsetType":"offTarget2" },
+        { "set":{ "_":[ "stencil", "target" ] }, "x":90, "y":99, "flipX":1, "setType":"onTarget3", "unsetType":"offTarget3" },
+        { "set":{ "_":[ "stencil", "target" ] }, "x":96, "y":105, "flipX":1, "setType":"onTarget3", "unsetType":"offTarget3" },
+        { "set":{ "_":[ "stencil", "target" ] }, "x":102, "y":111, "flipX":1, "setType":"onTarget3", "unsetType":"offTarget3" },
+        { "set":{ "_":[ "stencil", "target" ] }, "tileX":12, "x":90, "y":29, "setType":"onCode", "unsetType":"offCode" },
+        { "set":{ "_":[ "stencil", "target" ] }, "tileX":24, "x":99, "y":29, "setType":"onCode", "unsetType":"offCode" },
+        { "set":{ "_":[ "stencil", "target" ] }, "tileX":36, "x":108, "y":29, "setType":"onCode", "unsetType":"offCode" },
+        { "set":{ "_":[ "stencil", "target" ] }, "tileX":48, "x":117, "y":29, "setType":"onCode", "unsetType":"offCode" },
+        { "set":{ "_":[ "stencil", "target" ] }, "tileX":60, "x":6, "y":120, "setType":"onGfx", "unsetType":"offGfx" },
+        { "set":{ "_":[ "stencil", "target" ] }, "tileX":72, "x":15, "y":120, "setType":"onGfx", "unsetType":"offGfx" },
+        { "set":{ "_":[ "stencil", "target" ] }, "tileX":84, "x":24, "y":120, "setType":"onGfx", "unsetType":"offGfx" },
+        { "set":{ "_":[ "stencil", "target" ] }, "tileX":0, "tileY":68, "x":48, "y":36, "setType":"onJs", "unsetType":"offJs" },
+        { "set":{ "_":[ "stencil", "target" ] }, "tileX":12, "tileY":68, "x":57, "y":36, "setType":"onJs", "unsetType":"offJs" },
+        { "set":{ "_":[ "stencil", "roller" ] }, "x":33, "y":138 },
+        { "set":{ "_":[ "stencil", "roller" ] }, "x":120, "y":117 },
+        { "set":{ "_":[ "stencil", "roller" ] }, "x":138, "y":117 },
+        { "set":{ "_":[ "stencil", "hole" ] }, "x":129, "y":141 },
+        { "set":{ "_":[ "stencil", "spring" ] } },
+        { "set":{ "_":[ "stencil", "gatecloser" ] }, "x":147, "y":36 },
+        { "set":{ "_":[ "stencil", "gatecloser" ] }, "x":150, "y":33 }
+      ],
+      "execute":{ "_":[ "stencil", "codeMessage" ] },
+      "states":[
+        {
+          "execute":[
+            { "as":{ "_":[ "object", "ball" ] }, "remove":1 },
+            { "as":{ "_":[ "object", "resettable" ] }, "executeAction":"reset" },
+            { "as":{ "_":"variable" }, "set":{ "balls":3, "score":0 } },
+            { "as":{ "_":[ "object", "message" ] }, "remove":1 },
+            {
+              "object":{
+                "type":"message",
+                "width":48, "height":30,
+                "x":39, "y":100,
+                "font":"spectrum", "fontSize":14, "lineHeight":8, "textAlign":"center", "html":"GAME<br>&nbsp;OVER<br>Press<br>&nbsp;Start",
+                "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "color":"#f00" }, "wait":5 }, { "set":{ "color":"#ff0" }, "wait":5, "loopTo":0 } ] } }
+              }
+            }
+          ],
+          "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "set":{ "state":"play" } } }
+        },
+        {
+          "name":"play",
+          "execute":[
+            { "_":[ "stencil", "codeNewball" ] },
+            { "as":{ "_":"variable" }, "set":{ "message":"New<br>day<br>start!" }, "execute":{ "_":[ "stencil", "codeMessage" ] } }
+          ],
+          "code":{
+            "name":"Execute",
+            "data":[
+              {
+                "when":{ "_":[ "object", "onTarget1", "not" ] },
+                "execute":[
+                  { "sum":800, "to":{ "_":[ "variable", "score" ] } },
+                  { "as":{ "_":"variable" }, "set":{ "message":"Feat bonus<br>800pt" }, "execute":{ "_":[ "stencil", "codeMessage" ] } },
+                  { "as":{ "_":[ "object", "offTarget1" ] }, "set":{ "state":"switchOn" } }
+                ]
+              },
+              {
+                "when":{ "_":[ "object", "onTarget2", "not" ] },
+                "execute":[
+                  { "sum":400, "to":{ "_":[ "variable", "score" ] } },
+                  { "as":{ "_":"variable" }, "set":{ "message":"Dev bonus<br>400pt" }, "execute":{ "_":[ "stencil", "codeMessage" ] } },
+                  { "as":{ "_":[ "object", "offTarget2" ] }, "set":{ "state":"switchOn" } }
+                ]
+              },
+              {
+                "when":{ "_":[ "object", "onTarget3", "not" ] },
+                "execute":[
+                  { "sum":200, "to":{ "_":[ "variable", "score" ] } },
+                  { "as":{ "_":"variable" }, "set":{ "message":"Fix bonus<br>200pt" }, "execute":{ "_":[ "stencil", "codeMessage" ] } },
+                  { "as":{ "_":[ "object", "offTarget3" ] }, "set":{ "state":"switchOn" } }
+                ]
+              },
+              {
+                "when":{ "_":[ "object", "onCode", "not" ] },
+                "execute":[
+                  { "sum":1000, "to":{ "_":[ "variable", "score" ] } },
+                  { "as":{ "_":"variable" }, "set":{ "message":"JSON<br>ready<br>1000pt" }, "execute":{ "_":[ "stencil", "codeMessage" ] } },
+                  { "as":{ "_":[ "object", "offCode" ] }, "set":{ "state":"switchOn" } }
+                ]
+              },
+              {
+                "when":{ "_":[ "object", "onGfx", "not" ] },
+                "execute":[
+                  { "sum":800, "to":{ "_":[ "variable", "score" ] } },
+                  { "as":{ "_":"variable" }, "set":{ "message":"GFX<br>ready<br>800pt" }, "execute":{ "_":[ "stencil", "codeMessage" ] } },
+                  { "as":{ "_":[ "object", "offGfx" ] }, "set":{ "state":"switchOn" } }
+                ]
+              },
+              {
+                "when":{ "_":[ "object", "onJs", "not" ] },
+                "execute":[
+                  { "sum":700, "to":{ "_":[ "variable", "score" ] } },
+                  { "as":{ "_":"variable" }, "set":{ "message":"Wright<br>fixed<br>700pt" }, "execute":{ "_":[ "stencil", "codeMessage" ] } },
+                  { "as":{ "_":[ "object", "offJs" ] }, "set":{ "state":"switchOn" } }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name":"balllost",
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "subtract":1, "to":{ "_":[ "variable", "balls" ] } },
+              { "as":{ "_":"variable" }, "set":{ "message":"Lunch<br>break<br>ended" }, "execute":{ "_":[ "stencil", "codeMessage" ] } },
+              { "wait":75 },
+              {
+                "when":{ "_":[ "variable", "balls" ] },
+                "execute":{ "set":{ "state":"play" } },
+                "elseExecute":[
+                  {
+                    "when":{ "_":[ "variable", "score", "isGreaterThan", { "_":[ "variable", "hiscore" ] } ] },
+                    "as":[ { "_":"storage" }, { "_":"variable" } ],
+                    "set":{ "hiscore":{ "_":[ "variable", "score" ] } }
+                  },
+                  { "set":{ "state":"default" } }
+                ]
+              }
+            ]
+          }
+        }
+      ],
+      "tilemap":{
+        "width":256, "height":192,
+        "tileWidth":3,
+        "tileHeight":3,
+        "map":[
+          "       IIIIIIIIIIIII     IIIIIIIIIIIIIIIIIIIII       ",
+          "      I IIIIIIIIIII I   I T                 Z I      ",
+          "     I T           Z I I T                   Z I     ",
+          "    I T             ZII T                     Z I    ",
+          "   I T               IIT                       Z I   ",
+          "  I T                II                         Z I  ",
+          " I T                 II                          Z I ",
+          "IIT                  II         J  L  L           ZII",
+          "II                   II      J  I  I  I  L         II",
+          "II                   II      I  I  I  I  I         II",
+          "II             J  L  II      I  I  I  I  I         II",
+          "II             I  I  II      I  I  I  I  I         II",
+          "II             I  I  II      I  I  I  I  I         II",
+          "II             I  I  II                         J  II",
+          "II             I  I  II                         I  II",
+          "II             I  I  II                         I  II",
+          "II  I                II                         I  II",
+          "II  I                II                         I  II",
+          "II  I               J T                        JI  II",
+          "II  I              J T                        J I  II",
+          "II  I             J T                        J TI  II",
+          "II  ZI           J T                        J T I  II",
+          "II   ZI         J T                        J T  I  II",
+          "II    ZI       JIT                         IT   I  II",
+          "IIL                                             I  II",
+          "II L                                            I  II",
+          "IIZ L                                           I  II",
+          "II Z L                                          I  II",
+          "II  Z L                                         I  II",
+          "II   ZI                                         I  II",
+          "II                                              I  II",
+          "II                            L                 I  II",
+          "II                             L           JL   I  II",
+          "II                            Z L      J  J  L  I  II",
+          "II                             Z L     I  I  I  I  II",
+          "II                              Z L    I  I  I  I  II",
+          "II                               Z L   I  I  I  I  II",
+          "II                                Z L  I  I  I  I  II",
+          "II                                 ZI  I  I  I  I  II",
+          "II  J  J  L                         I  I  I  I  I  II",
+          "II  I  I  I                         I  I  I  I  I  II",
+          "II  I  I  I                            I  I  I  I  II",
+          "II     I  I                            I  I  I  I  II",
+          "II     I  I                            I  I  I  I  II",
+          "IIL    I  I                            I  I  I  I  II",
+          "II L      I  I              I         JI  ZIIT  I  II",
+          "III L     I  I              I        J I        I  II",
+          "II I L    I  I              I       J II        IIIII",
+          "II  I L      I              I      J I IL      JIIIII",
+          "II   I L     I              I     J I  I L    J I  II",
+          "II    I L    ZI            IT    J I    I IIII II  II",
+          "II     I L    ZI          IT    J I      IIIIII I  II",
+          "II      I L    ZI        IT    J I              I  II",
+          "II       I L                  J I               I  II",
+          "II        I L                J I                I  II",
+          "II         I L              J I                 I  II",
+          "II          I                I                  I  II",
+          "II           I              I                   I  II",
+          "II           II            II                   I  II",
+          "II           II            II                   I  II",
+          "II           II            II                   I  II",
+          "II           II            II                   I  II",
+          "II           II            II                   I  II",
+          "II           II            II                   I  II"
+        ]
+      }
+    }
+  }
+}
