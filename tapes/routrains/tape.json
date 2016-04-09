@@ -1,0 +1,1058 @@
+{
+  "name":"Routrains",
+  "author":"KesieV",
+  "year":2016,
+  "genre":"Simulation",
+  "description":"My father pushed a coin into a Space Invaders arcade cabinet. Deeper, into the same ferry-boat sliding in the middle of the strait of Messina, my mother was keeping me in her belly, sitting in a dark cabin of the Palermo-Milano train. I kept traveling 24 hours twice a year in the same train and every summer, even once out of my mother, for meeting the relatives my parents left in Sicily. I ate, slept, played crosswords and videogames, lived my parents and sisters in that train cabin. There I started asking about my own life: summers were the most intense part of the year for me and I used to ask myself how I'll change once there and how much I really changed on the way back home. Then, from high school, I used to spend one hour a day by train for going (and even not going) to school, along the Canzo-Asso line. I started that weird hobby of traveling by train without any destination in my spare time, with just my notebook, my pencil and my drawings, hoping that someone will notice and talk to me one day. And the single time it happened I discovered that life doesn't work like that: she never noticed me for real. I realized that life is looking for your own luck, crying in front of a coffee in a bar along the railroad. That's why, this time, I started using the train twice of the time for going at work, the one I ever wanted to do that was so different than I dreamed, moving till the last stop - Milan. After my parents' divorce, I used to meet my father by train - and, on the same line, I gave the engagement ring to the girl I want to keep with myself forever. Life is a train, indeed. Plot! Ready to be a true conductor? Run, slow down at curves and switch turnouts till you reach the right station! Use DOWN for accelerating, UP for slowing down and the A BUTTON for switching the turnouts!",
+  "screenshots":[ "routrains-1.png", "routrains-2.png" ],
+  "hardware":{
+    "width":256,
+    "height":192,
+    "texture":"scanlines"
+  },
+  "cheats":{
+    "autobrake":"Auto-stop train at stations",
+    "unlimitedfault":"Unlimited fault",
+    "unlimitedtime":"Unlimited time"
+  },
+  "resources":{
+    "intro":"intro.png",
+    "landscape":"landscape.png",
+    "sprites":"sprites.png",
+    "scanlines":"../default/scanlines.png"
+  },
+  "stencils":{
+    "codeNextStage":[
+      { "sum":1, "to":{ "_":[ "variable", "stage" ] } },
+      {
+        "when":{ "_":[ "variable", "stage", "isLessThan", 4 ] },
+        "gotoScene":{ "_":[ "stage", ".", { "_":[ "variable", "stage" ] } ] },
+        "elseExecute":{ "gotoScene":"ending" }
+      }
+    ],
+    "modelCurveRail":{
+      "type":[ "rail", "point" ],
+      "image":"sprites", "tileX":0, "tileY":16, "width":32, "height":32,
+      "zIndex":10,
+      "deltaX":0,
+      "deltaY":0,
+      "movingSpeedLimit":1.5,
+      "mulAngle":0,
+      "mulX":0,
+      "mulY":0,
+      "pointState":-1,
+      "states":{
+        "execute":{ "when":{ "_":[ "this", "extraPiece" ] }, "object":{ "_":[ "this", "extraPiece" ] } },
+        "actions":{
+          "name":"update",
+          "execute":{
+            "when":{ "_":[ "this", "pointState", "isNotEqualTo", { "_":[ "variable", "pointState" ] } ] },
+            "set":{ "type":"rail", "frame":0, "dontCross":0 },
+            "elseExecute":{ "set":{ "removeType":"rail", "frame":1, "dontCross":1 } }
+          }
+        }
+      }
+    },
+    "modelGameScene":{
+      "execute":[
+        { "as":{ "_":"variable" }, "set":{ "faultGauge":0, "movingSpeed":1, "timeLeft":0 } },
+        {
+          "object":[
+            {
+              "type":"hud",
+              "hudType":"label", "label":"SPEED: %repeatPercent|variable.movingSpeed|2|10|<span style='font-family:pixeldingbats;font-size:6px;color:#ff0'>h</span>|<span style='font-family:pixeldingbats;font-size:6px;color:#7f7f7f'>h</span>% %number|variable.movingSpeed./.2.*.75.floor%Km/h<br>FAULT: %repeatPercent|variable.faultGauge|25|10|<span style='font-family:pixeldingbats;font-size:6px;color:#f00'>h</span>|<span style='font-family:pixeldingbats;font-size:6px;color:#7f7f7f'>h</span>%<br>SCORE: %number|variable.score|0|8%",
+              "box":"label", "width":246, "height":30,
+              "x":5, "y":5,
+              "font":"spectrum", "lineHeight":10, "outline":"#000000"
+            },
+            {
+              "type":"hud",
+              "hudType":"label", "label":"%number|variable.timeLeft|0|2%",
+              "box":"label", "width":50, "height":25,
+              "x":198, "y":19,
+              "bgcolor":"#00f", "border":"#000",
+              "font":"spectrum", "fontSize":40, "lineHeight":20, "outline":"#000000", "textAlign":"center"
+            },
+            {
+              "box":"label", "width":58, "height":15,
+              "zIndex":10, "x":198, "y":5,
+              "bgcolor":"#00f", "border":"#000",
+              "font":"spectrum", "lineHeight":15, "outline":"#000000", "html":"&nbsp;Time"
+            }
+          ],
+          "into":{ "_":"scenehud" }
+        }
+      ],
+      "states":[
+        {
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "wait":1 },
+              { "as":{ "_":"variable" }, "set":{ "movingSpeed":0, "nextStation":"station1", "nextStationId":1, "pointState":0 } },
+              { "as":{ "_":[ "object", "point" ] }, "executeAction":"update" },
+              {
+                "object":[
+                  {
+                    "type":"label",
+                    "box":"label", "width":240, "height":20,
+                    "zIndex":10, "x":-240, "y":135,
+                    "bgcolor":"#0ff", "border":"#000",
+                    "font":"spectrum", "lineHeight":20, "outline":"#000", "html":"&nbsp;Welcome to:",
+                    "states":{ "code":{ "name":"Execute", "data":{ "set":{ "x":{ "_":[ "this", "x", "/", 1.3 ] } } } } }
+                  },
+                  {
+                    "type":"label",
+                    "box":"label", "width":240, "height":30,
+                    "x":-240, "y":152,
+                    "bgcolor":"#00f", "border":"#000",
+                    "font":"spectrum", "fontSize":30, "lineHeight":30, "outline":"#000", "html":{ "_":[ "&nbsp;", ".", { "_":[ "scene", "landName" ] } ] },
+                    "states":{ "code":{ "name":"Execute", "data":{ "set":{ "x":{ "_":[ "this", "x", "/", 1.1 ] } } } } }
+                  }
+                ],
+                "into":{ "_":"scenehud" }
+              },
+              {
+                "object":{
+                  "type":"label",
+                  "follow":1,
+                  "width":50, "height":50,
+                  "x":{ "_":[ "objectTyped", "train", "x" ] }, "y":{ "_":[ "objectTyped", "train", "y" ] },
+                  "forceX":{ "_":[ "randomValue", [ -2, -1, 1, 2 ] ] }, "forceY":{ "_":[ "randomValue", [ -2, -1, 1, 2 ] ] },
+                  "states":{ "code":{ "name":"Physics", "data":{ "walls":{ "area":{ "width":1600, "height":1600, "x":0, "y":0 }, "restitution":1 } } } }
+                }
+              },
+              { "wait":25 },
+              { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+              { "as":{ "_":[ "object", "label" ] }, "remove":1 },
+              { "set":{ "state":"nextstation" } }
+            ]
+          }
+        },
+        {
+          "name":"nextstation",
+          "execute":[
+            { "as":{ "_":[ "object", "station" ] }, "set":{ "removeType":"nextStation", "frame":0, "animation":"idle" } },
+            { "to":{ "_":[ "objectTyped", "train" ] }, "set":{ "follow":0 } },
+            { "as":{ "_":"variable" }, "set":{ "movingSpeed":0, "movingSpeedLimit":100, "timeLeft":60 } }
+          ],
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "as":{ "_":[ "objectTyped", { "_":[ "variable", "nextStation" ] } ] }, "set":{ "type":"nextStation", "follow":1, "animation":"blinking" } },
+              {
+                "object":[
+                  {
+                    "type":"label",
+                    "box":"label", "width":240, "height":20,
+                    "zIndex":10, "x":-240, "y":135,
+                    "bgcolor":"#0ff", "border":"#000",
+                    "font":"spectrum", "lineHeight":20, "outline":"#000", "html":"&nbsp;Next station:",
+                    "states":{ "code":{ "name":"Execute", "data":{ "set":{ "x":{ "_":[ "this", "x", "/", 1.3 ] } } } } }
+                  },
+                  {
+                    "type":"label",
+                    "box":"label", "width":240, "height":30,
+                    "x":-240, "y":152,
+                    "bgcolor":"#f00", "border":"#000",
+                    "font":"spectrum", "fontSize":30, "lineHeight":30, "outline":"#000", "html":{ "_":[ "&nbsp;", ".", { "_":[ "objectTyped", { "_":[ "variable", "nextStation" ] }, "stationName" ] } ] },
+                    "states":{ "code":{ "name":"Execute", "data":{ "set":{ "x":{ "_":[ "this", "x", "/", 1.1 ] } } } } }
+                  }
+                ],
+                "into":{ "_":"scenehud" }
+              },
+              { "wait":125 },
+              { "as":{ "_":[ "object", "label" ] }, "remove":1 },
+              { "set":{ "state":"drive" } }
+            ]
+          }
+        },
+        {
+          "name":"drive",
+          "execute":{ "as":{ "_":[ "objectTyped", "train" ] }, "set":{ "follow":1 } },
+          "code":[
+            {
+              "name":"Sequence",
+              "data":[
+                { "wait":12 },
+                { "as":{ "_":[ "objectTyped", "train" ] }, "execute":{ "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "html":"Go!" } } },
+                { "wait":1, "loop":1, "until":{ "_":[ "objectTyped", "train", "distanceTo", { "_":[ "objectTyped", "nextStation" ] }, "isLessThan", 20 ] } },
+                { "as":{ "_":[ "objectTyped", "train" ] }, "execute":{ "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "html":"Stop!" } } },
+                { "when":{ "_":[ "cheat", "autobrake" ] }, "as":{ "_":"variable" }, "set":{ "movingSpeed":0 } },
+                {
+                  "when":{ "_":[ "variable", "movingSpeed", "isEqualTo", 0 ] },
+                  "set":{ "state":"arrived" },
+                  "elseExecute":{
+                    "when":{ "_":[ "objectTyped", "train", "distanceTo", { "_":[ "objectTyped", "nextStation" ] }, "isGreaterThan", 20 ] },
+                    "set":{ "set":{ "overMessage":"STATION MISSED!", "state":"over" } }
+                  }
+                },
+                { "wait":1, "loopTo":-1 }
+              ]
+            },
+            {
+              "name":"Sequence",
+              "data":[
+                { "wait":25 },
+                { "when":{ "_":[ "cheat", "unlimitedtime", "not" ] }, "subtract":1, "to":{ "_":[ "variable", "timeLeft" ] } },
+                { "loopTo":0, "until":{ "_":[ "variable", "timeLeft", "not" ] } },
+                { "set":{ "overMessage":"TIME OVER", "state":"over" } }
+              ]
+            },
+            {
+              "name":"Execute",
+              "data":[
+                {
+                  "when":{ "_":[ "variable", "changePointLocker" ] },
+                  "subtract":1,
+                  "to":{ "_":[ "variable", "changePointLocker" ] },
+                  "elseExecute":{
+                    "when":{ "_":[ "keyA", "isHit" ] },
+                    "execute":[
+                      {
+                        "when":{ "_":[ "variable", "pointState" ] },
+                        "as":{ "_":"variable" },
+                        "set":{ "pointState":0 },
+                        "elseExecute":{ "as":{ "_":"variable" }, "set":{ "pointState":1 } }
+                      },
+                      { "as":{ "_":[ "object", "point" ] }, "executeAction":"update" }
+                    ]
+                  }
+                },
+                {
+                  "when":{ "_":[ "keyDown", "isDown", "and", { "_":[ "variable", "movingSpeed", "isLessThan", 2 ] } ] },
+                  "sum":0.01,
+                  "to":{ "_":[ "variable", "movingSpeed" ] },
+                  "elseExecute":{
+                    "when":{ "_":[ "keyUp", "isDown", "and", { "_":[ "variable", "movingSpeed", "isGreaterThan", 0 ] } ] },
+                    "subtract":0.01,
+                    "to":{ "_":[ "variable", "movingSpeed" ] }
+                  }
+                },
+                { "when":{ "_":[ "variable", "faultGauge", "isGreaterThan", 25 ] }, "set":{ "overMessage":"SORRY, BAD CONDUCTING.", "state":"over" } }
+              ]
+            }
+          ]
+        },
+        {
+          "name":"over",
+          "execute":{ "as":{ "_":"variable" }, "set":{ "movingSpeed":0 } },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              {
+                "object":{
+                  "type":"label",
+                  "width":256, "height":40,
+                  "zIndex":100, "x":0, "y":76,
+                  "bgcolor":"#000", "color":"#fff",
+                  "font":"spectrum", "lineHeight":40, "outline":"#f00", "textAlign":"center", "html":{ "_":[ "that", "overMessage" ] }
+                },
+                "into":{ "_":"scenehud" }
+              },
+              { "wait":25 },
+              { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+              { "gotoScene":"gameover" }
+            ]
+          }
+        },
+        {
+          "name":"arrived",
+          "execute":{ "as":{ "_":"variable" }, "set":{ "movingSpeed":0 } },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              {
+                "set":{
+                  "bonus":{
+                    "_":[
+                      "variable",
+                      "timeLeft",
+                      "/",
+                      { "_":[ "objectTyped", "train", "distanceTo", { "_":[ "objectTyped", "nextStation" ] }, "+", 1 ] },
+                      "*",
+                      10,
+                      "floor",
+                      "*",
+                      10
+                    ]
+                  }
+                }
+              },
+              {
+                "object":[
+                  { "type":"label", "width":256, "height":50, "zIndex":90, "x":0, "y":76, "bgcolor":"#000" },
+                  {
+                    "type":"label",
+                    "width":256, "height":40,
+                    "zIndex":100, "x":0, "y":76,
+                    "color":"#fff",
+                    "font":"spectrum", "lineHeight":40, "outline":"#00f", "textAlign":"center", "html":"IN TIME!"
+                  }
+                ],
+                "into":{ "_":"scenehud" }
+              },
+              { "wait":25 },
+              {
+                "object":{
+                  "type":"label",
+                  "width":256, "height":40,
+                  "zIndex":100, "x":0, "y":86,
+                  "color":"#fff",
+                  "font":"spectrum", "lineHeight":40, "outline":"#00f", "textAlign":"center", "html":{ "_":[ "BONUS: ", ".", { "_":[ "that", "bonus" ] }, ".", "pts." ] }
+                },
+                "into":{ "_":"scenehud" }
+              },
+              { "sum":{ "_":[ "this", "bonus" ] }, "to":{ "_":[ "variable", "score" ] } },
+              { "wait":125 },
+              { "as":{ "_":[ "object", "label" ] }, "remove":1 },
+              { "sum":1, "to":{ "_":[ "variable", "nextStationId" ] } },
+              { "as":{ "_":"variable" }, "set":{ "nextStation":{ "_":[ "station", ".", { "_":[ "variable", "nextStationId" ] } ] } } },
+              {
+                "when":{ "_":[ "objectTyped", { "_":[ "variable", "nextStation" ] } ] },
+                "set":{ "state":"nextstation" },
+                "elseExecute":{ "set":{ "state":"landcompleted" } }
+              }
+            ]
+          }
+        },
+        {
+          "name":"landcompleted",
+          "execute":[
+            { "as":{ "_":[ "object", "station" ] }, "set":{ "removeType":"nextStation", "frame":0, "animation":"idle" } },
+            { "as":{ "_":[ "objectTyped", "train" ] }, "set":{ "follow":1 } },
+            { "as":{ "_":"variable" }, "set":{ "movingSpeed":1, "timeLeft":0 } },
+            {
+              "object":[
+                {
+                  "type":"label",
+                  "box":"label", "width":258, "height":25,
+                  "x":-1, "y":145,
+                  "bgcolor":"#00f", "border":"#000",
+                  "font":"spectrum", "fontSize":30, "lineHeight":25, "outline":"#000", "textAlign":"center", "html":"Turn completed!",
+                  "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "color":"#fff" }, "wait":25 }, { "set":{ "color":"#ff0" }, "wait":25, "loopTo":0 } ] } }
+                },
+                {
+                  "object":{
+                    "type":"label",
+                    "width":258, "height":20,
+                    "zIndex":100, "x":-1, "y":170,
+                    "bgcolor":"#f00", "border":"#000", "color":"#fff",
+                    "font":"spectrum", "lineHeight":20, "outline":"#000", "textAlign":"center", "html":"WELL DONE!"
+                  },
+                  "into":{ "_":"scenehud" }
+                }
+              ],
+              "into":{ "_":"scenehud" }
+            }
+          ],
+          "code":{ "name":"Sequence", "data":[ { "wait":25 }, { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } }, { "_":[ "stencil", "codeNextStage" ] } ] }
+        }
+      ]
+    },
+    "modelPopupLabel":{
+      "width":100, "height":10,
+      "zIndex":10000, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "that", "y", "-", 5 ] },
+      "color":"#fff",
+      "font":"spectrum", "lineHeight":12, "outline":"#000", "textAlign":"center",
+      "speed":0.5,
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[ { "subtract":{ "_":[ "this", "speed" ] }, "to":{ "_":[ "this", "y" ] }, "wait":1, "loop":1, "cycles":15 }, { "remove":1 } ]
+        }
+      }
+    },
+    "modelRail":{
+      "type":"rail",
+      "image":"sprites", "width":16, "height":16,
+      "zIndex":9,
+      "animations":{ "blinking":{ "frames":[ 1, 2 ], "loopTo":0 } },
+      "deltaX":0,
+      "deltaY":0,
+      "movingSpeedLimit":100,
+      "mulAngle":0,
+      "mulX":0,
+      "mulY":0,
+      "pointState":-1
+    },
+    "modelTrain":{
+      "image":"sprites", "width":16, "height":16,
+      "zIndex":20,
+      "hitbox":{ "width":3, "height":3, "x":7, "y":7 },
+      "movingAngle":0,
+      "tileHit":0,
+      "tilePosition":0,
+      "states":{
+        "execute":{ "set":{ "tileHit":{ "_":[ "this", "collidesWith", { "_":[ "object", "rail" ] } ] } } },
+        "code":{
+          "name":"Execute",
+          "data":[
+            { "sum":{ "_":[ "variable", "movingSpeed" ] }, "to":{ "_":[ "this", "tilePosition" ] } },
+            {
+              "when":{ "_":[ "this", "tilePosition", "isGreaterThan", 15 ] },
+              "execute":[
+                { "when":{ "_":[ "this", "tileHit", "mulAngle" ] }, "set":{ "movingAngle":{ "_":[ "this", "tileHit", "endAngle" ] } } },
+                { "set":{ "tileHit":{ "_":[ "this", "collidesWith", { "_":[ "object", "rail" ] } ] } } },
+                {
+                  "set":{
+                    "movingSpeedLimit":{ "_":[ "this", "tileHit", "movingSpeedLimit" ] },
+                    "pointLocker":{ "_":[ "this", "tileHit", "pointState", "isEqualTo", -1, "not" ] }
+                  }
+                },
+                { "subtract":16, "to":{ "_":[ "this", "tilePosition" ] } }
+              ]
+            },
+            { "when":{ "_":[ "this", "pointLocker" ] }, "as":{ "_":"variable" }, "set":{ "changePointLocker":4 } },
+            {
+              "when":{ "_":[ "variable", "movingSpeed", "isGreaterThan", { "_":[ "this", "movingSpeedLimit" ] } ] },
+              "execute":{
+                "when":{ "_":[ "cheat", "unlimitedfault", "not" ] },
+                "sum":{ "_":[ "variable", "movingSpeed", "-", { "_":[ "this", "movingSpeedLimit" ] } ] },
+                "to":{ "_":[ "variable", "faultGauge" ] }
+              }
+            },
+            { "set":{ "x":{ "_":[ "this", "tileHit", "x" ] }, "y":{ "_":[ "this", "tileHit", "y" ] }, "angle":{ "_":[ "this", "movingAngle" ] } } },
+            {
+              "sum":{ "_":[ "this", "tilePosition", "*", { "_":[ "this", "tileHit", "mulX" ] }, "+", { "_":[ "this", "tileHit", "deltaX" ] } ] },
+              "to":{ "_":[ "this", "x" ] }
+            },
+            {
+              "sum":{ "_":[ "this", "tilePosition", "*", { "_":[ "this", "tileHit", "mulY" ] }, "+", { "_":[ "this", "tileHit", "deltaY" ] } ] },
+              "to":{ "_":[ "this", "y" ] }
+            },
+            { "sum":{ "_":[ "this", "tilePosition", "*", { "_":[ "this", "tileHit", "mulAngle" ] } ] }, "to":{ "_":[ "this", "angle" ] } }
+          ]
+        }
+      }
+    },
+    "modelTrainEnding":{
+      "tileY":16, "width":16, "height":16,
+      "zIndex":20, "y":140,
+      "states":{
+        "code":[
+          { "name":"Sequence", "data":{ "sum":1, "to":{ "_":[ "this", "x" ] }, "wait":2, "loop":1, "cycles":100 } },
+          {
+            "name":"Sequence",
+            "data":[
+              { "sum":1, "to":{ "_":[ "this", "y" ] }, "wait":{ "_":[ "randomNumber", [ 5, 10 ] ] } },
+              { "subtract":1, "to":{ "_":[ "this", "y" ] }, "wait":{ "_":[ "randomNumber", [ 5, 10 ] ] }, "loopTo":0 }
+            ]
+          }
+        ]
+      }
+    },
+    "subtrain":{ "set":{ "_":[ "stencil", "modelTrain" ] }, "tileX":64 },
+    "train":{ "type":"train", "set":{ "_":[ "stencil", "modelTrain" ] }, "tileX":48 },
+    "!":{ "image":"landscape", "tileX":48, "tileY":0, "width":16, "height":16 },
+    "#":{ "image":"landscape", "tileX":32, "tileY":0, "width":16, "height":16 },
+    "'":{ "image":"landscape", "tileX":0, "tileY":16, "width":16, "height":16 },
+    ",":{ "image":"landscape", "tileX":0, "tileY":32, "width":16, "height":16 },
+    ".":{ "image":"landscape", "tileX":0, "tileY":0, "width":16, "height":16 },
+    "=":{ "image":"landscape", "tileX":32, "tileY":16, "width":16, "height":16 },
+    "I":{ "image":"landscape", "tileX":0, "tileY":48, "width":16, "height":16 },
+    "_":{ "image":"landscape", "tileX":16, "tileY":32, "width":16, "height":16 },
+    "a":{ "image":"landscape", "tileX":32, "tileY":32, "width":16, "height":16 },
+    "b":{ "image":"landscape", "tileX":48, "tileY":32, "width":16, "height":16 },
+    "c":{ "image":"landscape", "tileX":64, "tileY":32, "width":16, "height":16 },
+    "d":{ "image":"landscape", "tileX":32, "tileY":48, "width":16, "height":16 },
+    "e":{ "image":"landscape", "tileX":48, "tileY":48, "width":16, "height":16 },
+    "f":{ "image":"landscape", "tileX":64, "tileY":48, "width":16, "height":16 },
+    "h":{ "image":"landscape", "tileX":32, "tileY":64, "width":16, "height":16 },
+    "i":{ "image":"landscape", "tileX":48, "tileY":64, "width":16, "height":16 },
+    "j":{ "image":"landscape", "tileX":64, "tileY":64, "width":16, "height":16 },
+    "A":{
+      "set":{ "_":[ "stencil", "modelCurveRail" ] },
+      "hitbox":{ "width":16, "height":16, "x":0, "y":0 },
+      "endAngle":90,
+      "extraPiece":{ "set":{ "_":[ "stencil", "v" ] }, "x":{ "_":[ "that", "x", "+", 16 ] }, "y":{ "_":[ "that", "y", "+", 16 ] }, "visible":0 },
+      "mulAngle":5.6,
+      "mulX":1,
+      "mulY":1
+    },
+    "B":{
+      "set":{ "_":[ "stencil", "modelCurveRail" ] },
+      "hitbox":{ "width":16, "height":16, "x":16, "y":0 },
+      "flipY":1,
+      "deltaX":16,
+      "endAngle":180,
+      "extraPiece":{ "set":{ "_":[ "stencil", "<" ] }, "x":{ "_":[ "that", "x" ] }, "y":{ "_":[ "that", "y", "+", 16 ] }, "visible":0 },
+      "mulAngle":5.6,
+      "mulX":-1,
+      "mulY":1
+    },
+    "C":{
+      "set":{ "_":[ "stencil", "modelCurveRail" ] },
+      "hitbox":{ "width":16, "height":16, "x":16, "y":16 },
+      "flipX":1, "flipY":1,
+      "deltaX":16,
+      "deltaY":16,
+      "endAngle":270,
+      "extraPiece":{ "set":{ "_":[ "stencil", "^" ] }, "x":{ "_":[ "that", "x" ] }, "y":{ "_":[ "that", "y" ] }, "visible":0 },
+      "mulAngle":5.6,
+      "mulX":-1,
+      "mulY":-1
+    },
+    "D":{
+      "set":{ "_":[ "stencil", "modelCurveRail" ] },
+      "hitbox":{ "width":16, "height":16, "x":0, "y":16 },
+      "flipX":1,
+      "deltaY":16,
+      "endAngle":0,
+      "extraPiece":{ "set":{ "_":[ "stencil", ">" ] }, "x":{ "_":[ "that", "x", "+", 16 ] }, "y":{ "_":[ "that", "y" ] }, "visible":0 },
+      "mulAngle":5.6,
+      "mulX":1,
+      "mulY":-1
+    },
+    "E":{
+      "set":{ "_":[ "stencil", "modelCurveRail" ] },
+      "hitbox":{ "width":16, "height":16, "x":0, "y":0 },
+      "flipX":1, "flipY":1,
+      "endAngle":0,
+      "extraPiece":{ "set":{ "_":[ "stencil", ">" ] }, "x":{ "_":[ "that", "x", "+", 16 ] }, "y":{ "_":[ "that", "y", "+", 16 ] }, "visible":0 },
+      "mulAngle":-5.6,
+      "mulX":1,
+      "mulY":1
+    },
+    "F":{
+      "set":{ "_":[ "stencil", "modelCurveRail" ] },
+      "hitbox":{ "width":16, "height":16, "x":0, "y":16 },
+      "flipY":1,
+      "deltaY":16,
+      "endAngle":-90,
+      "extraPiece":{ "set":{ "_":[ "stencil", "^" ] }, "x":{ "_":[ "that", "x", "+", 16 ] }, "y":{ "_":[ "that", "y" ] }, "visible":0 },
+      "mulAngle":-5.6,
+      "mulX":1,
+      "mulY":-1
+    },
+    "G":{
+      "set":{ "_":[ "stencil", "modelCurveRail" ] },
+      "hitbox":{ "width":16, "height":16, "x":16, "y":16 },
+      "deltaX":16,
+      "deltaY":16,
+      "endAngle":-180,
+      "extraPiece":{ "set":{ "_":[ "stencil", "<" ] }, "x":{ "_":[ "that", "x" ] }, "y":{ "_":[ "that", "y" ] }, "visible":0 },
+      "mulAngle":-5.6,
+      "mulX":-1,
+      "mulY":-1
+    },
+    "H":{
+      "set":{ "_":[ "stencil", "modelCurveRail" ] },
+      "hitbox":{ "width":16, "height":16, "x":16, "y":0 },
+      "flipX":1,
+      "deltaX":16,
+      "deltaY":0,
+      "endAngle":-270,
+      "extraPiece":{ "set":{ "_":[ "stencil", "v" ] }, "x":{ "_":[ "that", "x" ] }, "y":{ "_":[ "that", "y", "+", 16 ] }, "visible":0 },
+      "mulAngle":-5.6,
+      "mulX":-1,
+      "mulY":1
+    },
+    "<":{ "set":{ "_":[ "stencil", "modelRail" ] }, "angle":180, "mulX":-1 },
+    ">":{ "set":{ "_":[ "stencil", "modelRail" ] }, "mulX":1 },
+    "^":{ "set":{ "_":[ "stencil", "modelRail" ] }, "angle":270, "mulY":-1 },
+    "v":{ "set":{ "_":[ "stencil", "modelRail" ] }, "angle":90, "mulY":1 },
+    "s":{ "image":"landscape", "tileX":16, "tileY":0, "width":16, "height":16 },
+    "t":{ "image":"landscape", "tileX":64, "tileY":0, "width":16, "height":16 },
+    "w":{ "image":"landscape", "tileX":64, "tileY":16, "width":16, "height":16 },
+    "~":{ "image":"landscape", "tileX":48, "tileY":16, "width":16, "height":16 },
+    "°":{ "image":"landscape", "tileX":16, "tileY":16, "width":16, "height":16 }
+  },
+  "scenes":{
+    "intro":{
+      "object":[
+        { "width":256, "height":192, "x":0, "y":0, "bgcolor":"#0ff" },
+        {
+          "image":"intro", "width":256, "height":192,
+          "zIndex":1, "x":0, "y":192,
+          "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "this", "y" ] }, "subtract":1, "to":{ "_":[ "this", "y" ] } } } }
+        },
+        {
+          "image":"intro", "tileY":193, "width":232, "height":40,
+          "zIndex":2, "x":12, "y":-58,
+          "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "this", "y", "isLessThan", 40 ] }, "sum":0.5, "to":{ "_":[ "this", "y" ] } } } }
+        },
+        {
+          "box":"label", "width":256,
+          "zIndex":30, "x":0, "y":130,
+          "color":"#fff",
+          "font":"spectrum", "fontSize":20, "lineHeight":20, "outline":"#000", "textAlign":"center", "html":"PRESS START",
+          "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "visible":0 }, "wait":10 }, { "set":{ "visible":1 }, "wait":10, "loopTo":0 } ] } }
+        }
+      ],
+      "execute":{ "as":{ "_":"variable" }, "set":{ "score":0, "stage":0 } },
+      "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "execute":{ "_":[ "stencil", "codeNextStage" ] } } } }
+    },
+    "ending":{
+      "object":[
+        { "width":256, "height":192, "x":0, "y":0, "bgcolor":"#0ff" },
+        {
+          "type":"background",
+          "zIndex":10, "y":48,
+          "tilemap":{
+            "tileWidth":16,
+            "tileHeight":16,
+            "map":[
+              "  abc  abbbbc     abc  abbbbc     ",
+              "sshijtshiiiijstssshijtshiiiijstsss",
+              "sssssstssssssssssssssstsssssssssss",
+              "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+              "sstsssssstsssssssstsssssstssssssss",
+              "'°'°'°'°'°'°'°'°'°'°'°'°'°'°'°'°'°",
+              ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>",
+              "..................................",
+              ".................................."
+            ]
+          }
+        },
+        { "set":{ "_":[ "stencil", "modelTrainEnding" ] }, "image":"sprites", "tileX":64, "x":-32 },
+        { "set":{ "_":[ "stencil", "modelTrainEnding" ] }, "image":"sprites", "tileX":80, "x":-48 },
+        { "set":{ "_":[ "stencil", "modelTrainEnding" ] }, "image":"sprites", "tileX":80, "x":-64 },
+        { "set":{ "_":[ "stencil", "modelTrainEnding" ] }, "image":"sprites", "tileX":80, "x":-80 },
+        {
+          "box":"label", "width":256,
+          "zIndex":20, "x":0, "y":8,
+          "color":"#fff",
+          "font":"spectrum", "outline":"#000", "textAlign":"center", "html":"CONGRATULATIONS! YOU'RE THE"
+        },
+        {
+          "width":256, "height":30,
+          "zIndex":20, "x":0, "y":18,
+          "color":"#f0f",
+          "font":"spectrum", "fontSize":30, "lineHeight":30, "outline":"#000", "textAlign":"center", "html":"KING OF THE CABIN!"
+        },
+        {
+          "box":"label", "width":256,
+          "zIndex":20, "x":0, "y":170,
+          "color":"#fff",
+          "font":"spectrum", "outline":"#000", "textAlign":"center", "html":{ "_":[ "Final score: ", ".", { "_":[ "variable", "score" ] }, ".", "pts." ] }
+        }
+      ],
+      "states":{
+        "code":[
+          {
+            "name":"Sequence",
+            "data":[
+              { "subtract":2, "to":{ "_":[ "objectTyped", "background", "x" ] }, "wait":1, "loop":1, "cycles":128 },
+              { "as":{ "_":[ "objectTyped", "background" ] }, "set":{ "x":1 }, "loopTo":0 }
+            ]
+          },
+          { "name":"Sequence", "data":[ { "wait":50 }, { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } }, { "gotoScene":"intro" } ] }
+        ]
+      }
+    },
+    "gameover":{
+      "object":{
+        "width":256, "height":192,
+        "x":0, "y":0,
+        "font":"spectrum", "fontSize":20, "lineHeight":192, "outline":"#000", "textAlign":"center", "html":"GAME OVER"
+      },
+      "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"intro" } } }
+    },
+    "stage1":{
+      "object":[
+        { "type":[ "station", "stationX" ], "set":{ "_":[ "stencil", "v" ] }, "x":1472, "y":464, "stationName":"Frontright" },
+        { "type":[ "station", "stationX" ], "set":{ "_":[ "stencil", "v" ] }, "x":784, "y":1136, "stationName":"Eastbound" },
+        { "type":[ "station", "stationX" ], "set":{ "_":[ "stencil", ">" ] }, "x":480, "y":672, "stationName":"Central" },
+        { "type":[ "station", "station2" ], "set":{ "_":[ "stencil", ">" ] }, "x":1120, "y":112, "stationName":"Frontnorth" },
+        { "type":[ "station", "station1" ], "set":{ "_":[ "stencil", "^" ] }, "x":736, "y":400, "stationName":"Sidewest" },
+        { "type":[ "station", "stationX" ], "set":{ "_":[ "stencil", "<" ] }, "x":464, "y":1472, "stationName":"Deepsouth" },
+        { "type":[ "station", "station3" ], "set":{ "_":[ "stencil", "<" ] }, "x":1136, "y":832, "stationName":"Southside" },
+        { "type":[ "station", "station4" ], "set":{ "_":[ "stencil", "^" ] }, "x":112, "y":1072, "stationName":"Western" },
+        { "set":{ "_":[ "stencil", "train" ] }, "x":448, "y":672 },
+        { "set":{ "_":[ "stencil", "subtrain" ] }, "x":432, "y":672 },
+        { "set":{ "_":[ "stencil", "subtrain" ] }, "x":416, "y":672 },
+        { "set":{ "_":[ "stencil", "subtrain" ] }, "x":400, "y":672 }
+      ],
+      "set":{ "_":[ "stencil", "modelGameScene" ] },
+      "landName":"Firstland",
+      "tilemap":{
+        "tileWidth":16,
+        "tileHeight":16,
+        "map":[
+          "#ssss.sstststtststssssssss.stttststtststsssss.sssssssss~~~stsssss.ssssssssssssssssssssssssssssssssss",
+          "sssss.ssssssssssssssssssss.ssssssssssssssssss.sssssssss~~~sssssss.sssss.............................",
+          "s'....................................................°~~~'.............abbbbbbbbbbbbbbbbbbbbbbbc.ss",
+          "s.abc.abc.abc.abc.ssssssssssssssssssssssssss'..°sssss,_~~~,_ssssssssssssdeeeeeeeeeeeeeeeeeeeeeeef.ss",
+          "..def.def.def.def.sststsssssssssssssstssssss,.._ssssss#~~~#ttsststtstssshiiiiiiiiiiiiiiiiiiiiiiij.ss",
+          "s.hij.hij.hij.hij.sssssstsstttssttsstsssssss##=sssssss=====ssssssssssssss=s=s=s=s=s=s=s=s=s=sssss.ss",
+          "s......................°sssssssttssttstsstss#=...............................................°sss.ss",
+          "s._sssss,._sssss,.sssss.stsssssssssssstsstss=.D.>>>>>>>>>>>>>>>>>>>>>>.>>>>>>>>>>>>>>>>>>>>A..sss.ss",
+          "s.abbbbbc.abbbbbc.ststs.ssssssssststssststsss....................########.....................sss.ss",
+          "s.deeeeef.deeeeef.sssss.sstssssssststtsssssss.^._sssss#===#s,!...########sssssssssssssssss,.v.sss.ss",
+          "s.hiiiiij.hiiiiij.sssss.sssstssssssssssssssss.^.ssssss=~~~=ssssss===#abc#ssssssssssssssssss.v.sss.ss",
+          "s........................°sssssssssssssssssss.^.sssssst~~~tsssssssss#def#ssssssssssssssssss.v.sss.ss",
+          "s.abc.abc.abc.abc.abc.abc.sstssssssssssssss##.^.##sssst~~~ts'...°sss#hij#sss'...°ssssssssss.v.sss.ss",
+          "s.def.def.def.def.def.def.sssssssssssss'....#.^.#...°st~~~ts.....sss=====sss.....ssssssssss.v.sss.ss",
+          "s.hij.hij.hij.hij.hij.hij.sstssssssssss.sss==.^.==ss.st~~~ts.....sss'°s'°sss.....ssssssssss.v.sss.ss",
+          "s.........................sssssssssssss.sssss.^.ssss.st~~~ts,..................._ssssssssss.v.sss.ss",
+          "s._sssss,._sssss,._sssss,.sstssssssssss.s'!##.^.##.°.st~~~tsssssssss,_s,_ssssssssssssssssss.v.sss.ss",
+          "s.abbbbbc.abbbbbc.abbbbbc.sssssssssssss,....#.^.#..._st~~~ts'.......................°ssssss.v.sss.ss",
+          "s.deeeeef.deeeeef.deeeeef.sstststststssss._==.^.==!_sst~~~ts.abbbc.acsacsacsac.abbbc.ssssss.v.sss.ss",
+          "s.hiiiiij.hiiiiij.hiiiiij.°ssssssssssssss.sss.^.sssssst~~~ts.deeef.hjshjshjshj.deeef.ssssss.v.sss.ss",
+          "s,......................................._sss.^.sssssst~~~ts.hiiij.............hiiij.ssssss.v.sss.ss",
+          "ssssssssssssss.ss.abc.abc.abc.abc.ssssss.ssss.^.°ssssst~~~ts.sssss.acsacsacsac.sssss.ssssss.v.sss.ss",
+          "ssssssssssssts.ss.def.def.def.def.ststss...°s.^..sssss#~~~#s.abbbc.hjshjshjshj.abbbc.ssssss.v.sss.ss",
+          "wwwwwwwsssssss.ss.hij.hij.hij.hij.ssssss.abcs.^######s=====s.deeef.............deeef.ssssss.v.sss.ss",
+          "wwwwwwwssststs,...................ssssss.defs.^##abc#'.......hiiij.acsacsacsac.hiiij.ssssss.v.sss.ss",
+          "wwwwwwwssssssssss._sssss,._sssss,.sstsss.hijs..##def#........sssss.hjshjshjshj.sssss.ssssss.v.sss.ss",
+          "wwwwwwwwwwwwwwwss.abbbbbc.abbbbbc.sttsss....s.^##hij#.#===#s.abbbc.............abbbc.ssssss.v.sss.ss",
+          "wwwwwwwwwwwwwwwss.deeeeef.deeeeef.stttss.abcs.^##====.#~~~#s.deeef.acsacsacsac.deeef.s######v.sss.ss",
+          "wwwwwwwwwwwwwwwts.hiiiiij.hiiiiij.stssss.defs.^##ssss..~~~ss.hiiij.hjshjshjshj.hiiij.s#abc##v.sss.ss",
+          "wwwabcwwwwwwwwwss,..............._ssstss.hijs.^##sss'..~~~ss.sssss.............sssss.s#def##..sss.ss",
+          "wwwdefwwwwwwwwwssssssssss.ssssssssssssss....s.^==sss...~~~ss.abbbc.acsacsacsac.abbbc.s#hij##v.sss.ss",
+          "wwwhijwwwwwwwwwts'abbbbbc.abbbbbc°ssssss.abcs.^..sss...~~~ss.deeef.hjshjshjshj.deeef.s====##v.sss.ss",
+          "wwwwwwwwwwwwwwwss.deeeeef.deeeeef.sstsss.defs.^..ss'...#~~ss.hiiij.............hiiij.ss,_s##v.sss.ss",
+          "wwwwwwwwwwwwwwwss.hiiiiij.deeeeef.sttsss.hijs.^..ss.abc#~~ss,......acsacsacsac.......ss'°s##v.sss.ss",
+          "wwwwwwwwwwwwwwwss.........deeeeef.sts'......s.^.!ss.def#~~ssssssss.hjshjshjshj.sssss.ss..s==v.sss.ss",
+          "wwwwwwwwwwwwwwwss.abbbbbc.deeeeef.sss.abbbbcs.^.....hij#~~ssssssss,..........._sssss...._s..v.sss.ss",
+          "wwwwwwwwwwwwwwwss.deeeeef.deeeeef.sss.deeeefs.^....._ss=~~stssssssssssss.sssssssssss.sssss..v.sss.ss",
+          "wwwwwwwwwwwwwwwss.hiiiiij.hiiiiij.sss.deeeefs.^._abcsss~~~ssssssssssssss.stssssstsss..°sss..v.sss.ss",
+          "wwwwwwwwwwwwwwwss,.IIIII....IIII..sss.deeeefs.^.sdefsss~~~ssssstssssssss.sssssssssss...sss!.v.sss.ss",
+          "===============sss,.....#.#...._s,....hiiiijs.^.sdefsss~~~ssssstssssstss.stsssstssss...sss,.v.sss.ss",
+          "ssssssssssssssssssssssss===sssssssssssssssss'.^.shijsss~~~stsstttsssssss.stsssssssss...ssss.v.sss.ss",
+          "ssssss'......................................F..sssssss~~~stsssssssstsss.sssssttssss...ssss.v.sss.ss",
+          "ssssss.D.>>>>>>>>>>>>>>>>>>>>>.>>>>>>>>>>>>>>...sssssss~~~tstssssssssss'.°sstssts'..........v.sss.ss",
+          "ssssss...................########.............._ssstsst~~~sstssssssssss...sststst.#========.v.sss.ss",
+          "ssssss.^._ssssssssss,!...===#####ssssssssssssssssssssts~~~sttssssssssss,._stsstss.#wwwwwww#.v.sss.ss",
+          "sstsss.^.sssssssssssssssssss#abc#ssssssssssssssssssssst~~~sssttsssssssss.ssssssss.#wwwwwww#.v.sss.ss",
+          "ssssss.^.ssttstsssssssssssss#def#°ssstsssttssssssssstts~~~tsttsssssss#####ssttsss.swwwwwww#.v.sss.ss",
+          "sstsss.^.stststtsssstsss###s#hij#.sttsssstsssstsssststs~~~sssssstssss#abc#sssstts.swwwwwww#.v.sss.ss",
+          "ssssss.^.stsstssstsstsss=.=s=====.sstsstssssttttstttttt~~~tsssstsssss#def#sssssss.#wwwwwww#.v.sts.tt",
+          "ssssss.^.sssttststsssssss.sssssss.ssssssstsssttttttttt#~~~#tttttttsss#hij#sssssss.#wwwwwww#.v.sttttt",
+          "ssss##.^.##stssssssstssss........_sssssssssstssttttttt=====ttttttttss########...!.=========.v.ssttts",
+          ".....#.^.#................ssssssssssssssssstsstt'....................========..............B..stttts",
+          "ssst==.^.==stst........................°sssssstt.H.<<<<<<<<<<<<<<<<<<<<.<<<<<<<<<<<<<<<<<<<...stttss",
+          "ssssss.^.ssssss.abbbc.acsacsacsac.abbbc.sstssttt............................................._tttsss",
+          "ssss##.^.##ttss.deeef.hjshjshjshj.deeef.sstssstt.v._st#===#s'.ss'.s'.ttttttttttttttttttttttttsttssss",
+          ".....#.^.#......hiiij.............hiiij.ssttstts.v.ttt=~~~#'._s'.s'._sssssssssstststtttttttttttsstss",
+          "ssss==.^.==ssss.sssss.acsacsacsac.sssss.sstssstt.v.tttt~~~#._s'._'._ssssssssssssstsstttsttttttssssss",
+          "ssstss.^.ssttss.abbbc.hjshjshjshj.abbbc.sstssstt.v.ttss~~~#_s'.s'._sssssssssttssssssttttttttttttssss",
+          "sstsss.^.ststts.deeef.IIIIIIIIIII.deeef.ssstsss#.v.#tss~~~#s'._'._sstsssssttstsabcsstttstttttttttttt",
+          "sstsss.^.ssttss.hiiij.............hiiij.sssss'.#.v.#...~~~#'._'._sstsssssssssssdefsssttttttttttttttt",
+          "ssss=#.^.#=tsts.sssss====#...#====sssss.sssts.=#.v.#=ss~~~===t,===tttstttsssssshijsttttttttttsssstst",
+          "~~~~~#.^.#~~~~~~~~~~~~~~~#...#~~~~~~~~~~~~~~~~~#.v.#~~~~~~~~~~~~~~~~~~~~~~~~~~=====~~~~~~~~~~~~~~~~~",
+          "~~~~~#.^.#~~~~~~~~~~~~~~~#...#~~~~~~~~~~~~~~~~~#.v.#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+          "~~~~~#.^.#~~~~~~~~~~~~~~~#...#~~~~~~~~~~~~~~~~~#.v.#~~~~~#====~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+          "stss==.^.##ssss.sssss=====...=====sssss.sssss.==.v.#===~~#abcssss'..°stttttttsttsttttttttsttttttttts",
+          "ssssss.^.#####s.........................sssss.s..v.#._'~~#defsss'._,.°sttttttttttttttstttttttttttttt",
+          "stssss.^.#abc#°.abbbc.acsacsacsac.abbbc......_s..v.#...~~#hijss'._ss,.°ssttssttttsssttttsttttttttstt",
+          "ssssss...#def#..deeef.hjshjshjshj.deeef.ss.ssss..v.#._s~~=ssss'._ssss,.°ssssssssssssssssttttstssssss",
+          "stssss.^.#hij#_.hiiij.............hiiij.ss.ssss..v.#_ss~~~sss'._ss'...............................°s",
+          "sstsss.^.##===s.sssss.acsacsacsac.sssss.ss.######v.==ss~~~ss'._sss.sssssssssssssssssssssssssssssss.s",
+          "ssssss.^.##ssss.abbbc.hjshjshjshj.abbbc.ss.#abc##v.tsss~~~ss.°ssss.s#===========================#s.s",
+          "sstsss.^.##ssss.deeef.............deeef.ss.#def##..tsss~~~ss,.°sss.s#sssssssssssssssssssssssssss#s.s",
+          "ssssss.^.==ssss.hiiij.acsacsacsac.hiiij.ss.#hij##v.tttt~~~sss,.°ss.s#s'.......................°s#s.s",
+          "sstsss.^..sssss.sssss.hjshjshjshj.sssss.ss,====##v.tstt~~~ssss,.°s.s#s.........................s#s.s",
+          "ssssss.^..sstss.abbbc.............abbbc.sssssss##v.tsss~~~ttsss,.°.s#s..##.................##..s#s.s",
+          "ssssss.^..sssss.deeef.acsacsacsac.deeef.sssssss##v.tsss~~~stssss,..s#s..==.................==..s#s.s",
+          "ssssss.^.!sstss.hiiij.hjshjshjshj.hiiij.sssssst==v.tsss~~~sssssss,.s#s.........................s#s..",
+          "ssstss.^._sstss.sssss.............sssss.sssssstt.v.ttss~~~sssttsts.s#s.........................s#s.s",
+          "ssssss.^.ssstss.abbbc.acsacsacsac.abbbc.sssssstt.v.tts#~~~#sssttss.s#s.....###############.....s#s.s",
+          "ssssts.^.sstsss.deeef.hjshjshjshj.deeef.ssssss##.v.##s=====sssttts.s#s.....===============.....s#s.s",
+          "ssssss.^.stttss.hiiij.............hiiij........#.v.#...............s#s.........................s#s.s",
+          "sstsss.^.tttsss,......acsacsacsac.......ssssst==.v.==s#####tstttts.s#s.........................s#s.s",
+          "ssssss.^.ssstsstsstss.hjshjshjshj.sssss.ssssssst.v.tss#~~~#tstttss.s#s.....###############.....s#s.s",
+          "tsssss.^.ssstssssstts,..........._sssss.ssssss##.v.##t=====sstttss.s#s.....===============.....s#s.s",
+          "ssssss.^.tttssssssstsssssssssssssssssss........#.v.#...............s#s.........................s#s.s",
+          "tsssss.^.sssttssssst'II°ss'.....°ssssss.ssssss==.v.==s#####sttttts.s#s.........................s#s.s",
+          "ssssss.^.sstsssstsst....ss.#####.°sssss.sssssstt.v.tss=~~~=sttttss.s#s..##.................##..s#s.s",
+          "ssssss.^.ssstttsstts.II.ss.#abc#......._ssssssst.v.ssss~~~stttttss.s#s..==.................==..s#s.s",
+          "stssss.^.ssssstsssss,......#def#,_tssssstsssssst.v.stss~~~stttstss.s#s.........................s#s..",
+          "stssss.^.ssssssstssssssssss#hij#ssssssssssssssss.v.ssss~~~sttttsss.s#s,......................._s#s.s",
+          "ssssss.^.°sssssssssssssssss########...!°ssstsss'.v.ssss~~~ssssttss.s#ssssssssssssssssssssssss.ss=s.s",
+          "stssss.C...................========.............B..stss~~~ttssttss.s======================ss'.°sss.s",
+          "stssss...<<<<<<<<<<<<<<<<<<<<.<<<<<<<<<<<<<<<<<<...ssss~~~ttsstsss.ssssssssssssssssssssssss'...°ss.s",
+          "tsssss,....................########..............._ssss~~~tsttttss,.........................abc..._s",
+          "tttssssssssssssssssssssssss===#####tssssssssssstsssssss=~~tttttsttsstt.ttttsssssssss.stssss.def.ssss",
+          "ssssssssssssssssssssssssssssss#abc#ssssssssssssssssssss~~~ttttttsstttt.ttttssttsssss.ttssss.hij.sstt",
+          "sstsssstsstssststtttssstssssss#def#sssssssssssssssssstt~~~stttttttttts.stttstttttttt.ttttts,..._sttt",
+          "sstssstsssssssstttssssssssssss#hij#sssssssssssssssstttt~~~tttttttttttt.tttttsttttsst.ttttsssssssttts",
+          "sstssttssttsstssststtsssstssss=====sssssssssssssssttttt~~~ttsttttttttt.tsttsstttttts.sssttttsttttsss",
+          "sssststsssssssstttttssssstssssssssssssssssssssssssssttt~~~tttttttttttt.ttttttsssssss.ssssstttsssssss"
+        ]
+      }
+    },
+    "stage2":{
+      "object":[
+        { "set":{ "_":[ "stencil", "B" ] }, "x":944, "y":800, "pointState":0 },
+        { "set":{ "_":[ "stencil", "E" ] }, "x":960, "y":800, "pointState":1 },
+        { "set":{ "_":[ "stencil", "D" ] }, "x":528, "y":496, "pointState":1 },
+        { "set":{ "_":[ "stencil", "train" ] }, "x":464, "y":112 },
+        { "set":{ "_":[ "stencil", "subtrain" ] }, "x":448, "y":112, "frame":1 },
+        { "set":{ "_":[ "stencil", "subtrain" ] }, "x":432, "y":112, "frame":1 },
+        { "set":{ "_":[ "stencil", "subtrain" ] }, "x":416, "y":112, "frame":1 },
+        { "set":{ "_":[ "stencil", "subtrain" ] }, "x":400, "y":112, "frame":1 },
+        { "set":{ "_":[ "stencil", "G" ] }, "x":512, "y":496, "pointState":0 },
+        { "type":[ "station", "station5" ], "set":{ "_":[ "stencil", ">" ] }, "x":480, "y":112, "stationName":"North dock" },
+        { "type":[ "station", "station1" ], "set":{ "_":[ "stencil", "v" ] }, "x":960, "y":320, "stationName":"Plant A" },
+        { "type":[ "station", "station2" ], "set":{ "_":[ "stencil", ">" ] }, "x":1168, "y":816, "stationName":"Plant B" },
+        { "type":[ "station", "stationX" ], "set":{ "_":[ "stencil", "v" ] }, "x":1472, "y":1120, "stationName":"Plant C1" },
+        { "type":[ "station", "station3" ], "set":{ "_":[ "stencil", "<" ] }, "x":1120, "y":1472, "stationName":"Plant D" },
+        { "type":[ "station", "station4" ], "set":{ "_":[ "stencil", "^" ] }, "x":112, "y":1024, "stationName":"Load zone" },
+        { "type":[ "station", "station6" ], "set":{ "_":[ "stencil", "v" ] }, "x":704, "y":1088, "stationName":"Plant C2" }
+      ],
+      "set":{ "_":[ "stencil", "modelGameScene" ] },
+      "landName":"Massivecorp",
+      "tilemap":{
+        "tileWidth":16,
+        "tileHeight":16,
+        "map":[
+          "..hij.#t.tssttstsssttststttssssssssssssttsttsssttstssssttt.s#..#s==sss.ssststtsststs.sttssss.ttttttt",
+          "......#s.sssstsststststttssttsttsststtsssssttsssstttstttss.t#..#ssssss.ttstsstttttts.tttstst.sttstst",
+          "..abc.#s,................................................._t#..#s=ssss.ststttssssstt.tststtt.tssttst",
+          "..def.#ttssstttstsssssssttttttsttssssssttsttsststtsssststtts#..#ss=sss.stttttsttstts.tstttts.ttsstst",
+          "..hij.=======================================================..#ss=sss.sttttttssstst.sttsttt.ttsssss",
+          "...............................................................#ss=sss.ttttstttsttss.tssttss.ttsssst",
+          "..abc.#======================================================#.#s==sss.tsstttsssssst.ststtts.sssstts",
+          "..def.#D.>>>>>>>>>>>>>>>>>>>>>.>>>>>>>>>>>>>>>>>>>>>>>>>>>>A.#.#s=ssss.ststsstttttss.stttstt.tttsstt",
+          "..hij.#..================########==========================..#.#s=ssss.stttstsssstt'.°tstsst.stststt",
+          "......#^#............!...===#abc#..........................#v#.#ss=sss.tttsssttstst,._ttstst.tsstttt",
+          "..abc.#^#...................#def#.....abbbbbbbbbbbbbbbbbc..#v#.#ssssss.ssstsstsststs.ttttsst.sststss",
+          "..def.#^#...................#hij#.....deeeeeeeeeeeeeeeeef.!#v#.#s=ssss.ststststtstst.ttsstst.stststt",
+          "..hij.#^#...................=====.....hiiiiiiiiiiiiiiidef..#v#.#s==sss.sttssttsttttt.stsstss.tsstsss",
+          "......#^#.............................IIIIIIIIIIII....def..#v#.#sss=ss.tttsssttstttt.ttsssts.sssssst",
+          "..abc.#^#..abc.abc.abc.abc.abc.abc.!..............=.=.def..#v#.#s===ss.ststtstttssts.ssststt.sststss",
+          "..def.#^#..def.def.def.def.def.def...............===..def.##v#.#s==sss.sssssstttttts.tssttts.sttstss",
+          "..hij.#^#..hij.hij.hij.hij.hij.hij....................hij.##v#.#ss=sss.tstststssstst.ttttttt.sttssts",
+          "......#^#.................................................##v#.#s==sss..............................",
+          "..abc.#^#..abc.abc.abc.abc.abc.abc.!...................#####v#.#ssssss.tttssstttstss.ssttsststsstsss",
+          "..def.#^#..def.def.def.def.def.def..........=..........#abc#v#.#sabcss.tssststssssss.sttsstttsststts",
+          "..hij.#^#..hij.hij.hij.hij.hij.hij........==...........#def#.#.#sdefss.ttssstsssttts.sstttsssstststt",
+          "......#^#..............................................#hij#v#.#sdefss.stssttsssssts.sssttsstttttttt",
+          "..abc.#^#..abc.abc.abc.abc.abc.abc.!..abc...=..........====#v#.#sdefss.ttsststssssss.tstssssttstttst",
+          "..def.#^#..def.def.def.def.def.def....def..................#v#.#sdefss.tsstsstssstst.tttttttsttttsts",
+          "..hij.#^#..hij.hij.hij.hij.hij.hij....def.!................#v#.#sdefss.ssstttsssttst.sttstssttstsstt",
+          "......#^#.............................def..................#v#.#sdefss.tttssststssss.ssssttststttsts",
+          "..abc.#^#..abc.abc.abc.abc.abc.abc.!..deebbbbbbbbbbbbbbbbc.#v#.#sdefss.sststssssttss.ssstsssttsstsss",
+          "..def.#^#..def.def.def.def.def.def....deeeeeeeeeeeeeeeeeef.#v#.#sdefss.ssstttstsstst.stttststtsstsss",
+          "..hij.#^#..hij.hij.hij.hij.hij.hij....hiiiiiiiiiiiiiiiiiij.#v#.#sdefss.stststtssttss.stststtsttttttt",
+          "......#^=..................................................#v#.#sdefss.sssssssttssss.ttssttststsssst",
+          "......#C.===================================================v#.#sdefss.sstsstsstssst.sttsstststsssss",
+          "......#..<<<<<<<<<<<<<<<<<<<<<<<...>>>>>>>>>>>>>>>>>>>>>>>>Av#.#sdefss.sttssssssstts.tsttsttststtsss",
+          "......==========================...========================..#.#sdefss.ststssttsssts.stssstttsssstts",
+          "..........................#sssss#^#........................#v#.#sdefss.stttsssstssts.ttsstttsttsstst",
+          "=========================##sabcs#^#...abc............abc...#v#.#sdefss.sssssssstssss.sssttsststtttts",
+          ">>>>>>>>>>>>>>>>>>>>>>>A.##sdefs#^#...def............def...#v#.#sdefss.sttsttstsstst.tsttstttssstttt",
+          "=======================#v##shijs#^#...hij============hij!..#v#.#sdefss.tsssssttttsts.tsststtttssssst",
+          ".......................#v##sssss#^#...>>>>>>>>>>>>>>>>>>...#v#.#sdefss.tssttttsttsst.sstsstststtssss",
+          ".......................#v#======#^#..!abc============abc...#v#.#sdefss.sstssst'.....................",
+          ".......................#v#......#^#...defIIIIIIIIIIIIdef...#v#.#sdefss.ssststs.sssssssssssssssssssss",
+          ".......................#v#......#^#...hij............hij...#v#.#sdefss.ttttsts.sabbbbbbbbbbbbbbbbbcs",
+          ".......................#v#......#^#........................#v#.#sdefss.sssssts.sdeeeeeeeeeeeeeeeeefs",
+          ".......................=v#......#^#...abbbbbbbbbbbbbbbbc...#v#.#shijss.ssststs.sdeeeeeeeeeeeeeeeeefs",
+          "=======================B.#......#^#...deeeeeeeeeeeeeeeef...#v#.#ssssss.ttsttss.shiiiiiiiiiiiiiiiiijs",
+          "<<<<<<<<<<<<<<<<<<<<<<<..#......#^#...hiiiiiiiiiiiiiiiij...#v#.#sabcss.tttssts.sssssssssssssssssssss",
+          "==========================......#^#........................#v#.#sdefss,.............................",
+          "................................=^#........................#v#.#shijssssssssssssssssssssssssssssssss",
+          "..abc.#=========================F.#........................#v#.#ssssssssssssssssssssssssssssssssssss",
+          "..def.#D.>>>>>>>>>>>>>>>>>>>>>>>..#........................#v#.=====================================",
+          "..hij.#..==========================........................=v=......................................",
+          "..abc.#^#..................................#===============...===============================#......",
+          "..def.#^#..................................#H.<<<<<<<<<<<<<...>>>>>>>>>>>.>>>>>>>>>>>>>>>>>A.#......",
+          "..def.#^#.....abbbbbbbcabbbbcabcabcabc.....#..======================########===============..#......",
+          "..def.#^#.....deeeeeeefdeeeefdefdefdef.....#v#..................!...===#abc#...............#v#......",
+          "..def.#^#.....hiiiiiiijhiiiijhijhijhij.....#v#.........................#def#...............#v#......",
+          "..hij.#^#..................................#v#.........................#hij#...............#v#......",
+          "..abc.#^#.....#======================#.....#v#.........................=====...............#v#......",
+          "..def.#^#.....#......................#.....#v#.............................................#v#......",
+          "..hij.#^#.....#.#=======#==#=======#.#.....#v#.............................................#v#......",
+          "..abc.#^#.....#.#sssssss#~~#sssssss#.#.....#v#!............................................#v#......",
+          "..def.#^#.....#.#s'°ssss#~~#ssss'°s#.#.....#v#.........abc.abc.abc.abc.....................#v#......",
+          "..hij.#^#.....#.#s,_'.°s#~~#s'.°,_s#.#.....#v#.........def.def.def.def....................!#v#......",
+          "..abc.#^#####.#.#sss.!.s#~~#s.!.sss#.#.....#v#.........hij.hij.hij.hij.!...................#v#......",
+          "..def.#^#abc#.#.#sss,._s#~~#s,._sss#.#.....#v##............................................#v#......",
+          "..def.#.#def#.#.#sssssss#~~#sssssss#.#.....#v##........abc.abc.abc.abc.....................#v#......",
+          "..def.#^#hij#.#.#sssssss#~~#sssssss#.#.....#v##........def.def.def.def....................##v#......",
+          "..def.#^##===.#.#sss'.°s#~~#s'.°sss#.#.....#v######....hij.hij.hij.hij.!..................##v#......",
+          "..hij.#^##....#.#sss.!.s#~~#s.!.sss#.#.....#v##abc#.......................................##v#......",
+          "..abc.#^##....#.#s'°,._s#~~#s,._'°s#.#.....#.##def#....abc.abc.abc.abc.................#####v#......",
+          "..def.#^#=....#.#s,_ssss#~~#ssss,_s#.#.....#v##hij#....def.def.def.def.................#abc#v#......",
+          "..hij.#^#.....#.#sssssss#~~#sssssss#.#.....#v#=====....hij.hij.hij.hij.!...............#def#.#......",
+          "..abc.#^#.....#.====================.#.....#v#.........................................#hij#v#......",
+          "..def.#^#.....#......................#.....#v#.........abc.abc.abc.abc.===.............====#v#......",
+          "..hij.#^#!....========================.....#v#.........def.def.def.def.====................#v#......",
+          "..abc.#^#..................................#v#.........hij.hij.hij.hij.===.................#v#......",
+          "..def.#^#....abcabbbbcabcabbbbcabcabcabc...#v#.............................................#v#......",
+          "..def.#^#....defdeeeefdefdeeeefdefdefdef...#v#.............................................#v#......",
+          "..def.#^#....hijhiiiijhijhiiiijhijhijhij...#v#.........abbbbbbbbbbbbbbbbbbbbbbbbbbbc.......#v#......",
+          "..def.#^=..................................=v#.........deeeeeeeeeeeeeeeeeeeeeeeeeeef.......#v#......",
+          "..def.#C.==================================B.#.........hiiiiiiiiiiiiiiiiiiiiiiiiiiij.......#v#......",
+          "..def.#..<<<<<<<<<<<<<<<<<<<<<<<<G<<<<<<<<<..#.........IIIIIIIIIIIIIIIIIIIIIIIIIIIII.......#v#......",
+          "..def.===========================..#==========.............................................#v#......",
+          "..hij............................#^#...................IIIIIIIIIIIIIIIIIIIIIIIIIIIII.......#v#......",
+          "..abc.abcabcabbbbcabcabcabcabc...#^#.......................................................#v#......",
+          "..def.defdefdeeeefdefdefdefdef...#^#.......................................................#v#......",
+          "..hij.hijhijhiiiijhijhijhijhij...#^#.......................................................#v#......",
+          ".................................#^#.......................................................#v#......",
+          "......IIIIIIIIIIIIIIIIIIIIIIII...#^#....===..===..===..===..===.....#####..................#v#......",
+          ".................................#^#....===..===..===..===..===.....#abc#..................#v#......",
+          "......IIIIIIIIIIIIIIIIIIIIIIII...#^#...!===.!===.!===.!===.!===.....#def#..................#v#......",
+          ".................................#^=................................#hij####...!...........=v#......",
+          "......IIIIIIIIIIIIIIIIIIIIIIII...#C.=======================================================B.#......",
+          ".................................#..<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<.<<<<<<<<<<<<<<<<<<<<..#......",
+          ".................................=============================================================......",
+          "....................................................................................................",
+          ".......................................!===.!===.!===.!===.!===.....................................",
+          "........................................===..===..===..===..===.....................................",
+          "........................................===..===..===..===..===.....................................",
+          "....................................................................................................",
+          "...................................................................................................."
+        ]
+      }
+    },
+    "stage3":{
+      "object":[
+        { "set":{ "_":[ "stencil", "D" ] }, "x":192, "y":352 },
+        { "set":{ "_":[ "stencil", "F" ] }, "x":352, "y":336, "pointState":0 },
+        { "set":{ "_":[ "stencil", "A" ] }, "x":352, "y":352, "pointState":1 },
+        { "set":{ "_":[ "stencil", "D" ] }, "x":368, "y":176 },
+        { "set":{ "_":[ "stencil", "E" ] }, "x":368, "y":512 },
+        { "set":{ "_":[ "stencil", "A" ] }, "x":512, "y":528, "pointState":1 },
+        { "set":{ "_":[ "stencil", "F" ] }, "x":512, "y":512, "pointState":0 },
+        { "set":{ "_":[ "stencil", "F" ] }, "x":512, "y":160, "pointState":0 },
+        { "set":{ "_":[ "stencil", "A" ] }, "x":512, "y":176, "pointState":1 },
+        { "set":{ "_":[ "stencil", "E" ] }, "x":528, "y":288 },
+        { "set":{ "_":[ "stencil", "D" ] }, "x":528, "y":368 },
+        { "set":{ "_":[ "stencil", "D" ] }, "x":528, "y":64 },
+        { "set":{ "_":[ "stencil", "E" ] }, "x":528, "y":608 },
+        { "set":{ "_":[ "stencil", "F" ] }, "x":1040, "y":608 },
+        { "set":{ "_":[ "stencil", "D" ] }, "x":1056, "y":368 },
+        { "set":{ "_":[ "stencil", "A" ] }, "x":1088, "y":304 },
+        { "set":{ "_":[ "stencil", "E" ] }, "x":1104, "y":352 },
+        { "set":{ "_":[ "stencil", "A" ] }, "x":1168, "y":64 },
+        { "set":{ "_":[ "stencil", "E" ] }, "x":1184, "y":352 },
+        { "set":{ "_":[ "stencil", "A" ] }, "x":1424, "y":368 },
+        { "set":{ "_":[ "stencil", "B" ] }, "x":1424, "y":1440 },
+        { "set":{ "_":[ "stencil", "C" ] }, "x":1232, "y":1440 },
+        { "set":{ "_":[ "stencil", "G" ] }, "x":1216, "y":1040 },
+        { "set":{ "_":[ "stencil", "H" ] }, "x":976, "y":1040, "pointState":1 },
+        { "set":{ "_":[ "stencil", "C" ] }, "x":976, "y":1024, "pointState":0 },
+        { "set":{ "_":[ "stencil", "B" ] }, "x":960, "y":1184 },
+        { "set":{ "_":[ "stencil", "G" ] }, "x":960, "y":880 },
+        { "set":{ "_":[ "stencil", "C" ] }, "x":192, "y":1184 },
+        { "set":{ "_":[ "stencil", "C" ] }, "x":192, "y":864 },
+        { "type":[ "station", "station3" ], "set":{ "_":[ "stencil", ">" ] }, "x":752, "y":64, "stationName":"Platform 1" },
+        { "type":[ "station", "stationX" ], "set":{ "_":[ "stencil", ">" ] }, "x":752, "y":304, "stationName":"Platform 2" },
+        { "type":[ "station", "station6" ], "set":{ "_":[ "stencil", ">" ] }, "x":752, "y":368, "stationName":"Platform 3" },
+        { "type":[ "station", "stationX" ], "set":{ "_":[ "stencil", ">" ] }, "x":752, "y":624, "stationName":"Platform 4" },
+        { "type":[ "station", "station1" ], "set":{ "_":[ "stencil", "v" ] }, "x":1440, "y":752, "stationName":"Headlands" },
+        { "type":[ "station", "station4" ], "set":{ "_":[ "stencil", "v" ] }, "x":1440, "y":1232, "stationName":"Footerlands" },
+        { "type":[ "station", "station2" ], "set":{ "_":[ "stencil", "<" ] }, "x":560, "y":880, "stationName":"Tophill" },
+        { "type":[ "station", "station5" ], "set":{ "_":[ "stencil", "<" ] }, "x":560, "y":1200, "stationName":"Southern" },
+        { "set":{ "_":[ "stencil", "train" ] }, "x":720, "y":368 },
+        { "set":{ "_":[ "stencil", "subtrain" ] }, "x":704, "y":368 },
+        { "set":{ "_":[ "stencil", "subtrain" ] }, "x":688, "y":368 },
+        { "set":{ "_":[ "stencil", "subtrain" ] }, "x":672, "y":368 }
+      ],
+      "set":{ "_":[ "stencil", "modelGameScene" ] },
+      "landName":"Main Station",
+      "tilemap":{
+        "tileWidth":16,
+        "tileHeight":16,
+        "map":[
+          ".........ssststtsss.ststsststssssststtssststtttssssttsssttttssttsttts.abc.tttsttt~~~ststssstss.sstts",
+          ".abc.abc.sstsstttst.ststtsabbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbc=======def.sttttss~~~ttttsssstt.ttsst",
+          ".def.def.tsttttttst.stsss'dfiiiiiiiiiiiiiiiiiiiiiiiiiiiiiefiiefssttss.hij.ttsssst~~~ttststttst.ssttt",
+          ".hij.hij.tstssssstt.ttttt,df.......======================hj..hj............°ssttt~~~sssssttstt.tstts",
+          ".........ttssttstts.sstts'hj.......>>>>>>>>>>>>.>>>>>>>>>>>>>>>>>>>>>>>>>...tttts~~~tttttsssts.ttsst",
+          ".abc.abc.ttttttssss.sssss,.........=======###########abc#ac..ac.............tsttt~~~ttstttsttt.stttt",
+          ".def.def.ssstssssts.sttst'.......^....!...####abc####def#df..dftsstttsabc.v.tstss~~~ttsststst#.#sttt",
+          ".hij.def.ssttttssst.sssst,.......^........####def####def#df..dfstsstttdef.v.tssts~~~sssssssst###ttss",
+          ".....def.stssssttss.sstts'.......^........####hij####def#df..dfttsstsshij.v.stsss~~~~~~~~~~~~~.~~~~~",
+          ".abc.def.tssststtts.ssttt,.......^........#######====def#df..dfttttstst#s.v.ssstt~~~~~~~~~~~~~.~~~~~",
+          ".def.hij.tststttsts.sttts'....!...........#######tsstdef#df..dfstssssss#s.v.tttss~~#abc#~~~~~~.~~~~~",
+          ".def.....sstssttstt.tss'.>>>>>>>..........#######s'°sdef#df..dfstttttts#t.v.ststs~~#def#tssts###ssss",
+          ".def.abc.stttttstts.stt.......!...........#######s,_sdef#df..dftsttttst#t.v.tsttt~~#hij#sttss=.=ttst",
+          ".def.def.ttssstttts.sss^s,.......v........#######tsstdef#df..dftttsssts#s.v.tttss~~=====sttsss.sssst",
+          ".hij.def.ssststssts.sst^s'.......v........###########def#df..dftttttsts#s.v.tssst~~~tt,......._sssts",
+          ".....def.tsssssttst.stt^s,.......v........####abc####def#df..dfttsttsss#s.v.tttts~~~ststtsttstsstsss",
+          ".abc.def.tststtsttt.sts^s'.......v........####def####def#df..dftsstssss#t.v.tttss~~~tsststtsstssssss",
+          ".def.hij..........._tts^s,.......v....!...####hij####def#df..dfttststst#s.v.tstst~~~ttsststttttttsts",
+          ".hij.....sttsststabctst^s'.........==================hij=hj..hj......°t#s.v.tttts~~~tsstttttsttsttts",
+          ".........ttstssttdefttt^s,.........>>>>>>>>>>>>.>>>>>>>>>>>>>>>>>>>>..t#t.v.tssss~~~stabcstssstttsts",
+          ".abc.abc.sstttttthij°st^s'.........##################abc#ac..ac.......°#s.v.sstt#~~~#sdefssttsssstst",
+          ".def.def.tt'........!..............##################def#df..dfsssss.v.=s.v.stss=====shijttttsssttss",
+          ".def.hij.st...>>>>>>>>.............==================hij=hj..hj...........................°ssabc#sss",
+          ".def.....tt.........!..............>>>>>>>>>>>>.>>>>>>>>>>>>>>>>>>>.>>.>>>>.>>>>>>>>>>>>>..twdef#tts",
+          ".def.abc.st.^.abc..._stvs'.........=======###########abc#ac..ac............................twhij#tst",
+          ".hij.def.ss.^.defstststvs,.......^....!...####abc####def#df..dfss.^.tss#tssttsst#####tsss.vswwww#sss",
+          ".....def.st.^.hijstssstvs'.......^........####def####def#df..dfss.^.tss#ssstssss=~~~=tsst.vtwwww#stt",
+          ".abc.def.ts.^.ttssstttsvs,.......^........####hij####def#df..dfss.^.tst#tttstttst~~~tttss.vswwww#tst",
+          ".def.def.ss.^.stttstttsvs'.......^........#######====def#df..dfss.^.sss#tststtsss~~~tttts.vtwwww#stt",
+          ".def.hij.st.^.ttssststsvs,.......^........#######tsstdef#df..dfss.^.sss#tttssttst~~~ttttt.vswwww#stt",
+          ".def.....tt.^.sttssststvs'.......^........#######s'°sdef#df..dfss.^.tts#tssststss~~~ttttt.vswwww#sts",
+          ".def.abc.st.^.sstttssttvs,.......^........#######s,_sdef#df..dfss.^.ttt#sttsstttt~~~ttsts.vswwww#stt",
+          ".hij.def.tt.^.tttsttstt.°'....!...........#######tsstdef#df..dfss.^.sss#sssssstss~~~tsstt.vswwww#tts",
+          ".....def.ss.^.ttttststs,.>>>>>>>..........###########def#df..dfss.^.sts#sststtstt~~~tssss.vtwwww#ttt",
+          ".abc.def.ss.^.tsttttssstt,....!...........###########def#df..dfss.^.stt#tsttsttst~~~ttsts.vtwwww#tss",
+          ".def.def.st.^.tstssstssts'.......v........####abc####def#df..dfss.^.sts#sttttssst~~~tsttt.vswwww#stt",
+          ".def.hij.tt.^.ststttsssst,.......v........####def####def#df..dfss.^.ttt#ttsttsttt~~~stsss.vtwwww#sst",
+          ".def.....ts.^.tstststttss'.......v....!...####hij####def#df..df...^.sss#ttsttssts~~~ststs.v°wwww#tst",
+          ".def.abc.ss.^.stttttsstts,.........==================hij=hj..hj.....tts#sttssssss~~~tsttt.v!wwww#sts",
+          ".hij.def.st.^.ststtttssst'.........>>>>>>>>>>>>.>>>>>>>>>>>>>>>>>...tss#tttssttss~~~stttt.v.wwww#sss",
+          ".....def.st.^.ststststtst,ac.......######################ac..ac...._sss#ttttststs~~~tstss.v.wwww#tss",
+          ".abc.def.ts.^.sstssttstts'debbbbbbbbbbbbbbbbbbbbbbbbbbbbbeebbefstssttts#sttststtt~~~sttts.v.wwww#ttt",
+          ".def.def.tt.^.ttstsssstts,hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiij=========stssststs~~~ttsts.v#wwww#tts",
+          ".hij.hij.st.^.sstttttsssttssstststsstssssttsstttsssssststttssttttstttstsststsssss~~~stsst.v#wwww=ttt",
+          ".........##.^.##ssssssttssstststtssssttss'IIIIIIIIIIIIIIIIIIIIIIIIII..°ststttsttt~~~tstst.v#tsststss",
+          "stst.abc..#.^.#.........................=..............................stssstssts~~~sssss.v#####ssst",
+          "stss.def.=#.^.==ttsttstssssttttttttsssabc.IIIIIIIIIIIIIIIIIIIIIIIII....sstttstsst~~~tssst.v#abc#stss",
+          "stst.hij.t#.^.ttsstttsttsssstsssttssstdef,.........................abc.tttttsstst~~~ttsts..#def#ssss",
+          "tstt,..._t#.^.ssssttstttsttttsststtttshijtsttttstsststtstststttsstsdef=stsstttstt~~~ttsss.v#hij#ttss",
+          "ssttttsttt#.^.sttttttttttssttststsstttssssstststtssttttssssststsssthij.ststsstttt~~~ttstt.v=====stst",
+          "sstttstsss#.^.sssststststtstttttt#####ttsttstttssstsssttststsststttsss.stttsstts#~~~#ttst.vttsstttts",
+          "ssststttts#.^.abcttttssstttsstsss#abc#tstttssttsssstsststtsssststtttt'.°sstststs=====st=#.v#=ttsttts",
+          "ttsttsssst#.^.defsssttststsstsstt#def#tssttsstssstssstssssts'.........t.................#.v#........",
+          "tsststssts#.^.hijtsststsssstttsts#hij#ststttttttstttstssstts.tsststss,._ttssssss#####st==.v==stttsst",
+          "stssttssts#.....................°========...!°ttsstttsttts'...°stsssts.ststtssst=~~~=stst.vtsstsstst",
+          "tssttsssst#.^.<<<<<<<<<<<<<<<<<<<<<.<<<<<<<<<<<<<<<<<<<<<<<<...tsttsst.ttssstssts~~~sttst.vtttssssst",
+          "stttsstsst#.^..................................................tssttss.ttssstssst~~~tssss.vtstttstss",
+          "tststtttst#.^.abcstsststtstttttsttstststsststttsss.sstt,abc..^.ststttt.ttstssttts~~~sstst.vsstststss",
+          "sttttststs#.^.defsttsstsstssttttststssttssststttss.tstttdef..^.tssssss.sttsssssts~~~sttts.vssttttsst",
+          "ttstst'...#.^.hijststtttsttttsttttsstttssssttssstt.tsttshij..^.stststs.ttttsstttt~~~ttsts.vssttttttt",
+          "ssttst.abc#.^.sstttsssstssss#==========#tt'........sttssts'..^.tstttst.ssssttssts~~~stttt.vssssttsss",
+          "tsttts.def#.^.sstsstssstt'..=~~~~~~~~~~=tabcssssss.stsstts...^.abcssts.tsssstsstt~~~stttt.vstsstssss",
+          "ssstss.hij#.^.ssstssssss'.~~~~~~~~~~~~~~#deftttstt.ssttsts...^.defsts#.#ststtttss~~~tttss.vtttsttsst",
+          ".......sst#.^.tstttsttt'.~~~~~~~~~~~~~~~#hijttstss.sttsstt...^.hijsst###tsstttstt~~~tsstt.vsstsststs",
+          "tsttts.abc#.^.tsssts'...~~~~~~~~~~~~~~~~=====~~~ts.ststssac...................°tt~~~tstts.vtststtttt",
+          "stsstt.def#.^.ssttts.~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.sstssthj!...<<<<<<<<<<<<<...ss~~~stttt.vsstttssts",
+          "tsssss.hij#.^........~~~~~~~~~~~~~~~~~~~~~~~~~~~~~.tttttss.....................st##~tstst.vtsssstsss",
+          "ttssss.sss#.^.sttsss,.~~~~~~~~~~~~~~~~~~~~~~~~~~~t.stttstt...v.abcsss###sabc.^.abc#~stsss.v°stssssst",
+          "sstsss.abc#.^.ssststs,..~~~~~~~~~~~~~~~~~~~~~~~~~t.tstssts...v.defsss=.=sdef.^.def#~tttst.v!tsstttss",
+          "tsttss.def#.^.ssstttttt,abbbbctstttt#~~#stttststss.ststtst...v.hijstst.tthij.^.hij#~sssss.v.tttststt",
+          "tsttts.hij#.^.sttstsststdeeeeftsstts====tttstsssst.tttsttt,..v.tttttts.tttst.^.ss==~ttstt.v.ststtsst",
+          ".......ttt#.^.abcttssssshiiiijtssssststtttststttss.tsstsabc..v.tsssstt.ttsts.^.st~~~sssst.v.ststtstt",
+          "tsstss.abc#.^.defsststtstt,......................._sttstdef..v.sttstst.sstst.^.ts~~~sttts.v#ssstsstt",
+          "sttsts.def#.^.hijsttssssttsstssttttsssstsssstssttssssttshij..v.ststsss.sstts.^.ts~~~ststt.v#ttststtt",
+          "sstsst.hij#..................................................._ttttttt.tttts.^.tt~~~ttttt.v#ssssttss",
+          "sttsts,...#...<<<<<<<<<<<<<<<<<<<<<.<<<<<<<<<<<<<<<<<<<<<<<<._ststssst.tstts.^.ts~~~tttss.v#####tsss",
+          "sssssttsts=,...................._#####===III!.sssttttttsst,._tsttttstt.tstss.^.ss~~~sttst.v#abc#ttss",
+          "ttststsstttsststsssssss.ssttstsst#abc#......._stttststssttsttssstsssts.tttts.^.st~~~sssst..#def#ssst",
+          "sssssttsttststtsttttstt.sstttssss#def#ttttsststttstttststssstttttttstt.tssst.^.ts~~~sttss.v#hij#stts",
+          "stttststtttstssstsstsss.ssttttstt#hij#tsttsttstsststtssttststsstttssts.sstss.^.tt~~~tttss.v=====ttst",
+          "stssstttststssttstststt.ttstsssst=====ssttttssstttttststtsttststsssttt.tssst.^.tt~~~tstts.vtsttsssts",
+          "tsstttttttttststtstssts.ttstttstsststtstsststssssststssstsssttsstsssts.ttsst.^.st~~~sstts.vttttsssts",
+          "tts'...............°sst.sts'...°tssttsttstststttttststttsttsssststttts.tttss.^.tt~~~sssts.vtssstssts",
+          "tts.abc.abc.abc.abc.tss.tts.abc.stsstttssststtssssssttsttsttsstsstttss.sstss.^.tt~~~ttsts.vttttsssst",
+          "stt.def.def.def.def.ttt.ttt.def.ststtts#####sssts########sststtstsstst.stttt.^.tt~~~sssts.vtttsssstt",
+          "tss.hij.hij.hij.hij.tts.stt.hij.tttstss#abc#tssss#abcabc#sssststtsstts.ttttt.^.ts~~~ststt.vsttsttstt",
+          "ttt.............................ssttstt#def#tttst#defdef#ssstsststtttt.stttt.^.ss~~~ttsss.vtstsssstt",
+          "sst.abc.abc.abc.abc.abc.abc.abc.ssstsss#hij#stsst#hijhij#tttstttttttss.sssss.^.abbbbbbbbc.vtsttsstts",
+          "tss.def.def.def.def.def.def.def.stsstss==.==tttss==s..t==ttststtststts.sstts.^.deeeeeeeef.vttttsssts",
+          "sts.hij.hij.hij.hij.hij.hij.hij......................................._sstst.^.hiiiiiiiij.vtttststss",
+          "ttt.............................tttststsssttstssttts.ttstststssttstsststssst...............ssttttsst",
+          "stt.abc.abc.abc.abc.abc.abc.abc.ttttsstststtsttsssst.tstsssttttssttttsststtt...<<<<<<<<<<..sttttstts",
+          "ttt.def.def.def.def.def.def.def.sttttstsststssssstts.sttstsstttstttsststssts,............._tttsstttt",
+          "tss.hij.hij.hij.hij.hij.hij.hij.stssttttttttstsststt.stssttttsstsstststsststsstst~~~tstsstsssttttsst",
+          "sts.tss.tss.tss.tss.........tss.tsttsssssssstsssstst.ststtstssssttttsssststsststs~~~sssttttttttttsst",
+          "sst.................abc.abc.....tttttststtstststtttt.ststtsssssstssstssttststttts~~~tssssssstttsttts",
+          "sts.abc.abc.abc.abc.def.def.abc.sttsss'..............................°sstststssst~~~tttttttsstssstst",
+          "sts.def.def.def.def.hij.hij.def.sttstt.sstttttsttttt.ststttstststssss.sttsssttstt~~~tssttstttttsstst",
+          "stt.hij.hij.hij.hij.tss.tss.hij.tsstss.tttsssttstsst.tstsssttsttttsts.tstsstttsst~~~tsttstssttssttss",
+          "tts.............................tsttts.stttstststsss.ssttsstststtstts.tttsttstsss~~~stttttssstststts"
+        ]
+      }
+    }
+  }
+}
