@@ -424,7 +424,7 @@ function WrightTools() {
 		["font","fontSize","lineHeight","outline","textAlign","html"], // Assignment
 		["forceX","forceY","forceZ"], // Assignment, Code -> Player -> Jump (forceY)
 
-		"applyVector", // Execute -> then part
+		"applyVector", "sumVector", // Execute -> then part
 		"remove","gotoScene", "withTransition", // Execute -> then part
 		"execute","onEnterExecute","executeAction", "elseExecute","subsequence", // State / Execute -> then part
 		"switch","case", // Switch/cases
@@ -804,6 +804,7 @@ function WrightTools() {
 		var pcs,t,p,out={},r=Math.floor(s.imagewidth/s.tilewidth),liked;
 		for (var i in s.tileproperties) {
 		  t=s.tileproperties[i];
+		  tid=t["#stencil"];
 		  if (t["#stencil"]&&(t["#stencil"].length==1)) {
 
 			var obj={};
@@ -831,7 +832,11 @@ function WrightTools() {
 
 			if (obj.tileX===undefined) obj.tileX=(p%r)*s.tilewidth;
 			if (obj.tileY===undefined) obj.tileY=Math.floor(p/r)*s.tileheight;
-			out[t["#stencil"]]=obj;
+
+			if (out[tid])
+				logLine("warn","Tile "+tid+" defined more than once.");
+			else
+				out[tid]=obj;
 		  }
 		}
 		return out;
@@ -956,6 +961,10 @@ function WrightTools() {
 
             mergeProperties(obj,MERGE_ALL,MERGE_DEFAULT,[tile?tile.properties:{},cur.properties,l.properties]);
 
+            if (cur.properties&&cur.properties["#nosize"]) {
+             delete obj.width;
+             delete obj.height;
+            }
 
             // CODE GENERATORS
             if (l.properties&&l.properties["#crop"]) {
@@ -991,6 +1000,7 @@ function WrightTools() {
               }
               chunk=runtidy(chunk,[function(a){return {scenes:{foo:{states:a}}}},["scenes","foo","states"]]);
             }
+
 
           } else if (startsWith(l.name,"tile")) {
 
