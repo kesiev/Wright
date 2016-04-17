@@ -2762,14 +2762,21 @@ function Wright(gameId,container,mods) {
 							}
 						}
 					}
-					if (line.applyVector) {
-						var angle;
-						if (line.applyVector.toward === undefined) angle = get(item, curtox, line.applyVector.angle);
-						else angle = Box.angleTo(item,get(item, curtox, line.applyVector.toward));
+					if (line.applyVector||line.sumVector) {
+						var angle, fx, fy, vector=line.applyVector||line.sumVector;
+						if (vector.toward === undefined) angle = get(item, curtox, vector.angle);
+						else angle = Box.angleTo(item,get(item, curtox, vector.toward));
 						angle *=  Math.PI /180;
-						var length = get(item, curtox, line.applyVector.length);
-						item.forceX = FIX(angle == 180 ? 0 : length * Math.sin(angle));
-						item.forceY = FIX(angle == 270 ? 0 : -length * Math.cos(angle));
+						var length = get(item, curtox, vector.length);
+						fx = FIX(angle == 180 ? 0 : length * Math.sin(angle));
+						fy = FIX(angle == 270 ? 0 : -length * Math.cos(angle));
+						if (line.applyVector) {
+							item.forceX=fx;
+							item.forceY=fy;
+						} else {
+							item.forceX+=fx;
+							item.forceY+=fy;
+						}
 					}
 					if (line.stopChannel) {
 						var channel=game.getAudioChannel(get(item, curtox, line.stopChannel));
