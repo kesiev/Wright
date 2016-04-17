@@ -1,0 +1,1325 @@
+{
+  "name":"Almost Golfing",
+  "author":"KesieV",
+  "year":2016,
+  "genre":"Sport",
+  "description":"When I was 7 I used to watch an anime on TV called 'Tutti in campo con Lotti' (Ashita tenki ni naare by Tetsuya Chiba, A Great Super Shot Boy in English) in which the main character become a pro golfer by chance. Every episode ended with a very short and pleasant golf lesson, In which you could learn golf terminology, rules and practices. Despite I wasn't in golfing (and I'm not in still now), I loved that part for some reasons and, thinking about that nowadays, I'm surprised on how much 'unwanted knowledge' we come across daily. Most of the gamers knows what an 'Uzi' is and how a 'Claymore' works, despite is military knowledge, we've learned from CSI and the following crime novels that 'UV lamps' can detect body fluids, which is forensics knowledge. What's fascinating is that that knowledge is naturally submerged into fake concepts we assimilate in the same way: hacking happens via computers but definitely not with the ease shown in movies, scientists applying the Schrodinger Cat paradox are cool but that's still a (quite far) theory for now and historical monuments weren't built to be easily climbable as shown in Assassin's Creed videogames. Fake things and real things are always mixed together and both of them are worthy to be remembered but it's up to us measure and check what is good and what is too good to be true. After all, humans, wasn't always like that? Now you've the tools for doing it in the right way! Plot! Now is your chance to win the Golfing Tournament and be the real champion! Keep your eyes peeled: always check the wind, avoid water hazards, bunkers, forests and mountains, and be the winner! Use LEFT/RIGHT for aiming, UP/DOWN for switching club. Hit the A BUTTON for shooting: when the indicator goes up you can decide the stroke power hitting the A BUTTON again and when it goes down you can decide its height hitting the A BUTTON once more.",
+  "screenshots":[ "golfing-1.png", "golfing-2.png" ],
+  "hardware":{
+    "width":256,
+    "height":192,
+    "texture":"scanlines"
+  },
+  "cheats":{},
+  "resources":{
+    "intro":"intro.png",
+    "sprites":"sprites.png",
+    "defaultsprites":"../default/sprites.png",
+    "scanlines":"../default/scanlines.png"
+  },
+  "stencils":{
+    "spark":{
+      "image":"defaultsprites", "tileX":64, "tileY":144, "width":16, "height":16,
+      "zIndex":10000, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "animations":{ "spark":{ "frames":4, "speed":3 } },
+      "animation":"spark",
+      "states":{ "code":{ "name":"Sequence", "data":[ { "wait":15 }, { "remove":1 } ] } }
+    },
+    "modelEndingScroll":{ "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "this", "x", "isLessThan", 8 ] }, "sum":3, "to":{ "_":[ "this", "x" ] } } } } },
+    "modelStage":{
+      "execute":[
+        {
+          "as":{ "_":"variable" },
+          "set":{ "club":0, "currentClub":{ "_":[ "stencil", "dataClubs", 0 ] }, "shotIndicator":0, "shots":0, "windAngle":0, "windForce":0 }
+        },
+        { "set":{ "cameraFocusY":90, "cameraFocusWidth":6, "cameraFocusHeight":6 } },
+        {
+          "object":[
+            { "image":"sprites", "tileX":0, "tileY":112, "width":8, "height":80, "x":240, "y":104 },
+            {
+              "type":"hud",
+              "hudType":"label", "label":"%text|variable.currentClub.name%",
+              "box":"label", "width":232,
+              "x":0, "y":167,
+              "font":"spectrum", "outline":"#000000", "textAlign":"right"
+            },
+            {
+              "type":"hud",
+              "hudType":"label", "label":"Hole %number|variable.hole%<br>Par %number|scene.par%<br>%number|variable.distance%y",
+              "box":"label", "width":232, "height":100,
+              "x":8, "y":8,
+              "font":"spectrum", "lineHeight":10, "outline":"#000000"
+            },
+            {
+              "image":"sprites", "tileX":8, "tileY":128, "width":16, "height":16,
+              "x":216, "y":153,
+              "font":"spectrum", "outline":"#000000",
+              "states":{ "code":{ "name":"Execute", "data":{ "set":{ "frame":{ "_":[ "variable", "currentClub", "icon" ] } } } } }
+            },
+            {
+              "image":"sprites", "tileX":32, "tileY":112, "width":16, "height":16,
+              "x":232, "y":8,
+              "font":"spectrum", "outline":"#000000",
+              "states":{ "code":{ "name":"Execute", "data":{ "set":{ "angle":{ "_":[ "variable", "windAngle" ] } } } } }
+            },
+            {
+              "type":"hud",
+              "hudType":"label", "label":"%number|variable.windForce%m",
+              "box":"label", "width":32,
+              "x":224, "y":21,
+              "font":"spectrum", "outline":"#000000", "textAlign":"center"
+            },
+            {
+              "image":"sprites", "tileX":8, "tileY":112, "width":10, "height":3,
+              "zIndex":10, "x":239, "y":143,
+              "states":{ "code":{ "name":"Execute", "data":{ "set":{ "y":{ "_":[ 143, "-", { "_":[ "variable", "shotIndicator" ] } ] } } } } }
+            }
+          ],
+          "into":{ "_":"scenehud" }
+        }
+      ],
+      "states":[
+        {
+          "execute":{ "object":{ "set":{ "_":[ "stencil", "previousHit" ] }, "x":{ "_":[ "objectTyped", "ball", "x" ] }, "y":{ "_":[ "objectTyped", "ball", "y" ] } } },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              {
+                "object":{
+                  "type":"label",
+                  "width":256, "height":40,
+                  "zIndex":100, "x":0, "y":76,
+                  "color":"#fff",
+                  "font":"spectrum", "lineHeight":40, "outline":"#f00", "textAlign":"center", "html":{ "_":[ "HOLE ", ".", { "_":[ "variable", "hole" ] } ] }
+                },
+                "into":{ "_":"scenehud" }
+              },
+              { "object":{ "_":[ "stencil", "fieldCamera" ] } },
+              { "wait":1, "until":{ "_":[ "objectTyped", "fieldCamera", "not" ] } },
+              { "wait":25 },
+              { "as":{ "_":[ "object", "label" ] }, "remove":1 },
+              { "as":{ "_":[ "objectTyped", "ball" ] }, "set":{ "state":"aim" } }
+            ]
+          }
+        },
+        {
+          "name":"hole",
+          "execute":[
+            { "set":{ "holeColor":"#ff0", "holeFoul":0, "holeLabel":"HOLE!" } },
+            { "sum":{ "_":[ "variable", "parDifference" ] }, "to":{ "_":[ "variable", "score" ] } },
+            { "as":{ "_":[ "variable", "parDifference", ".", "pts." ] }, "pushInto":{ "_":[ "variable", "scores" ] } },
+            { "when":{ "_":[ "variable", "parDifference", "isGreaterThan", 3 ] }, "set":{ "holeColor":"#f00", "holeFoul":1, "holeLabel":"FOUL!" } },
+            { "when":{ "_":[ "variable", "parDifference", "isEqualTo", 3 ] }, "set":{ "holeColor":"#f00", "holeLabel":"TRIPLE BOGEY" } },
+            { "when":{ "_":[ "variable", "parDifference", "isEqualTo", 2 ] }, "set":{ "holeColor":"#f00", "holeLabel":"DOUBLE BOGEY" } },
+            { "when":{ "_":[ "variable", "parDifference", "isEqualTo", 1 ] }, "set":{ "holeColor":"#f00", "holeLabel":"BOGEY" } },
+            { "when":{ "_":[ "variable", "parDifference", "isEqualTo", 0 ] }, "set":{ "holeColor":"#0f0", "holeLabel":"PAR!" } },
+            { "when":{ "_":[ "variable", "parDifference", "isEqualTo", -1 ] }, "set":{ "holeColor":"#0f0", "holeLabel":"BIRDIE!" } },
+            { "when":{ "_":[ "variable", "parDifference", "isEqualTo", -2 ] }, "set":{ "holeColor":"#0f0", "holeLabel":"EAGLE!" } },
+            { "when":{ "_":[ "variable", "parDifference", "isEqualTo", -3 ] }, "set":{ "holeColor":"#0f0", "holeLabel":"DOUBLE EAGLE!" } },
+            { "when":{ "_":[ "variable", "parDifference", "isEqualTo", -4 ] }, "set":{ "holeColor":"#0f0", "holeLabel":"TRIPLE EAGLE!" } },
+            { "when":{ "_":[ "variable", "parDifference", "isEqualTo", -5 ] }, "set":{ "holeColor":"#0f0", "holeLabel":"OSTRICH!" } },
+            { "when":{ "_":[ "variable", "shots", "isEqualTo", 1 ] }, "set":{ "holeLabel":"HOLE IN ONE!" } },
+            {
+              "when":{ "_":[ "variable", "parDifference", "isLessThan", 0 ] },
+              "set":{ "holeLabel":{ "_":[ "this", "holeLabel", ".", " ", ".", { "_":[ "variable", "parDifference" ] }, ".", "pts." ] } },
+              "elseExecute":{
+                "when":{ "_":[ "variable", "parDifference", "isGreaterThan", 0 ] },
+                "set":{ "holeLabel":{ "_":[ "this", "holeLabel", ".", " +", ".", { "_":[ "variable", "parDifference" ] }, ".", "pts." ] } }
+              }
+            }
+          ],
+          "code":{
+            "name":"Sequence",
+            "data":[
+              {
+                "object":{
+                  "type":"label",
+                  "width":256, "height":40,
+                  "zIndex":100, "x":0, "y":76,
+                  "color":"#fff",
+                  "font":"spectrum", "lineHeight":40, "outline":"#000", "textAlign":"center", "html":{ "_":[ "scene", "holeLabel" ] },
+                  "states":{
+                    "code":{
+                      "name":"Sequence",
+                      "data":[
+                        { "set":{ "color":"#fff", "outline":"#000" }, "wait":6 },
+                        { "set":{ "color":{ "_":[ "scene", "holeColor" ] }, "outline":"#fff" }, "wait":6, "loopTo":0 }
+                      ]
+                    }
+                  }
+                },
+                "into":{ "_":"scenehud" }
+              },
+              { "wait":25 },
+              { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+              { "sum":1, "to":{ "_":[ "variable", "hole" ] } },
+              { "when":{ "_":[ "this", "holeFoul" ] }, "gotoScene":"gameover", "elseExecute":{ "gotoScene":"scoreboard" } }
+            ]
+          }
+        }
+      ]
+    },
+    "aim":{
+      "type":"aim",
+      "follow":1,
+      "image":"sprites", "tileX":14, "tileY":115, "width":6, "height":6,
+      "cameraFocusX":122,
+      "zIndex":100,
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":[
+            { "applyVector":{ "angle":{ "_":[ "objectTyped", "golfer", "angle" ] }, "length":80 } },
+            {
+              "set":{
+                "x":{ "_":[ "objectTyped", "ball", "x", "+", { "_":[ "this", "forceX" ] } ] }, "y":{ "_":[ "objectTyped", "ball", "y", "+", { "_":[ "this", "forceY" ] } ] },
+                "angle":{ "_":[ "objectTyped", "golfer", "angle" ] }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "ball":{
+      "type":"ball",
+      "object":{ "_":[ "stencil", "ballShadow" ] },
+      "image":"sprites", "tileX":8, "tileY":115, "width":6, "height":6,
+      "zIndex":10,
+      "states":[
+        {
+          "name":"aim",
+          "set":{ "z":0, "follow":0, "visible":1, "forceX":0, "forceY":0, "forceZ":0 },
+          "execute":[
+            { "as":{ "_":[ "object", "golfer" ] }, "remove":1 },
+            { "sum":1, "to":{ "_":[ "variable", "shots" ] } },
+            {
+              "as":{ "_":"variable" },
+              "set":{
+                "distance":{ "_":[ "that", "distanceTo", { "_":[ "objectTyped", "hole" ] }, "*", 0.35, "floor" ] },
+                "parDifference":{ "_":[ "variable", "shots", "-", { "_":[ "scene", "par" ] } ] },
+                "windAngle":{ "_":[ "randomNumber", [ 0, 360 ] ] },
+                "windForce":{ "_":[ "randomValue", { "_":[ "scene", "windForce" ] } ] }
+              }
+            },
+            {
+              "when":{ "_":[ "variable", "parDifference", "isGreaterThan", 3 ] },
+              "as":{ "_":"scene" },
+              "set":{ "state":"hole" },
+              "elseExecute":{ "object":{ "set":{ "_":[ "stencil", "golfer" ] }, "angle":{ "_":[ "that", "angleTo", { "_":[ "objectTyped", "hole" ] } ] } } }
+            }
+          ]
+        },
+        {
+          "name":"hit",
+          "set":{ "follow":1, "life":0 },
+          "execute":[
+            { "object":{ "_":[ "stencil", "spark" ] } },
+            { "as":{ "_":[ "objectTyped", "previousHit" ] }, "set":{ "x":{ "_":[ "that", "x" ] }, "y":{ "_":[ "that", "y" ] } } },
+            {
+              "applyVector":{ "angle":{ "_":[ "variable", "shotAngle" ] }, "length":{ "_":[ "variable", "shotForce", "*", { "_":[ "variable", "currentClub", "shotRatio" ] } ] } }
+            },
+            {
+              "when":{ "_":[ "variable", "shotSpin", "isGreaterThan", -5 ] },
+              "set":{ "forceZ":-5 },
+              "elseExecute":{ "set":{ "forceZ":{ "_":[ "variable", "shotSpin" ] } } }
+            },
+            { "set":{ "forceZ":{ "_":[ "this", "forceZ", "*", { "_":[ "variable", "currentClub", "spinRatio" ] } ] } } }
+          ],
+          "code":[
+            {
+              "name":"Execute",
+              "data":[
+                { "sum":1, "to":{ "_":[ "this", "life" ] } },
+                {
+                  "when":{
+                    "_":[
+                      "this",
+                      "forceX",
+                      "abs",
+                      "isLessThan",
+                      0.5,
+                      "and",
+                      { "_":[ "this", "forceY", "abs", "isLessThan", 0.5 ] },
+                      "and",
+                      { "_":[ "this", "touchZ", "and", { "_":[ "this", "forceZ", "abs", "isLessThan", 0.5 ] } ] },
+                      "and",
+                      { "_":[ "this", "collidesWith", { "_":[ "objectTyped", "hole" ] } ] }
+                    ]
+                  },
+                  "set":{ "z":0, "forceX":0, "forceY":0, "forceZ":0, "state":"hole" },
+                  "elseExecute":{
+                    "when":{
+                      "_":[
+                        "this",
+                        "forceX",
+                        "abs",
+                        "isLessThan",
+                        0.1,
+                        "and",
+                        { "_":[ "this", "forceY", "abs", "isLessThan", 0.1 ] },
+                        "and",
+                        { "_":[ "this", "touchZ", "and", { "_":[ "this", "forceZ", "abs", "isLessThan", 0.2 ] } ] }
+                      ]
+                    },
+                    "set":{ "z":0, "forceX":0, "forceY":0, "forceZ":0, "state":"aim" },
+                    "elseExecute":{
+                      "when":{ "_":[ "this", "life", "isGreaterThan", 5 ] },
+                      "execute":{
+                        "when":{ "_":[ "this", "z", "isGreaterThan", -14, "and", { "_":[ "this", "collidesWith", { "_":[ "object", "tree" ] } ] } ] },
+                        "set":{ "state":"lost" },
+                        "elseExecute":{ "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "mountain" ] } ] }, "set":{ "state":"lost" } }
+                      }
+                    }
+                  }
+                },
+                {
+                  "when":{ "_":[ "this", "z", "isLessThan", -10 ] },
+                  "sumVector":{ "angle":{ "_":[ "variable", "windAngle" ] }, "length":{ "_":[ "variable", "windForce", "*", { "_":[ "this", "z" ] }, "*", -0.0001 ] } }
+                }
+              ]
+            },
+            {
+              "name":"Physics",
+              "data":{
+                "walls":[
+                  {
+                    "z":0,
+                    "firstExecute":{
+                      "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "tile" ] } ] },
+                      "execute":[
+                        {
+                          "set":{
+                            "forceX":{ "_":[ "this", "forceX", "*", { "_":[ "that", "friction" ] } ] }, "forceY":{ "_":[ "this", "forceY", "*", { "_":[ "that", "friction" ] } ] }, "forceZ":{ "_":[ "this", "forceZ", "*", { "_":[ "that", "bouncyness" ] } ] }
+                          }
+                        },
+                        { "when":{ "_":[ "that", "gotoState" ] }, "set":{ "state":{ "_":[ "that", "gotoState" ] } } }
+                      ]
+                    }
+                  },
+                  { "area":{ "width":1280, "height":1280, "x":0, "y":0 }, "restitution":0, "execute":{ "set":{ "state":"lost" } } }
+                ],
+                "gravityZ":0.5,
+                "limitX":[ -16, 16 ],
+                "limitY":[ -16, 16 ]
+              }
+            }
+          ]
+        },
+        {
+          "name":"lost",
+          "set":{ "visible":0 },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              {
+                "object":{
+                  "type":"label",
+                  "width":256, "height":40,
+                  "zIndex":100, "x":0, "y":76,
+                  "color":"#fff",
+                  "font":"spectrum", "lineHeight":40, "outline":"#f00", "textAlign":"center", "html":"LOST BALL"
+                },
+                "into":{ "_":"scenehud" }
+              },
+              { "wait":75 },
+              { "as":{ "_":[ "object", "label" ] }, "remove":1 },
+              { "set":{ "x":{ "_":[ "objectTyped", "previousHit", "x" ] }, "y":{ "_":[ "objectTyped", "previousHit", "y" ] }, "state":"aim" } }
+            ]
+          }
+        },
+        {
+          "name":"bunker",
+          "code":{
+            "name":"Sequence",
+            "data":[
+              {
+                "object":{
+                  "type":"label",
+                  "width":256, "height":40,
+                  "zIndex":100, "x":0, "y":76,
+                  "color":"#fff",
+                  "font":"spectrum", "lineHeight":40, "outline":"#f00", "textAlign":"center", "html":"BUNKER"
+                },
+                "into":{ "_":"scenehud" }
+              },
+              { "wait":75 },
+              { "as":{ "_":[ "object", "label" ] }, "remove":1 },
+              { "set":{ "state":"aim" } }
+            ]
+          }
+        },
+        {
+          "name":"hazard",
+          "set":{ "visible":0 },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "object":{ "_":[ "stencil", "spark" ] } },
+              {
+                "object":{
+                  "type":"label",
+                  "width":256, "height":40,
+                  "zIndex":100, "x":0, "y":76,
+                  "color":"#fff",
+                  "font":"spectrum", "lineHeight":40, "outline":"#f00", "textAlign":"center", "html":"HAZARD"
+                },
+                "into":{ "_":"scenehud" }
+              },
+              { "wait":75 },
+              { "as":{ "_":[ "object", "label" ] }, "remove":1 },
+              { "applyVector":{ "angle":{ "_":[ "this", "angleTo", { "_":[ "objectTyped", "previousHit" ] } ] }, "length":1 } },
+              { "set":{ "x":{ "_":[ "this", "x", "+", { "_":[ "this", "forceX" ] } ] }, "y":{ "_":[ "this", "y", "+", { "_":[ "this", "forceY" ] } ] } } },
+              { "loopTo":-3, "until":{ "_":[ "this", "collidesWith", "obstacle", "not" ] } },
+              { "set":{ "state":"aim" } }
+            ]
+          }
+        },
+        {
+          "name":"hole",
+          "set":{ "visible":0 },
+          "execute":[ { "object":{ "_":[ "stencil", "spark" ] }, "as":{ "_":[ "objectTyped", "hole" ] } }, { "as":{ "_":"scene" }, "set":{ "state":"hole" } } ]
+        }
+      ]
+    },
+    "ballShadow":{
+      "into":{ "_":[ "this", "parent" ] },
+      "image":"sprites", "tileX":15, "tileY":121, "width":6, "height":7,
+      "zIndex":8,
+      "attachedTo":{ "_":"that" },
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":[
+            {
+              "set":{ "x":{ "_":[ "this", "attachedTo", "x" ] }, "y":{ "_":[ "this", "attachedTo", "y" ] }, "visible":{ "_":[ "this", "attachedTo", "visible" ] } }
+            },
+            { "when":{ "_":[ "this", "attachedTo", "removed" ] }, "remove":1 }
+          ]
+        }
+      }
+    },
+    "dataClubs":[
+      { "name":"Wood", "icon":0, "shotRatio":0.25, "shotSpeed":2, "spinRatio":0.3, "spinSpeed":4 },
+      { "name":"Iron", "icon":1, "shotRatio":0.2, "shotSpeed":2, "spinRatio":0.2, "spinSpeed":4 },
+      { "name":"Putter", "icon":2, "shotRatio":0.1, "shotSpeed":1, "spinRatio":0.1, "spinSpeed":2 }
+    ],
+    "fieldCamera":{
+      "type":"fieldCamera",
+      "follow":1,
+      "width":8, "height":8,
+      "x":{ "_":[ "objectTyped", "ball", "x" ] }, "y":{ "_":[ "objectTyped", "ball", "y" ] },
+      "execute":{ "applyVector":{ "angle":{ "_":[ "objectTyped", "ball", "angleTo", { "_":[ "objectTyped", "hole" ] } ] }, "length":2 } },
+      "states":{
+        "code":[
+          { "name":"Physics", "data":{ "walls":{ "type":"hole", "execute":{ "set":{ "follow":0 }, "remove":1 } } } },
+          { "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "set":{ "follow":0 }, "remove":1 } }
+        ]
+      }
+    },
+    "flag":{
+      "image":"sprites", "tileX":48, "tileY":112, "width":6, "height":16,
+      "zIndex":9,
+      "animations":{ "idle":{ "frames":2, "loopTo":0 } },
+      "animation":"idle",
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":{
+            "when":{ "_":[ "this", "distanceTo", { "_":[ "objectTyped", "ball" ] }, "isLessThan", 30 ] },
+            "set":{ "visible":0 },
+            "elseExecute":{ "set":{ "visible":1 } }
+          }
+        }
+      }
+    },
+    "golfer":{
+      "type":"golfer",
+      "image":"sprites", "tileX":8, "tileY":144, "width":16, "height":16,
+      "zIndex":11, "x":{ "_":[ "that", "x", "-", 10 ] }, "y":{ "_":[ "that", "y", "-", 5 ] },
+      "originX":"13px", "originY":"8px",
+      "states":[
+        {
+          "execute":[
+            { "as":{ "_":"variable" }, "set":{ "shotAngle":0, "shotForce":0, "shotIndicator":0, "shotSpin":0 } },
+            { "object":{ "set":{ "_":[ "stencil", "aim" ] } } }
+          ],
+          "code":{
+            "name":"Execute",
+            "data":{
+              "when":{ "_":[ "keyRight", "isDown" ] },
+              "sum":2,
+              "to":{ "_":[ "this", "angle" ] },
+              "elseExecute":{
+                "when":{ "_":[ "keyLeft", "isDown" ] },
+                "subtract":2,
+                "to":{ "_":[ "this", "angle" ] },
+                "elseExecute":{
+                  "when":{ "_":[ "keyA", "isHit" ] },
+                  "set":{ "state":"charge" },
+                  "elseExecute":{
+                    "when":{ "_":[ "keyUp", "isHit" ] },
+                    "execute":[
+                      { "sum":1, "to":{ "_":[ "variable", "club" ] } },
+                      { "when":{ "_":[ "variable", "club", "isEqualTo", { "_":[ "stencil", "dataClubs", "count" ] } ] }, "as":{ "_":"variable" }, "set":{ "club":0 } },
+                      { "as":{ "_":"variable" }, "set":{ "currentClub":{ "_":[ "stencil", "dataClubs", { "_":[ "variable", "club" ] } ] } } }
+                    ],
+                    "elseExecute":{
+                      "when":{ "_":[ "keyDown", "isHit" ] },
+                      "execute":[
+                        { "subtract":1, "to":{ "_":[ "variable", "club" ] } },
+                        {
+                          "when":{ "_":[ "variable", "club", "isLessThan", 0 ] },
+                          "as":{ "_":"variable" },
+                          "set":{ "club":{ "_":[ "stencil", "dataClubs", "count", "-", 1 ] } }
+                        },
+                        { "as":{ "_":"variable" }, "set":{ "currentClub":{ "_":[ "stencil", "dataClubs", { "_":[ "variable", "club" ] } ] } } }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "name":"charge",
+          "set":{ "frame":1 },
+          "execute":{ "as":{ "_":"variable" }, "set":{ "shotAngle":{ "_":[ "that", "angle" ] } } },
+          "code":{
+            "name":"Execute",
+            "data":[
+              { "sum":{ "_":[ "variable", "currentClub", "shotSpeed" ] }, "to":{ "_":[ "variable", "shotIndicator" ] } },
+              {
+                "when":{ "_":[ "variable", "shotIndicator", "isGreaterThan", 40 ] },
+                "execute":[ { "as":{ "_":"variable" }, "set":{ "shotIndicator":40 } }, { "set":{ "state":"spin" } } ]
+              },
+              { "when":{ "_":[ "keyA", "isHit" ] }, "set":{ "state":"spin" } }
+            ]
+          }
+        },
+        {
+          "name":"spin",
+          "set":{ "frame":2 },
+          "execute":{ "as":{ "_":"variable" }, "set":{ "shotForce":{ "_":[ "variable", "shotIndicator" ] } } },
+          "code":{
+            "name":"Execute",
+            "data":[
+              { "subtract":{ "_":[ "variable", "currentClub", "spinSpeed" ] }, "to":{ "_":[ "variable", "shotIndicator" ] } },
+              {
+                "when":{ "_":[ "variable", "shotIndicator", "isLessThan", -39 ] },
+                "execute":[ { "as":{ "_":"variable" }, "set":{ "shotIndicator":-39 } }, { "set":{ "state":"shot" } } ]
+              },
+              { "when":{ "_":[ "keyA", "isHit" ] }, "set":{ "state":"shot" } }
+            ]
+          }
+        },
+        {
+          "name":"shot",
+          "set":{ "frame":3 },
+          "execute":[
+            { "as":{ "_":"variable" }, "set":{ "shotSpin":{ "_":[ "variable", "shotIndicator" ] } } },
+            { "as":{ "_":[ "objectTyped", "aim" ] }, "remove":1 },
+            { "as":{ "_":[ "objectTyped", "ball" ] }, "set":{ "state":"hit" } }
+          ]
+        }
+      ]
+    },
+    "hole":{
+      "type":"hole",
+      "image":"sprites", "tileX":20, "tileY":112, "width":6, "height":6,
+      "zIndex":5,
+      "hitbox":{ "width":2, "height":2, "x":2, "y":2 },
+      "states":{ "execute":{ "object":{ "set":{ "_":[ "stencil", "flag" ] }, "x":{ "_":[ "that", "x", "+", 6 ] }, "y":{ "_":[ "that", "y", "-", 12 ] } } } }
+    },
+    "previousHit":{ "type":"previousHit", "image":"sprites", "tileX":8, "tileY":121, "width":6, "height":6, "zIndex":7 },
+    "#":{
+      "type":[ "tile", "obstacle" ],
+      "friction":0,
+      "image":"sprites", "tileX":16, "tileY":16, "width":16, "height":16,
+      "bouncyness":0,
+      "gotoState":"bunker"
+    },
+    ",":{ "set":{ "_":[ "stencil", "." ] }, "tileX":32, "tileY":48 },
+    "-":{ "set":{ "_":[ "stencil", "." ] }, "tileX":16, "tileY":48 },
+    ":":{ "set":{ "_":[ "stencil", "." ] }, "tileX":16, "tileY":0 },
+    "D":{ "set":{ "_":[ "stencil", "." ] }, "tileX":0, "tileY":64 },
+    "F":{ "set":{ "_":[ "stencil", "." ] }, "tileX":32, "tileY":80 },
+    ".":{ "type":"tile", "friction":0.91, "image":"sprites", "tileX":0, "tileY":0, "width":16, "height":16, "bouncyness":-0.5 },
+    "J":{ "set":{ "_":[ "stencil", "." ] }, "tileX":0, "tileY":48 },
+    "K":{ "set":{ "_":[ "stencil", "." ] }, "tileX":32, "tileY":64 },
+    "Y":{ "set":{ "_":[ "stencil", "." ] }, "tileX":0, "tileY":80 },
+    "Z":{ "set":{ "_":[ "stencil", "." ] }, "tileX":16, "tileY":80 },
+    "=":{ "type":[ "tile", "par" ], "friction":0.91, "image":"sprites", "tileX":32, "tileY":0, "width":16, "height":16, "bouncyness":-0.5 },
+    "A":{ "type":[ "tile", "obstacle", "tree" ], "friction":0, "image":"sprites", "tileX":0, "tileY":16, "width":16, "height":16, "bouncyness":0 },
+    "T":{ "set":{ "_":[ "stencil", "A" ] }, "tileX":0, "tileY":32 },
+    "M":{ "type":[ "tile", "obstacle", "mountain" ], "friction":0, "image":"sprites", "tileX":32, "tileY":16, "width":16, "height":16, "bounciness":0 },
+    "N":{ "set":{ "_":[ "stencil", "M" ] }, "tileX":48, "tileY":32 },
+    "O":{ "set":{ "_":[ "stencil", "M" ] }, "tileX":48, "tileY":16 },
+    "U":{ "set":{ "_":[ "stencil", "M" ] }, "tileX":32, "tileY":32 },
+    "W":{ "type":"tile", "friction":0.71, "image":"sprites", "tileX":64, "tileY":16, "width":16, "height":16, "bouncyness":-0.4 },
+    "w":{ "set":{ "_":[ "stencil", "W" ] }, "tileX":64, "tileY":32 },
+    "~":{
+      "type":[ "tile", "obstacle" ],
+      "friction":0,
+      "image":"sprites", "tileX":48, "tileY":0, "width":16, "height":16,
+      "animations":{ "idle":{ "frames":2, "loopTo":0 } },
+      "animation":"idle",
+      "bouncyness":0,
+      "gotoState":"hazard"
+    }
+  },
+  "scenes":{
+    "intro":{
+      "object":[
+        { "width":256, "height":192, "x":0, "y":0, "bgcolor":"#0ff" },
+        {
+          "image":"intro", "tileX":69, "width":172, "height":192,
+          "zIndex":10, "x":84, "y":192,
+          "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "this", "y" ] }, "subtract":2, "to":{ "_":[ "this", "y" ] } } } }
+        },
+        {
+          "width":258, "height":32,
+          "zIndex":5, "x":-1, "y":192,
+          "bgcolor":"#0f0", "border":"#000",
+          "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "this", "y", "isGreaterThan", 162 ] }, "subtract":0.3, "to":{ "_":[ "this", "y" ] } } } }
+        },
+        {
+          "image":"intro", "tileX":241, "width":126, "height":42,
+          "zIndex":20, "x":8, "y":-42,
+          "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "this", "y", "isLessThan", 40 ] }, "sum":1, "to":{ "_":[ "this", "y" ] } } } }
+        },
+        {
+          "box":"label", "width":256,
+          "zIndex":100, "x":0, "y":150,
+          "color":"#fff",
+          "font":"spectrum", "fontSize":20, "lineHeight":20, "outline":"#000", "textAlign":"center", "html":"PRESS START",
+          "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "visible":0 }, "wait":10 }, { "set":{ "visible":1 }, "wait":10, "loopTo":0 } ] } }
+        }
+      ],
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":{
+            "when":{ "_":[ "keyA", "isHit" ] },
+            "execute":[ { "as":{ "_":"variable" }, "set":{ "hole":1, "score":0, "scores":{ "_":[ "new", [] ] } } }, { "gotoScene":"scoreboard" } ]
+          }
+        }
+      }
+    },
+    "ending":{
+      "object":[
+        { "width":256, "height":192, "x":0, "y":0, "bgcolor":"#0ff" },
+        {
+          "width":256, "height":0,
+          "zIndex":5, "x":0, "y":96,
+          "bgcolor":"#fff",
+          "states":{
+            "code":{
+              "name":"Sequence",
+              "data":[ { "subtract":1, "to":{ "_":[ "this", "y" ] } }, { "sum":2, "to":{ "_":[ "this", "height" ] } }, { "wait":3, "cycles":20, "loopTo":0 } ]
+            }
+          }
+        },
+        {
+          "set":{ "_":[ "stencil", "modelEndingScroll" ] },
+          "width":154, "height":30,
+          "zIndex":20, "x":-154, "y":130,
+          "color":"#fff",
+          "font":"spectrum", "lineHeight":30, "outline":"#000", "textAlign":"center", "html":"FINAL SCORE"
+        },
+        {
+          "set":{ "_":[ "stencil", "modelEndingScroll" ] },
+          "width":154, "height":30,
+          "zIndex":20, "x":-154, "y":148,
+          "color":"#fff",
+          "font":"spectrum", "fontSize":40, "lineHeight":30, "outline":"#000", "textAlign":"center", "html":{ "_":[ "variable", "score" ] }
+        },
+        {
+          "box":"label", "width":154,
+          "zIndex":10, "x":8, "y":18,
+          "color":"#fff",
+          "font":"spectrum", "outline":"#000", "textAlign":"center", "html":"YOU COMPLETED THE"
+        },
+        {
+          "width":154, "height":30,
+          "zIndex":10, "x":8, "y":31,
+          "color":"#fff",
+          "font":"spectrum", "fontSize":30, "lineHeight":30, "outline":"#000", "textAlign":"center", "html":"COMPETITION!",
+          "states":{
+            "code":{
+              "name":"Sequence",
+              "data":[
+                { "set":{ "color":"#fff" }, "wait":1 },
+                { "set":{ "color":"#ff0" }, "wait":1 },
+                { "set":{ "color":"#f0f" }, "wait":1 },
+                { "set":{ "color":"#f00" }, "wait":1 },
+                { "loopTo":0 }
+              ]
+            }
+          }
+        },
+        {
+          "image":"intro", "width":69, "height":175,
+          "zIndex":20, "x":179, "y":192,
+          "states":{
+            "code":[
+              { "name":"Execute", "data":{ "when":{ "_":[ "this", "y", "isGreaterThan", 8 ] }, "subtract":2, "to":{ "_":[ "this", "y" ] } } },
+              {
+                "name":"Sequence",
+                "data":{
+                  "object":{
+                    "image":"defaultsprites", "tileX":208, "tileY":104, "width":8, "height":8,
+                    "alpha":0,
+                    "states":{
+                      "code":{
+                        "name":"Sequence",
+                        "data":[
+                          {
+                            "set":{ "x":{ "_":[ "randomNumber", [ 16, 53 ] ] }, "y":{ "_":[ "randomNumber", [ 16, 159 ] ] }, "alpha":1, "angle":{ "_":[ "randomNumber", [ 0, 90 ] ] } }
+                          },
+                          { "sum":5, "to":{ "_":[ "this", "angle" ] } },
+                          { "subtract":0.01, "to":{ "_":[ "this", "alpha" ] } },
+                          { "wait":1, "cycles":50, "loopTo":-2 },
+                          { "loopTo":0 }
+                        ]
+                      }
+                    }
+                  },
+                  "into":{ "_":"this" },
+                  "wait":20, "loop":1, "cycles":2
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"intro" } } }
+    },
+    "gameover":{
+      "object":{
+        "width":256, "height":192,
+        "x":0, "y":0,
+        "font":"spectrum", "fontSize":20, "lineHeight":192, "outline":"#000", "textAlign":"center", "html":"GAME OVER"
+      },
+      "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"intro" } } }
+    },
+    "1":{
+      "object":[ { "set":{ "_":[ "stencil", "ball" ] }, "x":309, "y":853 }, { "set":{ "_":[ "stencil", "hole" ] }, "x":1013, "y":195 } ],
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "par":3,
+      "windForce":[ 0, 0, 0, 2, 3 ],
+      "tilemap":{
+        "tileWidth":16,
+        "tileHeight":16,
+        "map":[
+          "ATTTAAAAATTTAAAAATAAAAAAAAAATATAAAATTAAAATTATTAATADwWwWWWwWWWwwWWWwwwWWWWWwwWWww",
+          "TAAAAATTTAAAAAATTAAATTAAAAATAAAATTTTAAATTAATTTATATJWwWWwWwWWWWWWWWwwWwWWwwWWwwww",
+          "ATTATTTAATATATTAAATTTAAAATAAAATTAAAAATTTAATTTATATJWWWwwWWwWWwWWwwWwWwwwwwWWWwwWw",
+          "TAATTAAATATATAATTTAAAATTAATAATTAAAAATTAAATTTATATJWwWwWWWwWWWwWwWWwWWWwwWWwWwWWWW",
+          "TATTTAATATAAATTAAAATTAAATAATTTTTAAATTAATTTTATATJwwWwwWWWWWwWWwwwwwwWWwWWWWWWWwwW",
+          "ATTAATTAAAATTAAATTTAAAAAATTAATTAAATAAATAATATATJwwwwWwwWWwWwWwWwwwWWwWWwWwWwWWwww",
+          "TTAATAAAAATAAATTATAAAATTTATATTAAAAAATTTATATATJWwWwWwWWWwWwWwWWwwWWwwwwWwwWWWwWWw",
+          "TATTAAAAATAATTAATAAATTATTAATAAATAATTATATTTATJWWwWwWWWwwWwwwWFZZZZZZYwWwwwWwwWWwW",
+          "ATTAATAAAATTAAATAAATTATAATAAAAAATTTTTATTTATJwwWWwwwwWWwWwwwF========YwWwWwWwWwwW",
+          "AAAATAAAATAAATAAAATAAAAAAAAAAAATATATATTAATJwWWwWW####WwwWwF==========YwWwwwWwwww",
+          "AAAAAAATTAAATATAATATTAAAATATAATATTTATTAATJWwwwWw#####WWwwF===========DwwWWwwWWwW",
+          "AAATAATAAATAATAATATAAAAATAAATTATTAATTAATJwWwWwWw#####wwWWF===========DwwwWwwWWWW",
+          "AATAATAATTATAAATTAAAAATTATATAATAAATTAATJwwwwwww######WWWWK===========DwwwWwwWWWw",
+          "TTAATAATTATAATTAAAAAATAAAATAATTAATTAATJWWwWWWww#######wwwK===========DWWWWWWWWww",
+          "AAATATTAATAATTAAATAATTAAATAATTAATATATJWWWwwwWwWw#####wWwwK===========JWwwWwWwwWw",
+          "AAAATAAATATTAAAATAATTAATTAATTAATAAATJWWWWWwWwWWwwWwWWWwWw,==========JwWWwwwwWWWW",
+          "AATTATTAATATAATAAATAAATAAATAATTAATTJWWWwWWwwwwWwwwwWWWwwWW,=======JwWwWWwwWWwwWw",
+          "ATTAAAAATTAATTAAATTTATTATTATTTATTTJwWwWwwwWwwwWWWWWWwwWwwWw,-----JWwWwWwwwwWWWww",
+          "AAAATAATAATTAAATTTAAAAATAATTAAAATJWWwwWWWWWwWWWFZZYWWWWWWWWwwwwwwwwWwWwWWWwWwWWw",
+          "TAATAATTATTAAATTTAAATATTATTAAATTJwWwWwwWWWWWWFZ..:.ZZZZZYWWWWwwwwWwWwwwwwwwwWWWw",
+          "AATAATAATTTAATTAAAATATAATTAAATJwwWwWWWWWWWWF::::....:...::ZYWWWWwwwWwWWWWwWwwwWw",
+          "ATAATATTAAAATAATAATATATTTAATTJWWWwWWWWWWFZZ:.......::.:.::.:YWWWwWWwWwwWWWWWwWWw",
+          "TAATATTAAAATTATAATATTTTTAATJwWwWWwwWWWWF......::.::.::::::.:.YWwWwwWWWWwWwWWwwwW",
+          "AATATTAAAATTATAATATTTTAAATJwWwwwwWwwWWF...:......:.:::.::.:.:JWWWwWwwwwwwwwwwwwW",
+          "ATATTTAAATTAAAATATTTTTAATJWwWWWWwwwWWF:.:..:..:.::.::....::.:WWwWwWWwWWwwWWwwwWW",
+          "AATAAAAATTATATTTTTTTAATTJWWWWwWwWwWWF::.::......::.:.::::...JWWwWwwwWwwWWWwWWWww",
+          "TTTAAAATTATATATTTTAAATJWwWWWWWwwwWWF.:..:::.:.::::.:.:....:JWWwWWwWwWWwWwwWwwWww",
+          "TTTTAATTATAAATTTTAATTJWwwwwwwWwWWF:.::..:.:.:.:::.:.:....:JWWwWWwwwwWwWWWWWwwWWW",
+          "TAATATAATATTTTTAAATJWwwwWWwwWWWWF...::::...:....:.:.::::..WWWWWwWwWWWwWWwWwWWwWw",
+          "AAAAAATTAATTTTAAATJwWwwwWwwWwWWF..:.::..:::....:..:.:::..JWwWwwWwwWwWWWwWwwWwWWF",
+          "AAAATTAAATTATAAAAJWwwwwWwwwWWWF::::..:.:.:::.:..:.:::.:.JWWWwWwwwwwwwwWWWWwWWWAA",
+          "AAATTAAATTATAATTTWwwwWwwwWWWWF.::.:::.:::::...:::::..::JWWWWwwWWWwWwWwwWwWWWWFAT",
+          "AATAAATTATTAATTJwwwWWWwwWwWWF.:::....:::..::..:..::..:JWwWwWWwWwwWwWwWWwWWWFAATT",
+          "TTAAATTAATAATTJwwwwWwwwwWWFZ.::.:.:::.:.:...:..::....JWWWwwwWwwwWwwwwwwWwwFAAATT",
+          "TATATTATAAATTwwWWWwWwWwWWF:.::.:.:.:.:......:..:.:..DWWWwWwWwwwWwWWWwwwWwFAAATAA",
+          "AAATTTTAAATTJWwWWwWwWwWWF.:.:.:...::...:..:...:....:JWWwwwwWwWWwwwwwwWWWFAATAAAT",
+          "ATTTTATAATTJWwwwwwWwwWWF:.:..:.:::........:::::..::JWWWwWwWwwwWwWwWwWwwFAAATTAAA",
+          "TTTTTTAATTJwwwWwWwWwWWF.:..:...:::.:....:.:.:.::.:JWWwwWWwwWwwWwWWWwWWFATAAATATT",
+          "TTTTTAATJWWwwwwWWwwWWF.:::::..:.::.:..:....:..:.:JWWwwWWWwWwwwWwWwWWWFATAATATAAA",
+          "AATAAATJWwWWWwWWWWWWF::::::..:...::..:.......:.:JWwwwWwwWWwWWWWwWwwWFATATTAAATAT",
+          "TATAATJWWwWWwWWwWWWF:.::...:...:...:.::.:----:.JWWWwwwWwwwWwwwWWwwFAAAATATTTTATA",
+          "AAAATJwwWwWwwWwWWWF::...:..:::::....:.:-J####,JWwwWWWWwWwWwwWWWWwFATAAATTTATATAT",
+          "ATATJwWWWWwwwwwWWF.::.::..:.:..:::.:..J#######WWwWwwWwwwWWWwWWWWFAAATTTAAAAAAATT",
+          "AATJWwWWWWwwwWWWF.:.:.:..::::..::.:..D#######WWWwwwWwwWWwWwwwwwFATAAATTATATTATTT",
+          "TTJwWWWWWWwwWWWF...::..::...:.:...:::D#######WWWWwwWWwwwwwWwWFAATAATATTATTATTATT",
+          "AJwWWwwwwWwwWWF::..:......:::::..:.:.D######WWWwWwwwWWwWwWwwFAAATTAAAAATATTTATAA",
+          "TWWWwwwWWWwWWF.::.::.....:..:::...:.::Y####WwwwWwWwWWWwwWwFAATTAAAATTTTTTAATTTTT",
+          "JWWwwWwWWwwWF.:::::.:.:::.:.::::....:.:ZYWWwwwWWWwWwWWWWWFAAAATTAAATATTTAATATAAA",
+          "wWWWWWwwwWWWK:::..::..:.:..:....::....::JWwwWwWWWwwWwWWwFATTTATTAATTTTTTATTAAAAT",
+          "WwwwWwWWwwWF..::::===.::.::...:..:.::.-JWWwWwWWWwwwwwWWFATAAATTATTTATATAATTTAATT",
+          "WWWWwwwwWWW::...======:..::...::..::.JWWWwwWwWwwwwwWWFAAAATTTTTAATAAATTTTATAAAAA",
+          "wwwwWwwWwWF::.:========::...:..:..:.JWWwwWwWwWwwwWwWFAATAAAATTTTAAATTTTATATTTAAT",
+          "wwWWWWWWWWK.::.=========::...:::..:JWWwwwwWWWwWwwwFAAAAAAAAAAAATTTATAATTTATTATAT",
+          "WwWwWwwWWWK.:.:=========:.:..:...-JWWWWwWWWwwWwWwFAAATTTTTTTTATAATTATTTTTAAATTTT",
+          "WwWWWWwWWF.::::=========:...:...JWWWwWWWwWWWwWWFAAAAAATTAAATTTTTTAAAATTTAATTAAAA",
+          "WWwWwWWWWK.:.:..========::..:.:JWWwwWwWwwWwWWwFAATTATTTATTATAAATTAAAATTTAATTATTA",
+          "wwwwWwWWW,:...:.:======:.:.::-JWWwwWWWWwwWWWwFAATAAAATTTATATTTATTATAAATAAATTAATT",
+          "wwwWWwWWWW::.:.:::.:.:.:::.-JWWWWwwWWwwWWwFAAATATTTAAAATTTATATATTAATAATTTTTTAATA",
+          "WwWwWwwWwW,..:....:::.:.:.JWWWwwWWWWWwWwwFAATAAAAATTATTAATAATATTAAAAATTAAAATATTT",
+          "WwWwWWwWwwW,...:.:::.::::JWWwWwWWWwwwWWFAATAATTTAAAAATATAATAATATAATATATTTTTTATTA",
+          "wWwwWwWwwwWW,:.::..:::-JWWWWWWwWwwwWWFAAATTATTAATTTATTATTAATTATATAATATATATTTAATA",
+          "YWwwWWWWWwwWW,.::.::.JWWWwWwwwwWwWwFAAATAAATATAAAATATAATATTTTATAAATATTTTTTTTTTTT",
+          "AYWwWwWWWwWWWW,----JWWWWwWwWwwwWWWFATATAATTAATTTTAATATTTAATTAAATTTATTTTATTATAATT",
+          "AAwwwWWwwwWwWWWWWWWWWWWWWWwWwWWwFAAATTTAAAATTTTTTATAAATTTTAAAAAATAAATTATAAATTTTA",
+          "TAYWWwwwwWWwwWwwwwwWwwwWwwwWWwWFAAAATATTTTTATTATAATATTATTATATTTTATTATTTTAATTATAA",
+          "AAAYWWwwwWwWWWwwwWWWwwWWWWWwwFAATTTATATAAATTTTTTATATATTTAATAATAAATAAAAAAATTTAAAT",
+          "ATAAYwWWwWWWwWWWWwWwWWWWWwwWFAAAAATTAATTATTAATAATAATATTAATTAAAATAAAAATTAAATAATTT",
+          "ATTAAYWWwWWwwWwWWwwwwwWwWWFAAATAATTATAATTATTAAAAAAATAATTATTTTATTTATAATTTTTAATAAT",
+          "AATTAAYWwwwWWwWWWWwWWWwWFAAATAATTTAATTTATTAAAATATAAAAATTAAATAAATAATTTTATAATAAAAT",
+          "AATTAAAAYWWWWWWWwWWWwFAAAATATTAAAATTATTATAAAAATATTTAATATATTTATTATAAAATATTATTAATT",
+          "TAATAAAAAAAAAAAAAAAAAATTTTAAAATAATTAAAATTATAAATAATAATTAAAAAAATAAATAATATATATTTATT",
+          "TATAATATTATTATTTATTTAAAATATAAATTTAATTATTATTAATTAAATTTTATTTTTAATAATTAAATTTTTAATTA",
+          "TTAATAAAAATATTTTTAATATTTATAAAATTAAATTTTTTAATTAATTTTAAAAAATTTTTTATTATATATATAAATAT",
+          "TAATAATTTAAAAAATTTATTATTAAAATATAATTTTTAAAAAAATTTAATTAATAAAAATAATTTTATATAAATATATA",
+          "AAATATATAATTTAAAAATATATATATAATATTTTATTATTATTATAATAAATAAAATTTATATAAATATATTAAAATTA",
+          "ATTTTTAAAAATAAATTAATAATTAAATAAAATATATTAATATTATAAAATAATTATTTAAAAAAAATTAATAATATTAT",
+          "TTTATATATAATATATAATTAAAATATAAATAATTTTAAATTATTTATAAAATTAAAATATATAAATATAATTAATAATA",
+          "AATAATTTATTTTTAAAAATATTTTTATAAAATATATATATTATATATATATTTTAATTAAAATTATATATATTTAATTT",
+          "ATATTTTATATTAAAATAAAATTAATATTTAAAATAAATAAAAATAAATATTAATTAATAATATTAATTATTTTATATTT",
+          "ATAATTAAATATATATTATAAATATTAAATTTATTATTATATAATATTTTAATAAAATTTATTTATTATTTAAATTTTTA"
+        ]
+      }
+    },
+    "2":{
+      "object":[ { "set":{ "_":[ "stencil", "ball" ] }, "x":144, "y":1108 }, { "set":{ "_":[ "stencil", "hole" ] }, "x":995, "y":116 } ],
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "par":3,
+      "windForce":[ 0, 0, 2, 2, 3, 4 ],
+      "tilemap":{
+        "tileWidth":16,
+        "tileHeight":16,
+        "map":[
+          "MOMOMOMOMOMOMOMOMOMOMOAAAAAAAATTTAAAWwwwWwwWWwWWwwWwwWWwwwWFYwwWWWWWWwwWwwWwWwww",
+          "UNUNUNUNUNUNUNUNUNUNUNTAAAATTTAATTTTWWWwWWwwwwWWFZZZYWwWWWF==ZZYWWwwWWwwWWWWwwWw",
+          "MOMOMOMOMOMOMOMOMOMOAAAAATTAATTTTTTWwwWwwWWWwWWF....:YWWF=======ZYwWwWwWWWWWwWWW",
+          "UNUNUNUNUNUNUNUNUNUNTTAATAATTTATTWwwWWwwWwWwFZZ.:..::DwF==========ZYWWwWwwWwwWWw",
+          "MOMOMOMOMOMOMOMOMOAAAATTATTTAATJWwwWWwwWWWwF::.:.::..JwK============YWWwWWwWwWww",
+          "UNUNUNUNUNUNUNUNUNTTTTWATTWATTJwwWWWWWwWWFZ::.::....DWF==============YWwWwwWWwwW",
+          "MOMOMOMOMOMOMOMOAAATTWATTAATJwWwwWWwwwwFZ.....:::..:JF===============DwWWWwwwwww",
+          "UNUNUNUNUNUNUNUNTTTWAATTATTJWwwWWwWwWwF:::.:......:DwK===============DWwWWWwwWww",
+          "MOMOMOMOMOMOAAAAATWATTTTTJWwwWWWwWwWFZ:.:..:.::.:.:DWK===============DWwwwWwWWWF",
+          "UNUNUNUNUNUNTTATTAATTATJwwWwwwwwWWwF.:..::::.:.::::DWK===============DwwWwWWWwFA",
+          "MOMOMOMOMOAAAATAATTATTJwwWWwWWWWWFZ::.:.::...:..:.:Dw,===============DWWWWwWWFAT",
+          "UNUNUNUNUNTTTTATTTATJwwWwwwWwwwwF:::.:::.::...::.:.:Yw,==============DwwwWwWFATA",
+          "MOMOMOAAAATTAATTATTJwWWwwWwwWWF::.:..:.:...::.:.::..DwW==============JwWwWwFAAAT",
+          "UNUNUNTTATWATTTTTJWWwWwwwWwWwF.::....:.:......:.::...Yw,============JwwwWwFAAATA",
+          "MOMOAAAATAATTATJwwWWwwwwWWwWF:...::.:::.:.:.:::.::.:.Dww,==========JWwwwWFAAATAA",
+          "UNUNTTATATTTATJWWWWWwWWWwWwF:::.::.::.:.::..:..::..::.Yww,========JwWwwWFAATAAAA",
+          "MOAAATTATTAATJWwWWWwwWwwWwF.:..:::.::...:.:.....:.....:YwWw,=====JwwWwFAAATAAATT",
+          "UNTTTWATTATTJWWwWWWwWWwWWF:.:::.:.::.:..:..::.::..:..:.:YWwW,==JwWwwFAAATAAATAMO",
+          "AAATWATTATJWwwWWWWWWwWWWF.::.:....::..::::::.:..:.:::...JwwWw,JwwwFAAAAAAAATTTUN",
+          "TTTAATTATJWwwwWwWWWwWWWF::::.::::..::...:::....:.::::::JWWWwwwwWFAAAAAAATAAAMOMO",
+          "ATATTWATJwwWwWwWWwwwWwWK...:::...:...............::--JWwWWwWWwFAAAAAAAATTTTTUNUN",
+          "TWTTAATJwWwWWwWWwWwwwwF...::...::::............:--JwWwwWWwWWFAAAAATAATAAMOMOMOMO",
+          "WATATTJwWWwwwWwWWWWWWF..:::.:...:..:...:..:..--JwWwWwWWwwwFAAAATTAAATTTTUNUNUNUN",
+          "ATTTJWWWWWwwwWWWWWWwF..:.:::..:::::.::..::::JWWwWwWwWwwWFAAAATTAAAAAAAMOMOMOMOMO",
+          "TTTJwWwwWwWwWwWwwWwF:.::..::.:.:.:..:::...-JwWWwwWwWWWFAAAATTAAAATTTTTUNUNUNUNUN",
+          "ATJWWWwwwWwwwwWwWWF.:::::.:.:::.:.:....::JWwWWwwWWWWFAAAAATAAAAATAMOMOMOMOMOMOFZ",
+          "TJWWwWWwWwwwwWwWwF.:::::.::.:::..::....-JwWwWWWWWwFAAAAATAAATATTTTUNUNUNUNUNUNK.",
+          "JWwwWWWWwWwWWWwWF...:...:.:::...:..:::JWwwWWWWwWwFAAAATAAATAATAAMOMOMOMOMOMOF.AA",
+          "wwwWWwWWwWWWwWwF..:..:..:.::...:.:::-JwWwwWwWwWFAAAATTAATAATTTTTUNUNUNUNUNUNK.TT",
+          "WWWWwWwwWWwwWwF....::::.....:...::.DwWwwwwWWWwFATAATAAAAATAAMOMOMOMOMOMOMOF.AA.D",
+          "WwWWwwWwwWwWWF:.:..:::......::.....JWWWwwWwWFAAAAATAAAATTTTTUNUNUNUNUNUNUN..TT-J",
+          "WwwWwwWwwWWwF.:..::.........:::.:.JWwWWWwwwFATAATTAAATAAMOMOMOMOMOMOMOFZZZAA.DMO",
+          "wwwwwwwWwwWF.:.::.::::....::..::.DwWWWwWwFAATATTAAATTTTTUNUNUNUNUNUNUNK...TT-JUN",
+          "wwwwWwWwwwF::.:.::..::::.....::.:JWWWWWwFATAATWATAAAMOMOMOMOMOMOMOMOF.AAAA.DMOMO",
+          "wWwWwwwwWF:..:...::.::::.::..:.:DWWWwwFAATAATAATTTTTUNUNUNUNUNUNUNUNK.TTTT-JUNUN",
+          "wWwwWwWwWK...:..:::.:::.:....:..JwwWwFATTATAAAAAMOMOMOMOMOMOMOMOMOMOK....DMOMOMO",
+          "wWwWWWwWF::.:::::.:.:..::....::DWwWWWATAATATTTTTUNUNUNUNUNUNUNUNUNUNK.---JUNUNUN",
+          "WwwWwWwWK:.::...:.:.::.:..::::.JwwwwFTAATATAMOMOMOMOMOMOMOMOMOMOMOFZ.DMOMOMOMOMO",
+          "WWwwWWWF..:::....::::.::.:.:.:DwwWwWAAATATTTUNUNUNUNUNUNUNUNUNUNUNK.-JUNUNUNUNUN",
+          "wwwwWWwK..::::.::.::...::::.:.JwwwWFAAAATAMOMOMOMOMOMOMOMOMOMOMOFZADMOMOMOMOMOMO",
+          "WwWwwwF.:..::.:.::.::.:...::.DwwWWwAAATTTTUNUNUNUNUNUNUNUNUNUNUNK.TDUNUNUNUNUNUN",
+          "wWwWwWK:......:...::::..::..:JWwWWFATTAAMOMOMOMOMOMOMOMOMOMOMOFZAA.DMOMOMOMOMOMO",
+          "wWWWWwK..::...:.::..::.:..:.DWwwwWAAAATAUNUNUNUNUNUNUNUNUNUNUNK.TA.DUNUNUNUNUNUN",
+          "WwWWWWK:.:.:::..:::::..:::.:JwwWWFATTTAAMOMOMOMOMOMOMOMOMOMOFZAAAA.DMOMOMOMOMOMO",
+          "WWwWWwK.:::.:.:::::.:.:.:::DwwwWFATAATTTUNUNUNUNUNUNUNUNUNUNK.TTTT.DUNUNUNUNUNUN",
+          "wWwwWWK.::....::.:::::..:..JWWwWAAATTAMOMOMOMOMOMOMOMOMOMOMOAAAA...DMOMOMOMOMOMO",
+          "WwwWWWK::..::.::::::......DwwWwFATTATTUNUNUNUNUNUNUNUNUNUNUNTTTT..-JUNUNUNUNUNUN",
+          "WWWwwWK....:...:.:...:.:..DWwWWAAAATMOMOMOMOMOMOMOMOMOMOMOF.AT...DMOMOMOMOMOMOMO",
+          "WWwwwwK..:.:...:..:::..:::JWWwWAAATTUNUNUNUNUNUNUNUNUNUNUNK.TT..-JUNUNUNUNUNUNUN",
+          "WwwWwwK::::...:.::..:::..DwWWWFATTTAMOMOMOMOMOMOMOMOMOMOMOKAAA.DMOMOMOMOMOMOMOMO",
+          "WWWWWF::...:::..::.:..:::DWWwWAAAATTUNUNUNUNUNUNUNUNUNUNUNKTAA.DUNUNUNUNUNUNUNUN",
+          "WwwwwK.:.:..:.:...:::::.:JWWWFATATAAMOMOMOMOMOMOMOMOMOMOFZ..AA.DMOMOMOMOMOMOMOMO",
+          "WwwwWK::.:.:...:.:::....DwwWWAAATTTTUNUNUNUNUNUNUNUNUNUN,-..TT.DUNUNUNUNUNUNUNUN",
+          "WwwwwK:..:....::.....::.JWwwFTATTAMOMOMOMOMOMOMOMOMOMOMOMOK....DMOMOMOMOMOMOMOMO",
+          "WwWwW,.::.:.:..:...:.::JWwWWAAAATTUNUNUNUNUNUNUNUNUNUNUNUN,----JUNUNUNUNUNUNUNUN",
+          "WwWwwW,::::::.::::::::DWwWwFTATTAAMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMO",
+          "wwwWwww,::.:.........:DWWWwAAAATTTUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUN",
+          "wwwWwWwW,-------::.:..DWwwwTATTAMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMO",
+          "wWwwwwwwWWwWWWWW,::.:.DWWwwAAATTUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUN",
+          "wWwWWWWwWwWwFZYWw,.:::DWwwFATTMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMO",
+          "wwWWWWWFZZZZ::.YWW,:::DWWwAAATUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUN",
+          "WwwwFZZ:.:.:.::.YwW,::DWWwAATAMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMO",
+          "WwwF..:..:.:.::..Yww,:DWwFAATTUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUN",
+          "wwWK:::.::.:.:..::YwwKDWwAATAAMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMO",
+          "wWF::.:::......:.:Dww,JWwAATTTUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUN",
+          "WF.:.:========.::::YWWwWFATTMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMO",
+          "wK:::==========:::..YwWwAAATUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUN",
+          "WK..:==========...::DWwwTATAMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMO",
+          "WK..:==========..:::.YWwATTTUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUN",
+          "WK.::==========:..:..DwFAATAMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMO",
+          "wK:.:==========:..:::DWAATTTUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUN",
+          "WK.:.==========.::.:.JwTATAAMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMO",
+          "wK:::..======...::.:DwWATTTTUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUN",
+          "w,:...:::.:.:.:..:.:JWWAATMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMO",
+          "wWK:..:.::....:.::.JWwWATTUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUN",
+          "Ww,......:.::..::.JwWWWATAMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMO",
+          "Www,.:.:::::.::::JwWwWwTTTUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUN",
+          "wwww,.:..:..:.:-JWWwwWwTMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMO",
+          "WWwWW,--------JWWwwWwWWTUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUN",
+          "WwwwwwwwWwWwwWWWWWWWwwwTMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMO"
+        ]
+      }
+    },
+    "3":{
+      "object":[ { "set":{ "_":[ "stencil", "ball" ] }, "x":166, "y":149.5 }, { "set":{ "_":[ "stencil", "hole" ] }, "x":917.636, "y":1157.45 } ],
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "par":4,
+      "windForce":[ 0, 2, 2, 4, 4, 5 ],
+      "tilemap":{
+        "tileWidth":16,
+        "tileHeight":16,
+        "map":[
+          "wWwwWwWwwwWWwwwwwwwWWwWWwwWWwwwWwWWWWwWwWWwwWWwwwWWwwwWWWWW,TTTAATTATAAAATAAAATT",
+          "wwWWWwWwwWwwWwwWwWwWwWwWWwwWWWwWwwwWWwwWwwwwWwwwWWWwwWwwWwWwWw,TAAAAATTTAATTTAAA",
+          "WwwwwWWwWWwWwwWWWWWwWWwWWwwWwWwWWWwwwwWwWWWwwwwWwWwWwWWWwWWwwWW,TATTTWAATTTAATAA",
+          "wwWwwWwWwwwwWWWWwWWwwWWwwwwWwwwwwwWwwwWWwWwwwWWWwwWwWWwwWWwwwWWW,AAAAAAAAAATTATT",
+          "wWWWWWwwWFZZYwwwWWwwwWWWwwWwWWwWwwWwWwwwwWWWwWwWWwWWWWwwWWwwwwWwwATTTTTTTTTAATAA",
+          "wwwWWWwWF====YwwwWWwwWwWWwWwFZZZZZZZZZZZZZZZZZZZYWWWwwwWwWwwWWWWWTAAAAAAAAAAAATT",
+          "WwWwwWwF======YwWWwwwwwWWwwF.:..:..::..::.:.:::..ZZZYWwWwwwwWwwwW,TAAAAAAAAAAATT",
+          "wwWWWWF========YwWwWwwwWwwF:::.......:...:::.:..:.::.ZZYWwwWWWWwWW,TTTTTATTTTAAA",
+          "WwwWWwK========DWwWWWWWwWWK::.:::.:.:.:.::.:..:.:.:.:::.YWwwwWwwwwWww,AAAATAAATT",
+          "WwwWWWK========DWwwwwWwWww,::..........:....::..:.:.:.::::YwwwWWwWWwWWTAAAAATAAA",
+          "wWwWww,========JWwWWWwWWwww,:::.......:::..::....::..::::..YWWwwwwWwWW,TATAAATTA",
+          "WWWWWWw,======JwWwWWWwWwwwwW,-::.::::.:.....::.:..:..:::..::ZYWWwWWwwww,TWAATAAA",
+          "WWwWwWWw,====JwWwWwWwwwWwWWWWw,.:::.:.:....::..:.:.::::....:..YwWWWwWWWw,ATAAATT",
+          "YwwwwwwWW,--JWwwwWWwWwwWwWWwwwW,--::..:.::.:.::::.:.::.:::.:.::.YwWWWWwWWTWTTTAA",
+          "AYwwwWwwWWwWwwwWWwWwWwWwWwWWWwwWwW,-:.::...:..:...::.::.:::::::::Ywwwwwww,AAAAAA",
+          "AAwwWWwwwWwwWWWwwWwWwwWWWwWWwwwWWWWW,-:.:..::....::::..:...:::::.DwWWWWWWWTTATTT",
+          "AAYWwwWWWWWWwwwWWWwwWWWWWWWwwwWwWWwWWw,-.:...:::.::..:.:.:......:.YWWwwWWw,ATAAA",
+          "AAAYWwWWwWwWWWwWWwWWWwwwwWWwWWwWwwwwWWWw,-....::.......:..::.:..::.YwwWwwWwTWATA",
+          "TAAAYWWwwWWWwwwWwWwwwwWWwwwwwWwwWwWwwwWwwW,..:::.:.::.....::.::.:.::YWWWwwW,AAAA",
+          "AATAAAYwwwwWwwWWwWwWWwwwWWwWwWWwWwWWwwwWwww,-...:::.::.:..:.:........YwWwWwwTTTT",
+          "TTATTAAYWWWWWwwWwwWwwwwwWwWwWwWwWWwwwwwwWWwWW,.:....::....::.:.:..:...YWwWWW,AAA",
+          "AATAATAAWWwWWWwWwWWWwwwWWwwWwWwWWWwwwWWWwWWWww,-..:::.:::::::...::.:..DwWWwwWTTT",
+          "TTATTATAYWWWwWWWWWWWwWwWWWWwWWwwWWWWwWwWWWWWwwWW,:..::::.:..:.:::...:.:YwWwwW,AA",
+          "A.TATTATAAYWwWWwWwWwWWwWwwWwWWWwwwwwWwwwwWWwwwwww,:::.::..::.:.......:.:YWwWwWTT",
+          "TAATAATATTAYWwWWWwwWWWWwWwWwwWWwWWwwwwWWwwwwwWwwWWw,.::..:.:..::.:.:.:..DWwWWW,A",
+          ":TTATTATAATAAAAAAAAYWWwwWwWwWwWWWWwWwWWWwWWwWWwwWWWWK.:..::::::...:...:.DwwwWwWT",
+          ":.:TAATATTTTTTTTTTTAAAAWwWWWwwwWWWWWWwwwwwwwWWwWwwwW,.:::..:.:.::..::..::YWWWww,",
+          ":.:.TTATAAAAAAAAAAAAATTZZwwwwwwwWWwWwwWwwW#####WwwWwW,..:.:.....:..:...:.DwwWWWW",
+          ":.::.:TATTTTTTTTTTTTTAAAAAAAWWwwwwwWwwWWW#######WwWWwW,.::..:...:.:..:.:.DWWWWWw",
+          ".::::..TAA.....AAAAA.TTAATTTAZwWwwWWwWwwW########WWWwWW..:.:.::.:.::.::::DwwWwWW",
+          "::.::::.TTAAAAATTTTTAA.TTAA.TAAYwWWwWWwww#########wwWwW,:.:..:::..:...::.DwWwwwW",
+          "::.:.::.::TTTTT..:.:TTAA.TTAATTAAAAYWwwwWW########wwWwww:.:.::.::.:.:...:DWWWwWW",
+          ":..:...:::.:.:.:::::..TTAA.TTAATTTAAAWWWww#########WwwwW,:::.::.::..:::..DwwWwWw",
+          "::::..:..:.::..:.....:..TTAA.TTAAATTAYWWwww#########wWWwW..:.::.::.......DwwWwwW",
+          ".::::..:::.::::..:..:..:.:TTAA.TTAAATAYWWww#########wwwWw,::.::......:.:.DwwwwwW",
+          ":::::..::...:....:.:::::::..TTAA.TTT.AAYwwwW########wWWwWWK:.:::.::::.:..DWWwwWW",
+          "...::::::::......:..:::.:...:.TTA.AT.TTAwwwWw########WWwwwK..::::.::...:.DwwWWwW",
+          ":...::...::..:..::.:::::.::...:.TATAAA.AYwWWw########wwWWwK:.::..:.:::.::DWWWwww",
+          "::..:.:::.::::.....:.:::.....::::TATTT.TAwWWWw#######WWwWW,:.......::..::DWWwWwW",
+          "MOMOMO,::.::.::.::.......:.:::::.:T.ATA.AYwwWw#######wwWwwwK..::..:.::::.DWwWWww",
+          "MOMOUNMOMOMOMO,:.:.:....::.:.:..::.ATAT.TAwWwww#####wwWwwwWK.:.:.:.::.:::DWWwWwW",
+          "UNUNMOMOUNUNUNMOMOMOMO,:.::..::.:..TAT.A.AYwWwW#####WWwWWwWK.:.::::.:::::DWwwwww",
+          "MOMOMOUNMOMOMOMOMOMOUNMOMOMO.::..::.TAATAAAwwwWW###wWWwWwwwK::...:.:...:.DwwWWWW",
+          "UNUNUNMOMOMOUNUNUNUNMOMOUNUN,:...:::.TTATTAWWWwWWwwwWwwwwWW,.::..:.:..:..DWwwWWW",
+          "AAAA.YUNUNUNMOMOMOMOUNUNMOMOMO,..:...:AT.AAwwwWwwWwwwwwwWWwwK..:..::..:.:DWwwWWW",
+          "TTTTAAAAAA.YUNUNUNMMMOMOUNUNMOMO:...::TAATAYwWwWWWwwwWWWWWwwK:.:.::::::::DWWWwWW",
+          "AAAAATTTTTAAAAAA.YUUUNUNMOMOUNMO,...:..TTAAAwWwWwWwWwwwwwWWwK:.::.::.:.:.DwwWwww",
+          "TAAATAAAAAAATTTTAAAAA:.YUNUNMOUNMO..:..A.TTTwwWwWWWwwwwwWwwWK:::..:....::DwwwWwW",
+          ":TTTAAAAATTTAAAATTTTTAAAA::YUNMOMO,.:..T..A.WWwWwWwWWWWWwWWwK.::.::::...:JWwwwwW",
+          "::..TTTTTAAAAAATAAAA:TTTTAAA.YUMONMO.:..A.TAwWWWwwwwwwwwwWWw,.::..::::.:Dwwwwwww",
+          "....:.:::TTTTTTAAAAAAAAA.TTTAA:UNMON,:..T.ATYwwWwWwWWwWwWwWwWK..::....::DWwwwwWW",
+          ".:.:....:::....TTTTTAAAAAAAATT:YMONMO::.A.TADwwWwWWWWwWwWwWww,.:::..:.:.JwwWwwww",
+          "....:..:.:.:..::..::TTTTTAAAAAA:UNMON,..A.ATDwwWWwWWwWwWWWWwww:......::JWwwWWwWW",
+          ".::.:...::.::..:...::::::TTTTTT.MOUNMO:.T.TA.YWwWwwwWWWwwwWWww,....:::JwWwWWWwww",
+          ".:.......::.::::.::.:..:.::::AA.UMOMON::.A.A.DwwwwWwwWwwwwwWwwWK..::.JWwwWwWWWww",
+          ".:....:..:.:.::...:::.::.::..TAAYUMONO::.T.TADwwWwwWWwWWwWWWWWW,-:.-JWWWwWWwwWWW",
+          "....:::....::.::..:....:::..:.TT:UUNMO,..A.ATDWwwwwWwwWWWWwwwwWWw,JWwwWwWWWWwwWW",
+          "------.:..............:.::.:::A:AYMOUNO:.T.TADWwWWwwwWwWwWWwWWWWWWwwWwwWWwwWWwwW",
+          "~~~~~~~,--.:::::..:.::.::::..:T:A:UNMON,:.AATJwwwWWWWWwwWwwwWwWwwWWWWwWwwwWWwwwW",
+          "~~~~~~~~~~,----:.::..:.:.:.:..:AT:MOONMO:.ATAWwWwwWWwwwwwwWwwwwwwWWwwwWWWWwwwWwW",
+          "~~~~~~~~~~~~~~~,--:....:.:::.::TA.UNNMON,:TATWwWWwWwWWwWWWwwwwwWwWwWwWWWwwwWWwww",
+          "~~~~~~~~~~~~~~~~~~,--.:.:.::...AT:MMOUNMO:ATDWwwWWWWWwWwWwwwwwwWWWwwWwwwWwww##wW",
+          "~~~~~~~~~~~~~~~~~~~~~,-.:::..::T:AUUNMOMO.TADwwwwwWWwWWWWWWwWwWwWwwwwWWwwww###ww",
+          "~~~~~~~~~~~~~~~~~~~~~~~,-:.::::.ATYMOUNUN:AT.YwWWwwwWWWWwwWwWWWwwWWwwwWWWw####wW",
+          "~~~~~~~~~~~~~~~~~~~~~~~~~,-.::::TA:UNMOOAATA.DWwWwwWwWWWWWwwWwwwWWwwwwWWW####WWw",
+          "~~~~~~~~~~~~~~~~~~~~~~~~~~~,:.:.AT:MOUNNTT.T.DwwWWwwwwWwwWWwWwWWWWwWWwWww####www",
+          "~~~~~~~~~~~~~~~~~~~~~~~~~~~~,-..T:.UNOMOAAA..DWwwwWWwWwwFZZYwwWwWwWWWWWW####wwWw",
+          "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~K.:A:MONUNTTT..DWWWwwwwWwF====YwWwWwWWWwww####wwWF",
+          "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~K:.TMONOO.AAA..DwwwWWwwwF======YwWwwwWwwW####wWwwK",
+          "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~,::AMOUNN.TTT..DWwwwwWWF========YWwwwWwWw###wWwwwK",
+          "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~KATUNMOO..AAA.DWWWWwWwK========DWwwwWWwWW#WwWWWwK",
+          "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~KTAMOUNN..TTT..YWwwWWwK========DWWwWwwWwwWWWwWwWK",
+          "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~KATUNOO...AAA..DWWwwWW,========JwwWwwwWwwWwwWWWWK",
+          "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~KAMOUNO...TTAA.DwWWWwWW,======JWWwWWwwWWwWWwWWWF.",
+          "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~KAUNMON...A.TT.DwwwwwwwW,====JWWWWwwwWWWwWwwwwwK.",
+          "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~F.AMOMOO...T.AA.DwWWwwwWwW,--JWWwwWwWWWWWwWwWwwwK.",
+          "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~K.TUNUNN....ATTADwwWwWWwwwWWWWwWWwwwwwWWWwWwwWWF..",
+          "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~K..YMOMO....T.ATDWWWWwwWWwwWwwWWwwWWWwwwWwwwWWwK..",
+          "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~F...AMOMOMO..AAAADWWwwWWwwWwWWwwWWWwwwWWWwWWWwwF...",
+          "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~K...TMOUNUN..TTTT.YwwWWWWwwWwWWwWwwWwWWWwWWwWWWK..."
+        ]
+      }
+    },
+    "4":{
+      "object":[ { "set":{ "_":[ "stencil", "ball" ] }, "x":116.5, "y":117.5 }, { "set":{ "_":[ "stencil", "hole" ] }, "x":933.636, "y":1044.95 } ],
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "par":3,
+      "windForce":[ 0, 8, 8, 12, 12, 14 ],
+      "tilemap":{
+        "tileWidth":16,
+        "tileHeight":16,
+        "map":[
+          ".:.:..:..:.:AAAAAAAAAYwwwWWWwwwwwMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOM",
+          ":::::.:..::.:TTATTATTAWwwWWwWWWwWUNMOUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNU",
+          "::::.:::.::::.:TAATAATYWWwWwWWWWwWWUNMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOMOM",
+          "....:.::::..:..:TTATTAAYwwwwwwWWwWWWwMOUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNUNMOUNUNU",
+          ".::::.::.::::.::::TTATTAYWWWwWWwwWwwWUNMOMOMOMOMOMOMOMOMOMOMOMMMOMOMOMOMOUNMOMOM",
+          "...:.=====:::.::::.:TTATAAYWWWwWwwwWWwwUNUNMOUNUNUNUNUMONUNUNUUUNUNUNUNUNUNUNUNU",
+          ":.::=======::....::..:TATTAYwwWWwWwWWWWWWwWUNMOMOMOMOMUNOMOMOMOMOMOMOMOMOMOMOMOM",
+          "::.=========:...:..:.:.TAATAYWwWwwwwWwWwwWWWWMOUNUNUNUNUNUNUNUNMOUNUNUNUNUNUNUNU",
+          ":..=========::..::..::..TTATAAYWWWWWWwwwWWWWWUNMOMOMOMOMOMMMMOOUNMOMOMOMOMOMOMOM",
+          ":::=========::..:::::.:.::TATTAYwWwwWWWWWwwwWwwUNUNUNUNUMOUUUNNUNUNUNUNUNMOUNUNU",
+          "::..=======::..::.:.:..::.:TAATAYWWWWWWWWWWwWwwwWMOMOMOMMOOMOMOMOMOMOMOMOUNMOMOM",
+          ":.:::=====:.:.:::::::.::.:.:TTATAYWwwWWwwWwWwwwWWUNMOUNUUNNUNUNUNUMOMOMMOUNUNUNU",
+          "..:::.:..:.....:..::::::::.::.TATAAYwwWwwWwWWWwWwWWUNMOMOMOMOMOMOMUNUNUUNMMOOMOM",
+          "AA:...:.:..:::..:::.:.:.:.:...:TATTAYWwwwwwwwWWwwwWWwMOUNUNUNUNUNUNUNUNUNUUNNUNU",
+          "AT..:..:.:.:::.::.:.:...::.:::::TTATAYWwwWwwwWwWwWWwwUNMOMOMOMOMOMMOOMMMOMOMMOOM",
+          "TAA..:::::.:.....:..:..:..:::.:.:.TATAAYwWwwWWWWwWwWwwwUNUNUNUNUNUUNNUUUMONUUNNU",
+          "ATAA..:::.:....:....:::.:...::::...TATTAYWwWwWWwwwWWWwwwwMOMOMOMOMUNOMOMUNOMOMOM",
+          "TATAA:.:..:::..:::.::...:.:..:.....:TTATAYWwWwwWwWWwwwWWwUNMOUNUNUNUNMOUNUNUNUNU",
+          "ATATAA:::::...:..:..:...::.::.:::::.::TATAAYwwwwWwwwWwWwWwWUMOOMOMOMOUNMOMOMOMOM",
+          "TATATA::......::....::...:.::::.....:.:TATTAYwWWWwwwWwwwwWwWUNNUNUNUNUNUMONUNUNU",
+          ",TATATA..:.:::.::.::::::.::..:.:........TTATAYwwWwwwwWWwWWWwwWMOOMMOOMOMUNOMOMOM",
+          "w,TATATA:.:::..:.:.:.:::.::..:.....:.::..:TATAYwwWWwWWwwwwWwWwUMOUUNNUNUNUNUNUNU",
+          "WW,TATATA.:...:.::.:::.:::::..::.....:.::::TATAAYwwWWwwWwwwwWWWUNMOMOMOMOMMOOMMO",
+          "WWw,TATATA:.::.:.::..:.......:..::..:::::.:.TTTTAYWwwwwWwWwwwWWUNUNUNUNUNMUNMOMO",
+          "WWWW,TATAAA:.::.:.:.:.::...::...:...:.:..:..:.TATAYWwWWWwWWwWwwwWMOMOMOMOUNUUNUN",
+          "wwWwW,TATAT..::.:::::::..:::.::...::::...:.:..AAATAAYWwWwWwWWwWwWUNUNUNUNUNUNUNU",
+          "wwWwwW,TAAAA.:::.....::.:...:..::..:.:.:.:..:.TTTATAAYWWwwwWwWwwWwWMOMOMOMOMOMOM",
+          "WWwwWWW,TTAAA..:::::........:::...:::.::.:::::..:AATAAYwWWWWwwwWWwwUNUNUNUNUMONU",
+          "wWwWwwWW,ATATA..:.:::::..:.:::::....::----::....:TAATAAYWWwWwwwwwWwwwMOMOMMMONMO",
+          "wWwwwwwWWTATATA:......:::::::::.::.::D####,-.:::.:TAATAAYwWwwWwWwwWWWUNUNUUUNUUN",
+          "WwwwWwwWW,TATATAA.:.:..::.::.::.:.:..D######K...::.TAATAAYWWwwWwwWwWwwMOOMOMOMOM",
+          "wwWWwWWwwW,TATATTAA.:::.::.:.....:::.D######K:.:.::.TAATTAWWWwwwwWwwWwUNNUNUMONU",
+          "OwwwWwWwWww,TATAATTAA.........::.::..D######,:...::..TAAAAYwWWWwwwwWWwwWMOOMOMOO",
+          "NWWWwwwWwwww,TATTAATTA...:.:::..:....:Y######K....:.::TATTAYWwWWWwwwWwwwUNNUNUNN",
+          "MMOwWWwwwwwWw,TAAATAATAA...::..:::::.:D######,.:...:.:.TAATAYwwwWWWWWWwwWMOMOMOM",
+          "UUNwwWWWwwWwWW,TATTATAATA..:.::.:::.:.D#######::...:::::TTAAAYwWwwWWwwwWwUNUNUNU",
+          "MOMOWWWWwwwwWWW,TAATAATATAA..::::...::D#######,..::.::.:::TTAAYwwwWWwwWwwMOMOMOM",
+          "UNUNWWwwWWwwWWWwTTTTTTAAAATAA:..:::.:.D########K.:::....:.:ATAAYwWWWWWWwwUNUNUNU",
+          "MOMMOWwWwWWwwWWW,AAAAAATATAATA...::::.D########K:....:..:.:TATAAYWWWWwWwwwMOOMOM",
+          "UNUUNWwwWwwWwwWWwTTTTTTATAATAT.::::..:.Y#######K:.:..:......TATAAYwWWWWwWwUNNUNU",
+          "MOMOMOWwWwwwWWWWW,AAAAAT.TTATA::::.:.:.D#######K::...:::::..:TATAAWwwWWwWwWMOMOM",
+          "UNUNUNwwwwWwWWWWWwTTTTT.AA.TAT..:::.:..D#######K:.::.:..:..:..TATAYWwwWwWwwUNUNU",
+          "MOMOMOMOwWWWwwwwwW,AAAAATTAATA.:.:....:.ZZY###F.....::::..:::::TATAYwWWwwWwwMOOM",
+          "UNUNUNUNWWwwWWWWWwwTTTTT.ATAAT:....::..:..:ZZZ:.:----:.::.:...::AATAYWwWWWwwUNNU",
+          "MOMOMOMMOWWWWwWWWww,AAAAAT.TTA::...:::..:.::..:-J~~~~,:.:::.....TAATAYWWwWwWMOOM",
+          "UNUNUNUUNwwWwWwwwWwwTTTTTAATAT:::.:.:::..:..:.D~~~~~~~K.::::::..:TTATAwwWWWwUNNU",
+          "MOMOMOMOMOWWWWwwwwww,AAAATTATA:::::..::....::.J~~~~~~~K.:.....::::ATATWwwWwwwMOM",
+          "UMONUNUNUNWWWwWWwWwWwTTTT.ATAT..:.::.:::...:-J~~~~~~~~K.:..:::.:..T.AAYWWwWWWUNU",
+          "MUNOMOMOMMOWWwWWwWWww,AAAAT.TA.:.....::....J~~~~~~~~~F:.:.....:...:ATTAWwWwwWwMO",
+          "UNUNUNUNUUNWWwWwWWwWWFTTTT.AAT...::..:.:.-J~~~~~~~~~F..::.....::..:TAATYwwwwWwUN",
+          "MOMOMOMOMOMOWWWWWwWWw..AAAATTA:.::.::..-J~~~~~~~~~~F:::.:.:::..:::..TTAAwWwwwWWM",
+          "UNUNUNUNUNUNWWwWWWWwF..TTTA.AT..:.::.:D~~~~~~~~~~~~K::::.....::..::::AATYWwwwWWU",
+          "MOMMOOMOMOMMOwwWwwww..J,AATATA.:...::.:Y~~~~~~~~~~F..::----:..:..:...TTAAwwwWwWw",
+          "UNUUNNUNUNUUNWWWwwWF..WwTTATTTA...:.::::ZY~~~~~FZZ::--J####,-:..:.::::ATTWwwWwWW",
+          "MOMOMOMOMOMOMOwwwWw..JWw,ATAAATA::::...:.:ZZZZZ....J#########,:.......TAAYWWwWwW",
+          "UNUNUNUNUNUNUMOYwwF..wwWwTATTTAA..:.....::...:.::-J###########,..::.:.:TTAwwwWwW",
+          "MOMOMMOOMOMOMUNAWW..JWwWw,TAAATTA:...::::.:..:::D##############K.:.::.:.ATYwWwWw",
+          "UNUNUUNNMOUNUMOAYF..wWwwwW,TTATAA:.:::...:..::.:J####FZZZZZZZZZ::.::::.:TAAwwWWw",
+          "MOMOMOMOUNMOMUNAA..JwwWwWWWw,AATTA.:.:.:.......D####F.:..:::..:::....:.:.TTYWwWw",
+          "UNUNUNUNUNUNUMOAA.JwwWwMOwwwwTAAAT:.:::.::..:..D###F.:::=====:::::::...:..AAWwwW",
+          "MMOOMOMOMOMOMUNAAJWwwWwUNWWWW,TTT.A..:.:::....:D##F:.:=========::::.:..:::TTwwwW",
+          "UUNNUNUNUNUNMOAAAYwWWwMOMOwWWww,AAT.:::::::::::D#F:.:===========.:::..:.:..AYwWw",
+          "MOMOMOMOMOMOUNATTAwWWwUNUNWWwWWwTTAA.:::..:::.::Z:.:.===========.::.:...:::TAwww",
+          "UNMOUNMOMOUNMOAATAWWWMOOMOMOWwWw,AAT:A::::......:::.:===========.::.-.::::::TYww",
+          "MOUNMOUNUNMOUNTAAAWWwUNNUNUNWWwWWATAAAA:..:.::.:.::::===========.::D#,..::..AAWW",
+          "UNUNMOUNUNUNMOATTAWMOOMOMOMMOWwWwTAATTAA::..:...::..:===========.:.D##K:::::TAWW",
+          "MOMOUNMOMOMOUNAATAYUNNUNUNUUNWwWw,TTAAAAAAAAA:..:.:..===========..:J##K.:::.ATWw",
+          "UNUNUNUNUNUNFYATAAMOMOMOMOMOMMOwww,AATTAATTAAAAA.....===========:.D##F::.:.:TJwW",
+          "MOMOMOMOMOMO,.AATTUNUNMMONUNUUNWWwwTTTATTAATTTTA..:::.=========::-J##K:...:.AYWW",
+          "UNUNUNMOUNUMOATADMOOMOUUNOMOMOMOwWw,AAAAAATAAAAA.::::.::=====:::D####K::.:.:TAww",
+          "MOMOMOUNMOMUNAAAJUNNUNUNUNUMONUNwwWWTTTTAAAAATTA.::.:::.:.::...:J####K:...:.ATww",
+          "UNUNMOUNUNUMOTATMOMOMOMOMOMUNOMOMOwwwAATTAAATAAA.:.:--:.:...::.J####F..:.:::TAwW",
+          "MOMOUNMOMOMUNATJUNUNMMONUNUNUNUNUNWWWTA.AATAAAAT.:.D##,-------J#####K:...:.:ATww",
+          "UNUNUNUNUNMOOAJMOOMOUUNOMOMOMOMOMMOww,TAAAATTTT:.:.D###############F:.:.:::.TAYw",
+          "MOMMOOMOMOUNNTMONNUNUNUNUNUNUMONUUNWWW,AAAAAAAAA:::.Y#############F:..::::.AATAw",
+          "UNUUNNUNUNMOAAANMOMOMOMOMOMOMMOOMOMMOwWTATAAAATT.:..:.Y#########FZ..:.:.:..TTATw",
+          "MOMOMOMOMOUNTAAMONUMONMOUNUNMMONUNUUNWw,TATTTAAAA:.::::ZZZZZZZZZ.:...:.:..:AATAw",
+          "MOUNUNMMONMOTAAUNOMUNOMOMOMOUMOOMOMOMOwwTTAAATTTT:..:..:.:.:.:.:::..:.:.:..TTATW",
+          "MOMOMOUUMOUMOAAAMOUNUNUNMOUMOUNMMMOMOMOWw,TTTAAA..:...:.:.::.:.:.::....:..AAATAw",
+          "UNUNUNUNUNUUNTTTUNMOMOMOUNMUNOMUUUNUNUNWWWw,TTTT.:.:...:..:.::::..::::..::TTTWTw"
+        ]
+      }
+    },
+    "5":{
+      "object":[ { "set":{ "_":[ "stencil", "ball" ] }, "x":1108, "y":1188.08 }, { "set":{ "_":[ "stencil", "hole" ] }, "x":1124.83, "y":150.5 } ],
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "par":4,
+      "windForce":[ 0, 8, 12, 12, 14, 16 ],
+      "tilemap":{
+        "tileWidth":16,
+        "tileHeight":16,
+        "map":[
+          "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATJWwwwwwwWWwwwwwwWWwwWwwWWWwWWwwWWwwww",
+          "TTTTTTTTTTATTTTTTTTTTTTTTTTTTTTTTTTTAAATTTJWwWWwwwWWWwWwwwwwwwWwwWwWWWwWwwWWwWWw",
+          "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAATTTJWWwWWWWWWWWwWWwwWwwWWWwwwwWwWWwwWwwWWwWW",
+          "TTTTATTTTATTATTTTTTTTTTTTATTTTTAAATTJwwWWWWwWWwWWWWwWwWwWWWwWWWWWwWwWwwwWwwwWwWw",
+          "AAAAAAAAATATTAAAAAAAAAAAATAAAAATTTJwWWwwWWWWWwWwwWWWWWwWwWwWWWWWwWwwwWWwWWwWWwWW",
+          "TTTTTTATTTTTTTATTTTTTTTTTAAATTTJWwWwwwWWWwwwWwwWWWwwwWWWwwwWWwwWWWwwWWWWWWWwwWwW",
+          "AAAAATTAAAATATTAAAAAAAAAATTTJwwWWwwwWWwwwwWwwWwwWwWWWwwwwWWWWWWWwwwFZZZZYWWwwwwW",
+          "TTATTTTTTTTTTATATTTTTTTTTJWwWwWWwwWwWWwWwwwWWWwwwwwwWwwWWwwwWWWwFZZ======YWWWWwW",
+          "AATAAAATAAAAATATAAAAAAAATwWwwWWWWWWWWWWwwwwwwwwWwWwWwwwwWwwWwFZZ=========DWWWwWW",
+          "TTTTAATTTAATTTTATATTTTATJWWWwWwWwwwWwwWwwWwWwWwWwwwWwWwwWwWwF=============YWWwwW",
+          "AAAATTAAATTAAAATTTAAAATJwWwwWWWwwWwwwWWWwwWwwwWwwwwWwwwwWwwF==============DwwWwW",
+          "AATTTTTAATTTATTTTTTAAAJWWWWwwWWWwwWwwWWwwwwwFZZZZZYWwwWWWwF================YWWwW",
+          "TTAAAAATTAATTAAAATTTTTWWWWWwWWWWWwwWwwwwWwFZ..::...:YwWwwWK================DWWww",
+          "TTTAATTTTTTTTTTAAATATJwWWWWWwwWWwWwWWwWWFZ.::.::.::.JwWwWWK================DwWWw",
+          "AAATTAAAAATAAAATTTATJWWwWFZZZZZYwwwWwwWF.:.::..:.:.DWwWWwWK================DWWww",
+          "TTATTTTAATTTTATTTATJWWwWF:::::::YWwwwwW,.:.:..:.:.:JwwwwWW,================DwWWW",
+          "ATTAAAATTAAAATAAATJWWWWF....:..::YwWWwww::::.:...-JWWwwWwww,===============JwwWW",
+          "ATTTTATTTTATTTTTAJwwWwWK.:...::.:DwwwWww,--.:..-JwwwwwWWWWwW,=============JWWWww",
+          "TAAAATAAAATAAAAATwwwwwF::..::..:.DwWwwWwwww,--JWWwwWWWwWwWWWW,-==========JwwWWWW",
+          "TTAAATTAATTTTAATJwwwwwK:...:...:.JWWwwWwwwwwWWWWwWWwWWWWWWWWwWw,--------JWWWwWWW",
+          "AATTTAATTAAAATTJWwwwWw,:.:...::.:wwwwwWWwwWWwwWwwWwWwwwWwWwwWwWwWWWwwwWWWwWWWwWw",
+          "TTTTTTTTATTAATJwWWwwwww:::.:::..JwwWWwWWWwWwWWwWwwwwWWwWWwWwwwwwwWWwWwwwWWwwWWWw",
+          "AAAAAAAATTTTTJWWwwwwWwW,.:::.:.JwwWWwwWWwWWWwWWWWWWWwWZZZZZZZZZZZZZZZZZZZZWWWwWW",
+          "AATTTTTTTTATJwWwWwWWWWww,..:--JwwWwwWWWwwWwwWwwWwwWZZJ~~~~~~~~~~~~~~~~~~~~,ZZWwW",
+          "TTAAAAAAAATJWwwwWwWWWWwwW,-JWwWwWWWWwWwWwwWWwwWWwZJ~~~~~~~~~~~~~~~~~~~~~~~~~~,ww",
+          "TTTTTTAAATJwWwwWWwWWWwwwWWwWwWWWwwwWwWwWWwWWWwwZJ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~,Z",
+          "AAAAATTTTJwWWwwWWWWWWWWwWWWwWWwwwWwWwwWWwWwwZZJ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+          "TAAAAAATJwwWwWwwWwwwwwwWwwwWWwWWWwWWwWwwwwZJ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+          "AATTTTTJWWwwWwWWWwwwwwWWWwwwwWwWwwwWWWwWWJ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+          "TAAATTJWwWWWWWwWWW####WwWwWWwwwwWWwWWwWZJ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+          "ATTAAAwwwWwwwwwwW#####WwwwWwwwWwWwWwwwJ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+          "AATAATWwwwWwwWW#######wWWWwwwwwWWwWwWF~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+          "TAATTJWwwwwWWW########FYWwwWWWwwWwwWWJ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+          "TAATAWWWwWWww########F..ZZZYWWwwWWwWF~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+          "AAAATwWwWwWWw########K..:.::YwWwwWWWJ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+          "AATTAwwWWWwW########F::..::..YWwWWwJ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+          "TTAATWwwwWww######FZ..::.:...DwwWWJ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+          "AATTJWwWWWW#####FZ...::.::.:.DWwwK~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+          "TAAAwwWWwWW###FZ::....:::...:DWWWJ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+          "TAATwWwWwwwFZZ....::::::.::.:DwWK~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+          "AATAwWwWWwF.....:.:..:::::..:DwWK~~~~~~~~~~~~~~F....Y~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+          "AAATWwwWwF.::..:..::::::...::JwWK~~~~~~~~~~~~~F.......AA.Y~~~~~~~~~~~~~~~~~~~~~~",
+          "TAAJwWWwwK:...:..:.::::..::.DWWWK~~~~~~~~~~~~~..AAAAAAAAA.Y~~~~~~~~~~~~~~~~~~~~~",
+          "AATwWwwWF:.::.::::::.:...:::JwwWK~~~~~~~~~~~~~.AAAAA..TTA..~~~~~~~~~~~~~~~~~~~~~",
+          "ATTwwwwF.:.:..:::.::.::::::D##WWK~~~~~~~~~~~~~.AATTTMOAATA.~~~~~~~~~~~~~~~~~~~~~",
+          "TAJWWWWK::...::::..:......:J###wK~~~~~~~~~~~~~.TTAMOUNTTAA.~~~~~~~~~~~~~~~~~~~~~",
+          "ATWwwWWK:..:.:.::::.:.:.:.D####WK~~~~~~~~~~~~~.AAAUMOMOATT.~~~~~~~~~~~~~~~~~~~~~",
+          "TAwwwWWK..:....::.:.....:.J####wK~~~~~~~~~~~~~,TTAAUNUNTAA.~~~~~~~~~~~~~~~~~~~~~",
+          "ATwwWWwK..:.....:.:.:::.:D#####WK~~~~~~~~~~~~~~.AAA...AATTJ~~~~~~~~~~~~~~~~~~~~~",
+          "TAWWwwwK::.:::::..:::.:::D#####W,Y~~~~~~~~~~~~~.TTTAAATT..~~~~~~~~~~~~~~~~~~~~~~",
+          "ATwWWWwK:...::::.:.:..::.D#####WW:~~~~~~~~~~~~~,..TTTT...J~~~~~~~~~~~~~~~~~~~~~~",
+          "TJwwWWWK.::::.:......:.::D######W,Y~~~~~~~~~~~~~,........~~~~~~~~~~~~~~~~~~~~~~~",
+          "AwwWwwwK:::.:::.:::::.:...Y#####WW:~~~~~~~~~~~~~~~,....J~~~~~~~~~~~~~~~~~~~~~~~~",
+          "TYwWwwWK:.:::.....:.:...::D#####WW,Y~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+          "AAwWWWW,.::::::::.:..:::.::Y####FYW:~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+          "TTwwWWWwK.::::.:.::...:.::..ZZZZ:DW,Y~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+          "AAWWwwwWK:::..::.:..:::::::.....:Dww,Y~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+          "TTYwWWWwK.::.:.:....::.::::.:::...YWW,Y~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+          "AAAwwWWWK.:..:::.:.:::.....:.::.::DWWW,:Y~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+          "TTTWwWWwK.....::::..::..:.:.::....:YWwWw,Y~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+          "AAAWWwWwK.:::.:::::....:.::..::.:.:DWwWww,:Y~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+          "AAAYWWWw,..::.:.......:..:......::::YWwwWWW,Y~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+          "TTTAwWWWW,--:::::.:::...:......:.::..YWwwWww,--Y~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+          "TTTTWWwww###,-.....:::::.:::.:.:..:.:DWWWWwWWWw,--Y~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+          "AAAAYWWww#####,:::..:..:.:..:.:..:.:.DWWWwwWwwwWwW,-----Y~~~~~~~~~~~~~~~~~~~~~~~",
+          "AATTAwwww######,.:...:.:.:...:::::.::DwwwWwWWwWWwWwWWwWw,---------------:Y~~~~~~",
+          "TTAATwwww#######K::..:.::::.:..::.::..YwwWwWWwwwwWwwWwWwWwWWWWWWWWWWwwWwW,------",
+          "TTTTAWwWw#######K.:.::.:.::::....:...:DWWWwwwWWWWWwwWWWwwwWWWwWwwWwwWwWWwWWwwWww",
+          "AAAATYWwwW######K.:::.::..:::::::::.::DWwWWwwwWwWWWWwFYwwwWwWwWwWwwwwwwwwWwWWWwW",
+          "TAAATAwWWW#####F:.::.:::::.:.:::.:..:.DwWWWWWwwWWWWWF:.ZZYwwWwWwwWwWWwWwwwwwWwWW",
+          "ATTTATYWwWWW###K.::....:..:::::.:.:..:.YwwWwWWWWwwFZ::.:::YwwwwwwWWFZZZYWWwWWwwW",
+          "TTTAATAAYWWwWwWK.::.:::::.::.:.:::....:JwwWWWWWWwF:.....:..YWwWWwWF=====YWwwWWww",
+          "AAAATATTAYWWwwW,.:::::::.:::::...:..:.DWWwWwWwWFZ.::::..:::DwWwWwF=======YwwWWww",
+          "TTTTTATTAAAYWWWw,..::.:::..::..:.::.::DWWwWwwWF:..:..::::..DWWWWWK=======DwwWWww",
+          "AAAAAAAAATTAYWwwW,-.:...:.:.....:....:JWWWWWwWK::.....:.:::DwWWwwK=======DWwWwWw",
+          "AAAATTTATTTAAAYwWWW,--.::.:.:...:.:.-JWWwwWWWW,..:..:..:.:.DwWWWW,=======JwWwwww",
+          "TTTTAAATAAAATTAYwWwwwW,------------JwWwWwWWwWww,..:::..::..JwwWWWw,=====JwwWWwww",
+          "TTTTTAATTTTATTTAAYwWwWWWwWwWwwWwWWWwWWwWwWWwWWww,---------JWwwwwwWw,---JWWwWWWWW",
+          "AAAAATTAAAATAAATTAAYwwwwwWWwwwwWwWWwwwWWWWwwwwwWwwWWwWWWwWWwWWwWwwWWwwWWwWWWwwWw",
+          "TAAATTTTAATTTTTTTTTAwwWWWWWwWwWwwwwwWwWWWWWWwwWWwWWWWwwWwWwwWwWWWWWwWwWwWwwWwWWW"
+        ]
+      }
+    },
+    "6":{
+      "object":[ { "set":{ "_":[ "stencil", "ball" ] }, "x":1157, "y":1126.58 }, { "set":{ "_":[ "stencil", "hole" ] }, "x":211.83, "y":308.917 } ],
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "par":4,
+      "windForce":[ 0, 8, 12, 12, 14, 16 ],
+      "tilemap":{
+        "tileWidth":16,
+        "tileHeight":16,
+        "map":[
+          "MOMOMOMOMOMOMOMOMOMOMOMUNMOOMOMOMOMOMMMOMMOMMOUNMOMOMOMOMUUNNOMOUNMOMOUNOMMUNUNU",
+          "MOMMONMOUMOMOMOMOMONUNUNUUNNUNUNUNUNUUUNUUNUUNMOUNUNUNUNUMONUNUNUNMMMOOUNUUNMOUN",
+          "MOUUNOUNMUNUNUNUNUNMOMOMOMOOMOMOMOMOMUNOMOMOMOUNMOMOMOMOMUMOMOMOMOUUUNNOMOMUUNMO",
+          "UNOOUNUNMO~~~~~~~~~UNUNUNUNNUNUNUNUNMOUNUMONUNUNUNUNUNMOUNMMONUNUNUMMOUNUNUNUNUN",
+          "OOONMOMOUN~~~~~~~~~~~~~~~~~MOOMOMOMOUNMMMONOMOMOMOMOMOUNMOUUMMOOMOMUMOMOMMMOMMOO",
+          "NONNUNUN~~~~~~~~~~~~~~~~~~~UNMONUNUNUNUUUNMMONUNUNUNUNUNUNUNUUNNUNUNUNUNUUUNUUNN",
+          "UNOMOO~~~~~~~~~~~~~~~~~~~~~~~UNOMOMOMOMOMOUUNOMOMOMOMOMOMOMOMOMOMOMOMMMMOOMOMMOO",
+          "UUNUNN~~~~~~~~~~~~~~~~~~~~~~~~~MONUNUNUNUNUNUNUNUMMOMOMOMOMOMOUNUNUNUUUMONUNMMON",
+          "MOMO~~~~~~~~~~~~~~~~~~~~~~~~~~~UNMOOMOMOMOMOMOMMOUUNUNUNUNUNUNMOMOMOMOMUNOMOUUNO",
+          "MOUN~~~~~~~~~~~~~~~~~~~~~~~~~~~~~UNNUNUNUNUMOMOUN#############UNUNUNMOOUMMONUNUN",
+          "MOUN~~~~~~~~~FAAAAAAY~~~~~~~~~~~~~~MOOMMOMOUNUN#####################UNNOUUNOMOMO",
+          "OOO~~~~~~~~F..TTTTAAAA~~~~~~~~~~~~~UNMOUNUN~~~~~~~~~~~~~~~############UNUNMOUNUN",
+          "MON~~~~~~~F.......TTTT..Y~~~~~~~~~~~~UN~~~~~~~~~~~~~~~~~~~~~~############MMMUNMO",
+          "UN~~~~~~~F................Y~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~########UUUNNUN",
+          "OO~~~~~~~...................Y~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~#######MOMOMO",
+          "NN~~~~~~F.....===.............Y~~~~~~~~~~~~~~~~~FA.AAAAAAAY~~~~~~~~~~#####UNUNUN",
+          "OO~~~~~~....=======............Y~~~~~~~~~~~~~~~FATAATATATAA.A~~~~~~~~~~#####MOMO",
+          "NN~~~~~~...=========............Y~~~~~~~~~~~~~F.T.TT.T.T.TTATAY~~~~~~~~~####UNUN",
+          "O~~~~~~~...=========.............~~~~~~~~~~~~F....----.....T.TAY~~~~~~~~~####MOO",
+          "O~~~~~~~...==========............Y~~~~~~~~~~~....JWWWW,-......T.Y~~~~~~~~~###UNN",
+          "N~~~~~~~...==========.............Y~~~~~~~~~F..DWWWWWWWW,........Y~~~~~~~~~~##MO",
+          "U~~~~~~~...=========...............Y~~~~~~~~...DWWWWWWWWW,-.......~~~~~~~~~~##UN",
+          "MO~~~~~~....========................Y~~~~~~~....YWWWWWWWWWW,......~~~~~~~~~~~##M",
+          "UN~~~~~~.....=======.................~~~~~~~,....YWWWWWWWWWWK.....~~~~~~~~~~~~#U",
+          "MO~~~~~~,......===...................~~~~~~~~~,....YWWWWWWWW,....J~~~~~~~~~~~~##",
+          "UN~~~~~~~............................~~~~~~~~~~~,...YWWWWWWWWK...~~~~~~~~~~~~~~#",
+          "OMO~~~~~~,..........................J~~~~~~~~~~~~,...ZYWWWWWF...J~~~~~~~~~~~~~~#",
+          "OUN~~~~~~~,A.................MO....J~~~~~~~~~~~~~~~,...YWWWWK...~~~~~~~~~~~~~~~~",
+          "OUN~~~~~~~~TAA.........AAMOMMUNMO.J~~~~~~~~~~~~~~~~~~,..ZZZZ...J~~~~~~~~~~~~~~~~",
+          "MOMO~~~~~~~,TAA.....AAAAAUNUUNMUNJ~~~~~~~~~~~~~~~~~~~~,.......J~~~~~~~~~~~~~~~F.",
+          "MOUN~~~~~~~~,TAAAAAAATAAAUNONOONJ~~~~~~~~~~~~~~~~~~~~~~,.....J~~~~~~~~~~~~~F....",
+          "MMON~~~~~~~~~,TAATTATTTAMOOOUNNJ~~~~~~~~~~~~~~~~~~~~~~~~~,.J~~~~~~~~~~~~~~F.....",
+          "MOMOMO~~~~~~~~,TTTTTTTTTUNNNUNJ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~......",
+          "UNUNUN~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~F....Y~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~......",
+          "MMONOMO~~~~~~~~~~~~~~~~~~~~~~~~~~~~~F......Y~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~......",
+          "UUNUNON~~~~~~~~~~~~~~~~~~~~~~~~~~~~F........~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~......",
+          "UNUUUNMMO~~~~~~~~~~~~~~~~~~~~~~~~~~.........~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~,.....",
+          "MOUNMOUUNMOMO~~~~~~~~~~~~~~~~~~~~~~.........~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~,....",
+          "UNUNUNMOUUNUNMO~~~~~~~~~~~~~~~~~~~~........J~~~~~~FZZZZZZZZZZZY~~~~~~~~~~~~~....",
+          "MOMOMOUNMOMMMONMOMO~~~~~~~~~~~~~~~~.......J~~~~~~F----------------Y~~~~~~~~~,...",
+          "UNUNUNUNUNUUUMMONUNMO~~~~~~~~~~~~~~,.....J~~~~~FZJWWWWWWWWWWWWWWWW,ZY~~~~~~~~~,.",
+          "MOMMOOMOMMOOUUMMMMOUNMO~~~~~~~~~~~~~~,..J~~~~~FJWWWWWWWWWWWWWWWWWWWW,Y~~~~~~~~~,",
+          "UNUUNNUMOUNNUNUUUMMMOUNMOMO~~~~~~~~~~~~~~~~~~~JWWWWWWWWWWWWWWWWWWWWWW,ZY~~~~~~~~",
+          "MOMOMOMMOOMOMOUNMUUMMMOUNUNMO~~~~~~~~~~~~~~~~FYWWWWWWWWWWWWWWWWWWWWWWWW,Y~~~~~~~",
+          "UNUNUNUUNNUNUNUNUNUUUMMOMOMUNMOMO~~~~~~~~~~~~AAWWWWWWWWWWWWWWWWWWWWWWWWW,ZY~~~~~",
+          "MOMOMOMOMOMOMOMOMOMMOUUNMOMOMUNUNMO~~~~~~~~~FATWWWWWWWWWWWWWWWWWWWWWWWWWWW,Y~~~~",
+          "UNUNUNUNUNUNUNUNUNUUNNUNUNUNUNUNUUN~~~~~~~~~AAJWWWWWWWWWWWWWWWWWWWWWWWWWWWW,Y~~~",
+          "AAMOMOMOMOMMOMOOMOMOMOMOUUNUNUNUNMO~~~~~~~~~AAWWWWWWWWWFZZZZZYWWWWWWWWWWWWWWD~~~",
+          "TTUNUNUNUNUMOUNNUNUNUNUNUNMOOMOMOUN~~~~~~~~FAAWWWWWWWFZ.......ZZZYWWWWWWWWWW,Y~~",
+          ".AAAMOMOMOMUNOMMOOMOMOMOMOUNNUNUNMO~~~~~~~~.TAWWWWWWW.............ZZYWWWWWWWWD~~",
+          ".TTTUNUNUNUNUNUUNNUMONUNUNUMOMOMOUN~~~~~~~~.AAWWWWWWF................YWWWWWWW,Y~",
+          "...AAAAAMOMOMOMOMOMUNOMOMOMUNUNUNUMO~~~~~~~AATWWWWWWK.................ZYWWWWWWD~",
+          "...TTTTTUNUNUNUNUNUNMOUNUNUNMOOMOMUN~~~~~~~AAAWWWWWWK...................ZYWWWW,Y",
+          ".......AAAMOMOMOMOMOUNMMOOMOUNNUNUMO~~~~~~FTTAWWWWWWK.....................YWWWWW",
+          ".......TTTUNUNUNUNUNUNUUNNUNUMOMOMUN~~~~~~.AAAWWWWWWK......................ZYWWW",
+          ".........AAAAAMOMOMOMOMOMOMOMUNUNUNMO~~~~~AATTWWWWWWK........................WWW",
+          ".........TTTTTUNUNUNUNUNUNUNUNMOOMOUN~~~~~AAATWWWWWWK........................ZYW",
+          ".............AAAAAMOMOMOMOMOMOUNNUMO~~~~~~ATAAYWWWWWK..........................Y",
+          ".............TTTTTUNUNUMONMOUNUMMOUN~~~~~~TAAAAWWWWW,...........................",
+          ".................AAAMOMUNOUNMOMUUN~~~~~~~~AAAAAYWWWWWK..........................",
+          ".................TTAUNUNUNUNUNUNUN~~~~~~~~AAATAAAWWWWK..........................",
+          "...................AMOMOMOMOMOMMO~~~~~~~~FTAAAATAYWWW,-.........................",
+          "...................AUNUNUNUNUNUUN~~~~~~~~..TTAAATAAWWWWK........................",
+          ".................AAAMOMOMOMOMMO~~~~~~~~~~....AAAATAYWWWK........................",
+          ".................ATTUNUNUNUNUUN~~~~~~~~~~....TAAAATAAYW,............=======.....",
+          ".................AMOMOMOMOMOMO~~~~~~~~~~F.....TATA.TAAYW,..........=========....",
+          ".................AUNUNUNUNUNUN~~~~~~~~~~......AA.AA.TAAWW,........===========...",
+          "...............AAAMOMOMOMOMO~~~~~~~~~~F....AAATTATAA.TAYWW,.......===========...",
+          "...............ATTUNUNUNUNUN~~~~~~~~~F..AAAAAAAAAATAA.TAYWW,......===========...",
+          "...............AMOMOMOMOMMO~~~~~~~~F.AAAAAAAATTTTTAAAA.TAYWWK.....===========...",
+          "...............AUNUNUNUNUUN~~~~~~~F.ATAAATTTT.----AAAAAAAAWW,-....===========...",
+          ".............AAAMOMOMOMMO~~~~~~~~F.AAAATTJ---JWWWWTAAATATAWWWW,....==========...",
+          ".............ATTUNUNUNUUN~~~~~~~F..AAATJWWWWWWWWWW,TAAATAAYWWWW,...=========....",
+          ".........AAAAAMOMOMOMOMO~~~~~~~F..AAATJWWWWWWWWWWWW,TAAATAAYWWWWK...=======.....",
+          ".........ATTTTUNUNUNUNUN~~~~~~~...AAAJWWWWWWWWWWWWWW,TAAATAAWWWW,-..............",
+          ".....AAAAAMOMOMOMOMOMO~~~~~~~~F..ATATWWWWWWWWWWWWWWWW,TAAATAYWWWWW,.............",
+          ".....ATTTTUNUNUNUNUNUN~~~~~~~F..AAATJWWWWWWWWWWWWWWWWW,TAAAAAWWWWWW,............",
+          ".AAAAAMOMOMOMOMOMOMMO~~~~~~~F...AATJWWWWWWWWWWWWWWWWWWW,TAAAAYWWWWWW,...........",
+          ".ATTTTUNUNUNUNUNUNMON~~~~~~~...AAAJWWWWWWWWWWWWWWWWWWWWW,TAAAAAYWWWWW,-.........",
+          ".TMOMOMOMOMOMOMOMOUN~~~~~~~~...AATWWWWWWWWWWWWWWWWWWWWWWW,TTATAAYWWWWWW,........"
+        ]
+      }
+    },
+    "scoreboard":{
+      "execute":[
+        { "set":{ "cycle":0 } },
+        {
+          "object":[
+            { "width":256, "height":192, "x":0, "y":0, "bgcolor":"#0ff" },
+            {
+              "width":256, "height":20,
+              "zIndex":2, "x":0, "y":8,
+              "color":"#ff0",
+              "font":"spectrum", "lineHeight":20, "outline":"#000", "textAlign":"center", "html":"GOLFING TOURNAMENT"
+            },
+            {
+              "width":106, "height":30,
+              "zIndex":2, "x":140, "y":40,
+              "color":"#f00",
+              "font":"spectrum", "fontSize":30, "lineHeight":30, "outline":"#000", "textAlign":"center", "html":"SCORE"
+            },
+            {
+              "width":106, "height":30,
+              "zIndex":2, "x":140, "y":60,
+              "color":"#fff",
+              "font":"spectrum", "fontSize":40, "lineHeight":30, "outline":"#000", "textAlign":"center", "html":{ "_":[ "variable", "score" ] }
+            },
+            {
+              "box":"label", "width":256,
+              "zIndex":2, "x":0, "y":165,
+              "color":"#fff",
+              "font":"spectrum", "fontSize":20, "lineHeight":20, "outline":"#000", "textAlign":"center", "html":"PRESS START TO CONTINUE",
+              "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "visible":0 }, "wait":10 }, { "set":{ "visible":1 }, "wait":10, "loopTo":0 } ] } }
+            }
+          ]
+        },
+        {
+          "times":6,
+          "execute":[
+            {
+              "object":[
+                {
+                  "width":60, "height":20,
+                  "zIndex":2, "x":10, "y":{ "_":[ "that", "cycle", "*", 20, "+", 40 ] },
+                  "bgcolor":"#fff", "border":"#000", "color":"#000",
+                  "font":"spectrum", "lineHeight":20, "textAlign":"center", "html":{ "_":[ "Hole ", ".", { "_":[ "that", "cycle", "+", 1 ] } ] }
+                },
+                {
+                  "width":70, "height":20,
+                  "zIndex":2, "x":70, "y":{ "_":[ "that", "cycle", "*", 20, "+", 40 ] },
+                  "bgcolor":"#fff", "border":"#000", "color":"#000",
+                  "font":"spectrum", "lineHeight":20, "textAlign":"center", "html":{ "_":[ "variable", "scores", { "_":[ "that", "cycle" ] } ] }
+                }
+              ]
+            },
+            { "sum":1, "to":{ "_":[ "this", "cycle" ] } }
+          ]
+        }
+      ],
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":{
+            "when":{ "_":[ "keyA", "isHit" ] },
+            "execute":{ "when":{ "_":[ "variable", "hole", "isGreaterThan", 6 ] }, "gotoScene":"ending", "elseExecute":{ "gotoScene":{ "_":[ "variable", "hole" ] } } }
+          }
+        }
+      }
+    }
+  }
+}
