@@ -43,6 +43,11 @@
 				color:#fff;
 			}
 
+			.splittedscene {
+				background-color: #00f;
+				color:#fff;
+			}
+
 			.mission {
 				background-color: #0f0;
 				color:#000;
@@ -842,10 +847,182 @@ function WrightTools() {
 		return out;
 	  }
 	  
+  function findRoom(point,rooms) {
+  	for (var i=0;i<rooms.length;i++) {
+  		if ((point.x>=rooms[i].x)&&(point.x<rooms[i].x+rooms[i].width)&&(point.y>=rooms[i].y)&&(point.y<rooms[i].y+rooms[i].height)) {
+  			return i;
+  		}
+  	}
+  	return -1;
+  }
+
+  function colliding(r,set) {
+  	var out=[];
+  	for (var i=0;i<set.length;i++)
+  		if (!((r.x>=set[i].x+set[i].width)||(r.x+r.width<=set[i].x)||(r.y>=set[i].y+set[i].height)||(r.y+r.height<=set[i].y)))
+  			out.push(i);
+  	return out;
+  }
+
+  var serialList;
+  function resetSerials() {
+  	serialList={};
+  }
+  function makeSerial(id) {
+  	if (!serialList[id]) serialList[id]=0;
+  	return serialList[id]++;
+  }
 	  
   function convertLayer(a,l) {	
 	logLine("info","Converting layer "+l.name);
     var p,pr,chunk=0,tile,cam,html="",i,j,entry,objs,dx=0,dy=0,dx,dy;
+    if (startsWith(l.name,"splittedscene")) {
+      chunk={};
+      if (l.properties) {
+        if (l.properties["#tile"]) {
+          var set=l.properties["#tile"].split(",");
+          chunk.tilemap=[];
+          for (var i=0;i<set.length;i++)
+            chunk.tilemap.push(convertLayer(a,getLayer(a,set[i])));
+        }
+        if (l.properties["#stencil"]) {
+          var set=l.properties["#stencil"].split(",");
+          if (!chunk.object) chunk.object=[];
+          for (var i=0;i<set.length;i++) chunk.object=chunk.object.concat(convertLayer(a,getLayer(a,set[i])));
+        }
+        mergeProperties(chunk,MERGE_ALL,MERGE_DEFAULT,[l.properties]);
+
+
+        var scenes={};
+        var roomNames=[];
+        var horizontalGap=(l.properties["#horizontalGap"]*1)||8; // HINT: use half player width + 1
+        var verticalGap=(l.properties["#verticalGap"]*1)||8; // HINT: use half player height + 1
+        var roomPrefix=l.properties["#roomPrefix"]||"room";
+        console.log(l.properties);
+
+        for (var i=0;i<l.objects.length;i++)
+        	roomNames.push(l.objects[i].name||(roomPrefix+"-"+i));
+
+        for (var i=0;i<l.objects.length;i++) {
+        	var room=l.objects[i];
+
+        	var sc={object:[],tilemap:[]};
+        	mergeProperties(sc,MERGE_ALL,MERGE_DEFAULT,[l.properties]);
+        	mergeProperties(sc,MERGE_ALL,MERGE_DEFAULT,[room.properties]);
+        	scenes[roomNames[i]]=sc;
+
+        	for (var j=0;j<chunk.object.length;j++) {
+        		
+        		if ((chunk.object[j].x>=room.x)&&(chunk.object[j].x<room.x+room.width)&&(chunk.object[j].y>=room.y)&&(chunk.object[j].y<room.y+room.height)) {
+        			var no=clone(chunk.object[j]);
+        			no.x-=room.x;
+        			no.y-=room.y;
+        			sc.object.push(no);
+        		}
+        	}
+
+        	
+
+        	for (var m=0;m<chunk.tilemap.length;m++) {
+        		var cut={
+	        		x:room.x/chunk.tilemap[m].tileWidth,
+	        		y:room.y/chunk.tilemap[m].tileHeight,
+	        		width:room.width/chunk.tilemap[m].tileWidth,
+	        		height:room.height/chunk.tilemap[m].tileHeight
+	        	};
+        		var cmap={map:clone(chunk.tilemap[m])};
+        		cmap.map=[];
+	        	for (var y=cut.y;y<cut.y+cut.height;y++)
+	        		cmap.map.push(chunk.tilemap[m].map[y].substr(cut.x,cut.width));
+	        	sc.tilemap.push(cmap);
+	        }
+
+	        // Top exit
+        	var nextroom=colliding({x:room.x,y:room.y-2,width:room.width,height:1},l.objects);
+	        for (var k=0;k<nextroom.length;k++) {
+	        	var sx=l.objects[nextroom[k]].x-room.x;
+	        	var sw=l.objects[nextroom[k]].width;
+	        	if (sx<0) {
+	        		sw+=sx;
+	        		sx=0;
+	        	}
+	        	if (sx+sw>room.width) sw=room.width-sx;
+	        	sc.object.push({
+        			x:sx,y:-verticalGap,width:sw,height:1,type:"roomExit",exitSide:"top",exitTo:roomNames[nextroom[k]],exitGapX:room.x-l.objects[nextroom[k]].x,exitGapY:0
+        		});
+        	}
+
+			// Bottom exit
+        	var nextroom=colliding({x:room.x,y:room.y+room.height+1,width:room.width,height:1},l.objects);
+	        for (var k=0;k<nextroom.length;k++) {
+	        	var sx=l.objects[nextroom[k]].x-room.x;
+	        	var sw=l.objects[nextroom[k]].width;
+	        	if (sx<0) {
+	        		sw+=sx;
+	        		sx=0;
+	        	}
+	        	if (sx+sw>room.width) sw=room.width-sx;
+	        	sc.object.push({
+        			x:sx,y:room.height+verticalGap,width:sw,height:1,type:"roomExit",exitSide:"bottom",exitTo:roomNames[nextroom[k]],exitGapX:room.x-l.objects[nextroom[k]].x,exitGapY:0
+        		});
+        	}
+
+        	// Right exit
+        	var nextroom=colliding({x:room.x+room.width+1,y:room.y,width:1,height:room.height},l.objects);
+	        for (var k=0;k<nextroom.length;k++) {
+	        	var sy=l.objects[nextroom[k]].y-room.y;
+	        	var sh=l.objects[nextroom[k]].height;
+	        	if (sy<0) {
+	        		sh+=sy;
+	        		sy=0;
+	        	}
+	        	if (sy+sh>room.height) sh=room.height-sy;
+	        	sc.object.push({
+        			x:room.width+horizontalGap,y:sy,width:1,height:sh,type:"roomExit",exitSide:"right",exitTo:roomNames[nextroom[k]],exitGapX:0,exitGapY:room.y-l.objects[nextroom[k]].y
+        		});
+        	}
+
+        	// Left exit
+        	var nextroom=colliding({x:room.x-2,y:room.y,width:1,height:room.height},l.objects);
+        	for (var k=0;k<nextroom.length;k++) {
+	        	var sy=l.objects[nextroom[k]].y-room.y;
+	        	var sh=l.objects[nextroom[k]].height;
+	        	if (sy<0) {
+	        		sh+=sy;
+	        		sy=0;
+	        	}
+	        	if (sy+sh>room.height) sh=room.height-sy;
+	        	sc.object.push({
+        			x:-horizontalGap,y:sy,width:1,height:sh,type:"roomExit",exitSide:"left",exitTo:roomNames[nextroom[k]],exitGapX:0,exitGapY:room.y-l.objects[nextroom[k]].y
+        		});
+        	}
+
+	        /*
+        
+
+        	// Right exit
+        	var nextroom=findRoom({x:room.x+room.width+1,y:room.y+(room.height/2)},l.objects);
+        	if (nextroom!=-1)
+        		sc.object.push({
+        			x:room.width+horizontalGap,y:0,width:1,height:room.height,type:"roomExit",exitSide:"right",exitTo:roomNames[nextroom],exitGapX:0,exitGapY:room.y-l.objects[nextroom].y
+        		});
+
+        	// Left exit
+        	var nextroom=findRoom({x:room.x-1,y:room.y+(room.height/2)},l.objects);
+        	if (nextroom!=-1)
+        		sc.object.push({
+        			x:-horizontalGap,y:0,width:1,height:room.height,type:"roomExit",exitSide:"left",exitTo:roomNames[nextroom],exitGapX:0,exitGapY:room.y-l.objects[nextroom].y
+        		});
+			*/
+
+  			if (sc.tilemap&&(sc.tilemap.length==1)) sc.tilemap=sc.tilemap[0];
+	        if (sc.object&&(sc.object.length==1)) sc.object=sc.object[0];
+        	if (sc.object.length==0) delete sc.object;
+        }
+
+        chunk=runtidy(scenes,[function(a){return {scenes:a}},["scenes"]]);
+      }
+    } else
     if (startsWith(l.name,"scene")) {
       chunk={};
       if (l.properties) {
@@ -955,6 +1132,11 @@ function WrightTools() {
             }
 
 
+            var serial=getProperty([],MERGE_OBJECT,"#serial",[tile?tile.properties:{},cur.properties,l.properties]);
+            if (serial.length) {
+            	serial=serial[serial.length-1];             
+              obj.serial=serial+"-"+makeSerial(serial);
+            }
 
             mergeProperties(obj,MERGE_SELECTED,MERGE_POSITION,[l,cur]);
             if (tile) obj.y-=tile.set.tileheight;
@@ -990,6 +1172,8 @@ function WrightTools() {
               chunk.push(obj);
             }
             if (chunk.length==1) chunk=chunk[0];
+
+
 
 
             if (startsWith(l.name,"mission")) {
@@ -1227,8 +1411,10 @@ function makeRpgProgression(a) {
 		this.output=[];
 		var a=jsonparse(text);
 		if (resource=="(Tilesets)") {
-		    for (var j=0;j<a.tilesets.length;j++)
-			  this.output[a.tilesets[j].name]=JSON.stringify(convertTileset(a,a.tilesets[j]));
+		    for (var j=0;j<a.tilesets.length;j++) {
+		    	var e=JSON.stringify(convertTileset(a,a.tilesets[j]));
+			  	this.output[a.tilesets[j].name]=e.substr(1,e.length-2);
+		    }
 		} else
 			for (var j=0;j<a.layers.length;j++) 
 				if (a.layers[j].name==resource) {
@@ -1248,6 +1434,7 @@ function makeRpgProgression(a) {
 		this.logs=logs={error:[],warn:[],info:[]};
 		this.output=setSavegame(data);
 	}
+	this.resetSerials=resetSerials;
 }
 
 function onl() {
@@ -1350,6 +1537,7 @@ function onl() {
 				for (var i=0;i<w.output.length;i++) {
 					if (w.output[i].substr(0,5)=="scene") css="scene"; else
 					if (w.output[i].substr(0,7)=="mission") css="mission"; else
+					if (w.output[i].substr(0,13)=="splittedscene") css="splittedscene"; else
 					css="";
 					html+="<input type='button' value='"+w.output[i]+"' class='tiledtoolbutton "+css+"'> ";
 				}
@@ -1357,6 +1545,7 @@ function onl() {
 				var buttons=document.getElementsByClassName("tiledtoolbutton");
 				for (var i=0;i<buttons.length;i++)
 					buttons[i].onclick=function(){
+						w.resetSerials();
 						w.tiledConvertResource(text,this.getAttribute("value"));
 						putlogs(w,"tiledtoollogs");
 						var html="";
