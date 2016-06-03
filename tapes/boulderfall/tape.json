@@ -1,0 +1,1504 @@
+{
+  "name":"Boulder Fall",
+  "author":"KesieV",
+  "year":2016,
+  "genre":"Puzzle",
+  "description":"When I was around 15 I found myself playing Boulder Dash (1984) on my C64 for a long while: despite I didn't like puzzle games at that time, with very few exception, its perfect mix with action games was very fresh and charming. After spending some time on it, mostly on the first caves, finding my way out and being crushed by rocks and diamonds, thoughts naturally started taking a different route and kept going since today. The fascinating part of that game was that it's about you against the rules of physics. It's you against something that isn't your enemy, is not trying to rule the world, is not designed for haunting you forever: it's there, for you, the rocks you've to avoid and the diamond you've to collect. It's man versus his own existence. It's about the choices he makes, the path he decide to dig in life. Shining happiness is there, sorrounded by ruthless failure. All is about taking the right route, running around failure and hoping for a long and worthy life. But Boulder Dash have some more to teach. Sadness and happiness moves in the very same way - they are just different in color and number. They are still, ready to roll and fall on the right spot or crush you. Because, when not approached carefully, happiness can kill you as much as every problem. And a problem, rolling fast over your head, can be a good opportunity for more happiness - or just a part of a clever strategy you've in mind. And what about the others? They are running in circle at our eyes (is it true?), but it's enough for keeping an eye on them. And what's that thing, that turns problems in happiness and vice versa, for a while? Is it the job we decide to do in life or the Boulder Dash 'Magic Wall'? And that thing that keep growing everyday and can turn in huge happiness when carefully confined or impenetrable despair when way too large? Is that our ambition? Is that a project we've for the future? Is that the Boulder Dash amoeba? And what about the exit to another stage, that opens after a certain amount of diamonds are collected - but you can collect as many more diamonds you can within the time limit? Heh! We can keep going forever. But, is all this thinking just building castles in the air? For most of the people, yes: this kind of 'videogame anthropology' is mostly found in comic strips - or in very bad videogame reviews. We all know that that an 'antropology' book is the place for studies about humans and their societies, and the same goes for religion, mathematics, physics etc. And we're also grownups and know that messages can be hidden on purpose in medias, doing politics propaganda in a funny movie or teaching history with a comic. What we forget, instead, is that everything (for now) is written by humans and - in some way - part of them, their everyday life or a single blazing thought of the author can be impressed on paper. Are we able to spot them in a middle of something? Everything is the humanity diary, after all. Plot! You've been trapped in a mine and that's too bad! But every cloud has a silver lining - that's a diamond mine! Collect as many diamond as you can within the time limit and find your way out! Choose the difficulty level on the main screen with UP/DOWN and start a new game hitting the A BUTTON. Once in the game use UP/DOWN/LEFT/RIGHT for moving around. You can hold LEFT/RIGHT for pushing a rock sideways. Hold the A BUTTON while pushing a direction for performing an action without moving (pushing a rock, picking a diamond). Hold the B BUTTON for a while for killing yourself - if your strategy didn't work and you're trapped somewhere. But, please, don't use this in real life. Any hope is lost forever for real.",
+  "screenshots":[ "boulderfall-1.png", "boulderfall-2.png" ],
+  "hardware":{
+    "width":320,
+    "height":200,
+    "texture":"scanlines"
+  },
+  "cheats":{
+    "unlimitedLives":"Unlimited lives"
+  },
+  "resources":{
+    "intro":"intro.png",
+    "sprites":"sprites.png",
+    "scanlines":"../default/scanlines.png"
+  },
+  "stencils":{
+    "codeCheckScore":{
+      "when":{ "_":[ "variable", "score", "isGreaterEqualThan", { "_":[ "variable", "nextLifeAt" ] } ] },
+      "execute":[ { "_":[ "stencil", "codeExtraLife" ] }, { "sum":500, "to":{ "_":[ "variable", "nextLifeAt" ] } } ]
+    },
+    "codeDoMagic":{
+      "when":{ "_":[ "scene", "magicTime" ] },
+      "execute":[
+        { "remove":1 },
+        {
+          "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "thing" ] }, "hitbox":{ "width":16, "height":16, "x":0, "y":32 } }, "not" ] },
+          "object":{ "set":{ "_":[ "stencil", { "_":[ "that", "magicTurnInto" ] } ] }, "x":{ "_":[ "that", "x" ] }, "y":{ "_":[ "that", "y", "+", 32 ] } }
+        },
+        {
+          "when":{ "_":[ "scene", "magicActive", "not" ] },
+          "execute":[
+            { "as":{ "_":"scene" }, "set":{ "magicActive":1 } },
+            { "as":{ "_":[ "object", "magicWall" ] }, "set":{ "type":"syncAnimated", "tileX":64, "framesCount":4 } }
+          ]
+        }
+      ]
+    },
+    "codeExtraLife":[
+      { "when":{ "_":[ "variable", "lives", "isLessThan", 9 ] }, "sum":1, "to":{ "_":[ "variable", "lives" ] } },
+      { "as":{ "_":"variable" }, "set":{ "message":"B O N U S&nbsp;&nbsp;L I F E" }, "execute":{ "_":[ "stencil", "codeMessage" ] } }
+    ],
+    "codeGotoNextStage":[
+      { "sum":1, "to":{ "_":[ "variable", "stage" ] } },
+      {
+        "when":{ "_":[ "variable", "stage", "isEqualTo", 20 ] },
+        "execute":[
+          { "when":{ "_":[ "variable", "difficulty", "isGreaterThan", 1 ] }, "subtract":1, "to":{ "_":[ "variable", "difficulty" ] } },
+          { "as":{ "_":"variable" }, "set":{ "stage":0 } }
+        ]
+      },
+      { "gotoScene":{ "_":[ "variable", "stage" ] }, "withTransition":3 }
+    ],
+    "codeMessage":[
+      { "as":{ "_":[ "object", "message" ] }, "remove":1 },
+      {
+        "object":{
+          "type":"message",
+          "box":"label", "width":320, "height":8,
+          "zIndex":10, "x":0, "y":0,
+          "bgcolor":"#8a7bce", "color":"#fff",
+          "font":"commodore", "fontSize":8, "lineHeight":9, "textAlign":"center", "html":{ "_":[ "variable", "message" ] },
+          "states":{ "code":{ "name":"Sequence", "data":[ { "wait":25 }, { "remove":1 } ] } }
+        },
+        "into":{ "_":"scenehud" }
+      }
+    ],
+    "modelRunAnimations":{
+      "code":[
+        {
+          "name":"Sequence",
+          "data":[
+            { "as":{ "_":"scene" }, "set":{ "amoebaEnclosed":1 } },
+            { "as":{ "_":[ "object", "thing" ] }, "executeAction":"doFrame" },
+            {
+              "when":{ "_":[ "objectTyped", "player" ] },
+              "execute":[
+                {
+                  "when":{ "_":[ "scene", "amoebaDead", "not" ] },
+                  "execute":{
+                    "when":{ "_":[ "scene", "amoebaEnclosed" ] },
+                    "as":{ "_":"scene" },
+                    "set":{ "amoebaDead":"d" },
+                    "elseExecute":{
+                      "when":{ "_":[ "object", "amoeba", "count", "isGreaterThan", { "_":[ "scene", "amoebaMax" ] } ] },
+                      "as":{ "_":"scene" },
+                      "set":{ "amoebaDead":"r" },
+                      "elseExecute":{
+                        "when":{ "_":[ "scene", "amoebaBirth" ] },
+                        "subtract":1,
+                        "to":{ "_":[ "scene", "amoebaBirth" ] },
+                        "elseExecute":{ "when":{ "_":[ "scene", "amoebaSlow" ] }, "subtract":1, "to":{ "_":[ "scene", "amoebaSlow" ] } }
+                      }
+                    }
+                  }
+                },
+                {
+                  "when":{ "_":[ "scene", "diamonds", "isGreaterEqualThan", { "_":[ "scene", "diamondsToGo" ] }, "and", { "_":[ "scene", "exitOpened", "not" ] } ] },
+                  "execute":[
+                    { "as":{ "_":"variable" }, "set":{ "message":"E X I T&nbsp;&nbsp;O P E N" }, "execute":{ "_":[ "stencil", "codeMessage" ] } },
+                    { "set":{ "diamondValue":{ "_":[ "scene", "extraDiamondValue" ] }, "exitOpened":1 } },
+                    { "as":{ "_":[ "object", "exit" ] }, "set":{ "frame":1 } },
+                    { "as":{ "_":[ "object", "headerBar" ] }, "set":{ "bgcolor":"#fff", "color":"#000" } }
+                  ]
+                },
+                {
+                  "when":{ "_":[ "scene", "magicActive" ] },
+                  "execute":{
+                    "when":{ "_":[ "scene", "magicTime" ] },
+                    "subtract":1,
+                    "to":{ "_":[ "scene", "magicTime" ] },
+                    "elseExecute":[
+                      { "as":{ "_":"scene" }, "set":{ "magicActive":0 } },
+                      { "as":{ "_":[ "object", "magicWall" ] }, "set":{ "removeType":"syncAnimated", "tileX":48, "frame":0 } }
+                    ]
+                  }
+                }
+              ]
+            },
+            { "wait":{ "_":[ "variable", "difficulty" ] }, "loopTo":0 }
+          ]
+        },
+        {
+          "name":"Execute",
+          "data":[
+            { "set":{ "animFrame":{ "_":[ "this", "animFrame", "+", 1, "%", 160 ] } } },
+            {
+              "as":{ "_":[ "object", "syncAnimated" ] },
+              "set":{ "frame":{ "_":[ "that", "animFrame", "/", { "_":[ "this", "fpf" ] }, "floor", "%", { "_":[ "this", "framesCount" ] } ] } }
+            }
+          ]
+        }
+      ]
+    },
+    "modelStage":{
+      "cameraY":8, "cameraWidth":320, "cameraHeight":192, "cameraFocusX":80, "cameraFocusY":48, "cameraFocusWidth":160, "cameraFocusHeight":96,
+      "execute":{
+        "object":{
+          "type":[ "hud", "headerBar" ],
+          "hudType":"label", "label":"%number|scene.diamonds|0|3%*<span style='color:#c9d684'>%number|scene.diamondsToGo|0|3%</span> <span style='color:#c9d684'>%number|variable.lives|0|2%</span> %number|scene.time|0|3% %number|variable.score|0|6% <span style='color:#8a7bce'>%text|scene.caveName%</span>",
+          "box":"label", "width":320, "height":8,
+          "zIndex":2, "x":0, "y":0,
+          "bgcolor":"#000", "color":"#fff",
+          "font":"commodore", "fontSize":8, "lineHeight":9, "textAlign":"center"
+        },
+        "into":{ "_":"scenehud" }
+      },
+      "animFrame":0,
+      "diamonds":0,
+      "states":[
+        {
+          "like":{ "_":[ "stencil", "modelRunAnimations" ] },
+          "execute":[
+            { "multiply":{ "_":[ 25, "/", { "_":[ "variable", "difficulty" ] }, "ceil" ] }, "to":{ "_":[ "scene", "magicTime" ] } },
+            { "multiply":{ "_":[ 25, "/", { "_":[ "variable", "difficulty" ] }, "ceil" ] }, "to":{ "_":[ "scene", "amoebaSlow" ] } },
+            { "when":{ "_":[ "scene", "isBonus" ] }, "execute":{ "_":[ "stencil", "codeExtraLife" ] } },
+            {
+              "object":{
+                "type":"camera",
+                "follow":1,
+                "width":16, "height":16,
+                "cameraSmoothness":1,
+                "at":{ "_":[ "objectTyped", "exit" ] },
+                "states":{
+                  "code":{
+                    "name":"Execute",
+                    "data":[
+                      { "when":{ "_":[ "this", "x", "-", { "_":[ "objectTyped", "entrance", "x" ] }, "isGreaterThan", 5 ] }, "subtract":5, "to":{ "_":[ "this", "x" ] } },
+                      { "when":{ "_":[ "this", "x", "-", { "_":[ "objectTyped", "entrance", "x" ] }, "isLessThan", -5 ] }, "sum":5, "to":{ "_":[ "this", "x" ] } },
+                      { "when":{ "_":[ "this", "y", "-", { "_":[ "objectTyped", "entrance", "y" ] }, "isGreaterThan", 5 ] }, "subtract":5, "to":{ "_":[ "this", "y" ] } },
+                      { "when":{ "_":[ "this", "y", "-", { "_":[ "objectTyped", "entrance", "y" ] }, "isLessThan", -5 ] }, "sum":5, "to":{ "_":[ "this", "y" ] } },
+                      { "when":{ "_":[ "this", "collidesWith", { "_":[ "objectTyped", "entrance" ] } ] }, "remove":1 }
+                    ]
+                  }
+                }
+              }
+            }
+          ],
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "wait":1, "loop":1, "until":{ "_":[ "objectTyped", "camera", "not" ] } },
+              { "wait":25 },
+              { "as":{ "_":[ "object", "entrance" ] }, "set":{ "state":"open" } },
+              { "wait":1, "until":{ "_":[ "objectTyped", "player" ] } },
+              { "set":{ "state":"play" } }
+            ]
+          }
+        },
+        {
+          "name":"play",
+          "like":{ "_":[ "stencil", "modelRunAnimations" ] },
+          "code":[
+            { "name":"Sequence", "data":{ "subtract":1, "to":{ "_":[ "scene", "time" ] }, "wait":29, "loop":1, "until":{ "_":[ "scene", "time", "not" ] } } },
+            { "name":"Execute", "data":{ "when":{ "_":[ "objectTyped", "player", "not" ] }, "as":{ "_":"scene" }, "set":{ "state":"dead" } } }
+          ]
+        },
+        {
+          "name":"dead",
+          "like":{ "_":[ "stencil", "modelRunAnimations" ] },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "when":{ "_":[ "cheat", "unlimitedLives", "not" ] }, "subtract":1, "to":{ "_":[ "variable", "lives" ] } },
+              { "wait":75 },
+              {
+                "when":{ "_":[ "variable", "lives" ] },
+                "execute":{
+                  "when":{ "_":[ "scene", "isBonus" ] },
+                  "execute":{ "_":[ "stencil", "codeGotoNextStage" ] },
+                  "elseExecute":{ "gotoScene":{ "_":[ "variable", "idScene" ] }, "withTransition":3 }
+                },
+                "elseExecute":{ "set":{ "state":"gameover" } }
+              }
+            ]
+          }
+        },
+        {
+          "name":"gameover",
+          "like":{ "_":[ "stencil", "modelRunAnimations" ] },
+          "execute":[
+            { "as":{ "_":[ "object", "message" ] }, "remove":1 },
+            {
+              "object":{
+                "box":"label", "width":320, "height":8,
+                "zIndex":10, "x":0, "y":0,
+                "bgcolor":"#984b43", "color":"#fff",
+                "font":"commodore", "fontSize":8, "lineHeight":9, "textAlign":"center", "html":"G A M E&nbsp;&nbsp;O V E R",
+                "states":{ "code":{ "name":"Sequence", "data":{ "set":{ "visible":{ "_":[ "this", "visible", "not" ] } }, "wait":25, "loop":1 } } }
+              },
+              "into":{ "_":"scenehud" }
+            }
+          ],
+          "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"intro", "withTransition":3 } }
+        },
+        {
+          "name":"won",
+          "like":{ "_":[ "stencil", "modelRunAnimations" ] },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "subtract":1, "to":{ "_":[ "scene", "time" ] } },
+              { "sum":1, "to":{ "_":[ "variable", "score" ] } },
+              { "_":[ "stencil", "codeCheckScore" ] },
+              { "wait":1, "loopTo":0, "until":{ "_":[ "scene", "time", "not" ] } },
+              { "wait":75 },
+              { "execute":{ "_":[ "stencil", "codeGotoNextStage" ] } }
+            ]
+          }
+        }
+      ]
+    },
+    "modelThing":{
+      "type":"thing",
+      "image":"sprites", "width":16, "height":16,
+      "fpf":1,
+      "framesCount":8,
+      "states":{
+        "actions":{
+          "name":"explode",
+          "execute":[
+            { "object":{ "set":{ "_":[ "stencil", "explosion" ] }, "at":{ "_":"that" }, "explodeTo":{ "_":[ "that", "explodeTo" ] } } },
+            { "remove":1 },
+            { "set":{ "cycle":0 } },
+            {
+              "times":8,
+              "execute":[
+                { "set":{ "cyclepos":{ "_":[ "stencil", "dataExplosionsDelta", { "_":[ "this", "cycle" ] } ] } } },
+                {
+                  "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "explodable" ] }, "hitbox":{ "_":[ "this", "cyclepos" ] } } ] },
+                  "execute":{ "as":{ "_":"that" }, "executeAction":"explode" },
+                  "elseExecute":{
+                    "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "notConsumable" ] }, "hitbox":{ "_":[ "this", "cyclepos" ] } }, "not" ] },
+                    "execute":[
+                      {
+                        "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "thing" ] }, "hitbox":{ "_":[ "this", "cyclepos" ] } } ] },
+                        "as":{ "_":"that" },
+                        "remove":1
+                      },
+                      {
+                        "object":{
+                          "set":{ "_":[ "stencil", "explosion" ] },
+                          "x":{ "_":[ "that", "x", "+", { "_":[ "that", "cyclepos", "x" ] } ] }, "y":{ "_":[ "that", "y", "+", { "_":[ "that", "cyclepos", "y" ] } ] },
+                          "explodeTo":{ "_":[ "that", "explodeTo" ] }
+                        }
+                      }
+                    ]
+                  }
+                },
+                { "sum":1, "to":{ "_":[ "this", "cycle" ] } }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "modelCircleEnemy":{
+      "type":[ "syncAnimated", "explodable", "hitable", "blockAmoeba" ],
+      "set":{ "_":[ "stencil", "modelThing" ] },
+      "states":{
+        "actions":[
+          {
+            "name":"doFrame",
+            "execute":[
+              { "set":{ "nextSide":{ "_":[ "this", "currentSide", "+", 1, "%", 4 ] } } },
+              {
+                "set":{
+                  "currentMove":{ "_":[ "this", "allSides", { "_":[ "this", "currentSide" ] } ] },
+                  "nextMove":{ "_":[ "this", "allSides", { "_":[ "this", "nextSide" ] } ] }
+                }
+              },
+              {
+                "when":{
+                  "_":[
+                    "this",
+                    "complexCollidesWith",
+                    { "subject":{ "_":[ "object", "player" ] }, "hitbox":[ { "width":48, "height":16, "x":-16, "y":0 }, { "width":16, "height":48, "x":0, "y":-16 } ] }
+                  ]
+                },
+                "executeAction":"hit",
+                "elseExecute":{
+                  "when":{
+                    "_":[
+                      "this",
+                      "complexCollidesWith",
+                      {
+                        "subject":{ "_":[ "object", "proximityKills" ] },
+                        "hitbox":[ { "width":48, "height":16, "x":-16, "y":0 }, { "width":16, "height":48, "x":0, "y":-16 } ]
+                      }
+                    ]
+                  },
+                  "executeAction":"hit",
+                  "elseExecute":{
+                    "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "thing" ] }, "hitbox":{ "_":[ "this", "nextMove" ] } }, "not" ] },
+                    "execute":[
+                      { "sum":{ "_":[ "this", "nextMove", "x" ] }, "to":{ "_":[ "this", "x" ] } },
+                      { "sum":{ "_":[ "this", "nextMove", "y" ] }, "to":{ "_":[ "this", "y" ] } },
+                      { "set":{ "currentSide":{ "_":[ "this", "nextSide" ] } } }
+                    ],
+                    "elseExecute":{
+                      "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "thing" ] }, "hitbox":{ "_":[ "this", "currentMove" ] } }, "not" ] },
+                      "execute":[
+                        { "sum":{ "_":[ "this", "currentMove", "x" ] }, "to":{ "_":[ "this", "x" ] } },
+                        { "sum":{ "_":[ "this", "currentMove", "y" ] }, "to":{ "_":[ "this", "y" ] } }
+                      ],
+                      "elseExecute":[
+                        { "set":{ "currentSide":{ "_":[ "this", "currentSide", "-", 1 ] } } },
+                        { "when":{ "_":[ "this", "currentSide", "isLessThan", 0 ] }, "set":{ "currentSide":3 } }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          { "name":"hit", "execute":{ "executeAction":"explode" } }
+        ]
+      }
+    },
+    "modelFallingThing":{
+      "type":"rounded",
+      "set":{ "_":[ "stencil", "modelThing" ] },
+      "isFalling":0,
+      "states":{
+        "actions":{
+          "name":"doFrame",
+          "execute":{
+            "when":{ "_":[ "this", "isFalling" ] },
+            "execute":{
+              "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "thing" ] }, "hitbox":{ "width":16, "height":16, "x":0, "y":16 } }, "not" ] },
+              "sum":16,
+              "to":{ "_":[ "this", "y" ] },
+              "elseExecute":{
+                "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "hitable" ] }, "hitbox":{ "width":16, "height":16, "x":0, "y":16 } } ] },
+                "as":{ "_":"that" },
+                "executeAction":"hit",
+                "elseExecute":{
+                  "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "magicWall" ] }, "hitbox":{ "width":16, "height":16, "x":0, "y":16 } } ] },
+                  "execute":{ "_":[ "stencil", "codeDoMagic" ] },
+                  "elseExecute":{
+                    "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "rounded" ] }, "hitbox":{ "width":16, "height":16, "x":0, "y":16 } } ] },
+                    "execute":{
+                      "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "thing" ] }, "hitbox":{ "width":16, "height":32, "x":-16, "y":0 } }, "not" ] },
+                      "subtract":16,
+                      "to":{ "_":[ "this", "x" ] },
+                      "elseExecute":{
+                        "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "thing" ] }, "hitbox":{ "width":16, "height":32, "x":16, "y":0 } }, "not" ] },
+                        "sum":16,
+                        "to":{ "_":[ "this", "x" ] },
+                        "elseExecute":{ "set":{ "type":"rounded", "isFalling":0 } }
+                      }
+                    },
+                    "elseExecute":{ "set":{ "type":"rounded", "isFalling":0 } }
+                  }
+                }
+              }
+            },
+            "elseExecute":{
+              "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "thing" ] }, "hitbox":{ "width":16, "height":16, "x":0, "y":16 } }, "not" ] },
+              "set":{ "isFalling":1 },
+              "elseExecute":{
+                "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "rounded" ] }, "hitbox":{ "width":16, "height":16, "x":0, "y":16 } } ] },
+                "execute":{
+                  "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "thing" ] }, "hitbox":{ "width":16, "height":32, "x":-16, "y":0 } }, "not" ] },
+                  "subtract":16,
+                  "to":{ "_":[ "this", "x" ] },
+                  "set":{ "removeType":"rounded", "isFalling":1 },
+                  "elseExecute":{
+                    "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "thing" ] }, "hitbox":{ "width":16, "height":32, "x":16, "y":0 } }, "not" ] },
+                    "sum":16,
+                    "to":{ "_":[ "this", "x" ] },
+                    "set":{ "removeType":"rounded", "isFalling":1 }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "player":{
+      "type":[ "syncAnimated", "explodable", "player", "hitable", "blockAmoeba" ],
+      "follow":1,
+      "set":{ "_":[ "stencil", "modelThing" ] },
+      "tileX":0, "tileY":0,
+      "cameraSmoothness":0.1,
+      "blinking":0,
+      "explodeTo":"",
+      "idleTimer":-1,
+      "isIdle":1,
+      "tapping":0,
+      "verticalTileY":80,
+      "states":{
+        "actions":[
+          {
+            "name":"doFrame",
+            "execute":{
+              "when":{ "_":[ "scene", "time", "not" ] },
+              "executeAction":"explode",
+              "elseExecute":[
+                { "set":{ "doMove":0 } },
+                {
+                  "when":{ "_":[ "keyB", "isGreaterThan", 75 ] },
+                  "executeAction":"explode",
+                  "elseExecute":{
+                    "when":{ "_":[ "keyUp", "isDown" ] },
+                    "set":{ "tileY":{ "_":[ "this", "verticalTileY" ] }, "framesCount":8, "idleTimer":-1, "nextMove":{ "width":16, "height":16, "x":0, "y":-16 }, "pushMove":0 },
+                    "elseExecute":{
+                      "when":{ "_":[ "keyDown", "isDown" ] },
+                      "set":{ "tileY":{ "_":[ "this", "verticalTileY" ] }, "framesCount":8, "idleTimer":-1, "nextMove":{ "width":16, "height":16, "x":0, "y":16 }, "pushMove":0 },
+                      "elseExecute":{
+                        "when":{ "_":[ "keyLeft", "isDown" ] },
+                        "set":{
+                          "tileY":64,
+                          "framesCount":8,
+                          "idleTimer":-1,
+                          "nextMove":{ "width":16, "height":16, "x":-16, "y":0 },
+                          "pushMove":{ "width":16, "height":16, "x":-32, "y":0 },
+                          "verticalTileY":64
+                        },
+                        "elseExecute":{
+                          "when":{ "_":[ "keyRight", "isDown" ] },
+                          "set":{
+                            "tileY":80,
+                            "framesCount":8,
+                            "idleTimer":-1,
+                            "nextMove":{ "width":16, "height":16, "x":16, "y":0 },
+                            "pushMove":{ "width":16, "height":16, "x":32, "y":0 },
+                            "verticalTileY":80
+                          },
+                          "elseExecute":[
+                            { "set":{ "idleTimer":{ "_":[ "this", "idleTimer", "+", 1, "%", 3 ] } } },
+                            {
+                              "when":{ "_":[ "this", "idleTimer", "not" ] },
+                              "execute":[
+                                { "set":{ "tileY":0, "framesCount":1, "nextMove":0, "pushMove":{ "width":16, "height":16, "x":32, "y":0 } } },
+                                { "when":{ "_":[ "randomNumber", [ 1, 4 ], "isEqualTo", 1 ] }, "set":{ "blinking":{ "_":[ "this", "blinking", "not" ] } } },
+                                { "when":{ "_":[ "randomNumber", [ 1, 16 ], "isEqualTo", 1 ] }, "set":{ "tapping":{ "_":[ "this", "tapping", "not" ] } } },
+                                { "when":{ "_":[ "this", "blinking" ] }, "sum":16, "to":{ "_":[ "this", "tileY" ] }, "set":{ "framesCount":8 } },
+                                { "when":{ "_":[ "this", "tapping" ] }, "sum":32, "to":{ "_":[ "this", "tileY" ] }, "set":{ "framesCount":8 } }
+                              ]
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "when":{
+                    "_":[
+                      "scene",
+                      "exitOpened",
+                      "and",
+                      { "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "exit" ] }, "hitbox":{ "_":[ "this", "nextMove" ] } } ] }
+                    ]
+                  },
+                  "execute":[ { "set":{ "state":"won" } }, { "as":{ "_":"scene" }, "set":{ "state":"won" } } ],
+                  "elseExecute":[
+                    {
+                      "when":{ "_":[ "this", "nextMove" ] },
+                      "execute":{
+                        "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "pickable" ] }, "hitbox":{ "_":[ "this", "nextMove" ] } } ] },
+                        "execute":[ { "as":{ "_":"that" }, "remove":1, "executeAction":"doPick" }, { "set":{ "doMove":1 } } ],
+                        "elseExecute":{
+                          "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "thing" ] }, "hitbox":{ "_":[ "this", "nextMove" ] } }, "not" ] },
+                          "set":{ "doMove":1 },
+                          "elseExecute":{
+                            "when":{ "_":[ "this", "pushMove" ] },
+                            "execute":{
+                              "when":{
+                                "_":[
+                                  { "_":[ "randomNumber", [ 1, 8 ], "isEqualTo", 1 ] },
+                                  "and",
+                                  { "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "thing" ] }, "hitbox":{ "_":[ "this", "pushMove" ] } }, "not" ] },
+                                  "and",
+                                  { "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "pushable" ] }, "hitbox":{ "_":[ "this", "nextMove" ] } } ] }
+                                ]
+                              },
+                              "execute":[
+                                { "set":{ "doMove":1 } },
+                                {
+                                  "as":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "pushable" ] }, "hitbox":{ "_":[ "this", "nextMove" ] } } ] },
+                                  "execute":[
+                                    { "sum":{ "_":[ "that", "nextMove", "x" ] }, "to":{ "_":[ "this", "x" ] } },
+                                    { "sum":{ "_":[ "that", "nextMove", "y" ] }, "to":{ "_":[ "this", "y" ] } }
+                                  ]
+                                }
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "when":{ "_":[ "this", "doMove", "and", { "_":[ "keyA", "isDown", "not" ] } ] },
+                      "execute":[
+                        { "sum":{ "_":[ "this", "nextMove", "x" ] }, "to":{ "_":[ "this", "x" ] } },
+                        { "sum":{ "_":[ "this", "nextMove", "y" ] }, "to":{ "_":[ "this", "y" ] } }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          { "name":"hit", "execute":{ "executeAction":"explode" } }
+        ]
+      }
+    },
+    "dataExplosionsDelta":[
+      { "width":16, "height":16, "x":-16, "y":-16 },
+      { "width":16, "height":16, "x":0, "y":-16 },
+      { "width":16, "height":16, "x":16, "y":-16 },
+      { "width":16, "height":16, "x":-16, "y":0 },
+      { "width":16, "height":16, "x":16, "y":0 },
+      { "width":16, "height":16, "x":-16, "y":16 },
+      { "width":16, "height":16, "x":0, "y":16 },
+      { "width":16, "height":16, "x":16, "y":16 }
+    ],
+    "explosion":{
+      "type":[ "thing", "notConsumable", "blockAmoeba" ],
+      "set":{ "_":[ "stencil", "modelThing" ] },
+      "tileX":32, "tileY":112,
+      "x":{ "_":[ "that", "x" ] }, "y":{ "_":[ "that", "y" ] }, "frame":5,
+      "execute":{ "as":{ "_":[ "this", "replacing" ] }, "remove":1 },
+      "states":{
+        "actions":{
+          "name":"doFrame",
+          "execute":[
+            { "subtract":1, "to":{ "_":[ "this", "frame" ] } },
+            {
+              "when":{ "_":[ "this", "frame", "isEqualTo", 0 ] },
+              "execute":[
+                { "when":{ "_":[ "this", "explodeTo" ] }, "object":{ "set":{ "_":[ "stencil", { "_":[ "that", "explodeTo" ] } ] }, "at":{ "_":"that" } } },
+                { "remove":1 }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    ".":{ "type":"pickable", "set":{ "_":[ "stencil", "modelThing" ] }, "tileX":16, "tileY":112 },
+    "P":{ "type":[ "notConsumable", "blockAmoeba", "exit" ], "set":{ "_":[ "stencil", "modelThing" ] }, "tileX":16, "tileY":96 },
+    "W":{ "type":[ "notConsumable", "blockAmoeba" ], "set":{ "_":[ "stencil", "modelThing" ] }, "tileX":16, "tileY":96 },
+    "X":{
+      "type":[ "notConsumable", "blockAmoeba", "entrance" ],
+      "set":{ "_":[ "stencil", "modelThing" ] },
+      "tileX":16, "tileY":96,
+      "animations":{ "idle":{ "frames":2, "speed":3, "loopTo":0 }, "open":{ "frames":3, "speed":2 } },
+      "animation":"idle",
+      "states":{
+        "name":"open",
+        "code":{
+          "name":"Sequence",
+          "data":[
+            { "set":{ "tileX":16, "tileY":0, "animation":"open" } },
+            { "wait":9 },
+            { "object":{ "set":{ "_":[ "stencil", "player" ] }, "at":{ "_":"that" } }, "remove":1 }
+          ]
+        }
+      }
+    },
+    "a":{
+      "type":[ "syncAnimated", "blockAmoeba", "amoeba", "proximityKills" ],
+      "set":{ "_":[ "stencil", "modelThing" ] },
+      "tileX":0, "tileY":128,
+      "growDirections":[
+        { "width":16, "height":16, "x":-16, "y":0 },
+        { "width":16, "height":16, "x":0, "y":16 },
+        { "width":16, "height":16, "x":16, "y":0 },
+        { "width":16, "height":16, "x":0, "y":-16 }
+      ],
+      "states":{
+        "actions":{
+          "name":"doFrame",
+          "execute":{
+            "when":{ "_":[ "scene", "amoebaDead" ] },
+            "execute":[ { "remove":1 }, { "object":{ "set":{ "_":[ "stencil", { "_":[ "scene", "amoebaDead" ] } ] }, "at":{ "_":"that" } } } ],
+            "elseExecute":[
+              { "set":{ "cycle":0 } },
+              {
+                "when":{
+                  "_":[
+                    "this",
+                    "complexCollidesWith",
+                    {
+                      "subject":{ "_":[ "object", "blockAmoeba" ] },
+                      "all":1,
+                      "hitbox":[ { "width":48, "height":16, "x":-16, "y":0 }, { "width":16, "height":48, "x":0, "y":-16 } ]
+                    },
+                    "count",
+                    "isNotEqualTo",
+                    5
+                  ]
+                },
+                "as":{ "_":"scene" },
+                "set":{ "amoebaEnclosed":0 }
+              },
+              {
+                "when":{ "_":[ "scene", "amoebaBirth", "not" ] },
+                "execute":[
+                  {
+                    "when":{ "_":[ "scene", "amoebaSlow" ] },
+                    "set":{ "doGrow":{ "_":[ "randomNumber", [ 1, 128 ], "isLessThan", 4 ] } },
+                    "elseExecute":{ "set":{ "doGrow":{ "_":[ "randomNumber", [ 1, 4 ], "isEqualTo", 1 ] } } }
+                  },
+                  {
+                    "when":{ "_":[ "this", "doGrow" ] },
+                    "execute":[
+                      { "set":{ "growDirection":{ "_":[ "this", "growDirections", { "_":[ "randomNumber", [ 0, 3 ] ] } ] } } },
+                      {
+                        "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "blockAmoeba" ] }, "hitbox":{ "_":[ "this", "growDirection" ] } }, "not" ] },
+                        "execute":[
+                          {
+                            "as":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "thing" ] }, "hitbox":{ "_":[ "this", "growDirection" ] } } ] },
+                            "remove":1
+                          },
+                          {
+                            "object":{
+                              "set":{ "_":[ "stencil", "a" ] },
+                              "x":{ "_":[ "that", "x", "+", { "_":[ "that", "growDirection", "x" ] } ] }, "y":{ "_":[ "that", "y", "+", { "_":[ "that", "growDirection", "y" ] } ] }
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      }
+    },
+    "m":{ "type":[ "blockAmoeba", "magicWall" ], "set":{ "_":[ "stencil", "modelThing" ] }, "tileX":48, "tileY":96 },
+    "B":{
+      "set":{ "_":[ "stencil", "modelCircleEnemy" ] },
+      "tileX":0, "tileY":176,
+      "allSides":[
+        { "width":16, "height":16, "x":0, "y":16 },
+        { "width":16, "height":16, "x":-16, "y":0 },
+        { "width":16, "height":16, "x":0, "y":-16 },
+        { "width":16, "height":16, "x":16, "y":0 }
+      ],
+      "currentSide":0,
+      "explodeTo":"d"
+    },
+    "q":{
+      "set":{ "_":[ "stencil", "modelCircleEnemy" ] },
+      "tileX":0, "tileY":144,
+      "allSides":[
+        { "width":16, "height":16, "x":-16, "y":0 },
+        { "width":16, "height":16, "x":0, "y":16 },
+        { "width":16, "height":16, "x":16, "y":0 },
+        { "width":16, "height":16, "x":0, "y":-16 }
+      ],
+      "currentSide":0,
+      "explodeTo":""
+    },
+    "d":{
+      "type":[ "syncAnimated", "pickable", "blockAmoeba" ],
+      "set":{ "_":[ "stencil", "modelFallingThing" ] },
+      "tileX":0, "tileY":160,
+      "magicTurnInto":"r",
+      "states":{
+        "actions":{
+          "name":"doPick",
+          "execute":[
+            { "sum":{ "_":[ "scene", "diamondValue" ] }, "to":{ "_":[ "variable", "score" ] } },
+            { "_":[ "stencil", "codeCheckScore" ] },
+            { "sum":1, "to":{ "_":[ "scene", "diamonds" ] } }
+          ]
+        }
+      }
+    },
+    "r":{ "type":[ "pushable", "blockAmoeba" ], "set":{ "_":[ "stencil", "modelFallingThing" ] }, "tileX":0, "tileY":112, "magicTurnInto":"d" },
+    "w":{ "type":[ "rounded", "blockAmoeba" ], "set":{ "_":[ "stencil", "modelThing" ] }, "tileX":48, "tileY":96 }
+  },
+  "execute":{
+    "as":{ "_":"variable" },
+    "set":{ "difficulty":3 }
+  },
+  "scenes":{
+    "intro":{
+      "object":[
+        { "width":8, "height":112, "zIndex":10, "x":16, "y":16, "bgcolor":"#fff" },
+        { "width":8, "height":112, "zIndex":10, "x":296, "y":16, "bgcolor":"#fff" },
+        { "width":272, "height":8, "zIndex":10, "x":24, "y":16, "bgcolor":"#fff" },
+        { "image":"intro", "width":230, "height":81, "zIndex":10, "x":45, "y":32 },
+        { "width":272, "height":8, "zIndex":10, "x":24, "y":120, "bgcolor":"#fff" },
+        {
+          "image":"intro", "tileY":81, "width":272, "height":104,
+          "zIndex":5, "x":24, "y":16,
+          "bgcolor":"#f00",
+          "states":{ "code":{ "name":"Execute", "data":{ "set":{ "y":{ "_":[ "this", "y", "+", 1, "%", 8, "+", 16 ] } } } } }
+        },
+        {
+          "type":"hud",
+          "hudType":"label", "label":"LEVEL: <span style='color:#8a7bce'>%text|scene.difficultyLabel%</span> (use up and down)",
+          "box":"label", "width":320, "height":8,
+          "zIndex":2, "x":0, "y":192,
+          "color":"#fff",
+          "font":"commodore", "fontSize":8, "lineHeight":9, "textAlign":"center"
+        },
+        {
+          "box":"label", "width":320,
+          "zIndex":3000, "x":0, "y":150,
+          "font":"commodore", "fontSize":8, "lineHeight":20, "textAlign":"center", "html":"PRESS START",
+          "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "visible":0 }, "wait":10 }, { "set":{ "visible":1 }, "wait":10, "loopTo":0 } ] } }
+        }
+      ],
+      "difficulties":[ 0, "VERY HARD", "HARD", "NORMAL", "EASY" ],
+      "difficultyLabel":"",
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":[
+            {
+              "when":{ "_":[ "keyA", "isHit" ] },
+              "execute":[
+                { "as":{ "_":"variable" }, "set":{ "lives":3, "nextLifeAt":500, "score":0, "stage":0 } },
+                { "gotoScene":{ "_":[ "variable", "stage" ] }, "withTransition":3 }
+              ],
+              "elseExecute":{
+                "when":{ "_":[ "keyUp", "isHit" ] },
+                "subtract":1,
+                "to":{ "_":[ "variable", "difficulty" ] },
+                "elseExecute":{ "when":{ "_":[ "keyDown", "isHit" ] }, "sum":1, "to":{ "_":[ "variable", "difficulty" ] } }
+              }
+            },
+            { "when":{ "_":[ "variable", "difficulty", "isLessThan", 1 ] }, "as":{ "_":"variable" }, "set":{ "difficulty":1 } },
+            { "when":{ "_":[ "variable", "difficulty", "isGreaterThan", 4 ] }, "as":{ "_":"variable" }, "set":{ "difficulty":4 } },
+            { "set":{ "difficultyLabel":{ "_":[ "this", "difficulties", { "_":[ "variable", "difficulty" ] } ] } } }
+          ]
+        }
+      }
+    },
+    "0":{
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "amoebaMax":200,
+      "amoebaSlow":20,
+      "caveName":"Cave 1",
+      "diamondValue":10,
+      "diamondsToGo":12,
+      "extraDiamondValue":15,
+      "isBonus":0,
+      "magicTime":20,
+      "time":150,
+      "tilemap":{
+        "map":[
+          "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+          "W...... ..d.r .....r.r....... ....r....W",
+          "W.rXr...... .........rd..r.... ..... ..W",
+          "W.......... ..r.....r.r..r........r....W",
+          "Wr.rr.........r......r..r....r...r.....W",
+          "Wr. r......... r..r........r......r.rr.W",
+          "W... ..r........r.....r. r........r.rr.W",
+          "Wwwwwwwwwwwwwwwwwwwwwwwwwwwwwww...r..r.W",
+          "W. ...r..d. ..r.r..........d.rd...... .W",
+          "W..d.....r..... ........rr r..r....r...W",
+          "W...r..r.r..............r .r..r........W",
+          "W.r.....r........rrr.......r.. .d....r.W",
+          "W.d.. ..r.  .....r.rd..d....r...r..d. .W",
+          "W. r..............r r..r........d.....rW",
+          "W........wwwwwwwwwwwwwwwwwwwwwwwwwwwwwwW",
+          "W r.........r...d....r.....r...r.......W",
+          "W r......... r..r........r......r.rr..PW",
+          "W. ..r........r.....r.  ....d...r.rr...W",
+          "W....rd..r........r......r.rd......r...W",
+          "W... ..r. ..r.rr.........r.rd...... ..rW",
+          "W.d.... ..... ......... .r..r....r...r.W",
+          "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
+        ]
+      }
+    },
+    "1":{
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "amoebaMax":200,
+      "amoebaSlow":20,
+      "caveName":"Cave 2",
+      "diamondValue":20,
+      "diamondsToGo":10,
+      "extraDiamondValue":50,
+      "isBonus":0,
+      "magicTime":20,
+      "time":150,
+      "tilemap":{
+        "map":[
+          "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+          "W.r..r..w.r...d.w... .r.wr......w..rr..W",
+          "W.......w......rwrr. ...w ..d...w....r.W",
+          "W                                      W",
+          "Wd......w.r....rw.r. .. w..r..d.w..r.r.W",
+          "W.......w.r....rw.r. r..w.....r.w... ..W",
+          "Wwwwwwwwwwwwwwwwwwww wwwwwwwwwwwwwwwwwwW",
+          "W....rr.w..r....w... ..rw....r..w.....rW",
+          "W.......w.. ....w... ...w....r. w.....rW",
+          "W                                      W",
+          "Wr..r...w....r..w..r ...w......dwr.....W",
+          "Wr....r.w..r..r.w... . rw.......wr...r.W",
+          "W.r.....w...r...w... . rw.......w r..r.W",
+          "Wwwwwwwwwwwwwwwwwwww wwwwwwwwwwwwwwwwwwW",
+          "Wr.  q..w....r.rw... ...w.rd..r.w......W",
+          "W.....r.wr......w..d ...w ..r...w.r.rr.W",
+          "W                                      W",
+          "Wd.. .r.wr....r.w.r. ..rw.r.r...w......W",
+          "W.....r.wr..d...w... r..w..r....w...rr W",
+          "W.d... rw..r....w.Xd r..w. .....w...rr W",
+          "W.r.... w.. ..r.w.P. ...w....r.rw.... .W",
+          "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
+        ]
+      }
+    },
+    "10":{
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "amoebaMax":200,
+      "amoebaSlow":20,
+      "caveName":"Cave 9",
+      "diamondValue":5,
+      "diamondsToGo":75,
+      "extraDiamondValue":10,
+      "isBonus":0,
+      "magicTime":20,
+      "time":150,
+      "tilemap":{
+        "map":[
+          "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+          "Wdddrrddrddr.rrrrdrdd.ddrddrddddrrdrdrrW",
+          "Wdrrdddrrrdrddrrrrrrdrrd.drdrrrrdrddrrdW",
+          "Wddrrrrrrrdrddrr.rrrdrrdddrdr.rrdrrrddrW",
+          "Wrrdrddrrrrrrdrrddd..ddrrdrddrrdrdd.rrdW",
+          "Wrrdrddrrrrrrdrrd.drdrrrrdrdrdrrddrrdrdW",
+          "Wdddrrdrd.ddrrddrrdddrrdrdrrr.drddrrdrdW",
+          "Wrrrrrdrrdddd..rrrdrdd.rdrddr.rrddddddrW",
+          "Wdrddwwwwwww.wwwwwdrrrrdrwwwwww.wwwwwwrW",
+          "Wd.ddw           wrddrrrdw           wrW",
+          "Wdrdrw XP        wrddrrrdw           wrW",
+          "Wdrrdw           wr.rrddrw           wrW",
+          "Wdrrdw           wddddrdrw           wdW",
+          "Wrdddw           wdrrd.drw           wdW",
+          "Wrrrrw           wdrrddrrw           wrW",
+          "Wdrddw           w.rdrrdrw           wrW",
+          "Wdrddw           wwwwwwwww           wrW",
+          "Wrrrdw                               wrW",
+          "Wrrrdw           wdd.rdrdw           wrW",
+          "Wddrrw           wrrrdrddw           wrW",
+          "Wdd..wwwwwwwwwwwwwdrrrdddwwwwwwwwwwwwwdW",
+          "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
+        ]
+      }
+    },
+    "11":{
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "amoebaMax":200,
+      "amoebaSlow":20,
+      "caveName":"Cave 10",
+      "diamondValue":25,
+      "diamondsToGo":12,
+      "extraDiamondValue":60,
+      "isBonus":0,
+      "magicTime":20,
+      "time":150,
+      "tilemap":{
+        "map":[
+          "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+          "W............X.........................W",
+          "Wwwwwwwwwwwww wwwwwwww.................W",
+          "Ww....d.............dw.................W",
+          "Ww.w w.wwwwww wwwwww.w.................W",
+          "Ww.wqw.wd.........dw.w.................W",
+          "Ww.wqw.w.wwww wwww.w.w.................W",
+          "Ww.wqw.w.wd.....dw.w.w.................W",
+          "Ww.wqw.w.w.ww ww.w.w.w.................W",
+          "Ww.wqw w w w   w w w w.................W",
+          "Ww.wqwqwqwqwqqqwqwqwqw.................W",
+          "Ww.wqw w w w   w w w w.................W",
+          "Ww.wqw.w.w.wwwww.w.w.w.................W",
+          "Ww.wqw.w.wd.....dw.w.w.................W",
+          "Ww.wdw.w.wwwwwwwww.w.w.................W",
+          "Ww.wdw.wd.........dw.w.................W",
+          "Ww.wdw.wwwwwwwwwwwww.w.................W",
+          "Ww.wdwd.............dw.................W",
+          "Wwwwwwwwwwwwwwwwwwwwww.................W",
+          "W......................................W",
+          "W......................................P",
+          "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
+        ]
+      }
+    },
+    "12":{
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "amoebaMax":200,
+      "amoebaSlow":20,
+      "caveName":"Cave 11",
+      "diamondValue":50,
+      "diamondsToGo":6,
+      "extraDiamondValue":0,
+      "isBonus":0,
+      "magicTime":20,
+      "time":120,
+      "tilemap":{
+        "map":[
+          "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+          "Wr.rd.rrr.w...drr..rw...d...r.w...dr.r.W",
+          "W... .r.r.w...r r..rwr....r..rwr...r.rrW",
+          "W.... ..rrw.r....r..w..r. rr..w....r.rrW",
+          "Wr.r.. rrrw.r.... ..wr......r.wr......rW",
+          "Wr. ...r..w.  ..r.rrw.......r.wr...... W",
+          "Wrr..r....w...r.....wr.rr.....wr..r r..W",
+          "W..r.rr..rwrr...r...wr.rr.....wr..r. .wW",
+          "W..r...r..w...r.r..rwr..r. .rrw. r..qwrW",
+          "Wr.r.wwwwwwwwwqwwwwwwwwwrwwwwwwwww..w. W",
+          "W.r.  .....rrrr..r.r.rr..rr... r..rwr..W",
+          "Wr.rr......rrrr..r. . r...r..r.rr.wr.rrW",
+          "W. .r.r. w..rrr..r.... ...r.....rw.r.rrW",
+          "W. .r.r. wr.wwwwwwwwwwwwwwwwwrr.w..r...W",
+          "Wr.. rrr.wr....r...r... .rr....w.r.rr.rW",
+          "Wr...rrr.wr.r... r..r.r...r.rrw.....r.PW",
+          "W .r....rw  ..r.rrr.......r.rw...... ..W",
+          "W..r.... w..r......r.rr.....wr..r.r...rW",
+          "Wr.rr..r.wr...r....rXrr......r..rq..r..W",
+          "Wr...r...w..r.rq......r... r.. r..rdr..W",
+          "Wrr.d. ..w..r.rr......r..r. r.q.rr.r...W",
+          "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
+        ]
+      }
+    },
+    "13":{
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "amoebaMax":200,
+      "amoebaSlow":20,
+      "caveName":"Cave 12",
+      "diamondValue":20,
+      "diamondsToGo":19,
+      "extraDiamondValue":0,
+      "isBonus":0,
+      "magicTime":20,
+      "time":180,
+      "tilemap":{
+        "map":[
+          "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+          "Wr. ...rr.....r.r..r........r.....r..d.W",
+          "W.....d.r....... ....r....r..r..... ..rW",
+          "W.......rdw.r.w.. w...wr...r... q.. .. W",
+          "Wdwwwwwwwwwww.w...w..rw.....r..  ......W",
+          "Wr........w...w.r.w d.w.....r..........W",
+          "Wrr..r....w...w...w..rwrr......r..d....W",
+          "W..r.....rwrr.w...w..rwrr.........r...rW",
+          "W.wwwwwwwwwww.w.r.w .rw.r....r. q...d.rW",
+          "Wr.r......w...w.r.w..rw.r..d...  ...r..W",
+          "W.r.......wrr w..dw.. w...r.......d.r..W",
+          "W ........wrr w..rw...w... ..r.....r...W",
+          "W.wwwwwwwwwwwwwwwrw...w...r........r.  W",
+          "W...r.r...w...wr..wr..w.r..r.r. q......W",
+          "W....r r..w...w...wd..w..r ....  .....dW",
+          "W.... .r..w.d.w..rw.r.w...r. r.........W",
+          "W.wwwwwwwwwww.w...w...w...r. r.........W",
+          "W..r......w.r.w...wr.rw...... ..r......W",
+          "Wr.X...r. w...w...wr.rw.........rd..r..W",
+          "W....r....w.r.wd..w...w.... ...r..d. ..W",
+          "Wrr.......w.r.wd..w...w..r..d.d.r..r...P",
+          "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
+        ]
+      }
+    },
+    "14":{
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "amoebaMax":200,
+      "amoebaSlow":4,
+      "caveName":"Bonus 3",
+      "diamondValue":10,
+      "diamondsToGo":14,
+      "extraDiamondValue":0,
+      "isBonus":1,
+      "magicTime":4,
+      "time":20,
+      "tilemap":{
+        "map":[
+          "WWWWWWWWWWWWWWWWWWWW",
+          "W       X          W",
+          "W                  W",
+          "W                  W",
+          "W                  W",
+          "W                 PW",
+          "W                  W",
+          "W              qqqqW",
+          "W              qqqqW",
+          "W              qqqqW",
+          "WddddddddddddddqqqqW",
+          "WWWWWWWWWWWWWWWWWWWW"
+        ]
+      }
+    },
+    "15":{
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "amoebaMax":200,
+      "amoebaSlow":140,
+      "caveName":"Cave 13",
+      "diamondValue":5,
+      "diamondsToGo":50,
+      "extraDiamondValue":8,
+      "isBonus":0,
+      "magicTime":140,
+      "time":160,
+      "tilemap":{
+        "map":[
+          "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+          "Wr.....rr.P.....r.Xra.......r........r.W",
+          "W.....r.r............r....r..r.r.......W",
+          "W........r..r..............r...........W",
+          "Wr.......r...........r......r..r.......W",
+          "Wr........r.....r...r.......r..r.......W",
+          "W.r..r........r......r.rr.........r....W",
+          "W..r.....r...........r.rr.........r...rW",
+          "W......r......r.r....r..r........r..r..W",
+          "Wr.r..........r.r..........r...........W",
+          "W..........rr.r..r....r...r....r..r.r..W",
+          "W..........r..r..r...........r.....r...W",
+          "W...r.r.......r...........r........r...W",
+          "W...r.r...r....r...r.......r...........W",
+          "W....r.r..r........r.....r............rW",
+          "W......r....r....r..r.r......r.........W",
+          "W..r.wwwwwwwwwwwwwwwwwwwwwwwwwwwwww....W",
+          "W..r.BBBBBBBBBBBBBBBBBBBBBBBBBBBBBB....W",
+          "Wr...rrrrrrrrrrrrrrrrrrrrrrrrrrrrrr.r..W",
+          "W......................................W",
+          "W.r................................r...W",
+          "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
+        ]
+      }
+    },
+    "16":{
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "amoebaMax":200,
+      "amoebaSlow":20,
+      "caveName":"Cave 14",
+      "diamondValue":10,
+      "diamondsToGo":30,
+      "extraDiamondValue":20,
+      "isBonus":0,
+      "magicTime":20,
+      "time":150,
+      "tilemap":{
+        "map":[
+          "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+          "W..X...................................W",
+          "W......................................W",
+          "W......................................W",
+          "W......................................W",
+          "W.....................q.q.q.q.q.q......W",
+          "W.....................r.r.r.r.r.r......W",
+          "W......................................W",
+          "W......................................W",
+          "W..........B. . . . . .................W",
+          "W.......... . . . . . .................W",
+          "W.......... .B. . . . .................W",
+          "W.......... . . . . . .................W",
+          "W.......... . .B. . . .................W",
+          "W.......... . . . . . .................W",
+          "W.......... . . .B. . .................W",
+          "W.......... . . . . . .................W",
+          "W.......... . . . .B. .................W",
+          "W.......... . . . . . .................P",
+          "W.......... . . . . .B.................W",
+          "W......................................W",
+          "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
+        ]
+      }
+    },
+    "17":{
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "amoebaMax":200,
+      "amoebaSlow":8,
+      "caveName":"Cave 15",
+      "diamondValue":10,
+      "diamondsToGo":15,
+      "extraDiamondValue":20,
+      "isBonus":0,
+      "magicTime":8,
+      "time":120,
+      "tilemap":{
+        "map":[
+          "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+          "Wr.rr..  r..r..r.r..Xr..r.rr..r.rr...r.W",
+          "W.w.rr......r..r...r....w...r......r.r.W",
+          "Wrrw.r... r.. r..r.r..rwr.... .. ..r.rqW",
+          "W...wr..r. q.....r. ..wr.  .....rrrr..rW",
+          "W.rr.wrr... r..r.r...wr. r......rrrr..rW",
+          "W. r..wr..r.r ..r.rrw... rrr. ...rrr..rW",
+          "W...rr.w. q..r..r.rw.....r.rr..r.r.rr..W",
+          "W..r.r..w.rr.... .w...r.. rrr..r....r..W",
+          "W... .rr.w....r. wqrr. ...rrr..r.r... rW",
+          "Wr.r...r.rw.....wr..r. .r....r.  ..r.rrW",
+          "W......r.rrw...w. ..rr..r.... ...r.....W",
+          "W.rr......r....r...r..r.r ..r.rr... r..W",
+          "W.rr......r.mmm..r....r...r......r.rr..W",
+          "W..r... r...r..r.r..r.rr... .....r.rr..W",
+          "W..r..r. .r....r.....r.  ......rrr..r. W",
+          "Wr.. r....r..r.r....r.  .......rrr..r..W",
+          "Wr...r..r.  ..r.  .... rrrr..r.r.rr..rrW",
+          "W. r..q r....r.rr......rrrr..r. .rr.. rW",
+          "Wr.rr..r.rr... .r.r. ...rrr..r.... ...rW",
+          "W...rr.r.rr... .r.r.P...r r..r.r....r..W",
+          "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
+        ]
+      }
+    },
+    "18":{
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "amoebaMax":200,
+      "amoebaSlow":20,
+      "caveName":"Cave 16",
+      "diamondValue":10,
+      "diamondsToGo":12,
+      "extraDiamondValue":20,
+      "isBonus":0,
+      "magicTime":20,
+      "time":150,
+      "tilemap":{
+        "map":[
+          "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+          "WX..r..........r........r.....r..r.....W",
+          "W.r.rr.........r...r........r......r.r.P",
+          "W.r..r........r..r....r.r..........r.rrW",
+          "W.......r..r.....r..............rr.r..rW",
+          "W..r...r....r..r.r..............r..r..rW",
+          "W.........r.....r........rrr.......r...W",
+          "W....r....r.....r........r.rr..r....r..W",
+          "W..r...mmmmmm..mmmmmm.....r.r..r.......W",
+          "W.....rw....w..w..rrw.......r....r....rW",
+          "Wr.r...w..r.w..w....w...r....r.....r...W",
+          "W......w..r.w..w....wr..r........r.....W",
+          "W.rr...w....wr.w....w.r.....r.......r..W",
+          "W.rr...w....wrrw.r..w.....r......r.rr..W",
+          "W..r...w....w..w....w.rr.........r.rr..W",
+          "W.....rwwwwww..wwwwww............r..r..W",
+          "Wr...r....r..r.r.................r..r..W",
+          "W.............r........r.....r........rW",
+          "W..r..r.. q...... q....r. q..r... q...rW",
+          "Wr.....r.  ......  ......  ..r...  ...rW",
+          "W......r.......................r....r..W",
+          "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
+        ]
+      }
+    },
+    "19":{
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "amoebaMax":200,
+      "amoebaSlow":3,
+      "caveName":"Bonus 4",
+      "diamondValue":30,
+      "diamondsToGo":6,
+      "extraDiamondValue":0,
+      "isBonus":1,
+      "magicTime":3,
+      "time":20,
+      "tilemap":{
+        "map":[
+          "WWWWWWWWWWWWWWWWWWWW",
+          "W..X.......rrr.....W",
+          "W..........rrr.....W",
+          "W..................W",
+          "W..........mmm.....W",
+          "W.......r..   .....W",
+          "W........r.   .....W",
+          "W.........r   .....W",
+          "W........P.mmm.....W",
+          "W..........   .....W",
+          "W..........   .....W",
+          "WWWWWWWWWWWWWWWWWWWW"
+        ]
+      }
+    },
+    "2":{
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "amoebaMax":200,
+      "amoebaSlow":0,
+      "caveName":"Cave 3",
+      "diamondValue":15,
+      "diamondsToGo":24,
+      "extraDiamondValue":0,
+      "isBonus":0,
+      "magicTime":0,
+      "time":150,
+      "tilemap":{
+        "map":[
+          "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+          "Wr.ww.wrr.w...rwr..r....w...r.....rw.d.W",
+          "W..Xw.d.r.w...www..w.r....r..r.r...w.wrW",
+          "W....w..rd..r....w.....r.wwr.......w.wwW",
+          "Wd.w..wrwr..r....w...r......r.rr......wW",
+          "Wr.w...w..r.ww..r.wwd.......r.rr......wW",
+          "Wrr..r....w...r......r.rr......r..dww..W",
+          "W..r.ww..r.rr...w....r.rr......w..r.w.rW",
+          "W..w...d......d.r..wwr..r.w.wr..wr..d.rW",
+          "Wr.r....w.ww..d.r..wwr..r..d.w...w..r.wW",
+          "W.r.ww.....rrwr..d.w.wr..wr...wr..d.r..W",
+          "Ww.ww......rrwr..r.w.ww...w..r.ww..r.wwW",
+          "W.w.r.r.w...wwr..r....w...r.....ww.r.wwW",
+          "W.w.r.r.w.d.w.wr..wr....r..r.rr....w...W",
+          "Ww..wrwr..r....w...d...w.rw......w.ww.dW",
+          "Ww...wwr..w.d...wr..r.r...r.wr......w..W",
+          "Ww.d....r.ww..r.wwr.......r.wr......w..W",
+          "W..r....w...r......r.rr......w..r.w...wW",
+          "Wr.ww..r.ww...w....r.rr......w..rd..r..P",
+          "Ww...r......r.rd......r...ww..wr..d.w..W",
+          "Wrr...w.....r.rd......w..r.wd.d.rw.r...W",
+          "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
+        ]
+      }
+    },
+    "3":{
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "amoebaMax":200,
+      "amoebaSlow":20,
+      "caveName":"Cave 4",
+      "diamondValue":5,
+      "diamondsToGo":36,
+      "extraDiamondValue":20,
+      "isBonus":0,
+      "magicTime":20,
+      "time":120,
+      "tilemap":{
+        "map":[
+          "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+          "WX.....r....................r........r.W",
+          "W.....r..............r.................W",
+          "W........r..r..........................W",
+          "Wr.....................................W",
+          "W...................r..................W",
+          "W.r.....................r.........r....W",
+          "W..r.....r...........r..r.............rW",
+          "W......r......r.....................r..W",
+          "W........ B...r.. B...... B...... B....W",
+          "W........  ...r..  ......  ......  .r..W",
+          "W......................................W",
+          "W...r..............................r...W",
+          "W...r.....r............................W",
+          "W......r...........r..................rW",
+          "W...........r.......r..................W",
+          "W..r..............r....................W",
+          "W.....................r.........r......W",
+          "W................................r..r..W",
+          "W....r......r.rr..................r....W",
+          "W...........r.rr.........r..r.r.......PW",
+          "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
+        ]
+      }
+    },
+    "4":{
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "amoebaMax":200,
+      "amoebaSlow":20,
+      "caveName":"Bonus 1",
+      "diamondValue":30,
+      "diamondsToGo":6,
+      "extraDiamondValue":0,
+      "isBonus":1,
+      "magicTime":20,
+      "time":10,
+      "tilemap":{
+        "map":[
+          "WWWWWWWWWWWWWWWWWWWW",
+          "W                  W",
+          "W         r        W",
+          "W  X      .        W",
+          "W                  W",
+          "W                  W",
+          "W                  W",
+          "W                  W",
+          "W                  W",
+          "W                  W",
+          "W         B       PW",
+          "WWWWWWWWWWWWWWWWWWWW"
+        ]
+      }
+    },
+    "5":{
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "amoebaMax":200,
+      "amoebaSlow":20,
+      "caveName":"Cave 5",
+      "diamondValue":50,
+      "diamondsToGo":4,
+      "extraDiamondValue":90,
+      "isBonus":0,
+      "magicTime":20,
+      "time":150,
+      "tilemap":{
+        "map":[
+          "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+          "WX.....................................W",
+          "W......................................W",
+          "W......................................W",
+          "W......................................W",
+          "W......................................W",
+          "W......................................W",
+          "W......................................W",
+          "W.......  q.....  q.....  q.....  q....W",
+          "W.......   .....   .....   .....   ....W",
+          "W....... d ..... d ..... d ..... d ....W",
+          "W......................................W",
+          "W......................................W",
+          "W......................................W",
+          "W.......  q.....  q.....  q.....  q....W",
+          "W.......   .....   .....   .....   ....W",
+          "W....... d ..... d ..... d ..... d ....W",
+          "W......................................W",
+          "W......................................W",
+          "W......................................W",
+          "W......................................P",
+          "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
+        ]
+      }
+    },
+    "6":{
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "amoebaMax":200,
+      "amoebaSlow":20,
+      "caveName":"Cave 6",
+      "diamondValue":40,
+      "diamondsToGo":4,
+      "extraDiamondValue":60,
+      "isBonus":0,
+      "magicTime":20,
+      "time":150,
+      "tilemap":{
+        "map":[
+          "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+          "Wwwwwwwwww....r.r..r........r.wwwwwwwwwW",
+          "Ww        ...........r....r...        wW",
+          "Ww dq     ..r..........r...r..     qd wW",
+          "Wwwwwwwwww..r........r......r.wwwwwwwwwW",
+          "Ww        ......r...r.......r.        wW",
+          "Ww dq     ....r......r.rr.....     qd wW",
+          "Wwwwwwwwww.rr........r.rr.....wwwwwwwwwW",
+          "Ww        ....r.r....r..r.....        wW",
+          "Ww dq     ....r.r....r..r..r..     qd wW",
+          "Wwwwwwwwww.rr.r..r....r...r...wwwwwwwwwW",
+          "Ww        .rr.r..r............        wW",
+          "Ww dq     ....r..r........r...     qd wW",
+          "Wwwwwwwwww.....r...r....r..r..wwwwwwwwwW",
+          "W....r.r..r........r.....r............rW",
+          "W......r....r....r..r.r...r..r.........W",
+          "W..r....r.....r...r.......r..r.........W",
+          "W..r........r......r.rr.........r......W",
+          "Wr.X...r...........r.rr.........rr..r.PW",
+          "W....r......r.rr......r........r..r....W",
+          "Wrr.........r.rr.........r..r.r.r..r...W",
+          "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
+        ]
+      }
+    },
+    "7":{
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "amoebaMax":200,
+      "amoebaSlow":75,
+      "caveName":"Cave 7",
+      "diamondValue":10,
+      "diamondsToGo":15,
+      "extraDiamondValue":20,
+      "isBonus":0,
+      "magicTime":75,
+      "time":120,
+      "tilemap":{
+        "map":[
+          "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+          "W. .. .rr..... ..r. X.... rr r..r. .  .W",
+          "W ..r. .. .  .... .r.r. ...  r..r.d.. .W",
+          "Wr.....  .q.  ... .r.r. ... wwwwwwwwwwwW",
+          "W.r.d... .  ...... ..rr..r.... . ... . W",
+          "Wwwwwwwwwwwww.r. ..   r.. .... ...r....P",
+          "Wr. r...... ..r. ... ..r.  ..r.  q.....W",
+          "Wr. r...... .. r..r.... ...r......r.rr.W",
+          "W... ..r  ... ..r.  ..r.  ... ....r.rr.W",
+          "W... ..r. .r.... ...q......r.r..  r..r.W",
+          "W  .. r.... ..r.r.... .  .......  d.. .W",
+          "W. ... .. .  .. .  .....rr r..r. . r.. W",
+          "W.. d..r.r.... .  ......r  r..r. .  ...W",
+          "W.r.  ..r.  ... .r.r. ...  r.. .... ...W",
+          "W....  .r.  ... .r.r. .r. . r.. r.... .W",
+          "W.  .... ....  .. r r..r.... ...r... .rW",
+          "W..... .  .rr. ...  r.. .r... r..r.r...W",
+          "W r...... ..r. .r.... .  ..r.  r.......W",
+          "W r...... .. r..r.... ...r......r.rr...W",
+          "W. ..r. ... ..r.  .aa.  ... ....r.rr...W",
+          "W. .drq..r.... ...r......r.rq.....dr...W",
+          "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
+        ]
+      }
+    },
+    "8":{
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "amoebaMax":200,
+      "amoebaSlow":20,
+      "caveName":"Cave 8",
+      "diamondValue":10,
+      "diamondsToGo":10,
+      "extraDiamondValue":20,
+      "isBonus":0,
+      "magicTime":20,
+      "time":120,
+      "tilemap":{
+        "map":[
+          "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW",
+          "W . r.. . .. ..r. ..X ..r.  ..r. r... .W",
+          "W.r.rr...... ..r...r.... ...r.....dr.r.W",
+          "P r..r...  ...r..r. ..r.r...wwwwwwwwwwwW",
+          "W...d ..r. q.....r..... ........rr r..rW",
+          "Wwwwwwwwwwwww..r.r.... .  ......r  r..rW",
+          "W.  ... ..r.  ..r.  .... rrr.....  r.. W",
+          "W... r... q.. ..r.  .....r.rr..r. . r..W",
+          "W..r. ..r. r.... ..... ...r r..r.... ..W",
+          "W.....r ...... .  qrr. ...  r.. .r....rW",
+          "Wr.r... . r...... ..r...r....r....dr.  W",
+          "W......r. r......... r..r...wwwwwwwwwwwW",
+          "W.rr...... ..r. ... ..r.  ..r.  ... r..W",
+          "Wwwwwwwwwwwwwr........ ...r......r.rr..W",
+          "W..r...  ...d..r. ..r.rr.........r.rr..W",
+          "W.. ..r. .r...mmmmmmmm.........  r..r..W",
+          "Wr.. r....r..r r...d .. .......  r..r..W",
+          "W ... ..r. ...r.  .....rrrr..r. . r.. rW",
+          "W. r..q.r.... .  ......rr r..r...  ...rW",
+          "Wr.  ..r.  .....r.r. ...  r..r.... ...rW",
+          "W...  .r.r .....r.r.....   .. .r....r..W",
+          "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW"
+        ]
+      }
+    },
+    "9":{
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "amoebaMax":200,
+      "amoebaSlow":20,
+      "caveName":"Bonus 2",
+      "diamondValue":10,
+      "diamondsToGo":16,
+      "extraDiamondValue":0,
+      "isBonus":1,
+      "magicTime":20,
+      "time":15,
+      "tilemap":{
+        "map":[
+          "WWWWWWWWWWWWWWWWWWWW",
+          "Wrq...............rW",
+          "WXrq.............rPW",
+          "Wd.rq...........r.dW",
+          "Wrd.rq.........r.drW",
+          "W.rd.rq.......r.dr.W",
+          "W..rd.rq.....r.dr..W",
+          "W...rd.rq...r.dr...W",
+          "W....rd.rq.r.dr....W",
+          "W.....rd.rr.dr.....W",
+          "W......rd..dr......W",
+          "WWWWWWWWWWWWWWWWWWWW"
+        ]
+      }
+    }
+  }
+}
