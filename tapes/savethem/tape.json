@@ -1,0 +1,1726 @@
+{
+  "name":"Save Them",
+  "author":"KesieV",
+  "year":2016,
+  "genre":"Puzzle",
+  "description":"Everyting, regardless its size or complexity, is always part of something bigger. These ecosystems are mostly depicted as 'boxes': a brick is into the 'house' box, that is inside the 'city' box. Extending this example a bit, things can also exist in multiple nested and intersecting boxes, each with its boundaries and contexts. Our role in life is encolosed by the 'society' box, but also by the 'family' one. Our duty in job is another, distinct box, with its own boundaries. Seeing the world from outside of one of these boxes is mind blowing and that moment always matches with a great sense of growth in knowledge or prestige. The common idea of job carreer usually imply going out from a box in order know and work with the other boxes at the same depth. A cook prepare a dish and the waiter can decide how to serve it, but the chef can decide which dish have to be cooked, influencing both - and, then, more underling boxes. Passing from cook to chef is usually percept as carreer improvement, since you're going to move 'bigger things'. The same happens with space exploration, innovation, anthropology and so on. But is really better or just different? As humans, we also love to perceive these larger boxes as a 'big picture', giving to the box itself a meaning and a purpose - probably because, as humans, the reason for something (us) for existing and living is a long time question. Sometime stretching the concept is easier - a company can be described as a complex ecosystem with a common goal - but mostly every single element into the nested boxes concur to the purpose of the bigger one, in a very complex way - commonly simplified as 'random'. Lemmings (1991) was one of the first videogames that introduced me to the concept: you lead a bunch dumb of creatures to the exit, giving them a specific task in order to save the others. But who is the real saviour? The one who is building a crucial bridge or who told him to do that? And, then... who exactly is the player in the game? Plot! A colony of little sprites are going back home... but the road is long and dangerous! Tell them how to reach the exit and Save Them all! Use UP/DOWN/LEFT/RIGHT for moving the flashing cursor and the A BUTTON for selecting an option. You can give a specific task to a sprite selecting one from the lower part of the screen and then selecting the spirit. Hold down the A BUTTON without selecting anything and use LEFT/RIGHT for moving the camera along the level. You can add spirit to the level faster or slower hitting the '+' or '-' button, kill them all with the mushroom cloud icon or restarting a level with the arrow icon (you've to select it twice). You can also hold down the B BUTTON and use LEFT/RIGHT for selecting a task quickly or UP/DOWN for adding sprites faster or slower.",
+  "screenshots":[ "savethem-1.png", "savethem-2.png" ],
+  "hardware":{
+    "width":256,
+    "height":192,
+    "gridSize":{ "width":32, "height":32 },
+    "texture":"scanlines"
+  },
+  "cheats":{},
+  "resources":{
+    "screens":"screens.png",
+    "sprites":"sprites.png",
+    "stage1":"stage1.png",
+    "stage10":"stage10.png",
+    "stage11":"stage11.png",
+    "stage2":"stage2.png",
+    "stage3":"stage3.png",
+    "stage4":"stage4.png",
+    "stage5":"stage5.png",
+    "stage6":"stage6.png",
+    "stage7":"stage7.png",
+    "stage8":"stage8.png",
+    "stage9":"stage9.png",
+    "defaultsprites":"../default/sprites.png",
+    "scanlines":"../default/scanlines.png"
+  },
+  "stencils":{
+    "codeDecreaseReleaseRate":{
+      "when":{ "_":[ "scene", "releaseRate", "isGreaterThan", { "_":[ "scene", "saveThemMinReleaseRate" ] } ] },
+      "subtract":1,
+      "to":{ "_":[ "scene", "releaseRate" ] }
+    },
+    "codeGotoNextStage":[
+      { "sum":1, "to":{ "_":[ "variable", "stage" ] } },
+      {
+        "when":{ "_":[ "variable", "stage", "isEqualTo", 12 ] },
+        "gotoScene":"ending",
+        "withTransition":3,
+        "elseExecute":{ "gotoScene":{ "_":[ "variable", "stage" ] }, "withTransition":3 }
+      }
+    ],
+    "codeIncreaseReleaseRate":{ "when":{ "_":[ "scene", "releaseRate", "isLessThan", 99 ] }, "sum":1, "to":{ "_":[ "scene", "releaseRate" ] } },
+    "codeMoveCamera":[
+      {
+        "when":{ "_":[ "keyRight", "isDown" ] },
+        "subtract":2,
+        "to":{ "_":[ "scene", "x" ] },
+        "elseExecute":{ "when":{ "_":[ "keyLeft", "isDown" ] }, "sum":2, "to":{ "_":[ "scene", "x" ] } }
+      },
+      { "when":{ "_":[ "scene", "x", "isGreaterThan", 0 ] }, "as":{ "_":"scene" }, "set":{ "x":0 } },
+      {
+        "when":{ "_":[ "scene", "x", "-", 256, "abs", "isGreaterThan", { "_":[ "scene", "width" ] } ] },
+        "as":{ "_":"scene" },
+        "set":{ "x":{ "_":[ 256, "-", { "_":[ "scene", "width" ] } ] } }
+      }
+    ],
+    "codeSaveMeDead":{ "sum":1, "to":{ "_":[ "scene", "saveMeAround" ] }, "remove":1 },
+    "codeSetName":{
+      "when":{ "_":[ "this", "isBomber" ] },
+      "set":{ "hoverLabel":"Bomber" },
+      "elseExecute":{
+        "when":{ "_":[ "this", "isBasher" ] },
+        "set":{ "hoverLabel":"Basher" },
+        "elseExecute":{
+          "when":{ "_":[ "this", "isClimber", "and", { "_":[ "this", "isFloater" ] } ] },
+          "set":{ "hoverLabel":"Athlete" },
+          "elseExecute":{
+            "when":{ "_":[ "this", "isClimber" ] },
+            "set":{ "hoverLabel":"Climber" },
+            "elseExecute":{ "when":{ "_":[ "this", "isFloater" ] }, "set":{ "hoverLabel":"Floater" }, "elseExecute":{ "set":{ "hoverLabel":"Walker" } } }
+          }
+        }
+      }
+    },
+    "modelPopupLabel":{
+      "width":100, "height":10,
+      "zIndex":10000, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "that", "y", "-", 5 ] },
+      "color":"#fff",
+      "font":"spectrum", "lineHeight":12, "outline":"#000", "textAlign":"center",
+      "speed":0.5,
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[ { "subtract":{ "_":[ "this", "speed" ] }, "to":{ "_":[ "this", "y" ] }, "wait":1, "loop":1, "cycles":15 }, { "remove":1 } ]
+        }
+      }
+    },
+    "modelSaveMeState":{
+      "code":{
+        "name":"Execute",
+        "data":[
+          {
+            "when":{ "_":[ "this", "isBomber" ] },
+            "execute":[
+              { "subtract":1, "to":{ "_":[ "this", "bomberCountdown" ] } },
+              {
+                "when":{ "_":[ "this", "bomberCountdown", "%", 25, "isEqualTo", 0 ] },
+                "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "color":"#f00", "html":{ "_":[ "that", "bomberCountdown", "/", 25 ] } }
+              },
+              { "when":{ "_":[ "this", "bomberCountdown", "isEqualTo", 0 ] }, "set":{ "state":"explode" } }
+            ]
+          },
+          { "when":{ "_":[ "this", "y", "isGreaterThan", 160 ] }, "execute":{ "_":[ "stencil", "codeSaveMeDead" ] } },
+          {
+            "when":{ "_":[ "this", "collidesWith", { "_":[ "objectTyped", "exit" ] } ] },
+            "execute":[
+              { "sum":1, "to":{ "_":[ "scene", "saveMeAround" ] }, "remove":1 },
+              { "sum":1, "to":{ "_":[ "scene", "saveMeSaved" ] } },
+              { "as":{ "_":"scene" }, "set":{ "saveMePercent":{ "_":[ "scene", "saveMeSaved", "/", { "_":[ "scene", "saveThemCount" ] }, "*", 100, "floor" ] } } },
+              { "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "color":"#0f0", "html":"SAVED!" } }
+            ]
+          }
+        ]
+      },
+      "actions":{
+        "name":"click",
+        "execute":[
+          {
+            "when":{ "_":[ "this", "isBlocker", "not" ] },
+            "execute":[
+              {
+                "when":{ "_":[ "scene", "selectorPosition", "isEqualTo", 0, "and", { "_":[ "scene", "nClimbers" ] }, "and", { "_":[ "this", "isClimber", "not" ] } ] },
+                "execute":[ { "set":{ "isClimber":1 } }, { "subtract":1, "to":{ "_":[ "scene", "nClimbers" ] } }, { "_":[ "stencil", "codeSetName" ] } ]
+              },
+              {
+                "when":{ "_":[ "scene", "selectorPosition", "isEqualTo", 1, "and", { "_":[ "scene", "nFloaters" ] }, "and", { "_":[ "this", "isFloater", "not" ] } ] },
+                "execute":[ { "set":{ "isFloater":1 } }, { "subtract":1, "to":{ "_":[ "scene", "nFloaters" ] } }, { "_":[ "stencil", "codeSetName" ] } ]
+              },
+              {
+                "when":{
+                  "_":[
+                    "scene",
+                    "selectorPosition",
+                    "isEqualTo",
+                    3,
+                    "and",
+                    { "_":[ "scene", "nBlockers" ] },
+                    "and",
+                    { "_":[ "this", "currentJob", "isNotEqualTo", "blocker" ] }
+                  ]
+                },
+                "execute":[ { "set":{ "currentJob":"blocker", "hoverLabel":"Blocker", "isBlocker":1 } }, { "subtract":1, "to":{ "_":[ "scene", "nBlockers" ] } } ]
+              },
+              {
+                "when":{
+                  "_":[
+                    "scene",
+                    "selectorPosition",
+                    "isEqualTo",
+                    4,
+                    "and",
+                    { "_":[ "scene", "nBuilders" ] },
+                    "and",
+                    { "_":[ "this", "currentJob", "isNotEqualTo", "builder" ] }
+                  ]
+                },
+                "execute":[ { "set":{ "currentJob":"builder", "hoverLabel":"Builder" } }, { "subtract":1, "to":{ "_":[ "scene", "nBuilders" ] } } ]
+              },
+              {
+                "when":{ "_":[ "scene", "selectorPosition", "isEqualTo", 5, "and", { "_":[ "scene", "nBashers" ] }, "and", { "_":[ "this", "isBasher", "not" ] } ] },
+                "execute":[ { "set":{ "isBasher":1 } }, { "subtract":1, "to":{ "_":[ "scene", "nBashers" ] } }, { "_":[ "stencil", "codeSetName" ] } ]
+              },
+              {
+                "when":{
+                  "_":[
+                    "scene",
+                    "selectorPosition",
+                    "isEqualTo",
+                    6,
+                    "and",
+                    { "_":[ "scene", "nMiners" ] },
+                    "and",
+                    { "_":[ "this", "currentJob", "isNotEqualTo", "miner" ] }
+                  ]
+                },
+                "execute":[ { "set":{ "currentJob":"miner", "hoverLabel":"Miner" } }, { "subtract":1, "to":{ "_":[ "scene", "nMiners" ] } } ]
+              },
+              {
+                "when":{
+                  "_":[
+                    "scene",
+                    "selectorPosition",
+                    "isEqualTo",
+                    7,
+                    "and",
+                    { "_":[ "scene", "nDiggers" ] },
+                    "and",
+                    { "_":[ "this", "currentJob", "isNotEqualTo", "digger" ] }
+                  ]
+                },
+                "execute":[ { "set":{ "currentJob":"digger", "hoverLabel":"Digger" } }, { "subtract":1, "to":{ "_":[ "scene", "nDiggers" ] } } ]
+              }
+            ]
+          },
+          {
+            "when":{ "_":[ "scene", "selectorPosition", "isEqualTo", 2, "and", { "_":[ "scene", "nBombers" ] }, "and", { "_":[ "this", "isBomber", "not" ] } ] },
+            "execute":[ { "set":{ "isBomber":1 } }, { "subtract":1, "to":{ "_":[ "scene", "nBombers" ] } }, { "_":[ "stencil", "codeSetName" ] } ]
+          }
+        ]
+      }
+    },
+    "modelStage":{
+      "states":[
+        {
+          "execute":[
+            {
+              "set":{
+                "counter":0,
+                "hoverObject":0,
+                "releaseRate":{ "_":[ "this", "saveThemMinReleaseRate" ] },
+                "saveMeAround":0,
+                "saveMePercent":0,
+                "saveMeSaved":0,
+                "selectorPosition":0
+              }
+            },
+            {
+              "times":12,
+              "execute":[
+                {
+                  "object":[
+                    {
+                      "type":"clickable",
+                      "set":{ "_":[ "stencil", "dataHudActions", { "_":[ "scene", "counter" ] } ] },
+                      "image":"sprites", "tileY":8, "width":16, "height":24,
+                      "zIndex":10, "x":{ "_":[ "scene", "counter", "*", 16 ] }, "y":168, "frame":{ "_":[ "scene", "counter" ] }
+                    },
+                    {
+                      "type":"hud",
+                      "hudType":"label", "label":"OUT %number|object.saveme.count% IN %number|scene.saveMePercent%%% TIME %number|scene.saveThemTime./.60.floor%-%number|scene.saveThemTime.mod.60|0|2% %text|scene.hoverObject.hoverLabel%",
+                      "box":"label", "width":256, "height":8,
+                      "x":0, "y":160,
+                      "bgcolor":"#fff", "color":"#000",
+                      "font":"spectrum", "fontSize":15, "lineHeight":7
+                    }
+                  ],
+                  "into":{ "_":"scenehud" }
+                },
+                {
+                  "when":{ "_":[ "stencil", "dataHudLabels", { "_":[ "scene", "counter" ] } ] },
+                  "object":{
+                    "type":"hud",
+                    "hudType":"label",
+                    "box":"label", "width":14, "height":10,
+                    "zIndex":20, "x":{ "_":[ "scene", "counter", "*", 16 ] }, "y":181,
+                    "font":"spectrum", "fontSize":15, "lineHeight":8, "textAlign":"center"
+                  },
+                  "as":{ "_":"that" },
+                  "into":{ "_":"scenehud" },
+                  "set":{ "label":{ "_":[ "stencil", "dataHudLabels", { "_":[ "scene", "counter" ] } ] } }
+                },
+                { "sum":1, "to":{ "_":[ "scene", "counter" ] } }
+              ]
+            },
+            {
+              "object":[
+                { "type":"intropanel", "image":"screens", "width":256, "height":192, "zIndex":100, "x":0, "y":0, "bgcolor":"#000" },
+                {
+                  "type":"intro",
+                  "width":256, "height":10,
+                  "zIndex":200, "x":0, "y":8,
+                  "font":"spectrum", "lineHeight":10, "outline":"#000", "textAlign":"center", "html":{ "_":[ "Level ", ".", { "_":[ "variable", "stage" ] } ] }
+                },
+                {
+                  "type":"intro",
+                  "width":256, "height":20,
+                  "zIndex":200, "x":0, "y":24,
+                  "color":"#00f",
+                  "font":"spectrum", "fontSize":32, "outline":"#000", "textAlign":"center", "html":{ "_":[ "scene", "saveThemStage" ] }
+                },
+                {
+                  "type":"intro",
+                  "width":256, "height":10,
+                  "zIndex":200, "x":0, "y":64,
+                  "font":"spectrum", "lineHeight":10, "outline":"#000", "textAlign":"center", "html":{ "_":[ "Number of elves ", ".", { "_":[ "scene", "saveThemCount" ] } ] }
+                },
+                {
+                  "type":"intro",
+                  "width":256, "height":10,
+                  "zIndex":200, "x":0, "y":80,
+                  "font":"spectrum", "lineHeight":10, "outline":"#000", "textAlign":"center", "html":{ "_":[ "scene", "saveThemPercentage", ".", "% to be saved" ] }
+                },
+                {
+                  "type":"intro",
+                  "width":256, "height":10,
+                  "zIndex":200, "x":0, "y":96,
+                  "font":"spectrum", "lineHeight":10, "outline":"#000", "textAlign":"center", "html":{ "_":[ "Release rate ", ".", { "_":[ "scene", "saveThemMinReleaseRate" ] } ] }
+                },
+                {
+                  "type":"intro",
+                  "width":256, "height":10,
+                  "zIndex":200, "x":0, "y":112,
+                  "font":"spectrum", "lineHeight":10, "outline":"#000", "textAlign":"center", "html":{ "_":[ "Time ", ".", { "_":[ "scene", "saveThemTime", "/", 60, "floor" ] }, ".", " minutes" ] }
+                },
+                {
+                  "type":"intro",
+                  "width":256, "height":10,
+                  "zIndex":200, "x":0, "y":174,
+                  "color":"#00f",
+                  "font":"spectrum", "lineHeight":10, "outline":"#000", "textAlign":"center", "html":"Press A button to continue"
+                }
+              ],
+              "into":{ "_":"scenehud" }
+            }
+          ],
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+              { "as":{ "_":[ "object", "intro" ] }, "remove":1 },
+              { "as":{ "_":[ "object", "intropanel" ] }, "set":{ "image":0 } },
+              { "wait":25 },
+              { "as":{ "_":[ "object", "intropanel" ] }, "remove":1 },
+              { "set":{ "state":"debrief" } }
+            ]
+          }
+        },
+        {
+          "name":"debrief",
+          "execute":{
+            "object":{
+              "type":"previewnotice",
+              "width":256, "height":32,
+              "zIndex":100, "x":0, "y":160,
+              "bgcolor":"#000",
+              "font":"spectrum", "lineHeight":16, "textAlign":"center", "html":"Preview with LEFT/RIGHT<br>Press the A BUTTON to start",
+              "states":{ "code":{ "name":"Sequence", "data":[ { "wait":75 }, { "remove":1 } ] } }
+            },
+            "into":{ "_":"scenehud" }
+          },
+          "code":[
+            {
+              "name":"Sequence",
+              "data":[
+                { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+                { "as":{ "_":[ "objectTyped", "previewnotice" ] }, "remove":1 },
+                { "as":{ "_":[ "objectTyped", "entrance" ] }, "set":{ "animation":"open" } },
+                { "wait":10 },
+                { "set":{ "state":"play" } }
+              ]
+            },
+            { "name":"Execute", "data":{ "execute":{ "_":[ "stencil", "codeMoveCamera" ] } } }
+          ]
+        },
+        {
+          "name":"play",
+          "execute":{
+            "object":[
+              {
+                "type":"gameelement",
+                "width":16, "height":24,
+                "x":0, "y":168,
+                "bgcolor":"#7f7f00",
+                "states":{ "code":{ "name":"Execute", "data":{ "set":{ "x":{ "_":[ "scene", "selectorPosition", "*", 16, "+", 32 ] } } } } }
+              },
+              {
+                "type":"gameelement",
+                "image":"sprites", "tileY":32, "width":8, "height":8,
+                "zIndex":1000, "x":124, "y":92,
+                "animations":{ "blink":{ "frames":2, "speed":1, "loopTo":0 } },
+                "animation":"blink",
+                "states":{
+                  "code":[
+                    {
+                      "name":"Player",
+                      "data":{
+                        "when":{ "_":[ "keyB", "not", "and", { "_":[ "keyA", "not" ] } ] },
+                        "horizontal":{ "control":1, "gotoZero":1 },
+                        "vertical":{ "control":1, "gotoZero":1 }
+                      }
+                    },
+                    { "name":"Physics", "data":{ "limitX":[ -4, 4 ], "limitY":[ -4, 4 ] } },
+                    {
+                      "name":"Execute",
+                      "data":[
+                        {
+                          "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "hoverable" ] } ] },
+                          "as":{ "_":"that" },
+                          "execute":{ "as":{ "_":"scene" }, "set":{ "hoverObject":{ "_":"that" } } },
+                          "elseExecute":{ "as":{ "_":"scene" }, "set":{ "hoverObject":0 } }
+                        },
+                        {
+                          "when":{ "_":"keyB" },
+                          "set":{ "forceX":0, "forceY":0 },
+                          "elseExecute":{
+                            "when":{ "_":[ "keyA", "isHit" ] },
+                            "as":{ "_":[ "this", "collidesWith", { "_":[ "object", "clickable" ] } ] },
+                            "executeAction":"click",
+                            "elseExecute":{ "when":{ "_":[ "keyA", "isDown" ] }, "execute":[ { "set":{ "forceX":0, "forceY":0 } }, { "_":[ "stencil", "codeMoveCamera" ] } ] }
+                          }
+                        },
+                        { "when":{ "_":[ "this", "x", "isLessThan", 0 ] }, "set":{ "x":0 } },
+                        { "when":{ "_":[ "this", "y", "isLessThan", 0 ] }, "set":{ "y":0 } },
+                        { "when":{ "_":[ "this", "x", "isGreaterThan", 248 ] }, "set":{ "x":248 } },
+                        { "when":{ "_":[ "this", "y", "isGreaterThan", 184 ] }, "set":{ "y":184 } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            "into":{ "_":"scenehud" }
+          },
+          "code":[
+            {
+              "name":"Sequence",
+              "data":[
+                { "wait":25 },
+                { "subtract":1, "to":{ "_":[ "scene", "saveThemTime" ] }, "loopTo":0, "until":{ "_":[ "scene", "saveThemTime", "not" ] } },
+                { "set":{ "state":"over" } }
+              ]
+            },
+            {
+              "name":"Sequence",
+              "data":[
+                {
+                  "object":{
+                    "set":{ "_":[ "stencil", "saveMe" ] },
+                    "x":{ "_":[ "objectTyped", "entrance", "x", "+", 8 ] }, "y":{ "_":[ "objectTyped", "entrance", "y", "+", 4 ] },
+                    "currentSide":{ "_":[ "scene", "saveThemSide" ] }
+                  }
+                },
+                { "wait":{ "_":[ 110, "-", { "_":[ "scene", "releaseRate" ] } ] } },
+                { "cycles":{ "_":[ "scene", "saveThemCount" ] }, "loopTo":0 }
+              ]
+            },
+            {
+              "name":"Execute",
+              "data":{
+                "when":{ "_":[ "scene", "saveMeAround", "isEqualTo", { "_":[ "scene", "saveThemCount" ] } ] },
+                "set":{ "hoverObject":0, "state":"over" },
+                "elseExecute":[
+                  { "when":{ "_":[ "scene", "hoverObject", "removed" ] }, "set":{ "hoverObject":0 } },
+                  {
+                    "when":{ "_":[ "keyB", "isDown" ] },
+                    "execute":[
+                      {
+                        "when":{ "_":[ "keyRight", "isHit" ] },
+                        "sum":1,
+                        "to":{ "_":[ "this", "selectorPosition" ] },
+                        "elseExecute":{
+                          "when":{ "_":[ "keyLeft", "isHit" ] },
+                          "subtract":1,
+                          "to":{ "_":[ "this", "selectorPosition" ] },
+                          "elseExecute":{
+                            "when":{ "_":[ "keyUp", "isDown" ] },
+                            "execute":{ "_":[ "stencil", "codeIncreaseReleaseRate" ] },
+                            "elseExecute":{ "when":{ "_":[ "keyDown", "isDown" ] }, "execute":{ "_":[ "stencil", "codeDecreaseReleaseRate" ] } }
+                          }
+                        }
+                      },
+                      { "when":{ "_":[ "this", "selectorPosition", "isLessThan", 0 ] }, "set":{ "selectorPosition":7 } },
+                      { "when":{ "_":[ "this", "selectorPosition", "isGreaterThan", 7 ] }, "set":{ "selectorPosition":0 } }
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name":"over",
+          "execute":[
+            { "as":{ "_":[ "object", "gameelement" ] }, "remove":1 },
+            { "set":{ "levelDone":{ "_":[ "scene", "saveMePercent", "isGreaterEqualThan", { "_":[ "scene", "saveThemPercentage" ] } ] } } }
+          ],
+          "code":{
+            "name":"Sequence",
+            "data":[
+              {
+                "object":{
+                  "width":256, "height":10,
+                  "x":0, "y":70,
+                  "bgcolor":"#000", "color":"#ff0",
+                  "font":"spectrum", "lineHeight":10, "textAlign":"center", "html":{ "_":[ "You rescued ", ".", { "_":[ "scene", "saveMePercent" ] }, ".", "%" ] }
+                },
+                "into":{ "_":"scenehud" }
+              },
+              { "wait":25 },
+              {
+                "object":{
+                  "width":256, "height":10,
+                  "x":0, "y":80,
+                  "bgcolor":"#000", "color":"#ff0",
+                  "font":"spectrum", "lineHeight":10, "textAlign":"center", "html":{ "_":[ "You needed ", ".", { "_":[ "scene", "saveThemPercentage" ] }, ".", "%" ] }
+                },
+                "into":{ "_":"scenehud" }
+              },
+              { "wait":25 },
+              {
+                "when":{ "_":[ "scene", "levelDone" ] },
+                "object":{
+                  "width":256, "height":20,
+                  "x":0, "y":90,
+                  "bgcolor":"#0f0", "color":"#000",
+                  "font":"spectrum", "lineHeight":10, "textAlign":"center", "html":"Superb! But can you do it again...?"
+                },
+                "into":{ "_":"scenehud" },
+                "elseExecute":{
+                  "object":{
+                    "width":256, "height":20,
+                    "x":0, "y":90,
+                    "bgcolor":"#f00", "color":"#fff",
+                    "font":"spectrum", "lineHeight":10, "textAlign":"center", "html":"You failed! I hope you'll do better next time!"
+                  },
+                  "into":{ "_":"scenehud" }
+                }
+              },
+              { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+              {
+                "when":{ "_":[ "this", "levelDone" ] },
+                "execute":{ "_":[ "stencil", "codeGotoNextStage" ] },
+                "elseExecute":{ "gotoScene":{ "_":[ "variable", "stage" ] }, "withTransition":3 }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "dataHudActions":[
+      { "states":{ "actions":{ "name":"click", "execute":{ "_":[ "stencil", "codeDecreaseReleaseRate" ] } } } },
+      { "states":{ "actions":{ "name":"click", "execute":{ "_":[ "stencil", "codeIncreaseReleaseRate" ] } } } },
+      { "states":{ "actions":{ "name":"click", "execute":{ "as":{ "_":"scene" }, "set":{ "selectorPosition":0 } } } } },
+      { "states":{ "actions":{ "name":"click", "execute":{ "as":{ "_":"scene" }, "set":{ "selectorPosition":1 } } } } },
+      { "states":{ "actions":{ "name":"click", "execute":{ "as":{ "_":"scene" }, "set":{ "selectorPosition":2 } } } } },
+      { "states":{ "actions":{ "name":"click", "execute":{ "as":{ "_":"scene" }, "set":{ "selectorPosition":3 } } } } },
+      { "states":{ "actions":{ "name":"click", "execute":{ "as":{ "_":"scene" }, "set":{ "selectorPosition":4 } } } } },
+      { "states":{ "actions":{ "name":"click", "execute":{ "as":{ "_":"scene" }, "set":{ "selectorPosition":5 } } } } },
+      { "states":{ "actions":{ "name":"click", "execute":{ "as":{ "_":"scene" }, "set":{ "selectorPosition":6 } } } } },
+      { "states":{ "actions":{ "name":"click", "execute":{ "as":{ "_":"scene" }, "set":{ "selectorPosition":7 } } } } },
+      { "states":{ "actions":{ "name":"click", "execute":{ "as":{ "_":[ "object", "saveme" ] }, "set":{ "isBomber":1 } } } } },
+      {
+        "states":{
+          "actions":{
+            "name":"click",
+            "execute":{
+              "when":{ "_":[ "scene", "selectorPosition", "isEqualTo", 9 ] },
+              "gotoScene":{ "_":[ "variable", "stage" ] },
+              "withTransition":3,
+              "elseExecute":{ "as":{ "_":"scene" }, "set":{ "selectorPosition":9 } }
+            }
+          }
+        }
+      }
+    ],
+    "dataHudLabels":[
+      "%number|scene.saveThemMinReleaseRate|0|2%",
+      "%number|scene.releaseRate|0|2%",
+      "%number|scene.nClimbers|0|2%",
+      "%number|scene.nFloaters|0|2%",
+      "%number|scene.nBombers|0|2%",
+      "%number|scene.nBlockers|0|2%",
+      "%number|scene.nBuilders|0|2%",
+      "%number|scene.nBashers|0|2%",
+      "%number|scene.nMiners|0|2%",
+      "%number|scene.nDiggers|0|2%",
+      0,
+      0
+    ],
+    "entrance":{ "type":"entrance", "image":"sprites", "tileY":40, "width":24, "height":16, "zIndex":1, "animations":{ "open":{ "frames":3 } } },
+    "exit":{
+      "type":"exit",
+      "image":"sprites", "tileX":72, "tileY":40, "width":24, "height":16,
+      "zIndex":1,
+      "hitbox":{ "width":4, "height":8, "x":10, "y":8 },
+      "animations":{ "flames":{ "frames":3, "loopTo":0 } },
+      "animation":"flames"
+    },
+    "saveMe":{
+      "type":[ "saveme", "hoverable", "clickable", "explodable", "gameelement" ],
+      "image":"sprites", "width":8, "height":8,
+      "zIndex":10,
+      "hitbox":{ "width":4, "height":8, "x":2, "y":0 },
+      "animations":{
+        "bashing":{ "frames":[ 26, 27, 28, 27 ], "loopTo":0 },
+        "blocking":{ "frames":[ 20, 21, 22, 21 ], "loopTo":0 },
+        "building":{ "frames":[ 23, 24, 25 ], "loopTo":0 },
+        "climb":{ "frames":[ 14, 15, 16, 15 ], "loopTo":0 },
+        "dead":{ "frames":[ 11, 12, 13 ] },
+        "digging":{ "frames":[ 32, 33, 34, 33 ], "loopTo":0 },
+        "fall":{ "frames":[ 8, 9, 10, 9 ], "loopTo":0 },
+        "floating":{ "frames":[ 17, 18, 19, 18 ], "speed":6, "loopTo":0 },
+        "mining":{ "frames":[ 29, 30, 31, 30 ], "loopTo":0 },
+        "walk":{ "frames":8, "loopTo":0 }
+      },
+      "animation":"fall",
+      "bomberCountdown":126,
+      "currentJob":0,
+      "hoverLabel":"",
+      "isBasher":0,
+      "isBlocker":0,
+      "isBomber":0,
+      "isClimber":0,
+      "isFloater":0,
+      "wasTouchingDown":0,
+      "states":[
+        {
+          "like":{ "_":[ "stencil", "modelSaveMeState" ] },
+          "set":{ "currentJob":0, "fallCounter":0 },
+          "execute":[ { "set":{ "animation":"fall", "wasTouchingDown":0 } }, { "_":[ "stencil", "codeSetName" ] } ],
+          "code":[
+            {
+              "name":"Physics",
+              "data":{
+                "walls":[
+                  {
+                    "type":"wall",
+                    "restitutionX":1,
+                    "restitutionY":0,
+                    "execute":{
+                      "execute":{
+                        "when":{ "_":[ "that", "isEqualTo", { "_":[ "this", "touchLeft" ] }, "or", { "_":[ "that", "isEqualTo", { "_":[ "this", "touchRight" ] } ] } ] },
+                        "execute":{
+                          "when":{ "_":[ "this", "isBasher" ] },
+                          "set":{ "forceX":0, "state":"basher" },
+                          "elseExecute":{ "when":{ "_":[ "this", "isClimber" ] }, "set":{ "forceX":0, "state":"climbing" } }
+                        }
+                      }
+                    }
+                  },
+                  { "type":"blocking", "restitutionX":1, "restitutionY":0 }
+                ],
+                "gravityY":1,
+                "limitX":[ -0.4, 0.4 ],
+                "limitY":[ -0.4, 0.4 ]
+              }
+            },
+            {
+              "name":"Execute",
+              "data":[
+                {
+                  "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "brick" ] }, "hitbox":{ "width":2, "height":3, "x":3, "y":6 } } ] },
+                  "set":{ "y":{ "_":[ "that", "y", "-", 8 ] }, "touchDown":1 }
+                },
+                {
+                  "when":{ "_":[ "this", "touchDown", "and", { "_":[ "this", "wasTouchingDown", "not" ] } ] },
+                  "execute":[
+                    { "set":{ "forceX":{ "_":[ "this", "currentSide" ] }, "animation":"walk", "wasTouchingDown":1 } },
+                    {
+                      "when":{ "_":[ "this", "isFloater", "not", "and", { "_":[ "this", "fallCounter", "isGreaterThan", 100 ] } ] },
+                      "set":{ "wasTouchingDown":0, "state":"dead" }
+                    }
+                  ],
+                  "elseExecute":{
+                    "when":{ "_":[ "this", "touchDown", "not", "and", { "_":[ "this", "wasTouchingDown" ] } ] },
+                    "execute":[ { "set":{ "currentSide":{ "_":[ "this", "forceX" ] } } }, { "set":{ "forceX":0, "animation":"fall", "wasTouchingDown":0 } } ]
+                  }
+                },
+                {
+                  "when":{ "_":[ "this", "wasTouchingDown" ] },
+                  "execute":[
+                    { "set":{ "fallCounter":0 } },
+                    { "when":{ "_":[ "this", "currentJob" ] }, "set":{ "state":{ "_":[ "this", "currentJob" ] } } },
+                    {
+                      "when":{ "_":[ "this", "forceX", "isGreaterThan", 0 ] },
+                      "set":{ "flipX":0, "currentSide":{ "_":[ "this", "forceX" ] }, "movingSide":1 },
+                      "elseExecute":{ "when":{ "_":[ "this", "forceX", "isLessThan", 0 ] }, "set":{ "flipX":1, "currentSide":{ "_":[ "this", "forceX" ] }, "movingSide":-1 } }
+                    }
+                  ],
+                  "elseExecute":[
+                    { "sum":1, "to":{ "_":[ "this", "fallCounter" ] } },
+                    { "when":{ "_":[ "this", "isFloater", "and", { "_":[ "this", "fallCounter", "isGreaterThan", 50 ] } ] }, "set":{ "animation":"floating" } }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        { "name":"blocker", "like":{ "_":[ "stencil", "modelSaveMeState" ] }, "set":{ "type":"blocking", "animation":"blocking" } },
+        {
+          "name":"climbing",
+          "like":{ "_":[ "stencil", "modelSaveMeState" ] },
+          "set":{ "forceX":0, "forceY":-0.4, "animation":"climb" },
+          "code":[
+            {
+              "name":"Physics",
+              "data":{ "walls":{ "type":"wall", "restitution":0, "execute":{ "set":{ "currentSide":{ "_":[ "this", "currentSide", "*", -1 ] }, "state":"default" } } } }
+            },
+            {
+              "name":"Execute",
+              "data":{
+                "when":{ "_":[ "this", "movingSide", "isEqualTo", 1 ] },
+                "execute":{
+                  "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "wall" ] }, "hitbox":{ "width":2, "height":2, "x":6, "y":3 } }, "not" ] },
+                  "set":{ "x":{ "_":[ "this", "x", "+", 2 ] }, "y":{ "_":[ "this", "y", "-", 3, "/", 4, "floor", "*", 4 ] }, "state":"default" }
+                },
+                "elseExecute":{
+                  "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "wall" ] }, "hitbox":{ "width":2, "height":2, "x":0, "y":3 } }, "not" ] },
+                  "set":{ "x":{ "_":[ "this", "x", "-", 2 ] }, "y":{ "_":[ "this", "y", "-", 3, "/", 4, "floor", "*", 4 ] }, "state":"default" }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name":"digger",
+          "like":{ "_":[ "stencil", "modelSaveMeState" ] },
+          "set":{ "forceX":0, "forceY":0, "animation":"digging", "actionTimer":0 },
+          "code":{
+            "name":"Execute",
+            "data":[
+              {
+                "set":{
+                  "diggingWalls":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "wall" ] }, "all":1, "hitbox":{ "width":8, "height":2, "x":0, "y":8 } } ] }
+                }
+              },
+              {
+                "when":{ "_":[ "this", "diggingWalls" ] },
+                "execute":[
+                  { "sum":1, "to":{ "_":[ "this", "actionTimer" ] } },
+                  {
+                    "when":{ "_":[ "this", "actionTimer", "isGreaterThan", 25 ] },
+                    "execute":[
+                      { "as":{ "_":[ "this", "diggingWalls" ] }, "executeAction":"remove" },
+                      { "set":{ "y":{ "_":[ "this", "y", "+", 4, "/", 4, "floor", "*", 4 ] }, "actionTimer":0 } }
+                    ]
+                  }
+                ],
+                "elseExecute":{ "set":{ "state":"default" } }
+              }
+            ]
+          }
+        },
+        {
+          "name":"basher",
+          "like":{ "_":[ "stencil", "modelSaveMeState" ] },
+          "set":{ "forceX":0, "forceY":0, "animation":"bashing", "actionTimer":0, "isBasher":0 },
+          "code":{
+            "name":"Execute",
+            "data":[
+              {
+                "when":{ "_":[ "this", "movingSide", "isEqualTo", 1 ] },
+                "set":{
+                  "diggingWalls":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "wall" ] }, "all":1, "hitbox":{ "width":2, "height":8, "x":7, "y":0 } } ] }
+                },
+                "elseExecute":{
+                  "set":{
+                    "diggingWalls":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "wall" ] }, "all":1, "hitbox":{ "width":2, "height":8, "x":0, "y":0 } } ] }
+                  }
+                }
+              },
+              {
+                "when":{ "_":[ "this", "diggingWalls" ] },
+                "execute":[
+                  { "sum":1, "to":{ "_":[ "this", "actionTimer" ] } },
+                  {
+                    "when":{ "_":[ "this", "actionTimer", "isGreaterThan", 25 ] },
+                    "execute":[
+                      { "as":{ "_":[ "this", "diggingWalls" ] }, "executeAction":"remove" },
+                      { "set":{ "x":{ "_":[ "this", "x", "+", { "_":[ "this", "movingSide", "*", 4 ] }, "/", 4, "floor", "*", 4 ] }, "actionTimer":0 } }
+                    ]
+                  }
+                ],
+                "elseExecute":{ "set":{ "state":"default" } }
+              }
+            ]
+          }
+        },
+        {
+          "name":"miner",
+          "like":{ "_":[ "stencil", "modelSaveMeState" ] },
+          "set":{ "forceX":0, "forceY":0, "animation":"mining", "actionTimer":0 },
+          "code":{
+            "name":"Execute",
+            "data":[
+              {
+                "when":{ "_":[ "this", "movingSide", "isEqualTo", 1 ] },
+                "set":{
+                  "diggingWalls":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "wall" ] }, "all":1, "hitbox":{ "width":12, "height":12, "x":0, "y":0 } } ] }
+                },
+                "elseExecute":{
+                  "set":{
+                    "diggingWalls":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "wall" ] }, "all":1, "hitbox":{ "width":12, "height":12, "x":-4, "y":0 } } ] }
+                  }
+                }
+              },
+              {
+                "when":{ "_":[ "this", "diggingWalls" ] },
+                "execute":[
+                  { "sum":1, "to":{ "_":[ "this", "actionTimer" ] } },
+                  {
+                    "when":{ "_":[ "this", "actionTimer", "isGreaterThan", 25 ] },
+                    "execute":[
+                      { "as":{ "_":[ "this", "diggingWalls" ] }, "executeAction":"remove" },
+                      {
+                        "set":{
+                          "x":{ "_":[ "this", "x", "+", { "_":[ "this", "movingSide", "*", 4 ] }, "/", 4, "floor", "*", 4 ] }, "y":{ "_":[ "this", "y", "+", 4, "/", 4, "floor", "*", 4 ] },
+                          "actionTimer":0
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "elseExecute":{ "set":{ "state":"default" } }
+              }
+            ]
+          }
+        },
+        {
+          "name":"builder",
+          "like":{ "_":[ "stencil", "modelSaveMeState" ] },
+          "set":{ "forceX":0, "forceY":0, "animation":"building", "actionTimer":0, "bricks":10 },
+          "code":{
+            "name":"Execute",
+            "data":[
+              { "sum":1, "to":{ "_":[ "this", "actionTimer" ] } },
+              {
+                "when":{ "_":[ "this", "actionTimer", "isGreaterThan", 25 ] },
+                "execute":[
+                  { "set":{ "actionTimer":0 } },
+                  { "object":{ "type":"brick", "width":8, "height":2, "zIndex":5, "x":{ "_":[ "that", "x" ] }, "y":{ "_":[ "that", "y", "+", 6 ] }, "bgcolor":"#0f0" } },
+                  {
+                    "when":{
+                      "_":[
+                        "this",
+                        "complexCollidesWith",
+                        { "subject":{ "_":[ "object", "wall" ] }, "hitbox":{ "width":4, "height":8, "x":{ "_":[ "this", "movingSide", "*", 4, "+", 2 ] }, "y":-2 } }
+                      ]
+                    },
+                    "set":{ "state":"default" },
+                    "elseExecute":[
+                      { "subtract":1, "to":{ "_":[ "this", "bricks" ] } },
+                      {
+                        "when":{ "_":[ "this", "bricks", "not" ] },
+                        "set":{ "state":"default" },
+                        "elseExecute":[ { "sum":{ "_":[ "this", "movingSide", "*", 4 ] }, "to":{ "_":[ "this", "x" ] } }, { "subtract":2, "to":{ "_":[ "this", "y" ] } } ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        { "name":"dead", "set":{ "animation":"dead" }, "code":{ "name":"Sequence", "data":[ { "wait":16 }, { "_":[ "stencil", "codeSaveMeDead" ] } ] } },
+        {
+          "name":"explode",
+          "set":{ "frame":9, "animation":"none" },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "sum":1, "to":{ "_":[ "this", "x" ] }, "wait":1 },
+              { "subtract":1, "to":{ "_":[ "this", "x" ] }, "wait":1 },
+              { "cycles":10, "loopTo":0 },
+              {
+                "object":[
+                  {
+                    "width":24, "height":24,
+                    "zIndex":50, "x":{ "_":[ "that", "x", "-", 6 ] }, "y":{ "_":[ "that", "y", "-", 8 ] },
+                    "bgcolor":"#fff",
+                    "states":{
+                      "code":{
+                        "name":"Sequence",
+                        "data":[
+                          { "sum":20, "to":{ "_":[ "this", "angle" ] }, "set":{ "visible":{ "_":[ "this", "visible", "not" ] } }, "wait":1, "cycles":10, "loopTo":0 },
+                          { "remove":1 }
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "width":24, "height":24,
+                    "zIndex":50, "x":{ "_":[ "that", "x", "-", 6 ] }, "y":{ "_":[ "that", "y", "-", 8 ] },
+                    "bgcolor":"#fff",
+                    "states":{
+                      "code":{
+                        "name":"Sequence",
+                        "data":[
+                          { "subtract":20, "to":{ "_":[ "this", "angle" ] }, "set":{ "visible":{ "_":[ "this", "visible", "not" ] } }, "wait":1, "cycles":10, "loopTo":0 },
+                          { "remove":1 }
+                        ]
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "as":{
+                  "_":[
+                    "this",
+                    "complexCollidesWith",
+                    { "subject":{ "_":[ "object", "explodable" ] }, "distance":12, "all":1, "hitbox":{ "width":48, "height":48, "x":-20, "y":-20 } }
+                  ]
+                },
+                "executeAction":"explode"
+              },
+              { "set":{ "state":"dead" } }
+            ]
+          }
+        }
+      ]
+    },
+    "#":{
+      "type":[ "wall", "explodable" ],
+      "zIndex":1,
+      "visible":0,
+      "bgcolor":"#000",
+      "states":{
+        "execute":{ "set":{ "tileX":{ "_":[ "this", "x" ] }, "tileY":{ "_":[ "this", "y" ] } } },
+        "actions":[
+          { "name":"explode", "execute":{ "executeAction":"remove" } },
+          { "name":"remove", "execute":{ "set":{ "removeType":[ "wall", "explodable" ], "visible":1 } } }
+        ]
+      }
+    }
+  },
+  "scenes":{
+    "intro":{
+      "object":[
+        { "image":"screens", "tileY":384, "width":189, "height":116, "zIndex":10, "x":33, "y":8 },
+        {
+          "box":"label", "width":256,
+          "zIndex":100, "x":0, "y":150,
+          "color":"#fff",
+          "font":"spectrum", "fontSize":20, "lineHeight":20, "outline":"#000", "textAlign":"center", "html":"PRESS START",
+          "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "visible":0 }, "wait":10 }, { "set":{ "visible":1 }, "wait":10, "loopTo":0 } ] } }
+        }
+      ],
+      "states":{
+        "code":[
+          {
+            "name":"Sequence",
+            "data":[
+              { "wait":{ "_":[ "randomNumber", [ 0, 75 ], "+", 25 ] } },
+              {
+                "object":{
+                  "image":"sprites", "width":8, "height":8,
+                  "zIndex":{ "_":[ "randomValue", [ 1, 20 ] ] }, "x":-8, "y":{ "_":[ "randomNumber", [ 0, 108 ], "+", 8 ] },
+                  "animations":{ "walk":{ "frames":8, "loopTo":0 } },
+                  "animation":"walk",
+                  "states":{
+                    "code":{
+                      "name":"Execute",
+                      "data":{ "when":{ "_":[ "this", "x", "isLessThan", 256 ] }, "sum":0.3, "to":{ "_":[ "this", "x" ] }, "elseExecute":{ "log":1, "remove":1 } }
+                    }
+                  }
+                }
+              },
+              { "loopTo":0 }
+            ]
+          },
+          {
+            "name":"Execute",
+            "data":{
+              "when":{ "_":[ "keyA", "isHit" ] },
+              "execute":[ { "as":{ "_":"variable" }, "set":{ "stage":0 } }, { "execute":{ "_":[ "stencil", "codeGotoNextStage" ] } } ]
+            }
+          }
+        ]
+      }
+    },
+    "ending":{
+      "object":[
+        { "image":"screens", "tileY":192, "width":256, "height":192, "x":0, "y":0 },
+        {
+          "box":"label", "width":256,
+          "zIndex":10, "x":0, "y":8,
+          "color":"#fff",
+          "font":"spectrum", "outline":"#000", "textAlign":"center", "html":"CONGRATULATIONS! YOU HAVE"
+        },
+        {
+          "width":256, "height":30,
+          "zIndex":10, "x":0, "y":21,
+          "color":"#fff",
+          "font":"spectrum", "fontSize":50, "lineHeight":30, "outline":"#000", "textAlign":"center", "html":"SAVED THEM!",
+          "states":{
+            "code":{
+              "name":"Execute",
+              "data":{ "when":{ "_":[ "this", "color", "isEqualTo", "#fff" ] }, "set":{ "color":"#0f0" }, "elseExecute":{ "set":{ "color":"#fff" } } }
+            }
+          }
+        }
+      ],
+      "execute":{ "set":{ "cnt":400 } },
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[
+            {
+              "object":{
+                "image":"sprites", "width":8, "height":8,
+                "zIndex":10, "x":46, "y":80,
+                "animations":{ "still":{ "frame":9 }, "walk":{ "frames":8, "loopTo":0 } },
+                "animation":"walk",
+                "timer":{ "_":[ "scene", "cnt" ] },
+                "states":{
+                  "code":{
+                    "name":"Execute",
+                    "data":{
+                      "when":{ "_":[ "this", "timer" ] },
+                      "execute":[ { "subtract":1, "to":{ "_":[ "this", "timer" ] } }, { "sum":0.3, "to":{ "_":[ "this", "x" ] } } ],
+                      "elseExecute":{ "set":{ "animation":"still", "state":"idle" } }
+                    }
+                  }
+                }
+              }
+            },
+            { "subtract":25, "to":{ "_":[ "scene", "cnt" ] }, "wait":75 },
+            { "cycles":6, "loopTo":0 },
+            { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+            { "gotoScene":"intro", "withTransition":3 }
+          ]
+        }
+      }
+    },
+    "1":{
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "image":"stage1",
+      "execute":{ "object":[ { "set":{ "_":[ "stencil", "entrance" ] }, "x":128, "y":36 }, { "set":{ "_":[ "stencil", "exit" ] }, "x":272, "y":124 } ] },
+      "nBashers":0,
+      "nBlockers":0,
+      "nBombers":0,
+      "nBuilders":0,
+      "nClimbers":0,
+      "nDiggers":0,
+      "nFloaters":0,
+      "nMiners":10,
+      "saveThemCount":10,
+      "saveThemMinReleaseRate":50,
+      "saveThemPercentage":10,
+      "saveThemSide":1,
+      "saveThemStage":"Diggity dig",
+      "saveThemTime":300,
+      "tilemap":{
+        "tileWidth":4,
+        "tileHeight":4,
+        "map":[
+          "         #############################################################################                                          ",
+          "         #############################################################################                                          ",
+          "         #############################################################################                                          ",
+          "          ############################################################################                                          ",
+          "           ###########################################################################                                          ",
+          "           ##################        #####             ####  #########################                                          ",
+          "           ################                                   ########################                                          ",
+          "            ##############                                     #######################                                          ",
+          "           ###############                                     ########################                                         ",
+          "          ###############                                       #######################                                         ",
+          "          ##############                                       #########################                                        ",
+          "          ##############                                       #########################                                        ",
+          "          ##############                                      ############# #############                                       ",
+          "          ##############                                      ############  #############                                       ",
+          "         ###############                                      ############   ############                                       ",
+          "         ###############                                      ############   ############                                       ",
+          "        ################                                      ############   ############                                       ",
+          "        ################                                     #############    ###########                                       ",
+          "       ####################################################################   ############                                      ",
+          "       ####################################################################   ############                                      ",
+          "       ####################################################################   ############                                      ",
+          "       ####################################################################   ############                                      ",
+          "      #####################################################################   ############                                      ",
+          "      #####################################################################   ############                                      ",
+          "     #####################################################################    ############                                      ",
+          "     ####################################################################     ############                                      ",
+          "    ####################################################################      ############                                      ",
+          "   ######################                                                     #############                                     ",
+          "   ######################                                                     ##############                                    ",
+          "   ######################                                                     ##############                                    ",
+          "   #####################                                                      ###############                                   ",
+          "   #####################                                                      ###############                                   ",
+          "   #####################                                                     ################                                   ",
+          " ##############################                                             ##################                                  ",
+          "#################################                                           ##################                                  ",
+          "##############################################################################################                                  ",
+          "#############################################################################################                                   ",
+          "#############################################################################################                                   ",
+          "#############################################################################################                                   ",
+          "#############################################################################################                                   "
+        ]
+      }
+    },
+    "10":{
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "image":"stage10",
+      "execute":{ "object":[ { "set":{ "_":[ "stencil", "entrance" ] }, "x":44, "y":96 }, { "set":{ "_":[ "stencil", "exit" ] }, "x":380, "y":48 } ] },
+      "nBashers":20,
+      "nBlockers":20,
+      "nBombers":20,
+      "nBuilders":20,
+      "nClimbers":20,
+      "nDiggers":20,
+      "nFloaters":20,
+      "nMiners":20,
+      "saveThemCount":80,
+      "saveThemMinReleaseRate":1,
+      "saveThemPercentage":62,
+      "saveThemSide":1,
+      "saveThemStage":"Do hast",
+      "saveThemTime":480,
+      "tilemap":{
+        "tileWidth":4,
+        "tileHeight":4,
+        "map":[
+          "                                                                                                                                ",
+          "                                                                                                                                ",
+          "                                                                                                                                ",
+          "                                                                                                                                ",
+          "                                                                                                                                ",
+          "                                                                                                                                ",
+          "                                                                                                                                ",
+          "                                                                                                                                ",
+          "                                                                                                                                ",
+          "                                                                                                                                ",
+          "                                                                                                                                ",
+          "                                                                                                                                ",
+          "                                                                                                                                ",
+          "                                                                                                                                ",
+          "                                                                                                                                ",
+          "                                                                                                                                ",
+          "                                                                                        ###################                     ",
+          "                                                                                        ###################                     ",
+          "                                                                                              ########                          ",
+          "                                                                                               ######                           ",
+          "                                                                                                ####                            ",
+          "                                                                                                ####                            ",
+          "                                                                                                ####                            ",
+          "                                                                                                ####                            ",
+          "                                                                                                ####                            ",
+          "                                                                                                ####                            ",
+          "                                                                                                ####                            ",
+          "                                                                                                ####                            ",
+          "                                                                                                ####                            ",
+          "                                                                                                ####                            ",
+          "                                                                                              ########                          ",
+          "                                                                                              ########                          ",
+          " #################################################         #         #       #       ##########################                 ",
+          " #################################################        ##        ##      ##       ##########################                 ",
+          " #################################################        ###       ###     ###      ##########################                 ",
+          " #################################################        ###       ###     ###      ##########################                 ",
+          " #################################################        ###       ###     ###     ###########################                 ",
+          "  ######               ########           #######        ####      ####    ####     ###########################                 ",
+          "   ####                 ######             #####         #####     #####   #####    ###########################                 ",
+          "    ##                   ####               ###          #####     #####   #####   ############################                 "
+        ]
+      }
+    },
+    "11":{
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "image":"stage11",
+      "execute":{ "object":[ { "set":{ "_":[ "stencil", "entrance" ] }, "x":12, "y":36 }, { "set":{ "_":[ "stencil", "exit" ] }, "x":480, "y":108 } ] },
+      "nBashers":4,
+      "nBlockers":0,
+      "nBombers":0,
+      "nBuilders":33,
+      "nClimbers":0,
+      "nFloaters":0,
+      "nMiners":1,
+      "saveThemCount":20,
+      "saveThemMinReleaseRate":50,
+      "saveThemPercentage":80,
+      "saveThemSide":1,
+      "saveThemStage":"Go! Go! Go!",
+      "saveThemTime":300,
+      "tilemap":{
+        "tileWidth":4,
+        "tileHeight":4,
+        "map":[
+          "#########################################################################################################################       ",
+          "#########################################################################################################################       ",
+          "#########################################################################################################################       ",
+          "#########################################################################################################################       ",
+          "#########################################################################################################################       ",
+          "####################################################################################################################            ",
+          "###################################################################################################################             ",
+          "### ### #                                   ## ######    ##          #           #        ################     ####             ",
+          "##                                               ####                #           #         ###############     ####             ",
+          "##                                                ##                 #           #         ###############      ##              ",
+          "##                                                ##                 #           #          #############       ##              ",
+          "#                                                                    #           #          #############                       ",
+          "                                                                     #           #           ############                       ",
+          "                                                                   ##################        ############                       ",
+          "                                                                   ##################        ############                       ",
+          "                                                                   ##################         ###########                       ",
+          "                                                                   ##################         ###########                       ",
+          " ##########################      ############                                                 ###########                       ",
+          " ##########################      ############                                                 ###########                       ",
+          " ############                    ############                                                  ##########                       ",
+          " ############                    ############                                                  ##########                       ",
+          " ############                    ############                                                   #########                       ",
+          " ############                    ############                                                   #########                       ",
+          " ############     ###########################                   ###########################      ########                       ",
+          " ############     ###########################                  ###########################       ########                       ",
+          " ############                                                                                    ########                       ",
+          " ############                                                                                    ########                       ",
+          " ############                                                                                     #######                       ",
+          " ############                                                                                     #######                       ",
+          " ############                                                                                     #######                       ",
+          " ############                                                                                      ######                       ",
+          " ############                                                                                ################      ############ ",
+          " ##############################################      ########                                ################      ############ ",
+          " ##############################################      ########                                ################      ############ ",
+          " ##############################################      ########                                ################      ############ ",
+          " ##############################################      ########################################################      ############ ",
+          " ##############################################      ########################################################      ############ ",
+          " ##############################################      ########################################################      ############ ",
+          " ##############################################      ########################################################      ############ ",
+          " ##############################################      ########################################################      ############ "
+        ]
+      }
+    },
+    "2":{
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "image":"stage2",
+      "execute":{ "object":[ { "set":{ "_":[ "stencil", "entrance" ] }, "x":96, "y":16 }, { "set":{ "_":[ "stencil", "exit" ] }, "x":336, "y":132 } ] },
+      "nBashers":0,
+      "nBlockers":0,
+      "nBombers":0,
+      "nBuilders":0,
+      "nClimbers":0,
+      "nDiggers":0,
+      "nFloaters":10,
+      "nMiners":0,
+      "saveThemCount":10,
+      "saveThemMinReleaseRate":50,
+      "saveThemPercentage":10,
+      "saveThemSide":1,
+      "saveThemStage":"Under my umbrella",
+      "saveThemTime":300,
+      "tilemap":{
+        "tileWidth":4,
+        "tileHeight":4,
+        "map":[
+          "                                      ###############################################################################           ",
+          "                                       ##############################################################################           ",
+          "                                        #############################################################################           ",
+          "                                         ############################################################################           ",
+          "                                          ###############################################################                       ",
+          "                                                  ######################################################                        ",
+          "                                                   ####################################################                         ",
+          "                                                    ##################################################                          ",
+          "                                                     ################################################                           ",
+          "                                                      #############################################                             ",
+          "                                                          ##  ##### ##############################                              ",
+          "                    #############                         #    ## #  ############################                               ",
+          "                    #############                                     ##########################                                ",
+          "                    #############                                      ########################                                 ",
+          "                      ######### #############                                                                                   ",
+          "                      ######### #############                                                                                   ",
+          "                      ######### #############                                                                                   ",
+          "      ##########      #########   ######### #############                                                                       ",
+          "      ##########      #########   ######### #############                                                                       ",
+          "      ##########      #########   ######### #############                                                                       ",
+          "      ##########      #########   #########   #########                                                                         ",
+          "      ##########      #########   #########   #########                                                                         ",
+          "##########   #####    #########   #########   #########                                       #######                           ",
+          "##########   #####    #########   #########   #########                                       #######                           ",
+          "##########   #####    #########   #########   #########                                       #######                           ",
+          "##########   #####    #########   #########   #########                                       #######                           ",
+          "##########   #####    #########   #########   #########                                       #######                           ",
+          "      ##########      #########   #########   #########                                      ##########                         ",
+          "      ##########      #########   #########   #########                                      ##########                         ",
+          "      ##########      #########   #########   #########                                      ##########                         ",
+          "      ##########      #########   #########   #########                                      ##########                         ",
+          "      ##########      #########   #########   #########                                      ##########                         ",
+          "        ##########    #########   #########   #########                                        ##########                       ",
+          "        ##########    #########   #########   #########                                        ##########                       ",
+          "        ##########    #########   #########   #########                                        ##########                       ",
+          "        ##########    #########   #########   #########                                        ##########                       ",
+          "        ##########    #########   #########   #########                                        ##########                       ",
+          "        ##########################################################################################################              ",
+          "        ##########################################################################################################              ",
+          "        ##########################################################################################################              "
+        ]
+      }
+    },
+    "3":{
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "image":"stage3",
+      "execute":{ "object":[ { "set":{ "_":[ "stencil", "entrance" ] }, "x":140, "y":4 }, { "set":{ "_":[ "stencil", "exit" ] }, "x":124, "y":136 } ] },
+      "nBashers":0,
+      "nBlockers":10,
+      "nBombers":0,
+      "nBuilders":0,
+      "nClimbers":0,
+      "nDiggers":0,
+      "nFloaters":0,
+      "nMiners":0,
+      "saveThemCount":50,
+      "saveThemMinReleaseRate":50,
+      "saveThemPercentage":10,
+      "saveThemSide":1,
+      "saveThemStage":"Please, stop!",
+      "saveThemTime":300,
+      "tilemap":{
+        "tileWidth":4,
+        "tileHeight":4,
+        "map":[
+          "########  ###################                  ###########################         #########                                    ",
+          "########   #################                    #########################          #########                                    ",
+          " ######     ###############                      #######################           #########                                    ",
+          "  ####            ####                                 ###########                 #########                                    ",
+          "  ####                                                                             #########                                    ",
+          "  ####                                                                             #########                                    ",
+          "  ####                                                                             #########                                    ",
+          "  ####                                                                             #########                                    ",
+          "  ####                                                                             #########                                    ",
+          "  ####                            #############################################    #########                                    ",
+          "  ####                                                                             #########                                    ",
+          "  ####                                                                             #########                                    ",
+          "  ####                                                                             #########                                    ",
+          "  ####                                                                             #########                                    ",
+          "  ####          #############################                                      #########                                    ",
+          "  ####                                                                             #########                                    ",
+          "  ####                                                                             #########                                    ",
+          "  ####                                                                             #########                                    ",
+          "  ####                                                                             #########                                    ",
+          "  ####   ################           #################################              #########                                    ",
+          "  ####                                                                             #########                                    ",
+          "  ####                                                                             #########                                    ",
+          "  ####                                                                             #########                                    ",
+          "  ####                                                                             #########                                    ",
+          "  ####             ###############################                                 #########                                    ",
+          "  ####                                                                             #########                                    ",
+          "  ####                                                                             #########                                    ",
+          "  ####                                                                             #########                                    ",
+          "  ####                                                                             #########                                    ",
+          "  ####       ################################                                      #########                                    ",
+          "  ####                                                                             #########                                    ",
+          "  ####                                                                             #########                                    ",
+          "  ####                                                                             #########                                    ",
+          "  ####                                                                             #########                                    ",
+          "  ####                                                                             #########                                    ",
+          "  ####                                                                           #############                                  ",
+          "  ####                ###                                                        #############            ###                   ",
+          "  ####                ###                                                        #############            ###                   ",
+          "  ####                ############################################        ###################################                   ",
+          "  ####                ############################################        ###################################                   "
+        ]
+      }
+    },
+    "4":{
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "image":"stage4",
+      "execute":{ "object":[ { "set":{ "_":[ "stencil", "entrance" ] }, "x":188, "y":16 }, { "set":{ "_":[ "stencil", "exit" ] }, "x":348, "y":32 } ] },
+      "nBashers":0,
+      "nBlockers":0,
+      "nBombers":0,
+      "nBuilders":0,
+      "nClimbers":10,
+      "nDiggers":0,
+      "nFloaters":0,
+      "nMiners":10,
+      "saveThemCount":10,
+      "saveThemMinReleaseRate":1,
+      "saveThemPercentage":100,
+      "saveThemSide":1,
+      "saveThemStage":"Down and up",
+      "saveThemTime":300,
+      "tilemap":{
+        "tileWidth":4,
+        "tileHeight":4,
+        "map":[
+          "################################################################################################################################",
+          "################################################################################################################################",
+          "#######            ########    ########                            ########                         ########  ########          ",
+          "######             ########    ########                            ########                         ########   ######           ",
+          " ####              ########    ########                            ########                         ########    ####            ",
+          "  ##               ########    ########                            ########                         ########     ##             ",
+          "                   ########    ########                            ########                         ########                    ",
+          "                   ########    ########                            ########                         ########                    ",
+          "                   ########    ########                            ########                         ########                    ",
+          "                   ########    ########                            ########                         ########                    ",
+          "                   ########    ########                            ########                         ########                    ",
+          "                   ########    ########                            ########                      #  ########                    ",
+          "                   ########    ########                            ########       ################  ########                    ",
+          "                   ########    ########                            ########       ################  ########                    ",
+          "                   ########    ########                            ########       ################  ########                    ",
+          "                 ############################################################     ################  ########                    ",
+          "                 ############################################################     ####        ####  ########                    ",
+          "                 ############################################################     #####      #####  ########                    ",
+          "                 ############################################################     ######    ######  ########                    ",
+          "                   #########                                                      #######  #######  ########                    ",
+          "                   ########                                                       #### ###########  ########                    ",
+          "                   ########                                                       ####  ##### ####  ########                    ",
+          "                   ########                                                       ####  ####  ####  ########                    ",
+          "                   ########                                                       #### ###### ####  ########                    ",
+          "                   ########                                                       ######## #######  ########                    ",
+          "                   ########                                                       #######   ######  ########                    ",
+          "                   ########                                                       ######     #####  ########                    ",
+          "                   ########                                                       #####       ####  ########                    ",
+          "                   #########################################################################################                    ",
+          "                   #########################################################################################                    ",
+          "                   #########################################################################################           ###      ",
+          "##                 #########################################################################################          #####   ##",
+          "####               ########                                                                         ########         ###########",
+          "#####              ########                                                                         ########       #############",
+          "######             ########                                                                         ########      ##############",
+          "######             ########                                                                         ########     ###############",
+          "########           ########                                                                         ########    ################",
+          "########           ########                                                                         ########   #################",
+          "#########          ########                                                                         ########   #################",
+          "###########        ########                                                                         ########   #################"
+        ]
+      }
+    },
+    "5":{
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "image":"stage5",
+      "execute":{ "object":[ { "set":{ "_":[ "stencil", "entrance" ] }, "x":40, "y":32 }, { "set":{ "_":[ "stencil", "exit" ] }, "x":452, "y":116 } ] },
+      "nBashers":10,
+      "nBlockers":0,
+      "nBombers":0,
+      "nBuilders":0,
+      "nClimbers":0,
+      "nDiggers":0,
+      "nFloaters":0,
+      "nMiners":0,
+      "saveThemCount":50,
+      "saveThemMinReleaseRate":50,
+      "saveThemPercentage":10,
+      "saveThemSide":1,
+      "saveThemStage":"Bash it up",
+      "saveThemTime":300,
+      "tilemap":{
+        "tileWidth":4,
+        "tileHeight":4,
+        "map":[
+          "################################################################################################                                ",
+          "############### ############### ###############################################################                                 ",
+          "##############      ############    ###########################################################                                 ",
+          " ###     # ##              #####     # ####   ################################################                                  ",
+          "                            ###        ####   ###############################################                                   ",
+          "                                       ####   ###############################################                                   ",
+          "                                       ####       ########################################                                      ",
+          "                                       ####       ######################################                                        ",
+          "                                       ####       #####################################                                         ",
+          "#                                      ####       ####################################                                          ",
+          "##                                     ####       ###################################                                           ",
+          "###                                    ####       ###################################                                           ",
+          "####                                   ####       ####################################                                          ",
+          "####                                   ####       ####################################                                          ",
+          "####                                   ####       ####################################                                          ",
+          "####                                   ####          #############################                                              ",
+          "####                                   ####              #################### ###                                               ",
+          "####                                   ####              ###################                                        ###        #",
+          "####                                   ####              ##################                                        #####       #",
+          "###########################################################################                                       #######      #",
+          "###########################################################################                                      #########     #",
+          "############################################################################                                    ###########    #",
+          "#############################################################################                                  #############  ##",
+          "####                                                     #####################                                ##################",
+          "###                                                       #####################                              ###################",
+          "#####                                                         ##################                            ####################",
+          "######                                                    #######################                          #####################",
+          "######                                                    ########################                        #########  ###########",
+          "#######                                                   ################## ######                      #########    ##########",
+          "########                                                 #################    #############             #########      #########",
+          "#########                                ##           ####################     ############            #########        ########",
+          "##########                #             ####         ######################     ###########           #########          #######",
+          "###########             ####            #####        ######################      ##########          #########            ######",
+          "###########            #####           #######       ######################       ##############################################",
+          "###########           #######          #######     ########################        #############################################",
+          "###########         ##########         #######     #########################       #############################################",
+          "#############       ##########          ######    ###########################      #############################################",
+          "#############       ##########          ######   #############################                                                  ",
+          "#############       #########            ##### ###############################                                                  ",
+          "##############      #########            ######################################                                                 "
+        ]
+      }
+    },
+    "6":{
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "image":"stage6",
+      "execute":{ "object":[ { "set":{ "_":[ "stencil", "entrance" ] }, "x":64, "y":24 }, { "set":{ "_":[ "stencil", "exit" ] }, "x":308, "y":88 } ] },
+      "nBashers":0,
+      "nBlockers":10,
+      "nBombers":10,
+      "nBuilders":0,
+      "nClimbers":0,
+      "nDiggers":0,
+      "nFloaters":0,
+      "nMiners":0,
+      "saveThemCount":50,
+      "saveThemMinReleaseRate":50,
+      "saveThemPercentage":20,
+      "saveThemSide":1,
+      "saveThemStage":"Bomblocker",
+      "saveThemTime":300,
+      "tilemap":{
+        "tileWidth":4,
+        "tileHeight":4,
+        "map":[
+          "####################################################################################################                            ",
+          " ######################################### ### ####################################################                             ",
+          "  #######  ######          #### #### ###        ############  ####################################                              ",
+          "    ####                                        #### ### ##       ####  ########################                                ",
+          "    ####                                        ####              ####      #################                                   ",
+          "    ####                                     #########            ####            ######                                        ",
+          "    ####                                     #########            ####                                                          ",
+          "    ####                                     ########             ####                                                          ",
+          "    ####                                    #########           ########                                                        ",
+          "    ####                                     ########           ########                                                        ",
+          "    ####                                     #########          ########                                                        ",
+          "    ####                                     #########          ########                                                        ",
+          "    ####                                        ####             ######                                                         ",
+          "    ####                                        ####              ####                                                          ",
+          "############                               #############           #                                                            ",
+          "############                               #############           #                                                            ",
+          "############                               #############           #                                                            ",
+          "########################################################           #                                                            ",
+          "############                               #############           #                                                            ",
+          "############                               #############           #                                                            ",
+          "############                                                       #                                                            ",
+          "############                                                       #                                                            ",
+          "############                                                       #                                                            ",
+          "####################################################################                                                            ",
+          "####################################################################                                                            ",
+          "####################################################################                                                            ",
+          "#############################################################################################                                   ",
+          "#############################################################################################                                   ",
+          "#############################################################################################                                   ",
+          "#############################################################################################                                   ",
+          "#############################################################################################                                   ",
+          "#############################################################################################                                   ",
+          "                                                                                                                                ",
+          "                                                                                                                                ",
+          "                                                                                                                                ",
+          "                                                                                                                                ",
+          "                                                                                                                                ",
+          "                                                                                                                                ",
+          "                                                                                                                                ",
+          "                                                                                                                                "
+        ]
+      }
+    },
+    "7":{
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "image":"stage7",
+      "execute":{ "object":[ { "set":{ "_":[ "stencil", "entrance" ] }, "x":12, "y":100 }, { "set":{ "_":[ "stencil", "exit" ] }, "x":484, "y":80 } ] },
+      "nBashers":0,
+      "nBlockers":0,
+      "nBombers":0,
+      "nBuilders":20,
+      "nClimbers":0,
+      "nDiggers":0,
+      "nFloaters":0,
+      "nMiners":0,
+      "saveThemCount":50,
+      "saveThemMinReleaseRate":50,
+      "saveThemPercentage":50,
+      "saveThemSide":1,
+      "saveThemStage":"Build builder!",
+      "saveThemTime":300,
+      "tilemap":{
+        "tileWidth":4,
+        "tileHeight":4,
+        "map":[
+          "                         ##################                                      ##################                             ",
+          "                         #################                                       #################                              ",
+          "                       ####################                                    ####################                             ",
+          "                     ########################                                ########################                           ",
+          "                 ########### ########## #########                        ########### ########## #########                       ",
+          "#         ################    ########   ############## #         ################    ########   ############## #         ######",
+          "#########################      ######      ######################################      ######      #############################",
+          "######################          ####          ################################          ####          ##########################",
+          "##################               ##              #########################               ##              #######################",
+          "#############                                          ##############                                          ##############   ",
+          "                                                                                                                                ",
+          "                                                                                                                                ",
+          "                                                                                                                                ",
+          "                                                                                                                                ",
+          "                                                                                                                                ",
+          "                                                                                                                                ",
+          "                                                                                                                                ",
+          "                                                                                                                                ",
+          "                                                                                                                                ",
+          "                                                                                                                                ",
+          "                                                                                                                                ",
+          "                                                                                                                                ",
+          "                                                                                                                                ",
+          "                                                                                                                                ",
+          "                                                                           ##########################    #######################",
+          "                                                                        #############################    #######################",
+          "                                                                     ################################    #######################",
+          "                                                                  ###################################    #######################",
+          "                                                               ######################################    #######################",
+          "                                      ###############################################################    #######################",
+          "                                      ###############################################################    #######################",
+          "                                      ###############################################################    #######################",
+          "################################################################################################################################",
+          "################################################################################################################################",
+          "################################################################################################################################",
+          "################################################################################################################################",
+          "################################################################################################################################",
+          "################################################################################################################################",
+          "################################################################################################################################",
+          "################################################################################################################################"
+        ]
+      }
+    },
+    "8":{
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "image":"stage8",
+      "execute":{ "object":[ { "set":{ "_":[ "stencil", "entrance" ] }, "x":20, "y":96 }, { "set":{ "_":[ "stencil", "exit" ] }, "x":268, "y":120 } ] },
+      "nBashers":20,
+      "nBlockers":20,
+      "nBombers":20,
+      "nBuilders":20,
+      "nClimbers":20,
+      "nDiggers":20,
+      "nFloaters":20,
+      "nMiners":20,
+      "saveThemCount":60,
+      "saveThemMinReleaseRate":50,
+      "saveThemPercentage":83,
+      "saveThemSide":1,
+      "saveThemStage":"Way easier",
+      "saveThemTime":300,
+      "tilemap":{
+        "tileWidth":4,
+        "tileHeight":4,
+        "map":[
+          "##############################################################################                                                  ",
+          "#    ###                                                              ###    #                                                  ",
+          "#   ###                                                                ###   #                                                  ",
+          "#  ###                                                                  ###  #                                                  ",
+          "# ###                                                                    ### #                                                  ",
+          "####                                                                      ####                                                  ",
+          "###                                                                        ###                                                  ",
+          "##       #                                                                  ##                                                  ",
+          "#                                                                            #                                                  ",
+          "#                                                                            #                                                  ",
+          "#                                                                            #                                                  ",
+          "#                                                                            #                                                  ",
+          "#                                                                            #                                                  ",
+          "#                                                                            #                                                  ",
+          "#                       ############                                         #                                                  ",
+          "#                     ################                                       #                                                  ",
+          "#                   ####################                                     #                                                  ",
+          "#                 ########################                                   #                                                  ",
+          "#                 ########################                                   #                                                  ",
+          "#                 ########################                                   #                                                  ",
+          "#                 ########################                                   #                                                  ",
+          "#                 ########################                                   #                                                  ",
+          "#                 ########################                                   #                                                  ",
+          "#                 ########################                                   #                                                  ",
+          "#                 ########################                                   #                                                  ",
+          "#                 ########################                                   #                                                  ",
+          "#                 ########################                                   #                                                  ",
+          "#                 ########################                                   #                                                  ",
+          "#                 ########################                                   #                                                  ",
+          "#                 ########################                                   #                                                  ",
+          "#                 ########################                                   #                                                  ",
+          "#                 ########################                                   #                                                  ",
+          "#                 ########################                                   #                                                  ",
+          "#                 ########################                                   #                                                  ",
+          "##############################################################################                                                  ",
+          "##############################################################################                                                  ",
+          "##############################################################################                                                  ",
+          "##############################################################################                                                  ",
+          "##############################################################################                                                  ",
+          "##############################################################################                                                  "
+        ]
+      }
+    },
+    "9":{
+      "set":{ "_":[ "stencil", "modelStage" ] },
+      "image":"stage9",
+      "execute":{ "object":[ { "set":{ "_":[ "stencil", "entrance" ] }, "x":52, "y":32 }, { "set":{ "_":[ "stencil", "exit" ] }, "x":456, "y":64 } ] },
+      "nBashers":20,
+      "nBlockers":20,
+      "nBombers":20,
+      "nBuilders":20,
+      "nClimbers":20,
+      "nDiggers":20,
+      "nFloaters":20,
+      "nMiners":20,
+      "saveThemCount":80,
+      "saveThemMinReleaseRate":20,
+      "saveThemPercentage":75,
+      "saveThemSide":1,
+      "saveThemStage":"Columns",
+      "saveThemTime":360,
+      "tilemap":{
+        "tileWidth":4,
+        "tileHeight":4,
+        "map":[
+          "                                                                                                                                ",
+          "                                                                                                                                ",
+          "                                                                                                                                ",
+          "                                                                                                                                ",
+          "                                                                                                                                ",
+          "                                                                                                                                ",
+          "                            ###                                                                                                 ",
+          "                            #####             ####                 #             ## #            ##  #                          ",
+          "                            #####             #####            #  ##             #####           #####                          ",
+          "                            #####             #####            #####             #####           #####                          ",
+          "                            #####             #####            #####             #####           #####                          ",
+          "                            #####             #####            #####             #####           #####                          ",
+          "                            #####             #####            #####             #####           #####                          ",
+          "        ###                 #####             ######################             #####################                          ",
+          "        ###                 #####             ######################             #####################                          ",
+          "        #########################             ######################             #####################                          ",
+          "        #########################             ######################             #####################                          ",
+          "        #########################             ######################             #####################                          ",
+          "        #########################             ######################             #####           #####                   ###    ",
+          "        #########################             #####            #####             #####           #####                   ###    ",
+          "        ###                 #######################            #######################           ###########################    ",
+          "        ###                 #######################            #######################           ###########################    ",
+          "                            #######################            #######################           ###########################    ",
+          "                            #######################            #######################           ###########################    ",
+          "                            #######################            #######################           ###########################    ",
+          "                            #####             #####            #####             #####           #####                   ###    ",
+          "                            #####             #####            #####             #####           #####                   ###    ",
+          "                            #####             #####            #####             #####           #####                          ",
+          "                            #####             #####            #####             #####           #####                          ",
+          "                            #####             #####            #####             #####           #####                          ",
+          "                            #####             #####            #####             #####           #####                          ",
+          "                            #####             #####            #####             #####           #####                          ",
+          "                            #####             #####            #####             #####           #####                          ",
+          "                            #####             #####            #####             #####           #####                          ",
+          "                            #####             #####            #####             #####           #####                          ",
+          "      ##                ###########         #########       ###########        #########        ########                 #######",
+          " ########               ############       ##########       ###########       ##########        #########               ########",
+          " ########               ############       ###########      ###########       ##########       ##########               ########",
+          "#########               ############       ###########      ###########       ##########       ##########               ########",
+          "#########               ############       ###########      ###########       ##########       ##########               ########"
+        ]
+      }
+    }
+  }
+}

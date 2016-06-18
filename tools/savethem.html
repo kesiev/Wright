@@ -1,0 +1,164 @@
+<html>
+	<head>
+		<title>Wright! Savethem Map tool</title>		
+	</head>
+	<body onload="onl()">
+    <canvas id="cnv" style="border:1px solid red"></canvas>
+    <canvas id="tmpcnv" style="display:none"></canvas>
+    <img id="img"  style="border:1px solid blue">
+    <hr>Out:<textarea id="textout" style="width: 100%;height:300px"></textarea>
+	</body>
+	<script>
+    var cell={w:4,h:4};
+		  function makeGrid(w,h) {
+        var cnv=document.getElementById("cnv");
+        var ctx=cnv.getContext("2d");
+        cnv.width=cell.w*w;
+        cnv.height=cell.h*h;
+        for (var y=0;y<h;y++)
+          for (var x=0;x<w;x++) {
+            ctx.fillStyle=(x+y)%2?"#FF0000":"#0000FF";
+            ctx.fillRect(x*cell.w,y*cell.h,cell.w,cell.h);
+          }
+      }
+
+      function processMap(image,extras) {
+         var img=document.getElementById("img");
+          var cnv=document.getElementById("tmpcnv");
+          var out=document.getElementById("cnv");
+          var ctx=cnv.getContext("2d");
+          var outctx=out.getContext("2d");
+         img.src="../tapes/savethem/"+image+".png";
+         var map=[],entranceX=0,entranceY=0,exitX=0,exitY=0,entranceColor=[100,50,25],exitColor=[25,50,100];
+         img.onload=function() {
+            w=Math.ceil(img.width/cell.w);
+            h=Math.ceil(img.height/cell.h);
+
+            cnv.width=out.width=w*cell.w;
+            cnv.height=out.height=h*cell.h;
+            ctx.drawImage(img, 0, 0);
+             outctx.fillStyle="#999";
+
+          for (var y=0;y<h;y++) {
+            var row="";
+            for (var x=0;x<w;x++) {
+              var data=ctx.getImageData(x*cell.w, y*cell.h, cell.w, cell.h).data;
+              var filled=false,isentrance=true,isexit=true;
+              for (var i=0;i<data.length;i+=4) {
+                for (var j=0;j<3;j++) {       
+                  if (data[i+j]!=entranceColor[j]) isentrance=false;
+                  if (data[i+j]!=exitColor[j]) isexit=false;
+                }
+                if (data[i+3]!==0) {
+                  filled=true;
+                }
+              }
+
+              if (isentrance) {
+                row+=" ";
+                entranceX=x*cell.w;
+                entranceY=y*cell.h;
+              } else  if (isexit) {
+                row+=" ";
+                exitX=x*cell.w;
+                exitY=y*cell.h;
+              } else if (filled) {
+                row+="#";
+                outctx.fillRect(x*cell.w,y*cell.h,cell.w,cell.h);
+              } else {
+                row+=" ";
+              }
+            }
+            map.push(row);
+
+          }
+
+          out={image:image,set:{_:["stencil","modelStage"]},
+          saveThemSide:1,
+"nBombers":0,
+      "nClimbers":0,
+      "nFloaters":0,
+      "nBlockers":0,
+      "nBuilders":0,
+      "nBashers":0,
+      "nMiners":0,
+      "nDiggers":0,execute:
+            {object:[
+              {set:{_:["stencil","entrance"]},x:entranceX,y:entranceY},
+              {set:{_:["stencil","exit"]},x:exitX,y:exitY}
+          ]}
+          ,tilemap:{tileWidth:cell.w,tileHeight:cell.h,map:map}};
+          for (var a in extras) out[a]=extras[a];
+          document.getElementById("textout").value=JSON.stringify(out);
+
+            
+
+
+         }
+      }
+
+      function onl() {        
+
+        /*
+
+                "%number|scene.nClimbers|0|2%",
+        "%number|scene.nFloaters|0|2%",
+        "%number|scene.nBombers|0|2%",
+        "%number|scene.nBlockers|0|2%",
+        "%number|scene.nBuilders|0|2%",
+        "%number|scene.nBashers|0|2%",        
+        "%number|scene.nMiners|0|2%",
+        "%number|scene.nDiggers|0|2%"
+
+        */
+        stages={          
+          "stage1":{image:"stage1",extras:{saveThemCount:10,saveThemPercentage:10,saveThemMinReleaseRate:50,saveThemTime:300,nMiners:10,saveThemStage:"Diggity dig"}},
+          "stage2":{image:"stage2",extras:{saveThemCount:10,saveThemPercentage:10,saveThemMinReleaseRate:50,saveThemTime:300,nFloaters:10,saveThemStage:"Under my umbrella"}},
+          "stage3":{image:"stage3",extras:{saveThemCount:50,saveThemPercentage:10,saveThemMinReleaseRate:50,saveThemTime:300,nBlockers:10,saveThemStage:"Please, stop!"}},
+          "stage4":{image:"stage4",extras:{saveThemCount:10,saveThemPercentage:100,saveThemMinReleaseRate:1,saveThemTime:300,nClimbers:10,nMiners:10,saveThemStage:"Down and up"}},
+          "stage5":{image:"stage5",extras:{saveThemCount:50,saveThemPercentage:10,saveThemMinReleaseRate:50,saveThemTime:300,nBashers:10,saveThemStage:"Bash it up"}},
+          "stage6":{image:"stage6",extras:{saveThemCount:50,saveThemPercentage:20,saveThemMinReleaseRate:50,saveThemTime:300,nBombers:10,nBlockers:10,saveThemStage:"Bomblocker"}},
+          "stage7":{image:"stage7",extras:{saveThemCount:50,saveThemPercentage:50,saveThemMinReleaseRate:50,saveThemTime:300,nBuilders:20,saveThemStage:"Build builder!"}},
+          "stage8":{image:"stage8",extras:{saveThemCount:60,saveThemPercentage:83,saveThemMinReleaseRate:50,saveThemTime:300,"nBombers":20,
+      "nClimbers":20,
+      "nFloaters":20,
+      "nBlockers":20,
+      "nBuilders":20,
+      "nBashers":20,
+      "nMiners":20,
+      "nDiggers":20,saveThemStage:"Way easier"}},
+"stage9":{image:"stage9",extras:{saveThemCount:80,saveThemPercentage:75,saveThemMinReleaseRate:20,saveThemTime:360,"nBombers":20,
+      "nClimbers":20,
+      "nFloaters":20,
+      "nBlockers":20,
+      "nBuilders":20,
+      "nBashers":20,
+      "nMiners":20,
+      "nDiggers":20,saveThemStage:"Columns"}},
+
+"stage10":{image:"stage10",extras:{saveThemCount:80,saveThemPercentage:62,saveThemMinReleaseRate:1,saveThemTime:480,"nBombers":20,
+      "nClimbers":20,
+      "nFloaters":20,
+      "nBlockers":20,
+      "nBuilders":20,
+      "nBashers":20,
+      "nMiners":20,
+      "nDiggers":20,saveThemStage:"Do hast"}},
+
+
+"stage11":{image:"stage11",extras:{saveThemCount:20,saveThemPercentage:80,saveThemMinReleaseRate:50,saveThemTime:300,
+      "nBuilders":33,
+      "nBashers":4,
+      "nMiners":1,saveThemStage:"Go! Go! Go!"}}
+
+        };
+
+
+        
+        var renderstage="stage1"; // Set this for generating stage dataq
+        //makeGrid(128,40); // ...or uncomment for drawing stage grid template for Gimp
+        processMap(stages[renderstage].image,stages[renderstage].extras);
+      }
+
+</script>
+</html>
