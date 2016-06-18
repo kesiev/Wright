@@ -483,6 +483,10 @@ function Box(parent, type, sub, statemanager) {
 			this.keys = keys;
 			return this;
 		};
+		box.setGridSize = function(size) {
+			if (size) this.gridsize=size;
+			return this;
+		};
 		box.updateKeys = function() {
 			for (var a in this.keys)
 				if (this.hwkeys[this.keys[a]])
@@ -654,6 +658,7 @@ function Box(parent, type, sub, statemanager) {
 					}
 					if (!obj.cleanprops.image) {
 						if (obj.image) node.style.backgroundImage = "url('" + this.resources.items[obj.image] + "')";
+						else node.style.backgroundImage="";
 						obj.cleanprops.image = 1;
 						this.stats.changesCount++;
 					}
@@ -987,10 +992,10 @@ function Box(parent, type, sub, statemanager) {
 		box.scheduleFrame = function() {
 			clearTimeout(this.timeout);
 			var wait = this.mspf - Box.getTimestamp() + this.frameTimestamp;
-			if (wait<0) {
+			if (wait<=0) {
 				this.stats.overload=-wait;
 				this.stats.load=1;
-				wait=0;
+				wait=1;
 			} else {
 				this.stats.overload=0;
 				this.stats.load=1-(wait/this.mspf);
@@ -2239,34 +2244,36 @@ function Wright(gameId,container,mods) {
 	function fillPlaceholders(from,tox,text) {
 		var j, ret, sub, elm, val, sym, sym2, total, len;
 		return text.replace(LABELEXP, function(match, slice) {
-			sub = slice.split("|");
-			val = get(from, tox, {"_": sub[1].split(".")});
-			switch (sub[0]) {
-				case "text":{ return val || ""; }
-				case "number": {
-					sym = ((val * 1) || sub[2] || 0)+"";
-					sym2 = hudget(from,tox,sub[3]) * 1;
-					if (sym2) while (sym.length<sym2) sym="0"+sym;
-					return sym;
+			if (slice) {
+				sub = slice.split("|");
+				val = get(from, tox, {"_": sub[1].split(".")});
+				switch (sub[0]) {
+					case "text":{ return val || ""; }
+					case "number": {
+						sym = ((val * 1) || sub[2] || 0)+"";
+						sym2 = hudget(from,tox,sub[3]) * 1;
+						if (sym2) while (sym.length<sym2) sym="0"+sym;
+						return sym;
+					}
+					case "repeatPercent": {
+						total = hudget(from,tox,sub[2]) * 1;
+						len = hudget(from,tox,sub[3]) * 1;
+						sym = hudget(from,tox,sub[4]);
+						sym2 = hudget(from,tox,sub[5]) || "";
+						val = Math.ceil((val / total) * len);
+						ret = "";
+						for (j = 0; j < len; j++) ret += j < val ? sym : sym2;
+						return ret;
+					}
+					case "repeat":{
+						sym = hudget(from,tox,sub[2]);
+						ret = "";
+						for (j = 0; j < val; j++) ret += sym;
+						return ret;
+					}
+					default:{ return val; }
 				}
-				case "repeatPercent": {
-					total = hudget(from,tox,sub[2]) * 1;
-					len = hudget(from,tox,sub[3]) * 1;
-					sym = hudget(from,tox,sub[4]);
-					sym2 = hudget(from,tox,sub[5]) || "";
-					val = Math.ceil((val / total) * len);
-					ret = "";
-					for (j = 0; j < len; j++) ret += j < val ? sym : sym2;
-					return ret;
-				}
-				case "repeat":{
-					sym = hudget(from,tox,sub[2]);
-					ret = "";
-					for (j = 0; j < val; j++) ret += sym;
-					return ret;
-				}
-				default:{ return val; }
-			}
+			} else return "%";
 		});
 	}
 
@@ -2495,6 +2502,7 @@ function Wright(gameId,container,mods) {
 					}
 					case ".":{ ret = ret + get(from, tox, struct[++id]); break; }
 					case "+":{ ret = FIX(ret + get(from, tox, struct[++id])); break; }	
+					case "mod":
 					case "%":{ ret = FIX(ret % get(from, tox, struct[++id])); break; }				
 					case "-":{ ret = FIX(ret - get(from, tox, struct[++id])); break; }
 					case "*":{ ret = FIX(ret * get(from, tox, struct[++id])); break; }
@@ -3238,7 +3246,7 @@ function Wright(gameId,container,mods) {
 	function runGame(mode) {
 		tv.innerHTML="";
 		game = Box(tv, "game");
-		game.setKeys(controls).setColor("#fff").setBgcolor("#000").size(hardware).setFps(hardware.fps||25).setScale(mode.scale).setOriginX(0).setOriginY(0).do(Code.GameManager);
+		game.setGridSize(hardware.gridSize).setKeys(controls).setColor("#fff").setBgcolor("#000").size(hardware).setFps(hardware.fps||25).setScale(mode.scale).setOriginX(0).setOriginY(0).do(Code.GameManager);
 		if (hardware.aliasMode) game.setAliasMode(hardware.aliasMode);
 		if (mode.volume&&gamedata.audioChannels) game.enableAudio(mode.volume/100);
 		tv.style.width = (game.width * game.scale) + "px";
