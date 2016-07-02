@@ -317,6 +317,7 @@ function WrightTools() {
 	mode.model=[
 		"width",
 		"height",
+		"gridSize",
 		"aliasMode",
 		"texture",
 		"scenes",
@@ -392,7 +393,7 @@ function WrightTools() {
 
 		"reversed","sort","shuffle","by", // sorting
 		"data", // Code
-		"area","camera","walls", // Code -> Physics (camerabound used later... :()
+		"area","camera","addCamera","walls", // Code -> Physics (camerabound used later... :()
 		"z","gravityX","gravityY","gravityZ","limitX","limitY","limitZ","restitution","restitutionX","restitutionY","friction","frictionX","frictionY", "firstExecute", "only", // Code -> Physics -> Wall
 		"top","bottom","left","right", // Code -> Physics -> Wall -> Only
 
@@ -893,131 +894,128 @@ function WrightTools() {
         mergeProperties(chunk,MERGE_ALL,MERGE_DEFAULT,[l.properties]);
 
 
-        var scenes={};
         var roomNames=[];
         var horizontalGap=(l.properties["#horizontalGap"]*1)||8; // HINT: use half player width + 1
         var verticalGap=(l.properties["#verticalGap"]*1)||8; // HINT: use half player height + 1
-        var roomPrefix=l.properties["#roomPrefix"]||"room";
-        console.log(l.properties);
+        var roomPrefix=l.properties["#roomPrefix"]===undefined?"room-":l.properties["#roomPrefix"];
+        var scenes=roomPrefix?{}:[];
 
+        var lcnt=0;
         for (var i=0;i<l.objects.length;i++)
-        	roomNames.push(l.objects[i].name||(roomPrefix+"-"+i));
+        	if (!l.objects[i].properties["#ignore"]) {
+        		roomNames.push(l.objects[i].name||(roomPrefix+lcnt));
+        		lcnt++;
+        	}
 
+        lcnt=0;
+        var outobjects=[];
         for (var i=0;i<l.objects.length;i++) {
         	var room=l.objects[i];
 
-        	var sc={object:[],tilemap:[]};
-        	mergeProperties(sc,MERGE_ALL,MERGE_DEFAULT,[l.properties]);
-        	mergeProperties(sc,MERGE_ALL,MERGE_DEFAULT,[room.properties]);
-        	scenes[roomNames[i]]=sc;
+        	if (!room.properties["#ignore"]) {
 
-        	for (var j=0;j<chunk.object.length;j++) {
-        		
-        		if ((chunk.object[j].x>=room.x)&&(chunk.object[j].x<room.x+room.width)&&(chunk.object[j].y>=room.y)&&(chunk.object[j].y<room.y+room.height)) {
-        			var no=clone(chunk.object[j]);
-        			no.x-=room.x;
-        			no.y-=room.y;
-        			sc.object.push(no);
-        		}
-        	}
+	        	var sc={object:[],tilemap:[]};
+	        	mergeProperties(sc,MERGE_ALL,MERGE_DEFAULT,[l.properties]);
+	        	mergeProperties(sc,MERGE_ALL,MERGE_DEFAULT,[room.properties]);
+	        	scenes[roomNames[lcnt]]=sc;
 
-        	
-
-        	for (var m=0;m<chunk.tilemap.length;m++) {
-        		var cut={
-	        		x:room.x/chunk.tilemap[m].tileWidth,
-	        		y:room.y/chunk.tilemap[m].tileHeight,
-	        		width:room.width/chunk.tilemap[m].tileWidth,
-	        		height:room.height/chunk.tilemap[m].tileHeight
-	        	};
-        		var cmap={map:clone(chunk.tilemap[m])};
-        		cmap.map=[];
-	        	for (var y=cut.y;y<cut.y+cut.height;y++)
-	        		cmap.map.push(chunk.tilemap[m].map[y].substr(cut.x,cut.width));
-	        	sc.tilemap.push(cmap);
-	        }
-
-	        // Top exit
-        	var nextroom=colliding({x:room.x,y:room.y-2,width:room.width,height:1},l.objects);
-	        for (var k=0;k<nextroom.length;k++) {
-	        	var sx=l.objects[nextroom[k]].x-room.x;
-	        	var sw=l.objects[nextroom[k]].width;
-	        	if (sx<0) {
-	        		sw+=sx;
-	        		sx=0;
+	        	for (var j=0;j<chunk.object.length;j++) {
+	        		
+	        		if ((chunk.object[j].x>=room.x)&&(chunk.object[j].x<room.x+room.width)&&(chunk.object[j].y>=room.y)&&(chunk.object[j].y<room.y+room.height)) {
+	        			var no=clone(chunk.object[j]);
+	        			no.x-=room.x;
+	        			no.y-=room.y;
+	        			sc.object.push(no);
+	        		}
 	        	}
-	        	if (sx+sw>room.width) sw=room.width-sx;
-	        	sc.object.push({
-        			x:sx,y:-verticalGap,width:sw,height:1,type:"roomExit",exitSide:"top",exitTo:roomNames[nextroom[k]],exitGapX:room.x-l.objects[nextroom[k]].x,exitGapY:0
-        		});
-        	}
 
-			// Bottom exit
-        	var nextroom=colliding({x:room.x,y:room.y+room.height+1,width:room.width,height:1},l.objects);
-	        for (var k=0;k<nextroom.length;k++) {
-	        	var sx=l.objects[nextroom[k]].x-room.x;
-	        	var sw=l.objects[nextroom[k]].width;
-	        	if (sx<0) {
-	        		sw+=sx;
-	        		sx=0;
-	        	}
-	        	if (sx+sw>room.width) sw=room.width-sx;
-	        	sc.object.push({
-        			x:sx,y:room.height+verticalGap,width:sw,height:1,type:"roomExit",exitSide:"bottom",exitTo:roomNames[nextroom[k]],exitGapX:room.x-l.objects[nextroom[k]].x,exitGapY:0
-        		});
-        	}
+	        	
 
-        	// Right exit
-        	var nextroom=colliding({x:room.x+room.width+1,y:room.y,width:1,height:room.height},l.objects);
-	        for (var k=0;k<nextroom.length;k++) {
-	        	var sy=l.objects[nextroom[k]].y-room.y;
-	        	var sh=l.objects[nextroom[k]].height;
-	        	if (sy<0) {
-	        		sh+=sy;
-	        		sy=0;
-	        	}
-	        	if (sy+sh>room.height) sh=room.height-sy;
-	        	sc.object.push({
-        			x:room.width+horizontalGap,y:sy,width:1,height:sh,type:"roomExit",exitSide:"right",exitTo:roomNames[nextroom[k]],exitGapX:0,exitGapY:room.y-l.objects[nextroom[k]].y
-        		});
-        	}
+	        	for (var m=0;m<chunk.tilemap.length;m++) {
+	        		var cut={
+		        		x:room.x/chunk.tilemap[m].tileWidth,
+		        		y:room.y/chunk.tilemap[m].tileHeight,
+		        		width:room.width/chunk.tilemap[m].tileWidth,
+		        		height:room.height/chunk.tilemap[m].tileHeight
+		        	};
+	        		var cmap={map:clone(chunk.tilemap[m])};
+	        		cmap.map=[];
+		        	for (var y=cut.y;y<cut.y+cut.height;y++)
+		        		cmap.map.push(chunk.tilemap[m].map[y].substr(cut.x,cut.width));
+		        	sc.tilemap.push(cmap);
+		        }
 
-        	// Left exit
-        	var nextroom=colliding({x:room.x-2,y:room.y,width:1,height:room.height},l.objects);
-        	for (var k=0;k<nextroom.length;k++) {
-	        	var sy=l.objects[nextroom[k]].y-room.y;
-	        	var sh=l.objects[nextroom[k]].height;
-	        	if (sy<0) {
-	        		sh+=sy;
-	        		sy=0;
-	        	}
-	        	if (sy+sh>room.height) sh=room.height-sy;
-	        	sc.object.push({
-        			x:-horizontalGap,y:sy,width:1,height:sh,type:"roomExit",exitSide:"left",exitTo:roomNames[nextroom[k]],exitGapX:0,exitGapY:room.y-l.objects[nextroom[k]].y
-        		});
-        	}
+		        if (l.properties["#roomHeightProperty"]) sc[l.properties["#roomHeightProperty"]]=room.height;
+		        if (l.properties["#roomWidthProperty"]) sc[l.properties["#roomWidthProperty"]]=room.width;
 
-	        /*
-        
+		        if (!l.properties["#noExits"]) {
 
-        	// Right exit
-        	var nextroom=findRoom({x:room.x+room.width+1,y:room.y+(room.height/2)},l.objects);
-        	if (nextroom!=-1)
-        		sc.object.push({
-        			x:room.width+horizontalGap,y:0,width:1,height:room.height,type:"roomExit",exitSide:"right",exitTo:roomNames[nextroom],exitGapX:0,exitGapY:room.y-l.objects[nextroom].y
-        		});
+			        // Top exit
+		        	var nextroom=colliding({x:room.x,y:room.y-2,width:room.width,height:1},l.objects);
+			        for (var k=0;k<nextroom.length;k++) {
+			        	var sx=l.objects[nextroom[k]].x-room.x;
+			        	var sw=l.objects[nextroom[k]].width;
+			        	if (sx<0) {
+			        		sw+=sx;
+			        		sx=0;
+			        	}
+			        	if (sx+sw>room.width) sw=room.width-sx;
+			        	sc.object.push({
+		        			x:sx,y:-verticalGap,width:sw,height:1,type:"roomExit",exitSide:"top",exitTo:roomNames[nextroom[k]],exitGapX:room.x-l.objects[nextroom[k]].x,exitGapY:0
+		        		});
+		        	}
 
-        	// Left exit
-        	var nextroom=findRoom({x:room.x-1,y:room.y+(room.height/2)},l.objects);
-        	if (nextroom!=-1)
-        		sc.object.push({
-        			x:-horizontalGap,y:0,width:1,height:room.height,type:"roomExit",exitSide:"left",exitTo:roomNames[nextroom],exitGapX:0,exitGapY:room.y-l.objects[nextroom].y
-        		});
-			*/
+					// Bottom exit
+		        	var nextroom=colliding({x:room.x,y:room.y+room.height+1,width:room.width,height:1},l.objects);
+			        for (var k=0;k<nextroom.length;k++) {
+			        	var sx=l.objects[nextroom[k]].x-room.x;
+			        	var sw=l.objects[nextroom[k]].width;
+			        	if (sx<0) {
+			        		sw+=sx;
+			        		sx=0;
+			        	}
+			        	if (sx+sw>room.width) sw=room.width-sx;
+			        	sc.object.push({
+		        			x:sx,y:room.height+verticalGap,width:sw,height:1,type:"roomExit",exitSide:"bottom",exitTo:roomNames[nextroom[k]],exitGapX:room.x-l.objects[nextroom[k]].x,exitGapY:0
+		        		});
+		        	}
 
-  			if (sc.tilemap&&(sc.tilemap.length==1)) sc.tilemap=sc.tilemap[0];
-	        if (sc.object&&(sc.object.length==1)) sc.object=sc.object[0];
-        	if (sc.object.length==0) delete sc.object;
+		        	// Right exit
+		        	var nextroom=colliding({x:room.x+room.width+1,y:room.y,width:1,height:room.height},l.objects);
+			        for (var k=0;k<nextroom.length;k++) {
+			        	var sy=l.objects[nextroom[k]].y-room.y;
+			        	var sh=l.objects[nextroom[k]].height;
+			        	if (sy<0) {
+			        		sh+=sy;
+			        		sy=0;
+			        	}
+			        	if (sy+sh>room.height) sh=room.height-sy;
+			        	sc.object.push({
+		        			x:room.width+horizontalGap,y:sy,width:1,height:sh,type:"roomExit",exitSide:"right",exitTo:roomNames[nextroom[k]],exitGapX:0,exitGapY:room.y-l.objects[nextroom[k]].y
+		        		});
+		        	}
+
+		        	// Left exit
+		        	var nextroom=colliding({x:room.x-2,y:room.y,width:1,height:room.height},l.objects);
+		        	for (var k=0;k<nextroom.length;k++) {
+			        	var sy=l.objects[nextroom[k]].y-room.y;
+			        	var sh=l.objects[nextroom[k]].height;
+			        	if (sy<0) {
+			        		sh+=sy;
+			        		sy=0;
+			        	}
+			        	if (sy+sh>room.height) sh=room.height-sy;
+			        	sc.object.push({
+		        			x:-horizontalGap,y:sy,width:1,height:sh,type:"roomExit",exitSide:"left",exitTo:roomNames[nextroom[k]],exitGapX:0,exitGapY:room.y-l.objects[nextroom[k]].y
+		        		});
+		        	}
+		        }
+
+	  			if (sc.tilemap&&(sc.tilemap.length==1)) sc.tilemap=sc.tilemap[0];
+		        if (sc.object&&(sc.object.length==1)) sc.object=sc.object[0];
+	        	if (sc.object.length==0) delete sc.object;
+	            lcnt++;
+			}
         }
 
         chunk=runtidy(scenes,[function(a){return {scenes:a}},["scenes"]]);
