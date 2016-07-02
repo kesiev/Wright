@@ -1271,6 +1271,8 @@ Box.angleToward=function(v) {
 	if (ang < 0) ang = 360 + ang;
 	return ang;
 }
+// UTILS - Vector Length
+Box.vectorLength=function(v) { return FIX(Math.sqrt((v.forceX*v.forceX)+(v.forceY*v.forceY))); }
 // UTILS - Rectangles
 Box.getRects=function(obj){
 	//if (this.screen.statsmanager) this.screen.stats.updatedRects[this.uid]=this;
@@ -1446,6 +1448,11 @@ Box.getFile = function(file, cb) {
  */
 
 function Wright(gameId,container,mods) {
+
+	function seededRandom() {
+	    variables.randomSeed = (variables.randomSeed * 9301 + 49297) % 233280;
+	    return variables.randomSeed / 233280;
+	}
 
 	var ANGLETOLLERANCE=45;
 	var CONTROLS={
@@ -1823,7 +1830,7 @@ function Wright(gameId,container,mods) {
 						var control = get(this, this, vertical.control),
 							speed = get(this, this, vertical.speed),
 							gotoZero = get(this, this, vertical.gotoZero),
-							zeroValue = get(this, this, horizontal.zeroValue) || 0;
+							zeroValue = get(this, this, vertical.zeroValue) || 0;
 						if (control) d = _Code.pad("keyUp", "keyDown") * (speed === undefined ? 1 : speed);
 						else d = 0;
 						if (gotoZero && !d)
@@ -2053,8 +2060,8 @@ function Wright(gameId,container,mods) {
 							if (tile.y + tile.height > mh) mh = tile.y + tile.height;
 						}
 				from.size({
-					width: atx + (tilemap.width || mw),
-					height: aty + (tilemap.height || mh)
+					width: (tilemap.width || mw),
+					height: (tilemap.height || mh)
 				});
 			});
 		},
@@ -2063,7 +2070,7 @@ function Wright(gameId,container,mods) {
 		// A (bad) dungeon generator thought for code golfing but it fits the purpose and has a lot of parameters :)
 		dungeon:function(template,father,from,tox) {
 
-			function random(n) { return Math.floor(Math.random()*n); }
+			function random(n) { return Math.floor(seededRandom()*n); }
 
 			var args={
 				gridWidth:get(from, tox, template.dungeon.gridWidth)||1,
@@ -2326,7 +2333,7 @@ function Wright(gameId,container,mods) {
 					valid.push(subitem)
 				});
 		});
-		return valid.length ? valid[Math.floor(Math.random() * valid.length)] : undefined;
+		return valid.length ? valid[Math.floor(seededRandom() * valid.length)] : undefined;
 	}
 
 	function merge(from,tox,obj,hst){
@@ -2388,6 +2395,20 @@ function Wright(gameId,container,mods) {
 						ret=game.getAudio(nm,ch);
 						break;
 					}
+					case "date":{
+						p=new Date();
+						ret={
+							allMilliseconds:p.getTime(),
+							allDays:Math.floor(p.getTime()/86400000),
+							day:p.getDate(),
+							month:p.getMonth(),
+							year:p.getFullYear(),
+							hours:p.getHours(),
+							minutes:p.getMinutes(),
+							seconds:p.getSeconds()
+						};
+						break;
+					}
 					case "merged":{ ret=merge(from,tox,ret); break; }
 					case "new":{ ret = Box.clone(get(from, tox, struct[++id])); break; }
 					case "arrayOf":{
@@ -2429,21 +2450,21 @@ function Wright(gameId,container,mods) {
 						if (p instanceof Array) {
 							var v1 = get(from, tox, p[0]),
 								v2 = get(from, tox, p[1]);
-							ret = v1 + Math.floor(Math.random() * (v2 - v1 + 1));
+							ret = v1 + Math.floor(seededRandom() * (v2 - v1 + 1));
 						} else ret = p;
 						break;
 					}					
 					case "randomObject":{
 						p = get(from, tox, struct[++id]);
 						if ((typeof p=="object")&&p.typeId) {
-							if (p.length) do {ret=p.items[Math.floor(Math.random() * p.items.length)];} while(ret.removed);
+							if (p.length) do {ret=p.items[Math.floor(seededRandom() * p.items.length)];} while(ret.removed);
 							else ret=0;
 						} // @TODO: Handle arrays, once needed.
 						break;
 					}
 					case "randomValue":{
 						p = get(from, tox, struct[++id]);
-						if (p instanceof Array) ret = p[Math.floor(Math.random() * p.length)];
+						if (p instanceof Array) ret = p[Math.floor(seededRandom() * p.length)];
 						else ret = p;
 						break;
 					}
@@ -2486,6 +2507,7 @@ function Wright(gameId,container,mods) {
 					}
 					case "angleTo":{ ret=FIX(Box.angleTo(ret,get(from, tox, struct[++id]))); break; }
 					case "angleToward":{ret=FIX(Box.angleToward(get(from, tox, struct[++id]))); break; }
+					case "vectorLength":{ret=FIX(Box.vectorLength(get(from, tox, struct[++id]))); break; }
 					case "shortestAngleTo":{
 				        p=((get(from,tox,struct[++id])-ret)%360)+180;
 				        ret=FIX((p-Math.floor(p/360)*360)-180);
@@ -2743,8 +2765,8 @@ function Wright(gameId,container,mods) {
 						if (list && (list instanceof Array)) {
 							var a,b;
 							for (var i=0;i<list.length*2;i++) {
-								a=Math.floor(Math.random()*list.length);
-								b=Math.floor(Math.random()*list.length);
+								a=Math.floor(seededRandom()*list.length);
+								b=Math.floor(seededRandom()*list.length);
 								p=list[a];
 								list[a]=list[b];
 								list[b]=p
@@ -2875,6 +2897,12 @@ function Wright(gameId,container,mods) {
 
 	// APPLY OBJECT CHANGES
 
+	function addCamera(from,tox,area) {
+		var cam=Box.clone(area);
+		for (var a in cam) cam[a]= get(from, tox, cam[a]);
+		camera.cameras.push(cam);
+	}
+
 	function applyStencil(from, tox, template) {
 		if (!template) debugger;
 		if (template.set) iterateComposedList(from, tox, get(from, tox, template.set), function(item) {
@@ -2932,10 +2960,14 @@ function Wright(gameId,container,mods) {
 					if (template.cameras == 0) camera.cameras = 0;
 					else {
 						camera.cameras = [];
-						iterateComposedList(from, tox, get(from, tox, template.cameras),function(area) {
-							camera.cameras.push(Box.clone(area));
-						});
+						iterateComposedList(from, tox, get(from, tox, template.cameras),function(area) { addCamera(from,tox,area) });
 					}
+					break;
+				}
+				case "addCamera":{
+					camera.currentCamera = 0;
+					if (!camera.cameras) camera.cameras = [];
+					if (template.addCamera) iterateComposedList(from, tox, get(from, tox, template.addCamera),function(area) { addCamera(from,tox,area) });
 					break;
 				}
 				case "hitbox":{
@@ -3004,6 +3036,7 @@ function Wright(gameId,container,mods) {
 			height: game.height
 		};
 		variables.idScene = idscene;
+		variables.randomSeed = (new Date()).getTime();
 		game.skipFrames = 1;
 		if (firstrun) {
 			hud = game.add("layer").size(game).setZIndex(20);
