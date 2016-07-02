@@ -1,0 +1,585 @@
+{
+  "name":"Starcaturday",
+  "author":"KesieV",
+  "year":2016,
+  "genre":"Platformer",
+  "description":"Is there any reason for making a full fledged videogame limited to a single button? The 'one switch games' (or one-button games), for a long time, have been associated to disabilities: gamers with limited mobility with their arms or hands can't deal with complex controllers. There is a lot to learn about at (http://game-accessibility.com/) but, long story short, some retail games can now be played in easy mode with less and customizable controls and few specific and mostly obscure games can be played using a single button. Time passed and mobile gaming created a generation of 'sane disabled': you've a lot of space on modern touch screens, but 'true mobile gaming' is limited to portrait mode and only one thumb. After all, during your metro ride, one hand is hanged somewhere, the best grip you can get on the 'sane' hand is portrait, since all fingers can be used for holding the device and the only interaction you can offer is a short swipe with your thumb - probaby just a single tap. But is this limit enough for limiting gameplays to the basics, like Flappy Bird (2013) did? Despite a lot of people think that simplier controllers lead to simplier or casual gameplays, there are a plethora of obvious examples that's wrong: 8-bit age hosted many hardcore videogames, mostly known because of their difficult and complex gameplay like the Mario, Zelda and Megaman series. All of these games were played using a joystick or a D-pad and one or two buttons - a lot less buttons than in a modern controllers. Many rhythm games uses simple controllers but can get really YouTube-or-not-happened hard. In Nintendo's NES Remix (2013) some Super Mario Bros. (1985) segments have to be played with auto-run and just using the jump button, making even the first stages harder but still surprisingly enjoyable. People want to understimate simple controls because you've to be a very skilled game designer in order to make something fun, which is challenging, pricey and risky. A good example on doing it right? Nitrome's Leap Day (2016) is an excellent one: they delivered a true platformer, with Super Meat Boy (2010) difficulty and Super Mario Bros. 3 (1988) design but playable with just a single button. Download it on your mobile and check by yourself. Menwhile, plot! Comets crosses the sky for years and years but they can get tired too! That's why, every day, one of them take a break on the top of one of the Sleepycomet towers. It's a great deal for Starcat, the greatest of the star collectors! Start from the bottom of the daily tower, jump and slide along the walls, get all the small stars, avoid enemies and spikes and reach the top! Use the A BUTTON for jumping and... that's all! And remember: every day there is a brand new tower and a comet to catch!",
+  "screenshots":[ "starcaturday-1.png", "starcaturday-2.png" ],
+  "hardware":{
+    "width":256,
+    "height":192,
+    "texture":"scanlines"
+  },
+  "cheats":{},
+  "resources":{
+    "tiles":"tiles.png",
+    "title":"title.png",
+    "chunks":"databases/chunks.json",
+    "defaultsprites":"../default/sprites.png",
+    "scanlines":"../default/scanlines.png"
+  },
+  "stencils":{
+    "codeBreak":{
+      "object":[
+        {
+          "image":{ "_":[ "that", "image" ] }, "tileX":{ "_":[ "that", "tileX" ] }, "tileY":{ "_":[ "that", "tileY" ] }, "width":{ "_":[ "that", "width", "/", 2 ] }, "height":{ "_":[ "that", "height", "/", 2 ] },
+          "zIndex":{ "_":[ "that", "zIndex" ] }, "x":{ "_":[ "that", "x" ] }, "y":{ "_":[ "that", "y" ] },
+          "forceX":-1, "forceY":-6,
+          "states":{
+            "code":[
+              { "name":"Physics", "data":{ "gravityY":1 } },
+              { "name":"Execute", "data":{ "when":{ "_":[ "this", "distanceTo", { "_":[ "objectTyped", "player" ] }, "isGreaterThan", 300 ] }, "remove":1 } }
+            ]
+          }
+        },
+        {
+          "image":{ "_":[ "that", "image" ] }, "tileX":{ "_":[ "that", "tileX", "+", { "_":[ "that", "width", "/", 2 ] } ] }, "tileY":{ "_":[ "that", "tileY" ] }, "width":{ "_":[ "that", "width", "/", 2 ] }, "height":{ "_":[ "that", "height", "/", 2 ] },
+          "zIndex":{ "_":[ "that", "zIndex" ] }, "x":{ "_":[ "that", "x", "+", { "_":[ "that", "width", "/", 2 ] } ] }, "y":{ "_":[ "that", "y" ] },
+          "forceX":1, "forceY":-6,
+          "states":{
+            "code":[
+              { "name":"Physics", "data":{ "gravityY":1 } },
+              { "name":"Execute", "data":{ "when":{ "_":[ "this", "distanceTo", { "_":[ "objectTyped", "player" ] }, "isGreaterThan", 300 ] }, "remove":1 } }
+            ]
+          }
+        },
+        {
+          "image":{ "_":[ "that", "image" ] }, "tileX":{ "_":[ "that", "tileX" ] }, "tileY":{ "_":[ "that", "tileY", "+", { "_":[ "that", "height", "/", 2 ] } ] }, "width":{ "_":[ "that", "width", "/", 2 ] }, "height":{ "_":[ "that", "height", "/", 2 ] },
+          "zIndex":{ "_":[ "that", "zIndex" ] }, "x":{ "_":[ "that", "x" ] }, "y":{ "_":[ "that", "y", "+", { "_":[ "that", "height", "/", 2 ] } ] },
+          "forceX":-1, "forceY":-4,
+          "states":{
+            "code":[
+              { "name":"Physics", "data":{ "gravityY":1 } },
+              { "name":"Execute", "data":{ "when":{ "_":[ "this", "distanceTo", { "_":[ "objectTyped", "player" ] }, "isGreaterThan", 300 ] }, "remove":1 } }
+            ]
+          }
+        },
+        {
+          "image":{ "_":[ "that", "image" ] }, "tileX":{ "_":[ "that", "tileX", "+", { "_":[ "that", "width", "/", 2 ] } ] }, "tileY":{ "_":[ "that", "tileY", "+", { "_":[ "that", "height", "/", 2 ] } ] }, "width":{ "_":[ "that", "width", "/", 2 ] }, "height":{ "_":[ "that", "height", "/", 2 ] },
+          "zIndex":{ "_":[ "that", "zIndex" ] }, "x":{ "_":[ "that", "x", "+", { "_":[ "that", "width", "/", 2 ] } ] }, "y":{ "_":[ "that", "y", "+", { "_":[ "that", "height", "/", 2 ] } ] },
+          "forceX":1, "forceY":-4,
+          "states":{
+            "code":[
+              { "name":"Physics", "data":{ "gravityY":1 } },
+              { "name":"Execute", "data":{ "when":{ "_":[ "this", "distanceTo", { "_":[ "objectTyped", "player" ] }, "isGreaterThan", 300 ] }, "remove":1 } }
+            ]
+          }
+        }
+      ]
+    },
+    "codeDefaultPlayer":{
+      "code":{
+        "name":"Execute",
+        "data":[
+          { "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "pickable" ] } ] }, "as":{ "_":"that" }, "executeAction":"pick" },
+          { "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "kill" ] } ] }, "set":{ "state":"dead" } }
+        ]
+      }
+    },
+    "codeLoad":[
+      {
+        "set":{
+          "cometCount":{ "_":[ "storage", "cometCount" ] },
+          "goldCometCount":{ "_":[ "storage", "goldCometCount" ] },
+          "lastComet":{ "_":[ "storage", "lastComet" ] },
+          "lastDate":{ "_":[ "storage", "lastDate" ] },
+          "lastGoldenComet":{ "_":[ "storage", "lastGoldenComet" ] }
+        }
+      },
+      { "when":{ "_":[ "scene", "cometCount", "not" ] }, "set":{ "cometCount":0, "goldCometCount":0 } },
+      {
+        "when":{ "_":[ "scene", "lastDate", "isNotEqualTo", { "_":[ "date", "allDays" ] } ] },
+        "set":{ "lastComet":0, "lastDate":{ "_":[ "date", "allDays" ] }, "lastGoldenComet":0 }
+      }
+    ],
+    "codeSave":{
+      "as":{ "_":"storage" },
+      "set":{
+        "cometCount":{ "_":[ "scene", "cometCount" ] },
+        "goldCometCount":{ "_":[ "scene", "goldCometCount" ] },
+        "lastComet":{ "_":[ "scene", "lastComet" ] },
+        "lastDate":{ "_":[ "scene", "lastDate" ] },
+        "lastGoldenComet":{ "_":[ "scene", "lastGoldenComet" ] }
+      }
+    },
+    "spark":{
+      "image":"defaultsprites", "tileX":64, "tileY":144, "width":16, "height":16,
+      "zIndex":{ "_":[ "that", "zIndex", "+", 1 ] }, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "animations":{ "spark":{ "frames":4, "speed":1 } },
+      "animation":"spark",
+      "states":{ "code":{ "name":"Sequence", "data":[ { "wait":8 }, { "remove":1 } ] } }
+    },
+    "removeWithSpark":[ { "object":{ "_":[ "stencil", "spark" ] } }, { "remove":1 } ],
+    "modelFoeBasic":{
+      "type":[ "foe", "newobject", "kill" ],
+      "image":"tiles", "width":16, "height":16,
+      "zIndex":10,
+      "animations":{ "fall":"still", "jump":"still", "still":{ "frames":4, "loopTo":0 }, "walk":"still" }
+    },
+    "modelRespawnable":{
+      "type":"respawnOnDeath",
+      "respawnPointX":0,
+      "respawnPointY":0,
+      "states":[
+        {
+          "execute":[
+            {
+              "when":{ "_":[ "this", "respawnPointX", "not" ] },
+              "set":{ "respawnPointX":{ "_":[ "this", "x" ] }, "respawnPointY":{ "_":[ "this", "y" ] } },
+              "elseExecute":[
+                { "when":{ "_":[ "this", "visible" ] }, "object":{ "_":[ "stencil", "spark" ] } },
+                { "set":{ "x":{ "_":[ "this", "respawnPointX" ] }, "y":{ "_":[ "this", "respawnPointY" ] }, "visible":1 } },
+                { "object":{ "_":[ "stencil", "spark" ] } }
+              ]
+            },
+            { "set":{ "state":"moving" } }
+          ]
+        },
+        { "name":"dead", "set":{ "visible":0 } }
+      ]
+    },
+    "blob":{
+      "set":[ { "_":[ "stencil", "modelFoeBasic" ] }, { "_":[ "stencil", "modelRespawnable" ] } ],
+      "tileX":0, "tileY":48,
+      "forceX":1,
+      "states":{
+        "name":"moving",
+        "code":[
+          {
+            "name":"Physics",
+            "data":{
+              "walls":[ { "type":[ "wall", "kill" ], "restitutionX":1, "restitutionY":0 }, { "type":"onlytop", "restitution":0, "only":{ "top":1 } } ],
+              "gravityX":0,
+              "gravityY":1
+            }
+          },
+          { "_":[ "stencil", "platformerAnimation" ] }
+        ]
+      }
+    },
+    "dataStageStructure":[
+      "end",
+      "5",
+      "5",
+      "checkpoint",
+      "5",
+      "4",
+      "checkpoint",
+      "4",
+      "4",
+      "checkpoint",
+      "3",
+      "3",
+      "checkpoint",
+      "3",
+      "2",
+      "checkpoint",
+      "2",
+      "2",
+      "checkpoint",
+      "2",
+      "1",
+      "checkpoint",
+      "1",
+      "1",
+      "start"
+    ],
+    "objectMoving":{
+      "type":"newobject",
+      "width":16, "height":16,
+      "forceX":1, "forceY":0,
+      "states":{
+        "code":[
+          { "name":"Physics" },
+          {
+            "name":"Execute",
+            "data":{
+              "when":{ "_":[ "this", "x", "%", 16, "isEqualTo", 0, "and", { "_":[ "this", "y", "%", 16, "isEqualTo", 0 ] } ] },
+              "execute":{ "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "arrow" ] } ] }, "as":{ "_":"that" }, "executeAction":"arrow" }
+            }
+          }
+        ]
+      }
+    },
+    "platformerAnimation":{
+      "name":"Execute",
+      "data":[
+        { "when":{ "_":[ "this", "forceX", "isLessThan", 0 ] }, "set":{ "flipX":1 } },
+        { "when":{ "_":[ "this", "forceX", "isGreaterThan", 0 ] }, "set":{ "flipX":0 } },
+        { "when":{ "_":[ "this", "forceY", "isLessThan", 0 ] }, "set":{ "animation":"jump" } },
+        { "when":{ "_":[ "this", "forceY", "isGreaterThan", 0 ] }, "set":{ "animation":"fall" } },
+        {
+          "when":{ "_":[ "this", "forceY", "isEqualTo", 0 ] },
+          "execute":{ "when":{ "_":[ "this", "forceX", "isEqualTo", 0 ] }, "set":{ "animation":"still" }, "elseExecute":{ "set":{ "animation":"walk" } } }
+        }
+      ]
+    },
+    "smoke":{
+      "image":"defaultsprites", "tileX":80, "tileY":16, "width":16, "height":16,
+      "zIndex":51,
+      "animations":{ "spark":{ "frames":4, "speed":1 } },
+      "animation":"spark",
+      "states":{ "code":[ { "name":"Physics" }, { "name":"Sequence", "data":[ { "wait":8 }, { "remove":1 } ] } ] }
+    },
+    "!":{
+      "type":"player",
+      "follow":1,
+      "image":"defaultsprites", "tileX":64, "tileY":32,
+      "zIndex":50,
+      "hitbox":{ "width":12, "height":14, "x":2, "y":2 },
+      "forceX":3,
+      "animations":{ "fall":{ "frame":5 }, "jump":{ "frame":4 }, "still":{ "frames":4, "loopTo":0 }, "walk":"still" },
+      "animation":"still",
+      "jumpLeft":2,
+      "scheduleForceY":0,
+      "scheduleJumpLeft":0,
+      "scheduleReady":0,
+      "states":[
+        {
+          "like":{ "_":[ "stencil", "codeDefaultPlayer" ] },
+          "execute":{ "when":{ "_":[ "scene", "checkpoint", "isEqualTo", -1 ] }, "as":{ "_":"scene" }, "set":{ "checkpoint":{ "_":[ "that", "y" ] } } },
+          "code":[
+            {
+              "name":"Physics",
+              "data":{
+                "walls":[
+                  {
+                    "type":"wall",
+                    "restitutionX":1,
+                    "restitutionY":0,
+                    "firstExecute":[
+                      {
+                        "when":{ "_":[ "that", "isTyped", "bumpable", "and", { "_":[ "this", "isUnder", { "_":"that" }, "and", { "_":[ "this", "forceY", "isLessThan", 0 ] } ] } ] },
+                        "execute":{ "as":{ "_":"that" }, "executeAction":"bump" }
+                      },
+                      {
+                        "when":{
+                          "_":[ "that", "isTyped", "springable", "and", { "_":[ "this", "isOver", { "_":"that" }, "and", { "_":[ "this", "forceY", "isGreaterThan", 0 ] } ] } ]
+                        },
+                        "execute":{ "as":{ "_":"that" }, "executeAction":"spring" }
+                      }
+                    ],
+                    "execute":{
+                      "when":{
+                        "_":[
+                          "that",
+                          "isTyped",
+                          "slidable",
+                          "and",
+                          { "_":[ "that", "isEqualTo", { "_":[ "this", "touchLeft" ] }, "or", { "_":[ "that", "isEqualTo", { "_":[ "this", "touchRight" ] } ] } ] }
+                        ]
+                      },
+                      "execute":{
+                        "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "wall" ] }, "hitbox":{ "width":12, "height":1, "x":2, "y":16 } }, "not" ] },
+                        "set":{ "state":"sliding" }
+                      }
+                    }
+                  },
+                  { "type":"onlytop", "restitution":0, "only":{ "top":1 } }
+                ],
+                "gravityX":0,
+                "gravityY":0.8,
+                "limitX":[ -5, 5 ],
+                "limitY":[ -16, 16 ]
+              }
+            },
+            {
+              "name":"Execute",
+              "data":[
+                { "when":{ "_":[ "this", "forceX", "isGreaterThan", 0 ] }, "set":{ "flipX":0 }, "elseExecute":{ "set":{ "flipX":1 } } },
+                { "when":{ "_":[ "this", "jumpLeft" ] }, "set":{ "angle":0 }, "elseExecute":{ "sum":25, "to":{ "_":[ "this", "angle" ] } } },
+                {
+                  "when":{ "_":[ "this", "scheduleReady" ] },
+                  "execute":[ { "set":{ "forceY":{ "_":[ "this", "scheduleForceY" ] }, "jumpLeft":{ "_":[ "this", "scheduleJumpLeft" ] } } }, { "set":{ "scheduleReady":0 } } ],
+                  "elseExecute":[
+                    {
+                      "when":{ "_":[ "this", "touchDown" ] },
+                      "set":{ "animation":"walk", "jumpLeft":2 },
+                      "elseExecute":{ "when":{ "_":[ "this", "forceY", "isGreaterThan", 0 ] }, "set":{ "animation":"fall" }, "elseExecute":{ "set":{ "animation":"jump" } } }
+                    },
+                    {
+                      "when":{ "_":[ "keyA", "isHit", "and", { "_":[ "this", "jumpLeft" ] } ] },
+                      "execute":[
+                        { "object":{ "set":{ "_":[ "stencil", "smoke" ] }, "x":{ "_":[ "that", "x" ] }, "y":{ "_":[ "that", "y", "+", 8 ] } } },
+                        { "set":{ "forceY":-10 } },
+                        { "subtract":1, "to":{ "_":[ "this", "jumpLeft" ] } }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name":"sliding",
+          "like":{ "_":[ "stencil", "codeDefaultPlayer" ] },
+          "execute":{ "set":{ "angle":0, "forceX":0, "forceY":1, "animation":"fall", "isSliding":1, "jumpLeft":1, "slideLimitY":[ -1.2, 1.2 ], "slideSmoke":0 } },
+          "code":[
+            {
+              "name":"Physics",
+              "data":{
+                "walls":{
+                  "type":"ground",
+                  "restitution":0,
+                  "execute":{
+                    "when":{ "_":[ "that", "isEqualTo", { "_":[ "this", "touchDown" ] } ] },
+                    "execute":[ { "when":{ "_":[ "this", "flipX" ] }, "set":{ "forceX":-3 }, "elseExecute":{ "set":{ "forceX":3 } } }, { "set":{ "state":"default" } } ]
+                  }
+                },
+                "gravityX":0,
+                "gravityY":0.8,
+                "limitX":[ 0, 0 ],
+                "limitY":{ "_":[ "this", "slideLimitY" ] }
+              }
+            },
+            {
+              "name":"Execute",
+              "data":[
+                {
+                  "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "slidable" ] }, "hitbox":{ "width":1, "height":16, "x":-1, "y":0 } } ] },
+                  "set":{ "flipX":0, "isSliding":1, "slideLimitY":[ -1.2, 1.2 ] },
+                  "elseExecute":{
+                    "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "slidable" ] }, "hitbox":{ "width":1, "height":16, "x":16, "y":0 } } ] },
+                    "set":{ "flipX":1, "isSliding":1, "slideLimitY":[ -1.2, 1.2 ] },
+                    "elseExecute":{ "set":{ "isSliding":0, "slideLimitY":[ -16, 16 ] } }
+                  }
+                },
+                {
+                  "when":{ "_":[ "this", "isSliding" ] },
+                  "execute":[
+                    { "sum":1, "to":{ "_":[ "this", "slideSmoke" ] } },
+                    {
+                      "when":{ "_":[ "this", "slideSmoke", "isGreaterThan", 4 ] },
+                      "execute":[
+                        { "set":{ "slideSmoke":0 } },
+                        {
+                          "when":{ "_":[ "this", "flipX" ] },
+                          "object":{ "set":{ "_":[ "stencil", "smoke" ] }, "x":{ "_":[ "that", "x", "+", 8 ] }, "y":{ "_":[ "that", "y", "-", 2 ] } },
+                          "elseExecute":{ "object":{ "set":{ "_":[ "stencil", "smoke" ] }, "x":{ "_":[ "that", "x", "-", 8 ] }, "y":{ "_":[ "that", "y", "-", 2 ] } } }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "when":{ "_":[ "keyA", "isHit" ] },
+                  "execute":[
+                    { "when":{ "_":[ "this", "flipX" ] }, "set":{ "forceX":-3 }, "elseExecute":{ "set":{ "forceX":3 } } },
+                    { "set":{ "forceY":-10, "state":"default" } }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name":"dead",
+          "execute":[ { "set":{ "removeType":"player", "visible":0, "angle":0 } }, { "object":{ "_":[ "stencil", "spark" ] } } ],
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "wait":25 },
+              { "set":{ "x":104, "y":{ "_":[ "scene", "checkpoint" ] }, "visible":1, "forceY":0, "state":"default" } },
+              { "when":{ "_":[ "this", "flipX" ] }, "set":{ "forceX":-3 }, "elseExecute":{ "set":{ "forceX":3 } } },
+              { "as":{ "_":[ "object", "respawnOnDeath" ] }, "set":{ "state":"default" } },
+              { "as":{ "_":[ "object", "resetOnDeath" ] }, "executeAction":"reset" },
+              { "object":{ "_":[ "stencil", "spark" ] } }
+            ]
+          }
+        },
+        {
+          "name":"idle",
+          "set":{ "angle":0, "forceX":0, "forceY":0, "animation":"still" },
+          "code":[
+            { "name":"Sequence", "data":{ "set":{ "forceY":-5 }, "wait":75, "loop":1 } },
+            {
+              "name":"Physics",
+              "data":{
+                "walls":[ { "type":"wall", "restitution":0 }, { "type":"onlytop", "restitution":0, "only":{ "top":1 } } ],
+                "gravityX":0,
+                "gravityY":0.8,
+                "limitX":[ -5, 5 ],
+                "limitY":[ -16, 16 ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "#":{ "type":[ "wall", "slidable", "ground" ], "image":"tiles", "width":16, "height":16, "zIndex":10 },
+    "T":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":80 },
+    "'":{ "image":"tiles", "tileY":64, "height":16, "zIndex":6 },
+    "*":{
+      "type":[ "pickable", "bonus" ],
+      "image":"tiles", "tileX":64,
+      "zIndex":8,
+      "states":{
+        "code":{ "name":"Execute", "data":{ "set":{ "angle":{ "_":[ "this", "angle", "+", 5, "%", 360 ] } } } },
+        "actions":{
+          "name":"pick",
+          "execute":[
+            { "sum":1, "to":{ "_":[ "scene", "score" ] } },
+            { "when":{ "_":[ "scene", "score", "isEqualTo", { "_":[ "scene", "bonusCount" ] } ] }, "as":{ "_":[ "objectTyped", "comet" ] }, "set":{ "frame":1 } },
+            { "_":[ "stencil", "removeWithSpark" ] }
+          ]
+        }
+      }
+    },
+    "-":{ "type":[ "onlytop", "ground" ], "image":"tiles", "tileX":16, "height":16, "zIndex":10 },
+    "<":{ "type":"arrow", "states":{ "actions":{ "name":"arrow", "execute":{ "as":{ "_":"that" }, "set":{ "forceX":-1, "forceY":0 } } } } },
+    ">":{ "type":"arrow", "states":{ "actions":{ "name":"arrow", "execute":{ "as":{ "_":"that" }, "set":{ "forceX":1, "forceY":0 } } } } },
+    "O":{ "type":[ "wall", "ground" ], "image":"tiles", "tileX":32, "height":16, "zIndex":10 },
+    "W":{
+      "type":[ "hitable", "wall", "bumpable", "slidable", "ground", "resetOnDeath" ],
+      "image":"tiles", "tileX":112, "height":16,
+      "zIndex":10,
+      "states":{
+        "actions":[
+          {
+            "name":"bump",
+            "execute":{ "set":{ "removeType":[ "wall", "hitable", "bumpable", "slidable", "ground" ], "visible":0 }, "execute":{ "_":[ "stencil", "codeBreak" ] } }
+          },
+          { "name":"reset", "execute":{ "set":{ "type":[ "wall", "hitable", "bumpable", "slidable", "ground" ], "visible":1 } } }
+        ]
+      }
+    },
+    "X":{ "type":"kill", "image":"tiles", "tileX":48, "height":16, "zIndex":10, "hitbox":{ "width":12, "height":12, "x":2, "y":2 } },
+    "Z":{
+      "type":[ "wall", "slidable", "ground", "springable" ],
+      "image":"tiles", "tileX":96, "height":16,
+      "zIndex":10,
+      "movingTime":0,
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[
+            { "wait":1, "loop":1, "until":{ "_":[ "this", "movingTime" ] } },
+            { "sum":1, "to":{ "_":[ "this", "y" ] }, "wait":1 },
+            { "subtract":1, "to":{ "_":[ "this", "y" ] } },
+            { "subtract":1, "to":{ "_":[ "this", "movingTime" ] }, "loopTo":0 }
+          ]
+        },
+        "actions":{
+          "name":"spring",
+          "execute":[
+            { "as":{ "_":"that" }, "set":{ "scheduleForceY":-14, "scheduleJumpLeft":2, "scheduleReady":1 } },
+            { "sum":4, "to":{ "_":[ "this", "movingTime" ] } }
+          ]
+        }
+      }
+    },
+    "^":{ "type":"arrow", "states":{ "actions":{ "name":"arrow", "execute":{ "as":{ "_":"that" }, "set":{ "forceX":0, "forceY":-1 } } } } },
+    "h":{ "image":"tiles", "tileX":80, "tileY":64, "height":16, "zIndex":6 },
+    "m":{ "image":"tiles", "tileX":16, "tileY":64, "height":16, "zIndex":6, "frame":{ "_":[ "randomNumber", [ 0, 3 ] ] } },
+    "n":{ "image":"tiles", "tileX":144, "tileY":64, "height":16, "zIndex":6 },
+    "p":{ "image":"tiles", "tileX":96, "tileY":64, "height":16, "zIndex":6 },
+    "v":{ "type":"arrow", "states":{ "actions":{ "name":"arrow", "execute":{ "as":{ "_":"that" }, "set":{ "forceX":0, "forceY":1 } } } } },
+    "x":{ "image":"tiles", "tileX":112, "tileY":64, "height":16, "zIndex":6 },
+    "y":{ "image":"tiles", "tileX":128, "tileY":64, "height":16, "zIndex":6 }
+  },
+  "execute":{
+    "object":[
+      { "width":48, "height":192, "zIndex":1, "x":208, "y":0, "bgcolor":"#000", "border":"#fff" },
+      { "image":"tiles", "tileX":64, "width":16, "height":16, "zIndex":2, "x":224, "y":8 },
+      {
+        "type":"hud",
+        "hudType":"label", "label":"%number|scene.score|0|3%",
+        "box":"label", "width":48,
+        "zIndex":2, "x":208, "y":24,
+        "color":"#ffffff",
+        "font":"spectrum", "fontSize":20, "lineHeight":15, "textAlign":"center"
+      },
+      { "image":"tiles", "tileX":0, "tileY":80, "width":16, "height":16, "zIndex":2, "x":224, "y":60 },
+      {
+        "type":"hud",
+        "hudType":"label", "label":"%number|scene.cometCount|0|3%",
+        "box":"label", "width":48,
+        "zIndex":2, "x":208, "y":76,
+        "color":"#ffffff",
+        "font":"spectrum", "fontSize":20, "lineHeight":15, "textAlign":"center"
+      },
+      { "image":"tiles", "tileX":16, "tileY":80, "width":16, "height":16, "zIndex":2, "x":224, "y":112 },
+      {
+        "type":"hud",
+        "hudType":"label", "label":"%number|scene.goldCometCount|0|3%",
+        "box":"label", "width":48,
+        "zIndex":2, "x":208, "y":128,
+        "color":"#ffffff",
+        "font":"spectrum", "fontSize":20, "lineHeight":15, "textAlign":"center"
+      }
+    ],
+    "into":{ "_":"hud" }
+  },
+  "scenes":{
+    "intro":{
+      "execute":[
+        { "_":[ "stencil", "codeLoad" ] },
+        { "as":{ "_":"variable" }, "set":{ "randomSeed":{ "_":[ "scene", "lastDate" ] } } },
+        {
+          "set":{
+            "cameras":[],
+            "checkpoint":-1,
+            "chunks":{ "_":[ "resource", "chunks" ] },
+            "counters":{ "_":[ "new", { "1":0, "2":1, "3":0, "4":0, "5":0, "checkpoint":0, "end":0, "start":0 } ] },
+            "cp":0,
+            "score":0,
+            "segment":0
+          }
+        },
+        { "shuffle":{ "_":[ "this", "chunks", 1 ] } },
+        { "shuffle":{ "_":[ "this", "chunks", 2 ] } },
+        { "shuffle":{ "_":[ "this", "chunks", 3 ] } },
+        { "shuffle":{ "_":[ "this", "chunks", 4 ] } },
+        { "shuffle":{ "_":[ "this", "chunks", 5 ] } },
+        {
+          "times":{ "_":[ "stencil", "dataStageStructure", "count" ] },
+          "execute":[
+            { "set":{ "nextSegmentType":{ "_":[ "stencil", "dataStageStructure", { "_":[ "scene", "segment" ] } ] } } },
+            {
+              "set":{
+                "nextChunk":{ "_":[ "this", "chunks", { "_":[ "scene", "nextSegmentType" ] }, { "_":[ "scene", "counters", { "_":[ "scene", "nextSegmentType" ] } ] } ] }
+              }
+            },
+            { "as":{ "_":[ "scene", "nextChunk", "tilemap" ] }, "set":{ "x":0, "y":{ "_":[ "scene", "cp" ] } } },
+            { "set":{ "_":[ "scene", "nextChunk" ] } },
+            {
+              "times":{ "_":[ "object", "newobject", "count" ] },
+              "as":{ "_":[ "objectTyped", "newobject" ] },
+              "execute":[ { "sum":{ "_":[ "scene", "cp" ] }, "to":{ "_":[ "this", "y" ] } }, { "set":{ "removeType":"newobject" } } ]
+            },
+            {
+              "object":{
+                "image":"tiles", "tileX":96, "tileY":16, "width":32, "height":32,
+                "zIndex":12, "x":96, "y":{ "_":[ "scene", "cp", "-", 16 ] },
+                "color":"#0ff",
+                "font":"spectrum", "lineHeight":32, "outline":"#000", "textAlign":"center",
+                "execute":{
+                  "when":{ "_":[ "scene", "segment", "isGreaterThan", 1 ] },
+                  "set":{ "html":{ "_":[ "scene", "segment", "-", 1 ] } },
+                  "elseExecute":{ "set":{ "frame":1 } }
+                }
+              }
+            },
+            { "sum":{ "_":[ "scene", "nextChunk", "chunkHeight" ] }, "to":{ "_":[ "scene", "cp" ] } },
+            { "sum":1, "to":{ "_":[ "scene", "counters", { "_":[ "scene", "nextSegmentType" ] } ] } },
+            {
+              "when":{ "_":[ "this", "chunks", { "_":[ "scene", "nextSegmentType" ] }, { "_":[ "scene", "counters", { "_":[ "scene", "nextSegmentType" ] } ] }, "not" ] },
+              "execute":{ "assign":0, "to":{ "_":[ "scene", "counters", { "_":[ "scene", "nextSegmentType" ] } ] } }
+            },
+            { "sum":1, "to":{ "_":[ "scene", "segment" ] } }
+          ]
+        },
+        {
+          "set":{
+            "addCamera":{ "width":208, "height":{ "_":[ "scene", "height" ] }, "x":8, "y":0 },
+            "width":432,
+            "cameraSmoothness":0.2, "cameraWidth":208, "cameraHeight":192, "cameraFocusX":0, "cameraFocusY":96, "cameraFocusWidth":208, "cameraFocusHeight":48,
+            "bonusCount":{ "_":[ "object", "bonus", "count" ] }
+          }
+        }
+      ],
+      "states":{ "name":"end", "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"intro" } } }
+    }
+  }
+}
