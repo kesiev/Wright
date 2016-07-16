@@ -1,0 +1,740 @@
+{
+  "name":"Gateways",
+  "author":"KesieV",
+  "year":2016,
+  "genre":"Puzzle",
+  "description":"In this very moment most of my colleagues are younger than me. While I'm writing this I'm 36 and I'm working here in Italy for Vidiemme Consulting SRL from 8 years already - counting that my age was pretty average when hired, it didn't took too much. I'm not scared by aging or have any prejudice about that - working as company internship tutor with with high school students for 4 years helped a lot in this sense. They are typically 18, which means I lived a 14 years long 'moving window gap' that's getting larger and larger. Working with them is fascinating and funny: every year I hear different dreams, visions, goals and passions. When I was 18 (1998) I loved computers and just wanted to be a good coder to be happy, mainly inheriting my father passions. Now imagine my face when I heard 'I want to write code for becoming rich. You can sell a stupid app and get a lot of money nowadays!' from one of my trainees! Time changes a lot of things but, what I've figured out is that in our job (and in life too?) the trick is focusing on what doesn't change. Or what changes slowly than the others. Every year, choosing a good technology for a beginners project, that should be easy to understand but not too much out-of-market, or an interesting topic, enough future proof but common too, is one of the greatest challenges we've to face. But there is something that is explained every year mostly in the same way: how responsabilities works, when you've to solve a problem by yourself, in team or you've to ask for help, how to recognize when is the time for a break and when you've to keep your eyes peeled, how to speak with people with different backgrounds, what a goal is and how you've to plan the road for getting there... Not only that's something that matters in life: this's the only true time-proof cross-platform professional knowledge you can grow and carry on along the entirety of your carreer, no matter what's trendy right now. Technologies have such a short life span that everybody can (have to!) learned them from scratch, anytime! Meanwhile... Plot! Dry decided to join the Gateways SRL company internship program: he'll learn how to use the famous Gateway Pistol, which can teleport everything from a side to another, and will turn in a real professional! Use the LEFT/RIGHT for moving Dry and UP for jumping. Hold down the A or the B BUTTON and then hold the LEFT/RIGHT/UP/DOWN or diagonals for aiming. Release the A or B BUTTON for firing a Gateway Bullet: use A for the blue one and B for the red one. Hold down the A and B BUTTON for closing both gateways. Good luck!",
+  "screenshots":[ "gateways-1.png", "gateways-2.png" ],
+  "hardware":{
+    "width":256,
+    "height":192,
+    "texture":"scanlines"
+  },
+  "cheats":{},
+  "resources":{
+    "sprites":"sprites.png",
+    "title":"title.png",
+    "defaultsprites":"../default/sprites.png",
+    "scanlines":"../default/scanlines.png"
+  },
+  "stencils":{
+    "codeDialogue":[
+      { "_":[ "stencil", "codeEndDialogue" ] },
+      { "as":{ "_":"scene" }, "set":{ "thenSetFlagId":{ "_":[ "that", "thenSetFlagId" ] } } },
+      {
+        "object":[
+          { "type":"comment", "width":256, "height":10, "zIndex":1, "x":0, "y":0, "bgcolor":"#000" },
+          {
+            "type":"comment",
+            "box":"label", "width":{ "_":[ "scene", "dialogueText", "count", "*", 8, "+", 10 ] }, "height":10,
+            "zIndex":10, "x":256, "y":0,
+            "font":"spectrum", "lineHeight":10, "html":{ "_":[ "scene", "dialogueText" ] },
+            "states":{
+              "code":{
+                "name":"Execute",
+                "data":{
+                  "when":{ "_":[ "this", "x", "isGreaterThan", { "_":[ "this", "width", "*", -1 ] } ] },
+                  "subtract":2,
+                  "to":{ "_":[ "this", "x" ] },
+                  "elseExecute":{ "_":[ "stencil", "codeEndDialogue" ] }
+                }
+              }
+            }
+          }
+        ],
+        "into":{ "_":"scenehud" }
+      }
+    ],
+    "codeDie":{ "gotoScene":{ "_":[ "variable", "stage" ] } },
+    "codeEndDialogue":[
+      { "as":{ "_":[ "object", "comment" ] }, "remove":1 },
+      {
+        "when":{ "_":[ "scene", "thenSetFlagId" ] },
+        "execute":[ { "assign":1, "to":{ "_":[ "scene", "flags", { "_":[ "scene", "thenSetFlagId" ] } ] } }, { "as":{ "_":"scene" }, "set":{ "thenSetFlagId":0 } } ]
+      }
+    ],
+    "codeNextStage":[
+      { "sum":1, "to":{ "_":[ "variable", "stage" ] } },
+      { "when":{ "_":[ "variable", "stage", "isGreaterThan", 13 ] }, "gotoScene":"ending", "elseExecute":{ "gotoScene":{ "_":[ "variable", "stage" ] } } }
+    ],
+    "spark":{
+      "image":"defaultsprites", "tileX":64, "tileY":144, "width":16, "height":16,
+      "zIndex":10000, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "animations":{ "spark":{ "frames":4, "speed":0 } },
+      "animation":"spark",
+      "states":{ "code":{ "name":"Sequence", "data":[ { "wait":4 }, { "remove":1 } ] } }
+    },
+    "removeWithSpark":[ { "object":{ "_":[ "stencil", "spark" ] } }, { "remove":1 } ],
+    "modelPopupLabel":{
+      "width":100, "height":10,
+      "zIndex":10000, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "that", "y", "-", 5 ] },
+      "color":"#fff",
+      "font":"spectrum", "lineHeight":12, "outline":"#000", "textAlign":"center",
+      "speed":0.5,
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[ { "subtract":{ "_":[ "this", "speed" ] }, "to":{ "_":[ "this", "y" ] }, "wait":1, "loop":1, "cycles":15 }, { "remove":1 } ]
+        }
+      }
+    },
+    "stageModel":{
+      "execute":[
+        { "set":{ "flags":{ "_":[ "new", {} ] } } },
+        { "set":{ "globalTimer":0 } },
+        { "as":{ "_":[ "scene", "flags" ] }, "set":{ "everFalse":0, "everTrue":1 } }
+      ],
+      "states":{
+        "code":{ "name":"Sequence", "data":[ { "wait":25 }, { "set":{ "globalTimer":{ "_":[ "this", "globalTimer", "+", 1, "%", 12 ] } } }, { "loopTo":0 } ] }
+      }
+    },
+    "behaviourCheckFlag":{
+      "states":[
+        {
+          "execute":{ "set":{ "_":[ "this", "onSet" ] } },
+          "code":{ "name":"Execute", "data":{ "when":{ "_":[ "scene", "flags", { "_":[ "this", "flagId" ] } ] }, "set":{ "state":"off" } } }
+        },
+        {
+          "name":"off",
+          "execute":{ "set":{ "_":[ "this", "offSet" ] } },
+          "code":{ "name":"Execute", "data":{ "when":{ "_":[ "scene", "flags", { "_":[ "this", "flagId" ] }, "not" ] }, "set":{ "state":"default" } } }
+        }
+      ]
+    },
+    "behaviourPhysics":{
+      "code":[
+        {
+          "name":"Execute",
+          "data":[
+            {
+              "when":{ "_":[ "this", "nextForce" ] },
+              "set":{ "forceX":{ "_":[ "this", "nextForceX" ] }, "forceY":{ "_":[ "this", "nextForceY" ] }, "nextForce":0 }
+            },
+            {
+              "when":{ "_":[ "this", "moved", "not" ] },
+              "execute":{
+                "when":{ "_":[ "this", "forceX", "abs", "isLessThan", { "_":[ "this", "weight" ] } ] },
+                "set":{ "forceX":0 },
+                "elseExecute":{
+                  "when":{ "_":[ "this", "touchDown" ] },
+                  "execute":{
+                    "when":{ "_":[ "this", "forceX", "isGreaterThan", 0 ] },
+                    "subtract":{ "_":[ "this", "weight" ] },
+                    "to":{ "_":[ "this", "forceX" ] },
+                    "elseExecute":{ "sum":{ "_":[ "this", "weight" ] }, "to":{ "_":[ "this", "forceX" ] } }
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name":"Physics",
+          "data":{
+            "walls":[
+              {
+                "type":"openedGateway",
+                "firstExecute":[
+                  { "set":{ "currentGateway":{ "_":"that" }, "otherGateway":{ "_":[ "objectTyped", { "_":[ "that", "otherGateway" ] } ] } } },
+                  {
+                    "when":{ "_":[ "this", "otherGateway" ] },
+                    "execute":[
+                      { "object":{ "_":[ "stencil", "spark" ] } },
+                      {
+                        "set":{
+                          "x":{ "_":[ "this", "otherGateway", "x", "+", { "_":[ "this", "otherGateway", "spawnAtX" ] } ] }, "y":{ "_":[ "this", "otherGateway", "y", "+", { "_":[ "this", "otherGateway", "spawnAtY" ] } ] },
+                          "nextForce":1,
+                          "nextForceX":{ "_":[ "this", "forceX" ] },
+                          "nextForceY":{ "_":[ "this", "forceY" ] }
+                        }
+                      },
+                      {
+                        "when":{ "_":[ "this", "currentGateway", "isVertical", "isEqualTo", { "_":[ "this", "otherGateway", "isVertical" ] } ] },
+                        "execute":{
+                          "when":{ "_":[ "this", "currentGateway", "isRight", "isEqualTo", { "_":[ "this", "otherGateway", "isRight" ] } ] },
+                          "execute":{
+                            "when":{ "_":[ "this", "currentGateway", "isVertical" ] },
+                            "set":{ "nextForceY":{ "_":[ "this", "nextForceY", "*", -1 ] } },
+                            "elseExecute":{ "set":{ "nextForceX":{ "_":[ "this", "nextForceX", "*", -1 ] } } }
+                          }
+                        },
+                        "elseExecute":[
+                          { "set":{ "tmpForce":{ "_":[ "this", "nextForceX" ] } } },
+                          { "set":{ "nextForceX":{ "_":[ "this", "nextForceY" ] }, "nextForceY":{ "_":[ "this", "tmpForce" ] } } },
+                          {
+                            "when":{ "_":[ "this", "currentGateway", "isRotated", "isNotEqualTo", { "_":[ "this", "otherGateway", "isRotated" ] } ] },
+                            "set":{ "nextForceY":{ "_":[ "this", "nextForceY", "*", -1 ] } }
+                          },
+                          {
+                            "when":{ "_":[ "this", "currentGateway", "isRight", "isNotEqualTo", { "_":[ "this", "otherGateway", "isRight" ] } ] },
+                            "set":{ "nextForceX":{ "_":[ "this", "nextForceX", "*", -1 ] } }
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              { "type":"wall", "restitution":0 },
+              { "type":"onlytop", "restitution":0, "only":{ "top":1 } }
+            ],
+            "gravityX":0,
+            "gravityY":0.5,
+            "limitX":[ -9, 9 ],
+            "limitY":[ -9, 9 ]
+          }
+        }
+      ]
+    },
+    "button":{
+      "image":"sprites", "tileX":0, "tileY":48, "width":16, "height":16,
+      "zIndex":10,
+      "hitbox":{ "width":16, "height":3, "x":0, "y":13 },
+      "flagId":"button",
+      "lockedButton":0,
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":{
+            "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "buttonPusher" ] } ] },
+            "execute":[ { "set":{ "frame":1 } }, { "assign":1, "to":{ "_":[ "scene", "flags", { "_":[ "this", "flagId" ] } ] } } ],
+            "elseExecute":{
+              "when":{ "_":[ "this", "lockedButton", "not" ] },
+              "execute":[ { "set":{ "frame":0 } }, { "assign":0, "to":{ "_":[ "scene", "flags", { "_":[ "this", "flagId" ] } ] } } ]
+            }
+          }
+        }
+      }
+    },
+    "dialogue":{
+      "zIndex":1000,
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":{
+            "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "player" ] } ] },
+            "execute":[ { "as":{ "_":"scene" }, "set":{ "dialogueText":{ "_":[ "that", "dialogueText" ] } } }, { "_":[ "stencil", "codeDialogue" ] }, { "remove":1 } ]
+          }
+        }
+      }
+    },
+    "gatewayGunBullet":{
+      "type":"gatewayGunBullet",
+      "image":"sprites", "tileX":0, "tileY":24, "width":8, "height":8,
+      "zIndex":5,
+      "counter":0,
+      "gatewayNotOpened":1,
+      "states":{
+        "code":[
+          {
+            "name":"Execute",
+            "data":[ { "sum":30, "to":{ "_":[ "this", "angle" ] } }, { "when":{ "_":[ "this", "collidesWith", { "_":"scene" }, "not" ] }, "remove":1 } ]
+          },
+          {
+            "name":"Physics",
+            "data":{
+              "walls":{
+                "type":"gatewayGunBulletObstacle",
+                "execute":[
+                  { "set":{ "x":{ "_":[ "this", "x", "floor" ] }, "y":{ "_":[ "this", "y", "floor" ] } } },
+                  {
+                    "times":{ "_":[ "stencil", "gateways", "count" ] },
+                    "execute":{
+                      "when":{ "_":[ "this", "gatewayNotOpened" ] },
+                      "execute":[
+                        { "set":{ "currentGateway":{ "_":[ "stencil", "gateways", { "_":[ "this", "counter" ] } ] }, "mbeCounter":0, "mbwCounter":0, "openGateway":1 } },
+                        { "as":{ "_":"scene" }, "set":{ "colorGateway":{ "_":[ "that", "colorGateway" ] } } },
+                        {
+                          "times":{ "_":[ "this", "currentGateway", "mustBeWall", "count" ] },
+                          "execute":[
+                            {
+                              "when":{
+                                "_":[
+                                  "this",
+                                  "complexCollidesWith",
+                                  { "subject":{ "_":[ "object", "gatewayWall" ] }, "hitbox":{ "_":[ "this", "currentGateway", "mustBeWall", { "_":[ "this", "mbwCounter" ] } ] } },
+                                  "not"
+                                ]
+                              },
+                              "set":{ "openGateway":0 }
+                            },
+                            { "sum":1, "to":{ "_":[ "this", "mbwCounter" ] } }
+                          ]
+                        },
+                        { "when":{ "_":[ "this", "openGateway", "isEqualTo", 0 ] } },
+                        {
+                          "times":{ "_":[ "this", "currentGateway", "mustBeEmpty", "count" ] },
+                          "execute":[
+                            {
+                              "when":{
+                                "_":[
+                                  "this",
+                                  "complexCollidesWith",
+                                  { "subject":{ "_":[ "object", "obstaclesGateway" ] }, "hitbox":{ "_":[ "this", "currentGateway", "mustBeEmpty", { "_":[ "this", "mbeCounter" ] } ] } }
+                                ]
+                              },
+                              "set":{ "openGateway":0 }
+                            },
+                            { "sum":1, "to":{ "_":[ "this", "mbeCounter" ] } }
+                          ]
+                        },
+                        { "when":{ "_":[ "this", "openGateway", "isEqualTo", 0 ] } },
+                        {
+                          "when":{ "_":[ "this", "openGateway" ] },
+                          "execute":[
+                            {
+                              "as":{ "_":[ "objectTyped", "player" ] },
+                              "execute":{ "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "color":{ "_":[ "scene", "colorGateway" ] }, "html":"OPEN" } }
+                            },
+                            { "as":{ "_":[ "object", { "_":[ "this", "newGateway" ] } ] }, "remove":1 },
+                            { "set":{ "gatewayNotOpened":0 } },
+                            {
+                              "object":{
+                                "type":{ "_":[ "that", "newGateway" ] },
+                                "set":{ "_":[ "that", "currentGateway" ] },
+                                "x":{ "_":[ "that", "x", "+", { "_":[ "that", "currentGateway", "openAtX" ] } ] }, "y":{ "_":[ "that", "y", "+", { "_":[ "that", "currentGateway", "openAtY" ] } ] },
+                                "bgcolor":{ "_":[ "that", "colorGateway" ] },
+                                "otherGateway":{ "_":[ "that", "otherGateway" ] }
+                              }
+                            }
+                          ]
+                        },
+                        { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+                      ]
+                    }
+                  },
+                  {
+                    "when":{ "_":[ "this", "gatewayNotOpened" ] },
+                    "as":{ "_":[ "objectTyped", "player" ] },
+                    "execute":{ "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "color":{ "_":[ "scene", "colorGateway" ] }, "html":"BLOCK" } }
+                  },
+                  {
+                    "when":{ "_":[ "object", "gateway", "count", "isEqualTo", 2 ] },
+                    "as":{ "_":[ "object", "gateway" ] },
+                    "set":{ "type":"openedGateway", "animation":"open" },
+                    "elseExecute":{ "as":{ "_":[ "object", "gateway" ] }, "set":{ "removeType":"openedGateway", "animation":"closed" } }
+                  },
+                  { "_":[ "stencil", "removeWithSpark" ] }
+                ]
+              }
+            }
+          }
+        ]
+      }
+    },
+    "gateways":[
+      {
+        "type":[ "obstaclesGateway", "gateway" ],
+        "image":"sprites", "tileX":0, "tileY":20, "width":16, "height":4,
+        "hitbox":{ "width":1, "height":2, "x":8, "y":0 },
+        "animations":{ "closed":{ "frames":2, "speed":5, "loopTo":0 }, "open":{ "frames":2, "speed":0, "loopTo":0 } },
+        "isRight":1,
+        "isRotated":0,
+        "isVertical":1,
+        "mustBeEmpty":[ { "width":16, "height":16, "x":-4, "y":1 } ],
+        "mustBeWall":[ { "width":1, "height":1, "x":-4, "y":-2 }, { "width":1, "height":1, "x":10, "y":-2 } ],
+        "openAtX":-4,
+        "openAtY":0,
+        "spawnAtX":0,
+        "spawnAtY":0,
+        "zindex":15
+      },
+      {
+        "type":[ "obstaclesGateway", "gateway" ],
+        "image":"sprites", "tileX":0, "tileY":16, "width":16, "height":4,
+        "hitbox":{ "width":1, "height":2, "x":8, "y":2 },
+        "bgcolor":"#f00",
+        "animations":{ "closed":{ "frames":2, "speed":5, "loopTo":0 }, "open":{ "frames":2, "speed":0, "loopTo":0 } },
+        "isRight":0,
+        "isRotated":1,
+        "isVertical":1,
+        "mustBeEmpty":[ { "width":16, "height":16, "x":-4, "y":-9 } ],
+        "mustBeWall":[ { "width":1, "height":1, "x":-4, "y":9 }, { "width":1, "height":1, "x":10, "y":9 } ],
+        "openAtX":-4,
+        "openAtY":4,
+        "spawnAtX":0,
+        "spawnAtY":-16,
+        "zindex":15
+      },
+      {
+        "type":[ "obstaclesGateway", "gateway" ],
+        "image":"sprites", "tileX":40, "tileY":16, "width":4, "height":16,
+        "hitbox":{ "width":2, "height":1, "x":0, "y":8 },
+        "bgcolor":"#0f0",
+        "animations":{ "closed":{ "frames":2, "speed":5, "loopTo":0 }, "open":{ "frames":2, "speed":0, "loopTo":0 } },
+        "isRight":0,
+        "isRotated":1,
+        "isVertical":0,
+        "mustBeEmpty":[ { "width":16, "height":16, "x":1, "y":-4 } ],
+        "mustBeWall":[ { "width":1, "height":1, "x":-2, "y":-4 }, { "width":1, "height":1, "x":-2, "y":10 } ],
+        "openAtX":0,
+        "openAtY":-4,
+        "spawnAtX":0,
+        "spawnAtY":0,
+        "zindex":15
+      },
+      {
+        "type":[ "obstaclesGateway", "gateway" ],
+        "image":"sprites", "tileX":32, "tileY":16, "width":4, "height":16,
+        "hitbox":{ "width":2, "height":1, "x":2, "y":8 },
+        "bgcolor":"#0f0",
+        "animations":{ "closed":{ "frames":2, "speed":5, "loopTo":0 }, "open":{ "frames":2, "speed":0, "loopTo":0 } },
+        "isRight":1,
+        "isRotated":0,
+        "isVertical":0,
+        "mustBeEmpty":[ { "width":16, "height":16, "x":-9, "y":-4 } ],
+        "mustBeWall":[ { "width":1, "height":1, "x":9, "y":-4 }, { "width":1, "height":1, "x":9, "y":10 } ],
+        "openAtX":4,
+        "openAtY":-4,
+        "spawnAtX":-14,
+        "spawnAtY":0,
+        "zindex":15
+      }
+    ],
+    "movingPlatform":{
+      "image":"sprites", "tileX":80, "tileY":48, "width":16, "height":16,
+      "zIndex":10,
+      "animations":{ "off":{ "frames":3, "speed":1 }, "on":{ "frames":[ 2, 1, 0 ], "speed":1 } },
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":{
+            "when":{ "_":[ "this", "pattern", { "_":[ "scene", "globalTimer", "%", { "_":[ "this", "pattern", "count" ] } ] } ] },
+            "set":{ "type":"onlytop", "animation":"on" },
+            "elseExecute":{ "set":{ "removeType":"onlytop", "animation":"off" } }
+          }
+        }
+      }
+    },
+    "platformerAnimation":{
+      "code":{
+        "name":"Execute",
+        "data":[
+          { "when":{ "_":[ "this", "forceX", "isLessThan", 0 ] }, "set":{ "flipX":1 } },
+          { "when":{ "_":[ "this", "forceX", "isGreaterThan", 0 ] }, "set":{ "flipX":0 } },
+          { "when":{ "_":[ "this", "forceY", "isLessThan", 0 ] }, "set":{ "animation":"jump" } },
+          { "when":{ "_":[ "this", "forceY", "isGreaterThan", 0 ] }, "set":{ "animation":"fall" } },
+          {
+            "when":{ "_":[ "this", "forceY", "isEqualTo", 0 ] },
+            "execute":{ "when":{ "_":[ "this", "forceX", "isEqualTo", 0 ] }, "set":{ "animation":"still" }, "elseExecute":{ "set":{ "animation":"walk" } } }
+          }
+        ]
+      }
+    },
+    "!":{
+      "type":[ "buttonPusher", "player" ],
+      "follow":1,
+      "image":"sprites",
+      "zIndex":20,
+      "hitbox":{ "width":12, "height":14, "x":2, "y":2 },
+      "animations":{ "fall":{ "frame":2 }, "jump":{ "frame":1 }, "still":{ "frame":0 }, "walk":{ "frame":1, "frames":2, "loopTo":0 } },
+      "animation":"still",
+      "weight":0.4,
+      "states":[
+        {
+          "like":[ { "_":[ "stencil", "platformerAnimation" ] }, { "_":[ "stencil", "behaviourPhysics" ] } ],
+          "code":{
+            "name":"Execute",
+            "data":[
+              {
+                "when":{
+                  "_":[
+                    { "_":[ "keyA", "isReleased", "or", { "_":[ "keyB", "isReleased" ] } ] },
+                    "and",
+                    { "_":[ "objectTyped", "gatewayGunBullet", "not" ] },
+                    "and",
+                    { "_":[ "this", "bulletForceX", "or", { "_":[ "this", "bulletForceY" ] } ] }
+                  ]
+                },
+                "execute":{
+                  "object":{
+                    "set":{ "_":[ "stencil", "gatewayGunBullet" ] },
+                    "x":{ "_":[ "that", "x", "+", 4 ] }, "y":{ "_":[ "that", "y", "+", 4 ] }, "frame":{ "_":[ "that", "bulletFrame" ] },
+                    "forceX":{ "_":[ "that", "bulletForceX" ] }, "forceY":{ "_":[ "that", "bulletForceY" ] },
+                    "colorGateway":{ "_":[ "that", "colorGateway" ] },
+                    "newGateway":{ "_":[ "that", "newGateway" ] },
+                    "obstaclesGateway":{ "_":[ "that", "obstaclesGateway" ] },
+                    "otherGateway":{ "_":[ "that", "otherGateway" ] }
+                  }
+                }
+              },
+              {
+                "when":{ "_":[ "keyA", "isDown" ] },
+                "set":{ "bulletFrame":1, "colorGateway":"#0ff", "newGateway":"blue", "otherGateway":"red" },
+                "elseExecute":{
+                  "when":{ "_":[ "keyB", "isDown" ] },
+                  "set":{ "bulletFrame":0, "colorGateway":"#f00", "newGateway":"red", "otherGateway":"blue" },
+                  "elseExecute":{ "set":{ "newGateway":0 } }
+                }
+              },
+              {
+                "when":{ "_":[ "keyA", "isDown", "and", { "_":[ "keyB", "isDown" ] }, "and", { "_":[ "objectTyped", "gateway" ] } ] },
+                "execute":[
+                  { "as":{ "_":[ "object", "gateway" ] }, "execute":{ "_":[ "stencil", "removeWithSpark" ] } },
+                  { "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "html":"CLEAR" } }
+                ]
+              },
+              { "set":{ "moved":0 } },
+              {
+                "when":{ "_":[ "this", "newGateway" ] },
+                "execute":[
+                  {
+                    "when":{ "_":[ "keyUp", "isDown" ] },
+                    "set":{ "bulletForceY":-6 },
+                    "elseExecute":{ "when":{ "_":[ "keyDown", "isDown" ] }, "set":{ "bulletForceY":6 }, "elseExecute":{ "set":{ "bulletForceY":0 } } }
+                  },
+                  {
+                    "when":{ "_":[ "keyLeft", "isDown" ] },
+                    "set":{ "bulletForceX":-6 },
+                    "elseExecute":{ "when":{ "_":[ "keyRight", "isDown" ] }, "set":{ "bulletForceX":6 }, "elseExecute":{ "set":{ "bulletForceX":0 } } }
+                  }
+                ],
+                "elseExecute":[
+                  { "when":{ "_":[ "keyUp", "isHit", "and", { "_":[ "this", "touchDown" ] } ] }, "set":{ "forceY":-5 } },
+                  {
+                    "when":{ "_":[ "keyRight", "isDown", "and", { "_":[ "this", "forceX", "isLessThan", 2 ] } ] },
+                    "sum":0.2,
+                    "to":{ "_":[ "this", "forceX" ] },
+                    "set":{ "moved":1 },
+                    "elseExecute":{
+                      "when":{ "_":[ "keyLeft", "isDown", "and", { "_":[ "this", "forceX", "isGreaterThan", -2 ] } ] },
+                      "subtract":0.2,
+                      "to":{ "_":[ "this", "forceX" ] },
+                      "set":{ "moved":1 }
+                    }
+                  }
+                ]
+              },
+              { "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "killer" ] } ] }, "set":{ "state":"dead" } },
+              { "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "exit" ] } ] }, "set":{ "state":"exit" } }
+            ]
+          }
+        },
+        {
+          "name":"dead",
+          "execute":{ "as":{ "_":[ "object", "gateway" ] }, "remove":1 },
+          "code":{
+            "name":"Sequence",
+            "data":[ { "object":{ "_":[ "stencil", "spark" ] } }, { "set":{ "visible":0 } }, { "wait":25 }, { "_":[ "stencil", "codeDie" ] } ]
+          }
+        },
+        {
+          "name":"exit",
+          "like":[ { "_":[ "stencil", "platformerAnimation" ] }, { "_":[ "stencil", "behaviourPhysics" ] } ],
+          "execute":[ { "set":{ "forceX":0 } }, { "as":{ "_":[ "object", "gateway" ] }, "remove":1 } ],
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "wait":1, "loop":1, "until":{ "_":[ "this", "touchDown" ] } },
+              { "wait":25 },
+              { "set":{ "forceY":-5 } },
+              { "wait":1, "loop":1, "until":{ "_":[ "this", "touchDown" ] } },
+              { "wait":25 },
+              { "set":{ "visible":0 } },
+              { "as":{ "_":[ "object", "door" ] }, "set":{ "flagId":"everFalse" } },
+              { "wait":25 },
+              {
+                "wait":1, "loop":1,
+                "until":{ "_":[ { "_":[ "keyA", "isHit" ] }, "or", { "_":[ "keyB", "isHit" ] }, "or", { "_":[ "objectTyped", "comment", "not" ] } ] }
+              },
+              { "_":[ "stencil", "codeNextStage" ] }
+            ]
+          }
+        }
+      ]
+    },
+    "#":{ "type":[ "wall", "gatewayWall", "obstaclesGateway", "gatewayGunBulletObstacle" ], "image":"sprites", "tileX":0, "tileY":32 },
+    ".":{ "image":"sprites", "tileX":208, "tileY":32, "width":16, "height":16 },
+    "0":{ "image":"sprites", "tileX":0, "tileY":64, "width":16, "height":16 },
+    "1":{ "image":"sprites", "tileX":16, "tileY":64, "width":16, "height":16 },
+    "2":{ "image":"sprites", "tileX":32, "tileY":64, "width":16, "height":16 },
+    "3":{ "image":"sprites", "tileX":48, "tileY":64, "width":16, "height":16 },
+    "4":{ "image":"sprites", "tileX":64, "tileY":64, "width":16, "height":16 },
+    "5":{ "image":"sprites", "tileX":80, "tileY":64, "width":16, "height":16 },
+    "6":{ "image":"sprites", "tileX":96, "tileY":64, "width":16, "height":16 },
+    "7":{ "image":"sprites", "tileX":112, "tileY":64, "width":16, "height":16 },
+    "8":{ "image":"sprites", "tileX":128, "tileY":64, "width":16, "height":16 },
+    "9":{ "image":"sprites", "tileX":144, "tileY":64, "width":16, "height":16 },
+    "A":{
+      "type":"door",
+      "image":"sprites", "tileX":32, "tileY":48, "width":16, "height":16,
+      "zIndex":10,
+      "hitbox":{ "width":4, "height":4, "x":6, "y":12 },
+      "animations":{ "close":{ "frames":[ 2, 1, 0 ] }, "open":{ "frames":3 } },
+      "flagId":"everTrue",
+      "states":[
+        {
+          "execute":{ "set":{ "removeType":"exit", "animation":"close" } },
+          "code":{ "name":"Execute", "data":{ "when":{ "_":[ "scene", "flags", { "_":[ "this", "flagId" ] } ] }, "set":{ "state":"open" } } }
+        },
+        {
+          "name":"open",
+          "execute":{ "set":{ "type":"exit", "animation":"open" } },
+          "code":{ "name":"Execute", "data":{ "when":{ "_":[ "scene", "flags", { "_":[ "this", "flagId" ] }, "not" ] }, "set":{ "state":"default" } } }
+        }
+      ]
+    },
+    "C":{
+      "type":[ "wall", "buttonPusher" ],
+      "image":"sprites", "tileX":32, "tileY":32,
+      "zIndex":10,
+      "hitbox":{ "width":12, "height":14, "x":2, "y":2 },
+      "weight":1,
+      "states":{ "like":{ "_":[ "stencil", "behaviourPhysics" ] }, "code":{} }
+    },
+    "R":{ "type":[ "wall", "obstaclesGateway", "gatewayGunBulletObstacle" ], "image":"sprites", "tileX":176, "tileY":32 },
+    "S":{ "image":"sprites", "tileX":192, "tileY":32, "width":16, "height":16 },
+    "T":{ "type":"onlytop", "image":"sprites", "tileX":128, "tileY":32 },
+    "W":{ "type":[ "wall", "obstaclesGateway", "gatewayGunBulletObstacle" ], "image":"sprites", "tileX":16, "tileY":32 },
+    "Z":{ "type":[ "obstaclesGateway", "gatewayGunBulletObstacle" ], "image":"sprites", "tileX":112, "tileY":32 },
+    "a":{ "image":"sprites", "tileX":160, "tileY":64, "width":16, "height":16 },
+    "b":{ "image":"sprites", "tileX":176, "tileY":64, "width":16, "height":16 },
+    "-":{
+      "set":{ "_":[ "stencil", "behaviourCheckFlag" ] },
+      "image":"sprites", "tileX":64, "tileY":32, "width":16, "height":16,
+      "hitbox":{ "width":16, "height":6, "x":0, "y":5 },
+      "offSet":{ "removeType":[ "wall", "obstaclesGateway" ], "visible":0 },
+      "onSet":{ "type":[ "wall", "obstaclesGateway" ], "visible":1 }
+    },
+    "=":{
+      "set":{ "_":[ "stencil", "behaviourCheckFlag" ] },
+      "image":"sprites", "tileX":96, "tileY":32, "width":16, "height":16,
+      "hitbox":{ "width":16, "height":6, "x":0, "y":5 },
+      "offSet":{ "removeType":"killer", "visible":0 },
+      "onSet":{ "type":"killer", "visible":1 }
+    },
+    "O":{
+      "set":{ "_":[ "stencil", "behaviourCheckFlag" ] },
+      "image":"sprites", "tileX":144, "tileY":32, "width":16, "height":16,
+      "offSet":{ "removeType":[ "wall", "obstaclesGateway", "gatewayGunBulletObstacle" ], "frame":1 },
+      "onSet":{ "type":[ "wall", "obstaclesGateway", "gatewayGunBulletObstacle" ], "frame":0 }
+    },
+    "i":{
+      "set":{ "_":[ "stencil", "behaviourCheckFlag" ] },
+      "image":"sprites", "tileX":48, "tileY":32, "width":16, "height":16,
+      "hitbox":{ "width":6, "height":16, "x":5, "y":0 },
+      "offSet":{ "removeType":[ "wall", "obstaclesGateway" ], "visible":0 },
+      "onSet":{ "type":[ "wall", "obstaclesGateway" ], "visible":1 }
+    },
+    "|":{
+      "set":{ "_":[ "stencil", "behaviourCheckFlag" ] },
+      "image":"sprites", "tileX":80, "tileY":32, "width":16, "height":16,
+      "hitbox":{ "width":6, "height":16, "x":5, "y":0 },
+      "offSet":{ "removeType":"killer", "visible":0 },
+      "onSet":{ "type":"killer", "visible":1 }
+    },
+    "c":{ "image":"sprites", "tileX":192, "tileY":64, "width":16, "height":16 },
+    "d":{ "image":"sprites", "tileX":208, "tileY":64, "width":16, "height":16 },
+    "e":{ "image":"sprites", "tileX":224, "tileY":64, "width":16, "height":16 },
+    "f":{ "image":"sprites", "tileX":240, "tileY":64, "width":16, "height":16 },
+    "g":{ "image":"sprites", "tileX":256, "tileY":64, "width":16, "height":16 },
+    "j":{ "image":"sprites", "tileX":112, "tileY":80, "width":16, "height":16 },
+    "k":{ "image":"sprites", "tileX":128, "tileY":80, "width":16, "height":16 },
+    "l":{ "image":"sprites", "tileX":96, "tileY":80, "width":16, "height":16 },
+    "m":{ "image":"sprites", "tileX":144, "tileY":80, "width":16, "height":16 },
+    "n":{ "image":"sprites", "tileX":160, "tileY":80, "width":16, "height":16 },
+    "o":{ "image":"sprites", "tileX":176, "tileY":80, "width":16, "height":16 },
+    "p":{ "image":"sprites", "tileX":192, "tileY":80, "width":16, "height":16 },
+    "q":{ "image":"sprites", "tileX":208, "tileY":80, "width":16, "height":16 },
+    "w":{ "image":"sprites", "tileX":80, "tileY":80, "width":16, "height":16 },
+    "x":{ "image":"sprites", "tileX":0, "tileY":80, "width":16, "height":16 },
+    "y":{
+      "image":"sprites", "tileX":16, "tileY":80, "width":16, "height":16,
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":{
+            "when":{ "_":[ "this", "x", "-", { "_":[ "objectTyped", "player", "x" ] }, "isGreaterThan", 20 ] },
+            "set":{ "frame":0 },
+            "elseExecute":{
+              "when":{ "_":[ "this", "x", "-", { "_":[ "objectTyped", "player", "x" ] }, "isLessThan", -20 ] },
+              "set":{ "frame":2 },
+              "elseExecute":{ "set":{ "frame":1 } }
+            }
+          }
+        }
+      }
+    },
+    "z":{ "image":"sprites", "tileX":64, "tileY":80, "width":16, "height":16 }
+  },
+  "execute":{},
+  "scenes":{
+    "intro":{
+      "object":[
+        { "image":"title", "width":231, "height":35, "x":12, "y":40 },
+        {
+          "box":"label", "width":256,
+          "zIndex":5, "x":0, "y":130,
+          "color":"#fff",
+          "font":"spectrum", "fontSize":20, "lineHeight":20, "outline":"#000", "textAlign":"center", "html":"PRESS START",
+          "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "visible":0 }, "wait":10 }, { "set":{ "visible":1 }, "wait":10, "loopTo":0 } ] } }
+        },
+        {
+          "image":"title", "tileX":30, "tileY":36, "width":36, "height":4,
+          "x":40, "y":0,
+          "flipY":1,
+          "bgcolor":"#f00",
+          "states":{ "code":{ "name":"Execute", "data":{ "set":{ "tileX":{ "_":[ "randomNumber", [ 36, 50 ] ] } } } } }
+        },
+        {
+          "image":"title", "tileX":30, "tileY":36, "width":36, "height":4,
+          "x":160, "y":188,
+          "bgcolor":"#0ff",
+          "states":{ "code":{ "name":"Execute", "data":{ "set":{ "tileX":{ "_":[ "randomNumber", [ 36, 50 ] ] } } } } }
+        },
+        {
+          "image":"title", "tileY":35, "width":30, "height":36,
+          "zIndex":10, "x":40, "y":-40,
+          "forceY":20,
+          "states":{
+            "code":[
+              { "name":"Physics", "data":{ "when":{ "_":[ "this", "y", "isLessThan", 40 ] }, "gravityY":-1 } },
+              {
+                "name":"Physics",
+                "data":{ "when":{ "_":[ "this", "y", "isGreaterThan", 40 ] }, "walls":{ "area":{ "width":256, "height":200, "x":0, "y":40 } }, "gravityY":-1 }
+              }
+            ]
+          }
+        },
+        {
+          "image":"title", "tileY":35, "width":30, "height":36,
+          "zIndex":10, "x":160, "y":192,
+          "forceY":-22,
+          "states":{
+            "code":[
+              { "name":"Physics", "data":{ "when":{ "_":[ "this", "y", "isGreaterThan", 40 ] }, "gravityY":1 } },
+              {
+                "name":"Physics",
+                "data":{ "when":{ "_":[ "this", "y", "isLessThan", 40 ] }, "walls":{ "area":{ "width":256, "height":176, "x":0, "y":-100 } }, "gravityY":1 }
+              }
+            ]
+          }
+        }
+      ],
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":{
+            "when":{ "_":[ "keyA", "isHit" ] },
+            "execute":[ { "as":{ "_":"variable" }, "set":{ "stage":1 } }, { "gotoScene":{ "_":[ "variable", "stage" ] } } ]
+          }
+        }
+      }
+    },
+    "ending":{
+      "object":{
+        "width":256, "height":1000,
+        "x":0, "y":192,
+        "font":"spectrum", "textAlign":"center", "html":"GATEWAYS<br>(c) 2016<br>A tribute to Portal.<br><br><br>Graphics by:<br>KesieV Norimaki<br><br><br>Story by:<br>KesieV Norimaki<br><br><br>Code by:<br>KesieV Norimaki<br><br><br>Big thanks to:<br>Andrea \"Dry\" D'Iapico<br>Arduini Umberto<br>Leonardo Ballari<br>Andrea Lucente<br>Il Marsicano<br>Bianca<br>Stefano \"Il Kusagari\" Fioretto<br>Romolo Camplani<br>All Akihabara age friends<br><br><br><br><br>The job is the life.",
+        "forceY":-0.5,
+        "states":{ "code":{ "name":"Physics" } }
+      },
+      "states":{
+        "code":[
+          { "name":"Sequence", "data":[ { "wait":1670 }, { "gotoScene":"intro" } ] },
+          { "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"intro" } }
+        ]
+      }
+    }
+  }
+}
