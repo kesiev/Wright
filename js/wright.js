@@ -420,10 +420,7 @@ function Box(parent, type, sub, statemanager) {
 				var onscreen=obj.onscreen;
 				if (obj===this.gridreference) {
 					onscreen=this.isOnScreen(obj);
-					if (onscreen||obj.onscreen) {
-						this.scheduleObjectChange(obj);
-						this.scheduleObjectChange(obj,1);
-					}
+					if (onscreen||obj.onscreen)  this.scheduleObjectChange(obj,1);
 					// Recalculate all translations except into gridreference.
 					// - Cancel previous translation - skip them is unconvenient.
 					// - Outer rectangles don't need redraw since are still at their place.
@@ -539,9 +536,9 @@ function Box(parent, type, sub, statemanager) {
 		};
 		// SCREEN - Render management
 		box.changes = {};
-		box.scheduleObjectChange = function(obj,whenvisible) {
-			if (!whenvisible||(this.isOnScreen(obj)!=obj.onscreen)) this.changes[obj.uid] = obj;
-			if (whenvisible)
+		box.scheduleObjectChange = function(obj,recursive) {
+			if (this.isOnScreen(obj)||obj.onscreen) this.changes[obj.uid] = obj;
+			if (recursive)
 				for (var i=0;i<obj.childs.length;i++)
 					if (!obj.childs[i].removed) this.scheduleObjectChange(obj.childs[i],1);
 		};
@@ -3127,8 +3124,7 @@ function Wright(gameId,container,mods) {
 	var Monitor={
 		_complexCollision:[],
 		initialize:function(ob){
-			/* NEEDS SMOOTHIE
-			if(!this.initialized) {
+			if(!this.initialized && window.SmoothieChart) {
 				this.initialized=1;
 				var smc=document.createElement("canvas");
 				smc.width=400;
@@ -3139,7 +3135,6 @@ function Wright(gameId,container,mods) {
 				this.smoothieline = new TimeSeries();
 				this.smoothie.addTimeSeries(this.smoothieline);
 			}
-			*/
 			if (this.canvas) this.canvas.parentNode.removeChild(this.canvas);
 			this._complexCollision=[];
 			this.canvas=document.createElement("canvas");
@@ -3207,29 +3202,33 @@ function Wright(gameId,container,mods) {
 			}
 		},
 		onProcessFrame:function(ob){
-			//this.smoothieline.append(new Date().getTime(), ob.stats.garbageCount);
-			//this.smoothieline.append(new Date().getTime(), ob.stats.calculatedRects);
-			//this.smoothieline.append(new Date().getTime(), ob.stats.frameProcessTime/40);
-			//this.smoothieline.append(new Date().getTime(), ob.stats.overload);
-			//this.smoothieline.append(new Date().getTime(), ob.stats.elementsCount);
-			//this.smoothieline.append(new Date().getTime(), ob.stats.uidsCount);
-			//this.smoothieline.append(new Date().getTime(), ob.stats.typesCount);
-			//this.smoothieline.append(new Date().getTime(), ob.stats.movedCells);
-			//this.smoothieline.append(new Date().getTime(), ob.stats.cellsCount);
-			//this.smoothieline.append(new Date().getTime(), ob.stats.cellsUsage);
-			//this.smoothieline.append(new Date().getTime(), ob.stats.iteratedObjects);
-			//this.smoothieline.append(new Date().getTime(), ob.stats.runningCount);
-			//this.smoothieline.append(new Date().getTime(), ob.stats.load);
-			//this.smoothieline.append(new Date().getTime(), ob.stats.objectWastedCount);
-			//this.smoothieline.append(new Date().getTime(), ob.stats.listUsage);
+			if (this.smoothie) {
+				//this.smoothieline.append(new Date().getTime(), ob.stats.garbageCount);
+				//this.smoothieline.append(new Date().getTime(), ob.stats.calculatedRects);
+				//this.smoothieline.append(new Date().getTime(), ob.stats.frameProcessTime/40);
+				//this.smoothieline.append(new Date().getTime(), ob.stats.overload);
+				//this.smoothieline.append(new Date().getTime(), ob.stats.elementsCount);
+				//this.smoothieline.append(new Date().getTime(), ob.stats.uidsCount);
+				//this.smoothieline.append(new Date().getTime(), ob.stats.typesCount);
+				//this.smoothieline.append(new Date().getTime(), ob.stats.movedCells);
+				//this.smoothieline.append(new Date().getTime(), ob.stats.cellsCount);
+				//this.smoothieline.append(new Date().getTime(), ob.stats.cellsUsage);
+				//this.smoothieline.append(new Date().getTime(), ob.stats.iteratedObjects);
+				//this.smoothieline.append(new Date().getTime(), ob.stats.runningCount);
+				//this.smoothieline.append(new Date().getTime(), ob.stats.load);
+				//this.smoothieline.append(new Date().getTime(), ob.stats.objectWastedCount);
+				//this.smoothieline.append(new Date().getTime(), ob.stats.listUsage);
+			}
 			this.debugRect(ob,true);
 		},
 		onApplyChanges:function(ob){
-			//this.smoothieline.append(new Date().getTime(), ob.stats.frameRenderTime);
-			//this.smoothieline.append(new Date().getTime(), ob.stats.changesCount);
-			//this.smoothieline.append(new Date().getTime(), ob.stats.objectChangedCount);
-			//this.smoothieline.append(new Date().getTime(),game.node.getElementsByTagName("div").length);
-			//this.smoothieline.append(new Date().getTime(),ob.stats.nodesOnScreen);
+			if (this.smoothie) {
+				//this.smoothieline.append(new Date().getTime(), ob.stats.frameRenderTime);
+				//this.smoothieline.append(new Date().getTime(), ob.stats.changesCount);
+				this.smoothieline.append(new Date().getTime(), ob.stats.objectChangedCount);
+				//this.smoothieline.append(new Date().getTime(),game.node.getElementsByTagName("div").length);
+				//this.smoothieline.append(new Date().getTime(),ob.stats.nodesOnScreen);
+			}
 			this.debugRect(ob);
 		}
 	};
