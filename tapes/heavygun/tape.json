@@ -1,0 +1,789 @@
+{
+  "name":"Heavy Gun",
+  "author":"KesieV",
+  "year":2016,
+  "genre":"Light Gun",
+  "description":"Light guns were the quite popular gun-shaped videogame controllers that accompanied gamers from the 8-bit and arcade age till the Playstation age. From cults titles like Nintendo Duck Hunt (1984) and the Namco Time Crisis (1995) passing through sightly more obscure but very innovative games like Sega Rescue Mission (1988), light gun based games had a very prestigious past and probably for a reason. In light gun videogames, the player and its digital avatar are using the same object in the very same way, offering an unprecedented immersive experience and breaking the fourth wall for the entire experience: the player is truly into the game. But what I've always found equally fun about the whole light gun affair is how these things worked. Some people think that some laser is fired by the gun to the TV hitting the target, but this behaviour, hinted by the shape of the controller, is wrong and the true is the whole opposite. Long story short, a first generation of guns, in which we can found our beloved Nintendo Zapper, used a diode for reading if the pointed part of the TV screen is white or not. Target were sequentially replaced with white boxes for a fraction of second and then the diode is tested, so the game knows which target was hit. Everything happens in a fraction of second, so all we see is a black screen with some white boxes for a very short while: the game uses humans slow persistence of vision in order to give them the illusion of shooting something. A second and more refined one was based on how cathode tube TVs works. Images are drawn by a single electron beam moving sequentially on the rows of the screen at very fast speed and hitting a phosphor layer which gives it a color: due to the slow persistence of vision of humans we talked about before, people just see a whole colored image instead of a single moving dot. 2nd generation light guns, when the trigger was pulled, calculates how long it takes this electron beam to excite the phosphor at the location at which the gun is pointed and, together with the screen refresh rate, the game understand how the gun was pointed. No more black screens and improved precision, voilat! This technique of drawing on the screen has been replaced in modern displays, resulting in more clear and precise images - but making these light guns useless. But is fascinating how something considered as a defect can be cleverly used as a great feature. Is not so different from computer hacking and, hey, can we try to learn something from that, right? Learning from errors and being aware of our defects is key and we heard this lesson over and over again. But we are humans - clever and imperfect. So, while we try to find out how to fix all these 'imperfections' on ourselves, why don't we find out a good use for them? Meanwhile, inspired by these games and the great Taito game Operation Wolf (1984) (which used another type of gun but... forget that.) I've added mouse/touch screen support to the Wright! engine, so... Plot! Well done, soldier! You managed to steal important intel files behind the enemies lines... now is the time to bring them back! Escape from the military base and defend yourself with your trusty gun! Use your POINTER (i.e. your mouse) for moving the reticle around the screen and the TRIGGER (i.e. mouse left button or touch the screen) for firing. Fire at ammo box for collecting them and try to survive as much as you can!",
+  "screenshots":[ "heavygun-1.png", "heavygun-2.png" ],
+  "hardware":{
+    "width":256,
+    "height":192,
+    "texture":"scanlines",
+    "usePointer":true
+  },
+  "cheats":{
+    "unlimitedAmmo":"Unlimited ammo (no hi-score, sorry!)",
+    "unlimitedEnergy":"Unlimited energy (no hi-score, sorry!)"
+  },
+  "resources":{
+    "hud":"hud.png",
+    "sprites":"sprites.png",
+    "stage":"stage.png",
+    "title":"title.png",
+    "defaultsprites":"../default/sprites.png",
+    "scanlines":"../default/scanlines.png"
+  },
+  "stencils":{
+    "codeAddReticle":{
+      "object":{
+        "image":"sprites", "width":16, "height":16,
+        "zIndex":1000,
+        "states":{ "code":{ "name":"Execute", "data":{ "set":{ "x":{ "_":[ "pointer", "x", "-", 8 ] }, "y":{ "_":[ "pointer", "y", "-", 8 ] } } } } }
+      },
+      "into":{ "_":"scenehud" }
+    },
+    "codeCheckHiscore":{
+      "when":{ "_":[ "cheat", "unlimitedEnergy", "not", "and", { "_":[ "cheat", "unlimitedAmmo", "not" ] } ] },
+      "execute":{
+        "when":{ "_":[ "scene", "score", "isGreaterThan", { "_":[ "variable", "hiscore" ] } ] },
+        "object":{
+          "type":"message",
+          "box":"label", "width":184, "height":30,
+          "zIndex":10, "x":0, "y":162,
+          "color":"#ff0",
+          "font":"spectrum", "fontSize":25, "lineHeight":30, "textAlign":"center", "html":"NEW HIGH SCORE!"
+        },
+        "as":[ { "_":"storage" }, { "_":"variable" } ],
+        "into":{ "_":"scenehud" },
+        "set":{ "hiscore":{ "_":[ "scene", "score" ] } }
+      }
+    },
+    "codeHandleCounters":[
+      { "when":{ "_":[ "cheat", "unlimitedEnergy" ] }, "as":{ "_":"scene" }, "set":{ "damage":0 } },
+      { "when":{ "_":[ "scene", "damage", "isGreaterThan", 25 ] }, "as":{ "_":"scene" }, "set":{ "damage":25 } },
+      { "when":{ "_":[ "scene", "soldiers", "isLessThan", 0 ] }, "as":{ "_":"scene" }, "set":{ "soldiers":0 } },
+      { "when":{ "_":[ "scene", "armored", "isLessThan", 0 ] }, "as":{ "_":"scene" }, "set":{ "armored":0 } },
+      { "when":{ "_":[ "scene", "helicopters", "isLessThan", 0 ] }, "as":{ "_":"scene" }, "set":{ "helicopters":0 } },
+      {
+        "when":{ "_":[ "scene", "bulletsDebt", "isGreaterThan", 20 ] },
+        "execute":[ { "sum":1, "to":{ "_":[ "scene", "roundsDebt" ] } }, { "as":{ "_":"scene" }, "set":{ "bulletsDebt":0 } } ]
+      }
+    ],
+    "spark":{
+      "image":"defaultsprites", "tileX":64, "tileY":144, "width":16, "height":16,
+      "zIndex":10000, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "animations":{ "spark":{ "frames":4, "speed":0 } },
+      "animation":"spark",
+      "states":{ "code":{ "name":"Sequence", "data":[ { "wait":4 }, { "remove":1 } ] } }
+    },
+    "removeWithCloud":[
+      {
+        "times":20,
+        "object":{ "_":[ "stencil", "smoke" ] },
+        "execute":[
+          { "sum":{ "_":[ "randomNumber", [ { "_":[ "this", "width", "/", -2 ] }, { "_":[ "this", "width", "/", 2 ] } ] ] }, "to":{ "_":[ "that", "x" ] } },
+          { "sum":{ "_":[ "randomNumber", [ { "_":[ "this", "height", "/", -2 ] }, { "_":[ "this", "height", "/", 2 ] } ] ] }, "to":{ "_":[ "that", "y" ] } }
+        ]
+      },
+      { "remove":1 }
+    ],
+    "modelPopupLabel":{
+      "width":100, "height":10,
+      "zIndex":10000, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "that", "y", "-", 5 ] },
+      "color":"#fff",
+      "font":"spectrum", "lineHeight":12, "outline":"#000", "textAlign":"center",
+      "speed":0.5,
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[ { "subtract":{ "_":[ "this", "speed" ] }, "to":{ "_":[ "this", "y" ] }, "wait":1, "loop":1, "cycles":15 }, { "remove":1 } ]
+        }
+      }
+    },
+    "stagepanel":{
+      "image":"stage", "width":96, "height":192,
+      "zIndex":1, "x":-97, "y":0,
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[
+            { "sum":1, "to":{ "_":[ "this", "x" ] }, "wait":1, "loop":1, "until":{ "_":[ "this", "x", "isGreaterThan", 288 ] } },
+            { "set":{ "x":-95 }, "loopTo":0 }
+          ]
+        }
+      }
+    },
+    "playerBullet":{
+      "image":"defaultsprites", "tileX":96, "tileY":104, "width":8, "height":8,
+      "zIndex":11000,
+      "animations":{ "idle":{ "frames":2, "speed":1 } },
+      "animation":"idle",
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[
+            {
+              "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "foe" ] }, "sortBy":"zIndex" } ] },
+              "as":{ "_":"that" },
+              "executeAction":"hit"
+            },
+            { "wait":3 },
+            { "remove":1 }
+          ]
+        }
+      }
+    },
+    "armored":{
+      "type":"armored",
+      "set":{ "_":[ "stencil", "behaviourFoe" ] },
+      "image":"sprites", "tileY":192, "width":75, "height":45,
+      "zIndex":18, "y":45,
+      "animations":{ "still":{ "frames":2, "loopTo":0 } },
+      "animation":"still",
+      "health":8,
+      "side":{ "_":[ "randomValue", [ -2, 2 ] ] },
+      "states":[
+        {
+          "execute":{ "when":{ "_":[ "this", "side", "isGreaterThan", 0 ] }, "set":{ "x":-75 }, "elseExecute":{ "set":{ "x":184, "flipX":1 } } },
+          "code":[
+            {
+              "name":"Sequence",
+              "data":[
+                {
+                  "sum":{ "_":[ "this", "side" ] },
+                  "to":{ "_":[ "this", "x" ] },
+                  "wait":1, "loop":1,
+                  "until":{ "_":[ "this", "collidesWith", { "width":186, "height":194, "x":-1, "y":-1 }, "not" ] }
+                },
+                { "remove":1 }
+              ]
+            },
+            {
+              "name":"Sequence",
+              "data":[
+                { "wait":10 },
+                { "wait":{ "_":[ "randomNumber", [ 50, 75 ] ] } },
+                { "object":{ "set":{ "_":[ "stencil", "spark" ] }, "x":{ "_":[ "that", "x", "+", 29 ] }, "y":{ "_":[ "that", "y" ] }, "forceY":-2 } },
+                { "object":{ "set":{ "_":[ "stencil", "smoke" ] }, "x":{ "_":[ "that", "x", "+", 29 ] }, "y":{ "_":[ "that", "y" ] }, "forceY":-2 } },
+                { "sum":2, "to":{ "_":[ "scene", "damage" ] } },
+                { "_":[ "stencil", "codeHandleCounters" ] },
+                { "loopTo":1 }
+              ]
+            }
+          ]
+        },
+        {
+          "name":"dead",
+          "execute":[
+            { "sum":1000, "to":{ "_":[ "scene", "score" ] } },
+            { "subtract":1, "to":{ "_":[ "scene", "armored" ] } },
+            { "_":[ "stencil", "codeHandleCounters" ] },
+            { "_":[ "stencil", "removeWithCloud" ] }
+          ]
+        }
+      ]
+    },
+    "farSoldier":{
+      "type":"farSoldier",
+      "set":{ "_":[ "stencil", "behaviourSolidier" ] },
+      "image":"sprites", "tileY":124, "width":21, "height":40,
+      "zIndex":50, "y":90,
+      "score":50,
+      "sparkX":2,
+      "sparkY":5
+    },
+    "behaviourSolidier":{
+      "set":{ "_":[ "stencil", "behaviourFoe" ] },
+      "animations":{ "dead":{ "frame":3 }, "stand":{ "frame":2 }, "walk":{ "frames":2, "loopTo":0 } },
+      "animation":"walk",
+      "damage":0.5,
+      "side":{ "_":[ "randomValue", [ -4, 4 ] ] },
+      "states":[
+        {
+          "execute":[
+            { "set":{ "destX":{ "_":[ "randomNumber", [ 0, { "_":[ 184, "-", { "_":[ "this", "width" ] } ] } ] ] } } },
+            {
+              "when":{ "_":[ "this", "side", "isGreaterThan", 0 ] },
+              "set":{ "x":{ "_":[ "this", "width", "*", -1 ] } },
+              "elseExecute":{ "set":{ "x":184, "flipX":1 } }
+            }
+          ],
+          "code":{
+            "name":"Sequence",
+            "data":[
+              {
+                "sum":{ "_":[ "this", "side" ] },
+                "to":{ "_":[ "this", "x" ] },
+                "wait":1, "loop":1,
+                "until":{ "_":[ "this", "x", "-", { "_":[ "this", "destX" ] }, "abs", "isLessThan", 5 ] }
+              },
+              { "set":{ "animation":"stand" } },
+              { "sum":1, "to":{ "_":[ "this", "x" ] }, "wait":1, "loop":1, "cycles":{ "_":[ "randomNumber", [ 10, 25 ] ] } },
+              {
+                "object":{
+                  "set":{ "_":[ "stencil", "spark" ] },
+                  "x":{ "_":[ "that", "x", "+", { "_":[ "that", "sparkX" ] } ] }, "y":{ "_":[ "that", "y", "+", { "_":[ "that", "sparkY" ] } ] }
+                }
+              },
+              { "sum":{ "_":[ "this", "damage" ] }, "to":{ "_":[ "scene", "damage" ] } },
+              { "_":[ "stencil", "codeHandleCounters" ] },
+              { "loopTo":2 }
+            ]
+          }
+        },
+        {
+          "name":"dead",
+          "set":{ "animation":"dead" },
+          "execute":[
+            { "sum":{ "_":[ "this", "score" ] }, "to":{ "_":[ "scene", "score" ] } },
+            { "subtract":1, "to":{ "_":[ "scene", "soldiers" ] } },
+            { "_":[ "stencil", "codeHandleCounters" ] }
+          ],
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "set":{ "visible":{ "_":[ "this", "visible", "not" ] } } },
+              { "subtract":1, "to":{ "_":[ "this", "y" ] } },
+              { "wait":1, "cycles":10, "loopTo":0 },
+              { "remove":1 }
+            ]
+          }
+        }
+      ]
+    },
+    "behaviourFoe":{
+      "type":"foe",
+      "health":1,
+      "states":[
+        {
+          "execute":[ { "sum":{ "_":[ "this", "health" ] }, "to":{ "_":[ "scene", "bulletsDebt" ] } }, { "_":[ "stencil", "codeHandleCounters" ] } ],
+          "code":{ "name":"Execute", "data":{ "when":{ "_":[ "this", "collidesWith", { "width":186, "height":194, "x":-1, "y":-1 }, "not" ] }, "remove":1 } },
+          "actions":{
+            "name":"hit",
+            "execute":[ { "subtract":1, "to":{ "_":[ "this", "health" ] } }, { "when":{ "_":[ "this", "health", "isLessThan", 1 ] }, "set":{ "state":"dead" } } ]
+          }
+        },
+        { "name":"dead", "set":{ "removeType":"foe" } }
+      ]
+    },
+    "frontSoldier":{
+      "type":"frontSoldier",
+      "set":{ "_":[ "stencil", "behaviourSolidier" ] },
+      "image":"sprites", "tileY":16, "width":72, "height":108,
+      "zIndex":100, "y":84,
+      "animations":{ "dead":{ "frame":1 }, "stand":{ "frame":0 }, "walk":{ "frame":0 } },
+      "score":50,
+      "sparkX":28,
+      "sparkY":13
+    },
+    "veryFarSoldier":{
+      "type":"veryFarSoldier",
+      "set":{ "_":[ "stencil", "behaviourSolidier" ] },
+      "image":"sprites", "tileY":164, "width":21, "height":28,
+      "zIndex":20, "y":80,
+      "score":100,
+      "sparkX":2,
+      "sparkY":2
+    },
+    "helicopter":{
+      "type":"helicopter",
+      "set":{ "_":[ "stencil", "behaviourFoe" ] },
+      "image":"sprites", "tileY":237, "width":59, "height":45,
+      "zIndex":15, "x":{ "_":[ "randomNumber", [ 0, 125 ] ] }, "y":-45,
+      "animations":{ "still":{ "frames":2, "speed":0, "loopTo":0 } },
+      "animation":"still",
+      "destination":{ "width":1, "height":1, "x":0, "y":30 },
+      "health":10,
+      "states":[
+        {
+          "execute":[
+            { "as":{ "_":[ "this", "destination" ] }, "set":{ "x":{ "_":[ "randomNumber", [ 29, 155 ] ] } } },
+            { "applyVector":{ "angle":{ "_":[ "this", "angleTo", { "_":[ "this", "destination" ] } ] }, "length":2 } }
+          ],
+          "code":[
+            { "name":"Physics" },
+            {
+              "name":"Sequence",
+              "data":[
+                { "wait":1, "loop":1, "until":{ "_":[ "this", "distanceTo", { "_":[ "this", "destination" ] }, "isLessThan", 3 ] } },
+                { "set":{ "forceX":0, "forceY":0 } }
+              ]
+            },
+            {
+              "name":"Sequence",
+              "data":[
+                { "wait":25 },
+                { "wait":{ "_":[ "randomNumber", [ 10, 20 ] ] } },
+                { "object":{ "set":{ "_":[ "stencil", "spark" ] }, "x":{ "_":[ "that", "x", "+", 0 ] }, "y":{ "_":[ "that", "y", "+", 29 ] }, "forceY":-2 } },
+                { "object":{ "set":{ "_":[ "stencil", "spark" ] }, "x":{ "_":[ "that", "x", "+", 43 ] }, "y":{ "_":[ "that", "y", "+", 29 ] }, "forceY":-2 } },
+                { "sum":0.5, "to":{ "_":[ "scene", "damage" ] } },
+                { "_":[ "stencil", "codeHandleCounters" ] },
+                { "loopTo":1 }
+              ]
+            }
+          ]
+        },
+        {
+          "name":"dead",
+          "execute":[
+            { "sum":2000, "to":{ "_":[ "scene", "score" ] } },
+            { "subtract":1, "to":{ "_":[ "scene", "helicopters" ] } },
+            { "_":[ "stencil", "codeHandleCounters" ] },
+            { "_":[ "stencil", "removeWithCloud" ] }
+          ]
+        }
+      ]
+    },
+    "rounds":{
+      "type":[ "rounds", "foe" ],
+      "image":"sprites", "tileX":16, "width":16, "height":16,
+      "zIndex":30, "x":-16, "y":100,
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":{ "when":{ "_":[ "this", "x", "isLessThan", 184 ] }, "sum":1, "to":{ "_":[ "this", "x" ] }, "elseExecute":{ "remove":1 } }
+        },
+        "actions":{
+          "name":"hit",
+          "execute":[
+            { "when":{ "_":[ "scene", "rounds", "isLessThan", 4 ] }, "sum":1, "to":{ "_":[ "scene", "rounds" ] } },
+            { "object":[ { "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "color":"#ff0", "html":"AMMO" }, { "_":[ "stencil", "spark" ] } ] },
+            { "remove":1 }
+          ]
+        }
+      }
+    },
+    "smoke":{
+      "image":"defaultsprites", "tileX":80, "tileY":16, "width":16, "height":16,
+      "zIndex":{ "_":[ "that", "zIndex", "+", 1 ] }, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "animations":{ "spark":{ "frames":4, "speed":1 } },
+      "animation":"spark",
+      "states":{ "code":[ { "name":"Physics" }, { "name":"Sequence", "data":[ { "wait":8 }, { "remove":1 } ] } ] }
+    },
+    "#":{ "width":16, "height":16, "bgcolor":"#f00", "__YELLOW":1 }
+  },
+  "execute":[
+    { "when":{ "_":[ "storage", "hiscore", "not" ] }, "as":{ "_":"storage" }, "set":{ "hiscore":0 } },
+    { "as":{ "_":"variable" }, "set":{ "hiscore":{ "_":[ "storage", "hiscore" ] } } }
+  ],
+  "scenes":{
+    "intro":{
+      "object":[
+        {
+          "image":"title", "width":135, "height":68,
+          "x":-135, "y":20,
+          "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "this", "x", "isLessThan", 10 ] }, "sum":1, "to":{ "_":[ "this", "x" ] } } } }
+        },
+        {
+          "image":"title", "tileX":135, "width":160, "height":191,
+          "x":256, "y":1,
+          "states":{
+            "code":{
+              "name":"Sequence",
+              "data":[
+                { "subtract":1, "to":{ "_":[ "this", "x" ] }, "wait":1, "loop":1, "until":{ "_":[ "this", "x", "isEqualTo", 96 ] } },
+                { "wait":25 },
+                { "set":{ "frame":1 } },
+                { "wait":25 },
+                { "set":{ "frame":2 } }
+              ]
+            }
+          }
+        },
+        {
+          "box":"label", "width":256,
+          "zIndex":5, "x":0, "y":130,
+          "color":"#fff",
+          "font":"spectrum", "fontSize":20, "lineHeight":20, "outline":"#000", "textAlign":"center", "html":"PULL TRIGGER TO START",
+          "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "visible":0 }, "wait":10 }, { "set":{ "visible":1 }, "wait":10, "loopTo":0 } ] } }
+        },
+        {
+          "box":"label", "width":256,
+          "zIndex":5, "x":0, "y":172,
+          "color":"#fff",
+          "font":"spectrum", "fontSize":20, "lineHeight":20, "outline":"#000", "textAlign":"center", "html":{ "_":[ "HI-SCORE: ", ".", { "_":[ "variable", "hiscore" ] } ] }
+        }
+      ],
+      "execute":{ "_":[ "stencil", "codeAddReticle" ] },
+      "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyPointer", "isHit" ] }, "gotoScene":"game", "withTransition":3 } } }
+    },
+    "game":{
+      "object":[
+        { "set":{ "_":[ "stencil", "stagepanel" ] }, "x":-97, "y":0 },
+        { "set":{ "_":[ "stencil", "stagepanel" ] }, "x":-1, "y":0 },
+        { "set":{ "_":[ "stencil", "stagepanel" ] }, "x":95, "y":0 },
+        { "set":{ "_":[ "stencil", "stagepanel" ] }, "x":191, "y":0 }
+      ],
+      "execute":[
+        { "_":[ "stencil", "codeAddReticle" ] },
+        {
+          "set":{ "armored":6, "bullets":32, "bulletsDebt":0, "damage":0, "freeAmmoCounter":0, "helicopters":6, "rounds":3, "roundsDebt":0, "score":0, "soldiers":60 }
+        },
+        {
+          "object":[
+            { "width":72, "height":192, "x":184, "y":0, "bgcolor":"#000" },
+            { "image":"hud", "width":16, "height":192, "zIndex":10, "x":184, "y":0 },
+            {
+              "image":"hud",
+              "zIndex":11,
+              "states":{
+                "code":{
+                  "name":"Execute",
+                  "data":[
+                    { "set":{ "damage":{ "_":[ "scene", "damage", "ceil" ] } } },
+                    {
+                      "when":{ "_":[ "this", "damage", "isEqualTo", 0 ] },
+                      "set":{ "visible":0 },
+                      "elseExecute":{
+                        "when":{ "_":[ "this", "damage", "isEqualTo", 1 ] },
+                        "set":{ "tileX":24, "tileY":184, "width":8, "height":8, "x":192, "y":184, "visible":1 },
+                        "elseExecute":[
+                          { "subtract":1, "to":{ "_":[ "this", "damage" ] } },
+                          {
+                            "set":{
+                              "tileX":16, "tileY":{ "_":[ 192, "-", { "_":[ "this", "damage", "*", 8 ] } ] }, "width":15, "height":{ "_":[ "this", "damage", "*", 8 ] },
+                              "x":184, "y":{ "_":[ 192, "-", { "_":[ "this", "damage", "*", 8 ] } ] },
+                              "visible":1
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            },
+            { "box":"label", "width":100, "zIndex":11, "x":202, "y":178, "font":"spectrum", "html":"DAMAGE" },
+            { "box":"label", "width":100, "zIndex":11, "x":200, "y":0, "font":"spectrum", "html":"SCORE" },
+            {
+              "type":"hud",
+              "hudType":"label", "label":"%number|scene.score|0|6%",
+              "box":"label", "width":100,
+              "zIndex":11, "x":200, "y":10,
+              "color":"#7f7f7f",
+              "font":"spectrum"
+            },
+            { "image":"hud", "tileX":32, "tileY":0, "width":24, "height":14, "zIndex":10, "x":200, "y":30 },
+            {
+              "type":"hud",
+              "hudType":"label", "label":"%number|scene.rounds%",
+              "box":"label", "width":100, "height":20,
+              "zIndex":11, "x":225, "y":27,
+              "color":"#fff",
+              "font":"spectrum", "fontSize":30, "lineHeight":20
+            },
+            {
+              "image":"hud", "tileX":32, "tileY":14, "width":64, "height":11,
+              "zIndex":11, "x":193, "y":50,
+              "states":{ "code":{ "name":"Execute", "data":{ "set":{ "width":{ "_":[ "scene", "bullets", "*", 8, "limitValue", [ 0, 64 ] ] } } } } }
+            },
+            {
+              "image":"hud", "tileX":32, "tileY":14, "width":64, "height":11,
+              "zIndex":11, "x":193, "y":66,
+              "states":{ "code":{ "name":"Execute", "data":{ "set":{ "width":{ "_":[ "scene", "bullets", "-", 8, "*", 8, "limitValue", [ 0, 64 ] ] } } } } }
+            },
+            {
+              "image":"hud", "tileX":32, "tileY":14, "width":64, "height":11,
+              "zIndex":11, "x":193, "y":82,
+              "states":{ "code":{ "name":"Execute", "data":{ "set":{ "width":{ "_":[ "scene", "bullets", "-", 16, "*", 8, "limitValue", [ 0, 64 ] ] } } } } }
+            },
+            {
+              "image":"hud", "tileX":32, "tileY":14, "width":64, "height":11,
+              "zIndex":11, "x":193, "y":98,
+              "states":{ "code":{ "name":"Execute", "data":{ "set":{ "width":{ "_":[ "scene", "bullets", "-", 24, "*", 8, "limitValue", [ 0, 64 ] ] } } } } }
+            },
+            { "image":"hud", "tileX":32, "tileY":25, "width":14, "height":8, "zIndex":10, "x":200, "y":140 },
+            { "image":"hud", "tileX":46, "tileY":25, "width":14, "height":8, "zIndex":10, "x":200, "y":152 },
+            { "image":"hud", "tileX":60, "tileY":25, "width":14, "height":8, "zIndex":10, "x":200, "y":164 },
+            {
+              "type":"hud",
+              "hudType":"label", "label":"%number|scene.soldiers|0|2%",
+              "box":"label", "width":100,
+              "zIndex":11, "x":220, "y":134,
+              "font":"spectrum"
+            },
+            {
+              "type":"hud",
+              "hudType":"label", "label":"%number|scene.helicopters|0|2%",
+              "box":"label", "width":100,
+              "zIndex":11, "x":220, "y":146,
+              "font":"spectrum"
+            },
+            {
+              "type":"hud",
+              "hudType":"label", "label":"%number|scene.armored|0|2%",
+              "box":"label", "width":100,
+              "zIndex":11, "x":220, "y":158,
+              "font":"spectrum"
+            }
+          ],
+          "into":{ "_":"scenehud" }
+        }
+      ],
+      "states":[
+        {
+          "execute":{
+            "object":{
+              "type":[ "intro", "rollup" ],
+              "width":184, "height":192,
+              "x":0, "y":0,
+              "bgcolor":"#000",
+              "states":{
+                "name":"rollup",
+                "code":{
+                  "name":"Execute",
+                  "data":{
+                    "when":{ "_":[ "this", "height", "isGreaterThan", 0 ] },
+                    "subtract":8,
+                    "to":{ "_":[ "this", "height" ] },
+                    "elseExecute":[ { "remove":1 }, { "as":{ "_":"scene" }, "set":{ "state":"intro" } } ]
+                  }
+                }
+              }
+            },
+            "into":{ "_":"scenehud" }
+          },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "wait":25 },
+              {
+                "object":{
+                  "type":"message",
+                  "box":"label", "width":184, "height":30,
+                  "zIndex":10, "x":0, "y":50,
+                  "font":"spectrum", "fontSize":25, "lineHeight":30, "textAlign":"center", "html":"&lt; FINAL MISSION &gt;"
+                },
+                "into":{ "_":"scenehud" }
+              },
+              { "wait":25 },
+              {
+                "object":{
+                  "type":"message",
+                  "width":184, "height":30,
+                  "zIndex":10, "x":0, "y":90,
+                  "font":"spectrum", "fontSize":20, "lineHeight":10, "textAlign":"center", "html":"ESCAPE FROM THE ENEMY CAMP WITH THE STOLEN INTEL."
+                },
+                "into":{ "_":"scenehud" }
+              },
+              { "wait":1, "loop":1, "until":{ "_":[ "keyPointer", "isHit" ] } },
+              { "as":{ "_":[ "object", "message" ] }, "remove":1 },
+              { "as":{ "_":[ "object", "rollup" ] }, "set":{ "state":"rollup" } }
+            ]
+          }
+        },
+        {
+          "name":"intro",
+          "code":{
+            "name":"Sequence",
+            "data":[
+              {
+                "object":{
+                  "type":"intro",
+                  "box":"label", "width":184, "height":50,
+                  "zIndex":1001, "x":0, "y":50,
+                  "color":"#ff0",
+                  "font":"spectrum", "fontSize":30, "lineHeight":50, "outline":"#000", "textAlign":"center", "html":"GOOD LUCK!"
+                }
+              },
+              { "wait":50 },
+              { "set":{ "state":"game" } }
+            ]
+          }
+        },
+        {
+          "name":"gameover",
+          "execute":[
+            { "as":{ "_":[ "object", "foe" ] }, "remove":1 },
+            {
+              "object":{
+                "type":"intro",
+                "width":184, "height":0,
+                "x":0, "y":0,
+                "bgcolor":"#000",
+                "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "this", "height", "isLessThan", 192 ] }, "sum":8, "to":{ "_":[ "this", "height" ] } } } }
+              },
+              "into":{ "_":"scenehud" }
+            }
+          ],
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "wait":50 },
+              {
+                "object":{
+                  "type":"message",
+                  "box":"label", "width":184, "height":30,
+                  "zIndex":10, "x":0, "y":50,
+                  "color":"#f00",
+                  "font":"spectrum", "fontSize":25, "lineHeight":30, "textAlign":"center", "html":"MISSION FAILED"
+                },
+                "into":{ "_":"scenehud" }
+              },
+              { "wait":25 },
+              {
+                "object":{
+                  "type":"message",
+                  "width":184, "height":60,
+                  "zIndex":10, "x":0, "y":90,
+                  "font":"spectrum", "fontSize":20, "lineHeight":10, "textAlign":"center", "html":"YOU FAINTED ON THE BATTLEFIELD AND WERE CAPTURED. FAREWELL, SOLDIER."
+                },
+                "into":{ "_":"scenehud" }
+              },
+              { "_":[ "stencil", "codeCheckHiscore" ] },
+              { "wait":1, "loop":1, "until":{ "_":[ "keyPointer", "isHit" ] } },
+              { "gotoScene":"intro", "withTransition":3 }
+            ]
+          }
+        },
+        {
+          "name":"gamecompleted",
+          "execute":[
+            { "as":{ "_":[ "object", "foe" ] }, "remove":1 },
+            {
+              "object":{
+                "type":"intro",
+                "width":184, "height":0,
+                "x":0, "y":0,
+                "bgcolor":"#000",
+                "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "this", "height", "isLessThan", 192 ] }, "sum":8, "to":{ "_":[ "this", "height" ] } } } }
+              },
+              "into":{ "_":"scenehud" }
+            }
+          ],
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "wait":50 },
+              {
+                "object":{
+                  "type":"message",
+                  "box":"label", "width":184, "height":30,
+                  "zIndex":10, "x":0, "y":50,
+                  "color":"#0f0",
+                  "font":"spectrum", "fontSize":25, "lineHeight":30, "textAlign":"center", "html":"MISSION COMPLETE"
+                },
+                "into":{ "_":"scenehud" }
+              },
+              { "wait":25 },
+              {
+                "object":{
+                  "type":"message",
+                  "width":184, "height":60,
+                  "zIndex":10, "x":0, "y":90,
+                  "font":"spectrum", "fontSize":20, "lineHeight":10, "textAlign":"center", "html":"YOU MANAGED TO ESCAPE AND BECAME A DECORATED WAR HERO. WELL DONE, SOLDIER!"
+                },
+                "into":{ "_":"scenehud" }
+              },
+              { "_":[ "stencil", "codeCheckHiscore" ] },
+              { "wait":1, "loop":1, "until":{ "_":[ "keyPointer", "isHit" ] } },
+              { "gotoScene":"intro", "withTransition":3 }
+            ]
+          }
+        },
+        {
+          "name":"game",
+          "execute":{ "as":{ "_":[ "object", "intro" ] }, "remove":1 },
+          "code":[
+            {
+              "name":"Sequence",
+              "data":[
+                { "wait":{ "_":[ "randomNumber", [ 180, 250 ] ] } },
+                {
+                  "object":{
+                    "image":"stage", "tileX":96, "width":65, "height":48,
+                    "zIndex":10, "x":-65, "y":20, "frame":{ "_":[ "randomNumber", [ 0, 2 ] ] },
+                    "states":{ "code":{ "name":"Sequence", "data":[ { "sum":1, "to":{ "_":[ "this", "x" ] }, "wait":1, "loop":1, "cycles":246 }, { "remove":1 } ] } }
+                  }
+                },
+                { "loopTo":0 }
+              ]
+            },
+            {
+              "name":"Execute",
+              "data":[
+                {
+                  "when":{ "_":[ "scene", "bullets", "isEqualTo", 0, "and", { "_":[ "scene", "rounds", "isEqualTo", 0 ] } ] },
+                  "execute":[
+                    { "sum":1, "to":{ "_":[ "scene", "freeAmmoCounter" ] } },
+                    { "when":{ "_":[ "scene", "freeAmmoCounter", "isGreaterThan", 125 ] }, "as":{ "_":"scene" }, "set":{ "bullets":8, "freeAmmoCounter":0 } }
+                  ]
+                },
+                {
+                  "when":{ "_":[ "this", "damage", "isEqualTo", 25 ] },
+                  "set":{ "state":"gameover" },
+                  "elseExecute":{
+                    "when":{ "_":[ "scene", "soldiers", "+", { "_":[ "scene", "helicopters" ] }, "+", { "_":[ "scene", "armored" ] }, "not" ] },
+                    "set":{ "state":"gamecompleted" }
+                  }
+                }
+              ]
+            },
+            {
+              "name":"Sequence",
+              "data":[
+                { "wait":1, "loop":1, "until":{ "_":[ "keyPointer", "isDown" ] } },
+                {
+                  "when":{ "_":[ "scene", "bullets", "isEqualTo", 0, "and", { "_":[ "scene", "rounds", "isGreaterThan", 0 ] } ] },
+                  "execute":[ { "subtract":1, "to":{ "_":[ "scene", "rounds" ] } }, { "set":{ "bullets":32 } } ]
+                },
+                {
+                  "when":{ "_":[ "scene", "bullets", "isGreaterThan", 0 ] },
+                  "execute":[
+                    { "when":{ "_":[ "cheat", "unlimitedAmmo", "not" ] }, "subtract":1, "to":{ "_":[ "scene", "bullets" ] } },
+                    { "object":{ "set":{ "_":[ "stencil", "playerBullet" ] }, "x":{ "_":[ "pointer", "x", "-", 4 ] }, "y":{ "_":[ "pointer", "y", "-", 4 ] } } }
+                  ]
+                },
+                { "wait":3, "loopTo":0 }
+              ]
+            },
+            {
+              "name":"Sequence",
+              "data":[
+                { "wait":125 },
+                { "wait":1, "loop":1, "until":{ "_":[ "objectTyped", "frontSoldier", "not" ] } },
+                { "wait":{ "_":[ "randomNumber", [ 75, 125 ] ] } },
+                { "object":{ "_":[ "stencil", "frontSoldier" ] } },
+                { "loopTo":1 }
+              ]
+            },
+            {
+              "name":"Sequence",
+              "data":[
+                { "wait":1, "loop":1, "until":{ "_":[ "objectTyped", "farSoldier", "not" ] } },
+                { "wait":{ "_":[ "randomNumber", [ 25, 75 ] ] } },
+                { "object":{ "_":[ "stencil", "farSoldier" ] }, "wait":10, "loop":1, "cycles":{ "_":[ "randomNumber", [ 1, 4 ] ] } },
+                { "loopTo":0 }
+              ]
+            },
+            {
+              "name":"Sequence",
+              "data":[
+                { "wait":1, "loop":1, "until":{ "_":[ "objectTyped", "veryFarSoldier", "not" ] } },
+                { "wait":{ "_":[ "randomNumber", [ 25, 75 ] ] } },
+                { "object":{ "_":[ "stencil", "veryFarSoldier" ] }, "wait":10, "loop":1, "cycles":{ "_":[ "randomNumber", [ 1, 4 ] ] } },
+                { "loopTo":0 }
+              ]
+            },
+            {
+              "name":"Sequence",
+              "data":[
+                { "wait":375 },
+                { "wait":1, "loop":1, "until":{ "_":[ "objectTyped", "armored", "not", "and", { "_":[ "scene", "armored" ] } ] } },
+                { "wait":{ "_":[ "randomNumber", [ 125, 250 ] ] } },
+                { "object":{ "_":[ "stencil", "armored" ] }, "loopTo":1 }
+              ]
+            },
+            {
+              "name":"Sequence",
+              "data":[
+                { "wait":500 },
+                { "wait":1, "loop":1, "until":{ "_":[ "objectTyped", "helicopter", "not", "and", { "_":[ "scene", "helicopters" ] } ] } },
+                { "wait":{ "_":[ "randomNumber", [ 250, 325 ] ] } },
+                { "object":{ "_":[ "stencil", "helicopter" ] }, "loopTo":1 }
+              ]
+            },
+            {
+              "name":"Sequence",
+              "data":[
+                { "wait":1, "loop":1, "until":{ "_":[ "objectTyped", "rounds", "not", "and", { "_":[ "scene", "roundsDebt" ] } ] } },
+                { "wait":{ "_":[ "randomNumber", [ 25, 50 ] ] } },
+                { "object":{ "_":[ "stencil", "rounds" ] }, "subtract":1, "to":{ "_":[ "scene", "roundsDebt" ] }, "loopTo":0 }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
