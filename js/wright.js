@@ -8,7 +8,7 @@ function FIX(value) { return Math.round(value * PREC) / PREC; }
 
 var Supports = (function(){
 	var vendors=["Khtml","ms","O","Moz","Webkit"],div=document.createElement('div');
-	return {
+	var ret={
 		css:function(prop){
 			var len=vendors.length;
 			if (prop in div.style) return prop;
@@ -16,8 +16,18 @@ var Supports = (function(){
 			while (len--) if (vendors[len]+prop in div.style) return vendors[len]+prop;	
 		},
 		setCss:function(obj,prop,value) { if (prop=this.css(prop)) obj[prop]=value; },
-		browser:function(substr){ return navigator.userAgent.toLowerCase().indexOf('firefox') > -1; }
+		browser:function(substr){ return navigator.userAgent.toLowerCase().indexOf(substr) > -1; },
+		lineHeightFixes:function(font,size){
+			if ((font=="spectrum")&&(this.isFirefox)&&(size>10)) return size*0.8;
+			return size;
+		},
+		pointerMode:function() {
+			if ('ontouchstart' in document.documentElement) return "touch";
+			else return "mouse";
+		}
 	}
+	ret.isFirefox=ret.browser("firefox");
+	return ret;
 })();
  
 /*
@@ -253,10 +263,10 @@ function Box(parent, type, sub, statemanager) {
 	if (!sub) {
 		// DOM Callbacks
 		function onkeydown(e) {
-			box.hwkeys[e.keyCode] = 1;
+			box.keyDown(e.keyCode);
 			e.preventDefault();
 		};
-		function onkeyup(e) { box.hwkeys[e.keyCode] = 0; };
+		function onkeyup(e) { box.keyUp(e.keyCode); };
 		// SCREEN - Stats
 		box.stats = {
 			updatedRects:{},
@@ -419,6 +429,11 @@ function Box(parent, type, sub, statemanager) {
 			if (!obj.removed) {
 				var onscreen=obj.onscreen;
 				if (obj===this.gridreference) {
+					if (obj.screen.rects) {
+						obj.screen.rects.rect[k]=FIX(obj.screen.rects.rect[k]-v);
+						obj.screen.rects.screen[k]=FIX(obj.screen.rects.screen[k]-v);
+						obj.screen.rects.outer[k]=FIX(obj.screen.rects.outer[k]-v);
+					}
 					onscreen=this.isOnScreen(obj);
 					if (onscreen||obj.onscreen)  this.scheduleObjectChange(obj,1);
 					// Recalculate all translations except into gridreference.
@@ -476,6 +491,12 @@ function Box(parent, type, sub, statemanager) {
 		setTimeout(function() { box.node.focus(); }, 1000);
 		Box.on("keydown",box.node,onkeydown);
 		Box.on("keyup",box.node,onkeyup);
+		box.keyDown = function(key) {
+			this.hwkeys[key]=1;
+		};
+		box.keyUp = function(key) {
+			if (this.hwkeys[key]==1) this.hwkeys[key]=2; else this.hwkeys[key]=0;
+		};
 		box.setKeys = function(keys) {
 			this.keys = keys;
 			return this;
@@ -485,14 +506,84 @@ function Box(parent, type, sub, statemanager) {
 			return this;
 		};
 		box.updateKeys = function() {
-			for (var a in this.keys)
-				if (this.hwkeys[this.keys[a]])
+			var key;
+			for (var a in this.keys) {
+				key=this.hwkeys[this.keys[a]];
+				if (key>0) {
 					if (this.key[a]) this.key[a] ++;
 					else this.key[a] = 1;
-			else if (this.key[a] > 0) this.key[a] = -1;
-			else if (this.key[a]) this.key[a] ++;
-			else this.key[a] = 0;
+					this.hwkeys[this.keys[a]]=(key==2?0:3);
+				}
+				else if (this.key[a] > 0) this.key[a] = -1;
+				else if (this.key[a]) this.key[a] ++;
+				else this.key[a] = 0;
+			}
 		};
+		// SCREEN - Pointer
+		box.positionInPage=0;
+		box.pointer = {x:0,y:0,width:1,height:1};
+		function getPositionInPage(obj) {
+			var x = y = 0;
+			if (obj.offsetParent) {
+				do {
+					x += obj.offsetLeft;
+					y += obj.offsetTop;
+				} while (obj = obj.offsetParent);
+			}
+			return {x:x,y:y};
+		}
+		function touchHandler(e) {
+			if (!box.positionInPage) box.positionInPage=getPositionInPage(box.node);
+			if (e.changedTouches.length==1) {					
+				var touch=e.changedTouches[0];
+				posx = touch.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+				posy = touch.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+				box.keyDown(-1);
+				box.pointer.x=Math.floor((posx-box.positionInPage.x)/box.scale);
+				box.pointer.y=Math.floor((posy-box.positionInPage.y)/box.scale);
+				e.preventDefault();
+			}
+		}
+		box.enablePointer = function (mode) {
+			this.keys.keyPointer=-1;
+			box.getPositionInPage=1;
+			box.node.style.cursor="none";
+			switch (mode) {
+				case "mouse":{
+					Box.on("mousemove",box.node,function(e){
+						if (!box.positionInPage) box.positionInPage=getPositionInPage(box.node);
+						var posx = 0;
+						var posy = 0;
+						if (!e) { var e = window.event; }
+						if (e.pageX || e.pageY) {
+							posx = e.pageX;
+							posy = e.pageY;
+						}
+						else if (e.clientX || e.clientY) {
+							posx = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+							posy = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+						}				
+						box.pointer.x=Math.floor((posx-box.positionInPage.x)/box.scale);
+						box.pointer.y=Math.floor((posy-box.positionInPage.y)/box.scale);
+					});
+					Box.on("mousedown",box.node,function(e){
+						box.keyDown(-1);
+						e.preventDefault();
+					});
+					Box.on("mouseup",box.node,function(e){
+						box.keyUp(-1);
+						e.preventDefault();
+					});
+					break;
+				}
+				case "touch":{
+					Box.on("touchstart",box.node,touchHandler);
+					Box.on("touchmove",box.node,touchHandler);
+					Box.on("touchend",box.node,function(e){ box.keyUp(-1); });				
+					break;
+				}
+			}
+		}
 		// SCREEN - Garbage management
 		box.garbage = { objects: [] };
 		box.addObject = function(tox, type, statemanager) {
@@ -637,7 +728,7 @@ function Box(parent, type, sub, statemanager) {
 						this.stats.changesCount++;
 					}
 					if (!obj.cleanprops.lineHeight) {
-						node.style.lineHeight = obj.lineHeight + "px";
+						node.style.lineHeight = Supports.lineHeightFixes(obj.font,obj.lineHeight) + "px";
 						obj.cleanprops.lineHeight = 1;
 						this.stats.changesCount++;
 					}
@@ -1002,6 +1093,13 @@ function Box(parent, type, sub, statemanager) {
 		};
 		box.processFrame = function() {
 			if (!this.removed) {
+				if (this.getPositionInPage) {
+					this.getPositionInPage++;
+					if (this.getPositionInPage>box.fps) {
+						this.positionInPage=0;
+						this.getPositionInPage=1;
+					}
+				}
 				this.stats.garbageCount = 0;
 				this.stats.calculatedRects = 0;
 				this.stats.movedCells = 0;
@@ -1171,7 +1269,7 @@ if (Box._transform&&Box._transformOrigin) {
 	}
 }
 
-if (Supports.browser("firefox")) {
+if (Supports.isFirefox) {
     Box._.pixelated.css.imageRendering="-moz-crisp-edges";
     Box._.pixelated.css.MozOsxFontSmoothing="grayscale";
 } else {
@@ -1299,8 +1397,8 @@ Box.getRects=function(obj){
 			height: obj.height
 		}
 	};
-	if (z > 0) { ret.outer.height += z;
-	} else {
+	if (z > 0) ret.outer.height += z;
+	else {
 		ret.outer.y += z;
 		ret.outer.height -= z;
 	}
@@ -2357,6 +2455,7 @@ function Wright(gameId,container,mods) {
 					case "this": { ret=from; break; }
 					case "that": { ret=tox; break; }
 					case "scene": { ret=scene; break; }
+					case "pointer": { ret=game.pointer; break; }
 					case "key": { ret=game.key; break; }
 					case "stencil":{
 						p=get(from, tox, struct[++id]);
@@ -2440,6 +2539,14 @@ function Wright(gameId,container,mods) {
 						if (value < a1) value = a1;
 						if (value > a2) value = a2;
 						ret = b1 + (((b2 - b1) * (value - a1)) / (a2 - a1));
+						break;
+					}
+					case "limitValue":{
+						p = get(from, tox, struct[++id]);
+						var a1 = get(from, tox, p[0]),
+							a2 = get(from, tox, p[1]);
+						if (ret < a1) value = a1;
+						if (ret > a2) value = a2;
 						break;
 					}
 					case "randomNumber":{
@@ -2723,14 +2830,15 @@ function Wright(gameId,container,mods) {
 				iterateComposedList(curfrom, curtox, curfrom, function(item) {
 					if (line.log) printLog(item,curtox,line.log);
 					if (line.print) scene.setHtml(get(item, curtox, line.print));
-					if (line.subsequence && sequence) {
-						var data = get(item, curtox, line.subsequence);
-						sequence.sub.push({
-							id: 0,
-							data: data instanceof Array ? data : [data],
-							linelocal: []
-						});
-					}
+					if (line.subsequence)
+						if (sequence) {
+							var data = get(item, curtox, line.subsequence);
+							sequence.sub.push({
+								id: 0,
+								data: data instanceof Array ? data : [data],
+								linelocal: []
+							});
+						} else console.warn("Skipping sequence",line.subsequence);
 					if (line.set) iterateComposedList(item, curtox, get(item, curtox, line.set), function(subitem) { applyStencil(item, curtox, subitem); });
 					if (line.sum !== undefined) set(item, curtox, line.to, FIX(get(item, curtox, line.to) + get(item, curtox, line.sum)));
 					if (line.subtract !== undefined) set(item, curtox, line.to, FIX(get(item, curtox, line.to) - get(item, curtox, line.subtract)));
@@ -2829,25 +2937,25 @@ function Wright(gameId,container,mods) {
 										iterateComposedList(item, curtox, get(item, curtox, statedata.actions[subitem].set), function(setter) {
 											applyStencil(item, curtox, get(item, curtox, setter));
 										});
-									if (statedata.actions[subitem].execute) execute(item, curtox, get(item, curtox, statedata.actions[subitem].execute));
+									if (statedata.actions[subitem].execute) execute(item, curtox, get(item, curtox, statedata.actions[subitem].execute),sequence);
 								}
 							});
 					}
 					if (line["switch"] !== undefined) {
 						var value=get(item,curtox,line["switch"]),cases=get(item,curtox,line["case"]);
-						if (cases[value]) execute(item, curtox, get(item, curtox, cases[value]));
+						if (cases[value]) execute(item, curtox, get(item, curtox, cases[value]),sequence);
 					}
-					if (line.execute !== undefined) execute(item, curtox, get(item, curtox, line.execute));
+					if (line.execute !== undefined) execute(item, curtox, get(item, curtox, line.execute),sequence);
 					if (line.decide !== undefined) {
 						var decision=decide(item,curtox, get(item, curtox, line.decide));
-						if (decision) execute(item, curtox, decision);
+						if (decision) execute(item, curtox, decision,sequence);
 					}
 				});
 
 			if (line.restartScene !== undefined) plugTape(line.withTransition === undefined ? 1 : line.withTransition, get(curfrom, curtox, line.withChannel), variables.idScene);
 			if (line.gotoScene !== undefined) plugTape(line.withTransition === undefined ? 1 : line.withTransition, get(curfrom, curtox, line.withChannel), get(curfrom, curtox, line.gotoScene));
 			if (!gamerunning) return 1;
-		} else if (line.elseExecute !== undefined) execute(curfrom, curtox, get(curfrom,curtox, line.elseExecute));
+		} else if (line.elseExecute !== undefined) execute(curfrom, curtox, get(curfrom,curtox, line.elseExecute), sequence);
 		return ret;
 	}
 
@@ -2908,92 +3016,93 @@ function Wright(gameId,container,mods) {
 
 		var s, subfather, father = template.into === undefined ? from : get(from, tox, template.into);
 		for (var a in template)
-			switch (a) {
-				case "withChannel":
-				case "withEffect":
-				case "withLooping":
-				case "into":
-				case "execute":
-				case "set":
-				case "box":{ break; }
-				case "log":{ printLog(from,tox,template.log); break; }
-				case "object":{
-					iterateComposedList(from, tox, get(from, tox, template.object), function(item) {
-						subfather = item.into === undefined ? father : get(from, tox, item.into);
-						applyStencil(subfather.add(item.box, StateManager), from, item);
-					});
-					break;
-				}
-				case "states":{ applyStatesModel(from, tox, template.states); break; }
-				case "type":{
-					iterateComposedList(from, tox, get(from, tox, template.type), function(item) {
-						from.addType(item);
-					});
-					break;
-				}
-				case "removeType":{
-					iterateComposedList(from, tox, get(from, tox, template.removeType),function(item) {
-						from.removeType(item);
-					});
-					break;
-				}
-				case "follow":{
-					if (get(from, tox, template.follow)) camera.follow = from;
-					else camera.follow=null;
-					break;
-				}
-				case "cameraX":{ camera.x = get(from, tox, template.cameraX); break; }
-				case "cameraY":{ camera.y = get(from, tox, template.cameraY); break; }
-				case "cameraWidth":{ camera.width = get(from, tox, template.cameraWidth); break; }
-				case "cameraHeight":{ camera.height = get(from, tox, template.cameraHeight); break; }
-				case "cameraFocusX":{ camera.focusX = get(from, tox, template.cameraFocusX); break; }
-				case "cameraFocusY":{ camera.focusY = get(from, tox, template.cameraFocusY); break; }
-				case "cameraFocusWidth":{ camera.focusWidth = get(from, tox, template.cameraFocusWidth); break; }
-				case "cameraFocusHeight":{ camera.focusHeight = get(from, tox, template.cameraFocusHeight); break; }
-				case "cameraBound":{ camera.bound = get(from, tox, template.cameraBound); break; }
-				case "cameraSmoothness":{ camera.smoothness = get(from, tox, template.cameraSmoothness); break; }
-				case "cameras":{
-					camera.currentCamera = 0;
-					if (template.cameras == 0) camera.cameras = 0;
-					else {
-						camera.cameras = [];
-						iterateComposedList(from, tox, get(from, tox, template.cameras),function(area) { addCamera(from,tox,area) });
+			if (!SceneGenerators[a])
+				switch (a) {
+					case "withChannel":
+					case "withEffect":
+					case "withLooping":
+					case "into":
+					case "execute":
+					case "set":
+					case "box":{ break; }
+					case "log":{ printLog(from,tox,template.log); break; }
+					case "object":{
+						iterateComposedList(from, tox, get(from, tox, template.object), function(item) {
+							subfather = item.into === undefined ? father : get(from, tox, item.into);
+							applyStencil(subfather.add(item.box, StateManager), from, item);
+						});
+						break;
 					}
-					break;
-				}
-				case "addCamera":{
-					camera.currentCamera = 0;
-					if (!camera.cameras) camera.cameras = [];
-					if (template.addCamera) iterateComposedList(from, tox, get(from, tox, template.addCamera),function(area) { addCamera(from,tox,area) });
-					break;
-				}
-				case "hitbox":{
-					var hb = [];
-					iterateComposedList(from, tox, get(from, tox, template.hitbox), function(item) {
-						hb.push(Box.clone(item));
-					});
-					from.setHitbox(hb);
-					break;
-				}
-				case "playAudio":{
-					game.playAudio(get(from, tox, template.playAudio),get(from, tox, template.withChannel),get(from, tox, template.withLooping),get(from, tox, template.withEffect));
-					break;
-				}
-				case "stopAudio":{
-					var audio=game.getAudio(get(from, tox, template.stopAudio),get(from, tox, template.withChannel));
-					if (audio) audio.stop();
-					break;
-				}
-				case "changeAnimation":{
-					from.changeAnimation(get(from, tox, template.changeAnimation));
-					break;
-				}
-				default:{
-					set(from, tox, {
-						_: ["this", a]
-					}, get(from, tox, template[a]));
-				}
-			}			
+					case "states":{ applyStatesModel(from, tox, template.states); break; }
+					case "type":{
+						iterateComposedList(from, tox, get(from, tox, template.type), function(item) {
+							from.addType(item);
+						});
+						break;
+					}
+					case "removeType":{
+						iterateComposedList(from, tox, get(from, tox, template.removeType),function(item) {
+							from.removeType(item);
+						});
+						break;
+					}
+					case "follow":{
+						if (get(from, tox, template.follow)) camera.follow = from;
+						else camera.follow=null;
+						break;
+					}
+					case "cameraX":{ camera.x = get(from, tox, template.cameraX); break; }
+					case "cameraY":{ camera.y = get(from, tox, template.cameraY); break; }
+					case "cameraWidth":{ camera.width = get(from, tox, template.cameraWidth); break; }
+					case "cameraHeight":{ camera.height = get(from, tox, template.cameraHeight); break; }
+					case "cameraFocusX":{ camera.focusX = get(from, tox, template.cameraFocusX); break; }
+					case "cameraFocusY":{ camera.focusY = get(from, tox, template.cameraFocusY); break; }
+					case "cameraFocusWidth":{ camera.focusWidth = get(from, tox, template.cameraFocusWidth); break; }
+					case "cameraFocusHeight":{ camera.focusHeight = get(from, tox, template.cameraFocusHeight); break; }
+					case "cameraBound":{ camera.bound = get(from, tox, template.cameraBound); break; }
+					case "cameraSmoothness":{ camera.smoothness = get(from, tox, template.cameraSmoothness); break; }
+					case "cameras":{
+						camera.currentCamera = 0;
+						if (template.cameras == 0) camera.cameras = 0;
+						else {
+							camera.cameras = [];
+							iterateComposedList(from, tox, get(from, tox, template.cameras),function(area) { addCamera(from,tox,area) });
+						}
+						break;
+					}
+					case "addCamera":{
+						camera.currentCamera = 0;
+						if (!camera.cameras) camera.cameras = [];
+						if (template.addCamera) iterateComposedList(from, tox, get(from, tox, template.addCamera),function(area) { addCamera(from,tox,area) });
+						break;
+					}
+					case "hitbox":{
+						var hb = [];
+						iterateComposedList(from, tox, get(from, tox, template.hitbox), function(item) {
+							hb.push(Box.clone(item));
+						});
+						from.setHitbox(hb);
+						break;
+					}
+					case "playAudio":{
+						game.playAudio(get(from, tox, template.playAudio),get(from, tox, template.withChannel),get(from, tox, template.withLooping),get(from, tox, template.withEffect));
+						break;
+					}
+					case "stopAudio":{
+						var audio=game.getAudio(get(from, tox, template.stopAudio),get(from, tox, template.withChannel));
+						if (audio) audio.stop();
+						break;
+					}
+					case "changeAnimation":{
+						from.changeAnimation(get(from, tox, template.changeAnimation));
+						break;
+					}
+					default:{
+						set(from, tox, {
+							_: ["this", a]
+						}, get(from, tox, template[a]));
+					}
+				}			
 		for (var a in SceneGenerators) if (template[a]!==undefined) SceneGenerators[a](template,father,from,tox);		
 		if (template.execute) execute(from, tox, get(from, tox, template.execute));
 		return from;
@@ -3281,6 +3390,7 @@ function Wright(gameId,container,mods) {
 		game.setGridSize(hardware.gridSize).setKeys(controls).setColor("#fff").setBgcolor("#000").size(hardware).setFps(hardware.fps||25).setScale(mode.scale).setOriginX(0).setOriginY(0).do(Code.GameManager);
 		if (hardware.aliasMode) game.setAliasMode(hardware.aliasMode);
 		if (mode.volume&&gamedata.audioChannels) game.enableAudio(mode.volume/100);
+		if (hardware.usePointer) game.enablePointer(mode.pointer||Supports.pointerMode());
 		tv.style.width = (game.width * game.scale) + "px";
 		tv.style.height = (game.height * game.scale) + "px";			
 		game.setResourcesRoot("tapes/" + gameId + "/");
@@ -3304,6 +3414,7 @@ function Wright(gameId,container,mods) {
 		if (!gamedata.scenes) gamedata.scenes = { intro: {} };
 		var cheatslist=gamedata.cheats;
 		var hasAudio=gamedata.audioChannels;
+		var hasPointer=gamedata.hardware.usePointer;
 		controlsmode=hardware.controls||"standard";
 		var controlsset=CONTROLS[controlsmode];
 		if (localStorage["wrightControls_"+controlsmode]) controls=JSON.parse(localStorage["wrightControls_"+controlsmode]);
@@ -3311,10 +3422,12 @@ function Wright(gameId,container,mods) {
 		for (var a in controlsset) if (controls[a]===undefined) controls[a]=controlsset[a].keyCode;
 		var scale=mods.scale||(localStorage["wrightScale"]*1)||3;
 		var volume=(mods.volume===undefined?((localStorage["wrightVolume"]||100)*1):mods.volume)||0;
+		var pointer=(mods.pointer===undefined?(localStorage["wrightPointer"]||Supports.pointerMode()):mods.pointer)||"mouse";
 		if (!Box.supportsScaling) scale=1;
 		if (mods.noui) runGame({scale:scale,volume:hasAudio?volume:0});
 		else {
-			var havecheats,row,itm,magazine=node(tv,"div","magazine");
+			var pointerOption,havecheats,row,itm,magazine=node(tv,"div","magazine");
+			var pointers=[{id:"mouse",label:"Mouse (click for Trigger)"},{id:"touch",label:"Touch screen (tap for Trigger)"}];
 			node(magazine,"div","logo","Wright!");
 			node(magazine,"h1",0,gamedata.genre||"Game");
 			var article=node(magazine,"div","article");
@@ -3334,13 +3447,23 @@ function Wright(gameId,container,mods) {
 				itm.value=keySymbol(controls[a]);
 				Box.on("click",itm,setupKey);
 			}
+			if (hasPointer) {
+				row=node(article,"p");
+				node(row,"span","label","Pointer/Gun:");
+				var pointerOption=node(row,"select","input");
+				for (var i=0;i<pointers.length;i++) {
+					itm=node(pointerOption,"option",0,pointers[i].label);
+					itm.value=pointers[i].id;
+					if (pointer==pointers[i].id) itm.setAttribute("selected","selected");
+				}
+			}
 			row=node(article,"p");
 			node(row,"span","label","Resolution:");
 			var resolution=node(row,"select","input"),resolutions=Box.supportsScaling?7:1;
 			for (var i=1;i<resolutions;i++) {
 				itm=node(resolution,"option",0,(hardware.width*i)+"x"+(hardware.height*i)+" (x"+i+")");
 				if (i==scale) itm.setAttribute("selected","selected");
-			}
+			}			
 			if (hasAudio) {
 				row=node(article,"p");
 				node(row,"span","label","Sound:");
@@ -3365,9 +3488,13 @@ function Wright(gameId,container,mods) {
 			itm=node(node(article,"p","runner"),"button",0,"Start game");
 			Box.on("click",itm,function(){
 				scale=localStorage["wrightScale"]=resolution.selectedIndex+1;
+				if (hasPointer)
+					pointer=localStorage["wrightPointer"]=pointerOption.options[pointerOption.selectedIndex].value;
+				else
+					pointer=0;
 				if (hasAudio) volume=localStorage["wrightVolume"]=audio.selectedIndex*10; else volume=0;
 				Box.off("keydown",document,waitKey);
-				runGame({scale:scale,volume:volume});
+				runGame({scale:scale,volume:volume,pointer:pointer});
 			});
 			node(magazine,"h4",0,"Wright engine &copy;2015");
 		}
