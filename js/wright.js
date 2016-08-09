@@ -13,7 +13,7 @@ var Supports = (function(){
 			var len=vendors.length;
 			if (prop in div.style) return prop;
 			prop=prop.replace(/^[a-z]/, function(val) { return val.toUpperCase(); });
-			while (len--) if (vendors[len]+prop in div.style) return vendors[len]+prop;	
+			while (len--) if (vendors[len]+prop in div.style) return vendors[len]+prop;
 		},
 		setCss:function(obj,prop,value) { if (prop=this.css(prop)) obj[prop]=value; },
 		browser:function(substr){ return navigator.userAgent.toLowerCase().indexOf(substr) > -1; },
@@ -29,7 +29,7 @@ var Supports = (function(){
 	ret.isFirefox=ret.browser("firefox");
 	return ret;
 })();
- 
+
 /*
  * GAME LIBRARY
  */
@@ -151,7 +151,7 @@ function Box(parent, type, sub, statemanager) {
 			if (!this.rects) {
 				if (this.screen.statsmanager) this.screen.stats.updatedRects[this.uid]=this;
 				this.screen.stats.calculatedRects++;
-				this.rects=Box.getRects(this);				
+				this.rects=Box.getRects(this);
 			}
 			return this.rects;
 		},
@@ -377,7 +377,7 @@ function Box(parent, type, sub, statemanager) {
 						getter:function(attr){
 							switch (attr) {
 								case "position":{
-									var pos=(box.audio.context.currentTime-this.initTime)*this.source.playbackRate.value;	
+									var pos=(box.audio.context.currentTime-this.initTime)*this.source.playbackRate.value;
 									return !this.looping&&(pos>this.source.buffer.duration)?this.source.buffer.duration:pos;
 								}
 								case "length":{
@@ -534,7 +534,7 @@ function Box(parent, type, sub, statemanager) {
 		}
 		function touchHandler(e) {
 			if (!box.positionInPage) box.positionInPage=getPositionInPage(box.node);
-			if (e.changedTouches.length==1) {					
+			if (e.changedTouches.length==1) {
 				var touch=e.changedTouches[0];
 				posx = touch.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
 				posy = touch.clientY + document.body.scrollTop + document.documentElement.scrollTop;
@@ -562,7 +562,7 @@ function Box(parent, type, sub, statemanager) {
 						else if (e.clientX || e.clientY) {
 							posx = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
 							posy = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
-						}				
+						}
 						box.pointer.x=Math.floor((posx-box.positionInPage.x)/box.scale);
 						box.pointer.y=Math.floor((posy-box.positionInPage.y)/box.scale);
 					});
@@ -579,7 +579,7 @@ function Box(parent, type, sub, statemanager) {
 				case "touch":{
 					Box.on("touchstart",box.node,touchHandler);
 					Box.on("touchmove",box.node,touchHandler);
-					Box.on("touchend",box.node,function(e){ box.keyUp(-1); });				
+					Box.on("touchend",box.node,function(e){ box.keyUp(-1); });
 					break;
 				}
 			}
@@ -716,7 +716,7 @@ function Box(parent, type, sub, statemanager) {
 						obj.cleanprops.textAlign = 1;
 						this.stats.changesCount++;
 					}
-					Box._translator(this,node,obj);					
+					Box._translator(this,node,obj);
 					if (!obj.cleanprops.alpha) {
 						node.style.opacity = obj.alpha;
 						obj.cleanprops.alpha = 1;
@@ -967,6 +967,11 @@ function Box(parent, type, sub, statemanager) {
 					var file = box.resources.root + box.resources.current[1];
 					var ext = file.substr(file.lastIndexOf(".") + 1).toLowerCase();
 					switch (ext) {
+						case "font":{
+							// Coming soon :)
+							box.loadNextResource();
+							break;
+						}
 						case "png":{
 							var cache = document.createElement("img");
 							cache.style.visibility = "hidden";
@@ -1293,11 +1298,11 @@ Box.applyEffect=function(box,node,effect) {
 		case "fade":{
 			node.gainNode.gain.linearRampToValueAtTime(effect.fromVolume===undefined?node.gainNode.gain.value:effect.fromVolume, currTime);
 			node.gainNode.gain.linearRampToValueAtTime(effect.toVolume===undefined?node.volume:effect.toVolume, currTime + (effect.length===undefined?1:effect.length));
-			break;					
+			break;
 		}
 		case "setvolume":{
 			node.gainNode.gain.setValueAtTime(effect.volume===undefined?node.volume:effect.volume, currTime);
-			break;					
+			break;
 		}
 	}
 }
@@ -1565,7 +1570,7 @@ function Wright(gameId,container,mods) {
 		height: 200,
 		fps: 25
 	};
-	var KEYSYMBOLS={	
+	var KEYSYMBOLS={
 		8:"Backspace",
 		9:"Tab",
 		13:"Enter",
@@ -1700,7 +1705,7 @@ function Wright(gameId,container,mods) {
 			if (wall.type)
 				iterateComposedList(self, self, get(self, self,wall.type), function(type){
 					game.iterateCollisions(self, get(self, self, type),1,0,0,0,wall,_Code.wallsXcollision);
-				});			
+				});
 			else if (wall.area)
 				iterateComposedList(self, self, get(self, self,wall.area), function(area){
 					hit = get(self, self, area);
@@ -2043,7 +2048,7 @@ function Wright(gameId,container,mods) {
 					if (wait) break;
 					else  sub.id++;
 				}
-			}		
+			}
 		},
 		// DON'T USE THIS CODE IN GAMES! FOR INTERNAL USE!
 		Fade: function(data, local) {
@@ -2216,7 +2221,7 @@ function Wright(gameId,container,mods) {
 	        // Make rooms
 	        var rw,rh,rx,ry,ok,room,roomId=0,env={rooms:[]},stopper=500;
 	    	for (var i=0;i<1+args.complexity;i++) {
-				rh=minheight+(random(1+roomheightdelta)*args.gridHeight);				
+				rh=minheight+(random(1+roomheightdelta)*args.gridHeight);
 				rw=minwidth+(random(1+roomwidthdelta)*args.gridWidth);
 				rx=(random(1+roomleftdelta)*args.gridWidth)+sidemargin;
 				ry=(random(1+roomtopdelta)*args.gridHeight)+sidemargin;
@@ -2266,7 +2271,7 @@ function Wright(gameId,container,mods) {
 						for (var y=start.y-1;y<start.y+2;y++)
 							for (var x=start.x-1;x<start.x+2;x++)
 								if (!map[y][x].data.cellType) map[y][x].data={cellType:3,isCorridor:1,isWall:1,isCorridorWall:1,mapX:x,mapY:y,fromRoom:startroom,toRoom:endroom};
-						if (map[start.y][start.x].data.cellType!=1) {						
+						if (map[start.y][start.x].data.cellType!=1) {
 								if (!map[start.y][start.x].data.isRoom)
 									door=0;
 								else if (!door)
@@ -2476,7 +2481,7 @@ function Wright(gameId,container,mods) {
 						break;
 					}
 					case "object":{ ret = game.getType(get(from, tox, struct[++id]))||0; break; }
-					case "variable":{ ret = variables; break; }				
+					case "variable":{ ret = variables; break; }
 					case "camera":{ ret = camera.cameras; break; }
 					case "currentCamera":{ ret = camera.currentCamera; break; }
 					case "hud":{ ret = hud; break; }
@@ -2557,7 +2562,7 @@ function Wright(gameId,container,mods) {
 							ret = v1 + Math.floor(seededRandom() * (v2 - v1 + 1));
 						} else ret = p;
 						break;
-					}					
+					}
 					case "randomObject":{
 						p = get(from, tox, struct[++id]);
 						if ((typeof p=="object")&&p.typeId) {
@@ -2627,9 +2632,9 @@ function Wright(gameId,container,mods) {
 						break;
 					}
 					case ".":{ ret = ret + get(from, tox, struct[++id]); break; }
-					case "+":{ ret = FIX(ret + get(from, tox, struct[++id])); break; }	
+					case "+":{ ret = FIX(ret + get(from, tox, struct[++id])); break; }
 					case "mod":
-					case "%":{ ret = FIX(ret % get(from, tox, struct[++id])); break; }				
+					case "%":{ ret = FIX(ret % get(from, tox, struct[++id])); break; }
 					case "-":{ ret = FIX(ret - get(from, tox, struct[++id])); break; }
 					case "*":{ ret = FIX(ret * get(from, tox, struct[++id])); break; }
 					case "/":{ ret = FIX(ret / get(from, tox, struct[++id])); break; }
@@ -2854,7 +2859,7 @@ function Wright(gameId,container,mods) {
 							var pos=from.indexOf(get(item, curtox, line.unpush));
 							if (pos!=-1) from.splice(pos,1);
 						}
-					}					
+					}
 					if (line.sort) {
 						var by= get(item, curtox, line.by);
 						var list= get(item, curtox, line.sort);
@@ -2927,12 +2932,12 @@ function Wright(gameId,container,mods) {
 						if (line.toAudio!==undefined) element=game.getAudio(get(item,curtox,line.toAudio),get(item,curtox,line.withChannel));
 						else if (line.toChannel!==undefined) element=game.getAudioChannel(get(item,curtox,line.toChannel));
 						if (element) element.applyEffect(get(item,curtox,line.applyEffect));
-					}					
+					}
 					if (line.executeAction !== undefined) {
 						var statedata = item.getState();
 						iterateComposedList(item, curtox, get(item, curtox, line.executeAction),
 							function(subitem) {
-								if (statedata.actions[subitem]) {												
+								if (statedata.actions[subitem]) {
 									if (statedata.actions[subitem].set)
 										iterateComposedList(item, curtox, get(item, curtox, statedata.actions[subitem].set), function(setter) {
 											applyStencil(item, curtox, get(item, curtox, setter));
@@ -3102,8 +3107,8 @@ function Wright(gameId,container,mods) {
 							_: ["this", a]
 						}, get(from, tox, template[a]));
 					}
-				}			
-		for (var a in SceneGenerators) if (template[a]!==undefined) SceneGenerators[a](template,father,from,tox);		
+				}
+		for (var a in SceneGenerators) if (template[a]!==undefined) SceneGenerators[a](template,father,from,tox);
 		if (template.execute) execute(from, tox, get(from, tox, template.execute));
 		return from;
 	}
@@ -3392,7 +3397,7 @@ function Wright(gameId,container,mods) {
 		if (mode.volume&&gamedata.audioChannels) game.enableAudio(mode.volume/100);
 		if (hardware.usePointer) game.enablePointer(mode.pointer||Supports.pointerMode());
 		tv.style.width = (game.width * game.scale) + "px";
-		tv.style.height = (game.height * game.scale) + "px";			
+		tv.style.height = (game.height * game.scale) + "px";
 		game.setResourcesRoot("tapes/" + gameId + "/");
 		for (var k in gamedata.resources) game.addResource(k, gamedata.resources[k]);
 		for (var k in gamedata.audioChannels) game.addAudioChannel(k, gamedata.audioChannels[k]);
@@ -3463,7 +3468,7 @@ function Wright(gameId,container,mods) {
 			for (var i=1;i<resolutions;i++) {
 				itm=node(resolution,"option",0,(hardware.width*i)+"x"+(hardware.height*i)+" (x"+i+")");
 				if (i==scale) itm.setAttribute("selected","selected");
-			}			
+			}
 			if (hasAudio) {
 				row=node(article,"p");
 				node(row,"span","label","Sound:");
@@ -3472,7 +3477,7 @@ function Wright(gameId,container,mods) {
 				for (var i=10;i<=100;i+=10) {
 					itm=node(audio,"option",0,"Volume "+i+"%");
 					if (i==volume) itm.setAttribute("selected","selected");
-				}				
+				}
 			}
 			node(article,"h3",0,"Cheats");
 			for (var a in cheatslist) {
