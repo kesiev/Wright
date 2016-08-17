@@ -694,12 +694,17 @@ function WrightTools() {
       return lines;
   }
 
-  function solveMacro(val) {
+  function solveMacro(a,val) {
     if ((typeof val=="string")&&(val.substr(0,1)=="#")) {
       var id=val.split("#");
       switch (id[1]) {
         case "DIALOGUE":{
           return makeDialogue(val.substr(10));
+          break;
+        }
+        case "OBJECT":{
+          var layer=getLayer(a,val.substr(8));
+          return {"object":convertLayer(a,layer)};
           break;
         }
         default:{
@@ -711,12 +716,12 @@ function WrightTools() {
 
 
   var MERGE_SUM=1,MERGE_OBJECT=2,MERGE_FIRST;
-  function getProperty(out,mode,name,list) {
+  function getProperty(a,out,mode,name,list) {
     var p,v;
     for (var i=0;i<list.length;i++) {
       p=list[i];
       if (p&&(p[name]!==undefined)) {
-        v=solveMacro(p[name]);
+        v=solveMacro(a,p[name]);
         switch (mode) {
             case MERGE_FIRST:{
               return v;
@@ -756,7 +761,7 @@ function WrightTools() {
   };
   var MERGE_ALL=1,MERGE_SELECTED=2;
 
-  function mergeProperties(out,mode,modes,list) {
+  function mergeProperties(a,out,mode,modes,list) {
     var b,done=[];
     switch (mode) {
       case MERGE_ALL:{
@@ -765,13 +770,13 @@ function WrightTools() {
           for (b in list[i])
             if ((b[0]!="#")&&(done.indexOf(b)==-1)) {
               done.push(b);
-              out[b]=getProperty(out[b],modes[b]||MERGE_OBJECT,b,list);
+              out[b]=getProperty(a,out[b],modes[b]||MERGE_OBJECT,b,list);
             }
             break;
       }
       case MERGE_SELECTED:{
         for (b in modes)
-            out[b]=getProperty(out[b],modes[b],b,list);
+            out[b]=getProperty(a,out[b],modes[b],b,list);
           break;
       }
     }
@@ -816,7 +821,7 @@ function WrightTools() {
 			var obj={};
 			liked=0;
 			p=i*1;
-			mergeProperties(obj,MERGE_ALL,MERGE_DEFAULT,[t,a.properties]);
+			mergeProperties(a,obj,MERGE_ALL,MERGE_DEFAULT,[t,a.properties]);
 
 			if (t["#like"]) {
 			  liked=1;
@@ -891,7 +896,7 @@ function WrightTools() {
           if (!chunk.object) chunk.object=[];
           for (var i=0;i<set.length;i++) chunk.object=chunk.object.concat(convertLayer(a,getLayer(a,set[i])));
         }
-        mergeProperties(chunk,MERGE_ALL,MERGE_DEFAULT,[l.properties]);
+        mergeProperties(a,chunk,MERGE_ALL,MERGE_DEFAULT,[l.properties]);
 
 
         var roomNames=[];
@@ -915,8 +920,8 @@ function WrightTools() {
         	if (!room.properties["#ignore"]) {
 
 	        	var sc={object:[],tilemap:[]};
-	        	mergeProperties(sc,MERGE_ALL,MERGE_DEFAULT,[l.properties]);
-	        	mergeProperties(sc,MERGE_ALL,MERGE_DEFAULT,[room.properties]);
+	        	mergeProperties(a,sc,MERGE_ALL,MERGE_DEFAULT,[l.properties]);
+	        	mergeProperties(a,sc,MERGE_ALL,MERGE_DEFAULT,[room.properties]);
 	        	scenes[roomNames[lcnt]]=sc;
 
 	        	for (var j=0;j<chunk.object.length;j++) {
@@ -1043,7 +1048,7 @@ function WrightTools() {
         if (chunk.tilemap&&(chunk.tilemap.length==1)) chunk.tilemap=chunk.tilemap[0];
         if (chunk.object&&(chunk.object.length==1)) chunk.object=chunk.object[0];
         if (chunk.cameras&&(chunk.cameras.length==1)) chunk.cameras=chunk.cameras[0];
-        mergeProperties(chunk,MERGE_ALL,MERGE_DEFAULT,[l.properties]);
+        mergeProperties(a,chunk,MERGE_ALL,MERGE_DEFAULT,[l.properties]);
         chunk=runtidy(chunk,[function(a){return {scenes:{foo:a}}},["scenes","foo"]]);
       }
 
@@ -1056,14 +1061,14 @@ function WrightTools() {
         dx=dy=0;
 
 
-        mergeProperties(cam,MERGE_SELECTED,MERGE_SIZE,[l.objects[i]]);
-        mergeProperties(cam,MERGE_SELECTED,MERGE_POSITION,[l,l.objects[i]]);
+        mergeProperties(a,cam,MERGE_SELECTED,MERGE_SIZE,[l.objects[i]]);
+        mergeProperties(a,cam,MERGE_SELECTED,MERGE_POSITION,[l,l.objects[i]]);
 
         // CODE GENERATORS
         var onEnterExecute=[];
         var onExitExecute=[];
 
-        var spawn=getProperty([],MERGE_OBJECT,"#spawn",[l.objects[i].properties,l.properties]);
+        var spawn=getProperty(a,[],MERGE_OBJECT,"#spawn",[l.objects[i].properties,l.properties]);
         if (spawn.length) {
           entry={object:[]};
           for (j=0;j<spawn.length;j++) {
@@ -1079,7 +1084,7 @@ function WrightTools() {
           }
         }
 
-        var remove=getProperty([],MERGE_OBJECT,"#remove",[l.objects[i].properties,l.properties]);
+        var remove=getProperty(a,[],MERGE_OBJECT,"#remove",[l.objects[i].properties,l.properties]);
         if (remove.length)
           for (j=0;j<remove.length;j++)
             onExitExecute.push({as:{_:["object",remove[j]]},remove:1});
@@ -1095,7 +1100,7 @@ function WrightTools() {
         }
 
         // BASIC PROPERTIES
-        mergeProperties(cam,MERGE_ALL,MERGE_DEFAULT,[l.objects[i].properties,l.properties]);
+        mergeProperties(a,cam,MERGE_ALL,MERGE_DEFAULT,[l.objects[i].properties,l.properties]);
 
           chunk.push(cam);
         }
@@ -1117,7 +1122,7 @@ function WrightTools() {
               obj.height=cur.height;              
             }
             if (cur.name) names.push(cur.name);
-            stencil=getProperty([],MERGE_OBJECT,"#stencil",[cur.properties,l.properties]);
+            stencil=getProperty(a,[],MERGE_OBJECT,"#stencil",[cur.properties,l.properties]);
 
             if (stencil.length) names=names.concat(stencil);
 
@@ -1130,16 +1135,16 @@ function WrightTools() {
             }
 
 
-            var serial=getProperty([],MERGE_OBJECT,"#serial",[tile?tile.properties:{},cur.properties,l.properties]);
+            var serial=getProperty(a,[],MERGE_OBJECT,"#serial",[tile?tile.properties:{},cur.properties,l.properties]);
             if (serial.length) {
             	serial=serial[serial.length-1];             
               obj.serial=serial+"-"+makeSerial(serial);
             }
 
-            mergeProperties(obj,MERGE_SELECTED,MERGE_POSITION,[l,cur]);
+            mergeProperties(a,obj,MERGE_SELECTED,MERGE_POSITION,[l,cur]);
             if (tile) obj.y-=tile.set.tileheight;
 
-            mergeProperties(obj,MERGE_ALL,MERGE_DEFAULT,[tile?tile.properties:{},cur.properties,l.properties]);
+            mergeProperties(a,obj,MERGE_ALL,MERGE_DEFAULT,[tile?tile.properties:{},cur.properties,l.properties]);
 
             if (cur.properties&&cur.properties["#nosize"]) {
              delete obj.width;
@@ -1160,6 +1165,9 @@ function WrightTools() {
               obj.y-=crop.sy*tileset.set.tileheight;
             }
 
+             if (l.properties&&l.properties["#deltaX"]) obj.x+=l.properties["#deltaX"]*1;
+             if (l.properties&&l.properties["#deltaY"]) obj.y+=l.properties["#deltaY"]*1;
+
 
             if (cur.properties&&cur.properties["#dialogue"]) {             
               obj.dialogue=makeDialogue(cur.properties["#dialogue"]);
@@ -1178,7 +1186,7 @@ function WrightTools() {
               var chunk={name:"mission", execute:{object:chunk},set:{data:{}}};
               for (var k in l.properties) {
                 if (startsWith(k,"#data-"))
-                  chunk.set.data[k.substr(6)]=solveMacro(l.properties[k]);
+                  chunk.set.data[k.substr(6)]=solveMacro(a,l.properties[k]);
               }
               chunk=runtidy(chunk,[function(a){return {scenes:{foo:{states:a}}}},["scenes","foo","states"]]);
             }
