@@ -2276,7 +2276,7 @@ function Wright(gameId,container,mods) {
 	var FILTERS={
 		none:[
 			{
-				label:"None",
+				label:"(None)",
 				filter:[{render:1}]
 			}
 		],
@@ -2290,7 +2290,7 @@ function Wright(gameId,container,mods) {
 			    ]
 			},
 			{
-				label:"None",
+				label:"Disabled",
 				filter:[{render:1}]
 			},
 			{
@@ -4151,7 +4151,7 @@ function Wright(gameId,container,mods) {
 		var pointer=(mods.pointer===undefined?(localStorage["wrightPointer"]||Supports.pointerMode()):mods.pointer)||"mouse";
 		var renderer=(mods.renderer===undefined?localStorage["wrightRenderer"]*1:mods.renderer)||0;
 		var filters=(hardware.filter instanceof Array?hardware.filter:FILTERS[hardware.filter])||FILTERS.none;
-		var filter=(mods.filter===undefined?localStorage["wrightFilter"]:mods.filter)||"None";
+		var filter=(mods.filter===undefined?localStorage["wrightFilter"]:mods.filter)||filters[0].label;
 		if (!Supports.supportsScaling) scale=1;
 		if (mods.noui) {
 			var filterset;
