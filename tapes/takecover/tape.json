@@ -8,16 +8,19 @@
   "hardware":{
     "width":256,
     "height":192,
-    "texture":"scanlines"
+    "filter":"retro"
   },
   "cheats":{
     "undestructableCovers":"Undestructable covers",
     "unlimitedLives":"Unlimited lives"
   },
   "resources":{
+    "spectrum":"spectrum.font",
+    "pixeldingbats":"pixeldingbats.font",
     "logoimage":"logo.png",
     "stage1":"stage1.png",
     "defaultsprites":"../default/sprites.png",
+    "crt":"../default/crt.png",
     "scanlines":"../default/scanlines.png"
   },
   "stencils":{
@@ -377,11 +380,23 @@
   "execute":{
     "object":[
       {
-        "type":"hud",
-        "hudType":"label", "label":"FOE %repeatPercent|variable.foeValue|variable.foeLimit|30|<span style='font-family:pixeldingbats;font-size:6px;color:#f00'>h</span>|<span style='font-family:pixeldingbats;font-size:6px;color:#7f7f7f'>h</span>%",
+        "html":"FOE",
         "box":"label", "width":246,
         "x":5, "y":174,
         "font":"spectrum", "outline":"#000000"
+      },
+      {
+        "type":"hud",
+        "hudType":"label", "label":"%repeatPercent|variable.foeValue|variable.foeLimit|30|h| %",
+        "box":"label", "width":246,
+        "x":37, "y":174, "color":"#f00", "fontSize":6, "zIndex":10,
+        "font":"pixeldingbats", "outline":"#000000"
+      },
+      {
+        "html":"hhhhhhhhhhhhhhhhhhhhhhhhhhhhhh",
+        "box":"label", "width":246,
+        "x":37, "y":174, "color":"#7f7f7f", "fontSize":6,
+        "font":"pixeldingbats", "outline":"#000000"
       },
       {
         "type":"hud",

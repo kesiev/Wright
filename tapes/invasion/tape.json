@@ -8,13 +8,16 @@
   "hardware":{
     "width":256,
     "height":192,
-    "texture":"scanlines"
+    "filter":"retro"
   },
   "cheats":{
     "unlimitedLives":"Unlimited lives"
   },
   "resources":{
+    "spectrum":"spectrum.font",
+    "pixeldingbats":"pixeldingbats.font",
     "defaultsprites":"../default/sprites.png",
+    "crt":"../default/crt.png",
     "scanlines":"../default/scanlines.png"
   },
   "stencils":{
@@ -145,11 +148,17 @@
     "object":[
       { "type":"hud", "hudType":"label", "label":"SCORE %number|variable.score%", "box":"label", "width":100, "x":5, "y":5, "font":"spectrum" },
       {
-        "type":"hud",
-        "hudType":"label", "label":"LIVES %repeat|variable.lives|<span style='font-family:pixeldingbats;font-size:8px;color:#ff0'>&#339;</span>%",
+        "html":"LIVES",
         "box":"label", "width":100,
         "x":110, "y":5,
         "font":"spectrum"
+      },
+      {
+        "type":"hud",
+        "hudType":"label", "label":"%repeat|variable.lives|&#339;%",
+        "box":"label", "width":100,
+        "x":158, "y":5, "fontSize":8, "color":"#ff0",
+        "font":"pixeldingbats"
       }
     ],
     "into":{ "_":"hud" }

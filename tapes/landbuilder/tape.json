@@ -8,14 +8,17 @@
   "hardware":{
     "width":256,
     "height":192,
-    "texture":"scanlines"
+    "filter":"retro"
   },
   "cheats":{},
   "resources":{
+    "spectrum":"spectrum.font",
+    "pixeldingbats":"pixeldingbats.font",
     "icons":"icons.png",
     "tiles":"tiles.png",
     "title":"title.png",
     "defaultsprites":"../default/sprites.png",
+    "crt":"../default/crt.png",
     "scanlines":"../default/scanlines.png"
   },
   "stencils":{
@@ -33,22 +36,73 @@
       "execute":[
         { "as":{ "_":"variable" }, "set":{ "money":500, "timeMinutes":5, "timeSeconds":0, "units":20 } },
         {
-          "object":[
+          "object":[           
             {
               "type":"hud",
-              "hudType":"label", "label":"<span style='color:#ff0'>%number|variable.money%$</span> <span style='color:#f0f'>%number|variable.units%<span style='font-family:pixeldingbats;font-size:6px'>&#231;</span></span>",
-              "box":"label", "width":256, "height":40,
+              "hudType":"label", "label":"$%number|variable.money|0|5|.%",
+              "box":"label", "width":60, "height":20,
               "zIndex":2, "x":5, "y":5,
-              "color":"#fff",
-              "font":"spectrum", "lineHeight":10, "outline":"#000"
+              "color":"#ff0",
+              "font":"spectrum", "outline":"#000"
+            },
+            {
+              "html":"&#231;",
+              "box":"label", "width":10, "height":20,
+              "zIndex":2, "x":63, "y":5, "fontSize":6,
+              "color":"#f0f", 
+              "font":"pixeldingbats", "outline":"#000"
+            },            
+            {
+              "type":"hud",
+              "hudType":"label", "label":"%number|variable.units|0|4|.%",
+              "box":"label", "width":60, "height":20,
+              "zIndex":2, "x":71, "y":5,
+              "color":"#f0f",
+              "font":"spectrum", "outline":"#000"
             },
             {
               "type":"hud",
-              "hudType":"label", "label":"%number|variable.timeMinutes|0|2%:%number|variable.timeSeconds|0|2% <span style='font-family:pixeldingbats;font-size:6px'>&#220;</span><br><span style='color:#ff0'>%number|storage.hiscoreMoney%$</span> <span style='color:#f0f'>%number|storage.hiscoreUnits%<span style='font-family:pixeldingbats;font-size:6px'>&#231;</span></span> <span style='font-family:pixeldingbats;font-size:6px'>&#206;</span>",
-              "box":"label", "width":251, "height":40,
-              "zIndex":2, "x":0, "y":5,
+              "hudType":"label", "label":"%number|variable.timeMinutes|0|2%:%number|variable.timeSeconds|0|2%",
+              "box":"label", "width":60, "height":20,
+              "zIndex":2, "x":177, "y":5,
+              "font":"spectrum", "outline":"#000", "textAlign":"right"
+            },
+            {
+              "html":"&#220;",
+              "box":"label", "width":10, "height":20,
+              "zIndex":2, "x":241, "y":5, "fontSize":6,
               "color":"#fff",
-              "font":"spectrum", "lineHeight":10, "outline":"#000", "textAlign":"right"
+              "font":"pixeldingbats", "outline":"#000"
+            },
+            {
+              "type":"hud",
+              "hudType":"label", "label":"$%number|storage.hiscoreMoney|0|5|.%",
+              "box":"label", "width":60, "height":20,
+              "zIndex":2, "x":137, "y":15,
+              "color":"#ff0",
+              "font":"spectrum", "outline":"#000"
+            },
+            {
+              "html":"&#231;",
+              "box":"label", "width":10, "height":20,
+              "zIndex":2, "x":195, "y":15, "fontSize":6,
+              "color":"#f0f",
+              "font":"pixeldingbats", "outline":"#000"
+            },
+            {
+              "type":"hud",
+              "hudType":"label", "label":"%number|storage.hiscoreUnits|0|4|.%",
+              "box":"label", "width":60, "height":20,
+              "zIndex":2, "x":203, "y":15,
+              "color":"#f0f",
+              "font":"spectrum", "outline":"#000"
+            },
+            {
+              "html":"&#206;",
+              "box":"label", "width":10, "height":20,
+              "zIndex":2, "x":241, "y":15, "fontSize":6,
+              "color":"#fff",
+              "font":"pixeldingbats", "outline":"#000"
             }
           ],
           "into":{ "_":"scenehud" }
@@ -103,7 +157,7 @@
         "object":{
           "type":"message",
           "box":"label", "width":246, "height":20,
-          "x":5, "y":12,
+          "x":5, "y":25, "color":{"_":["variable","textColor"]},
           "font":"spectrum", "outline":"#000", "html":{ "_":[ "variable", "message" ] },
           "states":{ "code":{ "name":"Sequence", "data":[ { "wait":45 }, { "remove":1 } ] } }
         },
@@ -304,7 +358,7 @@
                           "as":{ "_":"that" },
                           "execute":{
                             "as":{ "_":"variable" },
-                            "set":{ "message":{ "_":[ "that", "label", ".", " (", ".", { "_":[ "that", "content" ] }, ".", ")" ] } },
+                            "set":{ "textColor":"#fff", "message":{ "_":[ "that", "label", ".", " (", ".", { "_":[ "that", "content" ] }, ".", ")" ] } },
                             "execute":{ "_":[ "stencil", "codeMessageShow" ] }
                           },
                           "elseExecute":{ "set":{ "state":"menu" } }
@@ -332,35 +386,76 @@
               "execute":[
                 { "as":{ "_":"variable" }, "set":{ "menuOption":{ "_":[ "that", "iconImage" ] }, "selectedStructure":{ "_":"that" } } },
                 {
-                  "object":{
-                    "type":[ "hud", "menu" ],
-                    "hudType":"label", "label":"<span style='color:#f00'>DOWN: Place worker.</span> <span style='color:#f0f'>%number|variable.selectedStructure.workers%/%number|variable.selectedStructure.maxWorkers%<span style='font-family:pixeldingbats;font-size:6px'>&#231;</span>",
-                    "box":"label", "width":240, "height":20,
-                    "x":8, "y":130,
-                    "font":"spectrum", "outline":"#000"
-                  },
+                  "object":[
+                    {
+                      "type":"menu",
+                      "html":"DOWN: Place worker.",
+                      "box":"label", "width":240, "height":20,
+                      "x":8, "y":128, "color":"#f00",
+                      "font":"spectrum", "outline":"#000"
+                    },
+                    {
+                      "type":"menu",
+                      "html":"&#231;",
+                      "box":"label", "width":10, "height":20, "fontSize":6,
+                      "x":168, "y":128, "color":"#f0f", "textAlign":"right",
+                      "font":"pixeldingbats", "outline":"#000"
+                    },
+                    {
+                      "type":[ "hud", "menu" ],
+                      "hudType":"label", "label":"%number|variable.selectedStructure.workers%/%number|variable.selectedStructure.maxWorkers%",
+                      "box":"label", "width":60, "height":20,
+                      "x":178, "y":128, "color":"#f0f",
+                      "font":"spectrum", "outline":"#000"
+                    }
+                  ],
                   "into":{ "_":"scenehud" }
                 },
                 {
                   "when":{ "_":[ "variable", "selectedStructure", "pickContentTo" ] },
                   "execute":{
-                    "object":{
-                      "type":[ "hud", "menu" ],
-                      "hudType":"label", "label":"<span style='color:#f00'>&nbsp;&nbsp;UP: Pick content.</span> <span style='color:%text|variable.selectedStructure.pickContentColor%'>%number|variable.selectedStructure.content%/%number|variable.selectedStructure.maxContent%%text|variable.selectedStructure.pickContentSymbol%</span>",
-                      "box":"label", "width":240, "height":20,
-                      "x":8, "y":118,
-                      "font":"spectrum", "outline":"#000"
-                    },
+                    "object":[
+                      {
+                        "type":"menu",
+                        "html":"&nbsp;&nbsp;UP: Pick content.",
+                        "box":"label", "width":240, "height":20,
+                        "x":8, "y":116, "color":"#f00",
+                        "font":"spectrum", "outline":"#000"
+                      },                      
+                      {
+                        "type":[ "hud", "menu" ],
+                        "hudType":"label", "label":"%text|variable.selectedStructure.pickContentSymbol%",
+                        "box":"label", "width":240, "height":20, "fontSize":{"_":["variable","selectedStructure","pickContentFontSize"]},
+                        "x":168, "y":116, "color":{"_":["variable","selectedStructure","pickContentColor"]},
+                        "font":{"_":["variable","selectedStructure","pickContentFont"]}, "outline":"#000"
+                      },
+                      {
+                        "type":[ "hud", "menu" ],
+                        "hudType":"label", "label":"%number|variable.selectedStructure.content%/%number|variable.selectedStructure.maxContent%",
+                        "box":"label", "width":240, "height":20,
+                        "x":178, "y":116, "color":{"_":["variable","selectedStructure","pickContentColor"]},
+                        "font":"spectrum", "outline":"#000"
+                      }
+                    ],
                     "into":{ "_":"scenehud" }
                   },
                   "elseExecute":{
-                    "object":{
-                      "type":[ "hud", "menu" ],
-                      "hudType":"label", "label":"<span style='color:#f00'>&nbsp;&nbsp;--: Content:</span> %number|variable.selectedStructure.content%/%number|variable.selectedStructure.maxContent% %text|variable.selectedStructure.contentSymbol%</span>",
-                      "box":"label", "width":240, "height":20,
-                      "x":8, "y":118,
-                      "font":"spectrum", "outline":"#000"
-                    },
+                    "object":[
+                      {
+                        "type":"menu",
+                        "html":"&nbsp;&nbsp;--: Content:",
+                        "box":"label", "width":240, "height":20,
+                        "x":8, "y":116, "color":"#f00",
+                        "font":"spectrum", "outline":"#000"
+                      },
+                      {
+                        "type":[ "hud", "menu" ],
+                        "hudType":"label", "label":"%number|variable.selectedStructure.content%/%number|variable.selectedStructure.maxContent% %text|variable.selectedStructure.contentSymbol%",
+                        "box":"label", "width":240, "height":20,
+                        "x":128, "y":116,
+                        "font":"spectrum", "outline":"#000"
+                      }
+                    ],
                     "into":{ "_":"scenehud" }
                   }
                 }
@@ -370,17 +465,45 @@
             {
               "object":[
                 {
-                  "type":[ "hud", "menu" ],
-                  "hudType":"label", "label":"<span style='color:#f00'>&lt;-&gt; %text|variable.currentOption.label%</span> <span style='color:#ff0'>%number|variable.currentOption.cost%$</span> <span style='color:#f0f'>%number|variable.currentOption.maxWorkers%<span style='font-family:pixeldingbats;font-size:6px'>&#231;</span></span>",
+                  "type":"menu",
+                  "html":"&lt;-&gt;",
                   "box":"label", "width":240, "height":20,
-                  "x":8, "y":142,
+                  "x":8, "y":139, "color":"#f00",
+                  "font":"spectrum", "outline":"#000"
+                },
+                {
+                  "type":[ "hud", "menu" ],
+                  "hudType":"label", "label":"$%number|variable.currentOption.cost|0|3|.%",
+                  "box":"label", "width":240, "height":20,
+                  "x":40, "y":139, "color":"#ff0",
+                  "font":"spectrum", "outline":"#000"
+                },
+                {
+                  "type":"menu",
+                  "html":"&#231;",
+                  "box":"label", "width":240, "height":20,
+                  "x":80, "y":139, "color":"#f0f", "fontSize":6,
+                  "font":"pixeldingbats", "outline":"#000"
+                },
+                {
+                  "type":[ "hud", "menu" ],
+                  "hudType":"label", "label":"%number|variable.currentOption.maxWorkers|0|3|.%",
+                  "box":"label", "width":240, "height":20,
+                  "x":88, "y":139, "color":"#f0f",
+                  "font":"spectrum", "outline":"#000"
+                },
+                {
+                  "type":[ "hud", "menu" ],
+                  "hudType":"label", "label":"%text|variable.currentOption.label%",
+                  "box":"label", "width":240, "height":20,
+                  "x":120, "y":139, "color":"#fff",
                   "font":"spectrum", "outline":"#000"
                 },
                 {
                   "type":[ "hud", "menu" ],
                   "hudType":"label", "label":"%text|variable.currentOption.description%",
                   "box":"label", "width":240, "height":20,
-                  "x":8, "y":152,
+                  "x":8, "y":150,
                   "font":"spectrum", "outline":"#000"
                 }
               ],
@@ -458,20 +581,20 @@
                         { "as":{ "_":"that" }, "execute":{ "_":[ "stencil", "codeCloud" ] } },
                         { "subtract":{ "_":[ "variable", "currentOption", "cost" ] }, "to":{ "_":[ "variable", "money" ] } },
                         { "subtract":{ "_":[ "variable", "currentOption", "maxWorkers" ] }, "to":{ "_":[ "variable", "units" ] } },
-                        { "log":"rimuovi con animazione", "when":{ "_":[ "variable", "selectedStructure" ] }, "as":{ "_":[ "variable", "selectedStructure" ] }, "remove":1 },
+                        { "when":{ "_":[ "variable", "selectedStructure" ] }, "as":{ "_":[ "variable", "selectedStructure" ] }, "remove":1 },
                         {
                           "when":{ "_":[ "variable", "currentOption", "type" ] },
                           "object":{ "set":{ "_":[ "variable", "currentOption" ] }, "x":{ "_":[ "that", "x" ] }, "y":{ "_":[ "that", "y" ] } }
                         },
                         {
                           "as":{ "_":"variable" },
-                          "set":{ "message":{ "_":[ "variable", "currentOption", "buildMessage" ] } },
+                          "set":{ "textColor":"#fff", "message":{ "_":[ "variable", "currentOption", "buildMessage" ] } },
                           "execute":{ "_":[ "stencil", "codeMessageShow" ] }
                         }
                       ],
-                      "elseExecute":{ "as":{ "_":"variable" }, "set":{ "message":"Not enough units." }, "execute":{ "_":[ "stencil", "codeMessageShow" ] } }
+                      "elseExecute":{ "as":{ "_":"variable" }, "set":{ "textColor":"#fff", "message":"Not enough units." }, "execute":{ "_":[ "stencil", "codeMessageShow" ] } }
                     },
-                    "elseExecute":{ "as":{ "_":"variable" }, "set":{ "message":"Not enough money." }, "execute":{ "_":[ "stencil", "codeMessageShow" ] } }
+                    "elseExecute":{ "as":{ "_":"variable" }, "set":{ "textColor":"#fff", "message":"Not enough money." }, "execute":{ "_":[ "stencil", "codeMessageShow" ] } }
                   }
                 },
                 { "set":{ "state":"default" } }
@@ -487,15 +610,15 @@
                       { "subtract":1, "to":{ "_":[ "variable", "units" ] } },
                       {
                         "as":{ "_":"variable" },
-                        "set":{ "message":{ "_":[ "Worker added to ", ".", { "_":[ "variable", "selectedStructure", "label" ] }, ".", "." ] } },
+                        "set":{ "textColor":"#fff", "message":{ "_":[ "Worker added to ", ".", { "_":[ "variable", "selectedStructure", "label" ] }, ".", "." ] } },
                         "execute":{ "_":[ "stencil", "codeMessageShow" ] }
                       }
                     ],
-                    "elseExecute":{ "as":{ "_":"variable" }, "set":{ "message":"Not enough units." }, "execute":{ "_":[ "stencil", "codeMessageShow" ] } }
+                    "elseExecute":{ "as":{ "_":"variable" }, "set":{ "textColor":"#fff", "message":"Not enough units." }, "execute":{ "_":[ "stencil", "codeMessageShow" ] } }
                   },
                   "elseExecute":{
                     "as":{ "_":"variable" },
-                    "set":{ "message":{ "_":[ { "_":[ "variable", "selectedStructure", "label" ] }, ".", " full." ] } },
+                    "set":{ "textColor":"#fff", "message":{ "_":[ { "_":[ "variable", "selectedStructure", "label" ] }, ".", " full." ] } },
                     "execute":{ "_":[ "stencil", "codeMessageShow" ] }
                   }
                 },
@@ -507,19 +630,16 @@
                       {
                         "as":{ "_":"variable" },
                         "set":{
+                          "textColor":{ "_":[ "variable", "selectedStructure", "pickContentColor" ] },
                           "message":{
                             "_":[
-                              "Picked <span style='color:",
-                              ".",
-                              { "_":[ "variable", "selectedStructure", "pickContentColor" ] },
-                              ".",
-                              "'>",
+                              "Picked ",
                               ".",
                               { "_":[ "variable", "selectedStructure", "content" ] },
                               ".",
-                              { "_":[ "variable", "selectedStructure", "pickContentSymbol" ] },
+                              { "_":[ "variable", "selectedStructure", "pickContentLabel" ] },
                               ".",
-                              "</span>."
+                              "."
                             ]
                           }
                         },
@@ -531,7 +651,7 @@
                       },
                       { "as":{ "_":[ "variable", "selectedStructure" ] }, "set":{ "content":0 } }
                     ],
-                    "elseExecute":{ "as":{ "_":"variable" }, "set":{ "message":"Nothing to pickup." }, "execute":{ "_":[ "stencil", "codeMessageShow" ] } }
+                    "elseExecute":{ "as":{ "_":"variable" }, "set":{ "textColor":"#fff", "message":"Nothing to pickup." }, "execute":{ "_":[ "stencil", "codeMessageShow" ] } }
                   }
                 }
               }
@@ -759,14 +879,17 @@
         "animationType":"process",
         "buildMessage":"House built.",
         "consume":"health",
-        "contentSymbol":"<span style='font-family:pixeldingbats;font-size:6px'>&#231;</span>",
+        "contentSymbol":"Units",
         "cost":25,
         "description":"Convert Health to Units",
         "iconImage":9,
         "maxContent":10,
         "maxWorkers":2,
         "pickContentColor":"#f0f",
-        "pickContentSymbol":"<span style='font-family:pixeldingbats;font-size:6px'>&#231;</span>",
+        "pickContentSymbol":"&#231;",
+        "pickContentLabel":" Unit",
+        "pickContentFont":"pixeldingbats",
+        "pickContentFontSize":6,
         "pickContentTo":"units",
         "rangeHeight":3,
         "rangeWidth":3,
@@ -791,6 +914,9 @@
         "maxWorkers":4,
         "pickContentColor":"#ff0",
         "pickContentSymbol":"$",
+        "pickContentLabel":"$",
+        "pickContentFont":"spectrum",
+        "pickContentFontSize":20,
         "pickContentTo":"money",
         "rangeHeight":3,
         "rangeWidth":3,
@@ -849,7 +975,28 @@
                 "box":"label", "width":256, "height":30,
                 "zIndex":10, "x":0, "y":100,
                 "color":"#fff",
-                "font":"spectrum", "lineHeight":12, "outline":"#000", "textAlign":"center", "html":{ "_":[ "Beat the greatest known land:<br><span style='color:#ff0'>", ".", { "_":[ "storage", "hiscoreMoney" ] }, ".", "$</span> <span style='color:#f0f'>", ".", { "_":[ "storage", "hiscoreUnits" ] }, ".", "<span style='font-family:pixeldingbats;font-size:6px'>&#231;</span>" ] }
+                "font":"spectrum", "lineHeight":12, "outline":"#000", "textAlign":"center", "html":"Beat the greatest known land:"
+              },
+              {
+                "type":[ "intro", "hud" ], "hudType":"label",
+                "box":"label", "label":"$%number|storage.hiscoreMoney|0|5|.%", "width":60, "height":30,
+                "zIndex":10, "x":73, "y":112,
+                "color":"#ff0",
+                "font":"spectrum", "lineHeight":12, "outline":"#000"
+              },
+              {
+                "type":"intro",
+                "box":"label", "html":"&#231;", "width":10, "height":30,
+                "zIndex":10, "x":129, "y":112, 
+                "color":"#f0f", "fontSize":6,
+                "font":"pixeldingbats", "lineHeight":12, "outline":"#000"
+              },
+              {
+                "type":[ "intro", "hud" ], "hudType":"label",
+                "box":"label", "label":"%number|storage.hiscoreUnits|0|4|.%", "width":60, "height":30,
+                "zIndex":10, "x":133, "y":112,
+                "color":"#f0f",
+                "font":"spectrum", "lineHeight":12, "outline":"#000"
               },
               {
                 "type":"intro",
@@ -907,7 +1054,7 @@
                   "isGreaterEqualThan",
                   { "_":[ "storage", "hiscoreUnits" ] },
                   "and",
-                  { "_":[ "variable", "money", "isGreaterEqualThan", { "_":[ "storage", "hiscoreMoneyz" ] } ] }
+                  { "_":[ "variable", "money", "isGreaterEqualThan", { "_":[ "storage", "hiscoreMoney" ] } ] }
                 ]
               },
               "execute":[

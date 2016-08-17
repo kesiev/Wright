@@ -8,15 +8,17 @@
   "hardware":{
     "width":256,
     "height":192,
-    "texture":"scanlines"
+    "filter":"retro"
   },
   "cheats":{},
   "resources":{
+    "spectrum":"spectrum.font",
     "portraits":"portraits.png",
     "spectrum":"spectrum.font",
     "tiles":"tiles.png",
     "title":"title.png",
     "units":"units.png",
+    "crt":"../default/crt.png",
     "scanlines":"../default/scanlines.png"
   },
   "stencils":{
@@ -999,7 +1001,8 @@
         "when":{ "_":[ "scene", "canCounterattack" ] },
         "subsequence":[
           { "as":{ "_":"scene" }, "set":{ "unit":{ "_":[ "scene", "targetUnit" ] } } },
-          { "as":{ "_":"scene" }, "set":{ "sourceUnit":{ "_":[ "scene", "unit" ] }, "targetUnit":{ "_":[ "scene", "sourceUnit" ] } } },
+          { "as":{ "_":"scene" }, "set":{ "targetUnit":{ "_":[ "scene", "sourceUnit" ] } } },
+          { "as":{ "_":"scene" }, "set":{ "sourceUnit":{ "_":[ "scene", "unit" ] } } },
           { "subsequence":{ "_":[ "stencil", "sequenceAttack" ] } }
         ]
       }

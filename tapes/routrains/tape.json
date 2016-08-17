@@ -8,7 +8,7 @@
   "hardware":{
     "width":256,
     "height":192,
-    "texture":"scanlines"
+    "filter":"retro"
   },
   "cheats":{
     "autobrake":"Auto-stop train at stations",
@@ -16,9 +16,12 @@
     "unlimitedtime":"Unlimited time"
   },
   "resources":{
+    "spectrum":"spectrum.font",
+    "pixeldingbats":"pixeldingbats.font",
     "intro":"intro.png",
     "landscape":"landscape.png",
     "sprites":"sprites.png",
+    "crt":"../default/crt.png",
     "scanlines":"../default/scanlines.png"
   },
   "stencils":{
@@ -59,10 +62,55 @@
         {
           "object":[
             {
-              "type":"hud",
-              "hudType":"label", "label":"SPEED: %repeatPercent|variable.movingSpeed|2|10|<span style='font-family:pixeldingbats;font-size:6px;color:#ff0'>h</span>|<span style='font-family:pixeldingbats;font-size:6px;color:#7f7f7f'>h</span>% %number|variable.movingSpeed./.2.*.75.floor%Km/h<br>FAULT: %repeatPercent|variable.faultGauge|25|10|<span style='font-family:pixeldingbats;font-size:6px;color:#f00'>h</span>|<span style='font-family:pixeldingbats;font-size:6px;color:#7f7f7f'>h</span>%<br>SCORE: %number|variable.score|0|8%",
+              "html":"SPEED:",
               "box":"label", "width":246, "height":30,
               "x":5, "y":5,
+              "font":"spectrum", "lineHeight":10, "outline":"#000000"
+            },
+            {
+              "type":"hud",
+              "hudType":"label", "label":"%repeatPercent|variable.movingSpeed|2|10|h| %",
+              "box":"label", "width":246, "height":30,
+              "x":61, "y":5, "color":"#ff0", "fontSize":6, "zIndex":10,
+              "font":"pixeldingbats", "lineHeight":10, "outline":"#000000"
+            },
+            {
+              "html":"hhhhhhhhhh",
+              "box":"label", "width":246, "height":30,
+              "x":61, "y":5, "color":"#7f7f7f", "fontSize":6,
+              "font":"pixeldingbats", "lineHeight":10, "outline":"#000000"
+            },
+            {
+              "type":"hud",
+              "hudType":"label", "label":"%number|variable.movingSpeed./.2.*.75.floor%Km/h",
+              "box":"label", "width":246, "height":30,
+              "x":135, "y":5,
+              "font":"spectrum", "lineHeight":10, "outline":"#000000"
+            },
+            {
+              "html":"FAULT:",
+              "box":"label", "width":246, "height":30,
+              "x":5, "y":15,
+              "font":"spectrum", "lineHeight":10, "outline":"#000000"
+            },
+            {
+              "type":"hud",
+              "hudType":"label", "label":"%repeatPercent|variable.faultGauge|25|10|h| %",
+              "box":"label", "width":246, "height":30,
+              "x":61, "y":15, "color":"#f00", "fontSize":6, "zIndex":10,
+              "font":"pixeldingbats", "lineHeight":10, "outline":"#000000"
+            },
+            {
+              "html":"hhhhhhhhhh",
+              "box":"label", "width":246, "height":30,
+              "x":61, "y":15, "color":"#7f7f7f", "fontSize":6,
+              "font":"pixeldingbats", "lineHeight":10, "outline":"#000000"
+            },
+            {
+              "type":"hud",
+              "hudType":"label", "label":"SCORE: %number|variable.score|0|8%",
+              "box":"label", "width":246, "height":30,
+              "x":5, "y":25,
               "font":"spectrum", "lineHeight":10, "outline":"#000000"
             },
             {

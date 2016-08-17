@@ -8,18 +8,21 @@
   "hardware":{
     "width":256,
     "height":192,
-    "texture":"scanlines"
+    "filter":"retro"
   },
   "cheats":{
     "unlimitedEnergy":"Unlimited energy"
   },
   "resources":{
+    "spectrum":"spectrum.font",
+    "pixeldingbats":"pixeldingbats.font",
     "endings":"endings.png",
     "logo":"logo.png",
     "portraits":"portraits.png",
     "tiles":"tiles.png",
     "defaultsprites":"../default/sprites.png",
     "gameover":"../default/gameover.png",
+    "crt":"../default/crt.png",
     "scanlines":"../default/scanlines.png"
   },
   "stencils":{
@@ -1468,13 +1471,53 @@
           }
         },
         {
-          "object":{
-            "type":"hud",
-            "hudType":"label", "label":"<span style='font-family:pixeldingbats;font-size:10px;color:#ff0'>&yacute;</span>%number|objectTyped.player.weapon.bulletsLoaded|0|3%/%number|objectTyped.player.weapon.bullets|0|3% <span style='font-family:pixeldingbats;font-size:10px;color:#ff0'>+</span> %repeatPercent|variable.playerHealth|variable.maxPlayerHealth|10|<span style='font-family:pixeldingbats;font-size:6px;color:#f00'>h</span>|<span style='font-family:pixeldingbats;font-size:6px;color:#7f7f7f'>h</span>% <span style='font-size:30px;color:#ff0'>$</span> %number|variable.money%",
-            "box":"label", "width":256,
-            "x":5, "y":5,
-            "font":"spectrum", "outline":"#000000"
-          },
+          "object":[            
+            {
+              "html":"&yacute;",
+              "box":"label", "width":100,
+              "x":5, "y":5, "color":"#ff0", "fontSize":10,
+              "font":"pixeldingbats", "outline":"#000000"
+            },
+            {
+              "type":"hud",
+              "hudType":"label", "label":"%number|objectTyped.player.weapon.bulletsLoaded|0|3%/%number|objectTyped.player.weapon.bullets|0|3%",
+              "box":"label", "width":100,
+              "x":16, "y":7,
+              "font":"spectrum", "outline":"#000000"
+            },
+            {
+              "html":"+",
+              "box":"label", "width":100,
+              "x":80, "y":5, "color":"#ff0", "fontSize":10,
+              "font":"pixeldingbats", "outline":"#000000"
+            },
+            {
+              "type":"hud",
+              "hudType":"label", "label":"%repeatPercent|variable.playerHealth|variable.maxPlayerHealth|10|h| %",
+              "box":"label", "width":100,
+              "x":99, "y":7, "color":"#f00", "fontSize":6, "zIndex":10,
+              "font":"pixeldingbats", "outline":"#000000"
+            },
+            {
+              "html":"hhhhhhhhhh",
+              "box":"label", "width":100,
+              "x":99, "y":7, "color":"#7f7f7f", "fontSize":6,
+              "font":"pixeldingbats", "outline":"#000000"
+            },
+            {
+              "html":"$",
+              "box":"label", "width":100,
+              "x":173, "y":5, "color":"#ff0", "fontSize":30,
+              "font":"spectrum", "outline":"#000000"
+            },
+             {
+              "type":"hud",
+              "hudType":"label", "label":"%number|variable.money%",
+              "box":"label", "width":100,
+              "x":193, "y":7,
+              "font":"spectrum", "outline":"#000000"
+            }
+          ],
           "into":{ "_":"scenehud" }
         },
         {

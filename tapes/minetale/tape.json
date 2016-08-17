@@ -8,17 +8,20 @@
   "hardware":{
     "width":256,
     "height":192,
-    "texture":"scanlines"
+    "filter":"retro"
   },
   "cheats":{
     "unlimitedEnergy":"Unlimited energy"
   },
   "resources":{
+    "spectrum":"spectrum.font",
+    "pixeldingbats":"pixeldingbats.font",
     "dock":"dock.png",
     "logo":"logo.png",
     "minetale-bg":"minetale-bg.png",
     "portraits":"minetale-portraits.png",
     "defaultsprites":"../default/sprites.png",
+    "crt":"../default/crt.png",
     "scanlines":"../default/scanlines.png"
   },
   "stencils":{
@@ -491,17 +494,42 @@
           },
           {
             "type":"hud",
-            "hudType":"label", "label":"LV%value|variable.xpLevel% %repeatPercent|variable.xp|variable.xpMax|15|<span style='font-family:pixeldingbats;font-size:6px;color:#ff0'>h</span>|<span style='font-family:pixeldingbats;font-size:6px;color:#7f7f7f'>h</span>%",
+            "hudType":"label", "label":"LV%value|variable.xpLevel%",
             "box":"label", "width":200,
             "x":25, "y":1,
             "font":"spectrum", "outline":"#000000"
           },
           {
             "type":"hud",
-            "hudType":"label", "label":"AIR %repeatPercent|variable.air|variable.maxAir|15|<span style='font-family:pixeldingbats;font-size:6px;color:#0ff'>h</span>|<span style='font-family:pixeldingbats;font-size:6px;color:#7f7f7f'>h</span>%",
+            "hudType":"label", "label":"%repeatPercent|variable.xp|variable.xpMax|15|h| %",
+            "box":"label", "width":200,
+            "x":57, "y":1, "fontSize":6, "color":"#f00", "zIndex":10,
+            "font":"pixeldingbats", "outline":"#000000"
+          },
+          {
+            "html":"hhhhhhhhhhhhhhh",
+            "box":"label", "width":200,
+            "x":57, "y":1, "fontSize":6, "color":"#7f7f7f",
+            "font":"pixeldingbats", "outline":"#000000"
+          },
+          {
+            "html":"AIR",
             "box":"label", "width":200,
             "x":25, "y":13,
             "font":"spectrum", "outline":"#000000"
+          },
+          {
+            "type":"hud",
+            "hudType":"label", "label":"%repeatPercent|variable.air|variable.maxAir|15|h| %",
+            "box":"label", "width":200,
+            "x":57, "y":13, "fontSize":6, "color":"#0ff", "zIndex":10,
+            "font":"pixeldingbats", "outline":"#000000"
+          },
+          {
+            "html":"hhhhhhhhhhhhhhh",
+            "box":"label", "width":200,
+            "x":57, "y":13, "fontSize":6, "color":"#7f7f7f",
+            "font":"pixeldingbats", "outline":"#000000"
           }
         ],
         "into":{ "_":"scenehud" }

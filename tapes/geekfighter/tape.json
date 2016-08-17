@@ -8,12 +8,14 @@
   "hardware":{
     "width":256,
     "height":192,
-    "texture":"scanlines"
+    "filter":"retro"
   },
   "cheats":{
     "unlimitedhealth":"Unlimited health"
   },
   "resources":{
+    "spectrum":"spectrum.font",
+    "pixeldingbats":"pixeldingbats.font",
     "endings":"endings.png",
     "intro":"intro.png",
     "portraits":"portraits.png",
@@ -21,6 +23,7 @@
     "ui":"ui.png",
     "wallpapers":"wallpapers.png",
     "defaultsprites":"../default/sprites.png",
+    "crt":"../default/crt.png",
     "scanlines":"../default/scanlines.png"
   },
   "stencils":{
@@ -1398,17 +1401,31 @@
             },
             {
               "type":"hud",
-              "hudType":"label", "label":"%text|objectTyped.player.name%<br>%repeat|variable.winPlayer|<span style='font-family:pixeldingbats;font-size:8px;color:#ff0'>&#339;</span>%",
+              "hudType":"label", "label":"%text|objectTyped.player.name%",
               "box":"label", "width":80,
               "zIndex":100, "x":32, "y":45,
               "font":"spectrum", "lineHeight":10, "outline":"#000"
             },
             {
               "type":"hud",
-              "hudType":"label", "label":"%text|objectTyped.foe.name%<br>%repeat|variable.winFoe|<span style='font-family:pixeldingbats;font-size:8px;color:#ff0'>&#339;</span>%",
+              "hudType":"label", "label":"%repeat|variable.winPlayer|&#339;%",
+              "box":"label", "width":80,
+              "zIndex":100, "x":32, "y":55, "fontSize":8, "color":"#ff0",
+              "font":"pixeldingbats", "lineHeight":10, "outline":"#000"
+            },
+            {
+              "type":"hud",
+              "hudType":"label", "label":"%text|objectTyped.foe.name%",
               "box":"label", "width":80,
               "zIndex":100, "x":144, "y":45,
               "font":"spectrum", "lineHeight":10, "outline":"#000", "textAlign":"right"
+            },
+            {
+              "type":"hud",
+              "hudType":"label", "label":"%repeat|variable.winFoe|&#339;%",
+              "box":"label", "width":80,
+              "zIndex":100, "x":144, "y":55, "color":"#ff0", "fontSize":8,
+              "font":"pixeldingbats", "lineHeight":10, "outline":"#000", "textAlign":"right"
             },
             {
               "type":"hud",

@@ -8,14 +8,16 @@
   "hardware":{
     "width":320,
     "height":200,
-    "texture":"scanlines"
+    "filter":"retro"
   },
   "cheats":{
     "unlimitedLives":"Unlimited lives"
   },
   "resources":{
+    "commodore":"commodore.font",
     "intro":"intro.png",
     "sprites":"sprites.png",
+    "crt":"../default/crt.png",
     "scanlines":"../default/scanlines.png"
   },
   "stencils":{
@@ -104,7 +106,8 @@
                     { "as":{ "_":"variable" }, "set":{ "message":"E X I T&nbsp;&nbsp;O P E N" }, "execute":{ "_":[ "stencil", "codeMessage" ] } },
                     { "set":{ "diamondValue":{ "_":[ "scene", "extraDiamondValue" ] }, "exitOpened":1 } },
                     { "as":{ "_":[ "object", "exit" ] }, "set":{ "frame":1 } },
-                    { "as":{ "_":[ "object", "headerBar" ] }, "set":{ "bgcolor":"#fff", "color":"#000" } }
+                    { "as":{ "_":[ "object", "headerBar" ] }, "set":{ "bgcolor":"#fff" } },
+                    { "as":{ "_":[ "object", "headerText" ] }, "set":{ "color":"#000" } }                      
                   ]
                 },
                 {
@@ -139,14 +142,46 @@
     "modelStage":{
       "cameraY":8, "cameraWidth":320, "cameraHeight":192, "cameraFocusX":80, "cameraFocusY":48, "cameraFocusWidth":160, "cameraFocusHeight":96,
       "execute":{
-        "object":{
-          "type":[ "hud", "headerBar" ],
-          "hudType":"label", "label":"%number|scene.diamonds|0|3%*<span style='color:#c9d684'>%number|scene.diamondsToGo|0|3%</span> <span style='color:#c9d684'>%number|variable.lives|0|2%</span> %number|scene.time|0|3% %number|variable.score|0|6% <span style='color:#8a7bce'>%text|scene.caveName%</span>",
-          "box":"label", "width":320, "height":8,
-          "zIndex":2, "x":0, "y":0,
-          "bgcolor":"#000", "color":"#fff",
-          "font":"commodore", "fontSize":8, "lineHeight":9, "textAlign":"center"
-        },
+        "object":[         
+          {
+            "type":"headerBar",
+            "width":320, "height":8,
+            "zIndex":2, "x":0, "y":0,
+            "bgcolor":"#000"
+          },
+          {
+            "type":[ "hud", "headerText" ],
+            "hudType":"label", "label":"%number|scene.diamonds|0|3%*",
+            "box":"label", "width":100, "height":8,
+            "zIndex":3, "x":48, "y":0,
+            "color":"#fff",
+            "font":"commodore", "fontSize":8, "lineHeight":8
+          },
+          {
+            "type":[ "hud", "headerText" ],
+            "hudType":"label", "label":"%number|scene.diamondsToGo|0|3% %number|variable.lives|0|2%",
+            "box":"label", "width":100, "height":8,
+            "zIndex":3, "x":80, "y":0,
+            "color":"#c9d684",
+            "font":"commodore", "fontSize":8, "lineHeight":8
+          },
+          {
+            "type":[ "hud", "headerText" ],
+            "hudType":"label", "label":"%number|scene.time|0|3% %number|variable.score|0|6%",
+            "box":"label", "width":100, "height":8,
+            "zIndex":3, "x":136, "y":0,
+            "color":"#fff",
+            "font":"commodore", "fontSize":8, "lineHeight":8
+          },
+          {
+            "type":[ "hud", "headerText" ],
+            "hudType":"label", "label":"%text|scene.caveName%",
+            "box":"label", "width":100, "height":8,
+            "zIndex":3, "x":224, "y":0,
+            "color":"#8a7bce",
+            "font":"commodore", "fontSize":8, "lineHeight":8
+          }
+        ],
         "into":{ "_":"scenehud" }
       },
       "animFrame":0,
@@ -741,10 +776,10 @@
         },
         {
           "type":"hud",
-          "hudType":"label", "label":"LEVEL: <span style='color:#8a7bce'>%text|scene.difficultyLabel%</span> (use up and down)",
+          "hudType":"label", "label":"LEVEL: %text|scene.difficultyLabel% (use up and down)",
           "box":"label", "width":320, "height":8,
-          "zIndex":2, "x":0, "y":192,
-          "color":"#fff",
+          "zIndex":2, "x":0, "y":190,
+          "color":"#8a7bce",
           "font":"commodore", "fontSize":8, "lineHeight":9, "textAlign":"center"
         },
         {

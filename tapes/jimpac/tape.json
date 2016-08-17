@@ -8,15 +8,18 @@
   "hardware":{
     "width":256,
     "height":192,
-    "texture":"scanlines"
+    "filter":"retro"
   },
   "cheats":{
     "unlimitedLives":"Unlimited lives"
   },
   "resources":{
+    "spectrum":"spectrum.font",
+    "pixeldingbats":"pixeldingbats.font",    
     "logo":"logo.png",
     "defaultsprites":"../default/sprites.png",
     "gameover":"../default/gameover.png",
+    "crt":"../default/crt.png",
     "scanlines":"../default/scanlines.png"
   },
   "stencils":{
@@ -304,13 +307,22 @@
     }
   },
   "execute":{
-    "object":{
-      "type":"hud",
-      "hudType":"label", "label":"1UP: %number|variable.score|0|6% %repeat|variable.lives|<span style='font-family:pixeldingbats;font-size:8px;color:#f00'>[</span>%",
-      "box":"label", "width":240,
-      "x":8, "y":0,
-      "font":"spectrum", "outline":"#000000"
-    },
+    "object":[
+      {
+        "type":"hud",
+        "hudType":"label", "label":"1UP: %number|variable.score|0|6%",
+        "box":"label", "width":240,
+        "x":8, "y":0,
+        "font":"spectrum", "outline":"#000000"
+      },
+      {
+        "type":"hud",
+        "hudType":"label", "label":"%repeat|variable.lives|[%",
+        "box":"label", "width":240,
+        "x":104, "y":0, "color":"#f00", "fontSize":8,
+        "font":"pixeldingbats", "outline":"#000000"
+      }
+    ],
     "into":{ "_":"hud" }
   },
   "scenes":{

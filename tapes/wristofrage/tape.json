@@ -8,17 +8,20 @@
   "hardware":{
     "width":256,
     "height":192,
-    "texture":"scanlines"
+    "filter":"retro"
   },
   "cheats":{
     "unlimitedLives":"Unlimited lives",
     "weakEnemies":"Weak enemies"
   },
   "resources":{
+    "spectrum":"spectrum.font",
+    "pixeldingbats":"pixeldingbats.font",
     "backgroundtiles":"wor-bg.png",
     "gamesprites":"sprites.png",
     "logoimage":"logo.png",
     "defaultsprites":"../default/sprites.png",
+    "crt":"../default/crt.png",
     "scanlines":"../default/scanlines.png"
   },
   "stencils":{
@@ -574,9 +577,23 @@
       },
       {
         "type":"hud",
-        "hudType":"label", "label":"%repeatPercent|variable.playerhealth|15|15|<span style='font-family:pixeldingbats;font-size:6px;color:#ff0'>h</span>|<span style='font-family:pixeldingbats;font-size:6px;color:#f00'>h</span>% x%number|variable.lives%",
+        "hudType":"label", "label":"%repeatPercent|variable.playerhealth|15|15|h| %",
         "box":"label", "width":140,
-        "x":5, "y":15,
+        "x":5, "y":15, "fontSize":6, "color":"#ff0", "zIndex":10,
+        "font":"pixeldingbats", "outline":"#000000"
+      },
+       {
+        "type":"hud",
+        "hudType":"label", "label":"hhhhhhhhhhhhhhh",
+        "box":"label", "width":140,
+        "x":5, "y":15, "fontSize":6, "color":"#f00",
+        "font":"pixeldingbats", "outline":"#000000"
+      },      
+      {
+        "type":"hud",
+        "hudType":"label", "label":"x%number|variable.lives%",
+        "box":"label", "width":140,
+        "x":110, "y":15,
         "font":"spectrum", "outline":"#000000"
       },
       {
@@ -594,10 +611,17 @@
       },
       {
         "type":"hud",
-        "hudType":"label", "label":"%repeatPercent|variable.health|variable.maxhealth|variable.maxhealth|<span style='font-family:pixeldingbats;font-size:6px;color:#ff0'>h</span>|<span style='font-family:pixeldingbats;font-size:6px;color:#f00'>h</span>%",
+        "hudType":"label", "label":"%repeatPercent|variable.health|variable.maxhealth|variable.maxhealth|h| %",
         "box":"label", "width":100,
-        "x":131, "y":15,
-        "font":"spectrum", "outline":"#000000", "textAlign":"right"
+        "x":131, "y":15, "fontSize":6, "color":"#ff0", "zIndex":10,
+        "font":"pixeldingbats", "outline":"#000000", "textAlign":"right"
+      },
+      {
+        "type":"hud",
+        "hudType":"label", "label":"%repeat|variable.maxhealth|h%",
+        "box":"label", "width":100,
+        "x":131, "y":15, "fontSize":6, "color":"#f00",
+        "font":"pixeldingbats", "outline":"#000000", "textAlign":"right"
       }
     ],
     "into":{ "_":"hud" }

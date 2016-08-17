@@ -8,15 +8,18 @@
   "hardware":{
     "width":256,
     "height":192,
-    "texture":"scanlines"
+    "filter":"retro"
   },
   "cheats":{
     "unlimitedLives":"Unlimited lives"
   },
   "resources":{
+    "spectrum":"spectrum.font",
+    "pixeldingbats":"pixeldingbats.font",
     "defaultsprites":"../default/sprites.png",
     "gameover":"../default/gameover.png",
     "intro":"../starcat/intro.png",
+    "crt":"../default/crt.png",
     "scanlines":"../default/scanlines.png"
   },
   "stencils":{
@@ -197,10 +200,17 @@
       },
       {
         "type":"hud",
-        "hudType":"label", "label":"LIVES %repeat|variable.lives|<span style='font-family:pixeldingbats;font-size:8px;color:#f00'>[</span>%",
+        "hudType":"label", "label":"LIVES",
         "box":"label", "width":100,
         "x":110, "y":5,
         "font":"spectrum", "outline":"#000000"
+      },
+      {
+        "type":"hud",
+        "hudType":"label", "label":"%repeat|variable.lives|[%",
+        "box":"label", "width":100,
+        "x":158, "y":5, "fontSize":8, "color":"#f00",
+        "font":"pixeldingbats", "outline":"#000000"
       },
       {
         "type":"hud",

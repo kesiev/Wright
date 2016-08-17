@@ -9,10 +9,11 @@
     "width":256,
     "height":192,
     "gridSize":{ "width":32, "height":32 },
-    "texture":"scanlines"
+    "filter":"retro"
   },
   "cheats":{},
   "resources":{
+    "spectrum":"spectrum.font",
     "screens":"screens.png",
     "sprites":"sprites.png",
     "stage1":"stage1.png",
@@ -27,6 +28,7 @@
     "stage8":"stage8.png",
     "stage9":"stage9.png",
     "defaultsprites":"../default/sprites.png",
+    "crt":"../default/crt.png",
     "scanlines":"../default/scanlines.png"
   },
   "stencils":{
@@ -936,7 +938,7 @@
                   "states":{
                     "code":{
                       "name":"Execute",
-                      "data":{ "when":{ "_":[ "this", "x", "isLessThan", 256 ] }, "sum":0.3, "to":{ "_":[ "this", "x" ] }, "elseExecute":{ "log":1, "remove":1 } }
+                      "data":{ "when":{ "_":[ "this", "x", "isLessThan", 256 ] }, "sum":0.3, "to":{ "_":[ "this", "x" ] }, "elseExecute":{ "remove":1 } }
                     }
                   }
                 }
