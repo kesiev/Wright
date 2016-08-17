@@ -1,0 +1,1604 @@
+{
+  "name":"Rolly",
+  "author":"KesieV",
+  "year":2016,
+  "genre":"Action Maze",
+  "description":"Why videogames can be so rewarding? Mostly because they have years of history on improving how to motivate its customers on keep playing and having fun. Starting from the early days of pinballs, a lot of blinking lights and a loud short jingle can put the player under the spotlight of a crowded arcade room for a short while, giving him its '5 seconds of glory'. Pumping up the player score to billions when performing a particularly difficult task, in order to replace the current high score and becoming 'better than others', is a good way of tickling the player sense of competition, incentivizing them on going back for more. The proverbial 'extra ball', that will become the 'extra life', gifts the player with more play time, which means longer sessions, higher scores but also more value for player's money - remember that pinballs and arcade games were coin operated: the longer you play the less you spend. Videogames weren't tied to the ball behaviour, button-only interactions or a single table design but they had complex controls, multiple scenes with different contents and variable interactivity and difficulty. The opportunities to tie the player are now unlimited. Starting over a game with faster gameplay, which is the grandfather of modern 'New Game+', was a very smart and cheap way for making the player feel to have joined the 'Elite of Great Players', which doesn't play like the others. The high-score concept was refined, so in high-score tables there is room for losers too: once you've lost the lead, you can keep your name between the losers and disappear forever or give it back its glory. With another play. But videogames can gift player with something unprecedented, due to its interactivity: more contents. So you can unreveal a pretty picture of a landscape (or a naughty girl, in most of the cases) after clearing a stage, like in Gals Panic (1990) or, mostly because of the strong influence of movies, watch a short and funny animation from time to time, like Pac-Man (1980) intermissions. When videogames started to have a clear plot, these short animations became the key: they may be used to reward the player with a little slice of a story. So Jr. Pac-Man (1983) hosted a short series of episodes which tells its love story with a tiny ghost (?) made with in-game graphics and laserdisk games, like Bega's Battle (1983), had full anime cutscene (and sadly shallow gameplay). Home consoles and computers allowed longer play sessions, thus different rewards: with different cutscenes that can be seen ending the game in different ways, like in Metroid (1983) or replacing old contents of the game with something new after the game end, creating a post-game scenario like in Dragon Warrior II (1987). Nowadays, we have achievements. Microsoft introduced them with its XBOX 360 in 2005: when the player does something noticeable in a game he is rewarded with an in-game notification, a digital badge and some points. All badges and the grand total of the collected points from all the games he played are collected in its profile, available for others player to see and compare. Now videogames can give the player an identity: how much he's skilled, which games he likes and how deep he knows its games. Well. Atari introduced achievements way before in 1983, when used to send back Boy Scout like badges to every player sending tv screen photos of their highscores by mail. Anyway, the progresses on rewarding people made by videogames are so recognized that the real world is adopting some of them, with phenomena like gamification (achievements in real life), and in some ways, reality shows (score-based evaluation of partecipants prized with short bursts of notoriety). Probably because videogames are often designed around people, not gamers. Plot! Help Rolly the roller on painting all the dots! Use A BUTTON for starting and UP/DOWN/LEFT/RIGHT for moving Rolly around the maze! For the occasion, I've changed Wright! a lot in these days: try selecting 'Canvas' on the Renderer option and then 'Retro CRT' one on 'Screen filter'!",
+  "screenshots":[ "rolly-1.png", "rolly-2.png" ],
+  "hardware":{
+    "width":224,
+    "height":288,
+    "filter":"retro"
+  },
+  "cheats":{
+    "unlimitedLives":"Unlimited lives (no hi-score, sorry!)"
+  },
+  "resources":{
+    "arcade":"arcade.font",
+    "images":"images.png",
+    "sprites":"sprites.png",
+    "title":"title.png",
+    "crt":"../default/crt.png",
+    "scanlines":"../default/scanlines.png"
+  },
+  "stencils":{
+    "codeCheckScore":[
+      {
+        "when":{ "_":[ "cheat", "unlimitedLives", "not", "and", { "_":[ "variable", "score", "isGreaterThan", { "_":[ "variable", "hiscore" ] } ] } ] },
+        "as":{ "_":"variable" },
+        "set":{ "hiscore":{ "_":[ "variable", "score" ] } }
+      },
+      {
+        "when":{ "_":[ "variable", "score", "isGreaterThan", { "_":[ "variable", "extralife" ] } ] },
+        "execute":[
+          { "when":{ "_":[ "variable", "lives", "isLessThan", 4 ] }, "sum":1, "to":{ "_":[ "variable", "lives" ] } },
+          { "sum":10000, "to":{ "_":[ "variable", "extralife" ] } }
+        ]
+      }
+    ],
+    "modelPopupLabel":{
+      "width":100, "height":10,
+      "zIndex":10000, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "color":"#e0ddff",
+      "font":"arcade", "fontSize":8, "lineHeight":12, "outline":"#000", "textAlign":"center",
+      "speed":0.5,
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[ { "subtract":{ "_":[ "this", "speed" ] }, "to":{ "_":[ "this", "y" ] }, "wait":1, "loop":1, "cycles":15 }, { "remove":1 } ]
+        }
+      }
+    },
+    "stageModel":{
+      "execute":{ "as":{ "_":"variable" }, "set":{ "combo":1, "fruitShown":0 } },
+      "states":[
+        {
+          "execute":[
+            { "_":[ "scene", "gameElements" ] },
+            {
+              "when":{ "_":[ "variable", "fruitShown", "not" ] },
+              "object":{ "set":{ "_":[ "stencil", "fruit" ] }, "zIndex":{ "_":[ "objectTyped", "player", "tileY" ] }, "at":{ "_":[ "objectTyped", "player" ] } }
+            }
+          ],
+          "code":{
+            "name":"Sequence",
+            "data":[
+              {
+                "object":{
+                  "type":"banner",
+                  "width":226, "height":40,
+                  "zIndex":1000, "x":-1, "y":120,
+                  "bgcolor":"#000", "border":"#e0ddff", "color":"#e0ddff",
+                  "font":"arcade", "fontSize":8, "lineHeight":8, "textAlign":"center", "html":{ "_":[ "<br>STAGE ", ".", { "_":[ "variable", "stage" ] }, ".", "<br><br>READY!" ] }
+                }
+              },
+              { "wait":50 },
+              { "as":{ "_":[ "object", "banner" ] }, "remove":1 },
+              { "set":{ "state":"go" } }
+            ]
+          }
+        },
+        {
+          "name":"go",
+          "execute":{ "as":{ "_":[ "object", "gameElement" ] }, "set":{ "state":"go" } },
+          "code":{
+            "name":"Execute",
+            "data":{
+              "when":{ "_":[ "objectTyped", "player" ] },
+              "execute":{ "when":{ "_":[ "objectTyped", "empty", "not" ] }, "set":{ "state":"stagedone" } },
+              "elseExecute":[
+                { "when":{ "_":[ "cheat", "unlimitedLives", "not" ] }, "subtract":1, "to":{ "_":[ "variable", "lives" ] } },
+                { "when":{ "_":[ "variable", "lives", "not" ] }, "set":{ "state":"gameover" }, "elseExecute":{ "set":{ "state":"default" } } }
+              ]
+            }
+          }
+        },
+        {
+          "name":"gameover",
+          "execute":{ "as":{ "_":"storage" }, "set":{ "hiscore":{ "_":[ "variable", "hiscore" ] } } },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              {
+                "object":{
+                  "type":"banner",
+                  "width":226, "height":24,
+                  "zIndex":1000, "x":-1, "y":120,
+                  "bgcolor":"#000", "border":"#e0ddff", "color":"#e0ddff",
+                  "font":"arcade", "fontSize":8, "lineHeight":8, "textAlign":"center", "html":"<br>GAME OVER"
+                }
+              },
+              { "wait":50 },
+              { "as":{ "_":[ "object", "banner" ] }, "remove":1 },
+              { "gotoScene":"intro", "withTransition":3 }
+            ]
+          }
+        },
+        {
+          "name":"stagedone",
+          "execute":[ { "as":{ "_":[ "object", "gameElement" ] }, "remove":1 }, { "as":{ "_":[ "objectTyped", "player" ] }, "set":{ "state":"default" } } ],
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "as":{ "_":[ "object", "road" ] }, "set":{ "bgcolor":{ "_":[ "scene", "rollColor" ] } }, "wait":10 },
+              { "as":{ "_":[ "object", "road" ] }, "set":{ "bgcolor":"#e0ddff" }, "wait":10, "cycles":3, "loopTo":0 },
+              {
+                "times":5,
+                "as":{ "_":[ "randomObject", { "_":[ "object", "road" ] } ] },
+                "remove":1,
+                "wait":1, "loop":1,
+                "until":{ "_":[ "object", "road", "not" ] }
+              },
+              { "wait":75 },
+              {
+                "object":{
+                  "type":"banner",
+                  "width":226, "height":24,
+                  "zIndex":1000, "x":-1, "y":120,
+                  "bgcolor":"#000", "border":"#e0ddff", "color":"#e0ddff",
+                  "font":"arcade", "fontSize":8, "lineHeight":8, "textAlign":"center", "html":"<br>STAGE CLEAR!"
+                }
+              },
+              { "wait":50 },
+              { "sum":1, "to":{ "_":[ "variable", "stage" ] } },
+              {
+                "when":{ "_":[ "variable", "stage", "isGreaterThan", 10 ] },
+                "execute":[ { "as":{ "_":"variable" }, "set":{ "stage":1 } }, { "gotoScene":"cutscene2", "withTransition":3 } ],
+                "elseExecute":{
+                  "when":{ "_":[ "variable", "stage", "isEqualTo", 6 ] },
+                  "gotoScene":"cutscene1",
+                  "withTransition":3,
+                  "elseExecute":{ "gotoScene":{ "_":[ "variable", "stage" ] }, "withTransition":3 }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "bally":{
+      "type":[ "gameElement", "stageElement" ],
+      "image":"sprites", "tileY":24, "width":16, "height":16,
+      "zIndex":10,
+      "hitbox":{ "width":8, "height":8, "x":4, "y":8 },
+      "forceX":0, "forceY":0,
+      "speed":2,
+      "animations":{ "endingrollable":{ "frames":[ 2, 3 ], "speed":1, "loopTo":0 }, "idle":{ "frames":2, "loopTo":0 }, "rollable":{ "frames":[ 2, 3 ], "loopTo":0 } },
+      "invulnerability":0,
+      "rollTime":0,
+      "states":[
+        {
+          "name":"go",
+          "set":{ "type":"enemy", "tileX":0, "tileY":24, "myX":{ "_":[ "this", "x" ] }, "myY":{ "_":[ "this", "y" ] } },
+          "code":{
+            "name":"Execute",
+            "data":[
+              {
+                "when":{ "_":[ "this", "rollTime" ] },
+                "execute":[
+                  { "set":{ "speed":1 } },
+                  { "subtract":1, "to":{ "_":[ "this", "rollTime" ] } },
+                  {
+                    "when":{ "_":[ "this", "rollTime", "isLessThan", 25 ] },
+                    "set":{ "animation":"endingrollable" },
+                    "elseExecute":{ "set":{ "animation":"rollable" } }
+                  }
+                ],
+                "elseExecute":[
+                  {
+                    "set":{ "x":{ "_":[ "this", "x", "/", 2, "floor", "*", 2 ] }, "y":{ "_":[ "this", "y", "/", 2, "floor", "*", 2 ] }, "speed":2, "animation":"idle" }
+                  },
+                  {
+                    "when":{ "_":[ "this", "invulnerability" ] },
+                    "execute":[ { "subtract":1, "to":{ "_":[ "this", "invulnerability" ] } }, { "set":{ "visible":{ "_":[ "this", "visible", "not" ] } } } ],
+                    "elseExecute":{ "set":{ "visible":1 } }
+                  }
+                ]
+              },
+              {
+                "when":{ "_":[ "this", "x", "+", 4, "%", 8, "isEqualTo", 0, "and", { "_":[ "this", "y", "%", 8, "isEqualTo", 0 ] } ] },
+                "decide":[
+                  {
+                    "when":{
+                      "_":[
+                        "this",
+                        "forceY",
+                        "isNotEqualTo",
+                        -1,
+                        "and",
+                        { "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "road" ] }, "hitbox":{ "width":8, "height":8, "x":4, "y":16 } } ] }
+                      ]
+                    },
+                    "options":{ "execute":{ "set":{ "forceX":0, "forceY":1 } } }
+                  },
+                  {
+                    "when":{
+                      "_":[
+                        "this",
+                        "forceY",
+                        "isNotEqualTo",
+                        1,
+                        "and",
+                        { "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "road" ] }, "hitbox":{ "width":8, "height":8, "x":4, "y":0 } } ] }
+                      ]
+                    },
+                    "options":{ "execute":{ "set":{ "forceX":0, "forceY":-1 } } }
+                  },
+                  {
+                    "when":{
+                      "_":[
+                        "this",
+                        "forceX",
+                        "isNotEqualTo",
+                        1,
+                        "and",
+                        { "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "road" ] }, "hitbox":{ "width":8, "height":8, "x":-4, "y":8 } } ] }
+                      ]
+                    },
+                    "options":{ "execute":{ "set":{ "forceX":-1, "forceY":0 } } }
+                  },
+                  {
+                    "when":{
+                      "_":[
+                        "this",
+                        "forceX",
+                        "isNotEqualTo",
+                        -1,
+                        "and",
+                        { "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "road" ] }, "hitbox":{ "width":8, "height":8, "x":12, "y":8 } } ] }
+                      ]
+                    },
+                    "options":{ "execute":{ "set":{ "forceX":1, "forceY":0 } } }
+                  }
+                ]
+              },
+              { "sum":{ "_":[ "this", "forceX", "*", { "_":[ "this", "speed" ] } ] }, "to":{ "_":[ "this", "x" ] } },
+              { "sum":{ "_":[ "this", "forceY", "*", { "_":[ "this", "speed" ] } ] }, "to":{ "_":[ "this", "y" ] } },
+              { "set":{ "zIndex":{ "_":[ "this", "y" ] } } }
+            ]
+          }
+        },
+        {
+          "name":"rolled",
+          "set":{ "tileX":23, "tileY":8, "animation":"none" },
+          "execute":[
+            { "set":{ "removeType":"enemy", "invulnerability":25, "rollTime":0, "score":{ "_":[ "variable", "combo", "*", 100 ] } } },
+            { "sum":1, "to":{ "_":[ "variable", "combo" ] } },
+            { "sum":{ "_":[ "this", "score" ] }, "to":{ "_":"variable" } },
+            { "_":[ "stencil", "codeCheckScore" ] },
+            { "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "html":{ "_":[ "that", "score" ] } } }
+          ],
+          "code":{
+            "name":"Sequence",
+            "data":[ { "wait":25 }, { "set":{ "x":{ "_":[ "this", "myX" ] }, "y":{ "_":[ "this", "myY" ] }, "visible":0 } }, { "wait":125 }, { "set":{ "state":"go" } } ]
+          }
+        }
+      ]
+    },
+    "cutsceneObject":{
+      "type":"cutsceneObject",
+      "image":"sprites", "width":16, "height":16,
+      "zIndex":10, "x":-16, "y":132,
+      "animations":{ "idle":{ "frames":2, "loopTo":0 } },
+      "animation":"idle",
+      "rollColor":"#e0ddff",
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":[
+            { "sum":{ "_":[ "this", "forceX" ] }, "to":{ "_":[ "this", "x" ] } },
+            { "sum":{ "_":[ "this", "forceY" ] }, "to":{ "_":[ "this", "y" ] } },
+            {
+              "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "road" ] }, "all":1 } ] },
+              "as":{ "_":"that" },
+              "set":{ "bgcolor":{ "_":[ "that", "rollColor" ] } }
+            }
+          ]
+        }
+      }
+    },
+    "fruit":{
+      "type":[ "fruit", "stageElement", "gameElement" ],
+      "image":"sprites", "tileY":40, "width":16, "height":16,
+      "frame":{ "_":[ "variable", "fruit" ] },
+      "hitbox":{ "width":8, "height":8, "x":4, "y":8 },
+      "visible":0,
+      "timer":{ "_":[ "variable", "fruit", "*", 25, "+", 125 ] },
+      "states":[
+        {
+          "name":"go",
+          "code":{
+            "name":"Execute",
+            "data":{
+              "when":{ "_":[ "this", "distanceTo", { "_":[ "objectTyped", "player" ] }, "isGreaterThan", 32 ] },
+              "execute":[ { "subtract":1, "to":{ "_":[ "this", "timer" ] } }, { "when":{ "_":[ "this", "timer", "not" ] }, "set":{ "state":"show" } } ]
+            }
+          }
+        },
+        {
+          "name":"show",
+          "set":{ "visible":1, "timer":250 },
+          "execute":{ "as":{ "_":"variable" }, "set":{ "fruitShown":1 } },
+          "code":{
+            "name":"Execute",
+            "data":{
+              "when":{ "_":[ "this", "timer" ] },
+              "execute":[
+                { "subtract":1, "to":{ "_":[ "this", "timer" ] } },
+                {
+                  "when":{ "_":[ "this", "collidesWith", { "_":[ "objectTyped", "player" ] } ] },
+                  "execute":[
+                    { "set":{ "score":{ "_":[ "variable", "fruit", "+", 1, "*", 100 ] } } },
+                    { "when":{ "_":[ "variable", "fruit", "isLessThan", 9 ] }, "sum":1, "to":{ "_":[ "variable", "fruit" ] } },
+                    { "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "html":{ "_":[ "that", "score" ] } } },
+                    { "sum":{ "_":[ "this", "score" ] }, "to":{ "_":[ "variable", "score" ] } },
+                    { "_":[ "stencil", "codeCheckScore" ] },
+                    { "remove":1 }
+                  ]
+                }
+              ],
+              "elseExecute":{ "remove":1 }
+            }
+          }
+        }
+      ]
+    },
+    "imagePart":{
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":{
+            "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "empty" ] }, "not" ] },
+            "execute":[
+              {
+                "set":{
+                  "image":"images", "tileX":{ "_":[ "scene", "imageIndex", "*", 208, "+", { "_":[ "this", "x", "-", 8 ] } ] }, "tileY":{ "_":[ "this", "y", "-", 24 ] },
+                  "state":"done"
+                }
+              },
+              { "set":{ "score":{ "_":[ "this", "width", "*", { "_":[ "this", "height" ] }, "/", 1000, "ceil", "*", 10 ] } } },
+              { "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "html":{ "_":[ "that", "score" ] } } },
+              { "sum":{ "_":[ "this", "score" ] }, "to":{ "_":[ "variable", "score" ] } },
+              { "_":[ "stencil", "codeCheckScore" ] }
+            ]
+          }
+        }
+      }
+    },
+    "rolly":{
+      "type":[ "gameElement", "player" ],
+      "image":"sprites", "tileY":8, "width":16, "height":16,
+      "zIndex":10,
+      "hitbox":{ "width":8, "height":8, "x":4, "y":8 },
+      "forceX":0, "forceY":0,
+      "speed":2,
+      "animations":{ "idle":{ "frames":2, "loopTo":0 } },
+      "invulnerability":25,
+      "states":[
+        { "set":{ "animation":"none" } },
+        {
+          "name":"go",
+          "set":{ "animation":"idle" },
+          "code":{
+            "name":"Execute",
+            "data":[
+              { "sum":{ "_":[ "this", "forceX", "*", { "_":[ "this", "speed" ] } ] }, "to":{ "_":[ "this", "x" ] } },
+              { "sum":{ "_":[ "this", "forceY", "*", { "_":[ "this", "speed" ] } ] }, "to":{ "_":[ "this", "y" ] } },
+              { "set":{ "zIndex":{ "_":[ "this", "y" ] } } },
+              {
+                "when":{ "_":[ "this", "invulnerability" ] },
+                "execute":[ { "subtract":1, "to":{ "_":[ "this", "invulnerability" ] } }, { "set":{ "visible":{ "_":[ "this", "visible", "not" ] } } } ],
+                "elseExecute":[
+                  { "set":{ "visible":1 } },
+                  {
+                    "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "enemy" ] } ] },
+                    "execute":{
+                      "when":{ "_":[ "that", "rollTime" ] },
+                      "as":{ "_":"that" },
+                      "set":{ "state":"rolled" },
+                      "elseExecute":{ "when":{ "_":[ "that", "invulnerability", "not" ] }, "set":{ "state":"dead" } }
+                    }
+                  }
+                ]
+              },
+              {
+                "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "empty" ] } ] },
+                "execute":[
+                  { "sum":10, "to":{ "_":[ "variable", "score" ] } },
+                  { "_":[ "stencil", "codeCheckScore" ] },
+                  { "as":{ "_":"that" }, "set":{ "removeType":"empty", "tileX":0, "bgcolor":{ "_":[ "scene", "rollColor" ] } } },
+                  {
+                    "when":{ "_":[ "that", "isTyped", "bonus" ] },
+                    "execute":[ { "as":{ "_":"variable" }, "set":{ "combo":1 } }, { "as":{ "_":[ "object", "enemy" ] }, "set":{ "rollTime":125 } } ]
+                  }
+                ]
+              },
+              {
+                "when":{ "_":[ "this", "x", "+", 4, "%", 8, "isEqualTo", 0, "and", { "_":[ "this", "y", "%", 8, "isEqualTo", 0 ] } ] },
+                "execute":{
+                  "when":{
+                    "_":[
+                      "keyDown",
+                      "isDown",
+                      "and",
+                      { "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "road" ] }, "hitbox":{ "width":8, "height":8, "x":4, "y":16 } } ] }
+                    ]
+                  },
+                  "set":{ "forceX":0, "forceY":1, "next":{ "width":8, "height":8, "x":4, "y":16 } },
+                  "elseExecute":{
+                    "when":{
+                      "_":[
+                        "keyUp",
+                        "isDown",
+                        "and",
+                        { "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "road" ] }, "hitbox":{ "width":8, "height":8, "x":4, "y":0 } } ] }
+                      ]
+                    },
+                    "set":{ "forceX":0, "forceY":-1, "next":{ "width":8, "height":8, "x":4, "y":0 } },
+                    "elseExecute":{
+                      "when":{
+                        "_":[
+                          "keyLeft",
+                          "isDown",
+                          "and",
+                          { "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "road" ] }, "hitbox":{ "width":8, "height":8, "x":-4, "y":8 } } ] }
+                        ]
+                      },
+                      "set":{ "forceX":-1, "forceY":0, "next":{ "width":8, "height":8, "x":-4, "y":8 } },
+                      "elseExecute":{
+                        "when":{
+                          "_":[
+                            "keyRight",
+                            "isDown",
+                            "and",
+                            { "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "road" ] }, "hitbox":{ "width":8, "height":8, "x":12, "y":8 } } ] }
+                          ]
+                        },
+                        "set":{ "forceX":1, "forceY":0, "next":{ "width":8, "height":8, "x":12, "y":8 } },
+                        "elseExecute":{
+                          "when":{ "_":[ "this", "next" ] },
+                          "execute":{
+                            "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "road" ] }, "hitbox":{ "_":[ "this", "next" ] } }, "not" ] },
+                            "set":{ "forceX":0, "forceY":0, "next":0 }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name":"dead",
+          "set":{ "animation":"none" },
+          "execute":{ "as":{ "_":[ "object", "stageElement" ] }, "remove":1 },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "sum":90, "to":{ "_":[ "this", "angle" ] }, "wait":2, "loop":1, "cycles":12 },
+              { "set":{ "frame":2 } },
+              { "wait":25 },
+              { "set":{ "visible":0 } },
+              { "wait":25 },
+              { "remove":1 }
+            ]
+          }
+        }
+      ]
+    },
+    ".":{ "type":[ "empty", "road" ], "image":"sprites", "zIndex":5, "bgcolor":"#e0ddff" },
+    "O":{ "type":[ "empty", "road", "bonus" ], "image":"sprites", "tileX":8, "zIndex":5, "bgcolor":"#e0ddff" }
+  },
+  "execute":[
+    {
+      "when":{ "_":[ "storage", "hiscore", "not" ] },
+      "as":{ "_":"variable" },
+      "set":{ "hiscore":10000 },
+      "elseExecute":{ "as":{ "_":"variable" }, "set":{ "hiscore":{ "_":[ "storage", "hiscore" ] } } }
+    },
+    {
+      "object":[
+        {
+          "type":"hud",
+          "hudType":"label", "label":"1UP&nbsp;<br>%number|variable.score|0|2%",
+          "box":"label", "width":64, "height":20,
+          "x":0, "y":0,
+          "color":"#e0ddff",
+          "font":"arcade", "fontSize":8, "lineHeight":8, "textAlign":"right"
+        },
+        {
+          "type":"hud",
+          "hudType":"label", "label":"HIGH SCORE<br>%number|variable.hiscore|0|2%&nbsp;&nbsp;",
+          "box":"label", "width":80, "height":20,
+          "x":72, "y":0,
+          "color":"#e0ddff",
+          "font":"arcade", "fontSize":8, "lineHeight":8, "textAlign":"right"
+        },
+        {
+          "image":"sprites", "tileY":8, "width":16, "height":16,
+          "x":8, "y":272,
+          "visible":0,
+          "states":{ "code":{ "name":"Execute", "data":{ "set":{ "visible":{ "_":[ "variable", "lives", "isGreaterThan", 2 ] } } } } }
+        },
+        {
+          "image":"sprites", "tileY":8, "width":16, "height":16,
+          "x":24, "y":272,
+          "visible":0,
+          "states":{ "code":{ "name":"Execute", "data":{ "set":{ "visible":{ "_":[ "variable", "lives", "isGreaterThan", 1 ] } } } } }
+        },
+        {
+          "image":"sprites", "tileY":8, "width":16, "height":16,
+          "x":40, "y":272,
+          "visible":0,
+          "states":{ "code":{ "name":"Execute", "data":{ "set":{ "visible":{ "_":[ "variable", "lives", "isGreaterThan", 0 ] } } } } }
+        },
+        {
+          "image":"sprites", "tileY":40, "width":16, "height":16,
+          "x":200, "y":272, "frame":0,
+          "visible":0,
+          "states":{ "code":{ "name":"Execute", "data":{ "set":{ "visible":{ "_":[ "variable", "fruit", "isGreaterThan", 0 ] } } } } }
+        },
+        {
+          "image":"sprites", "tileY":40, "width":16, "height":16,
+          "x":184, "y":272, "frame":1,
+          "visible":0,
+          "states":{ "code":{ "name":"Execute", "data":{ "set":{ "visible":{ "_":[ "variable", "fruit", "isGreaterThan", 1 ] } } } } }
+        },
+        {
+          "image":"sprites", "tileY":40, "width":16, "height":16,
+          "x":168, "y":272, "frame":2,
+          "visible":0,
+          "states":{ "code":{ "name":"Execute", "data":{ "set":{ "visible":{ "_":[ "variable", "fruit", "isGreaterThan", 2 ] } } } } }
+        },
+        {
+          "image":"sprites", "tileY":40, "width":16, "height":16,
+          "x":152, "y":272, "frame":3,
+          "visible":0,
+          "states":{ "code":{ "name":"Execute", "data":{ "set":{ "visible":{ "_":[ "variable", "fruit", "isGreaterThan", 3 ] } } } } }
+        },
+        {
+          "image":"sprites", "tileY":40, "width":16, "height":16,
+          "x":136, "y":272, "frame":4,
+          "visible":0,
+          "states":{ "code":{ "name":"Execute", "data":{ "set":{ "visible":{ "_":[ "variable", "fruit", "isGreaterThan", 4 ] } } } } }
+        },
+        {
+          "image":"sprites", "tileY":40, "width":16, "height":16,
+          "x":120, "y":272, "frame":5,
+          "visible":0,
+          "states":{ "code":{ "name":"Execute", "data":{ "set":{ "visible":{ "_":[ "variable", "fruit", "isGreaterThan", 5 ] } } } } }
+        },
+        {
+          "image":"sprites", "tileY":40, "width":16, "height":16,
+          "x":104, "y":272, "frame":6,
+          "visible":0,
+          "states":{ "code":{ "name":"Execute", "data":{ "set":{ "visible":{ "_":[ "variable", "fruit", "isGreaterThan", 6 ] } } } } }
+        },
+        {
+          "image":"sprites", "tileY":40, "width":16, "height":16,
+          "x":88, "y":272, "frame":7,
+          "visible":0,
+          "states":{ "code":{ "name":"Execute", "data":{ "set":{ "visible":{ "_":[ "variable", "fruit", "isGreaterThan", 7 ] } } } } }
+        },
+        {
+          "image":"sprites", "tileY":40, "width":16, "height":16,
+          "x":72, "y":272, "frame":8,
+          "visible":0,
+          "states":{ "code":{ "name":"Execute", "data":{ "set":{ "visible":{ "_":[ "variable", "fruit", "isGreaterThan", 8 ] } } } } }
+        }
+      ],
+      "into":{ "_":"hud" }
+    }
+  ],
+  "scenes":{
+    "intro":{
+      "object":[
+        { "image":"title", "width":185, "height":52, "x":19, "y":30, "animations":{ "idle":{ "frames":2, "speed":10, "loopTo":0 } }, "animation":"idle" },
+        { "image":"title", "tileY":52, "width":67, "height":8, "x":78, "y":235 },
+        {
+          "width":224, "height":50,
+          "x":0, "y":245,
+          "color":"#fff",
+          "font":"arcade", "fontSize":8, "lineHeight":10, "textAlign":"center", "html":"TM & (c) 2016 KESIEV CORP.<br>LICENSED TO WRIGHT! MAG"
+        }
+      ],
+      "execute":{ "as":{ "_":"variable" }, "set":{ "extralife":10000, "fruit":0, "lives":3, "score":0, "stage":1 } },
+      "states":{
+        "code":[
+          { "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":{ "_":[ "variable", "stage" ] }, "withTransition":3 } },
+          {
+            "name":"Sequence",
+            "data":[
+              { "wait":75 },
+              {
+                "object":{
+                  "width":224, "height":50,
+                  "x":0, "y":89,
+                  "color":"#fff",
+                  "font":"arcade", "fontSize":8, "lineHeight":10, "textAlign":"center", "html":"HELP ROLLY THE ROLLER ON PAINTING ALL THE DOTS!"
+                }
+              },
+              { "wait":25 },
+              {
+                "object":[
+                  {
+                    "type":"tutorial",
+                    "image":"sprites", "tileY":8, "width":16, "height":16,
+                    "x":24, "y":114,
+                    "animations":{ "idle":{ "frames":2, "loopTo":0 } },
+                    "animation":"idle"
+                  },
+                  { "type":"tutorial", "width":200, "height":10, "x":48, "y":122, "color":"#fff", "font":"arcade", "fontSize":8, "lineHeight":8, "html":"... OUR HERO" }
+                ]
+              },
+              { "wait":25 },
+              {
+                "object":[
+                  {
+                    "type":"tutorial",
+                    "image":"sprites", "tileY":24, "width":16, "height":16,
+                    "x":24, "y":138,
+                    "animations":{ "idle":{ "frames":2, "loopTo":0 } },
+                    "animation":"idle"
+                  },
+                  {
+                    "type":"tutorial",
+                    "width":200, "height":10,
+                    "x":48, "y":146,
+                    "color":"#fff",
+                    "font":"arcade", "fontSize":8, "lineHeight":8, "html":"... THE BAD GUYS"
+                  }
+                ]
+              },
+              { "wait":25 },
+              {
+                "object":[
+                  { "type":"tutorial", "image":"sprites", "width":8, "height":8, "x":24, "y":160, "bgcolor":"#e0ddff" },
+                  { "type":"tutorial", "image":"sprites", "width":8, "height":8, "x":34, "y":160, "bgcolor":"#e0ddff" },
+                  { "type":"tutorial", "image":"sprites", "width":8, "height":8, "x":24, "y":170, "bgcolor":"#e0ddff" },
+                  { "type":"tutorial", "image":"sprites", "width":8, "height":8, "x":34, "y":170, "bgcolor":"#e0ddff" },
+                  {
+                    "type":"tutorial",
+                    "width":200, "height":10,
+                    "x":48, "y":170,
+                    "color":"#fff",
+                    "font":"arcade", "fontSize":8, "lineHeight":8, "html":"... PAINT THEM ALL"
+                  }
+                ]
+              },
+              { "wait":25 },
+              {
+                "object":[
+                  { "type":"tutorial", "image":"sprites", "tileX":8, "width":8, "height":8, "x":24, "y":184, "bgcolor":"#e0ddff" },
+                  { "type":"tutorial", "image":"sprites", "tileX":8, "width":8, "height":8, "x":34, "y":184, "bgcolor":"#e0ddff" },
+                  { "type":"tutorial", "image":"sprites", "tileX":8, "width":8, "height":8, "x":24, "y":194, "bgcolor":"#e0ddff" },
+                  { "type":"tutorial", "image":"sprites", "tileX":8, "width":8, "height":8, "x":34, "y":194, "bgcolor":"#e0ddff" },
+                  {
+                    "type":"tutorial",
+                    "width":200, "height":10,
+                    "x":48, "y":194,
+                    "color":"#fff",
+                    "font":"arcade", "fontSize":8, "lineHeight":8, "html":"... MAKES YOU STRONG!"
+                  }
+                ]
+              },
+              { "wait":25 },
+              {
+                "object":[
+                  { "type":"tutorial", "image":"sprites", "tileY":40, "width":16, "height":16, "x":24, "y":208 },
+                  {
+                    "type":"tutorial",
+                    "width":200, "height":10,
+                    "x":48, "y":216,
+                    "color":"#fff",
+                    "font":"arcade", "fontSize":8, "lineHeight":8, "html":"... MYSTERY BONUS?"
+                  }
+                ]
+              },
+              { "wait":250 },
+              { "as":{ "_":[ "object", "tutorial" ] }, "remove":1 },
+              {
+                "object":{
+                  "type":"tutorial",
+                  "width":224, "height":50,
+                  "x":0, "y":161,
+                  "color":"#fff",
+                  "font":"arcade", "fontSize":8, "lineHeight":10, "textAlign":"center", "html":"EXTRA LIFE<br>EVERY 10.000 pts."
+                }
+              },
+              { "wait":250 },
+              { "as":{ "_":[ "object", "tutorial" ] }, "remove":1 },
+              { "loopTo":3 }
+            ]
+          }
+        ]
+      }
+    },
+    "1":{
+      "object":[
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":208, "height":48, "x":8, "y":24 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":48, "height":168, "x":8, "y":64 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":208, "height":48, "x":8, "y":224 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":128, "height":48, "x":48, "y":184 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":48, "height":88, "x":48, "y":104 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":128, "height":48, "x":48, "y":64 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":48, "height":48, "x":88, "y":104 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":48, "height":48, "x":88, "y":144 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":48, "height":88, "x":128, "y":104 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":48, "height":168, "x":168, "y":64 }
+      ],
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "gameElements":{
+        "object":[
+          { "set":{ "_":[ "stencil", "bally" ] }, "x":188, "y":256 },
+          { "set":{ "_":[ "stencil", "bally" ] }, "x":196, "y":16 },
+          { "set":{ "_":[ "stencil", "rolly" ] }, "x":108, "y":216 },
+          { "set":{ "_":[ "stencil", "bally" ] }, "x":20, "y":16 },
+          { "set":{ "_":[ "stencil", "bally" ] }, "x":20, "y":256 }
+        ]
+      },
+      "imageIndex":0,
+      "rollColor":"#ffff00",
+      "tilemap":{
+        "width":224,
+        "tileWidth":8,
+        "tileHeight":8,
+        "map":[
+          "                            ",
+          "                            ",
+          "                            ",
+          " .......................... ",
+          " .                        . ",
+          " .                        . ",
+          " .                        . ",
+          " .                        . ",
+          " .......................... ",
+          " .    .              .    . ",
+          " .    .              .    . ",
+          " .    .              .    . ",
+          " .    .              .    . ",
+          " .    O..............O    . ",
+          " .    .    .    .    .    . ",
+          " .    .    .    .    .    . ",
+          " .    .    .    .    .    . ",
+          " .    .    .    .    .    . ",
+          " .    .    ......    .    . ",
+          " .    .    .    .    .    . ",
+          " .    .    .    .    .    . ",
+          " .    .    .    .    .    . ",
+          " .    .    .    .    .    . ",
+          " .    O..............O    . ",
+          " .    .              .    . ",
+          " .    .              .    . ",
+          " .    .              .    . ",
+          " .    .              .    . ",
+          " .......................... ",
+          " .                        . ",
+          " .                        . ",
+          " .                        . ",
+          " .                        . ",
+          " .......................... ",
+          "                            ",
+          "                            "
+        ]
+      }
+    },
+    "10":{
+      "object":[
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":80, "height":32, "x":8, "y":24 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":72, "height":32, "x":80, "y":24 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":72, "height":32, "x":144, "y":24 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":32, "height":72, "x":8, "y":48 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":32, "height":80, "x":8, "y":112 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":32, "height":88, "x":8, "y":184 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":64, "height":72, "x":32, "y":160 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":64, "height":48, "x":32, "y":224 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":120, "height":120, "x":32, "y":48 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":72, "height":64, "x":144, "y":48 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":40, "height":64, "x":144, "y":104 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":40, "height":64, "x":176, "y":104 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":64, "height":40, "x":88, "y":160 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":64, "height":40, "x":88, "y":192 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":64, "height":32, "x":88, "y":224 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":128, "height":24, "x":88, "y":248 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":72, "height":40, "x":144, "y":160 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":72, "height":64, "x":144, "y":192 }
+      ],
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "gameElements":{
+        "object":[
+          { "set":{ "_":[ "stencil", "bally" ] }, "x":196, "y":256 },
+          { "set":{ "_":[ "stencil", "bally" ] }, "x":196, "y":40 },
+          { "set":{ "_":[ "stencil", "rolly" ] }, "x":116, "y":152 },
+          { "set":{ "_":[ "stencil", "bally" ] }, "x":28, "y":40 },
+          { "set":{ "_":[ "stencil", "bally" ] }, "x":28, "y":256 }
+        ]
+      },
+      "imageIndex":9,
+      "rollColor":"#f8bb55",
+      "tilemap":{
+        "width":224,
+        "tileWidth":8,
+        "tileHeight":8,
+        "map":[
+          "                            ",
+          "                            ",
+          "                            ",
+          " .......................... ",
+          " .        .       .       . ",
+          " .        .       .       . ",
+          " ...O.............O........ ",
+          " .  .             .       . ",
+          " .  .             .       . ",
+          " .  .             .       . ",
+          " .  .             .       . ",
+          " .  .             .       . ",
+          " .  .             .       . ",
+          " .  .             ......... ",
+          " ....             .   .   . ",
+          " .  .             .   .   . ",
+          " .  .             .   .   . ",
+          " .  .             .   .   . ",
+          " .  .             .   .   . ",
+          " .  .             .   .   . ",
+          " .  ....................... ",
+          " .  .      .      .       . ",
+          " .  .      .      .       . ",
+          " ....      .      .       . ",
+          " .  .      ................ ",
+          " .  .      .      .       . ",
+          " .  .      .      .       . ",
+          " .  .      .      .       . ",
+          " .  O.............O       . ",
+          " .  .      .      .       . ",
+          " .  .      .      .       . ",
+          " .  .      ................ ",
+          " .  .      .              . ",
+          " .......................... ",
+          "                            ",
+          "                            "
+        ]
+      }
+    },
+    "2":{
+      "object":[
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":48, "height":48, "x":8, "y":24 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":48, "height":208, "x":8, "y":64 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":128, "height":48, "x":48, "y":24 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":48, "height":48, "x":48, "y":64 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":48, "height":128, "x":48, "y":104 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":128, "height":48, "x":48, "y":224 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":48, "height":48, "x":88, "y":64 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":48, "height":48, "x":88, "y":104 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":48, "height":48, "x":88, "y":144 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":48, "height":48, "x":88, "y":184 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":48, "height":128, "x":128, "y":64 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":48, "height":48, "x":128, "y":184 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":48, "height":208, "x":168, "y":24 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":48, "height":48, "x":168, "y":224 }
+      ],
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "gameElements":{
+        "object":[
+          { "set":{ "_":[ "stencil", "bally" ] }, "x":188, "y":256 },
+          { "set":{ "_":[ "stencil", "bally" ] }, "x":196, "y":16 },
+          { "set":{ "_":[ "stencil", "rolly" ] }, "x":108, "y":136 },
+          { "set":{ "_":[ "stencil", "bally" ] }, "x":20, "y":16 },
+          { "set":{ "_":[ "stencil", "bally" ] }, "x":20, "y":256 }
+        ]
+      },
+      "imageIndex":1,
+      "rollColor":"#2121ff",
+      "tilemap":{
+        "width":224,
+        "tileWidth":8,
+        "tileHeight":8,
+        "map":[
+          "                            ",
+          "                            ",
+          "                            ",
+          " .......................... ",
+          " .    .              .    . ",
+          " .    .              .    . ",
+          " .    .              .    . ",
+          " .    .              .    . ",
+          " .....................    . ",
+          " .    .    .    .    .    . ",
+          " .    .    .    .    .    . ",
+          " .    .    .    .    .    . ",
+          " .    .    .    .    .    . ",
+          " .    .....O....O    .    . ",
+          " .    .    .    .    .    . ",
+          " .    .    .    .    .    . ",
+          " .    .    .    .    .    . ",
+          " .    .    .    .    .    . ",
+          " .    .    ......    .    . ",
+          " .    .    .    .    .    . ",
+          " .    .    .    .    .    . ",
+          " .    .    .    .    .    . ",
+          " .    .    .    .    .    . ",
+          " .    .    O....O.....    . ",
+          " .    .    .    .    .    . ",
+          " .    .    .    .    .    . ",
+          " .    .    .    .    .    . ",
+          " .    .    .    .    .    . ",
+          " .    ..................... ",
+          " .    .              .    . ",
+          " .    .              .    . ",
+          " .    .              .    . ",
+          " .    .              .    . ",
+          " .......................... ",
+          "                            ",
+          "                            "
+        ]
+      }
+    },
+    "3":{
+      "object":[
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":48, "height":48, "x":8, "y":24 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":48, "height":48, "x":8, "y":64 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":48, "height":48, "x":8, "y":184 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":48, "height":48, "x":8, "y":224 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":48, "height":48, "x":168, "y":184 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":48, "height":48, "x":168, "y":224 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":48, "height":48, "x":168, "y":24 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":48, "height":48, "x":168, "y":64 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":128, "height":48, "x":48, "y":24 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":128, "height":48, "x":48, "y":64 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":128, "height":48, "x":48, "y":184 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":88, "height":88, "x":8, "y":104 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":128, "height":48, "x":48, "y":224 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":88, "height":88, "x":128, "y":104 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":48, "height":88, "x":88, "y":104 }
+      ],
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "gameElements":{
+        "object":[
+          { "set":{ "_":[ "stencil", "bally" ] }, "x":188, "y":256 },
+          { "set":{ "_":[ "stencil", "bally" ] }, "x":188, "y":216 },
+          { "set":{ "_":[ "stencil", "rolly" ] }, "x":108, "y":56 },
+          { "set":{ "_":[ "stencil", "bally" ] }, "x":28, "y":216 },
+          { "set":{ "_":[ "stencil", "bally" ] }, "x":28, "y":256 }
+        ]
+      },
+      "imageIndex":2,
+      "rollColor":"#ff0000",
+      "tilemap":{
+        "width":224,
+        "tileWidth":8,
+        "tileHeight":8,
+        "map":[
+          "                            ",
+          "                            ",
+          "                            ",
+          " .......................... ",
+          " .    .              .    . ",
+          " .    .              .    . ",
+          " .    .              .    . ",
+          " .    .              .    . ",
+          " .....O..............O..... ",
+          " .    .              .    . ",
+          " .    .              .    . ",
+          " .    .              .    . ",
+          " .    .              .    . ",
+          " .......................... ",
+          " .         .    .         . ",
+          " .         .    .         . ",
+          " .         .    .         . ",
+          " .         .    .         . ",
+          " .         .    .         . ",
+          " .         .    .         . ",
+          " .         .    .         . ",
+          " .         .    .         . ",
+          " .         .    .         . ",
+          " .......................... ",
+          " .    .              .    . ",
+          " .    .              .    . ",
+          " .    .              .    . ",
+          " .    .              .    . ",
+          " .....O..............O..... ",
+          " .    .              .    . ",
+          " .    .              .    . ",
+          " .    .              .    . ",
+          " .    .              .    . ",
+          " .......................... ",
+          "                            ",
+          "                            "
+        ]
+      }
+    },
+    "4":{
+      "object":[
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":24, "height":24, "x":8, "y":24 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":24, "height":24, "x":24, "y":40 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":24, "height":24, "x":8, "y":40 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":24, "height":24, "x":24, "y":24 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":24, "height":24, "x":176, "y":24 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":24, "height":24, "x":192, "y":40 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":24, "height":24, "x":176, "y":40 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":24, "height":24, "x":192, "y":24 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":24, "height":24, "x":8, "y":232 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":24, "height":24, "x":24, "y":248 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":24, "height":24, "x":8, "y":248 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":24, "height":24, "x":24, "y":232 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":24, "height":24, "x":176, "y":232 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":24, "height":24, "x":192, "y":248 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":24, "height":24, "x":176, "y":248 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":24, "height":24, "x":192, "y":232 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":144, "height":24, "x":40, "y":232 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":144, "height":24, "x":40, "y":248 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":144, "height":24, "x":40, "y":24 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":144, "height":24, "x":40, "y":40 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":24, "height":184, "x":8, "y":56 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":24, "height":184, "x":24, "y":56 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":24, "height":184, "x":176, "y":56 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":24, "height":184, "x":192, "y":56 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":80, "height":96, "x":40, "y":56 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":80, "height":96, "x":40, "y":144 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":72, "height":96, "x":112, "y":56 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":72, "height":96, "x":112, "y":144 }
+      ],
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "gameElements":{
+        "object":[
+          { "set":{ "_":[ "stencil", "bally" ] }, "x":188, "y":240 },
+          { "set":{ "_":[ "stencil", "bally" ] }, "x":188, "y":32 },
+          { "set":{ "_":[ "stencil", "rolly" ] }, "x":116, "y":136 },
+          { "set":{ "_":[ "stencil", "bally" ] }, "x":20, "y":32 },
+          { "set":{ "_":[ "stencil", "bally" ] }, "x":20, "y":240 }
+        ]
+      },
+      "imageIndex":3,
+      "rollColor":"#2121ff",
+      "tilemap":{
+        "width":224,
+        "tileWidth":8,
+        "tileHeight":8,
+        "map":[
+          "                            ",
+          "                            ",
+          "                            ",
+          " .......................... ",
+          " . . .                . . . ",
+          " ..O....................O.. ",
+          " . . .                . . . ",
+          " .......................... ",
+          " . . .        .       . . . ",
+          " . . .        .       . . . ",
+          " . . .        .       . . . ",
+          " . . .        .       . . . ",
+          " . . .        .       . . . ",
+          " . . .        .       . . . ",
+          " . . .        .       . . . ",
+          " . . .        .       . . . ",
+          " . . .        .       . . . ",
+          " . . .        .       . . . ",
+          " . . .................. . . ",
+          " . . .        .       . . . ",
+          " . . .        .       . . . ",
+          " . . .        .       . . . ",
+          " . . .        .       . . . ",
+          " . . .        .       . . . ",
+          " . . .        .       . . . ",
+          " . . .        .       . . . ",
+          " . . .        .       . . . ",
+          " . . .        .       . . . ",
+          " . . .        .       . . . ",
+          " .......................... ",
+          " . . .                . . . ",
+          " ..O....................O.. ",
+          " . . .                . . . ",
+          " .......................... ",
+          "                            ",
+          "                            "
+        ]
+      }
+    },
+    "5":{
+      "object":[
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":48, "height":48, "x":8, "y":24 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":48, "height":48, "x":8, "y":224 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":48, "height":48, "x":168, "y":224 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":48, "height":48, "x":168, "y":24 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":48, "height":168, "x":168, "y":64 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":48, "height":168, "x":8, "y":64 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":128, "height":48, "x":48, "y":24 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":128, "height":48, "x":48, "y":224 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":128, "height":48, "x":48, "y":64 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":128, "height":48, "x":48, "y":184 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":48, "height":88, "x":88, "y":104 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":48, "height":88, "x":128, "y":104 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":48, "height":88, "x":48, "y":104 }
+      ],
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "gameElements":{
+        "object":[
+          { "set":{ "_":[ "stencil", "bally" ] }, "x":188, "y":216 },
+          { "set":{ "_":[ "stencil", "bally" ] }, "x":188, "y":56 },
+          { "set":{ "_":[ "stencil", "rolly" ] }, "x":108, "y":96 },
+          { "set":{ "_":[ "stencil", "bally" ] }, "x":28, "y":56 },
+          { "set":{ "_":[ "stencil", "bally" ] }, "x":28, "y":216 }
+        ]
+      },
+      "imageIndex":4,
+      "rollColor":"#ffff00",
+      "tilemap":{
+        "width":224,
+        "tileWidth":8,
+        "tileHeight":8,
+        "map":[
+          "                            ",
+          "                            ",
+          "                            ",
+          " .......................... ",
+          " .    .              .    . ",
+          " .    .              .    . ",
+          " .    .              .    . ",
+          " .    .              .    . ",
+          " .......................... ",
+          " .    .              .    . ",
+          " .    .              .    . ",
+          " .    .              .    . ",
+          " .    .              .    . ",
+          " .    O..............O    . ",
+          " .    .    ......    .    . ",
+          " .    .    ......    .    . ",
+          " .    .    ......    .    . ",
+          " .    .    ..OO..    .    . ",
+          " .    .    ..OO..    .    . ",
+          " .    .    ..OO..    .    . ",
+          " .    .    ......    .    . ",
+          " .    .    ......    .    . ",
+          " .    .    ......    .    . ",
+          " .    O..............O    . ",
+          " .    .              .    . ",
+          " .    .              .    . ",
+          " .    .              .    . ",
+          " .    .              .    . ",
+          " .......................... ",
+          " .    .              .    . ",
+          " .    .              .    . ",
+          " .    .              .    . ",
+          " .    .              .    . ",
+          " .......................... ",
+          "                            ",
+          "                            "
+        ]
+      }
+    },
+    "6":{
+      "object":[
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":56, "height":48, "x":8, "y":24 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":56, "height":48, "x":8, "y":64 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":48, "height":88, "x":56, "y":24 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":96, "height":48, "x":8, "y":104 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":136, "height":48, "x":8, "y":144 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":176, "height":48, "x":8, "y":184 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":176, "height":48, "x":8, "y":224 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":48, "height":128, "x":96, "y":24 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":48, "height":168, "x":136, "y":24 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":40, "height":248, "x":176, "y":24 }
+      ],
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "gameElements":{
+        "object":[
+          { "set":{ "_":[ "stencil", "bally" ] }, "x":196, "y":256 },
+          { "set":{ "_":[ "stencil", "bally" ] }, "x":164, "y":176 },
+          { "set":{ "_":[ "stencil", "rolly" ] }, "x":36, "y":56 },
+          { "set":{ "_":[ "stencil", "bally" ] }, "x":28, "y":176 },
+          { "set":{ "_":[ "stencil", "bally" ] }, "x":28, "y":256 }
+        ]
+      },
+      "imageIndex":5,
+      "rollColor":"#2121ff",
+      "tilemap":{
+        "width":224,
+        "tileWidth":8,
+        "tileHeight":8,
+        "map":[
+          "                            ",
+          "                            ",
+          "                            ",
+          " .......................... ",
+          " .     .    .    .    .   . ",
+          " .     .    .    .    .   . ",
+          " .     .    .    .    .   . ",
+          " .     .    .    .    .   . ",
+          " .......    .    .    .   . ",
+          " .     .    .    .    .   . ",
+          " .     .    .    .    .   . ",
+          " .     .    .    .    .   . ",
+          " .     .    .    .    .   . ",
+          " ......O.....    .    .   . ",
+          " .          .    .    .   . ",
+          " .          .    .    .   . ",
+          " .          .    .    .   . ",
+          " .          .    .    .   . ",
+          " ...........O.....    .   . ",
+          " .               .    .   . ",
+          " .               .    .   . ",
+          " .               .    .   . ",
+          " .               .    .   . ",
+          " ................O.....   . ",
+          " .                    .   . ",
+          " .                    .   . ",
+          " .                    .   . ",
+          " .                    .   . ",
+          " .....................O   . ",
+          " .                    .   . ",
+          " .                    .   . ",
+          " .                    .   . ",
+          " .                    .   . ",
+          " .......................... ",
+          "                            ",
+          "                            "
+        ]
+      }
+    },
+    "7":{
+      "object":[
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":208, "height":32, "x":8, "y":24 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":32, "height":80, "x":8, "y":48 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":32, "height":32, "x":8, "y":120 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":56, "height":32, "x":8, "y":144 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":80, "height":32, "x":8, "y":168 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":56, "height":32, "x":8, "y":192 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":32, "height":32, "x":8, "y":216 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":32, "height":32, "x":32, "y":216 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":208, "height":32, "x":8, "y":240 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":32, "height":56, "x":136, "y":48 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":32, "height":32, "x":160, "y":48 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":32, "height":32, "x":184, "y":48 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":56, "height":32, "x":160, "y":72 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":80, "height":32, "x":136, "y":96 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":32, "height":32, "x":136, "y":120 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":56, "height":32, "x":160, "y":120 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":56, "height":32, "x":136, "y":144 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":32, "height":32, "x":184, "y":144 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":80, "height":80, "x":136, "y":168 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":32, "height":56, "x":56, "y":192 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":56, "height":104, "x":32, "y":48 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":64, "height":104, "x":80, "y":48 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":32, "height":32, "x":56, "y":144 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":64, "height":32, "x":80, "y":144 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":64, "height":80, "x":80, "y":168 }
+      ],
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "gameElements":{
+        "object":[
+          { "set":{ "_":[ "stencil", "bally" ] }, "x":196, "y":256 },
+          { "set":{ "_":[ "stencil", "bally" ] }, "x":196, "y":40 },
+          { "set":{ "_":[ "stencil", "rolly" ] }, "x":108, "y":136 },
+          { "set":{ "_":[ "stencil", "bally" ] }, "x":28, "y":40 },
+          { "set":{ "_":[ "stencil", "bally" ] }, "x":28, "y":256 }
+        ]
+      },
+      "imageIndex":6,
+      "rollColor":"#00ff00",
+      "tilemap":{
+        "width":224,
+        "tileWidth":8,
+        "tileHeight":8,
+        "map":[
+          "                            ",
+          "                            ",
+          "                            ",
+          " .......................... ",
+          " .                        . ",
+          " .                        . ",
+          " .......................... ",
+          " .  .     .      .  .  .  . ",
+          " .  .     .      .  .  .  . ",
+          " .  .     .      .  ....... ",
+          " .  .     .      .  .     . ",
+          " .  .     .      .  .     . ",
+          " .  .     .      .......... ",
+          " .  .     .      .        . ",
+          " .  .     .      .        . ",
+          " ....     .      .......... ",
+          " .  .     .      .  .     . ",
+          " .  .     .      .  .     . ",
+          " .........O......O......... ",
+          " .     .  .      .     .  . ",
+          " .     .  .      .     .  . ",
+          " .........O......O......... ",
+          " .        .      .        . ",
+          " .        .      .        . ",
+          " ..........      .        . ",
+          " .     .  .      .        . ",
+          " .     .  .      .        . ",
+          " .......  .      .        . ",
+          " .  .  .  .      .        . ",
+          " .  .  .  .      .        . ",
+          " .......................... ",
+          " .                        . ",
+          " .                        . ",
+          " .......................... ",
+          "                            ",
+          "                            "
+        ]
+      }
+    },
+    "8":{
+      "object":[
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":40, "height":40, "x":176, "y":232 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":40, "height":40, "x":8, "y":24 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":40, "height":40, "x":176, "y":24 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":40, "height":40, "x":8, "y":232 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":40, "height":184, "x":8, "y":56 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":144, "height":40, "x":40, "y":24 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":144, "height":40, "x":40, "y":232 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":72, "height":88, "x":40, "y":56 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":72, "height":96, "x":40, "y":144 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":72, "height":88, "x":112, "y":56 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":72, "height":96, "x":112, "y":144 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":40, "height":184, "x":176, "y":56 }
+      ],
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "gameElements":{
+        "object":[
+          { "set":{ "_":[ "stencil", "bally" ] }, "x":196, "y":240 },
+          { "set":{ "_":[ "stencil", "bally" ] }, "x":196, "y":32 },
+          { "set":{ "_":[ "stencil", "rolly" ] }, "x":108, "y":48 },
+          { "set":{ "_":[ "stencil", "bally" ] }, "x":28, "y":32 },
+          { "set":{ "_":[ "stencil", "bally" ] }, "x":28, "y":240 }
+        ]
+      },
+      "imageIndex":7,
+      "rollColor":"#47b9ae",
+      "tilemap":{
+        "width":224,
+        "tileWidth":8,
+        "tileHeight":8,
+        "map":[
+          "                            ",
+          "                            ",
+          "                            ",
+          " O........................O ",
+          " .....                ..... ",
+          " .....                ..... ",
+          " .....                ..... ",
+          " .......................... ",
+          " .   .       ..       .   . ",
+          " .   .       ..       .   . ",
+          " .   .       ..       .   . ",
+          " .   .       ..       .   . ",
+          " .   .       ..       .   . ",
+          " .   .       ..       .   . ",
+          " .   .       ..       .   . ",
+          " .   .       ..       .   . ",
+          " .   .       ..       .   . ",
+          " .   ..................   . ",
+          " .   ..................   . ",
+          " .   .       ..       .   . ",
+          " .   .       ..       .   . ",
+          " .   .       ..       .   . ",
+          " .   .       ..       .   . ",
+          " .   .       ..       .   . ",
+          " .   .       ..       .   . ",
+          " .   .       ..       .   . ",
+          " .   .       ..       .   . ",
+          " .   .       ..       .   . ",
+          " .   .       ..       .   . ",
+          " .......................... ",
+          " .....                ..... ",
+          " .....                ..... ",
+          " .....                ..... ",
+          " O........................O ",
+          "                            ",
+          "                            "
+        ]
+      }
+    },
+    "9":{
+      "object":[
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":24, "height":24, "x":8, "y":24 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":24, "height":24, "x":24, "y":40 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":24, "height":24, "x":40, "y":56 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":24, "height":24, "x":160, "y":56 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":24, "height":24, "x":192, "y":24 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":24, "height":24, "x":176, "y":40 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":24, "height":24, "x":8, "y":248 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":24, "height":24, "x":24, "y":232 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":24, "height":24, "x":40, "y":216 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":24, "height":24, "x":160, "y":216 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":24, "height":24, "x":176, "y":232 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":24, "height":24, "x":192, "y":248 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":32, "height":32, "x":56, "y":192 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":32, "height":32, "x":56, "y":72 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":32, "height":32, "x":136, "y":72 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":32, "height":32, "x":136, "y":192 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":32, "height":40, "x":56, "y":96 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":32, "height":40, "x":136, "y":96 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":32, "height":40, "x":56, "y":160 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":32, "height":40, "x":136, "y":160 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":32, "height":40, "x":136, "y":128 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":32, "height":40, "x":56, "y":128 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":64, "height":32, "x":80, "y":72 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":64, "height":32, "x":80, "y":192 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":64, "height":40, "x":80, "y":128 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":64, "height":40, "x":80, "y":92 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":64, "height":40, "x":80, "y":160 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":24, "height":216, "x":8, "y":40 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":24, "height":184, "x":24, "y":56 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":24, "height":152, "x":40, "y":72 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":24, "height":216, "x":192, "y":40 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":24, "height":184, "x":176, "y":56 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":24, "height":152, "x":160, "y":72 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":176, "height":24, "x":24, "y":24 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":176, "height":24, "x":24, "y":248 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":144, "height":24, "x":40, "y":40 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":144, "height":24, "x":40, "y":232 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":112, "height":24, "x":56, "y":216 },
+        { "set":{ "_":[ "stencil", "imagePart" ] }, "width":112, "height":24, "x":56, "y":56 }
+      ],
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "gameElements":{
+        "object":[
+          { "set":{ "_":[ "stencil", "bally" ] }, "x":196, "y":240 },
+          { "set":{ "_":[ "stencil", "bally" ] }, "x":196, "y":32 },
+          { "set":{ "_":[ "stencil", "rolly" ] }, "x":108, "y":152 },
+          { "set":{ "_":[ "stencil", "bally" ] }, "x":28, "y":32 },
+          { "set":{ "_":[ "stencil", "bally" ] }, "x":28, "y":240 }
+        ]
+      },
+      "imageIndex":8,
+      "rollColor":"#00ff00",
+      "tilemap":{
+        "width":224,
+        "tileWidth":8,
+        "tileHeight":8,
+        "map":[
+          "                            ",
+          "                            ",
+          "                            ",
+          " .......................... ",
+          " . .                    . . ",
+          " .......................... ",
+          " . . .                . . . ",
+          " . ..O................O.. . ",
+          " . . . .            . . . . ",
+          " . . .................. . . ",
+          " . . . .  .      .  . . . . ",
+          " . . . .  .      .  . . . . ",
+          " . . . .............. . . . ",
+          " . . . .  .      .  . . . . ",
+          " . . . .  .      .  . . . . ",
+          " . . . .  .      .  . . . . ",
+          " . . . .............. . . . ",
+          " . . . .  .      .  . . . . ",
+          " . . . .  .      .  . . . . ",
+          " . . . .  .      .  . . . . ",
+          " . . . .............. . . . ",
+          " . . . .  .      .  . . . . ",
+          " . . . .  .      .  . . . . ",
+          " . . . .  .      .  . . . . ",
+          " . . . .............. . . . ",
+          " . . . .  .      .  . . . . ",
+          " . . . .  .      .  . . . . ",
+          " . . .................. . . ",
+          " . . . .            . . . . ",
+          " . ..O................O.. . ",
+          " . . .                . . . ",
+          " .......................... ",
+          " . .                    . . ",
+          " .......................... ",
+          "                            ",
+          "                            "
+        ]
+      }
+    },
+    "cutscene1":{
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[
+            {
+              "object":[
+                { "type":"rolly", "set":{ "_":[ "stencil", "cutsceneObject" ] }, "tileY":8, "rollColor":"#ffff00" },
+                { "type":"bally", "set":{ "_":[ "stencil", "cutsceneObject" ] }, "tileY":24 }
+              ]
+            },
+            { "wait":25 },
+            { "as":{ "_":[ "objectTyped", "rolly" ] }, "set":{ "x":-16, "forceX":3 } },
+            { "wait":1, "loop":1, "until":{ "_":[ "objectTyped", "rolly", "x", "isGreaterThan", 224 ] } },
+            { "wait":25 },
+            { "as":{ "_":[ "objectTyped", "bally" ] }, "set":{ "x":-16, "forceX":4 } },
+            { "wait":1, "loop":1, "until":{ "_":[ "objectTyped", "bally", "x", "isGreaterThan", 224 ] } },
+            { "wait":25 },
+            { "as":{ "_":[ "objectTyped", "rolly" ] }, "set":{ "x":224, "forceX":-5 } },
+            { "wait":1, "loop":1, "until":{ "_":[ "objectTyped", "rolly", "x", "isLessThan", 0 ] } },
+            { "wait":25 },
+            { "as":{ "_":[ "objectTyped", "bally" ] }, "set":{ "x":224, "forceX":-6 } },
+            { "wait":1, "loop":1, "until":{ "_":[ "objectTyped", "bally", "x", "isLessThan", 0 ] } },
+            { "wait":25 },
+            { "as":{ "_":[ "objectTyped", "rolly" ] }, "set":{ "x":-16, "forceX":7 } },
+            { "wait":10 },
+            { "as":{ "_":[ "objectTyped", "bally" ] }, "set":{ "x":-16, "forceX":8 } },
+            { "wait":18 },
+            { "as":{ "_":[ "objectTyped", "rolly" ] }, "set":{ "forceX":0 } },
+            { "wait":3 },
+            { "as":{ "_":[ "objectTyped", "bally" ] }, "set":{ "forceX":0 } },
+            { "wait":25 },
+            { "as":{ "_":[ "object", "cutsceneObject" ] }, "set":{ "forceX":-8 } },
+            { "wait":1, "loop":1, "until":{ "_":[ "objectTyped", "rolly", "x", "isLessThan", 0 ] } },
+            { "wait":50 },
+            { "gotoScene":{ "_":[ "variable", "stage" ] }, "withTransition":3 }
+          ]
+        }
+      },
+      "tilemap":{ "width":224, "height":288, "y":140, "tileWidth":8, "tileHeight":8, "map":[
+          "............................"
+        ] }
+    },
+    "cutscene2":{
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[
+            {
+              "object":[
+                { "type":"rolly", "set":{ "_":[ "stencil", "cutsceneObject" ] }, "tileY":8, "x":104, "y":116, "rollColor":"#ffff00" },
+                { "type":"bally", "set":{ "_":[ "stencil", "cutsceneObject" ] }, "tileY":24 }
+              ]
+            },
+            { "wait":25 },
+            { "as":{ "_":[ "objectTyped", "rolly" ] }, "set":{ "forceX":3 } },
+            { "wait":23 },
+            { "as":{ "_":[ "objectTyped", "rolly" ] }, "set":{ "forceX":0, "forceY":3 } },
+            { "wait":10 },
+            { "as":{ "_":[ "objectTyped", "rolly" ] }, "set":{ "forceX":-3, "forceY":0 } },
+            { "wait":15 },
+            { "as":{ "_":[ "objectTyped", "bally" ] }, "set":{ "x":224, "y":136, "forceX":-3 } },
+            { "wait":10 },
+            { "as":{ "_":[ "objectTyped", "bally" ] }, "set":{ "forceX":0 } },
+            { "wait":21 },
+            { "as":{ "_":[ "objectTyped", "rolly" ] }, "set":{ "forceX":0, "forceY":-3 } },
+            { "wait":10 },
+            { "as":{ "_":[ "objectTyped", "rolly" ] }, "set":{ "forceX":3, "forceY":0 } },
+            { "as":{ "_":[ "objectTyped", "bally" ] }, "set":{ "forceX":-5 } },
+            { "wait":5 },
+            { "as":{ "_":[ "objectTyped", "bally" ] }, "set":{ "forceX":5 } },
+            { "wait":18 },
+            { "as":{ "_":[ "objectTyped", "rolly" ] }, "set":{ "forceX":0, "forceY":0 } },
+            { "wait":25 },
+            { "sum":1, "to":{ "_":[ "objectTyped", "rolly", "x" ] }, "wait":1 },
+            { "subtract":1, "to":{ "_":[ "objectTyped", "rolly", "x" ] }, "wait":1, "cycles":10, "loopTo":-1 },
+            { "wait":25 },
+            { "as":{ "_":[ "objectTyped", "rolly" ] }, "set":{ "forceX":3 } },
+            { "as":{ "_":[ "objectTyped", "bally" ] }, "set":{ "x":-16, "y":136, "forceX":3 } },
+            { "wait":10 },
+            { "as":{ "_":[ "objectTyped", "bally" ] }, "set":{ "forceX":0 } },
+            { "wait":13 },
+            { "as":{ "_":[ "objectTyped", "rolly" ] }, "set":{ "forceX":0, "forceY":3 } },
+            { "as":{ "_":[ "objectTyped", "bally" ] }, "set":{ "forceX":5 } },
+            { "wait":5 },
+            { "as":{ "_":[ "objectTyped", "bally" ] }, "set":{ "forceX":-5 } },
+            { "wait":5 },
+            { "as":{ "_":[ "objectTyped", "rolly" ] }, "set":{ "forceX":0, "forceY":0 } },
+            { "wait":25 },
+            { "sum":1, "to":{ "_":[ "objectTyped", "rolly", "x" ] }, "wait":1 },
+            { "subtract":1, "to":{ "_":[ "objectTyped", "rolly", "x" ] }, "wait":1, "cycles":10, "loopTo":-1 },
+            { "wait":50 },
+            { "gotoScene":{ "_":[ "variable", "stage" ] }, "withTransition":3 }
+          ]
+        }
+      },
+      "tilemap":{
+        "width":224, "height":288,
+        "x":40, "y":124,
+        "tileWidth":8,
+        "tileHeight":8,
+        "map":[
+          "..................",
+          ".                .",
+          ".                .",
+          ".                .",
+          ".................."
+        ]
+      }
+    }
+  }
+}
