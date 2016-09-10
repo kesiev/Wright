@@ -20,11 +20,7 @@ var Supports = (function(){
 			while (len--) if (vendors[len]+prop in div.style) return vendors[len]+prop;
 		},
 		setCss:function(obj,prop,value) { if (prop=this.css(prop)) obj[prop]=value; },
-		browser:function(substr){ return navigator.userAgent.toLowerCase().indexOf(substr) > -1; },
-		lineHeightFixes:function(font,size){
-			if ((font=="spectrum")&&(this.isFirefox)&&(size>10)) return size*0.8;
-			return size;
-		},
+		browser:function(substr){ return navigator.userAgent.toLowerCase().indexOf(substr) > -1; },		
 		pointerMode:function() {
 			if ('ontouchstart' in document.documentElement) return "touch";
 			else return "mouse";
@@ -53,6 +49,16 @@ var DOMInator=function(useCanvas,aliasmode){
 	var from,to,source,sources={},filters=[],filter;
 
 	if (pixelated) pixelateStyle(extracss);
+
+	function lineHeightFixes(font,size){
+		if (font=="spectrum") return size-1;
+		return size;
+	}
+
+	function topFixes(font,pos){
+		if ((font=="spectrum")&&Supports.isFirefox) return pos-1;
+		return pos;
+	}
 
 	/* Pixelation handler */
 	function pixelateStyle(style) {
@@ -187,9 +193,10 @@ var DOMInator=function(useCanvas,aliasmode){
 		var prints;
 		if (octx) {
 			prints={f:node.style.fontSize+"px "+node.style.fontFamily,a:node.style.textAlign,l:[]};
+			var lh=lineHeightFixes(node.style.fontFamily,node.style.lineHeight);
 			var ow=node.style.padding+(node.style.outline?1:0);
 			var px=node.style.padding+ow;
-			var y=node.style.lineHeight/2;
+			var y=topFixes(node.style.fontFamily,lh/2);
 			var c=node.style.color||"#fff";
 			var maxWidth=node.style.width-(ow*2);
 			octx.font=prints.f;
@@ -212,7 +219,7 @@ var DOMInator=function(useCanvas,aliasmode){
 							if (testWidth > maxWidth && n > 0) {
 								prints.l.push({s:node.style.outline,c:c,l:line,x:px,y:y});	          	
 								line = words[n];
-								y += node.style.lineHeight;
+								y += lh;
 							}
 							else {
 								line = testLine;
@@ -220,7 +227,7 @@ var DOMInator=function(useCanvas,aliasmode){
 						}
 						prints.l.push({s:node.style.outline,c:c,l:line,x:px,y:y});
 					}
-					y += node.style.lineHeight;			
+					y += lh;			
 				}
 				
 			}
@@ -296,7 +303,12 @@ var DOMInator=function(useCanvas,aliasmode){
 						else resize=1;
 						break;
 					}
-					case "lineHeight":
+					case "fontFamily":
+					case "lineHeight":{
+						this._node.style.lineHeight=lineHeightFixes(this.style.fontFamily,this.style.lineHeight)+"px";
+						this._node.style.fontFamily=this.style.fontFamily;
+						break;						
+					}
 					case "width":
 					case "height":{
 						this._node.style[k]=v+"px";
@@ -395,11 +407,12 @@ var DOMInator=function(useCanvas,aliasmode){
 				/* Composite mode (for correct group filters) */
 				if (this.__first&&this.__isComposite) {
 					var cctx;
-				
+
 					if (!this.__canvas) {
 						this.__canvas=createNode("canvas");
 						cctx=this.__ctx=model.__canvas.getContext("2d");
 					} else cctx=this.__ctx;
+					resetContext(cctx);
 
 					this.__canvas.width=this.style.width;
 					this.__canvas.height=this.style.height;
@@ -586,6 +599,8 @@ var DOMInator=function(useCanvas,aliasmode){
 					}
 				}					
 		};
+
+		this.destroy=function(){};
 		
 		this.frame=function(){};
 
@@ -599,14 +614,24 @@ var DOMInator=function(useCanvas,aliasmode){
 			if (!sources[name]) {
 				sources[name]={};
 				sources[name].node=createNode("canvas");
+				sources[name].node.style.display="none";
+				document.body.appendChild(sources[name].node)
 				sources[name].ctx=sources[name].node.getContext("2d");
 			}
 			sources[name].node.width=style.width;
-			sources[name].node.height=style.height;
+			sources[name].node.height=style.height;			
 			return sources[name];
 		}
 
+		function removeCanvasSource(source) {
+			if (source&&source.node&&source.node.parentNode) source.node.parentNode.removeChild(source.node);
+		}
+
 		this.addFilter=function(filter) { filters.push(filter); }
+
+		this.destroy=function() {
+			for (var a in sources) removeCanvasSource(sources[a]);
+		}
 		
 		this.frame=function() {
 			if (this.style.width&&this.style.height) {
@@ -1272,6 +1297,7 @@ function Box(parent, type, sub, statemanager, useCanvas, aliasmode) {
 			if (this.node.parentNode) this.node.parentNode.removeChild(this.node._node);
 			if (this.timeout) clearTimeout(this.timeout);
 			if (this.audio) for (var a in this.audio.channels) this.audio.channels[a].destroy();
+			this.node.destroy();
 			this.timeout=-1;
 		};
 		box.clean = function() {
@@ -1391,7 +1417,7 @@ function Box(parent, type, sub, statemanager, useCanvas, aliasmode) {
 						this.stats.changesCount++;
 					}
 					if (!obj.cleanprops.lineHeight) {
-						node.setStyle("lineHeight",Supports.lineHeightFixes(obj.font,obj.lineHeight));
+						node.setStyle("lineHeight",obj.lineHeight);
 						obj.cleanprops.lineHeight = 1;
 						this.stats.changesCount++;
 					}
@@ -2303,6 +2329,13 @@ function Wright(gameId,container,mods) {
 			    ]
 			},
 			{
+				label:"test",
+				filter:[
+					{"render":1,"to":"currentframe"},
+			        {"blit":"currentframe"}			        
+			    ]	
+			},
+			{
 				label:"Retro CRT",
 				filter:[
 			        {"generate":"texture","image":"crt","alpha":0.1,"to":"crt"},
@@ -3048,7 +3081,7 @@ function Wright(gameId,container,mods) {
 		getter:function(key){
 			if (window.localStorage) {
 				var ret=localStorage["GAME_"+this.id+"_"+key];
-				return ret?JSON.parse(ret):undefined;
+				return ret&&(ret!="undefined")?JSON.parse(ret):undefined;
 			}
 		}
 	};
@@ -3077,6 +3110,10 @@ function Wright(gameId,container,mods) {
 							if (len>0) for (j=0;j<len;j++) sym=sym3+sym;
 						}
 						return sym;
+					}
+					case "boolean": {
+						if (val) return hudget(from,tox,sub[2]);
+						else return hudget(from,tox,sub[3]);
 					}
 					case "repeatPercent": {
 						total = hudget(from,tox,sub[2]) * 1;
@@ -3250,6 +3287,10 @@ function Wright(gameId,container,mods) {
 						}
 						break
 					}
+					case "capitalize":{
+						ret=Box.capitalize(ret);
+						break;
+					}
 					case "proportionalValue":{
 						p = get(from, tox, struct[++id]);
 						var value = get(from, tox, p.value);
@@ -3266,8 +3307,8 @@ function Wright(gameId,container,mods) {
 						p = get(from, tox, struct[++id]);
 						var a1 = get(from, tox, p[0]),
 							a2 = get(from, tox, p[1]);
-						if (ret < a1) value = a1;
-						if (ret > a2) value = a2;
+						if (ret < a1) ret = a1;
+						if (ret > a2) ret = a2;
 						break;
 					}
 					case "randomNumber":{
@@ -3356,6 +3397,7 @@ function Wright(gameId,container,mods) {
 					case "/":{ ret = FIX(ret / get(from, tox, struct[++id])); break; }
 					case "^":{ ret = Math.pow(ret,get(from, tox, struct[++id])); break; }
 					case "sin":{ ret = Math.sin(ret); break; }
+					case "cos":{ ret = Math.cos(ret); break; }
 					case "not":{ ret = !ret; break; }
 					case "and":{
 						id++;
@@ -3745,15 +3787,9 @@ function Wright(gameId,container,mods) {
 					case "into":
 					case "execute":
 					case "set":
+					case "object":
 					case "box":{ break; }
 					case "log":{ printLog(from,tox,template.log); break; }
-					case "object":{
-						iterateComposedList(from, tox, get(from, tox, template.object), function(item) {
-							subfather = item.into === undefined ? father : get(from, tox, item.into);
-							applyStencil(subfather.add(item.box, StateManager), from, item);
-						});
-						break;
-					}
 					case "states":{ applyStatesModel(from, tox, template.states); break; }
 					case "type":{
 						iterateComposedList(from, tox, get(from, tox, template.type), function(item) {
@@ -3824,6 +3860,11 @@ function Wright(gameId,container,mods) {
 						}, get(from, tox, template[a]));
 					}
 				}
+		if (template.object)
+			iterateComposedList(from, tox, get(from, tox, template.object), function(item) {
+				subfather = item.into === undefined ? father : get(from, tox, item.into);
+				applyStencil(subfather.add(item.box, StateManager), from, item);
+			});	
 		for (var a in SceneGenerators) if (template[a]!==undefined) SceneGenerators[a](template,father,from,tox);
 		if (template.execute) execute(from, tox, get(from, tox, template.execute));
 		return from;
