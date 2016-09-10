@@ -1,0 +1,3134 @@
+{
+  "name":"Bounds Unknown",
+  "author":"KesieV",
+  "year":2016,
+  "genre":"Survival?",
+  "description":"No Man's Sky (2016) is all about the fear of the unknown.<br><br>For example, can you guess how the 'scary unknown' of the main game designer Sean Murray looked like? After all, he was finally working on the game of his own dreams: a game in which the player explores an infinite space. But which genre a dream is? What you've supposed to do in a dream? Something complex or intuitive? Something multiplayer or more intimate? And will this dream be fun? What the player truly have to do? Does he have to explore the space? Does he have to survive, probably? Does he have to fight? What? For what reason? And until when? Until the end? Which is the plausible role of an ending, when put inside an unlimited environment? Since a dream is just a part of reality, how large this part have to or could be? Can it be described with recognizable paradigms in videogames? If not, what promotes a dreamy concept to a true worthy gameplay feature? Then, how is possible to give the sense of getting lost in this space? How is possible to transmit the fear of the unknown? Why not to try with procedural? That makes this game a pioneer, the most procedural and detailed galaxy ever produced! But will it work? Will this investment kill its own small company? Is there anything sure in this chaos? Yes: the game should put the player against the unknown, like in classic sci-fi novels by Isaac Asimov. But is this truly an answer? How is possible to reach this target? Graphics is enough in order to suggest the environment symbolism? Survival is the right genre for recreating this sense of loneliness and weakness? And is this enough? And there is another problem. Despite the game universe is procedural and unlimited, what happens in there is not. Regardless the company size, you have to add more and more hand crafted contents in order to keep them on par with procedural ones, until the same perception is recreated. When contents are 'too much'? 'When it's done?' When money ends?<br><br>And how the Hello Games unknown was like? Will they be able to work on something that's not Joe Danger, which was heavily based by Nintendo strongholds like Super Mario Bros. (1985) and Excitebike (1984)? Will they be able to replicate the Joe Danger success with an original work?<br><br>And what about the advertisers 'scary unknown'? How they can describe a product when its features aren't clear in the first place? And how they can do this using well recognized and appreciated symbols? Will players be able to guess the game interactions viewing some clips? Which clips? From partial content? From old content? From contents that have been cut? How is possible to make lonely and mostly lifeless planets (which are pretty realistic) appealing?<br><br>And, finally, the gamers fears. What exactly is No Man's Sky? What is its point? Being fun? Being revolutionary? Display some nice graphics? Show a clever design? Which is the role of infinity in this game? Unlimited places to visit? Unlimited things to do? Unlimited things to see? What 'procedural' means? Better. What is 'procedural' in the game? The dialogues? Just the planets? Animals? Or animal parts? So, procedural means... just 'shuffling up the stuffs'? Whatever. How long this game is? 20 hours, like an average FPS? 100 hours, like average RPGs? Unlimited, like sandbox games? Which kind of sci-fi No Man's Sky is about? Mass Effect? Star Wars? What else?! Is the game 'the genre I like'? Or which is the right pace of this game? Players have to spend more time on a single planet or sprint thru more planets? What players have to do to 'complete' the game? And ultimately, what is a game content? These procedural planets? This resource collecting? This trading? These stories scattered around? And - why not - was my money well spent into this game?<br><br>Christopher Columbus in 1485 was sure that a brand new trading route to the East Indies can be extabilished sailing westward from Europe. After its painful quest for financial support and 7 years later he managed to set sail for its disastrous voyage, which led him to a totally different place. Columbus plan failed, he was wrong and a liar but still he called the locals 'indios' and never admitted to having docked elsewhere. Despite his ways, he has been fearless and discovered a New World of opportunities and deserves its place in human history as explorer, navigator and colonizer. It's all about trusting your guts, keeping an open mind and evaluating the outcome as it is. But you already know that, right? Plot! Your spaceship crashed on a planet at the borders of the universe. How many secrets the universe is hiding? Just discover it by yourself! Controls are explained ingame, on the lower left of the screen: U/D means UP/DOWN, L/R means LEFT/RIGHT and DIR means UP/DOWN/LEFT/RIGHT. Once you've learned how to play, you can disable tutorials from the settings screen. Have a nice trip!",
+  "screenshots":[ "boundsunknown-1.png", "boundsunknown-2.png" ],
+  "hardware":{
+    "width":256,
+    "height":192,
+    "filter":"retro"
+  },
+  "cheats":{},
+  "resources":{
+    "hud":"hud.png",
+    "planets":"planets.png",
+    "spectrum":"spectrum.font",
+    "sprites":"sprites.png",
+    "terrain":"terrain.png",
+    "crt":"../default/crt.png",
+    "data":"databases/data.json",
+    "defaultsprites":"../default/sprites.png",
+    "scanlines":"../default/scanlines.png"
+  },
+  "stencils":{
+    "codeCheckCondition":[
+      { "set":{ "_counter":0, "conditionValid":1 } },
+      {
+        "times":{ "_":[ "this", "condition", "length" ] },
+        "execute":[
+          { "set":{ "currentCondition":{ "_":[ "this", "condition", { "_":[ "this", "_counter" ] } ] } } },
+          {
+            "when":{
+              "_":[
+                "this",
+                "currentCondition",
+                "units",
+                "and",
+                { "_":[ "variable", "stats", "units", "isLessThan", { "_":[ "this", "currentCondition", "units" ] } ] }
+              ]
+            },
+            "set":{ "conditionValid":0 }
+          },
+          {
+            "when":{
+              "_":[
+                "this",
+                "currentCondition",
+                "lifeForms",
+                "and",
+                { "_":[ "variable", "stats", "lifeForms", "isLessThan", { "_":[ "this", "currentCondition", "lifeForms" ] } ] }
+              ]
+            },
+            "set":{ "conditionValid":0 }
+          },
+          {
+            "when":{
+              "_":[
+                "this",
+                "currentCondition",
+                "energy",
+                "and",
+                { "_":[ "variable", "stats", "inventory", 0, "isLessThan", { "_":[ "this", "currentCondition", "energy" ] } ] }
+              ]
+            },
+            "set":{ "conditionValid":0 }
+          },
+          {
+            "when":{
+              "_":[
+                "this",
+                "currentCondition",
+                "redMineral",
+                "and",
+                { "_":[ "variable", "stats", "inventory", 1, "isLessThan", { "_":[ "this", "currentCondition", "redMineral" ] } ] }
+              ]
+            },
+            "set":{ "conditionValid":0 }
+          },
+          {
+            "when":{
+              "_":[
+                "this",
+                "currentCondition",
+                "greenMineral",
+                "and",
+                { "_":[ "variable", "stats", "inventory", 2, "isLessThan", { "_":[ "this", "currentCondition", "greenMineral" ] } ] }
+              ]
+            },
+            "set":{ "conditionValid":0 }
+          },
+          {
+            "when":{
+              "_":[
+                "this",
+                "currentCondition",
+                "blueMineral",
+                "and",
+                { "_":[ "variable", "stats", "inventory", 3, "isLessThan", { "_":[ "this", "currentCondition", "blueMineral" ] } ] }
+              ]
+            },
+            "set":{ "conditionValid":0 }
+          },
+          {
+            "when":{
+              "_":[
+                "this",
+                "currentCondition",
+                "maxEnergy",
+                "and",
+                { "_":[ "variable", "stats", "maxInventory", 0, "isLessThan", { "_":[ "this", "currentCondition", "maxEnergy" ] } ] }
+              ]
+            },
+            "set":{ "conditionValid":0 }
+          },
+          {
+            "when":{
+              "_":[
+                "this",
+                "currentCondition",
+                "maxRedMineral",
+                "and",
+                { "_":[ "variable", "stats", "maxInventory", 1, "isLessThan", { "_":[ "this", "currentCondition", "maxRedMineral" ] } ] }
+              ]
+            },
+            "set":{ "conditionValid":0 }
+          },
+          {
+            "when":{
+              "_":[
+                "this",
+                "currentCondition",
+                "maxGreenMineral",
+                "and",
+                { "_":[ "variable", "stats", "maxInventory", 2, "isLessThan", { "_":[ "this", "currentCondition", "maxGreenMineral" ] } ] }
+              ]
+            },
+            "set":{ "conditionValid":0 }
+          },
+          {
+            "when":{
+              "_":[
+                "this",
+                "currentCondition",
+                "maxBlueMineral",
+                "and",
+                { "_":[ "variable", "stats", "maxInventory", 3, "isLessThan", { "_":[ "this", "currentCondition", "maxBlueMineral" ] } ] }
+              ]
+            },
+            "set":{ "conditionValid":0 }
+          },
+          {
+            "when":{
+              "_":[
+                "this",
+                "currentCondition",
+                "shipWarpEfficiency",
+                "and",
+                { "_":[ "variable", "stats", "shipWarpEfficiency", "isGreaterThan", { "_":[ "this", "currentCondition", "shipWarpEfficiency" ] } ] }
+              ]
+            },
+            "set":{ "conditionValid":0 }
+          },
+          {
+            "when":{
+              "_":[
+                "this",
+                "currentCondition",
+                "shipAcceleration",
+                "and",
+                { "_":[ "variable", "stats", "shipAcceleration", "isLessThan", { "_":[ "this", "currentCondition", "shipAcceleration" ] } ] }
+              ]
+            },
+            "set":{ "conditionValid":0 }
+          },
+          {
+            "when":{
+              "_":[
+                "this",
+                "currentCondition",
+                "shipSpeed",
+                "and",
+                { "_":[ "variable", "stats", "shipSpeed", "isLessThan", { "_":[ "this", "currentCondition", "shipSpeed" ] } ] }
+              ]
+            },
+            "set":{ "conditionValid":0 }
+          },
+          {
+            "when":{
+              "_":[
+                "this",
+                "currentCondition",
+                "shipLiftoffConsume",
+                "and",
+                { "_":[ "variable", "stats", "shipLiftoffConsume", "isGreaterThan", { "_":[ "this", "currentCondition", "shipLiftoffConsume" ] } ] }
+              ]
+            },
+            "set":{ "conditionValid":0 }
+          },
+          {
+            "when":{
+              "_":[
+                "this",
+                "currentCondition",
+                "raygunCooldown",
+                "and",
+                { "_":[ "variable", "stats", "raygunCooldown", "isGreaterThan", { "_":[ "this", "currentCondition", "raygunCooldown" ] } ] }
+              ]
+            },
+            "set":{ "conditionValid":0 }
+          },
+          {
+            "when":{
+              "_":[
+                "this",
+                "currentCondition",
+                "jetpackConsume",
+                "and",
+                { "_":[ "variable", "stats", "jetpackConsume", "isGreaterThan", { "_":[ "this", "currentCondition", "jetpackConsume" ] } ] }
+              ]
+            },
+            "set":{ "conditionValid":0 }
+          },
+          {
+            "when":{
+              "_":[
+                "this",
+                "currentCondition",
+                "knowledge",
+                "and",
+                { "_":[ "variable", "stats", "knowledge", "isLessThan", { "_":[ "this", "currentCondition", "knowledge" ] } ] }
+              ]
+            },
+            "set":{ "conditionValid":0 }
+          },
+          {
+            "when":{
+              "_":[
+                "this",
+                "currentCondition",
+                "event",
+                "and",
+                {
+                  "_":[
+                    "variable",
+                    "stats",
+                    "eventsProgress",
+                    { "_":[ "this", "currentCondition", "event", 0 ] },
+                    "or",
+                    0,
+                    "isLessThan",
+                    { "_":[ "this", "currentCondition", "event", 1 ] }
+                  ]
+                }
+              ]
+            },
+            "set":{ "conditionValid":0 }
+          },
+          {
+            "when":{
+              "_":[
+                "this",
+                "currentCondition",
+                "shipBulletSpeed",
+                "and",
+                { "_":[ "variable", "stats", "shipBulletSpeed", "isLessThan", { "_":[ "this", "currentCondition", "shipBulletSpeed" ] } ] }
+              ]
+            },
+            "set":{ "conditionValid":0 }
+          },
+          {
+            "when":{
+              "_":[
+                "this",
+                "currentCondition",
+                "shipRaygunCooldown",
+                "and",
+                { "_":[ "variable", "stats", "shipRaygunCooldown", "isGreaterThan", { "_":[ "this", "currentCondition", "shipRaygunCooldown" ] } ] }
+              ]
+            },
+            "set":{ "conditionValid":0 }
+          },
+          {
+            "when":{
+              "_":[
+                "this",
+                "currentCondition",
+                "piratesHit",
+                "and",
+                { "_":[ "variable", "stats", "piratesHit", "isLessThan", { "_":[ "this", "currentCondition", "piratesHit" ] } ] }
+              ]
+            },
+            "set":{ "conditionValid":0 }
+          },
+          { "sum":1, "to":{ "_":[ "this", "_counter" ] } }
+        ]
+      }
+    ],
+    "codeCheckInventory":[
+      { "set":{ "_counter":0 } },
+      {
+        "times":{ "_":[ "variable", "stats", "inventory", "count" ] },
+        "execute":[
+          {
+            "when":{ "_":[ "variable", "stats", "maxInventory", { "_":[ "this", "_counter" ] }, "isLessThan", 50 ] },
+            "assign":50,
+            "to":{ "_":[ "variable", "stats", "maxInventory", { "_":[ "this", "_counter" ] } ] }
+          },
+          {
+            "when":{
+              "_":[
+                "variable",
+                "stats",
+                "inventory",
+                { "_":[ "this", "_counter" ] },
+                "isGreaterThan",
+                { "_":[ "variable", "stats", "maxInventory", { "_":[ "this", "_counter" ] } ] }
+              ]
+            },
+            "assign":{ "_":[ "variable", "stats", "maxInventory", { "_":[ "this", "_counter" ] } ] },
+            "to":{ "_":[ "variable", "stats", "inventory", { "_":[ "this", "_counter" ] } ] }
+          },
+          {
+            "when":{ "_":[ "variable", "stats", "inventory", { "_":[ "this", "_counter" ] }, "isLessThan", 0 ] },
+            "assign":0,
+            "to":{ "_":[ "variable", "stats", "inventory", { "_":[ "this", "_counter" ] } ] }
+          },
+          { "sum":1, "to":{ "_":[ "this", "_counter" ] } }
+        ]
+      },
+      { "when":{ "_":[ "variable", "stats", "units", "isLessThan", 0 ] }, "as":{ "_":[ "variable", "stats" ] }, "set":{ "units":0 } },
+      {
+        "as":{ "_":[ "variable", "stats" ] },
+        "set":{
+          "jetpackConsume":{ "_":[ "this", "jetpackConsume", "limitValue", [ 0.1, 0.5 ] ] },
+          "raygunCooldown":{ "_":[ "this", "raygunCooldown", "limitValue", [ 5, 20 ] ] },
+          "shipAcceleration":{ "_":[ "this", "shipAcceleration", "limitValue", [ 0.1, 0.3 ] ] },
+          "shipBulletSpeed":{ "_":[ "this", "shipBulletSpeed", "limitValue", [ 3, 10 ] ] },
+          "shipLiftoffConsume":{ "_":[ "this", "shipLiftoffConsume", "limitValue", [ 20, 40 ] ] },
+          "shipRaygunCooldown":{ "_":[ "this", "shipRaygunCooldown", "limitValue", [ 5, 20 ] ] },
+          "shipSpeed":{ "_":[ "this", "shipSpeed", "limitValue", [ 1, 6 ] ] },
+          "shipWarpEfficiency":{ "_":[ "this", "shipWarpEfficiency", "limitValue", [ 1, 2 ] ] }
+        }
+      },
+      {
+        "when":{ "_":[ "variable", "stats", "inventory", 0, "isEqualTo", 0 ] },
+        "execute":{ "when":{ "_":[ "objectTyped", "player" ] }, "as":{ "_":"that" }, "set":{ "state":"dead" } }
+      }
+    ],
+    "codeCreateHud":[
+      { "set":{ "counter":0 } },
+      {
+        "object":[
+          { "type":[ "allhud", "universehud", "solarsystemhud", "planethud" ], "image":"hud", "tileX":0, "tileY":40, "width":9, "height":8, "x":240, "y":176 },
+          {
+            "type":[ "allhud", "universehud", "solarsystemhud", "planethud", "hud" ],
+            "hudType":"label", "label":"%number|variable.stats.units|0|10|&nbsp;%",
+            "width":90, "height":10,
+            "x":148, "y":175,
+            "color":"#fff",
+            "font":"spectrum", "lineHeight":10, "outline":"#000", "textAlign":"right"
+          }
+        ],
+        "into":{ "_":"hud" }
+      },
+      {
+        "times":{ "_":[ "variable", "stats", "inventory", "count" ] },
+        "execute":[
+          { "when":{ "_":[ "this", "counter", "isEqualTo", 0 ] }, "set":{ "otherType":"solarsystemhud" }, "elseExecute":{ "set":{ "otherType":"nonehud" } } },
+          {
+            "object":[
+              {
+                "type":[ "allhud", "planethud", { "_":[ "that", "otherType" ] } ],
+                "image":"hud", "width":64, "height":8,
+                "x":120, "y":{ "_":[ 10, "*", { "_":[ "that", "counter" ] }, "+", 18 ] }
+              },
+              {
+                "type":[ "allhud", "planethud", { "_":[ "that", "otherType" ] } ],
+                "image":"hud", "tileY":{ "_":[ "that", "counter", "+", 1, "*", 8 ] }, "height":8,
+                "zIndex":10, "x":120, "y":{ "_":[ 10, "*", { "_":[ "that", "counter" ] }, "+", 18 ] },
+                "counter":{ "_":[ "that", "counter" ] },
+                "states":{
+                  "code":{
+                    "name":"Execute",
+                    "data":{
+                      "set":{
+                        "width":{ "_":[ "variable", "stats", "inventory", { "_":[ "this", "counter" ] }, "/", { "_":[ "variable", "stats", "maxInventory", { "_":[ "this", "counter" ] } ] }, "*", 56, "floor", "+", 8 ] }
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "type":[ "allhud", "planethud", "hud", { "_":[ "that", "otherType" ] } ],
+                "hudType":"label", "label":{ "_":[ "%number|variable.stats.inventory.", ".", { "_":[ "that", "counter" ] }, ".", ".ceil|0|3|&nbsp;%/", ".", "%number|variable.stats.maxInventory.", ".", { "_":[ "that", "counter" ] }, ".", "|0|3|&nbsp;%" ] },
+                "width":100, "height":10,
+                "x":192, "y":{ "_":[ 10, "*", { "_":[ "that", "counter" ] }, "+", 16 ] },
+                "color":"#fff",
+                "font":"spectrum", "lineHeight":10, "outline":"#000"
+              }
+            ],
+            "into":{ "_":"hud" }
+          },
+          { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+        ]
+      }
+    ],
+    "codeEnding":{
+      "object":{
+        "width":192, "height":1000,
+        "x":64, "y":192,
+        "font":"spectrum", "textAlign":"center", "html":"BOUNDS UNKNOWN<br>(c) 2016<br>A tribute to<br>No Man's Sky<br><br><br>Graphics by:<br>KesieV Norimaki<br><br><br>Story by:<br>Bianca Brenna<br>KesieV Norimaki<br><br><br>Code by:<br>KesieV Norimaki<br><br><br>Big thanks to:<br>Giuseppe Marchese<br>Roberto Garrito<br>Andrea \"Dry\" D'Iapico<br>Arduini Umberto<br>Leonardo Ballari<br>Andrea Lucente<br>Il Marsicano<br>\"Il Kusagari\"<br>Romolo Camplani<br>and<br>All Akihabara<br>age friends<br><br><br><br><br>Life doesn't have<br>any genre.<br><br>Life doesn't have<br>any ending.",
+        "forceY":-0.5,
+        "states":{ "code":{ "name":"Physics" } }
+      },
+      "states":{
+        "code":[
+          { "name":"Sequence", "data":[ { "wait":1960 }, { "_":[ "stencil", "codeGotoGame" ] } ] },
+          { "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "execute":{ "_":[ "stencil", "codeGotoGame" ] } } }
+        ]
+      }
+    },
+    "codeGetData":[
+      { "as":{ "_":"variable" }, "set":{ "randomSeed":{ "_":[ "that", "recordId" ] } } },
+      { "set":{ "counter":0 } },
+      {
+        "times":{ "_":[ "this", "dataset", "count" ] },
+        "execute":[
+          { "set":{ "entry":{ "_":[ "this", "dataset", { "_":[ "this", "counter" ] } ] } } },
+          {
+            "when":{ "_":[ "this", "entry", "range" ] },
+            "assign":{ "_":[ "randomNumber", { "_":[ "this", "entry", "range" ] }, "/", { "_":[ "this", "entry", "div" ] } ] },
+            "to":{ "_":[ "this", { "_":[ "this", "entry", "id" ] } ] }
+          },
+          {
+            "when":{ "_":[ "this", "entry", "sylset" ] },
+            "execute":[
+              { "set":{ "_name":"", "_words":{ "_":[ "randomNumber", { "_":[ "this", "entry", "words" ] } ] }, "counter2":0 } },
+              {
+                "times":{ "_":[ "this", "_words" ] },
+                "execute":[
+                  { "set":{ "_word":"" } },
+                  {
+                    "times":{ "_":[ "randomNumber", { "_":[ "this", "entry", "len" ] } ] },
+                    "set":{ "_word":{ "_":[ "this", "_word", ".", { "_":[ "randomValue", { "_":[ "resource", "data", { "_":[ "this", "entry", "sylset" ] } ] } ] } ] } }
+                  },
+                  { "set":{ "_name":{ "_":[ "this", "_name", ".", { "_":[ "this", "_word", "capitalize" ] } ] } } },
+                  { "sum":1, "to":{ "_":[ "this", "counter2" ] } },
+                  {
+                    "when":{ "_":[ "this", "counter2", "isLessThan", { "_":[ "this", "_words" ] } ] },
+                    "set":{ "_name":{ "_":[ "this", "_name", ".", { "_":[ "randomValue", [ " ", "-", "' " ] ] } ] } }
+                  }
+                ]
+              },
+              { "assign":{ "_":[ "this", "_name" ] }, "to":{ "_":[ "this", { "_":[ "this", "entry", "id" ] } ] } }
+            ]
+          },
+          { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+        ]
+      }
+    ],
+    "codeGetPlanetData":[
+      {
+        "when":{ "_":[ "resource", "data", "planets", { "_":[ "this", "recordId" ] } ] },
+        "execute":[
+          { "set":{ "_model":{ "_":[ "resource", "data", "planets", { "_":[ "this", "recordId" ] } ] } } },
+          { "set":{ "recordId":{ "_":[ "this", "_model", "recordId" ] } } }
+        ]
+      },
+      { "set":{ "dataset":{ "_":[ "resource", "data", "planetData" ] } }, "execute":{ "_":[ "stencil", "codeGetData" ] } },
+      { "set":{ "counter":0, "depths":{ "_":[ "new", [] ] }, "lifeForms":{ "_":[ "new", [] ] }, "mineralSet":{ "_":[ "new", [] ] } } },
+      {
+        "times":6,
+        "execute":[
+          { "set":{ "currentColor":{ "_":[ "randomValue", { "_":[ "resource", "data", "palette", { "_":[ "that", "counter" ] } ] } ] } } },
+          {
+            "as":{ "_":[ "new", {} ] },
+            "pushInto":{ "_":[ "that", "depths" ] },
+            "set":{
+              "tileX":{ "_":[ "randomValue", { "_":[ "resource", "data", "terrains", { "_":[ "that", "counter" ] } ] }, "*", 16 ] }, "tileY":{ "_":[ "randomNumber", { "_":[ "that", "currentColor", "fg" ] }, "*", 16 ] },
+              "bgcolor":{ "_":[ "resource", "data", "colors", { "_":[ "that", "currentColor", "bg" ] } ] }
+            }
+          },
+          { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+        ]
+      },
+      { "set":{ "counter":0 } },
+      {
+        "times":{ "_":[ "this", "lifeFormsCount" ] },
+        "execute":[
+          {
+            "as":{ "_":[ "new", {} ] },
+            "pushInto":{ "_":[ "that", "lifeForms" ] },
+            "set":{
+              "speed":{ "_":[ "randomValue", { "_":[ "resource", "data", "lifeFormsSpeed" ] } ] },
+              "body":{ "_":[ "randomValue", { "_":[ "resource", "data", "lifeFormsBody" ] } ] },
+              "damage":{ "_":[ "randomValue", { "_":[ "resource", "data", "lifeFormsDamage" ] } ] },
+              "eyes":{ "_":[ "randomValue", { "_":[ "resource", "data", "lifeFormsEyes" ] } ] },
+              "id":{ "_":[ "that", "counter" ] },
+              "mouth":{ "_":[ "randomValue", { "_":[ "resource", "data", "lifeFormsMouth" ] } ] }
+            }
+          },
+          { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+        ]
+      },
+      { "times":4, "as":{ "_":[ "randomValue", { "_":[ "resource", "data", "mineralSets" ] } ] }, "pushInto":{ "_":[ "that", "mineralSet" ] } },
+      { "when":{ "_":[ "this", "_model" ] }, "set":{ "_":[ "this", "_model" ] } }
+    ],
+    "codeGetSolarSystemData":[
+      { "set":{ "dataset":{ "_":[ "resource", "data", "solarSystemData" ] } }, "execute":{ "_":[ "stencil", "codeGetData" ] } },
+      { "when":{ "_":[ "this", "suggested" ] }, "set":{ "_":[ "this", "suggested" ] } },
+      { "set":{ "asteroidSet":{ "_":[ "new", [] ] }, "starColors":{ "_":[ "new", [] ] } } },
+      { "times":2, "as":{ "_":[ "randomValue", [ "#f00", "#0f0", "#00f", "#f0f", "#ff0", "#0ff", "#fff" ] ] }, "pushInto":{ "_":[ "that", "starColors" ] } },
+      { "times":4, "as":{ "_":[ "randomValue", { "_":[ "resource", "data", "asteroidSets" ] } ] }, "pushInto":{ "_":[ "that", "asteroidSet" ] } },
+      {
+        "when":{ "_":[ "this", "getPlanets" ] },
+        "execute":[
+          { "set":{ "counter":0, "orbits":[ 40, 80, 120, 160, 200, 240 ], "planets":{ "_":[ "new", [] ] } } },
+          { "shuffle":{ "_":[ "this", "orbits" ] } },
+          {
+            "times":{ "_":[ "this", "planetsCount" ] },
+            "execute":[
+              {
+                "as":{ "_":[ "new", {} ] },
+                "pushInto":{ "_":[ "that", "planets" ] },
+                "set":{
+                  "size":{ "_":[ "randomValue", [ 1, 0.5 ] ] },
+                  "_planet":{ "_":[ "that", "suggestedPlanets", { "_":[ "that", "counter" ] } ] },
+                  "orbit":{ "_":[ "that", "orbits", { "_":[ "that", "counter" ] } ] },
+                  "orbitAngle":{ "_":[ "randomNumber", [ 0, 360 ] ] },
+                  "orbitSpeed":{ "_":[ "randomNumber", [ 0, 50 ], "/", 100 ] },
+                  "recordId":{ "_":[ "variable", "randomSeed" ] },
+                  "style":{ "_":[ "randomValue", { "_":[ "resource", "data", "planetTypes" ] }, "*", 32 ] }
+                },
+                "execute":[
+                  { "_":[ "stencil", "codeGetPlanetData" ] },
+                  {
+                    "set":{
+                      "planetBgColor":{ "_":[ "this", "depths", { "_":[ "this", "baseDepth" ] }, "bgcolor" ] },
+                      "planetTileY":{ "_":[ "this", "depths", { "_":[ "this", "baseDepth" ] }, "tileY", "*", 2 ] }
+                    }
+                  },
+                  {
+                    "when":{ "_":[ "this", "_planet" ] },
+                    "set":[ { "_":[ "resource", "data", "planets", { "_":[ "this", "_planet" ] } ] }, { "recordId":{ "_":[ "this", "_planet" ] } } ]
+                  }
+                ]
+              },
+              { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+            ]
+          }
+        ]
+      }
+    ],
+    "codeGetSolarSystemIdFromCoords":[
+      {
+        "as":{ "_":"variable" },
+        "set":{ "randomSeed":{ "_":[ "that", "universeX", "+", 11000, "+", { "_":[ "that", "universeY", "+", 1000, "*", 10000 ] } ] } }
+      },
+      {
+        "sum":{ "_":[ "variable", "_noise", { "_":[ "variable", "randomSeed", "%", { "_":[ "variable", "_noise", "count" ] } ] } ] },
+        "to":{ "_":[ "variable", "randomSeed" ] }
+      },
+      { "set":{ "counter3":0, "suggested":0, "suggestedPlanets":{ "_":[ "new", [] ] } } },
+      {
+        "times":{ "_":[ "resource", "data", "systems", "count" ] },
+        "execute":[
+          { "set":{ "system":{ "_":[ "resource", "data", "systems", { "_":[ "this", "counter3" ] } ] } } },
+          {
+            "when":{
+              "_":[
+                "this",
+                "system",
+                "universeX",
+                "isEqualTo",
+                { "_":[ "this", "universeX" ] },
+                "and",
+                { "_":[ "this", "system", "universeY", "isEqualTo", { "_":[ "this", "universeY" ] } ] }
+              ]
+            },
+            "to":{ "_":"this" },
+            "set":{ "_":[ "this", "system" ] }
+          },
+          { "sum":1, "to":{ "_":[ "this", "counter3" ] } }
+        ]
+      },
+      {
+        "when":{ "_":[ "this", "suggested", "or", { "_":[ "randomNumber", [ 0, 100 ], "isLessThan", 60 ] } ] },
+        "set":{ "isEmpty":0, "recordId":{ "_":[ "variable", "randomSeed" ] } },
+        "elseExecute":{ "set":{ "isEmpty":1, "recordId":{ "_":[ "variable", "randomSeed" ] } } }
+      }
+    ],
+    "codeGiveBasicEquipment":[
+      { "set":{ "_counter":0 } },
+      { "subtract":100, "to":{ "_":[ "variable", "stats", "units" ] } },
+      {
+        "times":{ "_":[ "variable", "stats", "inventory", "count" ] },
+        "execute":[
+          {
+            "when":{ "_":[ "variable", "stats", "inventory", { "_":[ "this", "_counter" ] }, "isLessThan", { "_":[ "variable", "stats", "shipLiftoffConsume" ] } ] },
+            "assign":{ "_":[ "variable", "stats", "shipLiftoffConsume" ] },
+            "to":{ "_":[ "variable", "stats", "inventory", { "_":[ "this", "_counter" ] } ] }
+          },
+          { "sum":1, "to":{ "_":[ "this", "_counter" ] } }
+        ]
+      },
+      { "assign":{ "_":[ "variable", "stats", "maxInventory", 0 ] }, "to":{ "_":[ "variable", "stats", "inventory", 0 ] } },
+      { "_":[ "stencil", "codeCheckInventory" ] }
+    ],
+    "codeGotoGame":{ "when":{ "_":[ "storage", "stats", "checkpointY", "isGreaterThan", -1 ] }, "gotoScene":"planet", "elseExecute":{ "gotoScene":"solarsystem" } },
+    "codeLoadGame":[
+      { "as":{ "_":"variable" }, "set":{ "stats":{ "_":[ "storage", "stats" ] } } },
+      {
+        "when":{ "_":[ "variable", "stats" ] },
+        "execute":[ { "_":[ "stencil", "codeCreateHud" ] }, { "_":[ "stencil", "codeGotoGame" ] } ],
+        "elseExecute":{ "subsequence":{ "_":[ "stencil", "codeStartNewGame" ] } }
+      }
+    ],
+    "codeOpenStats":[
+      { "as":{ "_":[ "object", "allhud" ] }, "set":{ "visible":0 } },
+      { "as":{ "_":[ "object", "tutorial" ] }, "set":{ "remove":1 } },
+      { "_":[ "stencil", "codePauseAll" ] },
+      {
+        "object":[
+          {
+            "type":"statsgui",
+            "width":258, "height":176,
+            "x":-1, "y":8,
+            "bgcolor":"#000", "border":"#fff",
+            "states":{
+              "code":{
+                "name":"Sequence",
+                "data":[
+                  { "wait":5 },
+                  {
+                    "when":{ "_":[ "keyB", "isHit" ] },
+                    "execute":[
+                      { "as":{ "_":[ "object", "statsgui" ] }, "remove":1 },
+                      { "as":{ "_":[ "object", { "_":[ "variable", "restoreHud" ] } ] }, "set":{ "visible":1 } },
+                      { "_":[ "stencil", "codeUnpauseAll" ] }
+                    ],
+                    "elseExecute":{
+                      "when":{ "_":[ "keyA", "isHit" ] },
+                      "as":{ "_":[ "variable", "stats" ] },
+                      "set":{ "tutorials":{ "_":[ "variable", "stats", "tutorials", "not" ] } }
+                    }
+                  },
+                  { "wait":1, "loopTo":-1 }
+                ]
+              }
+            }
+          },
+          {
+            "type":"statsgui",
+            "width":240, "height":10,
+            "zIndex":10, "x":8, "y":16,
+            "bgcolor":"#ff0", "color":"#000",
+            "font":"spectrum", "lineHeight":10, "html":"SUITE STATS"
+          },
+          {
+            "type":[ "statsgui", "hud" ],
+            "hudType":"label", "label":"&nbsp;Raygun: COOLDOWN: %number|variable.stats.raygunCooldown%<br>Jetpack: CONSUME: %number|variable.stats.jetpackConsume%",
+            "width":229, "height":192,
+            "zIndex":10, "x":8, "y":26,
+            "color":"#fff",
+            "font":"spectrum", "lineHeight":10
+          },
+          {
+            "type":"statsgui",
+            "width":240, "height":10,
+            "zIndex":10, "x":8, "y":46,
+            "bgcolor":"#ff0", "color":"#000",
+            "font":"spectrum", "lineHeight":10, "html":"SHIP STATS"
+          },
+          {
+            "type":[ "statsgui", "hud" ],
+            "hudType":"label", "label":"Move: SPD: %number|variable.stats.shipSpeed% ACC: %number|variable.stats.shipAcceleration%<br>Fire: SPD: %number|variable.stats.shipBulletSpeed% COOLDOWN: %number|variable.stats.shipRaygunCooldown%<br>Cost: WARP: %number|variable.stats.shipWarpEfficiency%%% LIFT: %number|variable.stats.shipLiftoffConsume%",
+            "width":229, "height":192,
+            "zIndex":10, "x":8, "y":56,
+            "color":"#fff",
+            "font":"spectrum", "lineHeight":10
+          },
+          {
+            "type":"statsgui",
+            "width":240, "height":10,
+            "zIndex":10, "x":8, "y":86,
+            "bgcolor":"#ff0", "color":"#000",
+            "font":"spectrum", "lineHeight":10, "html":"KNOWLEDGE STATS"
+          },
+          {
+            "type":[ "statsgui", "hud" ],
+            "hudType":"label", "label":"&nbsp;&nbsp;Life: %number|variable.stats.lifeForms|0|4% &nbsp;&nbsp;Pirate: %number|variable.stats.piratesHit|0|4%<br>&nbsp;&nbsp;&nbsp;All: %number|variable.stats.knowledge|0|4%",
+            "width":229, "height":192,
+            "zIndex":10, "x":8, "y":96,
+            "color":"#fff",
+            "font":"spectrum", "lineHeight":10
+          },
+          {
+            "type":"statsgui",
+            "width":240, "height":10,
+            "zIndex":10, "x":8, "y":116,
+            "bgcolor":"#f0f", "color":"#000",
+            "font":"spectrum", "lineHeight":10, "html":"SETTINGS"
+          },
+          {
+            "type":[ "statsgui", "hud" ],
+            "hudType":"label", "label":"&nbsp;&nbsp;A: Tutorials are %boolean|variable.stats.tutorials|On|Off%<br>&nbsp;&nbspB: Close",
+            "width":229, "height":192,
+            "zIndex":10, "x":8, "y":126,
+            "color":"#fff",
+            "font":"spectrum", "lineHeight":10
+          }
+        ],
+        "into":{ "_":"scenehud" }
+      }
+    ],
+    "codePauseAll":[
+      { "as":{ "_":[ "object", "pausable" ] }, "set":{ "prevState":{ "_":[ "this", "state" ] } } },
+      { "as":{ "_":[ "object", "pausable" ] }, "set":{ "state":"paused" } }
+    ],
+    "codePerformAction":[
+      { "set":{ "_counter":0 } },
+      {
+        "times":{ "_":[ "this", "action", "length" ] },
+        "execute":[
+          { "set":{ "currentAction":{ "_":[ "this", "action", { "_":[ "this", "_counter" ] } ] } } },
+          {
+            "when":{ "_":[ "this", "currentAction", "units" ] },
+            "sum":{ "_":[ "this", "currentAction", "units" ] },
+            "to":{ "_":[ "variable", "stats", "units" ] }
+          },
+          {
+            "when":{ "_":[ "this", "currentAction", "energy" ] },
+            "sum":{ "_":[ "this", "currentAction", "energy" ] },
+            "to":{ "_":[ "variable", "stats", "inventory", 0 ] }
+          },
+          {
+            "when":{ "_":[ "this", "currentAction", "redMineral" ] },
+            "sum":{ "_":[ "this", "currentAction", "redMineral" ] },
+            "to":{ "_":[ "variable", "stats", "inventory", 1 ] }
+          },
+          {
+            "when":{ "_":[ "this", "currentAction", "greenMineral" ] },
+            "sum":{ "_":[ "this", "currentAction", "greenMineral" ] },
+            "to":{ "_":[ "variable", "stats", "inventory", 2 ] }
+          },
+          {
+            "when":{ "_":[ "this", "currentAction", "blueMineral" ] },
+            "sum":{ "_":[ "this", "currentAction", "blueMineral" ] },
+            "to":{ "_":[ "variable", "stats", "inventory", 3 ] }
+          },
+          {
+            "when":{ "_":[ "this", "currentAction", "maxEnergy" ] },
+            "sum":{ "_":[ "this", "currentAction", "maxEnergy" ] },
+            "to":{ "_":[ "variable", "stats", "maxInventory", 0 ] }
+          },
+          {
+            "when":{ "_":[ "this", "currentAction", "maxRedMineral" ] },
+            "sum":{ "_":[ "this", "currentAction", "maxRedMineral" ] },
+            "to":{ "_":[ "variable", "stats", "maxInventory", 1 ] }
+          },
+          {
+            "when":{ "_":[ "this", "currentAction", "maxGreenMineral" ] },
+            "sum":{ "_":[ "this", "currentAction", "maxGreenMineral" ] },
+            "to":{ "_":[ "variable", "stats", "maxInventory", 2 ] }
+          },
+          {
+            "when":{ "_":[ "this", "currentAction", "maxBlueMineral" ] },
+            "sum":{ "_":[ "this", "currentAction", "maxBlueMineral" ] },
+            "to":{ "_":[ "variable", "stats", "maxInventory", 3 ] }
+          },
+          {
+            "when":{ "_":[ "this", "currentAction", "raygunCooldown" ] },
+            "sum":{ "_":[ "this", "currentAction", "raygunCooldown" ] },
+            "to":{ "_":[ "variable", "stats", "raygunCooldown" ] }
+          },
+          {
+            "when":{ "_":[ "this", "currentAction", "shipWarpEfficiency" ] },
+            "sum":{ "_":[ "this", "currentAction", "shipWarpEfficiency" ] },
+            "to":{ "_":[ "variable", "stats", "shipWarpEfficiency" ] }
+          },
+          {
+            "when":{ "_":[ "this", "currentAction", "shipSpeed" ] },
+            "sum":{ "_":[ "this", "currentAction", "shipSpeed" ] },
+            "to":{ "_":[ "variable", "stats", "shipSpeed" ] }
+          },
+          {
+            "when":{ "_":[ "this", "currentAction", "shipAcceleration" ] },
+            "sum":{ "_":[ "this", "currentAction", "shipAcceleration" ] },
+            "to":{ "_":[ "variable", "stats", "shipAcceleration" ] }
+          },
+          {
+            "when":{ "_":[ "this", "currentAction", "shipLiftoffConsume" ] },
+            "sum":{ "_":[ "this", "currentAction", "shipLiftoffConsume" ] },
+            "to":{ "_":[ "variable", "stats", "shipLiftoffConsume" ] }
+          },
+          {
+            "when":{ "_":[ "this", "currentAction", "jetpackConsume" ] },
+            "sum":{ "_":[ "this", "currentAction", "jetpackConsume" ] },
+            "to":{ "_":[ "variable", "stats", "jetpackConsume" ] }
+          },
+          { "when":{ "_":[ "this", "currentAction", "replaceShipPart" ] }, "execute":{ "_":[ "stencil", "codeReplaceShipPart" ] } },
+          {
+            "when":{ "_":[ "this", "currentAction", "shipRaygunCooldown" ] },
+            "sum":{ "_":[ "this", "currentAction", "shipRaygunCooldown" ] },
+            "to":{ "_":[ "variable", "stats", "shipRaygunCooldown" ] }
+          },
+          {
+            "when":{ "_":[ "this", "currentAction", "shipBulletSpeed" ] },
+            "sum":{ "_":[ "this", "currentAction", "shipBulletSpeed" ] },
+            "to":{ "_":[ "variable", "stats", "shipBulletSpeed" ] }
+          },
+          {
+            "when":{ "_":[ "this", "currentAction", "saveCheckPoint" ] },
+            "as":{ "_":[ "variable", "stats" ] },
+            "execute":{ "_":[ "stencil", "codeSetCheckpoint" ] }
+          },
+          {
+            "when":{ "_":[ "this", "currentAction", "gotoScene" ] },
+            "execute":[
+              { "as":{ "_":[ "variable", "stats" ] }, "execute":{ "_":[ "stencil", "codeSetCheckpoint" ] } },
+              { "as":{ "_":[ "object", "allhud" ] }, "set":{ "visible":0 } },
+              { "as":{ "_":[ "object", "eventgui" ] }, "remove":1 },
+              { "as":{ "_":[ "objectTyped", "player" ] }, "remove":1 },
+              { "gotoScene":{ "_":[ "this", "currentAction", "gotoScene" ] } }
+            ]
+          },
+          {
+            "when":{ "_":[ "this", "currentAction", "showPlace" ] },
+            "subsequence":[
+              { "as":{ "_":[ "object", "eventgui" ] }, "set":{ "visible":0 } },
+              {
+                "as":{ "_":[ "objectTyped", { "_":[ "this", "currentAction", "showPlace" ] } ] },
+                "execute":{
+                  "object":{
+                    "type":"marker",
+                    "follow":1,
+                    "image":"hud", "tileY":48, "width":24, "height":24,
+                    "zIndex":1000, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+                    "states":{ "code":{ "name":"Execute", "data":{ "sum":2, "to":{ "_":[ "this", "angle" ] } } } }
+                  }
+                }
+              },
+              { "wait":100 },
+              { "as":{ "_":[ "object", "marker" ] }, "remove":1 },
+              { "as":{ "_":[ "objectTyped", "player" ] }, "follow":1 },
+              { "wait":25 }
+            ]
+          },
+          { "sum":1, "to":{ "_":[ "this", "_counter" ] } }
+        ]
+      },
+      { "_":[ "stencil", "codeCheckInventory" ] }
+    ],
+    "codeReplaceShipPart":[
+      {
+        "assign":{ "_":[ "randomValue", { "_":[ "resource", "data", "shipParts" ] } ] },
+        "to":{ "_":[ "variable", "stats", "shipParts", { "_":[ "randomValue", [ 0, 1 ] ] } ] }
+      },
+      { "as":{ "_":[ "object", "ship" ] }, "executeAction":"update" }
+    ],
+    "codeRunEvent":[
+      { "as":{ "_":[ "object", "allhud" ] }, "set":{ "visible":0 } },
+      { "_":[ "stencil", "codePauseAll" ] },
+      {
+        "as":{ "_":"variable" },
+        "set":{ "execute":{ "_":[ "stencil", "codeShowTutorial" ] }, "tutorial":"U/D: Move cursor<br>&nbsp;&nbsp;A: Confirm<br>&nbsp;&nbsp;B: Cancel" }
+      },
+      {
+        "when":{ "_":[ "this", "event", "useSequence" ] },
+        "execute":[
+          {
+            "when":{ "_":[ "variable", "stats", "events", { "_":[ "this", "event", "label" ] }, "*", 1, "not" ] },
+            "as":{ "_":"variable" },
+            "set":{ "eventId":0 },
+            "elseExecute":{ "as":{ "_":"variable" }, "set":{ "eventId":{ "_":[ "variable", "stats", "events", { "_":[ "that", "event", "label" ] } ] } } }
+          },
+          {
+            "when":{ "_":[ "variable", "eventId", "isGreaterEqualThan", { "_":[ "this", "event", "list", "count" ] } ] },
+            "as":{ "_":"variable" },
+            "set":{ "eventId":0 }
+          },
+          { "set":{ "subevent":{ "_":[ "this", "event", "list", { "_":[ "variable", "eventId" ] } ] } } }
+        ],
+        "elseExecute":{ "set":{ "subevent":{ "_":[ "randomValue", { "_":[ "this", "event", "list" ] } ] } } }
+      },
+      { "set":{ "counter":0, "options":{ "_":[ "new", [] ] }, "selection":-1 } },
+      {
+        "times":{ "_":[ "this", "subevent", "options", "count" ] },
+        "execute":[
+          { "as":{ "_":[ "this", "subevent", "options", { "_":[ "this", "counter" ] } ] }, "pushInto":{ "_":[ "that", "options" ] } },
+          { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+        ]
+      },
+      { "shuffle":{ "_":[ "this", "options" ] } },
+      {
+        "object":[
+          { "type":"eventgui", "width":258, "height":176, "x":-1, "y":8, "bgcolor":"#000", "border":"#fff" },
+          {
+            "type":"eventgui",
+            "image":"hud", "tileY":80, "width":32, "height":32,
+            "zIndex":10, "x":-32, "y":16,
+            "bgcolor":"#f00",
+            "animations":{ "static":{ "frames":3, "speed":1, "loopTo":0 } },
+            "animation":"static",
+            "states":{
+              "code":{
+                "name":"Sequence",
+                "data":[
+                  { "sum":2, "to":{ "_":[ "this", "x" ] }, "wait":1, "loop":1, "cycles":20 },
+                  { "wait":10 },
+                  { "set":{ "frame":{ "_":[ "randomValue", { "_":[ "variable", "subevent", "portrait" ] } ] }, "animation":"none" } }
+                ]
+              }
+            }
+          },
+          {
+            "type":"eventgui",
+            "width":200, "height":0,
+            "zIndex":10, "x":48, "y":16,
+            "color":"#fff",
+            "font":"spectrum", "lineHeight":10, "html":{ "_":[ "randomValue", { "_":[ "variable", "subevent", "text" ] } ] },
+            "states":{
+              "code":{
+                "name":"Sequence",
+                "data":[
+                  { "sum":2, "to":{ "_":[ "this", "height" ] }, "wait":1, "loop":1, "cycles":55 },
+                  { "set":{ "counter":0, "done":0, "valids":{ "_":[ "new", [] ] } } },
+                  { "set":{ "condition":{ "_":[ "variable", "options", { "_":[ "this", "counter" ] }, "condition" ] }, "conditionValid":1 } },
+                  { "when":{ "_":[ "this", "condition" ] }, "execute":{ "_":[ "stencil", "codeCheckCondition" ] } },
+                  { "assign":{ "_":[ "this", "conditionValid" ] }, "to":{ "_":[ "this", "valids", { "_":[ "this", "counter" ] } ] } },
+                  {
+                    "object":{
+                      "type":[ "eventgui", "eventoption" ],
+                      "width":240, "height":10,
+                      "zIndex":10, "x":-256, "y":{ "_":[ "that", "counter", "*", 14, "+", 138 ] },
+                      "font":"spectrum", "lineHeight":10, "html":{ "_":[ "variable", "options", { "_":[ "that", "counter" ] }, "text" ] },
+                      "isValid":{ "_":[ "that", "conditionValid" ] },
+                      "optionId":{ "_":[ "that", "counter" ] },
+                      "states":{
+                        "code":{
+                          "name":"Execute",
+                          "data":[
+                            { "when":{ "_":[ "this", "x", "isLessThan", 8 ] }, "sum":24, "to":{ "_":[ "this", "x" ] } },
+                            {
+                              "when":{ "_":[ "variable", "selection", "isEqualTo", -1, "or", { "_":[ "variable", "selection", "isEqualTo", { "_":[ "this", "optionId" ] } ] } ] },
+                              "execute":{ "when":{ "_":[ "this", "isValid" ] }, "set":{ "bgcolor":"#fff", "color":"#000" }, "elseExecute":{ "set":{ "bgcolor":"#7f7f7f", "color":"#000" } } },
+                              "elseExecute":{ "when":{ "_":[ "this", "isValid" ] }, "set":{ "bgcolor":"#000", "color":"#fff" }, "elseExecute":{ "set":{ "bgcolor":"#000", "color":"#7f7f7f" } } }
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    "into":{ "_":"scenehud" }
+                  },
+                  { "wait":10 },
+                  { "sum":1, "to":{ "_":[ "this", "counter" ] } },
+                  { "loopTo":-6, "until":{ "_":[ "this", "counter", "isEqualTo", { "_":[ "variable", "options", "count" ] } ] } },
+                  { "wait":10 },
+                  { "as":{ "_":"variable" }, "set":{ "selection":0 } },
+                  {
+                    "when":{ "_":[ "keyUp", "isHit" ] },
+                    "subtract":1,
+                    "to":{ "_":[ "variable", "selection" ] },
+                    "elseExecute":{ "when":{ "_":[ "keyDown", "isHit" ] }, "sum":1, "to":{ "_":[ "variable", "selection" ] } }
+                  },
+                  {
+                    "when":{ "_":[ "variable", "selection", "isLessThan", 0 ] },
+                    "as":{ "_":"variable" },
+                    "set":{ "selection":{ "_":[ "variable", "options", "count", "-", 1 ] } },
+                    "elseExecute":{
+                      "when":{ "_":[ "variable", "selection", "isGreaterEqualThan", { "_":[ "variable", "options", "count" ] } ] },
+                      "as":{ "_":"variable" },
+                      "set":{ "selection":0 }
+                    }
+                  },
+                  {
+                    "when":{ "_":[ "keyA", "isHit", "and", { "_":[ "this", "valids", { "_":[ "variable", "selection" ] } ] } ] },
+                    "set":{ "done":1 },
+                    "elseExecute":{ "when":{ "_":[ "keyB", "isHit" ] }, "set":{ "done":-1 } }
+                  },
+                  { "wait":1, "loopTo":-3, "until":{ "_":[ "this", "done", "isNotEqualTo", 0 ] } },
+                  {
+                    "when":{ "_":[ "this", "done", "isEqualTo", 1 ] },
+                    "elseExecute":{ "_":[ "stencil", "codeStopEvent" ] },
+                    "subsequence":[
+                      { "assign":1, "to":{ "_":[ "variable", "stats", "flags", { "_":[ "variable", "flagId" ] } ] } },
+                      { "sum":1, "to":{ "_":[ "variable", "eventId" ] } },
+                      { "sum":1, "to":{ "_":[ "variable", "stats", "knowledge" ] } },
+                      { "as":{ "_":[ "object", "eventoption" ] }, "remove":1 },
+                      {
+                        "when":{ "_":[ "variable", "event", "useSequence" ] },
+                        "execute":[
+                          { "assign":{ "_":[ "variable", "eventId" ] }, "to":{ "_":[ "variable", "stats", "events", { "_":[ "variable", "event", "label" ] } ] } },
+                          {
+                            "when":{ "_":[ "variable", "stats", "eventsProgress", { "_":[ "variable", "event", "label" ] }, "or", 0, "isLessThan", { "_":[ "variable", "eventId" ] } ] },
+                            "assign":{ "_":[ "variable", "eventId" ] },
+                            "to":{ "_":[ "variable", "stats", "eventsProgress", { "_":[ "variable", "event", "label" ] } ] }
+                          }
+                        ]
+                      },
+                      {
+                        "object":{
+                          "type":"eventgui",
+                          "width":240, "height":0,
+                          "zIndex":10, "x":8, "y":138,
+                          "bgcolor":"#7f7f00", "color":"#fff",
+                          "font":"spectrum", "lineHeight":10, "html":{ "_":[ "randomValue", { "_":[ "variable", "options", { "_":[ "variable", "selection" ] }, "result" ] } ] },
+                          "states":{
+                            "code":{
+                              "name":"Sequence",
+                              "data":[
+                                { "sum":2, "to":{ "_":[ "this", "height" ] }, "wait":1, "loop":1, "cycles":20 },
+                                { "wait":10 },
+                                { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+                                {
+                                  "when":{ "_":[ "variable", "options", { "_":[ "variable", "selection" ] }, "action" ] },
+                                  "set":{ "action":{ "_":[ "randomValue", { "_":[ "variable", "options", { "_":[ "variable", "selection" ] }, "action" ] } ] } },
+                                  "subsequence":{ "_":[ "stencil", "codePerformAction" ] }
+                                },
+                                { "execute":{ "_":[ "stencil", "codeStopEvent" ] } }
+                              ]
+                            }
+                          }
+                        },
+                        "into":{ "_":"scenehud" }
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          }
+        ],
+        "into":{ "_":"scenehud" }
+      }
+    ],
+    "codeSaveGame":[
+      { "as":{ "_":"storage" }, "set":{ "stats":{ "_":[ "variable", "stats" ] } } },
+      {
+        "object":{
+          "width":50, "height":10,
+          "zIndex":1000, "x":8, "y":174,
+          "bgcolor":"#000", "color":"#fff",
+          "font":"spectrum", "lineHeight":10, "textAlign":"center", "html":"SAVED",
+          "states":{ "code":{ "name":"Sequence", "data":[ { "wait":75 }, { "remove":1 } ] } }
+        },
+        "into":{ "_":"scenehud" }
+      }
+    ],
+    "codeSetCheckpoint":[
+      {
+        "as":{ "_":[ "variable", "stats" ] },
+        "set":{
+          "checkpointX":{ "_":[ "objectTyped", "player", "x" ] },
+          "checkpointY":{ "_":[ "objectTyped", "player", "y" ] },
+          "spaceShipAngle":{ "_":[ "objectTyped", "ship", "angle" ] },
+          "spaceShipX":{ "_":[ "objectTyped", "ship", "x" ] },
+          "spaceShipY":{ "_":[ "objectTyped", "ship", "y" ] }
+        }
+      },
+      { "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "html":"CHECKPOINT" } },
+      { "_":[ "stencil", "codeSaveGame" ] }
+    ],
+    "codeShowTutorial":[
+      { "as":{ "_":[ "object", "tutorial" ] }, "remove":1 },
+      {
+        "when":{ "_":[ "variable", "stats", "tutorials" ] },
+        "execute":{
+          "object":{
+            "type":"tutorial",
+            "width":150, "height":40,
+            "zIndex":10000, "x":8, "y":132,
+            "bgcolor":"#7f0000", "color":"#fff",
+            "font":"spectrum", "lineHeight":10, "html":{ "_":[ "variable", "tutorial" ] },
+            "states":{ "code":{ "name":"Sequence", "data":[ { "wait":75 }, { "remove":1 } ] } }
+          },
+          "into":{ "_":"scenehud" }
+        }
+      }
+    ],
+    "codeStartNewGame":[
+      {
+        "as":{ "_":"variable" },
+        "set":{
+          "randomSeed":{ "_":[ "date", "allMilliseconds" ] },
+          "stats":{
+            "_":[
+              "new",
+              {
+                "checkpointX":-2,
+                "checkpointY":-2,
+                "events":{},
+                "eventsProgress":{},
+                "flags":{},
+                "inventory":[],
+                "jetpackConsume":0.5,
+                "jumps":0,
+                "knowledge":0,
+                "lifeForms":0,
+                "maxInventory":[ 50, 50, 50, 50 ],
+                "piratesHit":0,
+                "raygunCooldown":10,
+                "shipAcceleration":0.1,
+                "shipBulletSpeed":3,
+                "shipLiftoffConsume":30,
+                "shipParts":[],
+                "shipRaygunCooldown":20,
+                "shipSpeed":2,
+                "shipWarpEfficiency":1.5,
+                "spaceShipX":-2,
+                "spaceShipY":-2,
+                "spaceshipAngle":-2,
+                "tutorials":1,
+                "units":0
+              }
+            ]
+          }
+        }
+      },
+      { "assign":{ "_":[ "randomValue", { "_":[ "resource", "data", "shipParts" ] } ] }, "to":{ "_":[ "variable", "stats", "shipParts", 0 ] } },
+      { "assign":{ "_":[ "randomValue", { "_":[ "resource", "data", "shipParts" ] } ] }, "to":{ "_":[ "variable", "stats", "shipParts", 1 ] } },
+      { "assign":{ "_":[ "variable", "stats", "maxInventory", 0 ] }, "to":{ "_":[ "variable", "stats", "inventory", 0 ] } },
+      { "assign":{ "_":[ "variable", "stats", "shipLiftoffConsume", "-", 10 ] }, "to":{ "_":[ "variable", "stats", "inventory", 1 ] } },
+      { "assign":{ "_":[ "variable", "stats", "shipLiftoffConsume", "-", 10 ] }, "to":{ "_":[ "variable", "stats", "inventory", 2 ] } },
+      { "assign":{ "_":[ "variable", "stats", "shipLiftoffConsume", "-", 10 ] }, "to":{ "_":[ "variable", "stats", "inventory", 3 ] } },
+      { "_":[ "stencil", "codeCheckInventory" ] },
+      {
+        "decide":{
+          "options":[
+            { "execute":{ "set":{ "universeX":{ "_":[ "randomNumber", [ 0, 10 ] ] }, "universeY":{ "_":[ "randomNumber", [ -500, 500 ] ] } } } },
+            { "execute":{ "set":{ "universeX":{ "_":[ "randomNumber", [ 490, 500 ] ] }, "universeY":{ "_":[ "randomNumber", [ -500, 500 ] ] } } } },
+            { "execute":{ "set":{ "universeX":{ "_":[ "randomNumber", [ -500, 500 ] ] }, "universeY":{ "_":[ "randomNumber", [ 0, 10 ] ] } } } },
+            { "execute":{ "set":{ "universeX":{ "_":[ "randomNumber", [ -500, 500 ] ] }, "universeY":{ "_":[ "randomNumber", [ 490, 500 ] ] } } } }
+          ]
+        }
+      },
+      { "_":[ "stencil", "codeGetSolarSystemIdFromCoords" ] },
+      { "wait":1, "loopTo":-2, "until":{ "_":[ "this", "isEmpty", "not" ] } },
+      { "set":{ "getPlanets":1 }, "execute":{ "_":[ "stencil", "codeGetSolarSystemData" ] } },
+      { "set":{ "currentPlanet":{ "_":[ "randomValue", { "_":[ "that", "planets" ] }, "recordId" ] } } },
+      {
+        "as":{ "_":[ "variable", "stats" ] },
+        "set":{ "currentPlanet":{ "_":[ "that", "currentPlanet" ] }, "universeX":{ "_":[ "that", "universeX" ] }, "universeY":{ "_":[ "that", "universeY" ] } }
+      },
+      { "_":[ "stencil", "codeCreateHud" ] },
+      { "gotoScene":"planet" }
+    ],
+    "codeStopEvent":[
+      { "as":{ "_":[ "object", "eventgui" ] }, "remove":1 },
+      { "as":{ "_":[ "object", { "_":[ "variable", "restoreHud" ] } ] }, "set":{ "visible":1 } },
+      { "_":[ "stencil", "codeUnpauseAll" ] }
+    ],
+    "codeSuperformula":[
+      {
+        "set":{ "_counter":0, "_points":{ "_":[ "new", [] ] }, "dt":{ "_":[ 2, "*", { "_":[ "variable", "_pi" ] }, "/", { "_":[ "this", "n" ] } ] }, "i":0, "r":0 }
+      },
+      {
+        "times":{ "_":[ "this", "n" ] },
+        "execute":[
+          {
+            "set":{ "t":{ "_":[ "this", "_counter", "*", { "_":[ "this", "dt" ] }, "-", { "_":[ "variable", "_pi" ] }, "*", { "_":[ "this", "m" ] }, "/", 4 ] } }
+          },
+          {
+            "set":{
+              "t":{
+                "_":[
+                  "this",
+                  "t",
+                  "cos",
+                  "/",
+                  { "_":[ "this", "a" ] },
+                  "abs",
+                  "^",
+                  { "_":[ "this", "n2" ] },
+                  "+",
+                  { "_":[ "this", "t", "sin", "/", { "_":[ "this", "b" ] }, "abs", "^", { "_":[ "this", "n3" ] } ] },
+                  "abs",
+                  "^",
+                  { "_":[ -1, "/", { "_":[ "this", "n1" ] } ] }
+                ]
+              }
+            }
+          },
+          { "when":{ "_":[ "this", "t", "isGreaterThan", { "_":[ "this", "r" ] } ] }, "set":{ "r":{ "_":[ "this", "t" ] } } },
+          { "as":{ "_":[ "new", {} ] }, "pushInto":{ "_":[ "that", "_points" ] }, "set":{ "width":1, "height":1, "t":{ "_":[ "that", "t" ] } } },
+          { "sum":1, "to":{ "_":[ "this", "_counter" ] } }
+        ]
+      },
+      { "set":{ "_counter":0, "r":{ "_":[ "this", "diameter", "*", { "_":[ "variable", "_sqrt12" ] }, "/", { "_":[ "this", "r" ] } ] } } },
+      {
+        "times":{ "_":[ "this", "n" ] },
+        "execute":[
+          { "set":{ "_item":{ "_":[ "this", "_points", { "_":[ "this", "_counter" ] } ] } } },
+          { "set":{ "t":{ "_":[ "this", "_item", "t", "*", { "_":[ "this", "r" ] } ] } } },
+          {
+            "as":{ "_":[ "this", "_item" ] },
+            "set":{
+              "x":{ "_":[ "that", "_counter", "*", { "_":[ "that", "dt" ] }, "cos", "*", { "_":[ "that", "t" ] } ] }, "y":{ "_":[ "that", "_counter", "*", { "_":[ "that", "dt" ] }, "sin", "*", { "_":[ "that", "t" ] } ] }
+            }
+          },
+          { "when":{ "_":[ "this", "_item", "x", "abs", "isLessThan", 0.000001 ] }, "as":{ "_":[ "this", "_item" ] }, "set":{ "x":0 } },
+          { "when":{ "_":[ "this", "_item", "y", "abs", "isLessThan", 0.000001 ] }, "as":{ "_":[ "this", "_item" ] }, "set":{ "y":0 } },
+          { "sum":1, "to":{ "_":[ "this", "_counter" ] } }
+        ]
+      }
+    ],
+    "codeUnpauseAll":{ "as":{ "_":[ "object", "pausable" ] }, "set":{ "state":{ "_":[ "this", "prevState" ] } } },
+    "codeUpdateShip":[
+      { "as":{ "_":[ "this", "shipBody" ] }, "remove":1 },
+      { "set":{ "frame":{ "_":[ "variable", "stats", "shipParts", 0 ] } } },
+      {
+        "object":{
+          "unoptimize":1,
+          "image":"sprites", "tileX":0, "tileY":64, "width":16, "height":16,
+          "x":0, "y":0, "frame":{ "_":[ "variable", "stats", "shipParts", 1 ] }
+        },
+        "as":{ "_":"that" },
+        "into":{ "_":"this" },
+        "execute":{ "as":{ "_":"that" }, "set":{ "shipBody":{ "_":"that" } } }
+      }
+    ],
+    "spark":{
+      "image":"defaultsprites", "tileX":64, "tileY":144, "width":16, "height":16,
+      "zIndex":10000, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "animations":{ "spark":{ "frames":4, "speed":0 } },
+      "animation":"spark",
+      "states":{ "code":{ "name":"Sequence", "data":[ { "wait":4 }, { "remove":1 } ] } }
+    },
+    "removeonrespawnBehaviour":{ "actions":{ "name":"remove", "execute":[ { "object":{ "_":[ "stencil", "spark" ] } }, { "remove":1 } ] } },
+    "modelPopupLabel":{
+      "width":100, "height":10,
+      "zIndex":10000, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "that", "y", "-", 5 ] },
+      "color":"#fff",
+      "font":"spectrum", "lineHeight":12, "outline":"#000", "textAlign":"center",
+      "speed":0.5,
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[ { "subtract":{ "_":[ "this", "speed" ] }, "to":{ "_":[ "this", "y" ] }, "wait":1, "loop":1, "cycles":15 }, { "remove":1 } ]
+        }
+      }
+    },
+    "modelStandardAnimations":{
+      "attackdown":{ "frame":9 },
+      "attackleft":"attackright",
+      "attackright":{ "frame":11 },
+      "attackup":{ "frame":10 },
+      "dead":{ "frame":12, "frames":2 },
+      "flydown":{ "frame":14 },
+      "flyleft":"flyright",
+      "flyright":{ "frame":16 },
+      "flyup":{ "frame":15 },
+      "stilldown":{ "frame":0 },
+      "stillleft":"stillright",
+      "stillright":{ "frame":6 },
+      "stillup":{ "frame":3 },
+      "walkdown":{ "frame":1, "frames":2, "loopTo":0 },
+      "walkleft":"walkright",
+      "walkright":{ "frame":7, "frames":2, "loopTo":0 },
+      "walkup":{ "frame":4, "frames":2, "loopTo":0 }
+    },
+    "player":{
+      "type":[ "player", "pausable" ],
+      "image":"sprites", "tileX":0, "tileY":0, "width":16, "height":16,
+      "hitbox":{ "width":14, "height":8, "x":1, "y":8 },
+      "animations":{ "_":[ "stencil", "modelStandardAnimations" ] },
+      "states":[
+        {
+          "set":{
+            "walls":0,
+            "follow":1,
+            "animation":"stilldown",
+            "cloudCount":0,
+            "depth":-1,
+            "footDepth":-1,
+            "footWalls":0,
+            "jetpackWalls":0,
+            "pointingSide":"down",
+            "raygunCooldown":0
+          },
+          "execute":{
+            "as":{ "_":"variable" },
+            "set":{ "execute":{ "_":[ "stencil", "codeShowTutorial" ] }, "tutorial":"DIR: Move<br>&nbsp;&nbsp;A: Raygun<br>&nbsp;&nbsp;B: Jetpack" }
+          },
+          "code":[
+            {
+              "name":"Execute",
+              "data":[
+                {
+                  "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "ground" ] } ] },
+                  "execute":{ "set":{ "depth":{ "_":[ "that", "depth" ] }, "footWalls":{ "_":[ "that", "footWalls" ] }, "jetpackWalls":{ "_":[ "that", "jetpackWalls" ] } } }
+                },
+                {
+                  "when":{ "_":[ "keyB", "isDown" ] },
+                  "execute":[
+                    { "subtract":{ "_":[ "variable", "stats", "jetpackConsume" ] }, "to":{ "_":[ "variable", "stats", "inventory", 0 ] } },
+                    { "set":{ "walls":{ "_":[ "this", "jetpackWalls" ] }, "footDepth":-1, "jetpack":1 } },
+                    {
+                      "when":{ "_":[ "this", "cloudCount", "not" ] },
+                      "execute":[
+                        {
+                          "object":{
+                            "set":{ "_":[ "stencil", "smoke" ] },
+                            "zIndex":{ "_":[ "that", "zIndex", "-", 1 ] },
+                            "forceX":{ "_":[ "randomNumber", [ -2, 2 ] ] }, "forceY":{ "_":[ "randomNumber", [ -2, 2 ] ] }
+                          }
+                        },
+                        { "set":{ "cloudCount":3 } }
+                      ],
+                      "elseExecute":{ "subtract":1, "to":{ "_":[ "this", "cloudCount" ] } }
+                    }
+                  ],
+                  "elseExecute":[
+                    { "set":{ "walls":{ "_":[ "this", "footWalls" ] }, "jetpack":0 } },
+                    {
+                      "when":{ "_":[ "this", "footDepth", "isNotEqualTo", { "_":[ "this", "depth" ] } ] },
+                      "execute":[
+                        {
+                          "when":{ "_":[ "this", "depth", "isLessThan", 2 ] },
+                          "object":{ "_":[ "stencil", "spark" ] },
+                          "elseExecute":{ "object":{ "_":[ "stencil", "smoke" ] } }
+                        },
+                        { "set":{ "footDepth":{ "_":[ "this", "depth" ] } } }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "when":{ "_":[ "keyA", "isDown" ] },
+                  "execute":{
+                    "when":{ "_":[ "this", "raygunCooldown", "isLessEqualThan", 0 ] },
+                    "execute":[ { "object":{ "_":[ "stencil", "ray" ] } }, { "set":{ "raygunCooldown":{ "_":[ "variable", "stats", "raygunCooldown" ] } } } ],
+                    "elseExecute":{ "subtract":1, "to":{ "_":[ "this", "raygunCooldown" ] } }
+                  }
+                },
+                { "subtract":{ "_":[ "scene", "energyConsume" ] }, "to":{ "_":[ "variable", "stats", "inventory", 0 ] } },
+                {
+                  "when":{ "_":[ "this", "depth", "isLessThan", 2 ] },
+                  "execute":[
+                    { "subtract":{ "_":[ "scene", "breatheConsume" ] }, "to":{ "_":[ "variable", "stats", "inventory", 0 ] } },
+                    { "set":{ "tileY":{ "_":[ "this", "depth", "*", 16 ] } } }
+                  ],
+                  "elseExecute":{ "set":{ "tileY":32 } }
+                },
+                { "when":{ "_":[ "this", "forceX", "isLessThan", 0 ] }, "set":{ "flipX":1, "pointingSide":"left" } },
+                { "when":{ "_":[ "this", "forceX", "isGreaterThan", 0 ] }, "set":{ "flipX":0, "pointingSide":"right" } },
+                { "when":{ "_":[ "this", "forceY", "isLessThan", 0 ] }, "set":{ "pointingSide":"up" } },
+                { "when":{ "_":[ "this", "forceY", "isGreaterThan", 0 ] }, "set":{ "pointingSide":"down" } },
+                {
+                  "when":{ "_":[ "this", "jetpack" ] },
+                  "execute":{ "set":{ "animation":{ "_":[ "fly", ".", { "_":[ "this", "pointingSide" ] } ] } } },
+                  "elseExecute":{
+                    "when":{ "_":[ "keyA", "isDown", "and", { "_":[ "this", "forceX", "not" ] }, "and", { "_":[ "this", "forceY", "not" ] } ] },
+                    "execute":{ "execute":{ "set":{ "animation":{ "_":[ "attack", ".", { "_":[ "this", "pointingSide" ] } ] } } } },
+                    "elseExecute":{
+                      "when":{ "_":[ "this", "forceY", "isEqualTo", 0, "and", { "_":[ "this", "forceX", "isEqualTo", 0 ] } ] },
+                      "execute":{ "set":{ "animation":{ "_":[ "still", ".", { "_":[ "this", "pointingSide" ] } ] } } },
+                      "elseExecute":{ "set":{ "animation":{ "_":[ "walk", ".", { "_":[ "this", "pointingSide" ] } ] } } }
+                    }
+                  }
+                },
+                { "_":[ "stencil", "codeCheckInventory" ] }
+              ]
+            },
+            { "name":"Player", "data":{ "horizontal":{ "control":1, "gotoZero":1 }, "vertical":{ "control":1, "gotoZero":1 } } },
+            {
+              "name":"Physics",
+              "data":{
+                "walls":[ { "type":{ "_":[ "this", "walls" ] }, "restitution":0 }, { "area":{ "width":800, "height":800, "x":0, "y":0 }, "restitution":0 } ],
+                "limitX":[ -2, 2 ],
+                "limitY":[ -2, 2 ]
+              }
+            },
+            { "name":"ZPerspective" }
+          ]
+        },
+        {
+          "name":"dead",
+          "set":{ "animation":"dead" },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "wait":50 },
+              { "set":{ "visible":0 }, "wait":1 },
+              { "set":{ "visible":1 }, "wait":1, "cycles":10, "loopTo":-1 },
+              { "_":[ "stencil", "codeGiveBasicEquipment" ] },
+              {
+                "set":{ "x":{ "_":[ "variable", "stats", "checkpointX" ] }, "y":{ "_":[ "variable", "stats", "checkpointY" ] }, "animation":"stilldown", "state":"default" }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "asteroid":{
+      "type":"playerhitable",
+      "image":"planets", "width":16, "height":16,
+      "zIndex":18, "x":{ "_":[ "randomNumber", [ 0, 496 ] ] }, "y":{ "_":[ "randomNumber", [ 0, 368 ] ] },
+      "forceX":{ "_":[ "randomNumber", [ -1, 1 ] ] }, "forceY":{ "_":[ "randomNumber", [ -1, 1 ] ] },
+      "angleSpeed":{ "_":[ "randomNumber", [ -10, 10 ] ] },
+      "states":{
+        "execute":{ "set":{ "tileX":{ "_":[ "this", "mineralSet", "-", 1, "*", 16 ] }, "tileY":{ "_":[ "this", "mineralType", "*", 16, "+", 480 ] } } },
+        "code":[
+          {
+            "name":"Execute",
+            "data":[
+              { "sum":{ "_":[ "this", "angleSpeed" ] }, "to":{ "_":[ "this", "angle" ] } },
+              {
+                "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "player" ] } ] },
+                "execute":[ { "as":{ "_":"that" }, "executeAction":"hit" }, { "as":{ "_":"this" }, "executeAction":"hit" } ]
+              }
+            ]
+          },
+          { "name":"Physics", "data":{ "walls":{ "area":{ "width":512, "height":384, "x":0, "y":0 }, "restitution":1 } } }
+        ],
+        "actions":{
+          "name":"hit",
+          "execute":[
+            {
+              "times":8,
+              "object":{
+                "set":{ "_":[ "stencil", "smoke" ] },
+                "zIndex":{ "_":[ "that", "zIndex", "-", 1 ] },
+                "forceX":{ "_":[ "randomNumber", [ -2, 2 ] ] }, "forceY":{ "_":[ "randomNumber", [ -2, 2 ] ] }
+              }
+            },
+            { "sum":10, "to":{ "_":[ "variable", "stats", "inventory", { "_":[ "this", "mineralType" ] } ] } },
+            { "_":[ "stencil", "codeCheckInventory" ] },
+            { "remove":1 }
+          ]
+        }
+      }
+    },
+    "bullet":{
+      "type":"removeonrespawn",
+      "image":"defaultsprites", "tileX":96, "tileY":96, "width":8, "height":8,
+      "zIndex":19, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "animations":{ "blink":{ "frames":2, "loopTo":0 } },
+      "states":{
+        "like":{ "_":[ "stencil", "removeonrespawnBehaviour" ] },
+        "code":[
+          {
+            "name":"Execute",
+            "data":[
+              { "sum":{ "_":[ "this", "spinSpeed" ] }, "to":{ "_":[ "this", "angle" ] } },
+              {
+                "when":{ "_":[ "this", "collidesWith", { "_":[ "object", { "_":[ "this", "hits" ] } ] } ] },
+                "execute":[ { "as":{ "_":"that" }, "executeAction":"hit" }, { "object":{ "_":[ "stencil", "spark" ] } }, { "remove":1 } ]
+              }
+            ]
+          },
+          { "name":"Physics", "data":{ "walls":{ "area":{ "width":512, "height":384, "x":0, "y":0 }, "execute":{ "remove":1 } } } }
+        ]
+      }
+    },
+    "checkPoint":{
+      "removeType":"empty",
+      "isStructure":1,
+      "isVisibleFromFar":1,
+      "mineralQuantity":0,
+      "mineralType":0,
+      "structureAnimation":"flip",
+      "structureTileX":0,
+      "structureTileY":240,
+      "states":{
+        "actions":{
+          "name":"hit",
+          "execute":[
+            {
+              "when":{ "_":[ "variable", "stats", "units", "isGreaterEqualThan", 10 ] },
+              "subtract":10, "to":{ "_":[ "variable", "stats", "units" ] }
+            },
+            { "assign":{ "_":[ "variable", "stats", "maxInventory", 0 ] }, "to":{ "_":[ "variable", "stats", "inventory", 0 ] } },
+            { "_":[ "stencil", "codeCheckInventory" ] },
+            { "_":[ "stencil", "codeSetCheckpoint" ] }
+          ]
+        }
+      }
+    },
+    "endingPortrait":{
+      "image":"hud", "tileY":128, "width":64, "height":192,
+      "x":-70, "y":0,
+      "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "this", "x", "isLessThan", 0 ] }, "sum":0.1, "to":{ "_":[ "this", "x" ] } } } }
+    },
+    "ground":{
+      "type":[ "hitable", "landscape", "ground", "empty" ],
+      "image":"terrain", "width":16, "height":16,
+      "zIndex":1,
+      "bgcolor":"#000",
+      "animations":{ "flip":{ "frames":[ 0, 1, 2, 3 ], "loopTo":0 } },
+      "depth":{ "_":[ "scene", "baseDepth" ] },
+      "mineralQuantity":0,
+      "states":{
+        "actions":[
+          {
+            "name":"setupwalls",
+            "execute":{
+              "when":{ "_":[ "this", "isStructure", "or", { "_":[ "this", "mineralQuantity" ] } ] },
+              "set":{ "type":"lifeformwall" },
+              "elseExecute":{ "set":{ "removeType":"lifeformwall" } }
+            }
+          },
+          {
+            "name":"prepare",
+            "execute":[
+              {
+                "set":{
+                  "type":{ "_":[ "depth", ".", { "_":[ "this", "depth" ] } ] },
+                  "flagId":{
+                    "_":[
+                      "place-",
+                      ".",
+                      { "_":[ "this", "x" ] },
+                      ".",
+                      ",",
+                      ".",
+                      { "_":[ "this", "y" ] },
+                      ".",
+                      "-",
+                      ".",
+                      { "_":[ "this", "planetRecordId" ] },
+                      ".",
+                      "-",
+                      ".",
+                      { "_":[ "this", "universeX" ] },
+                      ".",
+                      ",",
+                      ".",
+                      { "_":[ "this", "universeX" ] }
+                    ]
+                  },
+                  "isFlipped":{ "_":[ "randomValue", [ 0, 1 ] ] },
+                  "showStencil":{ "_":[ "scene", "depths", { "_":[ "this", "depth" ] } ] }
+                }
+              },
+              {
+                "when":{ "_":[ "this", "depth", "isEqualTo", 0 ] },
+                "set":{
+                  "footWalls":[ "mineral", "structure", "depth1", "depth2", "depth3", "depth4", "depth5" ],
+                  "jetpackWalls":[ "mineral", "structure", "depth2", "depth3", "depth4", "depth5" ]
+                }
+              },
+              {
+                "when":{ "_":[ "this", "depth", "isEqualTo", 1 ] },
+                "set":{
+                  "footWalls":[ "mineral", "structure", "depth2", "depth3", "depth4", "depth5" ],
+                  "jetpackWalls":[ "mineral", "structure", "depth3", "depth4", "depth5" ]
+                }
+              },
+              {
+                "when":{ "_":[ "this", "depth", "isEqualTo", 2 ] },
+                "set":{ "footWalls":[ "mineral", "structure", "depth3", "depth4", "depth5" ], "jetpackWalls":[ "mineral", "structure", "depth4", "depth5" ] }
+              },
+              {
+                "when":{ "_":[ "this", "depth", "isEqualTo", 3 ] },
+                "set":{ "footWalls":[ "mineral", "structure", "depth4", "depth5" ], "jetpackWalls":[ "mineral", "structure", "depth5" ] }
+              },
+              {
+                "when":{ "_":[ "this", "depth", "isEqualTo", 4 ] },
+                "set":{ "footWalls":[ "mineral", "structure", "depth5" ], "jetpackWalls":[ "mineral", "structure" ] }
+              },
+              { "when":{ "_":[ "this", "depth", "isEqualTo", 5 ] }, "set":{ "footWalls":[ "mineral", "structure" ], "jetpackWalls":[ "mineral", "structure" ] } },
+              { "executeAction":"setupwalls" }
+            ]
+          },
+          {
+            "name":"hide",
+            "execute":[
+              { "set":{ "removeType":[ "mineral", "structure", "landable" ] } },
+              { "set":{ "_":[ "this", "showStencil" ] } },
+              {
+                "when":{ "_":[ "this", "isStructure", "and", { "_":[ "this", "isVisibleFromFar" ] } ] },
+                "set":{
+                  "tileX":{ "_":[ "this", "structureTileX" ] }, "tileY":{ "_":[ "this", "structureTileY" ] },
+                  "flipX":0,
+                  "animation":{ "_":[ "this", "structureAnimation" ] }
+                },
+                "elseExecute":[
+                  { "set":{ "tileX":0, "animation":"none" } },
+                  { "when":{ "_":[ "this", "depth", "isGreaterThan", 1, "and", { "_":[ "this", "isStructure", "not" ] } ] }, "set":{ "type":"landable" } }
+                ]
+              },
+              { "executeAction":"setupwalls" }
+            ]
+          },
+          {
+            "name":"show",
+            "execute":[
+              { "set":{ "_":[ "this", "showStencil" ] } },
+              {
+                "when":{ "_":[ "this", "isStructure" ] },
+                "set":{
+                  "type":"structure",
+                  "tileX":{ "_":[ "this", "structureTileX" ] }, "tileY":{ "_":[ "this", "structureTileY" ] },
+                  "flipX":0,
+                  "animation":{ "_":[ "this", "structureAnimation" ] }
+                },
+                "elseExecute":[
+                  { "set":{ "removeType":"structure", "flipX":{ "_":[ "this", "isFlipped" ] }, "animation":"none" } },
+                  {
+                    "when":{ "_":[ "this", "mineralQuantity" ] },
+                    "set":{
+                      "type":"mineral",
+                      "tileX":{ "_":[ "this", "mineralSet", "-", 1, "*", 64, "+", { "_":[ "this", "mineralQuantity", "-", 1, "*", 16 ] } ] }, "tileY":{ "_":[ "this", "mineralType", "*", 16, "+", 240 ] }
+                    },
+                    "elseExecute":{ "set":{ "removeType":"mineral" } }
+                  }
+                ]
+              },
+              { "executeAction":"setupwalls" }
+            ]
+          },
+          {
+            "name":"hit",
+            "execute":[
+              {
+                "when":{ "_":[ "this", "mineralQuantity" ] },
+                "execute":[
+                  { "sum":{ "_":[ "this", "mineralQuantity" ] }, "to":{ "_":[ "variable", "stats", "units" ] } },
+                  { "sum":{ "_":[ "this", "mineralQuantity" ] }, "to":{ "_":[ "variable", "stats", "inventory", { "_":[ "this", "mineralType" ] } ] } },
+                  { "_":[ "stencil", "codeCheckInventory" ] },
+                  { "subtract":1, "to":{ "_":[ "this", "mineralQuantity" ] } },
+                  { "object":{ "_":[ "stencil", "spark" ] } },
+                  { "executeAction":"show" }
+                ]
+              },
+              {
+                "when":{ "_":[ "this", "event" ] },
+                "execute":{
+                  "when":{ "_":[ "variable", "stats", "flags", { "_":[ "this", "flagId" ] } ] },
+                  "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "html":"EMPTY" },
+                  "elseExecute":{
+                    "as":{ "_":"variable" },
+                    "set":{ "event":{ "_":[ "that", "event" ] }, "flagId":{ "_":[ "that", "flagId" ] }, "randomSeed":{ "_":[ "that", "eventSeed" ] }, "restoreHud":"planethud" },
+                    "execute":{ "_":[ "stencil", "codeRunEvent" ] }
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "lifeForm":{
+      "type":[ "pausable", "lifeform", "landscape", "hitable" ],
+      "image":"sprites", "tileY":80, "width":16, "height":16,
+      "animations":{ "idle":{ "frames":2, "loopTo":0 } },
+      "animation":"idle",
+      "states":{
+        "code":[
+          {
+            "name":"Sequence",
+            "data":[
+              {
+                "when":{ "_":[ "randomValue", [ 0, 1 ] ] },
+                "execute":{ "set":{ "forceX":{ "_":[ "randomValue", [ -1, 1 ], "*", { "_":[ "this", "lifeForm", "speed" ] } ] }, "forceY":0 } },
+                "elseExecute":{ "set":{ "forceX":0, "forceY":{ "_":[ "randomValue", [ -1, 1 ], "*", { "_":[ "this", "lifeForm", "speed" ] } ] } } }
+              },
+              { "wait":{ "_":[ "randomNumber", [ 10, 50 ] ] }, "loopTo":0 }
+            ]
+          },
+          {
+            "name":"Execute",
+            "data":[
+              { "when":{ "_":[ "this", "forceX", "isLessThan", 0 ] }, "set":{ "flipX":1 }, "elseExecute":{ "set":{ "flipX":0 } } },
+              {
+                "when":{ "_":[ "this", "collidesWith", { "_":[ "objectTyped", "player" ] } ] },
+                "execute":[
+                  { "subtract":{ "_":[ "this", "lifeForm", "damage" ] }, "to":{ "_":[ "variable", "stats", "inventory", 0 ] } },
+                  { "_":[ "stencil", "codeCheckInventory" ] }
+                ]
+              }
+            ]
+          },
+          {
+            "name":"Physics",
+            "data":{ "walls":[ { "type":"lifeformwall", "restitution":1 }, { "area":{ "width":800, "height":800, "x":0, "y":0 }, "restitution":1 } ] }
+          },
+          { "name":"ZPerspective" }
+        ],
+        "actions":[
+          {
+            "name":"prepare",
+            "execute":[
+              {
+                "set":{
+                  "tileX":{ "_":[ "this", "lifeForm", "body", "*", 32 ] },
+                  "collectedFlagId":{
+                    "_":[ "coll-", ".", { "_":[ "this", "planetRecordId" ] }, ".", "-", ".", { "_":[ "this", "universeX" ] }, ".", ",", ".", { "_":[ "this", "universeX" ] } ]
+                  },
+                  "flagId":{
+                    "_":[
+                      "life-",
+                      ".",
+                      { "_":[ "this", "lifeForm", "id" ] },
+                      ".",
+                      "-",
+                      ".",
+                      { "_":[ "this", "planetRecordId" ] },
+                      ".",
+                      "-",
+                      ".",
+                      { "_":[ "this", "universeX" ] },
+                      ".",
+                      ",",
+                      ".",
+                      { "_":[ "this", "universeX" ] }
+                    ]
+                  }
+                }
+              },
+              {
+                "object":{
+                  "unoptimize":1,
+                  "image":"sprites", "tileX":0, "tileY":96, "width":16, "height":16,
+                  "zIndex":1, "x":0, "y":0, "frame":{ "_":[ "that", "lifeForm", "eyes" ] }
+                },
+                "into":{ "_":"this" }
+              },
+              {
+                "object":{
+                  "unoptimize":1,
+                  "image":"sprites", "tileX":0, "tileY":112, "width":16, "height":16,
+                  "zIndex":2, "x":0, "y":0, "frame":{ "_":[ "that", "lifeForm", "mouth" ] }
+                },
+                "into":{ "_":"this" }
+              }
+            ]
+          },
+          { "name":"hide", "execute":{ "set":{ "visible":0 } } },
+          { "name":"show", "execute":{ "set":{ "visible":1 } } },
+          {
+            "name":"hit",
+            "execute":{
+              "when":{ "_":[ "variable", "stats", "flags", { "_":[ "this", "flagId" ] } ] },
+              "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "html":"KNOWN" },
+              "elseExecute":[
+                { "assign":1, "to":{ "_":[ "variable", "stats", "flags", { "_":[ "this", "flagId" ] } ] } },
+                { "sum":1, "to":{ "_":[ "variable", "stats", "knowledge" ] } },
+                {
+                  "sum":{ "_":[ "this", "lifeForm", "damage", "+", 1, "*", { "_":[ "this", "lifeForm", "speed", "+", 1 ] }, "ceil", "*", 10 ] },
+                  "to":{ "_":[ "variable", "stats", "units" ] }
+                },
+                {
+                  "when":{ "_":[ "variable", "stats", "flags", { "_":[ "this", "collectedFlagId" ] }, "*", 1, "not" ] },
+                  "assign":0,
+                  "to":{ "_":[ "variable", "stats", "flags", { "_":[ "this", "collectedFlagId" ] } ] }
+                },
+                { "sum":1, "to":{ "_":[ "variable", "stats", "flags", { "_":[ "this", "collectedFlagId" ] } ] } },
+                { "sum":1, "to":{ "_":[ "variable", "stats", "lifeForms" ] } },
+                {
+                  "when":{ "_":[ "variable", "stats", "flags", { "_":[ "this", "collectedFlagId" ] }, "isEqualTo", { "_":[ "this", "lifeFormsCount" ] } ] },
+                  "execute":[ { "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "html":"ALL FOUND" } }, { "sum":10, "to":{ "_":[ "variable", "stats", "units" ] } } ],
+                  "elseExecute":{
+                    "object":{
+                      "set":{ "_":[ "stencil", "modelPopupLabel" ] },
+                      "html":{ "_":[ "that", "lifeFormsCount", "-", { "_":[ "variable", "stats", "flags", { "_":[ "that", "collectedFlagId" ] } ] }, ".", " MORE" ] }
+                    }
+                  }
+                },
+                { "_":[ "stencil", "codeCheckInventory" ] }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "pirate":{
+      "type":[ "enemy", "playerhitable", "removeonrespawn" ],
+      "image":"sprites", "tileX":0, "tileY":128, "width":16, "height":16,
+      "zIndex":20, "frame":{ "_":[ "randomValue", { "_":[ "resource", "data", "shipParts" ] } ] },
+      "angle":{ "_":[ "randomNumber", [ 0, 360 ] ] },
+      "execute":{
+        "object":{
+          "unoptimize":1,
+          "image":"sprites", "tileX":0, "tileY":144, "width":16, "height":16,
+          "x":0, "y":0, "frame":{ "_":[ "randomValue", { "_":[ "resource", "data", "shipParts" ] } ] }
+        },
+        "as":{ "_":"that" },
+        "into":{ "_":"this" },
+        "execute":{ "as":{ "_":"that" }, "set":{ "shipBody":{ "_":"that" } } }
+      },
+      "speed":{ "_":[ "randomNumber", [ 1, 3 ] ] },
+      "aggressivity":25,
+      "steerSpeed":{ "_":[ "randomNumber", [ 20, 30 ] ] },
+      "states":{
+        "like":{ "_":[ "stencil", "removeonrespawnBehaviour" ] },
+        "code":[
+          {
+            "name":"Sequence",
+            "data":[
+              { "wait":{ "_":[ "randomNumber", [ 25, 50 ] ] } },
+              {
+                "sum":{
+                  "_":[ "this", "angle", "shortestAngleTo", { "_":[ "this", "angleTo", { "_":[ "objectTyped", "player" ] } ] }, "/", { "_":[ "this", "steerSpeed" ] } ]
+                },
+                "to":{ "_":[ "this", "angle" ] },
+                "wait":1, "loop":1, "cycles":{ "_":[ "randomNumber", [ 50, 75 ] ] }
+              },
+              { "loopTo":0 }
+            ]
+          },
+          {
+            "name":"Sequence",
+            "data":[
+              { "wait":{ "_":[ "this", "aggressivity" ] } },
+              {
+                "object":{
+                  "set":{ "_":[ "stencil", "bullet" ] },
+                  "execute":{ "applyVector":{ "angle":{ "_":[ "that", "angle" ] }, "length":{ "_":[ "that", "speed", "+", 2 ] } } },
+                  "animation":"blink",
+                  "hits":"player",
+                  "spinSpeed":5
+                }
+              },
+              { "loopTo":0 }
+            ]
+          },
+          { "name":"Execute", "data":{ "applyVector":{ "angle":{ "_":[ "this", "angle" ] }, "length":{ "_":[ "this", "speed" ] } } } },
+          { "name":"Physics", "data":{ "walls":{ "area":{ "width":512, "height":384, "x":0, "y":0 }, "restitution":0 } } }
+        ],
+        "actions":{
+          "name":"hit",
+          "execute":[
+            {
+              "times":8,
+              "object":{
+                "set":{ "_":[ "stencil", "smoke" ] },
+                "zIndex":{ "_":[ "that", "zIndex", "-", 1 ] },
+                "forceX":{ "_":[ "randomNumber", [ -2, 2 ] ] }, "forceY":{ "_":[ "randomNumber", [ -2, 2 ] ] }
+              }
+            },
+            { "sum":1, "to":{ "_":[ "variable", "stats", "piratesHit" ] } },
+            { "sum":1, "to":{ "_":[ "variable", "stats", "knowledge" ] } },
+            { "sum":10, "to":{ "_":[ "variable", "stats", "units" ] } },
+            { "remove":1 }
+          ]
+        }
+      }
+    },
+    "piratesGroup":{
+      "image":"hud", "tileX":0, "tileY":112, "width":16, "height":16,
+      "zIndex":15, "x":{ "_":[ "randomNumber", [ 0, 496 ] ] }, "y":{ "_":[ "randomNumber", [ 0, 368 ] ] },
+      "states":{
+        "code":[
+          {
+            "name":"Execute",
+            "data":{
+              "when":{ "_":[ "this", "collidesWith", { "_":[ "objectTyped", "player" ] }, "and", { "_":[ "objectTyped", "player", "invulnerability", "not" ] } ] },
+              "execute":[
+                { "times":{ "_":[ "randomNumber", [ 1, 3 ] ] }, "object":{ "set":{ "_":[ "stencil", "pirate" ] }, "at":{ "_":"that" } } },
+                { "as":{ "_":[ "objectTyped", "player" ] }, "set":{ "invulnerability":25 } },
+                { "object":{ "_":[ "stencil", "spark" ] } },
+                { "remove":1 }
+              ]
+            }
+          },
+          { "name":"Sequence", "data":[ { "set":{ "visible":0 }, "wait":10 }, { "set":{ "visible":{ "_":[ "this", "isVisible" ] } }, "wait":10, "loopTo":0 } ] }
+        ]
+      }
+    },
+    "ray":{
+      "image":"defaultsprites", "tileX":96, "tileY":104, "width":8, "height":8,
+      "zIndex":10000, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "execute":[
+        { "when":{ "_":[ "that", "pointingSide", "isEqualTo", "up" ] }, "subtract":12, "to":{ "_":[ "this", "y" ] } },
+        { "when":{ "_":[ "that", "pointingSide", "isEqualTo", "down" ] }, "sum":12, "to":{ "_":[ "this", "y" ] } },
+        { "when":{ "_":[ "that", "pointingSide", "isEqualTo", "left" ] }, "subtract":12, "to":{ "_":[ "this", "x" ] } },
+        { "when":{ "_":[ "that", "pointingSide", "isEqualTo", "right" ] }, "sum":12, "to":{ "_":[ "this", "x" ] } }
+      ],
+      "animations":{ "idle":{ "frames":2, "speed":1 } },
+      "animation":"idle",
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[
+            {
+              "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "hitable" ] }, "all":1 } ] },
+              "as":{ "_":"that" },
+              "executeAction":"hit"
+            },
+            { "wait":3 },
+            { "remove":1 }
+          ]
+        }
+      }
+    },
+    "shipBehaviour":{
+      "code":{
+        "name":"Sequence",
+        "data":[
+          { "wait":1, "loop":1, "until":{ "_":[ "this", "damaged" ] } },
+          {
+            "object":{
+              "set":{ "_":[ "stencil", "smoke" ] },
+              "zIndex":10000,
+              "forceX":{ "_":[ "randomNumber", [ -2, 2 ] ] }, "forceY":{ "_":[ "randomNumber", [ -3, 0 ] ] }
+            }
+          },
+          { "wait":10, "loopTo":0 }
+        ]
+      },
+      "actions":{ "name":"update", "execute":{ "_":[ "stencil", "codeUpdateShip" ] } }
+    },
+    "smoke":{
+      "image":"defaultsprites", "tileX":80, "tileY":16, "width":16, "height":16,
+      "zIndex":10000, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "animations":{ "spark":{ "frames":4, "speed":1 } },
+      "animation":"spark",
+      "states":{ "code":[ { "name":"Physics" }, { "name":"Sequence", "data":[ { "wait":8 }, { "remove":1 } ] } ] }
+    },
+    "solarsystemSpaceship":{
+      "type":[ "ship", "player" ],
+      "follow":1,
+      "image":"sprites", "tileX":0, "tileY":48, "width":16, "height":16,
+      "zIndex":20, "frame":{ "_":[ "variable", "stats", "shipParts", 0 ] },
+      "angle":{ "_":[ "randomNumber", [ 0, 360 ] ] },
+      "execute":{ "_":[ "stencil", "codeUpdateShip" ] },
+      "raygunCooldown":0,
+      "states":[
+        {
+          "like":{ "_":[ "stencil", "shipBehaviour" ] },
+          "set":{ "speed":0.5, "invulnerability":25 },
+          "execute":{
+            "as":{ "_":"variable" },
+            "set":{
+              "execute":{ "_":[ "stencil", "codeShowTutorial" ] },
+              "tutorial":"L/R: Steer<br>U/D: Speed<br>&nbsp;&nbsp;A: Descend/Fire<br>&nbsp;&nbsp;B: Leave system"
+            }
+          },
+          "code":[
+            {
+              "name":"Execute",
+              "data":[
+                {
+                  "when":{ "_":[ "this", "invulnerability" ] },
+                  "execute":[ { "subtract":1, "to":{ "_":[ "this", "invulnerability" ] } }, { "set":{ "visible":{ "_":[ "this", "visible", "not" ] } } } ],
+                  "elseExecute":{ "set":{ "visible":1 } }
+                },
+                {
+                  "when":{ "_":[ "keyUp", "isDown" ] },
+                  "execute":[
+                    { "sum":{ "_":[ "variable", "stats", "shipAcceleration" ] }, "to":{ "_":[ "this", "speed" ] } },
+                    {
+                      "when":{ "_":[ "this", "speed", "isGreaterThan", { "_":[ "variable", "stats", "shipSpeed" ] } ] },
+                      "set":{ "speed":{ "_":[ "variable", "stats", "shipSpeed" ] } }
+                    }
+                  ],
+                  "elseExecute":{
+                    "when":{ "_":[ "keyDown", "isDown" ] },
+                    "execute":[
+                      { "subtract":{ "_":[ "variable", "stats", "shipAcceleration" ] }, "to":{ "_":[ "this", "speed" ] } },
+                      { "when":{ "_":[ "this", "speed", "isLessThan", 0.5 ] }, "set":{ "speed":0.5 } }
+                    ]
+                  }
+                },
+                {
+                  "when":{ "_":[ "keyLeft", "isDown" ] },
+                  "subtract":3,
+                  "to":{ "_":[ "this", "angle" ] },
+                  "elseExecute":{ "when":{ "_":[ "keyRight", "isDown" ] }, "sum":3, "to":{ "_":[ "this", "angle" ] } }
+                },
+                { "applyVector":{ "angle":{ "_":[ "this", "angle" ] }, "length":{ "_":[ "this", "speed" ] } } },
+                { "when":{ "_":[ "this", "raygunCooldown" ] }, "subtract":1, "to":{ "_":[ "this", "raygunCooldown" ] } },
+                {
+                  "when":{ "_":[ "objectTyped", "enemy" ] },
+                  "execute":[
+                    { "set":{ "destination":0 } },
+                    {
+                      "when":{ "_":[ "this", "raygunCooldown", "not", "and", { "_":[ "keyA", "isHit" ] } ] },
+                      "execute":[
+                        {
+                          "object":{
+                            "set":{ "_":[ "stencil", "bullet" ] },
+                            "tileX":112, "tileY":96,
+                            "angle":{ "_":[ "that", "angle" ] },
+                            "execute":{ "applyVector":{ "angle":{ "_":[ "that", "angle" ] }, "length":{ "_":[ "variable", "stats", "shipBulletSpeed" ] } } },
+                            "hits":"playerhitable",
+                            "spinSpeed":0
+                          }
+                        },
+                        { "set":{ "raygunCooldown":{ "_":[ "variable", "stats", "shipRaygunCooldown" ] } } }
+                      ]
+                    }
+                  ],
+                  "elseExecute":{
+                    "when":{ "_":[ "keyB", "isHit" ] },
+                    "gotoScene":"universe",
+                    "elseExecute":{
+                      "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "planet" ] } ] },
+                      "execute":[
+                        { "set":{ "destination":{ "_":"that" } } },
+                        {
+                          "when":{ "_":[ "keyA", "isHit" ] },
+                          "execute":{
+                            "when":{ "_":[ "this", "speed", "isGreaterThan", 0.5 ] },
+                            "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "html":"SLOW DOWN" },
+                            "elseExecute":[ { "as":{ "_":[ "variable", "stats" ] }, "set":{ "currentPlanet":{ "_":[ "that", "destination", "recordId" ] } } }, { "gotoScene":"planet" } ]
+                          }
+                        }
+                      ],
+                      "elseExecute":{ "set":{ "destination":-1 } }
+                    }
+                  }
+                }
+              ]
+            },
+            { "name":"Physics", "data":{ "walls":{ "area":{ "width":512, "height":384, "x":0, "y":0 }, "restitution":0 } } }
+          ],
+          "actions":{
+            "name":"hit",
+            "execute":{
+              "when":{ "_":[ "this", "invulnerability", "not" ] },
+              "execute":[
+                { "set":{ "invulnerability":25 } },
+                { "subtract":10, "to":{ "_":[ "variable", "stats", "inventory", 0 ] } },
+                { "_":[ "stencil", "codeCheckInventory" ] }
+              ]
+            }
+          }
+        },
+        {
+          "name":"dead",
+          "set":{ "visible":0 },
+          "execute":{
+            "times":8,
+            "object":{
+              "set":{ "_":[ "stencil", "smoke" ] },
+              "zIndex":{ "_":[ "that", "zIndex", "-", 1 ] },
+              "forceX":{ "_":[ "randomNumber", [ -2, 2 ] ] }, "forceY":{ "_":[ "randomNumber", [ -2, 2 ] ] }
+            }
+          },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "as":{ "_":[ "object", "removeonrespawn" ] }, "executeAction":"remove" },
+              { "wait":75 },
+              { "_":[ "stencil", "codeGiveBasicEquipment" ] },
+              { "set":{ "state":"default" } }
+            ]
+          }
+        }
+      ]
+    },
+    "spaceship":{
+      "type":[ "structure", "hitable", "ship", "pausable" ],
+      "image":"sprites", "tileX":0, "tileY":48, "width":16, "height":16,
+      "zIndex":20, "frame":{ "_":[ "variable", "stats", "shipPart", 0 ] },
+      "execute":{ "_":[ "stencil", "codeUpdateShip" ] },
+      "state":"fly",
+      "states":[
+        {
+          "name":"landed",
+          "like":{ "_":[ "stencil", "shipBehaviour" ] },
+          "set":{ "zIndex":10, "speed":0 },
+          "actions":{
+            "name":"hit",
+            "execute":[
+              { "assign":{ "_":[ "variable", "stats", "maxInventory", 0 ] }, "to":{ "_":[ "variable", "stats", "inventory", 0 ] } },
+              { "as":{ "_":[ "objectTyped", "player" ] }, "remove":1 },
+              { "set":{ "state":"board" } }
+            ]
+          }
+        },
+        {
+          "name":"board",
+          "like":{ "_":[ "stencil", "shipBehaviour" ] },
+          "execute":{
+            "as":{ "_":"variable" },
+            "set":{ "execute":{ "_":[ "stencil", "codeShowTutorial" ] }, "tutorial":"&nbsp;UP: Liftoff<br>&nbsp;&nbsp;A: Descend/Save<br>&nbsp;&nbsp;B: Stats" }
+          },
+          "code":[
+            {
+              "name":"Sequence",
+              "data":[
+                { "sum":1, "to":{ "_":[ "this", "x" ] }, "wait":1 },
+                { "subtract":1, "to":{ "_":[ "this", "x" ] }, "wait":1, "cycles":5, "loopTo":-1 },
+                {
+                  "when":{ "_":[ "keyUp", "isHit" ] },
+                  "execute":{
+                    "when":{ "_":[ "variable", "stats", "inventory", 1, "isLessThan", { "_":[ "variable", "stats", "shipLiftoffConsume" ] } ] },
+                    "execute":{ "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "color":"#f00", "html":"NO FUEL" } },
+                    "elseExecute":{
+                      "when":{ "_":[ "variable", "stats", "inventory", 2, "isLessThan", { "_":[ "variable", "stats", "shipLiftoffConsume" ] } ] },
+                      "execute":{ "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "color":"#0f0", "html":"NO FUEL" } },
+                      "elseExecute":{
+                        "when":{ "_":[ "variable", "stats", "inventory", 3, "isLessThan", { "_":[ "variable", "stats", "shipLiftoffConsume" ] } ] },
+                        "execute":{ "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "color":"#00f", "html":"NO FUEL" } },
+                        "elseExecute":[
+                          { "sum":10, "to":{ "_":[ "variable", "stats", "units" ] } },
+                          { "subtract":{ "_":[ "variable", "stats", "shipLiftoffConsume" ] }, "to":{ "_":[ "variable", "stats", "inventory", 1 ] } },
+                          { "subtract":{ "_":[ "variable", "stats", "shipLiftoffConsume" ] }, "to":{ "_":[ "variable", "stats", "inventory", 2 ] } },
+                          { "subtract":{ "_":[ "variable", "stats", "shipLiftoffConsume" ] }, "to":{ "_":[ "variable", "stats", "inventory", 3 ] } },
+                          { "as":{ "_":[ "object", "landscape" ] }, "executeAction":"hide" },
+                          {
+                            "times":5,
+                            "object":{
+                              "set":{ "_":[ "stencil", "smoke" ] },
+                              "zIndex":{ "_":[ "that", "zIndex", "-", 1 ] },
+                              "forceX":{ "_":[ "randomNumber", [ -2, 2 ] ] }, "forceY":{ "_":[ "randomNumber", [ -2, 2 ] ] }
+                            }
+                          },
+                          { "set":{ "state":"fly" } }
+                        ]
+                      }
+                    }
+                  },
+                  "elseExecute":{
+                    "when":{ "_":[ "keyA", "isHit" ] },
+                    "execute":[
+                      { "object":{ "set":{ "_":[ "stencil", "player" ] }, "at":{ "_":"that" } } },
+                      { "_":[ "stencil", "codeSetCheckpoint" ] },
+                      { "set":{ "state":"landed" } }
+                    ],
+                    "elseExecute":{ "when":{ "_":[ "keyB", "isHit" ] }, "as":{ "_":"variable" }, "set":{ "restoreHud":"planethud" }, "execute":{ "_":[ "stencil", "codeOpenStats" ] } }
+                  }
+                },
+                { "wait":1, "loopTo":-1 }
+              ]
+            },
+            { "name":"ZPerspective" }
+          ]
+        },
+        {
+          "name":"fly",
+          "like":{ "_":[ "stencil", "shipBehaviour" ] },
+          "set":{ "follow":1, "zIndex":1000000, "speed":0.5, "damaged":0 },
+          "execute":{
+            "as":{ "_":"variable" },
+            "set":{
+              "execute":{ "_":[ "stencil", "codeShowTutorial" ] },
+              "tutorial":"L/R: Steer<br>U/D: Speed<br>&nbsp;&nbsp;A: Descend<br>&nbsp;&nbsp;B: Leave planet"
+            }
+          },
+          "code":[
+            {
+              "name":"Execute",
+              "data":[
+                {
+                  "when":{ "_":[ "keyUp", "isDown" ] },
+                  "execute":[
+                    { "sum":{ "_":[ "variable", "stats", "shipAcceleration" ] }, "to":{ "_":[ "this", "speed" ] } },
+                    {
+                      "when":{ "_":[ "this", "speed", "isGreaterThan", { "_":[ "variable", "stats", "shipSpeed" ] } ] },
+                      "set":{ "speed":{ "_":[ "variable", "stats", "shipSpeed" ] } }
+                    }
+                  ],
+                  "elseExecute":{
+                    "when":{ "_":[ "keyDown", "isDown" ] },
+                    "execute":[
+                      { "subtract":{ "_":[ "variable", "stats", "shipAcceleration" ] }, "to":{ "_":[ "this", "speed" ] } },
+                      { "when":{ "_":[ "this", "speed", "isLessThan", 0.5 ] }, "set":{ "speed":0.5 } }
+                    ]
+                  }
+                },
+                {
+                  "when":{ "_":[ "keyLeft", "isDown" ] },
+                  "subtract":3,
+                  "to":{ "_":[ "this", "angle" ] },
+                  "elseExecute":{ "when":{ "_":[ "keyRight", "isDown" ] }, "sum":3, "to":{ "_":[ "this", "angle" ] } }
+                },
+                {
+                  "when":{ "_":[ "keyA", "isHit" ] },
+                  "execute":{
+                    "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "landable" ] } ] },
+                    "execute":{ "set":{ "landX":{ "_":[ "that", "x" ] }, "landY":{ "_":[ "that", "y" ] }, "state":"landing" } },
+                    "elseExecute":{ "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "html":"CAN'T LAND" } }
+                  },
+                  "elseExecute":{ "when":{ "_":[ "keyB", "isHit" ] }, "gotoScene":"solarsystem" }
+                },
+                { "applyVector":{ "angle":{ "_":[ "this", "angle" ] }, "length":{ "_":[ "this", "speed" ] } } }
+              ]
+            },
+            { "name":"Physics", "data":{ "walls":{ "area":{ "width":800, "height":800, "x":0, "y":0 }, "restitution":0 } } }
+          ]
+        },
+        {
+          "name":"landing",
+          "like":{ "_":[ "stencil", "shipBehaviour" ] },
+          "code":{
+            "name":"Execute",
+            "data":[
+              { "set":{ "done":0 } },
+              {
+                "when":{ "_":[ "this", "x", "-", { "_":[ "this", "landX" ] }, "abs", "isLessThan", 0.5 ] },
+                "sum":1,
+                "to":{ "_":[ "this", "done" ] },
+                "set":{ "x":{ "_":[ "this", "landX" ] } },
+                "elseExecute":{
+                  "when":{ "_":[ "this", "x", "isLessThan", { "_":[ "this", "landX" ] } ] },
+                  "sum":0.5,
+                  "to":{ "_":[ "this", "x" ] },
+                  "elseExecute":{ "subtract":0.5, "to":{ "_":[ "this", "x" ] } }
+                }
+              },
+              {
+                "when":{ "_":[ "this", "y", "-", { "_":[ "this", "landY" ] }, "abs", "isLessThan", 0.5 ] },
+                "sum":1,
+                "to":{ "_":[ "this", "done" ] },
+                "set":{ "y":{ "_":[ "this", "landY" ] } },
+                "elseExecute":{
+                  "when":{ "_":[ "this", "y", "isLessThan", { "_":[ "this", "landY" ] } ] },
+                  "sum":0.5,
+                  "to":{ "_":[ "this", "y" ] },
+                  "elseExecute":{ "subtract":0.5, "to":{ "_":[ "this", "y" ] } }
+                }
+              },
+              {
+                "object":{
+                  "set":{ "_":[ "stencil", "smoke" ] },
+                  "zIndex":{ "_":[ "that", "zIndex", "-", 1 ] },
+                  "forceX":{ "_":[ "randomNumber", [ -2, 2 ] ] }, "forceY":{ "_":[ "randomNumber", [ -2, 2 ] ] }
+                }
+              },
+              {
+                "when":{ "_":[ "this", "done", "isEqualTo", 2 ] },
+                "execute":[ { "as":{ "_":[ "object", "landscape" ] }, "executeAction":"show" }, { "set":{ "state":"board" } } ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    ".":{ "set":{ "_":[ "stencil", "ground" ] } }
+  },
+  "execute":[
+    {
+      "as":{ "_":"variable" },
+      "set":{
+        "_noise":{ "_":[ "new", [] ] },
+        "_phi":{ "_":[ 3.14, "*", 2, "/", 360 ] },
+        "_pi":3.141592653589793,
+        "_sqrt12":0.7071067811865476,
+        "randomSeed":{ "_":[ "resource", "data", "universeSeed" ] }
+      }
+    },
+    { "times":100, "as":{ "_":[ "randomNumber", [ 0, 10000 ] ] }, "pushInto":{ "_":[ "variable", "_noise" ] } }
+  ],
+  "scenes":{
+    "intro":{
+      "width":256, "height":192,
+      "color1":"#fff",
+      "color2":"#fff",
+      "screenCenter":{ "width":1, "height":1, "x":128, "y":96 },
+      "states":[
+        {
+          "execute":[
+            {
+              "times":100,
+              "object":{
+                "width":1, "height":1,
+                "x":-1, "y":-1,
+                "states":{
+                  "code":[
+                    {
+                      "name":"Execute",
+                      "data":{
+                        "when":{ "_":[ "this", "collidesWith", { "_":"scene" }, "not" ] },
+                        "set":{
+                          "at":{ "_":[ "scene", "screenCenter" ] },
+                          "bgcolor":{ "_":[ "randomValue", [ { "_":[ "scene", "color1" ] }, { "_":[ "scene", "color2" ] } ] ] },
+                          "forceAngle":{ "_":[ "randomNumber", [ 0, 360 ] ] },
+                          "forceLength":{ "_":[ "randomNumber", [ 10, 30 ], "/", 10 ] }
+                        },
+                        "elseExecute":{
+                          "set":{
+                            "width":{ "_":[ "this", "distanceTo", { "_":[ "scene", "screenCenter" ] }, "*", 0.015, "ceil" ] }, "height":{ "_":[ "this", "distanceTo", { "_":[ "scene", "screenCenter" ] }, "*", 0.015, "ceil" ] }
+                          },
+                          "applyVector":{ "angle":{ "_":[ "this", "forceAngle" ] }, "length":{ "_":[ "this", "forceLength" ] } }
+                        }
+                      }
+                    },
+                    { "name":"Physics" }
+                  ]
+                }
+              }
+            },
+            {
+              "object":[
+                { "image":"hud", "tileX":64, "width":256, "height":32, "zIndex":10, "x":0, "y":80 },
+                {
+                  "width":256, "height":10,
+                  "zIndex":10, "x":0, "y":178,
+                  "color":"#fff",
+                  "font":"spectrum", "lineHeight":10, "outline":"#000", "textAlign":"center", "html":"(c)2016 Wright! Magazine."
+                },
+                {
+                  "type":"instructions",
+                  "width":256, "height":20,
+                  "zIndex":10, "x":0, "y":122,
+                  "color":"#fff",
+                  "font":"spectrum", "lineHeight":10, "outline":"#000", "textAlign":"center", "html":"Press START to continue<br>Press DOWN for new game"
+                }
+              ]
+            }
+          ],
+          "code":[
+            {
+              "name":"Sequence",
+              "data":[
+                { "wait":125 },
+                {
+                  "set":{
+                    "color1":{
+                      "_":[
+                        "randomValue",
+                        [ "#f00", "#0f0", "#00f", "#f0f", "#ff0", "#0ff", "#fff", "#7f0000", "#007f00", "#00007f", "#7f007f", "#7f7f00", "#007f7f", "#7f7f7f" ]
+                      ]
+                    },
+                    "color2":{
+                      "_":[
+                        "randomValue",
+                        [ "#f00", "#0f0", "#00f", "#f0f", "#ff0", "#0ff", "#fff", "#7f0000", "#007f00", "#00007f", "#7f007f", "#7f7f00", "#007f7f", "#7f7f7f" ]
+                      ]
+                    }
+                  },
+                  "loopTo":0
+                }
+              ]
+            },
+            {
+              "name":"Sequence",
+              "data":[
+                {
+                  "when":{ "_":[ "keyA", "isHit" ] },
+                  "set":{ "nextSequence":"codeLoadGame", "state":"leave" },
+                  "elseExecute":{ "when":{ "_":[ "keyDown", "isHit" ] }, "set":{ "nextSequence":"codeStartNewGame", "state":"leave" } }
+                },
+                { "wait":1, "loopTo":0 }
+              ]
+            }
+          ]
+        },
+        {
+          "name":"leave",
+          "execute":[
+            { "as":{ "_":[ "object", "instructions" ] }, "remove":1 },
+            {
+              "object":{
+                "width":256, "height":192,
+                "zIndex":1000, "x":0, "y":0,
+                "alpha":0,
+                "bgcolor":"#000",
+                "states":{
+                  "code":{
+                    "name":"Sequence",
+                    "data":[
+                      { "sum":0.02, "to":{ "_":[ "this", "alpha" ] }, "wait":1, "loop":1, "until":{ "_":[ "this", "alpha", "isGreaterThan", 1 ] } },
+                      { "subsequence":{ "_":[ "stencil", { "_":[ "scene", "nextSequence" ] } ] } }
+                    ]
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "endingAlien":{ "set":{ "_":[ "stencil", "codeEnding" ] }, "execute":{ "object":{ "set":{ "_":[ "stencil", "endingPortrait" ] }, "tileX":64 } } },
+    "endingHuman":{ "set":{ "_":[ "stencil", "codeEnding" ] }, "execute":{ "object":{ "set":{ "_":[ "stencil", "endingPortrait" ] } } } },
+    "endingLore":{ "set":{ "_":[ "stencil", "codeEnding" ] } },
+    "endingRobot":{ "set":{ "_":[ "stencil", "codeEnding" ] }, "execute":{ "object":{ "set":{ "_":[ "stencil", "endingPortrait" ] }, "tileX":128 } } },
+    "_TOOL_":{
+      "execute":[
+        { "as":{ "_":[ "object", "hudtopright" ] }, "set":{ "visible":0 } },
+        {
+          "object":[
+            {
+              "type":"hud",
+              "hudType":"label", "label":"(B) %number|scene._set%: (U/D) %number|scene.a% - (L/R) %number|scene.b%",
+              "width":240, "height":10,
+              "x":0, "y":0,
+              "color":"#fff",
+              "font":"spectrum", "lineHeight":10
+            },
+            {
+              "image":"hud", "tileY":80, "width":32, "height":32,
+              "x":8, "y":16,
+              "bgcolor":"#f00",
+              "states":{
+                "code":{
+                  "name":"Execute",
+                  "data":{
+                    "set":{
+                      "frame":{ "_":[ "resource", "data", "events", { "_":[ "scene", "_set" ] }, "list", { "_":[ "scene", "a" ] }, "portrait", { "_":[ "scene", "b" ] } ] }
+                    }
+                  }
+                }
+              }
+            },
+            { "type":"option1", "width":240, "height":10, "x":8, "y":138, "bgcolor":"#ccc", "color":"#000", "font":"spectrum", "lineHeight":10 },
+            { "type":"option2", "width":240, "height":10, "x":8, "y":152, "bgcolor":"#ccc", "color":"#000", "font":"spectrum", "lineHeight":10 },
+            { "type":"option3", "width":240, "height":10, "x":8, "y":166, "bgcolor":"#ccc", "color":"#000", "font":"spectrum", "lineHeight":10 },
+            { "type":"text", "width":200, "height":110, "x":48, "y":16, "bgcolor":"#ccc", "color":"#000", "font":"spectrum", "lineHeight":10 },
+            {
+              "type":"result1",
+              "width":240, "height":40,
+              "zIndex":10, "x":8, "y":16,
+              "bgcolor":"#c00", "color":"#000",
+              "font":"spectrum", "lineHeight":10,
+              "states":{ "code":{ "name":"Execute", "data":{ "set":{ "visible":{ "_":[ "keyA", "isDown" ] } } } } }
+            },
+            {
+              "type":"result2",
+              "width":240, "height":40,
+              "zIndex":10, "x":8, "y":64,
+              "bgcolor":"#c00", "color":"#000",
+              "font":"spectrum", "lineHeight":10,
+              "states":{ "code":{ "name":"Execute", "data":{ "set":{ "visible":{ "_":[ "keyA", "isDown" ] } } } } }
+            },
+            {
+              "type":"result3",
+              "width":240, "height":40,
+              "zIndex":10, "x":8, "y":112,
+              "bgcolor":"#c00", "color":"#000",
+              "font":"spectrum", "lineHeight":10,
+              "states":{ "code":{ "name":"Execute", "data":{ "set":{ "visible":{ "_":[ "keyA", "isDown" ] } } } } }
+            }
+          ],
+          "into":{ "_":"scenehud" }
+        },
+        { "set":{ "_set":{ "_":[ "storage", "_set", "or", 0 ] }, "a":{ "_":[ "storage", "a", "or", 0 ] }, "b":{ "_":[ "storage", "b", "or", 0 ] } } }
+      ],
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[
+            {
+              "as":{ "_":[ "object", "text" ] },
+              "set":{
+                "html":{ "_":[ "resource", "data", "events", { "_":[ "that", "_set" ] }, "list", { "_":[ "that", "a" ] }, "text", { "_":[ "that", "b" ] }, "or", "---" ] }
+              }
+            },
+            {
+              "as":{ "_":[ "object", "text" ] },
+              "set":{
+                "html":{ "_":[ "resource", "data", "events", { "_":[ "that", "_set" ] }, "list", { "_":[ "that", "a" ] }, "text", { "_":[ "that", "b" ] }, "or", "---" ] }
+              }
+            },
+            {
+              "as":{ "_":[ "object", "option1" ] },
+              "set":{ "html":{ "_":[ "resource", "data", "events", { "_":[ "that", "_set" ] }, "list", { "_":[ "that", "a" ] }, "options", 0, "text" ] } },
+              "execute":[
+                {
+                  "when":{ "_":[ "resource", "data", "events", { "_":[ "scene", "_set" ] }, "list", { "_":[ "scene", "a" ] }, "options", 0, "action" ] },
+                  "set":{ "bgcolor":"#f00" },
+                  "elseExecute":{ "set":{ "bgcolor":"#7f7f7f" } }
+                },
+                {
+                  "when":{ "_":[ "resource", "data", "events", { "_":[ "scene", "_set" ] }, "list", { "_":[ "scene", "a" ] }, "options", 0, "condition" ] },
+                  "set":{ "x":16 },
+                  "elseExecute":{ "set":{ "x":8 } }
+                }
+              ]
+            },
+            {
+              "as":{ "_":[ "object", "option2" ] },
+              "set":{ "html":{ "_":[ "resource", "data", "events", { "_":[ "that", "_set" ] }, "list", { "_":[ "that", "a" ] }, "options", 1, "text" ] } },
+              "execute":[
+                {
+                  "when":{ "_":[ "resource", "data", "events", { "_":[ "scene", "_set" ] }, "list", { "_":[ "scene", "a" ] }, "options", 1, "action" ] },
+                  "set":{ "bgcolor":"#f00" },
+                  "elseExecute":{ "set":{ "bgcolor":"#7f7f7f" } }
+                },
+                {
+                  "when":{ "_":[ "resource", "data", "events", { "_":[ "scene", "_set" ] }, "list", { "_":[ "scene", "a" ] }, "options", 1, "condition" ] },
+                  "set":{ "x":16 },
+                  "elseExecute":{ "set":{ "x":8 } }
+                }
+              ]
+            },
+            {
+              "as":{ "_":[ "object", "option3" ] },
+              "set":{ "html":{ "_":[ "resource", "data", "events", { "_":[ "that", "_set" ] }, "list", { "_":[ "that", "a" ] }, "options", 2, "text" ] } },
+              "execute":[
+                {
+                  "when":{ "_":[ "resource", "data", "events", { "_":[ "scene", "_set" ] }, "list", { "_":[ "scene", "a" ] }, "options", 2, "action" ] },
+                  "set":{ "bgcolor":"#f00" },
+                  "elseExecute":{ "set":{ "bgcolor":"#7f7f7f" } }
+                },
+                {
+                  "when":{ "_":[ "resource", "data", "events", { "_":[ "scene", "_set" ] }, "list", { "_":[ "scene", "a" ] }, "options", 2, "condition" ] },
+                  "set":{ "x":16 },
+                  "elseExecute":{ "set":{ "x":8 } }
+                }
+              ]
+            },
+            {
+              "as":{ "_":[ "object", "result1" ] },
+              "set":{
+                "html":{ "_":[ "resource", "data", "events", { "_":[ "that", "_set" ] }, "list", { "_":[ "that", "a" ] }, "options", 0, "result", { "_":[ "that", "b" ] }, "or", "---" ] }
+              }
+            },
+            {
+              "as":{ "_":[ "object", "result2" ] },
+              "set":{
+                "html":{ "_":[ "resource", "data", "events", { "_":[ "that", "_set" ] }, "list", { "_":[ "that", "a" ] }, "options", 1, "result", { "_":[ "that", "b" ] }, "or", "---" ] }
+              }
+            },
+            {
+              "as":{ "_":[ "object", "result3" ] },
+              "set":{
+                "html":{ "_":[ "resource", "data", "events", { "_":[ "that", "_set" ] }, "list", { "_":[ "that", "a" ] }, "options", 2, "result", { "_":[ "that", "b" ] }, "or", "---" ] }
+              }
+            },
+            {
+              "wait":1, "loop":1,
+              "until":{
+                "_":[
+                  "keyRight",
+                  "isHit",
+                  "or",
+                  { "_":[ "keyLeft", "isHit" ] },
+                  "or",
+                  { "_":[ "keyUp", "isHit" ] },
+                  "or",
+                  { "_":[ "keyDown", "isHit" ] },
+                  "or",
+                  { "_":[ "keyB", "isHit" ] }
+                ]
+              }
+            },
+            { "when":{ "_":[ "keyUp", "isHit" ] }, "subtract":1, "to":{ "_":[ "this", "a" ] }, "set":{ "b":0 } },
+            { "when":{ "_":[ "keyDown", "isHit" ] }, "sum":1, "to":{ "_":[ "this", "a" ] }, "set":{ "b":0 } },
+            { "when":{ "_":[ "keyLeft", "isHit" ] }, "subtract":1, "to":{ "_":[ "this", "b" ] } },
+            { "when":{ "_":[ "keyRight", "isHit" ] }, "sum":1, "to":{ "_":[ "this", "b" ] } },
+            { "when":{ "_":[ "keyB", "isHit" ] }, "sum":1, "to":{ "_":[ "this", "_set" ] }, "set":{ "a":0, "b":0 } },
+            { "when":{ "_":[ "this", "_set", "isGreaterEqualThan", { "_":[ "resource", "data", "events", "count" ] } ] }, "set":{ "_set":0 } },
+            { "as":{ "_":"storage" }, "set":{ "_set":{ "_":[ "that", "_set" ] }, "a":{ "_":[ "that", "a" ] }, "b":{ "_":[ "that", "b" ] } } },
+            { "loopTo":0 }
+          ]
+        }
+      }
+    },
+    "planet":{
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[
+            { "as":{ "_":[ "object", "allhud" ] }, "set":{ "visible":0 } },
+            { "as":{ "_":[ "object", "planethud" ] }, "set":{ "visible":1 } },
+            { "assign":{ "_":[ "variable", "stats", "maxInventory", 0 ] }, "to":{ "_":[ "variable", "stats", "inventory", 0 ] } },
+            { "set":{ "loading":0, "recordId":{ "_":[ "variable", "stats", "currentPlanet" ] } }, "execute":{ "_":[ "stencil", "codeGetPlanetData" ] } },
+            {
+              "when":{ "_":[ "variable", "stats", "spaceShipX", "isEqualTo", -2 ] },
+              "object":[
+                { "type":"message", "width":256, "height":192, "zIndex":50, "x":0, "y":0, "bgcolor":"#000" },
+                {
+                  "type":"message",
+                  "box":"label", "width":256, "height":10,
+                  "zIndex":100, "x":0, "y":91,
+                  "color":"#fff",
+                  "font":"spectrum", "lineHeight":10, "textAlign":"center", "html":"EMERGENCY LANDING",
+                  "states":{
+                    "code":{
+                      "name":"Execute",
+                      "data":{
+                        "when":{ "_":[ "scene", "loading", "%", 2 ] },
+                        "set":{ "bgcolor":"#000", "color":"#fff" },
+                        "elseExecute":{ "set":{ "bgcolor":"#fff", "color":"#000" } }
+                      }
+                    }
+                  }
+                }
+              ],
+              "into":{ "_":"scenehud" },
+              "elseExecute":{
+                "object":[
+                  { "type":"message", "width":256, "height":192, "zIndex":50, "x":0, "y":0, "bgcolor":"#000" },
+                  {
+                    "type":"message",
+                    "box":"label", "width":256, "height":20,
+                    "zIndex":100, "x":0, "y":91,
+                    "color":"#fff",
+                    "font":"spectrum", "lineHeight":10, "textAlign":"center", "html":{ "_":[ "REACHING PLANET<br>", ".", { "_":[ "scene", "name" ] } ] },
+                    "states":{
+                      "code":{
+                        "name":"Execute",
+                        "data":{
+                          "when":{ "_":[ "scene", "loading", "%", 2 ] },
+                          "set":{ "bgcolor":"#000", "color":"#fff" },
+                          "elseExecute":{ "set":{ "bgcolor":"#fff", "color":"#000" } }
+                        }
+                      }
+                    }
+                  }
+                ],
+                "into":{ "_":"scenehud" }
+              }
+            },
+            { "wait":2 },
+            { "set":{ "counter":0 } },
+            {
+              "times":50,
+              "execute":[
+                { "set":{ "counter2":0 } },
+                {
+                  "times":50,
+                  "execute":[
+                    {
+                      "object":{
+                        "set":{ "_":[ "stencil", "ground" ] },
+                        "x":{ "_":[ "that", "counter", "*", 16 ] }, "y":{ "_":[ "that", "counter2", "*", 16 ] },
+                        "planetRecordId":{ "_":[ "that", "recordId" ] },
+                        "universeX":{ "_":[ "variable", "stats", "universeX" ] },
+                        "universeY":{ "_":[ "variable", "stats", "universeY" ] }
+                      }
+                    },
+                    { "sum":1, "to":{ "_":[ "this", "counter2" ] } }
+                  ]
+                },
+                { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+              ]
+            },
+            {
+              "subsequence":[
+                {
+                  "set":{
+                    "a":{ "_":[ 0.2, "*", { "_":[ "randomNumber", [ 1, 100 ] ] }, "+", -10 ] },
+                    "b":{ "_":[ 0.2, "*", { "_":[ "randomNumber", [ 1, 100 ] ] }, "+", -10 ] },
+                    "diameter":{ "_":[ "randomNumber", [ 30, 300 ] ] },
+                    "m":{ "_":[ 0.26, "*", { "_":[ "randomNumber", [ 1, 100 ] ] }, "+", -10 ] },
+                    "n":50,
+                    "n1":{ "_":[ 0.2, "*", { "_":[ "randomNumber", [ 1, 100 ] ] }, "+", -10 ] },
+                    "n2":{ "_":[ 0.02, "*", { "_":[ "randomNumber", [ 1, 100 ] ] }, "+", -1 ] },
+                    "n3":{ "_":[ 0.33, "*", { "_":[ "randomNumber", [ 1, 100 ] ] }, "+", -3 ] }
+                  },
+                  "execute":{ "_":[ "stencil", "codeSuperformula" ] }
+                },
+                {
+                  "set":{
+                    "dx":{ "_":[ "randomNumber", [ 0, 800 ] ] },
+                    "dy":{ "_":[ "randomNumber", [ 0, 800 ] ] },
+                    "passes":{ "_":[ "this", "diameter", "/", 14, "ceil" ] },
+                    "point":{ "_":[ "new", { "width":1, "height":1 } ] },
+                    "ratio":0,
+                    "step":{ "_":[ 1, "/", { "_":[ "this", "diameter", "/", 14, "ceil" ] } ] }
+                  }
+                },
+                {
+                  "when":{ "_":[ "randomNumber", [ 0, 100 ], "isGreaterThan", { "_":[ "this", "minerProbability" ] } ] },
+                  "set":{ "miner":1 },
+                  "elseExecute":{ "set":{ "miner":0 } }
+                },
+                { "as":{ "_":[ "object", "ground" ] }, "set":{ "type":"terramorph" } },
+                {
+                  "times":{ "_":[ "this", "passes" ] },
+                  "execute":[
+                    { "set":{ "counter":0 } },
+                    {
+                      "times":{ "_":[ "this", "_points", "count" ] },
+                      "execute":[
+                        {
+                          "as":{ "_":[ "this", "point" ] },
+                          "set":{
+                            "x":{ "_":[ "that", "_points", { "_":[ "that", "counter" ] }, "x", "*", { "_":[ "that", "ratio" ] }, "+", { "_":[ "that", "dx" ] } ] }, "y":{ "_":[ "that", "_points", { "_":[ "that", "counter" ] }, "y", "*", { "_":[ "that", "ratio" ] }, "+", { "_":[ "that", "dy" ] } ] }
+                          }
+                        },
+                        {
+                          "when":{ "_":[ "this", "point", "collidesWith", { "_":[ "object", "terramorph" ] } ] },
+                          "execute":[
+                            {
+                              "when":{ "_":[ "this", "miner", "isEqualTo", 0, "or", { "_":[ "that", "depth", "not" ] } ] },
+                              "execute":{
+                                "when":{ "_":[ "that", "depth", "isLessThan", 4 ] },
+                                "execute":[ { "sum":1, "to":{ "_":[ "that", "depth" ] } }, { "as":{ "_":"that" }, "set":{ "removeType":"terramorph" } } ]
+                              },
+                              "elseExecute":{
+                                "when":{ "_":[ "that", "depth" ] },
+                                "execute":[ { "subtract":1, "to":{ "_":[ "that", "depth" ] } }, { "as":{ "_":"that" }, "set":{ "removeType":"terramorph" } } ]
+                              }
+                            },
+                            {
+                              "when":{ "_":[ "randomNumber", [ 0, 100 ], "isLessThan", { "_":[ "this", "mineralDensity" ] } ] },
+                              "execute":[
+                                {
+                                  "when":{ "_":[ "that", "mineralQuantity", "not" ] },
+                                  "execute":[
+                                    {
+                                      "when":{ "_":[ "randomNumber", [ 0, 100 ], "isLessThan", 50 ] },
+                                      "as":{ "_":"that" },
+                                      "set":{ "removeType":"empty", "mineralType":{ "_":[ "scene", "mineralCommon" ] } },
+                                      "elseExecute":{ "as":{ "_":"that" }, "set":{ "removeType":"empty", "mineralType":{ "_":[ "randomNumber", [ 1, 3 ] ] } } }
+                                    },
+                                    { "as":{ "_":"that" }, "set":{ "mineralSet":{ "_":[ "scene", "mineralSet", { "_":[ "this", "mineralType" ] } ] } } }
+                                  ]
+                                },
+                                { "when":{ "_":[ "that", "mineralQuantity", "isLessThan", 4 ] }, "sum":1, "to":{ "_":[ "that", "mineralQuantity" ] } }
+                              ]
+                            }
+                          ]
+                        },
+                        { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+                      ]
+                    },
+                    { "sum":{ "_":[ "this", "step" ] }, "to":{ "_":[ "this", "ratio" ] } }
+                  ]
+                },
+                { "sum":1, "to":{ "_":[ "scene", "loading" ] }, "wait":1 }
+              ],
+              "loop":1, "cycles":{ "_":[ "this", "areas" ] }
+            },
+            {
+              "set":{
+                "counter":1,
+                "point":{ "_":[ "new", { "width":1, "height":1 } ] },
+                "stepX":{ "_":[ 800, "/", { "_":[ "that", "checkPointsX" ] } ] },
+                "stepY":{ "_":[ 800, "/", { "_":[ "that", "checkPointsY" ] } ] },
+                "stepsX":{ "_":[ "that", "checkPointsX", "-", 1 ] },
+                "stepsY":{ "_":[ "that", "checkPointsY", "-", 1 ] }
+              }
+            },
+            {
+              "times":{ "_":[ "this", "stepsY" ] },
+              "execute":[
+                { "set":{ "counter2":1 } },
+                {
+                  "times":{ "_":[ "this", "stepsX" ] },
+                  "execute":[
+                    {
+                      "as":{ "_":[ "this", "point" ] },
+                      "set":{
+                        "x":{ "_":[ "that", "stepX", "*", { "_":[ "that", "counter2" ] }, "+", { "_":[ "randomNumber", [ -48, 48 ] ] }, "floor" ] }, "y":{ "_":[ "that", "stepY", "*", { "_":[ "that", "counter" ] }, "+", { "_":[ "randomNumber", [ 48, 48 ] ] }, "floor" ] }
+                      }
+                    },
+                    { "when":{ "_":[ "this", "point", "collidesWith", { "_":[ "object", "empty" ] } ] }, "as":{ "_":"that" }, "set":{ "_":[ "stencil", "checkPoint" ] } },
+                    { "sum":1, "to":{ "_":[ "this", "counter2" ] } }
+                  ]
+                },
+                { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+              ]
+            },
+            { "set":{ "counter":0 } },
+            {
+              "times":{ "_":[ "this", "lifeFormsCount" ] },
+              "execute":[
+                { "set":{ "lifeForm":{ "_":[ "this", "lifeForms", { "_":[ "this", "counter" ] } ] } } },
+                {
+                  "as":{ "_":[ "randomObject", { "_":[ "object", "empty" ] } ] },
+                  "execute":[
+                    { "set":{ "removeType":"empty" } },
+                    {
+                      "object":{
+                        "set":{ "_":[ "stencil", "lifeForm" ] },
+                        "at":{ "_":"that" },
+                        "lifeForm":{ "_":[ "scene", "lifeForm" ] },
+                        "lifeFormsCount":{ "_":[ "scene", "lifeFormsCount" ] },
+                        "planetRecordId":{ "_":[ "scene", "recordId" ] },
+                        "universeX":{ "_":[ "variable", "stats", "universeX" ] },
+                        "universeY":{ "_":[ "variable", "stats", "universeY" ] }
+                      }
+                    }
+                  ]
+                },
+                { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+              ]
+            },
+            { "set":{ "counter":0 } },
+            {
+              "times":{ "_":[ "resource", "data", "events", "count" ] },
+              "execute":[
+                { "set":{ "event":{ "_":[ "resource", "data", "events", { "_":[ "this", "counter" ] } ] }, "generate":1 } },
+                {
+                  "when":{ "_":[ "this", "event", "onPlanetsTagged" ] },
+                  "execute":{
+                    "when":{ "_":[ "this", "planetTag" ] },
+                    "set":{ "generate":{ "_":[ "this", "event", "onPlanetsTagged", { "_":[ "this", "planetTag" ] } ] } },
+                    "elseExecute": { "set":{ "generate":0 } }
+                  }
+                },
+                {
+                  "when":{ "_":[ "this", "generate" ] },
+                  "set":{ "generate":{ "_":[ "randomNumber", [ 0, 100 ], "isLessEqualThan", { "_":[ "this", "event", "probability" ] } ] } }
+                },
+                {
+                  "when":{ "_":[ "this", "generate" ] },
+                  "as":{ "_":[ "randomObject", { "_":[ "object", "empty" ] } ] },
+                  "set":{
+                    "log":{ "_":[ "that", "event", "label" ] },
+                    "type":{ "_":[ "that", "event", "type" ] },
+                    "removeType":"empty",
+                    "event":{ "_":[ "that", "event" ] },
+                    "eventSeed":{ "_":[ "variable", "randomSeed" ] },
+                    "isStructure":1,
+                    "isVisibleFromFar":{ "_":[ "that", "event", "isVisibleFromFar" ] },
+                    "structureTileX":{ "_":[ "randomValue", { "_":[ "that", "event", "tileX" ] }, "*", 16 ] },
+                    "structureTileY":{ "_":[ "randomValue", { "_":[ "that", "event", "tileY" ] }, "*", 16 ] }
+                  }
+                },
+                { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+              ]
+            },
+            { "wait":1 },
+            { "set":{ "width":800, "height":800 } },
+            { "as":{ "_":[ "object", "landscape" ] }, "executeAction":"prepare" },
+            {
+              "when":{ "_":[ "variable", "stats", "spaceShipX", "isEqualTo", -2 ] },
+              "execute":[
+                {
+                  "object":{
+                    "follow":1,
+                    "set":{ "_":[ "stencil", "spaceship" ] },
+                    "at":{ "_":[ "randomObject", { "_":[ "object", "empty" ] } ] },
+                    "angle":0,
+                    "damaged":1,
+                    "state":"board"
+                  }
+                },
+                { "as":{ "_":[ "object", "landscape" ] }, "executeAction":"show" }
+              ],
+              "elseExecute":{
+                "when":{ "_":[ "variable", "stats", "spaceShipX", "isEqualTo", -1 ] },
+                "execute":[
+                  { "object":{ "set":{ "_":[ "stencil", "spaceship" ] }, "x":392, "y":392, "angle":{ "_":[ "randomNumber", [ 0, 360 ] ] } } },
+                  { "as":{ "_":[ "object", "landscape" ] }, "executeAction":"hide" }
+                ],
+                "elseExecute":[
+                  {
+                    "object":{
+                      "set":{ "_":[ "stencil", "spaceship" ] },
+                      "x":{ "_":[ "variable", "stats", "spaceShipX" ] }, "y":{ "_":[ "variable", "stats", "spaceShipY" ] },
+                      "angle":{ "_":[ "variable", "stats", "spaceShipAngle" ] },
+                      "state":"landed"
+                    }
+                  },
+                  {
+                    "object":{ "set":{ "_":[ "stencil", "player" ] }, "x":{ "_":[ "variable", "stats", "checkpointX" ] }, "y":{ "_":[ "variable", "stats", "checkpointY" ] } }
+                  },
+                  { "as":{ "_":[ "object", "landscape" ] }, "executeAction":"show" }
+                ]
+              }
+            },
+            { "wait":2 },
+            { "as":{ "_":[ "object", "message" ] }, "remove":1 }
+          ]
+        }
+      }
+    },
+    "solarsystem":{
+      "width":512, "height":384,
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[
+            {
+              "as":{ "_":[ "variable", "stats" ] },
+              "set":{ "checkpointX":-1, "checkpointY":-1, "spaceShipX":-1, "spaceShipY":-1, "spaceshipAngle":-1 },
+              "execute":{ "_":[ "stencil", "codeSaveGame" ] }
+            },
+            { "as":{ "_":[ "object", "allhud" ] }, "set":{ "visible":0 } },
+            { "as":{ "_":[ "object", "solarsystemhud" ] }, "set":{ "visible":1 } },
+            {
+              "set":{ "universeX":{ "_":[ "variable", "stats", "universeX" ] }, "universeY":{ "_":[ "variable", "stats", "universeY" ] } },
+              "execute":{ "_":[ "stencil", "codeGetSolarSystemIdFromCoords" ] }
+            },
+            { "set":{ "getPlanets":1 }, "execute":{ "_":[ "stencil", "codeGetSolarSystemData" ] } },
+            {
+              "object":{
+                "width":240, "height":30,
+                "zIndex":20, "x":8, "y":6,
+                "font":"spectrum", "lineHeight":10, "outline":"#000",
+                "states":{
+                  "code":{
+                    "name":"Execute",
+                    "data":{
+                      "when":{ "_":[ "objectTyped", "ship", "destination" ] },
+                      "execute":{
+                        "when":{ "_":[ "objectTyped", "ship", "destination", "isEqualTo", -1 ] },
+                        "set":{ "color":"#fff", "html":{ "_":[ "scene", "name", ".", "<br>System" ] } },
+                        "elseExecute":{ "set":{ "color":"#ff0", "html":{ "_":[ "objectTyped", "ship", "destination", "name", ".", "<br>Planet" ] } } }
+                      },
+                      "elseExecute":{ "set":{ "color":"#f00", "html":"WARNING!" } }
+                    }
+                  }
+                }
+              },
+              "into":{ "_":"scenehud" }
+            },
+            { "object":{ "image":"planets", "tileY":128, "width":32, "height":32, "zIndex":5, "x":240, "y":176, "bgcolor":"#7f7f00" } },
+            { "set":{ "counter":0 } },
+            {
+              "times":{ "_":[ "this", "planets", "count" ] },
+              "execute":[
+                {
+                  "object":{
+                    "name":{ "_":[ "that", "planets", { "_":[ "that", "counter" ] }, "name" ] }, "type":[ "planet", { "_":[ "that", "planets", { "_":[ "that", "counter" ] }, "recordId" ] } ],
+                    "image":"planets", "tileX":{ "_":[ "that", "planets", { "_":[ "that", "counter" ] }, "style" ] }, "tileY":{ "_":[ "that", "planets", { "_":[ "that", "counter" ] }, "planetTileY" ] }, "width":32, "height":32,
+                    "zIndex":10,
+                    "scale":{ "_":[ "that", "planets", { "_":[ "that", "counter" ] }, "size" ] },
+                    "bgcolor":{ "_":[ "that", "planets", { "_":[ "that", "counter" ] }, "planetBgColor" ] },
+                    "orbitAngle":{ "_":[ "that", "planets", { "_":[ "that", "counter" ] }, "orbitAngle" ] },
+                    "orbitSpeed":{ "_":[ "that", "planets", { "_":[ "that", "counter" ] }, "orbitSpeed" ] },
+                    "planet":{ "_":[ "that", "planets", { "_":[ "that", "counter" ] } ] },
+                    "recordId":{ "_":[ "that", "planets", { "_":[ "that", "counter" ] }, "recordId" ] },
+                    "states":{
+                      "code":{
+                        "name":"Execute",
+                        "data":[
+                          { "set":{ "x":240, "y":176 } },
+                          { "applyVector":{ "angle":{ "_":[ "this", "orbitAngle" ] }, "length":{ "_":[ "this", "planet", "orbit" ] } } },
+                          { "sum":{ "_":[ "this", "forceX" ] }, "to":{ "_":[ "this", "x" ] } },
+                          { "sum":{ "_":[ "this", "forceY", "*", 0.75 ] }, "to":{ "_":[ "this", "y" ] } },
+                          { "sum":{ "_":[ "this", "orbitSpeed" ] }, "to":{ "_":[ "this", "orbitAngle" ] } }
+                        ]
+                      }
+                    }
+                  }
+                },
+                { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+              ]
+            },
+            {
+              "times":{ "_":[ "this", "piratesCount" ] },
+              "object":{ "set":{ "_":[ "stencil", "piratesGroup" ] }, "isVisible":{ "_":[ "scene", "piratesVisibility" ] } }
+            },
+            { "set":{ "counter":0 } },
+            {
+              "times":{ "_":[ "this", "asteroidsCount" ] },
+              "object":{
+                "set":{ "_":[ "stencil", "asteroid" ] },
+                "execute":{ "set":{ "mineralSet":{ "_":[ "scene", "asteroidSet", { "_":[ "this", "mineralType" ] } ] } } },
+                "mineralQuantity":{ "_":[ "randomNumber", [ 1, 3 ] ] },
+                "mineralType":{ "_":[ "randomNumber", [ 1, 3 ] ] }
+              }
+            },
+            {
+              "times":100,
+              "object":{
+                "type":"star",
+                "width":1, "height":1,
+                "zIndex":1,
+                "bgcolor":"#f00",
+                "starColors":{ "_":[ "that", "starColors" ] },
+                "states":{
+                  "actions":{
+                    "name":"shine",
+                    "execute":{
+                      "set":{
+                        "x":{ "_":[ "randomNumber", [ 0, 511 ] ] }, "y":{ "_":[ "randomNumber", [ 0, 383 ] ] },
+                        "bgcolor":{ "_":[ "randomValue", { "_":[ "this", "starColors" ] } ] }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            { "wait":1 },
+            { "as":{ "_":[ "object", "star" ] }, "executeAction":"shine" },
+            {
+              "when":{ "_":[ "objectTyped", { "_":[ "variable", "stats", "currentPlanet" ] } ] },
+              "object":{
+                "set":{ "_":[ "stencil", "solarsystemSpaceship" ] },
+                "x":{ "_":[ "objectTyped", { "_":[ "variable", "stats", "currentPlanet" ] }, "x", "+", 8 ] }, "y":{ "_":[ "objectTyped", { "_":[ "variable", "stats", "currentPlanet" ] }, "y", "+", 8 ] }
+              },
+              "elseExecute":{ "object":{ "set":{ "_":[ "stencil", "solarsystemSpaceship" ] }, "x":248, "y":96 } }
+            },
+            { "set":{ "as":{ "_":[ "variable", "stats", "currentPlanet" ] }, "currentPlanet":-1 } },
+            { "as":{ "_":[ "randomObject", { "_":[ "object", "star" ] } ] }, "executeAction":"shine", "wait":10, "loop":1 }
+          ]
+        }
+      }
+    },
+    "universe":{
+      "states":{
+        "execute":{
+          "as":{ "_":"variable" },
+          "set":{ "execute":{ "_":[ "stencil", "codeShowTutorial" ] }, "tutorial":"DIR: Move cursor<br>&nbsp;&nbsp;A: Warp<br>&nbsp;&nbsp;B: Back" }
+        },
+        "code":{
+          "name":"Sequence",
+          "data":[
+            { "as":{ "_":[ "object", "allhud" ] }, "set":{ "visible":0 } },
+            { "as":{ "_":[ "object", "universehud" ] }, "set":{ "visible":1 } },
+            {
+              "set":{
+                "counter":0,
+                "counter2":0,
+                "cx":{ "_":[ "variable", "stats", "universeX", "-", 7, "limitValue", [ -500, 486 ] ] },
+                "cy":{ "_":[ "variable", "stats", "universeY", "-", 5, "limitValue", [ -500, 490 ] ] }
+              }
+            },
+            {
+              "times":11,
+              "execute":[
+                { "set":{ "counter2":0 } },
+                {
+                  "times":15,
+                  "execute":[
+                    {
+                      "object":{
+                        "image":"planets", "tileY":480, "width":8, "height":8,
+                        "x":{ "_":[ "that", "counter2", "*", 16, "+", 12 ] }, "y":{ "_":[ "that", "counter", "*", 16, "+", 12 ] },
+                        "execute":[
+                          { "_":[ "stencil", "codeGetSolarSystemIdFromCoords" ] },
+                          {
+                            "when":{ "_":[ "this", "isEmpty" ] },
+                            "set":{ "frame":0 },
+                            "elseExecute":[
+                              { "set":{ "getPlanets":0 }, "execute":{ "_":[ "stencil", "codeGetSolarSystemData" ] } },
+                              { "set":{ "type":"landable", "frame":{ "_":[ "this", "planetsCount" ] }, "bgcolor":{ "_":[ "this", "starColors", 0 ] } } }
+                            ]
+                          },
+                          { "set":{ "flagId":{ "_":[ "sys-", ".", { "_":[ "this", "universeX" ] }, ".", ",", ".", { "_":[ "this", "universeY" ] } ] } } },
+                          {
+                            "when":{
+                              "_":[
+                                "this",
+                                "universeX",
+                                "isEqualTo",
+                                { "_":[ "variable", "stats", "universeX" ] },
+                                "and",
+                                { "_":[ "this", "universeY", "isEqualTo", { "_":[ "variable", "stats", "universeY" ] } ] }
+                              ]
+                            },
+                            "set":{ "type":"current", "state":"blink" }
+                          }
+                        ],
+                        "universeX":{ "_":[ "that", "cx", "+", { "_":[ "that", "counter2" ] } ] },
+                        "universeY":{ "_":[ "that", "cy", "+", { "_":[ "that", "counter" ] } ] },
+                        "states":{ "name":"blink", "code":{ "name":"Sequence", "data":[ { "set":{ "visible":1 }, "wait":5 }, { "set":{ "visible":0 }, "wait":5, "loopTo":0 } ] } }
+                      }
+                    },
+                    { "sum":1, "to":{ "_":[ "this", "counter2" ] } }
+                  ]
+                },
+                { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+              ]
+            },
+            {
+              "object":[
+                {
+                  "type":"cursor",
+                  "image":"hud", "tileY":48, "width":24, "height":24,
+                  "zIndex":10, "x":{ "_":[ "variable", "stats", "universeX", "-", { "_":[ "that", "cx" ] }, "*", 16, "abs", "+", 4 ] }, "y":{ "_":[ "variable", "stats", "universeY", "-", { "_":[ "that", "cy" ] }, "abs", "*", 16, "+", 4 ] },
+                  "states":{
+                    "code":{
+                      "name":"Execute",
+                      "data":[
+                        { "sum":2, "to":{ "_":[ "this", "angle" ] } },
+                        {
+                          "when":{ "_":[ "keyLeft", "isHit", "and", { "_":[ "this", "x", "isGreaterThan", 4 ] } ] },
+                          "subtract":16,
+                          "to":{ "_":[ "this", "x" ] },
+                          "elseExecute":{
+                            "when":{ "_":[ "keyRight", "isHit", "and", { "_":[ "this", "x", "isLessThan", 228 ] } ] },
+                            "sum":16,
+                            "to":{ "_":[ "this", "x" ] },
+                            "elseExecute":{
+                              "when":{ "_":[ "keyUp", "isHit", "and", { "_":[ "this", "y", "isGreaterThan", 4 ] } ] },
+                              "subtract":16,
+                              "to":{ "_":[ "this", "y" ] },
+                              "elseExecute":{ "when":{ "_":[ "keyDown", "isHit", "and", { "_":[ "this", "y", "isLessThan", 164 ] } ] }, "sum":16, "to":{ "_":[ "this", "y" ] } }
+                            }
+                          }
+                        },
+                        {
+                          "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "landable" ] } ] },
+                          "execute":[
+                            {
+                              "set":{
+                                "cost":{ "_":[ "that", "distanceTo", { "_":[ "objectTyped", "current" ] }, "*", { "_":[ "resource", "data", "costPerPixel" ] }, "*", { "_":[ "variable", "stats", "shipWarpEfficiency" ] }, "ceil" ] },
+                                "destination":{ "_":"that" }
+                              }
+                            },
+                            { "set":{ "costLabel":{ "_":[ "- ", ".", { "_":[ "this", "cost" ] } ] } } },
+                            {
+                              "when":{ "_":[ "variable", "stats", "units", "isLessThan", { "_":[ "this", "cost" ] } ] },
+                              "set":{ "costColor":"#f00" },
+                              "elseExecute":{ "set":{ "costColor":"#0f0" } }
+                            }
+                          ],
+                          "elseExecute":{ "set":{ "costLabel":"", "destination":0 } }
+                        },
+                        {
+                          "when":{ "_":[ "keyA", "isHit", "and", { "_":[ "this", "destination" ] } ] },
+                          "execute":{
+                            "when":{ "_":[ "variable", "stats", "units", "isLessThan", { "_":[ "this", "cost" ] } ] },
+                            "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "html":"NO UNITS" },
+                            "elseExecute":[
+                              {
+                                "when":{ "_":[ "variable", "stats", "flags", { "_":[ "this", "destination", "flagId" ] }, "*", 1, "not" ] },
+                                "execute":[
+                                  { "sum":1, "to":{ "_":[ "variable", "stats", "knowledge" ] } },
+                                  { "sum":1, "to":{ "_":[ "variable", "stats", "jumps" ] } },
+                                  {
+                                    "when":{ "_":[ "variable", "stats", "jumps", "isGreaterThan", 3 ] },
+                                    "as":{ "_":[ "variable", "stats" ] },
+                                    "set":{ "flags":{ "_":[ "new", {} ] }, "jumps":0 }
+                                  }
+                                ]
+                              },
+                              { "assign":1, "to":{ "_":[ "variable", "stats", "flags", { "_":[ "this", "destination", "flagId" ] } ] } },
+                              { "subtract":{ "_":[ "this", "cost" ] }, "to":{ "_":[ "variable", "stats", "units" ] } },
+                              {
+                                "as":{ "_":[ "variable", "stats" ] },
+                                "set":{ "currentPlanet":-1, "universeX":{ "_":[ "that", "destination", "universeX" ] }, "universeY":{ "_":[ "that", "destination", "universeY" ] } }
+                              },
+                              { "gotoScene":"solarsystem" }
+                            ]
+                          },
+                          "elseExecute":{ "when":{ "_":[ "keyB", "isHit" ] }, "gotoScene":"solarsystem" }
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "width":90, "height":30,
+                  "zIndex":20, "x":148, "y":165,
+                  "font":"spectrum", "lineHeight":10, "outline":"#000", "textAlign":"right",
+                  "states":{
+                    "code":{
+                      "name":"Execute",
+                      "data":{ "set":{ "color":{ "_":[ "objectTyped", "cursor", "costColor" ] }, "html":{ "_":[ "objectTyped", "cursor", "costLabel" ] } } }
+                    }
+                  }
+                },
+                {
+                  "type":"hud",
+                  "hudType":"label", "label":"%text|objectTyped.cursor.destination.name%<br>(%number|objectTyped.cursor.destination.universeX%,%number|objectTyped.cursor.destination.universeY%)",
+                  "width":240, "height":30,
+                  "zIndex":20, "x":8, "y":6,
+                  "font":"spectrum", "lineHeight":10, "outline":"#000",
+                  "states":{ "code":{ "name":"Execute", "data":{ "set":{ "visible":{ "_":[ "objectTyped", "cursor", "destination" ] } } } } }
+                }
+              ]
+            }
+          ]
+        }
+      }
+    }
+  }
+}

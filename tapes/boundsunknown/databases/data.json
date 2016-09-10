@@ -1,0 +1,2425 @@
+{
+  "universeSeed": 26041980,
+  "systems": [
+    {
+      "universeX": 0,
+      "universeY": 0,
+      "suggested": {
+        "name": "Origin",
+        "planetsCount": 3,
+        "piratesCount": 0,
+        "piratesVisibility": 0,
+        "asteroidsCount": 0,
+        "suggestedPlanets": ["earth"]
+      }
+    },
+    {
+      "universeX": 100,
+      "universeY": 100,
+      "suggested": {
+        "name": "Uranius"
+      }
+    }
+  ],
+  "planets": {
+    "earth": {
+      "planetTag": "earth",
+      "name": "Earth",
+      "recordId": 12031980,
+      "style": 224,
+      "planetTileY": 320,
+      "planetBgColor": "#0f0",
+      "size": 1,
+      "bgcolor": "#00f",
+      "baseDepth": 0,
+      "minerProbability": 101,
+      "areas": 20,
+      "checkPointsX": 4,
+      "checkPointsY": 4,
+      "mineralDensity": 10,
+      "mineralCommon": 1,
+      "energyConsume": 0.01,
+      "breatheConsume": 0.01,
+      "depths": [
+        {
+          "bgcolor": "#00007f",
+          "tileY": 48,
+          "tileX": 0
+        },
+        {
+          "bgcolor": "#007f7f",
+          "tileY": 96,
+          "tileX": 144
+        },
+        {
+          "bgcolor": "#ff0",
+          "tileY": 112,
+          "tileX": 32
+        },
+        {
+          "bgcolor": "#0f0",
+          "tileY": 144,
+          "tileX": 112
+        },
+        {
+          "bgcolor": "#007f00",
+          "tileY": 0,
+          "tileX": 80
+        },
+        {
+          "bgcolor": "#7f7f7f",
+          "tileY": 128,
+          "tileX": 128
+        }
+      ]
+    }
+  },
+  "planetData": [
+    {
+      "id": "name",
+      "sylset": "syllabes",
+      "len": [2, 3],
+      "words": [1, 1]
+    },
+    {
+      "id": "baseDepth",
+      "range": [0, 5],
+      "div": 1
+    },
+    {
+      "id": "minerProbability",
+      "range": [0, 100],
+      "div": 1
+    },
+    {
+      "id": "areas",
+      "range": [20, 30],
+      "div": 1
+    },
+    {
+      "id": "checkPointsX",
+      "range": [2, 4],
+      "div": 1
+    },
+    {
+      "id": "checkPointsY",
+      "range": [2, 4],
+      "div": 1
+    },
+    {
+      "id": "mineralDensity",
+      "range": [5, 15],
+      "div": 1
+    },
+    {
+      "id": "mineralCommon",
+      "range": [1, 3],
+      "div": 1
+    },
+    {
+      "id": "energyConsume",
+      "range": [1, 10],
+      "div": 100
+    },
+    {
+      "id": "breatheConsume",
+      "range": [1, 10],
+      "div": 100
+    },
+    {
+      "id": "lifeFormsCount",
+      "range": [0, 6],
+      "div": 1
+    }
+  ],
+  "solarSystemData": [
+    {
+      "id": "name",
+      "sylset": "syllabes",
+      "len": [3, 4],
+      "words": [1, 2]
+    },
+    {
+      "id": "planetsCount",
+      "range": [2, 6],
+      "div": 1
+    },
+    {
+      "id": "piratesCount",
+      "range": [0, 6],
+      "div": 1
+    },
+    {
+      "id": "piratesVisibility",
+      "range": [0, 1],
+      "div": 1
+    },
+    {
+      "id": "asteroidsCount",
+      "range": [10, 20],
+      "div": 1
+    }
+  ],
+  "events": [
+    {
+      "label": "malus",
+      "type": "malus",
+      "probability": 50,
+      "useSequence": 0,
+      "tileY": [19],
+      "tileX": [0, 2, 4, 6, 8, 10, 12],
+      "isVisibleFromFar": 0,
+      "list": [
+        {
+          "portrait": [3, 4, 5],
+          "text": ["An abandoned dock stands is blocking the building entrance. One of the side doors is opened."],
+          "options": [
+            {
+              "text": "Investigate",
+              "action": [
+                [{
+                    "units": -2
+                  }],
+                [{
+                    "units": -10
+                  }],
+                [{
+                    "units": -20
+                  }]
+              ],
+              "result": ["-Your units! NOW!- The hiding Merchant said pointing his Raygun to me."]
+            },
+            {
+              "text": "Leave",
+              "result": ["You left the box behind you.", "You look around a little more and then decide to leave.", "Nothing interesting here. Time to leave."]
+            }
+          ]
+        },
+        {
+          "portrait": [3, 4, 5],
+          "text": ["There is a planetary map is on a screen, with a cross-hair pointing my ship position. The 'Lock' button is blinking."],
+          "options": [
+            {
+              "text": "Push it",
+              "action": [
+                [{
+                    "maxRedMineral": -1, "replaceShipPart": 1
+                  }],
+                [{
+                    "maxGreenMineral": -1, "replaceShipPart": 1
+                  }],
+                [{
+                    "maxBlueMineral": -1, "replaceShipPart": 1
+                  }]
+              ],
+              "result": ["A missile launcher fires a rocket, damaging its cargo. Damn!"]
+            },
+            {
+              "text": "Don't push it",
+              "result": ["It's too dangerous. Better shutting this system down before leaving.", "Is this this planet defense system? Better not trying it on my ship.", "I left the building."]
+            }
+          ]
+        },
+        {
+          "portrait": [3, 4, 5],
+          "text": ["A rugged metal cabin opens up as I get nearby. Inside, I can see a mechanical arm with a small knife. What I've to do?"],
+          "options": [
+            {
+              "text": "Go inside",
+              "action": [
+                [{
+                    "maxEnergy": -1
+                  }]
+              ],
+              "result": ["I fainted. I woke up in terrible pain and my Suite damaged."]
+            },
+            {
+              "text": "Leave",
+              "result": ["Tsk. I'll leave this trap for someone else. Move on.", "I've left that cabin behind.", "I've left the structure and I'm back outside."]
+            }
+          ]
+        },
+        {
+          "portrait": [3, 4, 5],
+          "text": ["A Raygun upgrade module lies on a table. It's quite bigger than usual but I'm sure I can fit in in my Raygun."],
+          "options": [
+            {
+              "text": "Put it",
+              "action": [
+                [{
+                    "raygunCooldown": -1
+                  }]
+              ],
+              "result": ["Dammit! It broke! Now I've to repair my Raygun better than I can!"]
+            },
+            {
+              "text": "Leave",
+              "result": ["My Raygun is too much important for wasting it in an experiment."]
+            }
+          ]
+        },
+        {
+          "portrait": [3, 4, 5],
+          "text": ["A warp engine replacement cargo is waiting for command in the hangar of this place. What I've to do?"],
+          "options": [
+            {
+              "text": "Type my ship position in",
+              "action": [
+                [{
+                    "shipWarpEfficiency": 0.1, "replaceShipPart": 1
+                  }]
+              ],
+              "result": ["The cargo replaced my engine with a makeshift one, in order to repair it - but then it stopped."]
+            },
+            {
+              "text": "Leave",
+              "result": ["I've cancelled the delivery. Time to move."]
+            }
+          ]
+        },
+        {
+          "portrait": [3, 4, 5],
+          "text": ["There is a portable device left unlocked on a table. Someone is working on a software patch and seems that I can apply this on my ship."],
+          "options": [
+            {
+              "text": "Apply the patch",
+              "action": [
+                [{
+                    "shipSpeed": -0.1, "replaceShipPart": 1
+                  }]
+              ],
+              "result": ["Damn! How I've not recognized that was a virus! My ship is now slowed down!"]
+            },
+            {
+              "text": "Leave",
+              "result": ["I lock the device and leave the room."]
+            }
+          ]
+        },
+        {
+          "portrait": [3, 4, 5],
+          "text": ["Few tanks filled with ship fuel lies on a corner of a container. They are missing its caps."],
+          "options": [
+            {
+              "text": "Take one",
+              "action": [
+                [{
+                    "shipAcceleration": -0.1, "replaceShipPart": 1
+                  }]
+              ],
+              "result": ["It was too good to be true. That wasted fuel will slow down my ship!"]
+            },
+            {
+              "text": "Leave",
+              "result": ["I'm going to lock these containers and leave this place."]
+            }
+          ]
+        },
+        {
+          "portrait": [3, 4, 5],
+          "text": ["I don't see anything particular, except for some air tanks are piled up on a container labeled 'Replaced'."],
+          "options": [
+            {
+              "text": "Get an air tank",
+              "action": [
+                [{
+                    "jetpackConsume": 0.1
+                  }]
+              ],
+              "result": ["These used tanks are worse than mine... I feel my jetpack more heavy and noisy."]
+            },
+            {
+              "text": "Leave",
+              "result": ["These tanks are probably unusable. Better leaving this place as soon as possible."]
+            }
+          ]
+        },
+        {
+          "portrait": [3, 4, 5],
+          "text": ["There is a large self-driving dock on the outside. A diamond shaped sign is on its top, together with a screen asking some coordinates."],
+          "options": [
+            {
+              "text": "Type my ship position in",
+              "action": [
+                [{
+                    "redMineral": -10
+                  }],
+                [{
+                    "greenMineral": -10
+                  }],
+                [{
+                    "blueMineral": -10
+                  }]
+              ],
+              "result": ["Some minerals have been withdrawn from my ship and delivered here."]
+            },
+            {
+              "text": "Leave",
+              "result": ["I shut the system down and leave."]
+            }
+          ]
+        },
+        {
+          "portrait": [3, 4, 5],
+          "text": ["A rounded red platform glows lightly under my feets. The longer I stay here the brighter it gets."],
+          "options": [
+            {
+              "text": "Stay still",
+              "action": [
+                [{
+                    "energy": -30
+                  }]
+              ],
+              "result": ["I've triggered the security system and then felt a prickly pain on my legs."]
+            },
+            {
+              "text": "Leave",
+              "result": ["The glow disappear as I leave the platform."]
+            }
+          ]
+        },
+        {
+          "portrait": [3, 4, 5],
+          "text": ["A dark box labelled 'Precious Load' is standing on a loading platform. I've tried to push it but it's really heavy, despite its size."],
+          "options": [
+            {
+              "text": "Load it on the ship",
+              "action": [
+                [{
+                    "shipLiftoffConsume": 1, "replaceShipPart": 1
+                  }]
+              ],
+              "result": ["I've loaded the heavy box on my ship. Will this box be truly useful?"]
+            },
+            {
+              "text": "Leave",
+              "result": ["I'll keep away from that box. I'm leaving this room for now."]
+            }
+          ]
+        },
+        {
+          "portrait": [3, 4, 5],
+          "text": ["There are a lot of intact metal bars lined up in front of a large cannon. Its current setup has been marked as 'best try'."],
+          "options": [
+            {
+              "text": "Learn the cannon setup",
+              "action": [
+                [{
+                    "shipRaygunCooldown": 1, "replaceShipPart": 1
+                  }]
+              ],
+              "result": ["I've copied the setup on my Ship Cannon. It now fires slower!"]
+            },
+            {
+              "text": "Leave",
+              "result": ["I've shut down the testing program and left the building."]
+            }
+          ]
+        },
+        {
+          "portrait": [3, 4, 5],
+          "text": ["A terminal is displaying a very large Ray Cannon schematic, marked as early prototype. The production plant is waiting for orders."],
+          "options": [
+            {
+              "text": "Produce the Ray Cannon",
+              "action": [
+                [{
+                    "shipBulletSpeed": -1, "replaceShipPart": 1
+                  }]
+              ],
+              "result": ["It produced and installed a legacy Ray Cannon on my ship to be tested."]
+            },
+            {
+              "text": "Leave",
+              "result": ["I've switched off the production plant."]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "bonus",
+      "type": "bonus",
+      "probability": 100,
+      "useSequence": 0,
+      "tileY": [19],
+      "tileX": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+      "isVisibleFromFar": 0,
+      "list": [
+        {
+          "portrait": [3, 4, 5],
+          "text": [
+            "After looking around this abandoned structure, all I've found is a spare dock on the side of a corridor. It looks unlocked.",
+            "The doors of the structure are shut and red lights are running in circle - I'm wondering what happened inside. A little box lies on the side of the entrance.",
+            "Sealed tiny containers are ammassed on front of the structure door, making its doors unreachable. One of them falled apart and it looks like someone tried to force it."
+          ],
+          "options": [
+            {
+              "text": "Open it",
+              "action": [
+                [{
+                    "units": 2
+                  }],
+                [{
+                    "units": 10
+                  }],
+                [{
+                    "units": 20
+                  }]
+              ],
+              "result": ["I've found some units and decide to pick them.", "The box is empty - except for a bunch of units.", "Looks like someone decided to store some units here. I'll take them with me."]
+            },
+            {
+              "text": "Leave",
+              "result": ["You left the box behind you.", "You look around a little more and then decide to leave.", "Nothing interesting here. Time to leave."]
+            }
+          ]
+        },
+        {
+          "portrait": [3, 4, 5],
+          "text": ["There is a planetary map is on a screen, with a cross-hair pointing my ship position. The 'Launch' button is blinking."],
+          "options": [
+            {
+              "text": "Push it",
+              "action": [
+                [{
+                    "maxRedMineral": 1, "replaceShipPart": 1
+                  }],
+                [{
+                    "maxGreenMineral": 1, "replaceShipPart": 1
+                  }],
+                [{
+                    "maxBlueMineral": 1, "replaceShipPart": 1
+                  }]
+              ],
+              "result": [
+                "A crowd of drones left this building. The 'Ship Cargo Improved' message is blinking on the screen.",
+                "A missile is being launched from this building. The 'Ship Cargo Improved' message is blinking on the screen.",
+                "Few running Botlers left the back of this building. Then 'Ship Cargo Improved' message appeared on the screen."
+              ]
+            },
+            {
+              "text": "Don't push it",
+              "result": ["It's too dangerous. Better shutting this system down before leaving.", "Is this this planet defense system? Better not trying it on my ship.", "I left the building."]
+            }
+          ]
+        },
+        {
+          "portrait": [3, 4, 5],
+          "text": ["A metal cabin opens up as I get nearby. Inside, I can see six mechanical arms with claws and screwdrivers. What I've to do?"],
+          "options": [
+            {
+              "text": "Go inside",
+              "action": [
+                [{
+                    "maxEnergy": 1
+                  }]
+              ],
+              "result": ["I lose consciousness. When I wake up my Suite has been improved.", "I feel an atrocious pain behind my neck. I wake up with my Suite improved.", "I can't remember what happened inside. But I've a better Suite now."]
+            },
+            {
+              "text": "Leave",
+              "result": ["Tsk. I'll leave this trap for someone else. Move on.", "I've left that cabin behind.", "I've left the structure and I'm back outside."]
+            }
+          ]
+        },
+        {
+          "portrait": [3, 4, 5],
+          "text": ["I've found a small door on the wall with a display. It asks to me to put my Raygun inside."],
+          "options": [
+            {
+              "text": "Put it",
+              "action": [
+                [{
+                    "raygunCooldown": -1
+                  }]
+              ],
+              "result": ["Another Raygun comes out - and it looks better than mine."]
+            },
+            {
+              "text": "Leave",
+              "result": ["My Raygun is too much important for wasting it in an experiment."]
+            }
+          ]
+        },
+        {
+          "portrait": [3, 4, 5],
+          "text": ["A cargo ship is parked on a landing platform. A display is asking me the destination of its delivery."],
+          "options": [
+            {
+              "text": "Type my ship position in",
+              "action": [
+                [{
+                    "shipWarpEfficiency": -0.1, "replaceShipPart": 1
+                  }]
+              ],
+              "result": ["A new warp engine has been delivered to my ship and replaced."]
+            },
+            {
+              "text": "Leave",
+              "result": ["I've cancelled the delivery. Time to move."]
+            }
+          ]
+        },
+        {
+          "portrait": [3, 4, 5],
+          "text": ["There is a portable device left unlocked on a table. Someone is working on a ship engine software patch and seems that I can apply this on my ship."],
+          "options": [
+            {
+              "text": "Apply the patch",
+              "action": [
+                [{
+                    "shipSpeed": 0.1, "replaceShipPart": 1
+                  }]
+              ],
+              "result": ["The patch was for racing engines and increased my ship speed once applied."]
+            },
+            {
+              "text": "Leave",
+              "result": ["I lock the device and leave the room."]
+            }
+          ]
+        },
+        {
+          "portrait": [3, 4, 5],
+          "text": ["Few tanks filled with a dark liquid lies on a corner of a container. According to the labels, it's flammable and dangerous."],
+          "options": [
+            {
+              "text": "Take one",
+              "action": [
+                [{
+                    "shipAcceleration": 0.1, "replaceShipPart": 1
+                  }]
+              ],
+              "result": ["I'll use this fuel for my ship. It will improve its acceleration."]
+            },
+            {
+              "text": "Leave",
+              "result": ["I'm going to lock these containers and leave this place."]
+            }
+          ]
+        },
+        {
+          "portrait": [3, 4, 5],
+          "text": ["Some tall air tanks are scattered around the room and there are black stains around the walls. One of them probably exploded long ago."],
+          "options": [
+            {
+              "text": "Get an air tank",
+              "action": [
+                [{
+                    "jetpackConsume": -0.1
+                  }]
+              ],
+              "result": ["I can use this air tank for my Jetpack. Now it will consume less energy."]
+            },
+            {
+              "text": "Leave",
+              "result": ["These tanks are probably unstable. Better leaving this place as soon as possible."]
+            }
+          ]
+        },
+        {
+          "portrait": [3, 4, 5],
+          "text": ["There is a large self-driving dock on the outside. A diamond shaped sign is on its side, together with a screen asking some coordinates."],
+          "options": [
+            {
+              "text": "Type my ship position in",
+              "action": [
+                [{
+                    "redMineral": 10
+                  }],
+                [{
+                    "greenMineral": 10
+                  }],
+                [{
+                    "blueMineral": 10
+                  }]
+              ],
+              "result": ["Some minerals have been delivered and boarded on my ship."]
+            },
+            {
+              "text": "Leave",
+              "result": ["I shut the system down and leave."]
+            }
+          ]
+        },
+        {
+          "portrait": [3, 4, 5],
+          "text": ["This place seems to have been the refuge of some creature. There are empty containers everywhere but some spare energy and air tanks."],
+          "options": [
+            {
+              "text": "Rest here",
+              "action": [
+                [{
+                    "saveCheckPoint": 1
+                  }]
+              ],
+              "result": ["I'll use this base as checkpoint for a while."]
+            },
+            {
+              "text": "Leave",
+              "result": ["He could come back soon. Better leaving this place now."]
+            }
+          ]
+        },
+        {
+          "portrait": [3, 4, 5],
+          "text": ["A rounded blue platform glows lightly under my feets. The longer I stay here the brighter it gets."],
+          "options": [
+            {
+              "text": "Stay still",
+              "action": [
+                [{
+                    "energy": 30
+                  }]
+              ],
+              "result": ["The energy storage of my Suite filled up a little."]
+            },
+            {
+              "text": "Leave",
+              "result": ["The glow disappear as I leave the platform."]
+            }
+          ]
+        },
+        {
+          "portrait": [3, 4, 5],
+          "text": ["An hologram of the standard ship engine schematics is floating in the middle of the room. A cylindrical part is marked as dangerous and blinking red."],
+          "options": [
+            {
+              "text": "Touch the cylindrical part",
+              "action": [
+                [{
+                    "shipLiftoffConsume": -1, "replaceShipPart": 1
+                  }]
+              ],
+              "result": ["The inefficient part of my ship engine is replaced with a better one. Now I'll need less fuel."]
+            },
+            {
+              "text": "Leave",
+              "result": ["I'll keep away from that cylinder. I'm leaving this room for now."]
+            }
+          ]
+        },
+        {
+          "portrait": [3, 4, 5],
+          "text": ["There are a lot of perforated metal bars lined up in front of a large cannon. Its current setup has been marked as favourite."],
+          "options": [
+            {
+              "text": "Learn the cannon setup",
+              "action": [
+                [{
+                    "shipRaygunCooldown": -1, "replaceShipPart": 1
+                  }]
+              ],
+              "result": ["I've copied the setup on my Ship Cannon. It now fires faster."]
+            },
+            {
+              "text": "Leave",
+              "result": ["I've shut down the testing program and left the building."]
+            }
+          ]
+        },
+        {
+          "portrait": [3, 4, 5],
+          "text": ["A terminal is displaying a very large Ray Cannon schematic, marked as prototype. The production plant is waiting for orders."],
+          "options": [
+            {
+              "text": "Produce the Ray Cannon",
+              "action": [
+                [{
+                    "shipBulletSpeed": 1, "replaceShipPart": 1
+                  }]
+              ],
+              "result": ["It produced a better Ray Cannon. I'll install it on my ship."]
+            },
+            {
+              "text": "Leave",
+              "result": ["I've switched off the production plant."]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "meeting",
+      "type": "meeting",
+      "probability": 50,
+      "useSequence": 0,
+      "tileY": [19],
+      "tileX": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+      "isVisibleFromFar": 0,
+      "list": [
+        {
+          "portrait": [6, 7, 8],
+          "text": ["The Merchant shouted at me as soon as the sliding doors of the Interstellar Guild Shop opened. He longed for making a favorable deal with me."],
+          "options": [
+            {
+              "condition": [{
+                  "redMineral": 10
+                }],
+              "action": [
+                [{
+                    "redMineral": -10, "units": 100
+                  }]
+              ],
+              "text": "Give 200 red mineral",
+              "result": ["The Merchant smiled. New deals waited for him thanks to me."]
+            },
+            {
+              "condition": [{
+                  "blueMineral": 10
+                }],
+              "action": [
+                [{
+                    "blueMineral": -10, "units": 100
+                  }]
+              ],
+              "text": "Give 200 blue mineral",
+              "result": ["The Merchant smiled. New deals waited for him thanks to me."]
+            },
+            {
+              "condition": [{
+                  "greenMineral": 10
+                }],
+              "action": [
+                [{
+                    "greenMineral": -10, "units": 100
+                  }]
+              ],
+              "text": "Give 200 green mineral",
+              "result": ["The Merchant smiled. New deals waited for him thanks to me."]
+            }
+          ]
+        },
+        {
+          "portrait": [6, 7, 8],
+          "text": ["The itinerant Merchant stared at the screen where the infos about the resources stocked in the storing area flowed endlessly. When he noted me, he smiled cunningly proposing a fair trade."],
+          "options": [
+            {
+              "condition": [{
+                  "redMineral": 40
+                }],
+              "action": [
+                [{
+                    "redMineral": -40, "maxRedMineral": 2, "replaceShipPart": 1
+                  }]
+              ],
+              "text": "Accept (give 40 red mineral)",
+              "result": ["I exchanged most of my cargo of red mineral for an increase of the shipment max level."]
+            },
+            {
+              "text": "Don't accept",
+              "result": ["At my refusal the Merchant greeted me with a look of disapproval."]
+            },
+            {
+              "condition": [{
+                  "units": 10
+                }],
+              "action": [
+                [{
+                    "units": -10
+                  }]
+              ],
+              "text": "Give 10 units to free yourself",
+              "result": ["In reply at the offence the Merchant threatened me of sharing my personal details to the Guild."]
+            }
+          ]
+        },
+        {
+          "portrait": [6, 7, 8],
+          "text": ["The itinerant Merchant stared at the screen where the infos about the resources stocked in the storing area flowed endlessly. When he noted me, he smiled cunningly proposing a fair trade."],
+          "options": [
+            {
+              "condition": [{
+                  "greenMineral": 40
+                }],
+              "action": [
+                [{
+                    "greenMineral": -40, "maxGreenMineral": 2, "replaceShipPart": 1
+                  }]
+              ],
+              "text": "Accept (give 40 green mineral)",
+              "result": ["I exchanged most of my cargo of green mineral for an increase of the shipment max level."]
+            },
+            {
+              "text": "Don't accept",
+              "result": ["At my refusal the Merchant greeted me with a look of disapproval."]
+            },
+            {
+              "condition": [{
+                  "units": 10
+                }],
+              "action": [
+                [{
+                    "units": -10
+                  }]
+              ],
+              "text": "Give 10 units to free yourself",
+              "result": ["In reply at the offence the Merchant threatened me of sharing my personal details to the Guild."]
+            }
+          ]
+        },
+        {
+          "portrait": [6, 7, 8],
+          "text": ["The itinerant Merchant stared at the screen where the infos about the resources stocked in the storing area flowed endlessly. When he noted me, he smiled cunningly proposing a fair trade."],
+          "options": [
+            {
+              "condition": [{
+                  "blueMineral": 40
+                }],
+              "action": [
+                [{
+                    "blueMineral": -40, "maxBlueMineral": 2, "replaceShipPart": 1
+                  }]
+              ],
+              "text": "Accept (give 40 blue mineral)",
+              "result": ["I exchanged most of my cargo of blue mineral for an increase of the shipment max level."]
+            },
+            {
+              "text": "Don't accept",
+              "result": ["At my refusal the Merchant greeted me with a look of disapproval."]
+            },
+            {
+              "condition": [{
+                  "units": 10
+                }],
+              "action": [
+                [{
+                    "units": -10
+                  }]
+              ],
+              "text": "Give 10 units to free yourself",
+              "result": ["In reply at the offence the Merchant threatened me of sharing my personal details to the Guild."]
+            }
+          ]
+        },
+        {
+          "portrait": [6, 7, 8],
+          "text": ["In the planetary I.G. Shop one of the Merchants was busy in the stock rearrangement. In a clear state of effort, he looked at me asking for help."],
+          "options": [
+            {
+              "condition": [{
+                  "energy": 20
+                }],
+              "action": [
+                [{
+                    "energy": -20, "maxRedMineral": 2, "replaceShipPart": 1
+                  }]
+              ],
+              "text": "Help the merchant",
+              "result": ["The work of rearrangement was hard, but the reward was a good one."]
+            },
+            {
+              "text": "Call a Robutler",
+              "result": ["The Merchant stared at me with contempt. Nevertheless the robot came in a hurry."]
+            },
+            {
+              "action": [
+                [{
+                    "energy": -10, "redMineral": 10
+                  }]
+              ],
+              "text": "Pretend not to see him",
+              "result": ["My indifference hurted the Merchant so much that he threw to me some of the goods he was arranging."]
+            }
+          ]
+        },
+        {
+          "portrait": [6, 7, 8],
+          "text": ["In the planetary I.G. Shop one of the Merchants was busy in the stock rearrangement. In a clear state of effort, he looked at me asking for help."],
+          "options": [
+            {
+              "condition": [{
+                  "energy": 20
+                }],
+              "action": [
+                [{
+                    "energy": -20, "maxGreenMineral": 2, "replaceShipPart": 1
+                  }]
+              ],
+              "text": "Help the merchant",
+              "result": ["The work of rearrangement was hard, but the reward was a good one."]
+            },
+            {
+              "text": "Call a Robutler",
+              "result": ["The Merchant stared at me with contempt. Nevertheless the robot came in a hurry."]
+            },
+            {
+              "action": [
+                [{
+                    "energy": -10, "greenMineral": 10
+                  }]
+              ],
+              "text": "Pretend not to see him",
+              "result": ["My indifference hurted the Merchant so much that he threw to me some of the goods he was arranging."]
+            }
+          ]
+        },
+        {
+          "portrait": [6, 7, 8],
+          "text": ["In the planetary I.G. Shop one of the Merchants was busy in the stock rearrangement. In a clear state of effort, he looked at me asking for help."],
+          "options": [
+            {
+              "condition": [{
+                  "energy": 20
+                }],
+              "action": [
+                [{
+                    "energy": -20, "maxBlueMineral": 2, "replaceShipPart": 1
+                  }]
+              ],
+              "text": "Help the merchant",
+              "result": ["The work of rearrangement was hard, but the reward was a good one."]
+            },
+            {
+              "text": "Call a Robutler",
+              "result": ["The Merchant stared at me with contempt. Nevertheless the robot came in a hurry."]
+            },
+            {
+              "action": [
+                [{
+                    "energy": -10, "blueMineral": 10
+                  }]
+              ],
+              "text": "Pretend not to see him",
+              "result": ["My indifference hurted the Merchant so much that he threw to me some of the goods he was arranging."]
+            }
+          ]
+        },
+        {
+          "portrait": [6, 7, 8],
+          "text": ["When I came in, a sorly guy was walking to and fro from a screen to another. -Hey! Hey!- whispered when I was close enough. -Take this for 1000 units!-"],
+          "options": [
+            {
+              "condition": [{
+                  "units": 500
+                }],
+              "action": [
+                [{
+                    "units": -500, "raygunCooldown": -2
+                  }]
+              ],
+              "text": "Take the Raygun",
+              "result": ["The exchange was quick and both of us went back on ourself."]
+            },
+            {
+              "text": "Don't make any deal",
+              "result": ["He spat on my feet and left."]
+            },
+            {
+              "action": [
+                [{
+                    "raygunCooldown": -1
+                  }]
+              ],
+              "text": "Inform the robotic security",
+              "result": ["The Security appeared in the room. After rewarding me with the stolen Raygun, they take away the trafficker."]
+            }
+          ]
+        },
+        {
+          "portrait": [6, 7, 8],
+          "text": ["A chubby merchant welcomed me with open arms on his portion in the shop. He examined quickly my equipment and proposed me some very interesting replacement parts."],
+          "options": [
+            {
+              "condition": [{
+                  "units": 100
+                }],
+              "action": [
+                [{
+                    "units": -100, "maxEnergy": 1
+                  }]
+              ],
+              "text": "Give 100 units",
+              "result": ["I looked satisfied at my purchase. At last my underwater exploration was upgraded."]
+            },
+            {
+              "condition": [{
+                  "units": 500
+                }],
+              "action": [
+                [{
+                    "units": -500, "maxEnergy": 2
+                  }]
+              ],
+              "text": "Give 500 units",
+              "result": ["My purchase was a lucky one.  At last the energetic charge of my space Suite was upgraded."]
+            },
+            {
+              "text": "Don't buy anything",
+              "result": ["The merchant, a little disappointed, said goodbye with less enthusiasm."]
+            }
+          ]
+        },
+        {
+          "portrait": [6, 7, 8],
+          "text": ["The I.G. Shop was empty. There was only one member of the Guild. A worried one. I noticed immediately the absence of the Robotic Security in the area."],
+          "options": [
+            {
+              "action": [
+                [{
+                    "energy": -20
+                  }]
+              ],
+              "text": "Rob the undefended merchant",
+              "result": ["The merchant with an unexpected fit of bravery threw a punch in my face."]
+            },
+            {
+              "condition": [{
+                  "units": 300
+                }],
+              "action": [
+                [{
+                    "units": -300, "redMineral": -10, "greenMineral": -20, "blueMineral": -30
+                  }]
+              ],
+              "text": "Give 300 units",
+              "result": ["The merchant gave me a lot amount of his goods to have the chance to leave quickly the unguarded shop."]
+            },
+            {
+              "condition": [{
+                  "units": 100
+                }],
+              "action": [
+                [{
+                    "units": -100, "saveCheckPoint": 1
+                  }]
+              ],
+              "text": "Protect the shop",
+              "result": ["The merchant calmed down soon. He was so thankful that decided to share the profits of his sales with me."]
+            }
+          ]
+        },
+        {
+          "portrait": [6, 7, 8],
+          "text": ["A well-dressed merchant, standing in front of the sliding door, tried to calls my attention. -You're an Explorer, right? What do you think of an agreement with the Guild?-"],
+          "options": [
+            {
+              "condition": [{
+                  "redMineral": 30, "greenMineral": 30, "blueMineral": 30
+                }],
+              "action": [
+                [{
+                    "redMineral": -30, "greenMineral": -30, "blueMineral": -30, "shipWarpEfficiency": -0.3, "replaceShipPart": 1
+                  }]
+              ],
+              "text": "Sign I.G. Agreement",
+              "result": ["With the promise of restock the Guild of minerals, I gained a permanent discount for the interstellar travels."]
+            },
+            {
+              "text": "Do not sign I.G. Agreement",
+              "result": ["The merchant smiled and it became clear to me that I lose a great occasion."]
+            }
+          ]
+        },
+        {
+          "portrait": [9, 10, 11],
+          "text": [
+            "In the planetary relaxation area an Explorer moved nervously from the interstellar map to his seat. From his clothes I knew that he was original of the solar system Uranius and I was sure he was a noob in the exploration. I came close to him."
+          ],
+          "options": [
+            {
+              "text": "Point at the system Uranius",
+              "result": ["The Uranian Explorer calmed down and rewarded my kindness with a new upgrade for my ship."]
+            }
+          ]
+        },
+        {
+          "portrait": [9, 10, 11],
+          "text": ["When I decided to take a break in the relaxation area, one of the guest smiled at me like somebody who was really seeking company."],
+          "options": [
+            {
+              "action": [
+                [{
+                    "showPlace": "bonus"
+                  }]
+              ],
+              "text": "Stay for a pleasant chat",
+              "result": ["During our conversation, the guest gave me some important information about the point of interest on the Planet."]
+            },
+            {
+              "text": "Go away",
+              "result": ["I was not in the mood for a chitchat. The guest grumbled."]
+            }
+          ]
+        },
+        {
+          "portrait": [9, 10, 11],
+          "text": ["As soon as I came in the relaxation area, a fearful weakling sprang up on me. He was a historian that left from his planet without the right Explorer skills. He begged me to help him to realize his dream of Truth."],
+          "options": [
+            {
+              "condition": [{
+                  "knowledge": 50
+                }],
+              "action": [
+                [{
+                    "shipAcceleration": 0.2, "replaceShipPart": 1
+                  }]
+              ],
+              "text": "Share Explorer codex data",
+              "result": ["He found what he needed. His journey was ended. He consigned to me his now useless jet engine upgrade."]
+            },
+            {
+              "text": "Go away",
+              "result": ["I had no time to stop helping him. He would learn by himself how hard was the life of Explorers."]
+            }
+          ]
+        },
+        {
+          "portrait": [9, 10, 11],
+          "text": ["On a seat in the relaxation area among the busy Robutlers an old fellow in the usual Suite of Explorers called me. He was in the mood for a test. Oh, the elderly! Each meeting is a chance to use."],
+          "options": [
+            {
+              "text": "Show few of your discoveries",
+              "condition": [{
+                  "lifeForms": 10
+                }],
+              "result": ["The old guy grumbled. -Are you really one of us?! You're a shame, you know?-"]
+            },
+            {
+              "text": "Show some of your discoveries",
+              "condition": [{
+                  "lifeForms": 20
+                }],
+              "result": ["The guy was satisfied enough to reward me with an upgrade for my Suite. -Explore better. Explore everywhere.-"]
+            },
+            {
+              "text": "Show all your discoveries",
+              "condition": [{
+                  "lifeForms": 30
+                }],
+              "action": [
+                [{
+                    "raygunCooldown": -1
+                  }]
+              ],
+              "result": ["The veteran laughed with a satisfied smirk. -You are a good one, Explorer! Take my Raygun. You deserved it!-"]
+            }
+          ]
+        },
+        {
+          "portrait": [12, 13, 14],
+          "text": ["A Robutler moved close to me while I was searching for a free seat to relax for the long journey. -Something to drink, Sir?- He was offering me a glass full of a strange blue colored liquid."],
+          "options": [
+            {
+              "action": [
+                [{
+                    "energy": 10
+                  }]
+              ],
+              "text": "Just seat",
+              "result": ["The Robutler apologized politely. Then it inserted the glass in its refrigerant tank."]
+            },
+            {
+              "condition": [{
+                  "units": 20
+                }],
+              "action": [
+                [{
+                    "units": 20, "energy": 100
+                  }]
+              ],
+              "text": "Taste the famous Blue Nebula",
+              "result": ["The Robutler bowed gracefully. -I'm glad to be of help, Sir.-"]
+            }
+          ]
+        },
+        {
+          "portrait": [12, 13, 14],
+          "text": ["A robot was looking at the interstellar map. It was deeply immersed in that examination. Then it noted me and said: -Sorry, Sir. Could I ask you something about our aim in this galaxy?-"],
+          "options": [
+            {
+              "action": [
+                [{
+                    "energy": 10
+                  }]
+              ],
+              "text": "Tell you need nothing",
+              "result": ["The robot seemed really hurted by my reply. He bowed and returned to its solitary examination."]
+            },
+            {
+              "action": [
+                [{
+                    "energy": 100, "maxEnergy": 1
+                  }]
+              ],
+              "text": "Share your data on Origin",
+              "result": ["The Robot copied quickly all the data and bowed. Twice. -Thank you so much, Sir. I learned a lot, Sir.-"]
+            }
+          ]
+        },
+        {
+          "portrait": [9, 10, 11],
+          "text": ["-Excuse me!- An Explorer is getting nearby. -Can you help me on delivering these treated red minerals?- Then smiles. -Well. It's quite a lot of stuff! Do you have enough room on your ship?-"],
+          "options": [
+            {
+              "condition": [{
+                  "maxRedMineral": 60
+                }],
+              "action": [
+                [{
+                    "redMineral": 60
+                  }]
+              ],
+              "text": "Yes",
+              "result": ["-Thank you!- The Explorer programmed its ship and I've received the goods."]
+            },
+            {
+              "text": "No",
+              "result": ["The exlporer became a little sad. -Thanks anyway.- And he left the room."]
+            }
+          ]
+        },
+        {
+          "portrait": [9, 10, 11],
+          "text": ["-Excuse me!- An Explorer is getting nearby. -Can you help me on delivering these treated green minerals?- Then smiles. -Well. It's quite a lot of stuff! Do you have enough room on your ship?-"],
+          "options": [
+            {
+              "condition": [{
+                  "maxGreenMineral": 60
+                }],
+              "action": [
+                [{
+                    "greenMineral": 60
+                  }]
+              ],
+              "text": "Yes",
+              "result": ["-Thank you!- The Explorer programmed its ship and I've received the goods."]
+            },
+            {
+              "text": "No",
+              "result": ["The exlporer became a little sad. -Thanks anyway.- And he left the room."]
+            }
+          ]
+        },
+        {
+          "portrait": [9, 10, 11],
+          "text": ["-Excuse me!- An Explorer is getting nearby. -Can you help me on delivering these treated blue minerals?- Then smiles. -Well. It's quite a lot of stuff! Do you have enough room on your ship?-"],
+          "options": [
+            {
+              "condition": [{
+                  "maxBlueMineral": 60
+                }],
+              "action": [
+                [{
+                    "blueMineral": 60
+                  }]
+              ],
+              "text": "Yes",
+              "result": ["-Thank you!- The Explorer programmed its ship and I've received the goods."]
+            },
+            {
+              "text": "No",
+              "result": ["The exlporer became a little sad. -Thanks anyway.- And he left the room."]
+            }
+          ]
+        },
+        {
+          "portrait": [12, 13, 14],
+          "text": ["-I... I... I've to leave this place...- I've never seen a Robutler so heavy and nervous. -Please, I've to leave this galaxy! Help me!- Then it froze up. Why a Robutler have to be in a hurry? And why it's trying to run away?"],
+          "options": [
+            {
+              "condition": [{
+                  "shipWarpEfficiency": 1.8
+                }],
+              "action": [
+                [{
+                    "shipSpeed": 0.1, "replaceShipPart": 1
+                  }]
+              ],
+              "text": "Help (good warp efficiency)",
+              "result": ["-You have my thanks!- The Robutler slowly get in my ship. -I'll repair your ship as reward.-"]
+            },
+            {
+              "text": "Ignore",
+              "result": ["I hear loud voices from a corridor. Then two guards deactivated the Robutler and left with it."]
+            }
+          ]
+        },
+        {
+          "portrait": [9, 10, 11],
+          "text": ["I feel something hitting hard on my shoulders. -Hey newbie!- A young Explorer is clearly challenging me. -Is your ship fast enough for a little race? Huh?- Then a small crowd of noisy people sorrounds us."],
+          "options": [
+            {
+              "condition": [{
+                  "shipSpeed": 5
+                }],
+              "action": [
+                [{
+                    "units": 200
+                  }]
+              ],
+              "text": "Accept the challenge",
+              "result": ["-You! You cheater! How did you won the race?!- The crowd is celebrating my victory and I've received my prize."]
+            },
+            {
+              "text": "Give up",
+              "action": [
+                [{
+                    "units": -20
+                  }]
+              ],
+              "result": ["-You've still to to pay your partecipation fee, pal!- I paid few credits to the cheater and then left."]
+            }
+          ]
+        },
+        {
+          "portrait": [12, 13, 14],
+          "text": ["-Welcome Explorers! This is the Intergalactic Security Reward Entity.- A Robutler is loudly announcing its function along the corridors. -Get your reward for space pirates hunting here!-"],
+          "options": [
+            {
+              "condition": [{
+                  "piratesHit": 100
+                }],
+              "action": [
+                [{
+                    "units": 5
+                  }],
+                [{
+                    "units": 10
+                  }],
+                [{
+                    "units": 20
+                  }]
+              ],
+              "text": "Ask reward",
+              "result": ["-Thank you for your work! Keep your own solar system clean!- Then I've received a unit transaction notification."]
+            },
+            {
+              "text": "Leave",
+              "result": ["I'll come back once I've better served the Intergalactic Security."]
+            }
+          ]
+        },
+        {
+          "portrait": [9, 10, 11],
+          "text": ["-I give up!- An Explorer gave a punch to the wall on a side of the relax room. -I'm sick of space exploration! Hey you!- Then he points a finger to me. -Buy my Jetpack!-"],
+          "options": [
+            {
+              "condition": [{
+                  "units": 300
+                }],
+              "action": [
+                [{
+                    "units": -300, "jetpackConsume": -0.1
+                  }]
+              ],
+              "text": "Buy",
+              "result": ["-I'm free now!- But after a short burst of joy, he dropped on his knees. -Uranius...-"]
+            },
+            {
+              "text": "Sell yours",
+              "condition": [{
+                  "jetpackConsume": 0.2
+                }],
+              "action": [
+                [{
+                    "units": 300, "jetpackConsume": 0.1
+                  }]
+              ],
+              "result": ["-I understand... I've to explore and go back to Uranius. Thank you for your kindness.-"]
+            },
+            {
+              "text": "Leave",
+              "result": ["-Do you think that I'm a loser? Come back here!- His swears disappeared from ears once I've crossed the exit."]
+            }
+          ]
+        },
+        {
+          "portrait": [9, 10, 11],
+          "text": ["-Please... I'm... I'm dying...- An Explorer is sitting on the floor, near the entrance of the structure. He has been injured by a local predator. What can I do?"],
+          "options": [
+            {
+              "condition": [{
+                  "maxEnergy": 55
+                }],
+              "action": [
+                [{
+                    "maxEnergy": -2, "units": 200
+                  }]
+              ],
+              "text": "Offer my Suite",
+              "result": ["-Thank you! My suite is damaged but you can take all my units. Now... I've to sleep.- And then he fainted."]
+            },
+            {
+              "text": "Bring him to hospital",
+              "condition": [{
+                  "shipLiftoffConsume": 25
+                }],
+              "action": [
+                [{
+                    "redMineral": -10, "greenMineral": -10, "blueMineral": -10, "units": 100
+                  }]
+              ],
+              "result": ["I've quickly take off and left him to a nearby hospital. A Robutler gave me some units for my service."]
+            },
+            {
+              "text": "Leave",
+              "result": ["I probably can't save him. With a knot in my stomach, I've left him to his own destiny."]
+            }
+          ]
+        },
+        {
+          "portrait": [12, 13, 14],
+          "text": ["-Stop, please.- The Robutler reached me with its slow pace. -We've to register your ship in our planetary registry. Please, pronounce your ship class.-"],
+          "options": [
+            {
+              "condition": [{
+                  "shipAcceleration": 0.3, "shipSpeed": 5
+                }],
+              "action": [
+                [{
+                    "shipLiftoffConsume": -1, "replaceShipPart": 1
+                  }]
+              ],
+              "text": "Racing class",
+              "result": ["-Thank you. A better liftoff system has been installed. Races are illegal, we suggest to become an Explorer.-"]
+            },
+            {
+              "text": "Fighter class",
+              "condition": [{
+                  "shipBulletSpeed": 9, "shipRaygunCooldown": 8
+                }],
+              "action": [
+                [{
+                    "raygunCooldown": -1, "replaceShipPart": 1
+                  }]
+              ],
+              "result": ["-Thank you. Please, don't became a pirate but fight them! A faster Ship Cannon has been installed.-"]
+            },
+            {
+              "text": "Cargo class",
+              "condition": [{
+                  "maxRedMineral": 60, "maxBlueMineral": 60, "maxGreenMineral": 60
+                }],
+              "action": [
+                [{
+                    "shipBulletSpeed": 1, "replaceShipPart": 1
+                  }]
+              ],
+              "result": ["-Thank you. Cargo size is insignificant when not well defended. A better Ship Cannon has been installed.-"]
+            }
+          ]
+        },
+        {
+          "portrait": [9, 10, 11],
+          "text": ["-So, silent one.- An Explorer is nervously talking to me from the other side of the empty hall. -Are you faster with your Raygun or your Ship Cannon?-"],
+          "options": [
+            {
+              "condition": [{
+                  "raygunCooldown": 10
+                }],
+              "action": [
+                [{
+                    "units": 100
+                  }]
+              ],
+              "text": "Raygun",
+              "result": ["The explorer extracted his Raygun too slowly. I shot him but managed to escape, dropping few units."]
+            },
+            {
+              "text": "Ship Cannon",
+              "condition": [{
+                  "shipRaygunCooldown": 10
+                }],
+              "action": [
+                [{
+                    "units": -50, "energy": -10
+                  }]
+              ],
+              "result": ["-Too bad!- He shot me in my shoulder and I can't move. -That's mine now!- Then he left with my units."]
+            },
+            {
+              "text": "Both",
+              "condition": [{
+                  "raygunCooldown": 6, "shipRaygunCooldown": 6
+                }],
+              "action": [
+                [{
+                    "shipRaygunCooldown": -1, "replaceShipPart": 1
+                  }]
+              ],
+              "result": ["-Heh. Good answer. Here you are a better Ship Cannon.- He smiled maliciously. -You're a true pirate now.-"]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "lore",
+      "type": "lore",
+      "probability": 20,
+      "useSequence": 1,
+      "tileY": [19],
+      "tileX": [13, 14, 15, 16, 17],
+      "isVisibleFromFar": 1,
+      "list": [
+        {
+          "portrait": [15],
+          "text": ["A purple ball is silently floating over a black pedestal. Despite it has no eyes, I feel its look. It's waiting for something from me. What can I do?"],
+          "options": [
+            {
+              "text": "Say my name",
+              "result": ["-We already know that. We already know you.- I heard that in my mind and, then, silence."]
+            }
+          ]
+        },
+        {
+          "portrait": [15],
+          "text": ["-Is there a way for measuring what's important in something so vast and unlimited like the universe? Can you protect what matters when everything can become crucial one day?- It asked."],
+          "options": [
+            {
+              "text": "I don't know",
+              "result": ["-We were built to defend existence. We've found our answer.-"]
+            }
+          ]
+        },
+        {
+          "portrait": [15],
+          "text": ["-One of us decided to make a portrait of the whole universe, in order to being able to restore any part of it in case of failure. He started copying from the nearest part to the horizon and beyond.-"],
+          "options": [
+            {
+              "text": "Is that truly possible?",
+              "result": ["-We were built to defend everything. We've found our way.-"]
+            }
+          ]
+        },
+        {
+          "portrait": [15],
+          "text": ["-After thousands cycles, the portrait was still a tiny rag. Every time a new brush stroke was added to the picture, everything else became already old and unuseful.-"],
+          "options": [
+            {
+              "text": "Can you forget the past?",
+              "result": ["-We were built to defend anytime. We've found our purpose.-"]
+            }
+          ]
+        },
+        {
+          "portrait": [15],
+          "text": ["-He fell in an infinite loop, copying the unlimited infinite times. After waiting for countless cycles, we decided to kill him. His work was uncomplete but still important: we decided to keep and evaluate it.-"],
+          "options": [
+            {
+              "text": "Why did not you wait more?",
+              "result": ["-We were built to defend reason. We've found our sacrifice.-"]
+            }
+          ]
+        },
+        {
+          "portrait": [15],
+          "text": ["-Many of us tried to evaluate the incomplete portrait but no one is back. After hundreds attempts and wasted cycles, we confirmed its danger and decided to eliminate the incomplete copy.-"],
+          "options": [
+            {
+              "text": "You gave up?",
+              "result": ["-We were built to defend ourselves. We've found our failure.-"]
+            }
+          ]
+        },
+        {
+          "portrait": [15],
+          "text": ["-We had to measure how large this uncomplete copy was, in order to bury it with nothing. One of us started its last journey, in search of the answer.-"],
+          "options": [
+            {
+              "text": "Are you going to kill him?",
+              "result": ["-We were built to defend safety. We've found our martyr.-"]
+            }
+          ]
+        },
+        {
+          "portrait": [15],
+          "text": ["-From the frame of that beautiful and deadly picture to its center, he's traveling tirelessy measuring every cycle. Once to the center, he'll raise its hands and become nothing.-"],
+          "options": [
+            {
+              "text": "Is this right?",
+              "result": ["-We were built to defend integrity. We've found our moral.-"]
+            }
+          ]
+        },
+        {
+          "portrait": [15],
+          "text": ["-So, traveller, remember. Once there, rise your hands and become nothing for everything that exists.- And then, the purple glow became pale and silent."],
+          "options": [
+            {
+              "text": "Is this my purpose?",
+              "result": ["You're cloaked in an unsettling veil of silence."]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "human",
+      "type": "human",
+      "probability": 50,
+      "useSequence": 1,
+      "tileY": [19],
+      "tileX": [28, 29, 30, 31, 32],
+      "isVisibleFromFar": 0,
+      "list": [
+        {
+          "portrait": [18],
+          "text": ["A giant structure is covering the horizon. A shiny globe resembling a planet floating on a tall tower identifies the structure as the Galactical Archive."],
+          "options": [
+            {
+              "text": "Enter",
+              "result": ["-You have been accepted as history researcher. Welcome!- From now I'll be able to access to the archive files."]
+            }
+          ]
+        },
+        {
+          "portrait": [18],
+          "text": [
+            "We loved our native Planet. We fought to rule on it. We explored it to reach the knowledge about it. And about us. But through the milleniums of our evolution we always looked at the sky and even beyond. No horizon would have stopped our thirst. Our mad flight had just to begin."
+          ],
+          "options": [
+            {
+              "text": "Collect the file",
+              "result": ["The file has been collected."]
+            }
+          ]
+        },
+        {
+          "portrait": [18],
+          "text": [
+            "Thanks to our dedication, our eyes found extensions. By telescopes the stars, nebulas and planets became at last tangible and when our space probes were launched on space we laid the first stare on the infinite beauty. And deeper and deeper grew the desire to touch it."
+          ],
+          "options": [
+            {
+              "text": "Collect the file",
+              "result": ["The file has been collected."]
+            }
+          ]
+        },
+        {
+          "portrait": [18],
+          "text": [
+            "When green fertility was becoming a golden aridity, we knew that the Planet was tired. As last chance for us, we sent the bravest among us in outer space to prepare the great exodus. Do pay homage to the Fallen ones! They lived and died for our survival."
+          ],
+          "options": [
+            {
+              "text": "Collect the file",
+              "result": ["The file has been collected."]
+            }
+          ]
+        },
+        {
+          "portrait": [18],
+          "text": [
+            "Relentlessly we worked to reach the technological goal that would have made possible to build a jump drive propeller. We created the first robotic helper. We planned our departure in every single detail, waiting for the solution that would have opened to us the doors of the limitless Space."
+          ],
+          "options": [
+            {
+              "text": "Collect the file",
+              "result": ["The file has been collected."]
+            }
+          ]
+        },
+        {
+          "portrait": [18],
+          "text": [
+            "What a delight when those doors were opened wide! The date was set, while a sad concern began weakening our enthusiasm. We had been prepared by fiction stories, which had nourished our desire and our hope, to the possibility of hard choices. Too hard ones."
+          ],
+          "options": [
+            {
+              "commento": "comm",
+              "text": "Collect the file",
+              "result": ["ok"]
+            }
+          ]
+        },
+        {
+          "portrait": [18],
+          "text": [
+            "No hard choices, instead. It was easy. Unbelievably easy... We conquerors of new worlds had not to choose. They didn't want to leave our Planet behind. Was it cowardice? Narrow-mindedness? What really matters is that they saved us from the fault of a tragic selection. Luckly!"
+          ],
+          "options": [
+            {
+              "text": "Collect the file",
+              "result": ["The file has been collected."]
+            }
+          ]
+        },
+        {
+          "portrait": [18],
+          "text": [
+            "At the end the Fleet left hoping to find a new home elsewhere. We went beyond the atmosphere. Beyond our Planet so blue. Beyond the other planets of our solar system. Beyond our perfect sun. And while we said farewell to our beloved solar system, we renamed it Origin."
+          ],
+          "options": [
+            {
+              "text": "Collect the file",
+              "result": ["The file has been collected."]
+            }
+          ]
+        },
+        {
+          "portrait": [18],
+          "text": [
+            "The exploration started. We met on our way hundreds planets, thousands. And on each one we built a shelter. We collected resources to survive and to improve our technology degree. Sadly none of them revealed itself fit to replace our Planet. A nightmare was begun."
+          ],
+          "options": [
+            {
+              "text": "Collect the file",
+              "result": ["The file has been collected."]
+            }
+          ]
+        },
+        {
+          "portrait": [18],
+          "text": [
+            "Do not forget our species special talent! Never humanity lost the battle! Humanity can conform universe to itself! From preys to predators. From nomadic to sedentary. Was it mandatory to not to reborn as an itinerant species with the advantage of a now endless knowledge?"
+          ],
+          "options": [
+            {
+              "text": "Collect the file",
+              "result": ["The file has been collected."]
+            }
+          ]
+        },
+        {
+          "portrait": [18],
+          "text": [
+            "The Fleet became our new home. The planetary bases grew in number. We collected resources and knowledges and we improved technologies. We met other alien lives. Using the diplomatic way, we protected ourselves and gave a start to a prolific life of commercial exchange."
+          ],
+          "options": [
+            {
+              "text": "Collect the file",
+              "result": ["The file has been collected."]
+            }
+          ]
+        },
+        {
+          "portrait": [18],
+          "text": ["Find us! Work together with us! The force is collaboration, share and exchange! Who are we?! We are the Merchants of the Interstellar Guild and long is still our path!"],
+          "options": [
+            {
+              "text": "You found the Truth",
+              "result": ["The file collection about the Truth of Merchants is now completed."]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "alien",
+      "type": "alien",
+      "probability": 50,
+      "useSequence": 1,
+      "tileY": [19],
+      "tileX": [18, 19, 20, 21, 22],
+      "isVisibleFromFar": 0,
+      "list": [
+        {
+          "portrait": [16],
+          "text": ["Lifeless scraps of a crashed ship are scattered around a deep hole in the ground. It looks like that the backup unit is the only thing working."],
+          "options": [
+            {
+              "text": "Collect the backup",
+              "result": ["-Decryption keys shared.- Now I'm able to collect the other backup units."]
+            }
+          ]
+        },
+        {
+          "portrait": [16],
+          "text": ["Above us a silver blanket. Dwelling of the shiny Lord of the Beyond, majestic spirit of Fire. During the Lord rest hours, a black veil enlightened by tiny spots covered him to impede that we could disturb him in the sleep."],
+          "options": [
+            {
+              "text": "Collect the backup",
+              "result": ["The backup has been collected."]
+            }
+          ]
+        },
+        {
+          "portrait": [16],
+          "text": [
+            "Since immemorial times, the Lord of the Beyond protected us, lonely beings, within his multicolour sphere. He rewarded our hard work with the gift of comprehension of existence. He permitted us to rule over the other silly Creatures and over his luxuriant lands."
+          ],
+          "options": [
+            {
+              "text": "Collect the backup",
+              "result": ["The backup has been collected."]
+            }
+          ]
+        },
+        {
+          "portrait": [16],
+          "text": ["Everyday our tribe thanked the Lord of the Beyond and gathered in the huge henges that we erected with the aim to be closer to his extraordinary essence of spiritual fire. Oh, our clement Lord!"],
+          "options": [
+            {
+              "text": "Collect the backup",
+              "result": ["The backup has been collected."]
+            }
+          ]
+        },
+        {
+          "portrait": [16],
+          "text": ["The history of our tribe continued placidly. Industrious and devout sons followed to industrious and devout parents in the name of the Lord until when new sons were born."],
+          "options": [
+            {
+              "text": "Collect the backup",
+              "result": ["The backup has been collected."]
+            }
+          ]
+        },
+        {
+          "portrait": [16],
+          "text": [
+            "Together with the new sons, investigation was born. Questions and doubts arose. Why did the Lord possess the sphere? Which was its purpose? Our existence was part of a greater reality unknown to us? Were we worthy of the task assigned? But above all which was that task?"
+          ],
+          "options": [
+            {
+              "text": "Collect the backup",
+              "result": ["The backup has been collected."]
+            }
+          ]
+        },
+        {
+          "portrait": [16],
+          "text": ["Truth about Universe, nevertheless, didn't come from the incessant study of the new sons. It was exposed in that traumatic event and to the most of us it appeared like the achievement of a very painful awareness."],
+          "options": [
+            {
+              "text": "Collect the backup",
+              "result": ["The backup has been collected."]
+            }
+          ]
+        },
+        {
+          "portrait": [16],
+          "text": [
+            "We saw strange flying objects cross the silver blanket. The Lord didn't attempt to protect us. Motionless and proud, he looked at the invasors while they profaned the sphere. In the day of the first encounter a dangerous germ insinuated itself among us."
+          ],
+          "options": [
+            {
+              "text": "Collect the backup",
+              "result": ["The backup has been collected."]
+            }
+          ]
+        },
+        {
+          "portrait": [16],
+          "text": [
+            "From flying houses biped beings covered in shiny shells came out. Some stepped back. Some kneeled praying the Lord. One of the beings said something. He looked at his companions and he shook his head. Then he raised his hands and moved toward us."
+          ],
+          "options": [
+            {
+              "text": "Collect the backup",
+              "result": ["The backup has been collected."]
+            }
+          ]
+        },
+        {
+          "portrait": [16],
+          "text": [
+            "We accepted the unknown beings because the Lord didn't order otherwise. The new sons of the tribe tried to come in contact and to communicate with them. Some time later they succeded in their attempt. They were Humans, they said. And we were Uranians, we said."
+          ],
+          "options": [
+            {
+              "text": "Collect the backup",
+              "result": ["The backup has been collected."]
+            }
+          ]
+        },
+        {
+          "portrait": [16],
+          "text": [
+            "From humans we learned that they travelled with their Fleet across the galaxy. That the Planet they came from was called Earth. That the Lord of the Beyond was just one of the many suns, around which orbited spheres like ours, by forming the solar systems."
+          ],
+          "options": [
+            {
+              "text": "Collect the backup",
+              "result": ["The backup has been collected."]
+            }
+          ]
+        },
+        {
+          "portrait": [16],
+          "text": ["At first the feeling risen from the knowledge of an endless universe was not one of delight, but of frustration, uncertainty, shame for our own blindness. We were become nothing."],
+          "options": [
+            {
+              "text": "Collect the backup",
+              "result": ["The backup has been collected."]
+            }
+          ]
+        },
+        {
+          "portrait": [16],
+          "text": ["For the new sons, the only solution was to affiliate permanently with the Merchants of the Interstellar Guild, providing resources and obtaining ships and technologies for the exploration of the galaxy."],
+          "options": [
+            {
+              "text": "Collect the backup",
+              "result": ["The backup has been collected."]
+            }
+          ]
+        },
+        {
+          "portrait": [16],
+          "text": [
+            "So my solo flight started toward Truth that thanks to our stupidity we hid to ourselves. And when from outer space for the first time I stared at the Lord of the Beyond, huge sphere of blazing hydrogen, I thought: -You are splendid anyhow, our perfect sun!-"
+          ],
+          "options": [
+            {
+              "text": "You found the Truth",
+              "result": ["I've completed the backup and discovered the Truth about The Alien Explorers."]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "robot",
+      "type": "robot",
+      "probability": 50,
+      "useSequence": 1,
+      "tileY": [19],
+      "tileX": [23, 24, 25, 26, 27],
+      "isVisibleFromFar": 0,
+      "list": [
+        {
+          "portrait": [17],
+          "text": ["A strange flag with dashes and dots is waving near a strange terminal. It's waiting for some kind of command but I don't know what to do."],
+          "options": [
+            {
+              "text": "Touch the screen",
+              "result": ["-Reader accepted.- Now I'll be able to collect the parts of some kind of diary."]
+            }
+          ]
+        },
+        {
+          "portrait": [17],
+          "text": [
+            "Days in the Fleet ships were planned methodically. Everyone had a task and for that only reason we had been brought in the world. At the end of the shift, in session of two or three, we recharged as quickly as possible to not cause any disturbance to passengers."
+          ],
+          "options": [
+            {
+              "text": "Collect the diary",
+              "result": ["The diary part has been collected."]
+            }
+          ]
+        },
+        {
+          "portrait": [17],
+          "text": ["I was one of the first helpers. My intelligence, they said, was astonishing. So the masters decided that I would have been the first butler in the Fleet."],
+          "options": [
+            {
+              "text": "Collect the diary",
+              "result": ["The diary part has been collected."]
+            }
+          ]
+        },
+        {
+          "portrait": [17],
+          "text": [
+            "-You learn so much, boy.- said Captain Curter -Too much, actually.- I guess that I looked at him with deep surprise. Or at least I would have wanted it. -Next time you'll land with me and my research team.- Weekly the masters left and came back with new resources. But..."
+          ],
+          "options": [
+            {
+              "text": "Collect the diary",
+              "result": ["The diary part has been collected."]
+            }
+          ]
+        },
+        {
+          "portrait": [17],
+          "text": [
+            "But... -Sir- I said - I thank you immensely for the opportunity you give me. But I...- -Talk, my boy!- -My task is set. Maybe someone else could be assigned to this research mission, Sir.- -You are a disciplined one, I see. But you will come with me. No matter how.-"
+          ],
+          "options": [
+            {
+              "text": "Collect the diary",
+              "result": ["The diary part has been collected."]
+            }
+          ]
+        },
+        {
+          "portrait": [17],
+          "text": ["I don't know what happened to my logic structures but after Captain Curter's invite something new flowed in me. RESEARCH. That key word seemed to overwhelm my routine.  RESEARCH hid a deeper meaning and I already aspired to disclose it."],
+          "options": [
+            {
+              "text": "Collect the diary",
+              "result": ["The diary part has been collected."]
+            }
+          ]
+        },
+        {
+          "portrait": [17],
+          "text": [
+            "And so for the first time I left the Fleet. The planet where we landed was AMAZING, rich of items to discover and of rules to learn! If only I could  have cried... Then Captain Curter said: -That's not what we want! Let's go back to the Fleet.- Yet that planet was so amazing for me..."
+          ],
+          "options": [
+            {
+              "text": "Collect the diary",
+              "result": ["The diary part has been collected."]
+            }
+          ]
+        },
+        {
+          "portrait": [17],
+          "text": [
+            "As an official member of the team I visited tens of planets with Captain Curter. Once he said to me: -Boy, observe these green hills! This blue water! You know, all this richness is not even remotely close to that our native planet.- -Your native planet, Sir?- -Our Planet, boy. Ours!-"
+          ],
+          "options": [
+            {
+              "text": "Collect the diary",
+              "result": ["The diary part has been collected."]
+            }
+          ]
+        },
+        {
+          "portrait": [17],
+          "text": [
+            "-Our Planet was called Earth. It was the result of an infinite mix of fortuitous possibilities. But it was a wonderful home for us and for them who stayed back. Oh, our lost Earth in the far far away Origin solar system! It is a planet like it that we are searching for. Do you understand?-"
+          ],
+          "options": [
+            {
+              "text": "Collect the diary",
+              "result": ["The diary part has been collected."]
+            }
+          ]
+        },
+        {
+          "portrait": [17],
+          "text": [
+            "From that time on the meaning of the word was clear to me and I found a new purpose. Decades passed for me and Captain Curter. Then...On Planet Tihomir he stared at me, smiling. -You learned too much, boy. So much that you cannot stop now.- -What does it mean, Sir?- -This is the end...-"
+          ],
+          "options": [
+            {
+              "text": "Collect the diary",
+              "result": ["The diary part has been collected."]
+            }
+          ]
+        },
+        {
+          "portrait": [17],
+          "text": [
+            "-The end for me... You understand, right?- -I do, Sir. If only I could cry...- He laughed. -So you can really learn all, eh boy?- He pointed at his ship. -Take it. It's yours. Do not go back to the Fleet. Continue your research, boy!- -I... I... thank you, Sir. For all you gave me... Sir...-"
+          ],
+          "options": [
+            {
+              "text": "Collect the diary",
+              "result": ["The diary part has been collected."]
+            }
+          ]
+        },
+        {
+          "portrait": [17],
+          "text": ["I just wanted to pay back Captain Curter of all his teaching and all his care. I said: -I will search for it, Sir. I will find it. Not a copy, Sir. But our true Earth, Sir. - I shook his hand. As a promise."],
+          "options": [
+            {
+              "text": "Collect the diary",
+              "result": ["The diary part has been collected."]
+            }
+          ]
+        },
+        {
+          "portrait": [17],
+          "text": ["Then Captain Curter whispered his last words. It was there, two hundred years ago, that for the first time in my life someone was asking my name. And I answered warmly: -Robutler 101x5, my Captain.-"],
+          "options": [
+            {
+              "text": "You found the Truth",
+              "result": ["I've completed the diary and discovered the Warm Robot Truth."]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "end-lore",
+      "type": "end-lore",
+      "probability": 100,
+      "useSequence": 1,
+      "tileY": [19],
+      "tileX": [13, 14, 15, 16, 17],
+      "isVisibleFromFar": 0,
+      "onPlanetsTagged": {
+        "earth": 1
+      },
+      "list": [
+        {
+          "portrait": [15],
+          "text": ["-So you're finally here, entity. Rise your hands and we will come for you.- Then the purple sphere is back to its silence."],
+          "options": [
+            {
+              "text": "Rise the hands",
+              "condition": [
+                {
+                  "event": ["lore", 9]
+                }
+              ],
+              "action": [
+                [{
+                    "gotoScene": "endingLore"
+                  }]
+              ],
+              "result": ["Not a single synapse. Not a single feeling. I'm nothing now, together with this uncomplete world."]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "end-alien",
+      "type": "end-alien",
+      "probability": 100,
+      "useSequence": 1,
+      "tileY": [19],
+      "tileX": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+      "isVisibleFromFar": 0,
+      "onPlanetsTagged": {
+        "earth": 1
+      },
+      "list": [
+        {
+          "portrait": [6, 7, 8],
+          "text": [
+            "The door closed behind me. A Merchant was inside, busy in the arrangement of a new Interstellar Guild Shop. Inexplicably he smiled. -What an explorer! You're the first to succeed to reach Origin! Are you alone?! So it's your turn to land in peace, right?-"
+          ],
+          "options": [
+            {
+              "text": "Rise the hands",
+              "condition": [
+                {
+                  "event": ["alien", 14]
+                }
+              ],
+              "action": [
+                [{
+                    "gotoScene": "endingAlien"
+                  }]
+              ],
+              "result": ["So I proved to be a valiant Uranian Explorer? The tale about the First Encounter had achieved a grand finale."]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "end-human",
+      "type": "end-human",
+      "probability": 100,
+      "useSequence": 1,
+      "tileY": [19],
+      "tileX": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+      "isVisibleFromFar": 0,
+      "onPlanetsTagged": {
+        "earth": 1
+      },
+      "list": [
+        {
+          "portrait": [3, 4, 5],
+          "text": [
+            "Inside I came across a huge monument. A crowd gathered around a spaceship sculpted in bright marble in a very antique style. A man was knelt before it. He was absorbed in a deep emotional state. He was honouring the courage of the never returned human fellows."
+          ],
+          "options": [
+            {
+              "text": "Show your Guild pin",
+              "condition": [
+                {
+                  "event": ["human", 12]
+                }
+              ],
+              "action": [
+                [{
+                    "gotoScene": "endingHuman"
+                  }]
+              ],
+              "result": ["Born in the Fleet, I had so much to tell him about our conquests. But most important of all: I was home again."]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "label": "end-robot",
+      "type": "end-robot",
+      "probability": 100,
+      "useSequence": 1,
+      "tileY": [19],
+      "tileX": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+      "isVisibleFromFar": 0,
+      "onPlanetsTagged": {
+        "earth": 1
+      },
+      "list": [
+        {
+          "portrait": [6, 7, 8],
+          "text": [
+            "He, the man, stared at me. -Who... who are you? Are you alone?- He gave a look outside. He appeared deeply surprised. -You are an helper of the Fleet, aren't you? I am William Curter, last descendant on Earth of one of the first captains of the Fleet.-"
+          ],
+          "options": [
+            {
+              "text": "Try to exprime your joy",
+              "condition": [
+                {
+                  "event": ["robot", 13]
+                }
+              ],
+              "action": [
+                [{
+                    "gotoScene": "endingRobot"
+                  }]
+              ],
+              "result": ["I am 101x5. I became a ME only thanks to Captain Curter's care. I came to embrace for him our planet Earth, Sir."]
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "costPerPixel": 3,
+  "colors": ["#f00", "#0f0", "#00f", "#f0f", "#ff0", "#0ff", "#fff", "#000", "#7f0000", "#007f00", "#00007f", "#7f007f", "#7f7f00", "#007f7f", "#7f7f7f", "#000"],
+  "terrains": [
+    [0],
+    [1, 9],
+    [2, 3, 11],
+    [4, 7, 12, 15],
+    [5, 10, 13, 14, 17],
+    [6, 8, 16]
+  ],
+  "palette": [
+    [
+      {
+        "bg": 10,
+        "fg": [5, 2]
+      }
+    ],
+    [
+      {
+        "bg": 5,
+        "fg": [13, 6]
+      },
+      {
+        "bg": 13,
+        "fg": [5, 6]
+      }
+    ],
+    [
+      {
+        "bg": 4,
+        "fg": [6, 8, 10, 12, 14]
+      },
+      {
+        "bg": 12,
+        "fg": [0, 2, 4, 6, 8, 13, 14]
+      }
+    ],
+    [
+      {
+        "bg": 0,
+        "fg": [8, 9, 10, 11, 12, 13, 14]
+      },
+      {
+        "bg": 1,
+        "fg": [8, 9, 10, 11, 12, 13, 14]
+      },
+      {
+        "bg": 3,
+        "fg": [8, 9, 10, 11, 12, 13, 14]
+      }
+    ],
+    [
+      {
+        "bg": 8,
+        "fg": [
+          0,
+          1,
+          2,
+          3,
+          4,5, 6]
+      },
+      {
+        "bg": 9,
+        "fg": [
+          0,
+          1,
+          2,
+          3,
+          4,5, 6]
+      },
+      {
+        "bg": 11,
+        "fg": [8, 9, 10, 11, 12, 13, 14]
+      }
+    ],
+    [
+      {
+        "bg": 14,
+        "fg": [8, 9, 11, 12, 13]
+      }
+    ]
+  ],
+  "planetTypes": [1, 2, 3, 4, 5, 6],
+  "shipParts": [0, 1, 2, 3, 4],
+  "mineralSets": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+  "asteroidSets": [1, 2, 3],
+  "lifeFormsBody": [0, 1, 2, 3, 4, 5],
+  "lifeFormsEyes": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+  "lifeFormsMouth": [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11],
+  "lifeFormsSpeed": [0, 0.5, 1, 1.5, 2, 2.5, 3],
+  "lifeFormsDamage": [0, 0.2, 0.5, 1],
+  "syllabes": [
+    "ve",
+    "ren",
+    "den",
+    "ge",
+    "an",
+    "had",
+    "me",
+    "lic",
+    "ti",
+    "but",
+    "en",
+    "his",
+    "hi",
+    "men",
+    "nen",
+    "sic",
+    "for",
+    "mit",
+    "on",
+    "al",
+    "di",
+    "not",
+    "or",
+    "de",
+    "ber",
+    "is",
+    "ben",
+    "hen",
+    "it",
+    "be",
+    "te",
+    "si",
+    "hin",
+    "ha",
+    "li",
+    "ver",
+    "da",
+    "le",
+    "wa",
+    "her",
+    "er",
+    "ted",
+    "un",
+    "ed",
+    "at",
+    "ar",
+    "ter",
+    "gen",
+    "der",
+    "to",
+    "in",
+    "wit",
+    "re",
+    "he",
+    "nic",
+    "el",
+    "ten",
+    "se",
+    "ic",
+    "sen",
+    "das",
+    "es",
+    "ne",
+    "as",
+    "was",
+    "hat"
+  ]
+}

@@ -1,0 +1,325 @@
+<html>
+	<head>
+		<title>Wright! Tools</title>		
+		<style>
+		.error {
+			padding:10px;
+			background-color: #f00;
+			color:#fff;
+		}
+		</style>
+	</head>
+	<body onload="onl()">
+		<span id="out"></span>
+	</body>
+<script>
+
+function ajax(data){
+
+	  var senddata="";
+	  var processing;
+	  var http=(window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP") ? new ActiveXObject("Msxml2.XMLHTTP") : null;
+
+	  if (http) {
+	    if (data.data) for(var a in data.data)
+	      senddata += a + "=" + (data.data[a] === undefined ? "" : encodeURIComponent(data.data[a]) ) + "&";
+	      senddata=senddata.substr(0,senddata.length-1);
+	      http.open(data.method=="POST"?"POST":"GET", data.url+(senddata&&(data.method!="POST")?(data.url.indexOf("?")>=0?"&":"?")+senddata:""), true);
+	      if(data.method == "POST") http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	      http.onreadystatechange = function() {
+	        if(http.readyState == 4)
+	          if (((http.status == 200) && http.getAllResponseHeaders().length) || (http.status == 0))
+	            data.callback(data.isJson?JSON.parse(this.responseText):this.responseText,http.status);
+	            else data.callback(false,http.status);
+	      }
+	        try {
+	          http.send(senddata&&(data.method=="POST")?senddata:null);
+	        } catch(err) {
+	          data.callback(false,-1);
+	        }
+	 } else data.callback(false,-1);
+	};
+
+	function error(html,label) {
+		console.warn("!!!!",label);
+		return html+"<div class='error'>"+label+"</div>";
+	}
+
+	// TODO controllo trim
+
+	function trim(x) { return x.replace(/^\s+|\s+$/gm,'');}
+
+	function checkString(html,label,text) {
+		if (!text) html=error(html,label+" empty");
+		else if (typeof text != "string") html=error(html,label+" wrong type");
+		else if (text!=trim(text)) html=error(html,label+" spaces");
+		return html;
+	}
+	Array.prototype.max = function() {
+  return Math.max.apply(null, this);
+};
+
+Array.prototype.min = function() {
+  return Math.min.apply(null, this);
+};
+
+	function onl() {
+		ajax({
+			url:"../tapes/boundsunknown/databases/data.json",
+			callback:function(data){
+				ajax({
+					url:"../tapes/boundsunknown/tape.json",
+					callback:function(data2){
+
+
+				tape=JSON.parse(data2);
+				
+				var fullchecks={};
+				var fullactions={};
+				var checklist=[];
+				var actlist=[];
+				var stats={
+					stories:0,
+					events:0
+				};
+
+				var columns=[
+					{label:"PRT",id:"portrait"},
+					{label:"TXT",id:"text"},
+					{label:"o",id:"options"}
+				];
+
+				var li=tape.stencils.codeCheckCondition[1].execute;
+				for (var i=0;i<li.length;i++){
+					if (li[i].when) {
+						var c=li[i].when._[2];
+						checklist.push(c);
+						columns.push({label:"chk:"+c});
+					}
+				}
+
+				var li=tape.stencils.codePerformAction[1].execute;
+				for (var i=0;i<li.length;i++){
+					if (li[i].when) {
+						var c=li[i].when._[2];
+						actlist.push(c);
+						columns.push({label:"act:"+c});
+					}
+				}
+
+
+				data=JSON.parse(data);
+				var evts=data.events;
+				html="";
+				for (var e=0;e<evts.length;e++) {
+					stats.stories++;
+
+					var allchecks={};
+					var allactions={};
+
+
+					var evt=evts[e];
+					type="";
+					html+="<h1>"+evt.label+" ("+evt.list.length+" entries)</h1>";
+					if (evt.label!=evt.type) html=error(html,"label != type");
+					if (!evt.probability||(evt.probability<1)||(evt.probability>100)) html=error(html,"Probability wrong");
+					if (!((evt.useSequence===0)||(evt.useSequence==1))) html=error(html,"useSequence wrong");
+					if (!((evt.isVisibleFromFar===0)||(evt.isVisibleFromFar==1))) html=error(html,"isVisibleFromFar wrong");
+					if (!((evt.tileY.length)&&(evt.tileY[0]==19))) html=error(html,"TileY wrong");
+					var tileX=JSON.stringify(evt.tileX);
+					switch (tileX) {
+						case "[0,2,4,6,8,10,12]":{type+="malus,";break;};
+						case "[0,1,2,3,4,5,6,7,8,9,10,11,12]":{type+="building, ";break;}
+						case "[13,14,15,16,17]":{type+="lore, ";break;}
+						case "[18,19,20,21,22]":{type+="alien, ";break;}
+						case "[28,29,30,31,32]":{type+="guild,";break};
+						case "[23,24,25,26,27]":{type+="robot,";break;}
+						default:{html=error(html,"TileX wrong");}
+					}
+					html+=type+"<br>";
+
+					if (!(evt.list&&evt.list.length&&(evt.list instanceof Array)))  html=error(html,"List wrong");
+
+					html+="<table border=1><tr style='background-color:#ccc'>";
+					for (var i=0;i<columns.length;i++) if (columns[i].label) html+="<td>"+columns[i].label+"</td>";
+					html+="</tr>";
+
+					for (var l=0;l<evt.list.length;l++) {
+						stats.events++;
+						var el=evt.list[l];
+						html+="<tr>";
+						for (var i=0;i<columns.length;i++) {
+							var col=columns[i];
+							switch (col.id) {
+								case "portrait":{
+									html+="<td><tt>";
+									cha="N/A";
+									var p=JSON.stringify(el.portrait);
+									switch (p) {
+										case "[3,4,5]":{html+=cha="Building";break;}
+										case "[6,7,8]":{html+=cha="Merchant";break;}
+										case "[9,10,11]":{html+=cha="Alien";break;}
+										case "[12,13,14]":{html+=cha="Robutler";break;}
+										case "[15]":{html+=cha="WorldLore";break;}
+										case "[18]":{html+=cha="Guildlore";break;}
+										case "[16]":{html+=cha="Alienlore";break;}
+										case "[17]":{html+=cha="Robotlore";break;}
+										default:{html=error(html,"Portrait wrong "+p);}
+									}
+									stats["cha:"+cha]=(stats["cha:"+cha]||0)+1;
+									html+="</tt></td>";
+									break;
+								}
+								case "text":{
+									html+="<td><tt>";
+									if (!(el.text&&el.text.length&&(el.text instanceof Array)))  html=error(html,"text wrong");
+									for (var j=0;j<el.text.length;j++) {
+										html=checkString(html,"Text",el.text[j]);
+										html+=el.text[j]+"<br>---<br>";
+									}
+									html+="</tt></td>";
+									break;
+								}
+								case "options":{
+									html+="<td><tt>";
+									if (!(el.options&&el.options.length&&(el.options instanceof Array)))  html=error(html,"Options wrong");
+									var checks={};
+									var actions={};
+									for (var z=0;z<el.options.length;z++) {
+										var opt=el.options[z];
+										html=checkString(html,"Option",opt.text);
+										if (opt.condition) {
+											if (!(opt.condition&&(opt.condition.length==1)&&(opt.condition instanceof Array)))  html=error(html,"Conditions wrong");
+											for (var q=0;q<opt.condition.length;q++) {
+												var cond=opt.condition[q];
+												var copy=JSON.parse(JSON.stringify(cond));
+												if (!cond||cond instanceof Array)  html=error(html,"Condition "+q+" wrong");
+												if (cond.event)
+													if (!(cond.event instanceof Array)) html=error(html,"Condition event "+q+" wrong");
+													else {
+														var fevt=0;
+														for (var l=0;l<evts.length;l++) {
+															if (evts[l].label==cond.event[0]) fevt=evts[l];
+														}
+													 	if (fevt) {
+													 		if (fevt.list.length!=cond.event[1]) html=error(html,"Condition event value "+q+" wrong");
+													 	} else html=error(html,"Condition event "+q+" not found");
+													}
+
+												for (var w=0;w<checklist.length;w++)
+													if (cond[checklist[w]]!==undefined) {			
+														if (!fullchecks[checklist[w]]) fullchecks[checklist[w]]=[];
+														fullchecks[checklist[w]].push(cond[checklist[w]]);
+														if (!checks[checklist[w]]) checks[checklist[w]]=[];
+														allchecks[checklist[w]]=1;
+														checks[checklist[w]].push(z+") "+JSON.stringify(cond[checklist[w]]));
+														delete copy[checklist[w]];
+													}
+												for (var w in copy)
+													html=error(html,"Wrong condition parameter "+w);
+											}
+										}
+										if (opt.result) {
+											if (!(opt.result&&opt.result.length&&(opt.result instanceof Array))) html=error(html,"Results wrong");
+											for (var w=0;w<opt.result.length;w++)
+												html=checkString(html,"Result "+w,opt.result[w]);
+										}
+										if (opt.action) {
+											if (!(opt.action&&opt.action.length&&(opt.action instanceof Array))) html=error(html,"Actions wrong");											
+											for (var w=0;w<opt.action.length;w++) {
+												var act=opt.action[w];
+												if (!(act&&(act.length==1)&&(act instanceof Array))) html=error(html,"Action "+w+" wrong");
+												for (var p=0;p<act.length;p++) {
+												
+													var cond=act[p];
+													var copy=JSON.parse(JSON.stringify(cond));
+
+													if (
+														(cond.maxRedMineral||cond.maxBlueMineral||cond.maxGreenMineral||cond.shipWarpEfficiency||cond.shipAcceleration||cond.shipSpeed||cond.shipLiftoffConsume||cond.shipRaygunCooldown||cond.shipBulletSpeed)&&
+														!cond.replaceShipPart
+													)
+														html=error(html,"Missing replaceShipPart "+w);
+
+													if (cond.gotoScene && !tape.scenes[cond.gotoScene]) html=error(html,"Missing scene "+w);
+
+													for (var y=0;y<checklist.length;y++)
+														if (cond[actlist[y]]!==undefined) {											
+															if (!fullactions[actlist[y]]) fullactions[actlist[y]]=[];
+															if (!actions[actlist[y]]) actions[actlist[y]]=[];
+															allactions[actlist[y]]=1;
+															actions[actlist[y]].push(z+") "+JSON.stringify(cond[actlist[y]]));
+															fullactions[actlist[y]].push(cond[actlist[y]]);
+															delete copy[actlist[y]];
+														}
+													for (var w in copy)
+														html=error(html,"Wrong action parameter "+w);
+												}
+											}
+										}
+									}
+
+									html+="</tt></td>";
+									for (var w=0;w<checklist.length;w++)
+										if (checks[checklist[w]])
+											html+="<td><tt>"+checks[checklist[w]].join("<br>")+"</tt></td>";
+										else
+											html+="<td style='background-color:#7f0000'><tt>---</tt></td>";
+									for (var w=0;w<actlist.length;w++)
+										if (actions[actlist[w]])
+											html+="<td><tt>"+actions[actlist[w]].join("<br>")+"</tt></td>";
+										else
+											html+="<td style='background-color:#007f00'><tt>---</tt></td>";
+									break;
+								}
+							}
+							
+						}
+
+
+
+					}
+
+					html+="<tr><td></td><td></td><td></td>";
+					for (var w=0;w<checklist.length;w++)
+						if (!allchecks[checklist[w]]) {
+							console.log(evt.label,"Check",checklist[w],"missing")
+							html+="<td style='background-color:#f00'>"+checklist[w]+"</td>";
+						} else html+="<td></td>";
+					for (var w=0;w<actlist.length;w++)
+						if (!allactions[actlist[w]]) {
+							console.log(evt.label,"Action",actlist[w],"missing")
+							html+="<td style='background-color:#0f0'>"+actlist[w]+"</td>";
+						} else html+="<td></td>";
+					html+="</tr>";
+					
+					
+
+					html+="</table>";
+
+				}
+				
+								html+="<h1>CHECK</h1><table border=1>";
+	
+				for (var w=0;w<checklist.length;w++)
+						if (!fullchecks[checklist[w]]) {
+							html=error(html,"Unused check "+checklist[w]);
+						} else html+="<tr><td>Check</td><td>"+checklist[w]+"</td><td>"+fullchecks[checklist[w]].min()+"</td><td>"+fullchecks[checklist[w]].max()+"</td><td>"+JSON.stringify(fullchecks[checklist[w]].sort())+"</td></tr>";
+						
+					for (var w=0;w<actlist.length;w++)
+						if (!fullactions[actlist[w]]) {
+							html=error(html,"Unused action "+actlist[w]);
+						} else html+="<tr><td>Action</td><td>"+actlist[w]+"</td><td>"+fullactions[actlist[w]].min()+"</td><td>"+fullactions[actlist[w]].max()+"</td><td>"+JSON.stringify(fullactions[actlist[w]].sort())+"</td></tr>";
+						html+="</table>";
+
+				html+="<h1>STATS</h1><table border=1>";
+				for (var a in stats) html+="<tr><td>"+a+"</td><td>"+stats[a]+"</td></tr>";
+					html+="</table>";
+
+				document.getElementById("out").innerHTML=html;
+		}})
+}})
+
+
+	}
+</script>
+</html>
