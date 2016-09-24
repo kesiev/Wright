@@ -238,6 +238,7 @@ var DOMInator=function(useCanvas,aliasmode){
 	/* Fake node */
 
 	this.createElement=function(nodeName,model,domnode) {
+
 		if (!model) model=[];
 
 		model.style={};
@@ -3610,6 +3611,10 @@ function Wright(gameId,container,mods) {
 					if (line.pushInto !== undefined) {
 						var into= get(item, curtox, line.pushInto);
 						if (into && (into instanceof Array)) into.push(item);
+					}
+					if (line.unshiftInto !== undefined) {
+						var into= get(item, curtox, line.unshiftInto);
+						if (into && (into instanceof Array)) into.unshift(item);
 					}
 					if (line.unpush !== undefined) {
 						var from= get(item, curtox, line.from);
