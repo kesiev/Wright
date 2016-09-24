@@ -1,0 +1,1503 @@
+{
+  "name":"Serpent",
+  "author":"KesieV",
+  "year":2016,
+  "genre":"Action",
+  "description":"A 'Demake' is a port a videogame on a less powerful platform. This is done mostly cutting down parts of the game while still keeping it recognizable: they mostly still have the original basic rules but some gameplay details may be stripped down, levels may be simplified and graphics or music may be readapted to the older platform limits. Despite it is a relatively modern concept and its beginning is set around 1990s, when in China and Hong Kong unauthorized adaptations of modern games like Final Fantasy VII or Tekken were produced and sold into the black market, I think that every videogame porting from 1980 can be considered a demake, since they share all of its key characteristics. Sega's OutRun (1986) had a plethora of portings on different 8 and 16 bit systems and most of them tried to keep the original appeal while stripping it down: I clearly remember its Commodore 64 and ZX Spectrum ports and, while both of them were graphically inferior due to their limited power, the first one lacked the characteristic forks at the end of each stage that were in the second one but the Commodore 64 one had both music and sound effects. The same was for every arcade port of that time, from Pac-Man (1980) and its legendary faulty Atari 2600 port (demake?) to Ghost'n Goblins (1995) which had a glorious and still not very faithful Commodore 64 conversion.<br><br>A 'Remaster' is port a videogame on a better platform instead, keeping its gameplay intact by improving media quality, such as music and sound effects. While it makes an older game more acceptable by a modern audience, remasters often fails on keeping the original videogame meaning. I'll try to explain this with an extreme case: Space Invaders (1978) or Pac-Man (1980) remasters are quite useless, since, despite its appearance, they became a symbol of a generation due to their formula, which became inflated shortly after their launch and can be found everywhere as basic part of many gameplays nowadays. In my opinion, games that are successful enough for a remaster usually continues their legacy living in other games as tiny parts, becaming just a dull shell that hardly can be improved by a fresh coat of paint.<br><br>'Remakes' are ports a videogame on a better platform, not only improving its appearance but updating or extending its gameplay. Probably the first remake was Pitfall II (1985) from Sega which, despite its name, was a remake of the original Pitfall!, with more levels, colors and better graphics. Remakes are mostly a risky labour of love: it inherit the delicate gameplay features selection from demakes but remastering most of them. In my opinion, best remakes aims to update the original gameplay in order to transmit its original meaning again. My favourites remakes are the Pac-Man Championship Edition (2007) series, which keeps all of the original mechanics but recreates the anxiety of moving on a haunted maze and the feverish search for the high-score of the original Pac-Man adding progressive techno music, ever changing mazes, a strict time limit and a detailed 'performance chart' at the end of every match.<br><br>A 'Reboot' produces a brand new videogame starting from few components of a previous one, like some of its game mechanics elements, characters or backstory. Since the original game bits are way less than in the other variants, reboots are considered marketwise brave and risky moves. Fans of the previous title usually fears that what they liked will be missing while the others will link the rebooted title to the original, perceiving it unappealing as before. Anyway, when successful, rebooted games can bring more fans to brands that lost its appeal during the years. Tomb Raider (1996), which built a wide fanbase around the strong and sexy heroine Lara Croft, was rebooted with another Tomb Raider (2013), with an younger, sensitive but tenacious Lara and updating its gameplay with open world exploration and cover-based firefights, following the modern tastes in videogames, movies and TV series.<br><br>That said, let's talk about Snake - the game of the hungry and stretching snake we probably still remember. Snake legacy was born with Blockade (1976) by Gremlin Industries as arcade videogame. Blockade worked mainly like the Snake we know, except that the player character grew indefinitely from its starting point. It eventually evolved on many platforms and with many variants: from the appearance of a tail to multiplayer gameplay and then to the movies, with the Tron (1982) iconic light cycles. Many of us remember Snake as one of the pioneer of mobile games on 1997's Nokia 6610 mobile phones or as the viral online game slither.io (2016). Snake can be considered a 'series without owner' that had a countless number of remakes, demakes, remasters and reboots that spans over the years, the technologies and the platforms, since its gameplay is so recognizable and simple that we still know the game with its legendary name: Snake. But now, plot! Serpents is a fictional 1990's Commodore 64 remaster of the Nokia Snake, with a rebooted different gameplay change every two levels! Use UP/DOWN/LEFT/RIGHT for moving your snake and... that's all!",
+  "screenshots":[ "serpents-1.png", "serpents-2.png" ],
+  "hardware":{
+    "width":320,
+    "height":200,
+    "filter":"retro"
+  },
+  "cheats":{
+    "unlimitedlives":"Unlimited lives"
+  },
+  "resources":{
+    "commodore":"commodore.font",
+    "snakes":"snakes.png",
+    "sprites":"sprites.png",
+    "crt":"../default/crt.png",
+    "defaultsprites":"../default/sprites64.png",
+    "scanlines":"../default/scanlines.png"
+  },
+  "stencils":{
+    "codeNextStage":[
+      { "sum":1, "to":{ "_":[ "variable", "stage" ] } },
+      {
+        "gotoScene":{ "_":[ "stencil", "stagesSequence", { "_":[ "variable", "stage", "%", { "_":[ "stencil", "stagesSequence", "count" ] } ] } ] },
+        "withTransition":3
+      }
+    ],
+    "codeSnakeOver":[
+      { "as":{ "_":[ "object", "removeonsnakeover" ] }, "remove":1 },
+      {
+        "when":{ "_":[ "scene", "snake", "count", "isGreaterEqualThan", { "_":[ "scene", "targetLength" ] } ] },
+        "as":{ "_":"scene" },
+        "set":{ "state":"stagedone" },
+        "elseExecute":{ "as":{ "_":"scene" }, "set":{ "state":"lostlife" } }
+      }
+    ],
+    "spark":{
+      "image":"defaultsprites", "tileX":0, "tileY":32, "width":16, "height":16,
+      "zIndex":10000, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "animations":{ "spark":{ "frames":4, "speed":0 } },
+      "animation":"spark",
+      "states":{ "code":{ "name":"Sequence", "data":[ { "wait":4 }, { "remove":1 } ] } }
+    },
+    "removeWithSpark":[ { "object":{ "_":[ "stencil", "spark" ] } }, { "remove":1 } ],
+    "modelBaller":{ "execute":{ "object":{ "_":[ "stencil", "ball" ] } } },
+    "modelDircheck":{ "type":[ "obstacle", "darkable" ], "image":"sprites", "tileY":16, "width":8, "height":8, "zIndex":2 },
+    "modelFoodKeeper":{
+      "code":{
+        "name":"Sequence",
+        "data":[
+          { "wait":1, "loop":1, "until":{ "_":[ "object", "food", "count", "isLessThan", { "_":[ "scene", "foodToKeep" ] } ] } },
+          { "object":{ "set":{ "_":[ "stencil", { "_":[ "scene", "foodStencil" ] } ] } } },
+          { "loopTo":0 }
+        ]
+      }
+    },
+    "modelRace":{
+      "code":{
+        "name":"Execute",
+        "data":{ "when":{ "_":[ "scene", "snake", 0, "collidesWith", { "_":[ "object", "goal" ] } ] }, "execute":{ "sum":5, "to":{ "_":[ "scene", "snakeFood" ] } } }
+      }
+    },
+    "modelRolly":{
+      "execute":{
+        "object":[
+          { "set":{ "_":[ "stencil", "modelRollyBadguy" ] }, "x":120, "y":56 },
+          { "set":{ "_":[ "stencil", "modelRollyBadguy" ] }, "x":144, "y":56 },
+          { "set":{ "_":[ "stencil", "modelRollyBadguy" ] }, "x":168, "y":56 },
+          { "set":{ "_":[ "stencil", "modelRollyBadguy" ] }, "x":192, "y":56 }
+        ]
+      }
+    },
+    "modelRollyBadguy":{
+      "type":[ "kill", "removeonsnakeover" ],
+      "image":"sprites", "tileX":0, "tileY":64, "width":16, "height":16,
+      "zIndex":10,
+      "forceX":0, "forceY":-2,
+      "animations":{ "idle":{ "frames":2, "loopTo":0 } },
+      "animation":"idle",
+      "states":{
+        "code":[
+          {
+            "name":"Sequence",
+            "data":[
+              { "wait":{ "_":[ "randomValue", [ 25, 75 ] ] } },
+              {
+                "when":{ "_":[ "randomValue", [ 0, 1 ] ] },
+                "set":{ "forceX":0, "forceY":{ "_":[ "randomValue", [ -2, 2 ] ] } },
+                "elseExecute":{ "set":{ "forceX":{ "_":[ "randomValue", [ -2, 2 ] ] }, "forceY":0 } }
+              },
+              { "loopTo":0 }
+            ]
+          },
+          {
+            "name":"Physics",
+            "data":{ "walls":[ { "type":"scenario", "restitution":1 }, { "area":{ "width":320, "height":184, "x":0, "y":8 }, "restitution":1 } ] }
+          }
+        ]
+      }
+    },
+    "modelSides":{
+      "code":{
+        "name":"Execute",
+        "data":{
+          "when":{ "_":[ "scene", "snake", 0, "collidesWith", { "_":[ "object", "dir1" ] }, "and", { "_":[ "scene", "snake", 0, "dir", "isNotEqualTo", 1 ] } ] },
+          "execute":{ "_":[ "stencil", "codeSnakeOver" ] },
+          "elseExecute":{
+            "when":{ "_":[ "scene", "snake", 0, "collidesWith", { "_":[ "object", "dir2" ] }, "and", { "_":[ "scene", "snake", 0, "dir", "isNotEqualTo", 2 ] } ] },
+            "execute":{ "_":[ "stencil", "codeSnakeOver" ] },
+            "elseExecute":{
+              "when":{ "_":[ "scene", "snake", 0, "collidesWith", { "_":[ "object", "dir3" ] }, "and", { "_":[ "scene", "snake", 0, "dir", "isNotEqualTo", 3 ] } ] },
+              "execute":{ "_":[ "stencil", "codeSnakeOver" ] },
+              "elseExecute":{
+                "when":{ "_":[ "scene", "snake", 0, "collidesWith", { "_":[ "object", "dir4" ] }, "and", { "_":[ "scene", "snake", 0, "dir", "isNotEqualTo", 4 ] } ] },
+                "execute":{ "_":[ "stencil", "codeSnakeOver" ] }
+              }
+            }
+          }
+        }
+      }
+    },
+    "modelSpooky":{
+      "code":{
+        "name":"Execute",
+        "data":{
+          "as":{ "_":[ "object", "darkable" ] },
+          "execute":{
+            "when":{ "_":[ "this", "distanceTo", { "_":[ "scene", "snake", 0 ] }, "isLessThan", 40 ] },
+            "set":{ "visible":1 },
+            "elseExecute":{ "set":{ "visible":0 } }
+          }
+        }
+      }
+    },
+    "modelSprinter":{
+      "execute":{ "set":{ "sprint":0 } },
+      "code":{
+        "name":"Execute",
+        "data":{
+          "when":{ "_":[ "scene", "sprint" ] },
+          "execute":[ { "subtract":1, "to":{ "_":[ "scene", "sprint" ] } }, { "set":{ "snakeSpeed":1 } } ],
+          "elseExecute":{ "set":{ "snakeSpeed":2 } }
+        }
+      }
+    },
+    "modelSwitch":{ "type":[ "obstacle", "darkable" ], "image":"sprites", "tileY":16, "width":8, "height":8, "zIndex":2 },
+    "modelSwitcher":{
+      "code":{
+        "name":"Execute",
+        "data":{
+          "when":{ "_":[ "scene", "snake", 0, "collidesWith", { "_":[ "object", "switch1" ] } ] },
+          "execute":[
+            { "as":{ "_":[ "object", "wall1" ] }, "set":{ "removeType":"kill", "tileX":{ "_":[ "this", "closedTileX" ] } } },
+            { "as":{ "_":[ "object", "wall2" ] }, "set":{ "type":"kill", "tileX":{ "_":[ "this", "originalTileX" ] } } },
+            { "as":{ "_":[ "object", "wall3" ] }, "set":{ "type":"kill", "tileX":{ "_":[ "this", "originalTileX" ] } } }
+          ],
+          "elseExecute":{
+            "when":{ "_":[ "scene", "snake", 0, "collidesWith", { "_":[ "object", "switch2" ] } ] },
+            "execute":[
+              { "as":{ "_":[ "object", "wall2" ] }, "set":{ "removeType":"kill", "tileX":{ "_":[ "this", "closedTileX" ] } } },
+              { "as":{ "_":[ "object", "wall1" ] }, "set":{ "type":"kill", "tileX":{ "_":[ "this", "originalTileX" ] } } },
+              { "as":{ "_":[ "object", "wall3" ] }, "set":{ "type":"kill", "tileX":{ "_":[ "this", "originalTileX" ] } } }
+            ],
+            "elseExecute":{
+              "when":{ "_":[ "scene", "snake", 0, "collidesWith", { "_":[ "object", "switch3" ] } ] },
+              "execute":[
+                { "as":{ "_":[ "object", "wall3" ] }, "set":{ "removeType":"kill", "tileX":{ "_":[ "this", "closedTileX" ] } } },
+                { "as":{ "_":[ "object", "wall1" ] }, "set":{ "type":"kill", "tileX":{ "_":[ "this", "originalTileX" ] } } },
+                { "as":{ "_":[ "object", "wall2" ] }, "set":{ "type":"kill", "tileX":{ "_":[ "this", "originalTileX" ] } } }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "stageModel":{
+      "set":{ "_":[ "stencil", "defaultStage" ] },
+      "states":[
+        {
+          "execute":[
+            {
+              "set":{
+                "tilemap":{
+                  "tileWidth":8,
+                  "tileHeight":8,
+                  "map":[
+                    "",
+                    "........................................",
+                    "........................................",
+                    "........................................",
+                    "........................................",
+                    "........................................",
+                    "........................................",
+                    "........................................",
+                    "........................................",
+                    "........................................",
+                    "........................................",
+                    "........................................",
+                    "........................................",
+                    "........................................",
+                    "........................................",
+                    "........................................",
+                    "........................................",
+                    "........................................",
+                    "........................................",
+                    "........................................",
+                    "........................................",
+                    "........................................",
+                    "........................................",
+                    "........................................"
+                  ]
+                }
+              }
+            },
+            {
+              "as":{ "_":[ "object", "withshadow" ] },
+              "execute":{
+                "when":{
+                  "_":[
+                    "this",
+                    "complexCollidesWith",
+                    {
+                      "subject":{ "_":[ "object", "background" ] },
+                      "hitbox":{ "width":8, "height":8, "x":{ "_":[ "scene", "shadowX" ] }, "y":{ "_":[ "scene", "shadowY" ] } }
+                    }
+                  ]
+                },
+                "as":{ "_":"that" },
+                "remove":1
+              }
+            },
+            {
+              "object":[
+                {
+                  "type":"hud",
+                  "hudType":"label", "label":"&nbsp;SCORE: %number|variable.score|0|10% LIVE%repeat|variable.lives|S%",
+                  "width":320, "height":8,
+                  "x":0, "y":0,
+                  "bgcolor":"#000", "color":"#fff",
+                  "font":"commodore", "fontSize":8, "lineHeight":8
+                },
+                { "width":320, "height":8, "x":0, "y":192, "bgcolor":"#000", "color":"#fff", "font":"commodore", "fontSize":8, "lineHeight":8, "html":"&nbsp;TARGET" },
+                { "width":248, "height":4, "zIndex":10, "x":66, "y":194, "bgcolor":"#adadad" },
+                {
+                  "width":248, "height":4,
+                  "zIndex":20, "x":66, "y":194,
+                  "bgcolor":"#c9d684",
+                  "states":{
+                    "code":{
+                      "name":"Execute",
+                      "data":{ "set":{ "width":{ "_":[ "scene", "snake", "count", "/", { "_":[ "scene", "targetLength" ] }, "*", 248, "limitValue", [ 0, 248 ] ] } } }
+                    }
+                  }
+                },
+                {
+                  "type":"intro",
+                  "width":320, "height":8,
+                  "x":0, "y":1,
+                  "bgcolor":"#000", "color":"#c9d684",
+                  "font":"commodore", "fontSize":8, "lineHeight":8, "textAlign":"center", "html":{ "_":[ "STAGE ", ".", { "_":[ "variable", "stage", "+", 1 ] } ] },
+                  "states":{ "code":{ "name":"Execute", "data":{ "set":{ "y":{ "_":[ "this", "y", "*", 1.3, "limitValue", [ 0, 92 ] ] } } } } }
+                },
+                {
+                  "type":"intro",
+                  "width":320, "height":8,
+                  "x":0, "y":1,
+                  "bgcolor":"#000", "color":"#fff",
+                  "font":"commodore", "fontSize":8, "lineHeight":8, "textAlign":"center", "html":{ "_":[ "scene", "stageName" ] },
+                  "states":{ "code":{ "name":"Execute", "data":{ "set":{ "y":{ "_":[ "this", "y", "*", 1.2, "limitValue", [ 0, 100 ] ] } } } } }
+                },
+                {
+                  "type":"intro",
+                  "width":320, "height":8,
+                  "x":0, "y":1,
+                  "bgcolor":"#000", "color":"#adadad",
+                  "font":"commodore", "fontSize":8, "lineHeight":8, "textAlign":"center", "html":{ "_":[ "scene", "stageComment" ] },
+                  "states":{ "code":{ "name":"Execute", "data":{ "set":{ "y":{ "_":[ "this", "y", "*", 1.15, "limitValue", [ 0, 108 ] ] } } } } }
+                }
+              ],
+              "into":{ "_":"scenehud" }
+            }
+          ],
+          "code":{ "name":"Sequence", "data":[ { "wait":75 }, { "as":{ "_":[ "object", "intro" ] }, "remove":1 }, { "set":{ "state":"readygo" } } ] }
+        },
+        {
+          "name":"readygo",
+          "execute":[
+            {
+              "set":{
+                "dir":3,
+                "dirX":-8,
+                "dirY":0,
+                "nextPosition":{ "_":[ "new", { "width":8, "height":8 } ] },
+                "nextdir":3,
+                "snake":{ "_":[ "new", [] ] },
+                "snakeFood":{ "_":[ "scene", "startSnakeFood" ] }
+              }
+            },
+            { "as":{ "_":[ "object", "darkable" ] }, "set":{ "visible":1 } },
+            {
+              "object":{
+                "set":{ "_":[ "stencil", "snakeBody" ] },
+                "tileY":{ "_":[ "scene", "snakeTileY" ] },
+                "x":{ "_":[ "scene", "startX", "*", 8 ] }, "y":{ "_":[ "scene", "startY", "*", 8 ] }, "frame":{ "_":[ "stencil", "bodyparts", "3h" ] },
+                "dir":3
+              },
+              "as":{ "_":"that" },
+              "pushInto":{ "_":[ "scene", "snake" ] }
+            },
+            {
+              "object":{
+                "type":"kill",
+                "set":{ "_":[ "stencil", "snakeBody" ] },
+                "tileY":{ "_":[ "scene", "snakeTileY" ] },
+                "x":{ "_":[ "scene", "startX", "*", 8, "+", 8 ] }, "y":{ "_":[ "scene", "startY", "*", 8 ] }, "frame":{ "_":[ "stencil", "bodyparts", "3-3" ] },
+                "dir":3
+              },
+              "as":{ "_":"that" },
+              "pushInto":{ "_":[ "scene", "snake" ] }
+            },
+            {
+              "object":{
+                "type":"kill",
+                "set":{ "_":[ "stencil", "snakeBody" ] },
+                "tileY":{ "_":[ "scene", "snakeTileY" ] },
+                "x":{ "_":[ "scene", "startX", "*", 8, "+", 16 ] }, "y":{ "_":[ "scene", "startY", "*", 8 ] }, "frame":{ "_":[ "stencil", "bodyparts", "3t" ] },
+                "dir":3
+              },
+              "as":{ "_":"that" },
+              "pushInto":{ "_":[ "scene", "snake" ] }
+            },
+            {
+              "object":{
+                "image":"sprites", "tileY":32, "width":16, "height":16,
+                "zIndex":10, "x":{ "_":[ "scene", "startX", "*", 8, "-", 4 ] }, "y":{ "_":[ "scene", "startY", "*", 8, "-", 16 ] },
+                "oscillating":0,
+                "states":{
+                  "code":[
+                    {
+                      "name":"Execute",
+                      "data":[
+                        { "sum":0.2, "to":{ "_":[ "this", "oscillating" ] } },
+                        { "set":{ "y":{ "_":[ { "_":[ "scene", "startY", "*", 8, "-", 20 ] }, "+", { "_":[ "this", "oscillating", "sin", "*", 3 ] } ] } } }
+                      ]
+                    },
+                    {
+                      "name":"Sequence",
+                      "data":[
+                        { "wait":10 },
+                        { "sum":1, "to":{ "_":[ "this", "frame" ] }, "cycles":3, "loopTo":0 },
+                        { "as":{ "_":"scene" }, "set":{ "state":"game" } },
+                        { "wait":5 },
+                        { "remove":1 }
+                      ]
+                    }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name":"game",
+          "code":[
+            {
+              "name":"Execute",
+              "data":[
+                { "when":{ "_":[ "keyUp", "isDown" ] }, "set":{ "nextdir":1 } },
+                { "when":{ "_":[ "keyDown", "isDown" ] }, "set":{ "nextdir":2 } },
+                { "when":{ "_":[ "keyLeft", "isDown" ] }, "set":{ "nextdir":3 } },
+                { "when":{ "_":[ "keyRight", "isDown" ] }, "set":{ "nextdir":4 } }
+              ]
+            },
+            {
+              "name":"Sequence",
+              "data":[
+                { "wait":{ "_":[ "scene", "snakeSpeed" ] } },
+                {
+                  "set":{ "headObj":{ "_":[ "scene", "snake", 0 ] }, "isFood":0, "tailObj":{ "_":[ "scene", "snake", { "_":[ "scene", "snake", "count", "-", 1 ] } ] } }
+                },
+                {
+                  "when":{ "_":[ "scene", "nextdir", "isEqualTo", 1, "and", { "_":[ "scene", "dir", "isEqualTo", 2, "not" ] } ] },
+                  "set":{ "dir":1, "dirX":0, "dirY":-8 }
+                },
+                {
+                  "when":{ "_":[ "scene", "nextdir", "isEqualTo", 2, "and", { "_":[ "scene", "dir", "isEqualTo", 1, "not" ] } ] },
+                  "set":{ "dir":2, "dirX":0, "dirY":8 }
+                },
+                {
+                  "when":{ "_":[ "scene", "nextdir", "isEqualTo", 3, "and", { "_":[ "scene", "dir", "isEqualTo", 4, "not" ] } ] },
+                  "set":{ "dir":3, "dirX":-8, "dirY":0 }
+                },
+                {
+                  "when":{ "_":[ "scene", "nextdir", "isEqualTo", 4, "and", { "_":[ "scene", "dir", "isEqualTo", 3, "not" ] } ] },
+                  "set":{ "dir":4, "dirX":8, "dirY":0 }
+                },
+                {
+                  "as":{ "_":[ "scene", "nextPosition" ] },
+                  "set":{
+                    "x":{ "_":[ "scene", "headObj", "x", "+", { "_":[ "scene", "dirX" ] } ] }, "y":{ "_":[ "scene", "headObj", "y", "+", { "_":[ "scene", "dirY" ] } ] }
+                  }
+                },
+                { "when":{ "_":[ "scene", "nextPosition", "x", "isLessThan", 0 ] }, "sum":320, "to":{ "_":[ "scene", "nextPosition", "x" ] } },
+                { "when":{ "_":[ "scene", "nextPosition", "y", "isLessThan", 8 ] }, "sum":184, "to":{ "_":[ "scene", "nextPosition", "y" ] } },
+                { "when":{ "_":[ "scene", "nextPosition", "x", "isGreaterThan", 319 ] }, "subtract":320, "to":{ "_":[ "scene", "nextPosition", "x" ] } },
+                { "when":{ "_":[ "scene", "nextPosition", "y", "isGreaterThan", 191 ] }, "subtract":184, "to":{ "_":[ "scene", "nextPosition", "y" ] } },
+                {
+                  "when":{ "_":[ "scene", "nextPosition", "collidesWith", { "_":[ "object", "food" ] } ] },
+                  "execute":[
+                    { "as":{ "_":"that" }, "executeAction":"eat" },
+                    { "as":{ "_":"that" }, "remove":1 },
+                    { "sum":1, "to":{ "_":[ "variable", "score" ] } },
+                    { "set":{ "isFood":1 } },
+                    { "sum":{ "_":[ "that", "snakeFoodValue" ] }, "to":{ "_":[ "scene", "snakeFood" ] } }
+                  ]
+                },
+                {
+                  "when":{ "_":[ "scene", "snakeFood" ] },
+                  "execute":[
+                    { "subtract":1, "to":{ "_":[ "scene", "snakeFood" ] } },
+                    {
+                      "object":{
+                        "set":{ "_":[ "stencil", "snakeBody" ] },
+                        "tileY":{ "_":[ "scene", "snakeTileY" ] },
+                        "at":{ "_":[ "scene", "nextPosition" ] },
+                        "dir":{ "_":[ "scene", "dir" ] },
+                        "food":{ "_":[ "scene", "isFood" ] }
+                      },
+                      "as":{ "_":"that" },
+                      "unshiftInto":{ "_":[ "scene", "snake" ] }
+                    }
+                  ],
+                  "elseExecute":[
+                    {
+                      "as":{ "_":[ "scene", "tailObj" ] },
+                      "set":{ "at":{ "_":[ "scene", "nextPosition" ] }, "dir":{ "_":[ "scene", "dir" ] }, "food":{ "_":[ "scene", "isFood" ] } }
+                    },
+                    { "unpush":{ "_":[ "scene", "tailObj" ] }, "from":{ "_":[ "scene", "snake" ] } },
+                    { "as":{ "_":[ "scene", "tailObj" ] }, "unshiftInto":{ "_":[ "scene", "snake" ] } }
+                  ]
+                },
+                {
+                  "when":{ "_":[ "scene", "snake", 1, "food" ] },
+                  "as":{ "_":[ "scene", "snake", 1 ] },
+                  "set":{ "type":"kill", "zIndex":10, "frame":{ "_":[ "stencil", "bodyparts", "full" ] } },
+                  "elseExecute":{
+                    "as":{ "_":[ "scene", "snake", 1 ] },
+                    "set":{
+                      "type":"kill",
+                      "zIndex":10, "frame":{ "_":[ "stencil", "bodyparts", { "_":[ "scene", "snake", 1, "dir", ".", "-", ".", { "_":[ "scene", "snake", 0, "dir" ] } ] } ] }
+                    }
+                  }
+                },
+                {
+                  "as":{ "_":[ "scene", "snake", { "_":[ "scene", "snake", "count", "-", 1 ] } ] },
+                  "set":{ "frame":{ "_":[ "stencil", "bodyparts", { "_":[ "scene", "snake", { "_":[ "scene", "snake", "count", "-", 2 ] }, "dir", ".", "t" ] } ] } }
+                },
+                {
+                  "as":{ "_":[ "scene", "snake", 0 ] },
+                  "set":{ "zIndex":15, "frame":{ "_":[ "stencil", "bodyparts", { "_":[ "scene", "snake", 0, "dir", ".", "h" ] } ] } }
+                },
+                { "when":{ "_":[ "scene", "snake", 0, "collidesWith", { "_":[ "object", "kill" ] } ] }, "execute":{ "_":[ "stencil", "codeSnakeOver" ] } },
+                { "loopTo":0 }
+              ]
+            }
+          ]
+        },
+        {
+          "name":"lostlife",
+          "execute":{ "set":{ "counter":{ "_":[ "scene", "snake", "count", "-", 1 ] } } },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "as":{ "_":[ "scene", "snake", { "_":[ "scene", "counter" ] } ] }, "execute":{ "_":[ "stencil", "removeWithSpark" ] } },
+              { "subtract":1, "to":{ "_":[ "scene", "counter" ] }, "wait":1, "loopTo":0, "until":{ "_":[ "scene", "counter", "isLessThan", 0 ] } },
+              { "wait":25 },
+              {
+                "when":{ "_":[ "variable", "lives" ] },
+                "execute":[ { "when":{ "_":[ "cheat", "unlimitedlives", "not" ] }, "subtract":1, "to":{ "_":[ "variable", "lives" ] } }, { "set":{ "state":"readygo" } } ],
+                "elseExecute":{ "set":{ "state":"gameover" } }
+              }
+            ]
+          }
+        },
+        {
+          "name":"gameover",
+          "execute":{
+            "object":[
+              {
+                "type":"intro",
+                "width":320, "height":8,
+                "x":0, "y":1,
+                "bgcolor":"#000", "color":"#984b43",
+                "font":"commodore", "fontSize":8, "lineHeight":8, "textAlign":"center", "html":"GAME",
+                "states":{ "code":{ "name":"Execute", "data":{ "set":{ "y":{ "_":[ "this", "y", "*", 1.3, "limitValue", [ 0, 92 ] ] } } } } }
+              },
+              {
+                "type":"intro",
+                "width":320, "height":8,
+                "x":0, "y":1,
+                "bgcolor":"#000", "color":"#984b43",
+                "font":"commodore", "fontSize":8, "lineHeight":8, "textAlign":"center", "html":"OVER",
+                "states":{ "code":{ "name":"Execute", "data":{ "set":{ "y":{ "_":[ "this", "y", "*", 1.2, "limitValue", [ 0, 100 ] ] } } } } }
+              }
+            ],
+            "into":{ "_":"scenehud" }
+          },
+          "code":{
+            "name":"Sequence",
+            "data":[ { "wait":25 }, { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } }, { "gotoScene":"intro", "withTransition":3 } ]
+          }
+        },
+        {
+          "name":"stagedone",
+          "execute":{
+            "object":[
+              {
+                "type":"intro",
+                "width":320, "height":8,
+                "x":0, "y":1,
+                "bgcolor":"#000", "color":"#c9d684",
+                "font":"commodore", "fontSize":8, "lineHeight":8, "textAlign":"center", "html":"STAGE CLEAR!",
+                "states":{ "code":{ "name":"Execute", "data":{ "set":{ "y":{ "_":[ "this", "y", "*", 1.3, "limitValue", [ 0, 92 ] ] } } } } }
+              },
+              {
+                "type":"hud",
+                "hudType":"label", "label":"BONUS: %number|scene.bonuscounter% X 10 = %number|scene.bonustotal%",
+                "width":320, "height":8,
+                "x":0, "y":1,
+                "bgcolor":"#000", "color":"#fff",
+                "font":"commodore", "fontSize":8, "lineHeight":8, "textAlign":"center",
+                "states":{ "code":{ "name":"Execute", "data":{ "set":{ "y":{ "_":[ "this", "y", "*", 1.2, "limitValue", [ 0, 100 ] ] } } } } }
+              }
+            ],
+            "into":{ "_":"scenehud" }
+          },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "wait":25 },
+              { "sum":1, "to":{ "_":[ "scene", "bonuscounter" ] } },
+              { "sum":10, "to":{ "_":[ "variable", "score" ] } },
+              { "sum":10, "to":{ "_":[ "scene", "bonustotal" ] } },
+              {
+                "wait":1,
+                "loopTo":-3,
+                "until":{ "_":[ "keyA", "isHit", "or", { "_":[ "scene", "bonuscounter", "isEqualTo", { "_":[ "scene", "snake", "count" ] } ] } ] }
+              },
+              { "sum":{ "_":[ "scene", "snake", "count", "-", { "_":[ "scene", "bonuscounter" ] }, "*", 10 ] }, "to":{ "_":[ "variable", "score" ] } },
+              { "set":{ "bonuscounter":{ "_":[ "scene", "snake", "count" ] }, "bonustotal":{ "_":[ 10, "*", { "_":[ "scene", "snake", "count" ] } ] } } },
+              {
+                "object":{
+                  "type":"intro",
+                  "width":320, "height":8,
+                  "x":0, "y":1,
+                  "bgcolor":"#000", "color":"#984b43",
+                  "font":"commodore", "fontSize":8, "lineHeight":8, "textAlign":"center", "html":"WELL DONE!",
+                  "states":{ "code":{ "name":"Execute", "data":{ "set":{ "y":{ "_":[ "this", "y", "*", 1.3, "limitValue", [ 0, 108 ] ] } } } } }
+                },
+                "into":{ "_":"scenehud" }
+              },
+              { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+              { "_":[ "stencil", "codeNextStage" ] }
+            ]
+          }
+        }
+      ]
+    },
+    "stagesSequence":[
+      "stage1",
+      "multi",
+      "stage2",
+      "sides",
+      "stage3",
+      "sprinting",
+      "stage4",
+      "blockade",
+      "stage5",
+      "baller",
+      "stage6",
+      "bouncing",
+      "stage7",
+      "rolly",
+      "stage8",
+      "spooky",
+      "stage9",
+      "switcher",
+      "stage10",
+      "race"
+    ],
+    "ball":{
+      "type":"removeonsnakeover",
+      "image":"sprites", "tileX":0, "tileY":48, "width":8, "height":8,
+      "zIndex":10, "x":156, "y":40,
+      "forceX":-2, "forceY":2,
+      "states":{
+        "code":[
+          { "name":"Execute", "data":{ "when":{ "_":[ "this", "y", "isGreaterThan", 192 ] }, "execute":{ "_":[ "stencil", "codeSnakeOver" ] } } },
+          {
+            "name":"Physics",
+            "data":{ "walls":[ { "type":"scenario", "restitution":1 }, { "area":{ "width":320, "height":200, "x":0, "y":8 }, "restitution":1 } ] }
+          }
+        ]
+      }
+    },
+    "bodyparts":{
+      "1-1":1,
+      "1-2":1,
+      "1-3":6,
+      "1-4":5,
+      "1h":14,
+      "1t":10,
+      "2-1":2,
+      "2-2":2,
+      "2-3":8,
+      "2-4":7,
+      "2h":15,
+      "2t":11,
+      "3-1":7,
+      "3-2":5,
+      "3-3":3,
+      "3-4":3,
+      "3h":16,
+      "3t":12,
+      "4-1":8,
+      "4-2":6,
+      "4-3":4,
+      "4-4":4,
+      "4h":17,
+      "4t":13,
+      "full":9
+    },
+    "defaultStage":{
+      "backgroundSpinX":0,
+      "backgroundSpinY":0,
+      "backgroundTileX":0,
+      "backgroundTileY":0,
+      "bonuscounter":0,
+      "bonustotal":0,
+      "foodStencil":"food",
+      "foodToKeep":3,
+      "shadowX":0,
+      "shadowY":8,
+      "snakeFoodValue":3,
+      "snakeSpeed":2,
+      "snakeTileY":0,
+      "stageComment":"Eat, grow and survive!",
+      "stageName":"The Snake Maze",
+      "startSnakeFood":0,
+      "startX":18,
+      "startY":12,
+      "targetLength":50
+    },
+    "food":{
+      "type":[ "food", "obstacle", "darkable" ],
+      "image":"sprites", "tileY":24, "width":8, "height":8,
+      "zIndex":10, "frame":{ "_":[ "randomNumber", [ 0, 1 ] ] },
+      "snakeFoodValue":{ "_":[ "scene", "snakeFoodValue" ] },
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[
+            { "set":{ "x":{ "_":[ "randomNumber", [ 1, 36 ], "*", 8 ] }, "y":{ "_":[ "randomNumber", [ 1, 21 ], "*", 8 ] } } },
+            { "wait":1, "loopTo":0, "until":{ "_":[ "this", "collidesWith", { "_":[ "object", "obstacle" ] }, "not" ] } },
+            { "object":{ "_":[ "stencil", "spark" ] } },
+            { "set":{ "state":"ready" } }
+          ]
+        }
+      }
+    },
+    "bouncingFood":{
+      "set":{ "_":[ "stencil", "food" ] },
+      "forceX":{ "_":[ "randomValue", [ -2, 2 ] ] }, "forceY":{ "_":[ "randomValue", [ -2, 2 ] ] },
+      "states":{
+        "name":"ready",
+        "code":{
+          "name":"Physics",
+          "data":{ "walls":[ { "type":"scenario", "restitution":1 }, { "area":{ "width":320, "height":184, "x":0, "y":8 }, "restitution":1 } ] }
+        }
+      }
+    },
+    "sprintingFood":{
+      "set":{ "_":[ "stencil", "food" ] },
+      "forceX":{ "_":[ "randomValue", [ -2, 2 ] ] }, "forceY":{ "_":[ "randomValue", [ -2, 2 ] ] },
+      "states":{ "name":"ready", "actions":{ "name":"eat", "execute":{ "sum":10, "to":{ "_":[ "scene", "sprint" ] } } } }
+    },
+    "snakeBody":{ "type":[ "obstacle", "scenario", "darkable" ], "image":"snakes", "width":8, "height":8, "zIndex":10 },
+    ".":{
+      "type":[ "background", "darkable" ],
+      "image":"sprites", "tileX":{ "_":[ "scene", "backgroundTileX" ] }, "tileY":{ "_":[ "scene", "backgroundTileY" ] }, "width":8, "height":8,
+      "zIndex":1
+    },
+    "8":{ "type":[ "obstacle", "darkable", "goal" ], "image":"sprites", "tileX":192, "tileY":16, "width":8, "height":8, "zIndex":2 },
+    "B":{ "type":"wall1", "set":{ "_":[ "stencil", "A" ] }, "tileX":8, "closedTileX":144, "originalTileX":8 },
+    "C":{ "type":"wall2", "set":{ "_":[ "stencil", "A" ] }, "tileX":16, "closedTileX":144, "originalTileX":16 },
+    "D":{ "type":"wall3", "set":{ "_":[ "stencil", "A" ] }, "tileX":24, "closedTileX":144, "originalTileX":24 },
+    "E":{ "set":{ "_":[ "stencil", "A" ] }, "tileX":32 },
+    "F":{ "set":{ "_":[ "stencil", "A" ] }, "tileX":40 },
+    "G":{ "set":{ "_":[ "stencil", "A" ] }, "tileX":48 },
+    "H":{ "set":{ "_":[ "stencil", "A" ] }, "tileX":56 },
+    "I":{ "set":{ "_":[ "stencil", "A" ] }, "tileX":64 },
+    "J":{ "set":{ "_":[ "stencil", "A" ] }, "tileX":72 },
+    "K":{ "set":{ "_":[ "stencil", "A" ] }, "tileX":80 },
+    "L":{ "set":{ "_":[ "stencil", "A" ] }, "tileX":88 },
+    "M":{ "set":{ "_":[ "stencil", "A" ] }, "tileX":96 },
+    "N":{ "set":{ "_":[ "stencil", "A" ] }, "tileX":104 },
+    "O":{ "set":{ "_":[ "stencil", "A" ] }, "tileX":112 },
+    "P":{ "set":{ "_":[ "stencil", "A" ] }, "tileX":184 },
+    "Q":{ "set":{ "_":[ "stencil", "A" ] }, "tileX":200 },
+    "A":{ "type":[ "wall", "obstacle", "kill", "scenario", "darkable", "withshadow" ], "image":"sprites", "tileY":16, "width":8, "height":8, "zIndex":2 },
+    "4":{ "type":"dir1", "set":{ "_":[ "stencil", "modelDircheck" ] }, "tileX":152 },
+    "5":{ "type":"dir2", "set":{ "_":[ "stencil", "modelDircheck" ] }, "tileX":160 },
+    "6":{ "type":"dir3", "set":{ "_":[ "stencil", "modelDircheck" ] }, "tileX":168 },
+    "7":{ "type":"dir4", "set":{ "_":[ "stencil", "modelDircheck" ] }, "tileX":176 },
+    "1":{ "type":"switch1", "set":{ "_":[ "stencil", "modelSwitch" ] }, "tileX":120 },
+    "2":{ "type":"switch2", "set":{ "_":[ "stencil", "modelSwitch" ] }, "tileX":128 },
+    "3":{ "type":"switch3", "set":{ "_":[ "stencil", "modelSwitch" ] }, "tileX":136 }
+  },
+  "execute":{},
+  "scenes":{
+    "intro":{
+      "object":[
+        { "type":"odd", "image":"sprites", "tileY":80, "width":28, "height":42, "x":37, "y":40 },
+        { "type":"pair", "image":"sprites", "tileX":28, "tileY":80, "width":26, "height":42, "x":67, "y":40 },
+        { "type":"odd", "image":"sprites", "tileX":54, "tileY":80, "width":28, "height":42, "x":95, "y":40 },
+        { "type":"pair", "image":"sprites", "tileX":82, "tileY":80, "width":28, "height":42, "x":125, "y":40 },
+        { "type":"odd", "image":"sprites", "tileX":28, "tileY":80, "width":26, "height":42, "x":155, "y":40 },
+        { "type":"pair", "image":"sprites", "tileX":110, "tileY":80, "width":34, "height":42, "x":183, "y":40 },
+        { "type":"odd", "image":"sprites", "tileX":144, "tileY":80, "width":34, "height":42, "x":219, "y":40 },
+        { "type":"pair", "image":"sprites", "tileY":80, "width":28, "height":42, "x":255, "y":40 },
+        {
+          "image":"sprites", "tileY":128, "width":96, "height":8,
+          "zIndex":10, "x":-128, "y":70,
+          "states":{
+            "code":{
+              "name":"Sequence",
+              "data":[
+                { "set":{ "y":{ "_":[ "randomNumber", [ 44, 70 ] ] }, "flipX":0 } },
+                { "as":{ "_":[ "object", "pair" ] }, "set":{ "zIndex":5 } },
+                { "as":{ "_":[ "object", "odd" ] }, "set":{ "zIndex":20 } },
+                { "sum":4, "to":{ "_":[ "this", "x" ] }, "wait":1, "loop":1, "until":{ "_":[ "this", "x", "isGreaterThan", 320 ] } },
+                { "set":{ "y":{ "_":[ "randomNumber", [ 44, 70 ] ] }, "flipX":1 } },
+                { "as":{ "_":[ "object", "pair" ] }, "set":{ "zIndex":20 } },
+                { "as":{ "_":[ "object", "odd" ] }, "set":{ "zIndex":5 } },
+                { "subtract":4, "to":{ "_":[ "this", "x" ] }, "wait":1, "loop":1, "until":{ "_":[ "this", "x", "isLessThan", -128 ] } },
+                { "loopTo":0 }
+              ]
+            }
+          }
+        },
+        {
+          "width":320, "height":50,
+          "zIndex":5, "x":0, "y":140,
+          "font":"commodore", "fontSize":8, "lineHeight":14, "textAlign":"center", "html":"PRESS START",
+          "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "visible":0 }, "wait":10 }, { "set":{ "visible":1 }, "wait":10, "loopTo":0 } ] } }
+        }
+      ],
+      "execute":{ "as":{ "_":"variable" }, "set":{ "lives":6, "score":0, "stage":-1 } },
+      "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "execute":{ "_":[ "stencil", "codeNextStage" ] } } } }
+    },
+    "baller":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "snakeSpeed":2,
+      "snakeTileY":40,
+      "stageComment":"Don't let the ball fall!",
+      "stageName":"Baller",
+      "startSnakeFood":5,
+      "startY":21,
+      "targetLength":30,
+      "states":{ "name":"game", "like":[ { "_":[ "stencil", "modelFoodKeeper" ] }, { "_":[ "stencil", "modelBaller" ] } ] },
+      "tilemap":{
+        "tileWidth":8,
+        "tileHeight":8,
+        "map":[
+          "                                        ",
+          "FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF",
+          "F                                      F",
+          "F                                      F",
+          "F  FF    FF    FF       FF    FF    FF F",
+          "F                                      F",
+          "F  FF    FF    FF       FF    FF    FF F",
+          "F                                      F",
+          "F                                      F",
+          "F                                      F",
+          "F                                      F",
+          "F                                      F",
+          "F                                      F",
+          "F                                      F",
+          "F                                      F",
+          "F                                      F",
+          "F                                      F",
+          "F                                      F",
+          "F                                      F",
+          "F                                      F",
+          "F                                      F",
+          "F                                      F",
+          "F                                      F",
+          "FFF                                  FFF",
+          "                                        "
+        ]
+      }
+    },
+    "blockade":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "backgroundTileX":8,
+      "snakeTileY":8,
+      "stageComment":"Unlimited growth!",
+      "stageName":"Blockade",
+      "startSnakeFood":99999,
+      "targetLength":200,
+      "tilemap":{
+        "tileWidth":8,
+        "tileHeight":8,
+        "map":[
+          "                                        ",
+          "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+          "B                                      B",
+          "B                                      B",
+          "B                                      B",
+          "B                                      B",
+          "B                                      B",
+          "B                                      B",
+          "B    BBBBBBBBBBBBBBBBBBBBBBBBBBBBB     B",
+          "B                                      B",
+          "B                                      B",
+          "B                                      B",
+          "B                                      B",
+          "B                                      B",
+          "B                                      B",
+          "B                                      B",
+          "B    BBBBBBBBBBBBBBBBBBBBBBBBBBBBB     B",
+          "B                                      B",
+          "B                                      B",
+          "B                                      B",
+          "B                                      B",
+          "B                                      B",
+          "B                                      B",
+          "BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB",
+          "                                        "
+        ]
+      }
+    },
+    "bouncing":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "foodStencil":"bouncingFood",
+      "stageComment":"Catch the food!",
+      "stageName":"Bouncing",
+      "states":{ "name":"game", "like":{ "_":[ "stencil", "modelFoodKeeper" ] } },
+      "tilemap":{
+        "tileWidth":8,
+        "tileHeight":8,
+        "map":[
+          "                                        ",
+          "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC",
+          "C                              C       C",
+          "C                              C       C",
+          "C                              C       C",
+          "C                              C       C",
+          "C                              C       C",
+          "C                              C       C",
+          "C                              C       C",
+          "C                              C       C",
+          "C                              C       C",
+          "C                         CCCCCC       C",
+          "C                                      C",
+          "C       CCCCCC                         C",
+          "C       C                              C",
+          "C       C                              C",
+          "C       C                              C",
+          "C       C                              C",
+          "C       C                              C",
+          "C       C                              C",
+          "C       C                              C",
+          "C       C                              C",
+          "C       C                              C",
+          "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC",
+          "                                        "
+        ]
+      }
+    },
+    "multi":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "foodToKeep":10,
+      "stageComment":"Eat! Eat! Eat!",
+      "stageName":"Multi",
+      "startY":21,
+      "states":{ "name":"game", "like":{ "_":[ "stencil", "modelFoodKeeper" ] } },
+      "tilemap":{
+        "tileWidth":8,
+        "tileHeight":8,
+        "map":[
+          "                                        ",
+          "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
+          "E                                      E",
+          "E                                      E",
+          "E                                      E",
+          "E                                      E",
+          "E                                      E",
+          "E      E                        E      E",
+          "E      E                        E      E",
+          "E      E                        E      E",
+          "E      E                        E      E",
+          "E      E                        E      E",
+          "E      E                        E      E",
+          "E      E                        E      E",
+          "E      E                        E      E",
+          "E      E                        E      E",
+          "E      E                        E      E",
+          "E      EEEEEEEEEEEEEEEEEEEEEEEEEE      E",
+          "E                                      E",
+          "E                                      E",
+          "E                                      E",
+          "E                                      E",
+          "E                                      E",
+          "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE",
+          "                                        "
+        ]
+      }
+    },
+    "race":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "backgroundTileX":16,
+      "shadowX":0,
+      "shadowY":0,
+      "snakeSpeed":1,
+      "snakeTileY":32,
+      "stageComment":"3 laps to go!",
+      "stageName":"Race",
+      "startX":28,
+      "startY":15,
+      "targetLength":20,
+      "states":{ "name":"game", "like":{ "_":[ "stencil", "modelRace" ] } },
+      "tilemap":{
+        "tileWidth":8,
+        "tileHeight":8,
+        "map":[
+          "                                        ",
+          "  PPPP            PFFP QQQQQQQQQQQQQQQQ ",
+          "QIJJJJJJJJJJJJJJJKPPPP  GGGIJJJJJJJJJJK ",
+          "QH               LGGGGG CCCL          L ",
+          "QH               LCCCCC PFPL          LG",
+          "GH               LBFBFB PPPL          LC",
+          "CH               LBBBBB    L          LB",
+          "PH    IJJJJJK    ONNNNNNNNNM    IK    LB",
+          "GH    HGGGGGL                   LH    L ",
+          "CH    HCCCCCL                   LH    L ",
+          "PH    HEFEFEL                   LH    L ",
+          "PH    HEEEEEL                   LH    L ",
+          " H    H     ONNNNNNNNNNNNNNNNNNNMH    L ",
+          " H    HGGGGGIJJJJJJJJJJJJJJJJJJJKH    L ",
+          " H    HCCCCCL      8            LH    L ",
+          " H    HBFBFBL      8            LH    L ",
+          "GH    HBBBBBL      8            LH    LQ",
+          "CH    ONNNNNM      8            OM    LQ",
+          "BH               IJJJJJJJJJK          LQ",
+          "BH               HQQQQQQQQQL          LQ",
+          " H               HQ1111111QL          LQ",
+          " H               HGGGGG111QL          LQ",
+          " ONNNNNNNNNNNNNNNMCCCCC   QONNNNNNNNNNMQ",
+          " QQQQQQQQQQQQQQQQQBFBFB   QQQQQQQQQQQQQQ",
+          "                                        "
+        ]
+      }
+    },
+    "rolly":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "backgroundTileX":8,
+      "shadowX":0,
+      "shadowY":0,
+      "snakeTileY":16,
+      "stageComment":"Avoid the bad guys!",
+      "stageName":"Rolly",
+      "startY":21,
+      "states":{ "name":"game", "like":[ { "_":[ "stencil", "modelFoodKeeper" ] }, { "_":[ "stencil", "modelRolly" ] } ] },
+      "tilemap":{
+        "tileWidth":8,
+        "tileHeight":8,
+        "map":[
+          "                                        ",
+          "IJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJK",
+          "H                                      H",
+          "H                                      H",
+          "H                                      H",
+          "H                                      H",
+          "H                                      H",
+          "H           H              H           H",
+          "H           H              H           H",
+          "H           H              H           H",
+          "H           H              H           H",
+          "H           ONNNNNNNNNNNNNNM           H",
+          "H                                      H",
+          "H                                      H",
+          "H                                      H",
+          "H                                      H",
+          "H                                      H",
+          "H                                      H",
+          "H                                      H",
+          "H                                      H",
+          "H                                      H",
+          "H                                      H",
+          "H                                      H",
+          "ONNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNNM",
+          "                                        "
+        ]
+      }
+    },
+    "sides":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "backgroundTileX":8,
+      "backgroundTileY":8,
+      "shadowX":0,
+      "shadowY":0,
+      "snakeTileY":24,
+      "stageComment":"One way!",
+      "stageName":"Sides",
+      "states":{ "name":"game", "like":[ { "_":[ "stencil", "modelFoodKeeper" ] }, { "_":[ "stencil", "modelSides" ] } ] },
+      "tilemap":{
+        "tileWidth":8,
+        "tileHeight":8,
+        "map":[
+          "                                        ",
+          "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
+          "P           6              6           P",
+          "P           6              6           P",
+          "P           6              6           P",
+          "P           6              6           P",
+          "P           6              6           P",
+          "P           6              6           P",
+          "P           6              6           P",
+          "P           6              6           P",
+          "P           P44444444444444P           P",
+          "P                                      P",
+          "P                                      P",
+          "P                                      P",
+          "P           P55555555555555P           P",
+          "P           7              7           P",
+          "P           7              7           P",
+          "P           7              7           P",
+          "P           7              7           P",
+          "P           7              7           P",
+          "P           7              7           P",
+          "P           7              7           P",
+          "P           7              7           P",
+          "PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP",
+          "                                        "
+        ]
+      }
+    },
+    "spooky":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "backgroundTileY":8,
+      "snakeTileY":48,
+      "stageComment":"Alone in the dark!",
+      "stageName":"Spooky",
+      "states":{ "name":"game", "like":[ { "_":[ "stencil", "modelFoodKeeper" ] }, { "_":[ "stencil", "modelSpooky" ] } ] },
+      "tilemap":{
+        "tileWidth":8,
+        "tileHeight":8,
+        "map":[
+          "                                        ",
+          "GGGGGGGGGGGGGG            GGGGGGGGGGGGGG",
+          "G                                      G",
+          "G                                      G",
+          "G                                      G",
+          "G                                      G",
+          "G                                      G",
+          "G                                      G",
+          "G            GGGG      GGGG            G",
+          "G                                      G",
+          "G                                      G",
+          "G                                      G",
+          "G                                      G",
+          "G                                      G",
+          "G                                      G",
+          "G                                      G",
+          "G            GGGG      GGGG            G",
+          "G                                      G",
+          "G                                      G",
+          "G                                      G",
+          "G                                      G",
+          "G                                      G",
+          "G                                      G",
+          "GGGGGGGGGGGGGG            GGGGGGGGGGGGGG",
+          "                                        "
+        ]
+      }
+    },
+    "sprinting":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "foodStencil":"sprintingFood",
+      "stageComment":"Eat and run!",
+      "stageName":"Sprinting",
+      "startY":21,
+      "states":{ "name":"game", "like":[ { "_":[ "stencil", "modelFoodKeeper" ] }, { "_":[ "stencil", "modelSprinter" ] } ] },
+      "tilemap":{
+        "tileWidth":8,
+        "tileHeight":8,
+        "map":[
+          "                                        ",
+          "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC",
+          "C                                      C",
+          "C                                      C",
+          "C                                      C",
+          "C                                      C",
+          "C                                      C",
+          "C     CCCC         CC         CCCC     C",
+          "C     C            CC            C     C",
+          "C     C            CC            C     C",
+          "C     C            CC            C     C",
+          "C     C            CC            C     C",
+          "C     C            CC            C     C",
+          "C     C            CC            C     C",
+          "C     C            CC            C     C",
+          "C     C            CC            C     C",
+          "C     C            CC            C     C",
+          "C     CCCC         CC         CCCC     C",
+          "C                                      C",
+          "C                                      C",
+          "C                                      C",
+          "C                                      C",
+          "C                                      C",
+          "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC",
+          "                                        "
+        ]
+      }
+    },
+    "stage1":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "stageName":"No boundaries",
+      "states":{ "name":"game", "like":{ "_":[ "stencil", "modelFoodKeeper" ] } }
+    },
+    "stage10":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "stageName":"Double U",
+      "startY":4,
+      "states":{ "name":"game", "like":{ "_":[ "stencil", "modelFoodKeeper" ] } },
+      "tilemap":{
+        "tileWidth":8,
+        "tileHeight":8,
+        "map":[
+          "                                        ",
+          "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+          "A                                      A",
+          "A                                      A",
+          "A                                      A",
+          "A                                      A",
+          "A    A    AAAAAAAAAAAAAAAAAAAA    A    A",
+          "A    A    A                  A    A    A",
+          "A    A    A                  A    A    A",
+          "A    A    A                  A    A    A",
+          "A    A    A                  A    A    A",
+          "A    A    A                  A    A    A",
+          "A    A    A                  A    A    A",
+          "A    A    A                  A    A    A",
+          "A    A                            A    A",
+          "A    A                            A    A",
+          "A    A                            A    A",
+          "A    A                            A    A",
+          "A    AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA    A",
+          "A                                      A",
+          "A                                      A",
+          "A                                      A",
+          "A                                      A",
+          "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+          "                                        "
+        ]
+      }
+    },
+    "stage2":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "stageName":"Great wall",
+      "states":{ "name":"game", "like":{ "_":[ "stencil", "modelFoodKeeper" ] } },
+      "tilemap":{
+        "tileWidth":8,
+        "tileHeight":8,
+        "map":[
+          "                                        ",
+          "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+          "A                                      A",
+          "A                                      A",
+          "A                                      A",
+          "A                                      A",
+          "A                                      A",
+          "A                                      A",
+          "A                                      A",
+          "A                                      A",
+          "A                                      A",
+          "A                                      A",
+          "A                                      A",
+          "A                                      A",
+          "A                                      A",
+          "A                                      A",
+          "A                                      A",
+          "A                                      A",
+          "A                                      A",
+          "A                                      A",
+          "A                                      A",
+          "A                                      A",
+          "A                                      A",
+          "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+          "                                        "
+        ]
+      }
+    },
+    "stage3":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "stageName":"Splitted",
+      "startX":14,
+      "states":{ "name":"game", "like":{ "_":[ "stencil", "modelFoodKeeper" ] } },
+      "tilemap":{
+        "tileWidth":8,
+        "tileHeight":8,
+        "map":[
+          "                                        ",
+          "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+          "                    A                   ",
+          "                    A                   ",
+          "                    A                   ",
+          "                    A                   ",
+          "                    A                   ",
+          "                    A                   ",
+          "                    A                   ",
+          "                    A                   ",
+          "                    A                   ",
+          "                    A                   ",
+          "                    A                   ",
+          "                    A                   ",
+          "                    A                   ",
+          "                    A                   ",
+          "                    A                   ",
+          "                    A                   ",
+          "                    A                   ",
+          "                    A                   ",
+          "                    A                   ",
+          "                    A                   ",
+          "                    A                   ",
+          "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+          "                                        "
+        ]
+      }
+    },
+    "stage4":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "stageName":"Plus Equals",
+      "states":{ "name":"game", "like":{ "_":[ "stencil", "modelFoodKeeper" ] } },
+      "tilemap":{
+        "tileWidth":8,
+        "tileHeight":8,
+        "map":[
+          "                                        ",
+          "AAAAAA                            AAAAAA",
+          "A                                      A",
+          "A                                      A",
+          "A                                      A",
+          "A                                      A",
+          "A                                      A",
+          "                                        ",
+          "                                        ",
+          "                                        ",
+          "              AAAAAAAAAAAA              ",
+          "                                        ",
+          "                                        ",
+          "                                        ",
+          "              AAAAAAAAAAAA              ",
+          "                                        ",
+          "                                        ",
+          "                                        ",
+          "A                                      A",
+          "A                                      A",
+          "A                                      A",
+          "A                                      A",
+          "A                                      A",
+          "AAAAAA                            AAAAAA",
+          "                                        "
+        ]
+      }
+    },
+    "stage5":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "stageName":"Vortex",
+      "states":{ "name":"game", "like":{ "_":[ "stencil", "modelFoodKeeper" ] } },
+      "tilemap":{
+        "tileWidth":8,
+        "tileHeight":8,
+        "map":[
+          "                                        ",
+          "               A                        ",
+          "               A                        ",
+          "               A                        ",
+          "               A           AAAAAAAAAAAAA",
+          "               A                        ",
+          "               A                        ",
+          "               A                        ",
+          "               A                        ",
+          "               A                        ",
+          "               A                        ",
+          "               A                        ",
+          "                                        ",
+          "                        A               ",
+          "                        A               ",
+          "                        A               ",
+          "                        A               ",
+          "                        A               ",
+          "                        A               ",
+          "                        A               ",
+          "AAAAAAAAAAAAA           A               ",
+          "                        A               ",
+          "                        A               ",
+          "                        A               ",
+          "                                        "
+        ]
+      }
+    },
+    "stage6":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "stageName":"Arena",
+      "states":{ "name":"game", "like":{ "_":[ "stencil", "modelFoodKeeper" ] } },
+      "tilemap":{
+        "tileWidth":8,
+        "tileHeight":8,
+        "map":[
+          "                                        ",
+          "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+          "A                                      A",
+          "A                                      A",
+          "A                           A          A",
+          "A          A                A          A",
+          "A          A                A          A",
+          "A          A                A          A",
+          "A          A                A          A",
+          "A          A                A          A",
+          "A          A                A          A",
+          "           A                A           ",
+          "           A                A           ",
+          "           A                A           ",
+          "A          A                A          A",
+          "A          A                A          A",
+          "A          A                A          A",
+          "A          A                A          A",
+          "A          A                A          A",
+          "A          A                A          A",
+          "A                           A          A",
+          "A                                      A",
+          "A                                      A",
+          "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+          "                                        "
+        ]
+      }
+    },
+    "stage7":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "stageName":"A-Maze",
+      "states":{ "name":"game", "like":{ "_":[ "stencil", "modelFoodKeeper" ] } },
+      "tilemap":{
+        "tileWidth":8,
+        "tileHeight":8,
+        "map":[
+          "                                        ",
+          "AAAAA    AAAAAAAAAAAAAAAAAAAAAAAAAAA    ",
+          "A            A                          ",
+          "A            A                          ",
+          "A            A                          ",
+          "             A                          ",
+          "             A                          ",
+          "             A                          ",
+          "             A                          ",
+          "AAAAAAAAAAAAAA    AAAAAAAAAAAAAAAAAAAAAA",
+          "                                        ",
+          "                                        ",
+          "                                        ",
+          "                                        ",
+          "                                        ",
+          "                                        ",
+          "                                        ",
+          "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+          "                      A                 ",
+          "                      A                 ",
+          "                      A                 ",
+          "                      A                 ",
+          "                      A                 ",
+          "                      A                 ",
+          "                                        "
+        ]
+      }
+    },
+    "stage8":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "stageName":"Cross",
+      "startX":14,
+      "startY":15,
+      "states":{ "name":"game", "like":{ "_":[ "stencil", "modelFoodKeeper" ] } },
+      "tilemap":{
+        "tileWidth":8,
+        "tileHeight":8,
+        "map":[
+          "                                        ",
+          "                    A                   ",
+          "                    A                   ",
+          "                    A                   ",
+          "                    A                   ",
+          "                    A                   ",
+          "                    A                   ",
+          "                    A                   ",
+          "                    A                   ",
+          "                    A                   ",
+          "                    A                   ",
+          "                    A                   ",
+          "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+          "                    A                   ",
+          "                    A                   ",
+          "                    A                   ",
+          "                    A                   ",
+          "                    A                   ",
+          "                    A                   ",
+          "                    A                   ",
+          "                    A                   ",
+          "                    A                   ",
+          "                    A                   ",
+          "                    A                   ",
+          "                                        "
+        ]
+      }
+    },
+    "stage9":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "stageName":"Table",
+      "startY":5,
+      "states":{ "name":"game", "like":{ "_":[ "stencil", "modelFoodKeeper" ] } },
+      "tilemap":{
+        "tileWidth":8,
+        "tileHeight":8,
+        "map":[
+          "                                        ",
+          "                                        ",
+          "                                        ",
+          "                                        ",
+          "                                        ",
+          "                                        ",
+          "                                        ",
+          "                                        ",
+          "                                        ",
+          "                                        ",
+          "                                        ",
+          "                                        ",
+          "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+          "       A                        A       ",
+          "       A                        A       ",
+          "       A                        A       ",
+          "       A                        A       ",
+          "       A                        A       ",
+          "       A                        A       ",
+          "       A                        A       ",
+          "       A                        A       ",
+          "       A                        A       ",
+          "       A                        A       ",
+          "       A                        A       ",
+          "                                        "
+        ]
+      }
+    },
+    "switcher":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "stageComment":"Switch the switch!",
+      "stageName":"Switcher",
+      "states":{ "name":"game", "like":[ { "_":[ "stencil", "modelFoodKeeper" ] }, { "_":[ "stencil", "modelSwitcher" ] } ] },
+      "tilemap":{
+        "tileWidth":8,
+        "tileHeight":8,
+        "map":[
+          "                                        ",
+          "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+          "A          A                C          A",
+          "A 1      3 A 3              C 3      1 A",
+          "A          A                C          A",
+          "A          A                C          A",
+          "A          A                C          A",
+          "A          A                C          A",
+          "A          A                C          A",
+          "A        2 A                C          A",
+          "A          A                C 2        A",
+          "ADDDDDDDDDDA                C          A",
+          "A          B                ADDDDDDDDDDA",
+          "A        2 B                A          A",
+          "A          B                A 2        A",
+          "A          B                A          A",
+          "A          B                A          A",
+          "A          B                A          A",
+          "A          B                A          A",
+          "A          B                A          A",
+          "A          B                A          A",
+          "A 1      3 B 2            1 A 3      1 A",
+          "A          B                A          A",
+          "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+          "                                        "
+        ]
+      }
+    }
+  }
+}
