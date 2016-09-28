@@ -990,6 +990,7 @@ function Box(parent, type, sub, statemanager, useCanvas, aliasmode) {
 		box.statsmanager = 0;
 		// DOMINATOR PROXY
 		box.addFilter=function(filter){
+			filter=Box.clone(filter);
 			if (filter.image) filter.image=this.resources.items[filter.image];
 			this.node.addFilter(filter);
 		},
