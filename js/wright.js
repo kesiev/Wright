@@ -22,7 +22,7 @@ var Supports = (function(){
 		setCss:function(obj,prop,value) { if (prop=this.css(prop)) obj[prop]=value; },
 		browser:function(substr){ return navigator.userAgent.toLowerCase().indexOf(substr) > -1; },		
 		pointerMode:function() {
-			if ('ontouchstart' in document.documentElement) return "touch";
+			if (this.isTouch) return "touch";
 			else return "mouse";
 		},
 		addEventListener:function(node,evt,cb,rt) {
@@ -32,29 +32,72 @@ var Supports = (function(){
 		removeEventListener:function(node,evt,cb,rt) {
 			if (node.removeEventListener) node.removeEventListener(evt,cb,rt);
 			else node.detachEvent("on"+evt,cb)
-		}
+		},
+		setFullScreen:function(node) { if (Supports.isFullscreen) node[Supports.isFullscreen.request](); },
+		exitFullScreen:function() { if (Supports.isFullscreen) document[Supports.isFullscreen.exit](); },
+		isFullScreen:function() { return Supports.isFullscreen?!!document[Supports.isFullscreen.is]:false; }
 	}
 	ret.supportsScaling=ret.css("transform")&&ret.css("transformOrigin");
 	ret.isFirefox=ret.browser("firefox");
+	ret.isTouch=!!('ontouchstart' in window || navigator.maxTouchPoints);
+	window.AudioContext=ret.isAudio=window.AudioContext||window.webkitAudioContext;
+	if (div.requestFullscreen) ret.isFullscreen={request:"requestFullscreen",exit:"exitFullscreen",is:"fullscreenEnabled",on:"fullscreenchange",error:"fullscreenerror"};
+	else if (div.webkitRequestFullscreen) ret.isFullscreen={request:"webkitRequestFullscreen",exit:"webkitExitFullscreen",is:"webkitIsFullScreen",on:"webkitfullscreenchange",error:"webkitfullscreenerror"};
+	else if (div.mozRequestFullScreen) ret.isFullscreen={request:"mozRequestFullScreen",exit:"mozCancelFullScreen",is:"fullscreenElement",on:"mozfullscreenchange",error:"mozfullscreenerror"};
+	else if (div.msRequestFullscreen) ret.isFullscreen={request:"msRequestFullscreen",exit:"msExitFullscreen",is:"msFullscreenElement",on:"MSFullscreenChange",error:"msfullscreenerror"};
+	else ret.isFullscreen=false;
+	var elem = document.createElement('canvas');
+  	ret.isCanvas=!!(elem.getContext && elem.getContext('2d'));
 	return ret;
 })();
+// TIME
+Supports.getTimestamp = function() { return (new Date()).getTime(); };
+// AUDIO
+Supports.applyEffect=function(context,node,effect) {
+	var currTime = context.currentTime;
+	node.gainNode.gain.cancelScheduledValues(0);
+	switch (effect.name) {
+		case "fade":{
+			node.gainNode.gain.value=effect.fromVolume===undefined?node.gainNode.gain.value:effect.fromVolume;
+			node.gainNode.gain.linearRampToValueAtTime(effect.toVolume===undefined?node.volume:effect.toVolume, currTime + (effect.length===undefined?1:effect.length));
+			break;
+		}
+		case "setvolume":{
+			node.gainNode.gain.value=effect.volume===undefined?node.volume:effect.volume;
+			break;
+		}
+	}
+}
+// OBJECTS
+Supports.clone = function(obj) { return typeof obj == "object" ? JSON.parse(JSON.stringify(obj)) : obj; };
+// FILE
+Supports.getFile = function(file, cb) {
+	var xmlhttp = new XMLHttpRequest();
+	xmlhttp.onreadystatechange = function() {
+		if (xmlhttp.readyState == 4)
+			if ((xmlhttp.status == 200)||(xmlhttp.status==0)) cb(xmlhttp.responseText);
+			else cb();
+	};
+	xmlhttp.open("GET", file, true);
+	xmlhttp.send();
+};
 
 /*
- * DOM-Canvas renderer.
+ * DOM-Canvas rendering and controls.
  */
 
 var DOMInator=function(useCanvas,aliasmode){
 	var useDom=!useCanvas,pixelated=aliasmode=="pixelated",degtorad=3.14/180,octx,canvas,bregexp=/<br>/gi,extracss={},txtarea = document.createElement("textarea");
 	var transformProp=Supports.css("transform"),transformOriginProp=Supports.css("transformOrigin");
-	var from,to,source,sources={},filters=[],filter;
+	var from,to,source,sources={},filters=[],filter,running=1;
 
 	if (pixelated) pixelateStyle(extracss);
 
+	/* Font rendering hacks */
 	function lineHeightFixes(font,size){
 		if (font=="spectrum") return size-1;
 		return size;
 	}
-
 	function topFixes(font,pos){
 		if ((font=="spectrum")&&Supports.isFirefox) return pos-1;
 		return pos;
@@ -70,32 +113,27 @@ var DOMInator=function(useCanvas,aliasmode){
 			Supports.setCss(style,"fontSmoothing","none");
 		}
 	}
-
 	function pixelatedContext(ctx) {
 		ctx.webkitImageSmoothingEnabled = ctx.imageSmoothingEnabled = ctx.mozImageSmoothingEnabled = ctx.oImageSmoothingEnabled = ctx.msImageSmoothingEnabled= false;
 	}
 
 	/* Nodes and context handling */
-
 	function createNode(type) {
 		var node=document.createElement(type);
 		for (var a in extracss) node.style[a]=extracss[a];
 		return node;
 	}
-
 	function resetContext(ctx) {
 		if (pixelated) pixelatedContext(ctx);
 	}
 
 	/* Z-Index handling */
-
 	function __disconnect(obj) {
 		if (this.__first===obj) this.__first=obj.__next;
 		if (obj.__next) obj.__next.__prev=obj.__prev;
 		if (obj.__prev) obj.__prev.__next=obj.__next;
 		obj.__next=obj.__prev=0;
 	}
-	
 	function __add(obj,pri) {
 		obj.__pri=pri;
 		if (this.__first) {
@@ -121,7 +159,6 @@ var DOMInator=function(useCanvas,aliasmode){
 			obj.__next=obj.__prev=0;
 		}
 	}
-
 	function __repri(obj,pri) {
 		if (obj.__pri!=pri)
 			if (pri<obj.__pri) {
@@ -166,14 +203,12 @@ var DOMInator=function(useCanvas,aliasmode){
 	}
 
 	/* HTML printing */
-
 	function decodeEntities(html) {	    
 		txtarea.innerHTML = html;
 		return txtarea.value.replace(bregexp,"\n");
 	}
-
 	function print(ctx,x,y,prints) {
-		/* @todo: How to disable aliasing when printing scaled text in a simple way? */
+		/* @TODO: How to disable aliasing when printing scaled text in a simple way? */
 		var p;
 		for (var i=0;i<prints.length;i++) {
 			p=prints[i];
@@ -188,7 +223,6 @@ var DOMInator=function(useCanvas,aliasmode){
 			ctx.fillText(p.l, x+p.x, y+p.y);
 		}    	
 	}
-
 	function recalculatePrints(node) {
 		var prints;
 		if (octx) {
@@ -235,8 +269,370 @@ var DOMInator=function(useCanvas,aliasmode){
 		return prints;
 	}
 
-	/* Fake node */
+	/* Audio */
+	var audio;
+	this.enableAudio=function(volume) {
+		if (!audio&&Supports.isAudio) {
+			audio={
+				context: new AudioContext(),
+				channels:{},
+				defaults:{}
+			};
+			audio.gainNode=audio.context.createGain();
+			audio.gainNode.connect(audio.context.destination);
+			audio.gainNode.gain.value=volume;
+		}
+	};
+	this.addAudioChannel=function(name,data) {
+		if (audio) {
+			var channel=audio.channels[name]={
+				gainNode:audio.context.createGain(),
+				looping:data.looping,
+				playing:{},
+				volume:data.volume===undefined?1:data.volume,
+				applyEffect:function(effect) { 
+					Supports.applyEffect(audio.context,this,effect);
+				},
+				stop:function() {
+					for (var a in this.playing) if (this.playing[a]) this.playing[a].stop();
+				},
+				destroy:function() {
+					this.stop();
+					this.gainNode.disconnect();
+				}
+			};
+			channel.gainNode.connect(audio.gainNode);
+			channel.gainNode.gain.value=channel.volume;
+			if (data.samples)
+				for (var i=0;i<data.samples.length;i++)
+					audio.defaults[data.samples[i]]=name;
+		}
+	}
+	this.getAudioChannel=function(channel) {
+		if (audio) return audio.channels[channel];
+		else return 0;
+	};
+	this.getAudio=function(name,channel) {
+		if (audio&&resources.items[name]) {
+			if (channel===undefined) channel=audio.defaults[name];
+			var ch=audio.channels[channel];
+			if (ch) return ch.playing[name];
+		} else return 0;
+	};
+	this.playAudio=function(name,channel,looping,effect) {
+		if (audio&&resources.items[name]) {
+			if (channel===undefined) channel=audio.defaults[name];
+			var ch=audio.channels[channel];
+			if (ch) {
+				var sample=this.getAudio(name,channel);
+				if (sample) sample.stop();
+				sample=ch.playing[name]={
+					source:audio.context.createBufferSource(),
+					gainNode:audio.context.createGain(),
+					initTime:audio.context.currentTime,
+					channel:ch,
+					volume:1,
+					looping:looping||((looping===undefined)&&ch.looping),
+					stop:function() {
+						sample.source.stop(0);
+						sample.gainNode.disconnect();
+						sample.source.disconnect();
+						sample.channel.playing[name]=0;
+					},
+					applyEffect:function(effect) { Supports.applyEffect(box,this,effect); },
+					getter:function(attr){
+						switch (attr) {
+							case "position":{
+								var pos=(audio.context.currentTime-this.initTime)*this.source.playbackRate.value;
+								return !this.looping&&(pos>this.source.buffer.duration)?this.source.buffer.duration:pos;
+							}
+							case "length":{
+								return this.source.buffer.duration;
+							}
+							case "times":{
+								var times=((audio.context.currentTime-this.initTime)*this.source.playbackRate.value)/this.source.buffer.duration;
+								return !this.looping&&(times>1)?1:times;
+							}
+						}
+					}
+				}
+				sample.source.buffer=resources.items[name];
+				if (sample.looping) sample.source.loop=true;
+				sample.source.connect(sample.gainNode);
+				sample.gainNode.connect(ch.gainNode);
+				sample.gainNode.gain.value=sample.volume;
+				if (effect) sample.applyEffect(effect);
+				sample.source.start(0);
+			}
+		}
+	};
 
+	/* Game cycle */
+	var skipFrames=0,timeout=0,fps=0,mspf=0,frameTimestamp=0,framedone=1,gamecycle=0,renderer=0,self=this;
+	/*
+	@TODO: Keeping rendering and gamecycle on the same place slows down everything a lot.
+	var ts,time,skipFrames=0,timeout=0,fps=0,mspf=0,frameTimestamp=0,gamecycle=0,renderer=0,self=this;	
+	function scheduleFrame() {
+		if (running) {
+			ts=Supports.getTimestamp();
+			time=ts-frameTimestamp;
+			if (time>=mspf)  {
+				if (skipFrames)
+					skipFrames--;
+				else 
+					if (loading) {
+						renderer();
+						self.rawFrame();
+					} else {
+						gamecycle();
+						updateControls();
+						renderer();
+						self.frame();
+					}
+				frameTimestamp = ts;
+				time=0;
+			}
+			if (window.requestAnimationFrame) window.requestAnimationFrame(scheduleFrame);
+			else {
+				time=mspf-time;
+				if (time<1) time=1;
+				timeout=setTimeout(scheduleFrame,time);
+			}
+		}
+	}
+	*/
+	
+	function doRenderer() {
+		renderer();
+		self.frame();
+		framedone=1;
+	}
+	function scheduleFrame() {
+		clearTimeout(timeout);
+		var wait = mspf - Supports.getTimestamp() + frameTimestamp;
+		if (wait<=0) wait=1;
+		if (wait) timeout = setTimeout(runGameCycle, wait);
+		else runGameCycle();
+	};
+	function runGameCycle() {
+		if (running) {
+			if (loading) {
+				renderer();
+				self.rawFrame();
+				if (timeout != -1) scheduleFrame();
+			} else {
+				frameTimestamp = Supports.getTimestamp();
+				gamecycle();
+				updateControls();
+				if (framedone) {
+					framedone=0;
+					if (window.requestAnimationFrame) window.requestAnimationFrame(doRenderer);
+					else setTimeout(doRenderer,mspf/2);
+				}
+				if (skipFrames) {
+					skipFrames--;
+					scheduleFrame();
+				} else if (timeout != -1) scheduleFrame();
+			}
+		}
+	}
+	
+	this.addSkipFrames=function(frames){ skipFrames+=frames; }
+	this.setGameCycle=function(cb) { gamecycle=cb; }
+	this.setRenderer=function(cb) { renderer=cb;}
+	this.setFps = function(cfps) {
+		fps=cfps;
+		mspf = 1000 / fps;
+	};
+	this.getFps = function() { return fps }
+	this.getMspf = function() { return mspf }
+	this.abort=function() {
+		running=0;
+		if (timeout) {
+			clearTimeout(timeout);
+			timeout=-1;
+		}
+	}
+	this.setFps(25);
+
+	/* Resources management */
+	var loading=1,resources = {
+		loadingNode:0,
+		callback: 0,
+		current: 0,
+		loader: [],
+		root: "",
+		items: {}
+	};
+	function loadNextResource() {
+		if (resources&&resources.loader.length) {
+			resources.current = resources.loader.splice(0, 1)[0];
+			var file = resources.root + resources.current[1];
+			var ext = file.substr(file.lastIndexOf(".") + 1).toLowerCase();
+			switch (ext) {
+				case "font":{
+					var fontFamily=resources.current[1];
+					var detector = document.createElement("div");
+					var span = document.createElement("span");
+					detector.style.position="absolute";
+					detector.style.overflow="hidden";
+					detector.style.left="-200px";
+					detector.style.top="-99999px";
+					detector.style.width = "99999px";
+					detector.style.height = "200px";
+					detector.style.fontSize = "100px";
+					detector.appendChild(span);
+					span.innerHTML="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+					span.style.fontFamily= "arial";
+					document.body.appendChild(detector);
+					var oh=span.offsetWidth;
+					span.style.fontFamily= "\""+fontFamily.substr(0,fontFamily.lastIndexOf("."))+"\", arial";
+					var int=setInterval(function() {
+						if (oh!=span.offsetWidth) {
+							document.body.removeChild(detector);
+							clearTimeout(int);
+							loadNextResource();
+						}
+					},100);
+					break;
+				}
+				case "png":{
+					var cache = document.createElement("img");
+					cache.style.visibility = "hidden";
+					cache.style.position = "absolute";
+					cache.src = file;
+					cache.onload = function() {
+						document.body.removeChild(cache);
+						resources.items[resources.current[0]] = {url:file,img:cache};
+						if (resources) setTimeout(loadNextResource, 100);
+					};
+					document.body.appendChild(cache);
+					break;
+				}
+				case "json":{
+					Supports.getFile(file,function(text){
+						resources.items[resources.current[0]] = JSON.parse(text);
+						loadNextResource();
+					});
+					break;
+				}
+				case "ogg":
+				case "mp3":{
+					if (audio&&Supports.isAudio) {
+					  var request = new XMLHttpRequest();
+					  request.open('GET', file, true);
+					  request.responseType = 'arraybuffer';
+					  request.onload = function() {
+						audio.context.decodeAudioData(request.response, function(buffer) {
+						  resources.items[resources.current[0]] = buffer;
+						  loadNextResource();
+						}, function(e){
+							console.warn("Audio error with "+file,e);
+						});
+					  }
+					  request.send();
+					} else loadNextResource();
+				  break;
+				}
+			}
+		} else {
+			finalizeFilters();
+			loading=0;
+			resources.loadingNode.parentNode.removeChild(resources.loadingNode);
+			delete resources.loadingNode;
+			resources.callback();
+			resources.callback = 0;
+		}
+	}
+	this.setResourcesRoot = function(path) { resources.root = path; };
+	this.getResourcesRoot = function(path) { return resources.root };
+	this.addResource = function(name, data) { resources.loader.push([name, data]); };		
+	this.getResource=function(name) { return resources.items[name];}
+	this.loadResources=function(cb) {
+		resources.callback = cb;
+		resources.loadingNode=this.createElement("div");
+		resources.loadingNode.setAttribute("innerHTML","Loading...");
+		resources.loadingNode.setStyle("fontFamily","sans-serif");
+		resources.loadingNode.setStyle("fontSize",12);
+		resources.loadingNode.setStyle("color","#ccc");
+		resources.loadingNode.setStyle("width",100);
+		resources.loadingNode.setStyle("height",20);
+		resources.loadingNode.setStyle("lineheight",20);		
+		resources.loadingNode.setStyle("left",5);
+		resources.loadingNode.setStyle("top",5);
+		this.appendChild(resources.loadingNode);
+		loadNextResource();
+	}
+
+	/* Fullscreen handler */
+	var gameScreen=0,orgScalex=0,orgScaley=0;
+	function fullScreenResizer() {
+		var width=document.body.clientWidth;
+		var height=document.body.clientHeight;
+		var scalex=width/gameScreen.style.width,scaley=height/gameScreen.style.height;
+		if (scaley<scalex) scalex=scaley;
+		if (useDom) scalex=Math.floor(scalex)||1;
+		gameScreen.setStyle("scalex",scalex);
+		gameScreen.setStyle("scaley",scalex);
+		screenContainer.style.left=Math.floor((width-(gameScreen.style.width*scalex))/2)+"px";
+		screenContainer.style.top=Math.floor((height-(gameScreen.style.height*scalex))/2)+"px";
+	}
+	function exitFullScreen(noexit) {		
+		if (!noexit) Supports.exitFullScreen();
+		root.style.display="inline";
+		root.style.position="";
+		root.style.left=root.style.right=root.style.top=root.style.bottom="";
+		screenContainer.style.position="";
+		gameScreen.setStyle("scalex",orgScalex);
+		gameScreen.setStyle("scaley",orgScaley);
+		Supports.removeEventListener(window,"resize",fullScreenResizer);
+		Supports.removeEventListener(window,Supports.isFullscreen.on,fullScreenChange);
+		Supports.removeEventListener(window,Supports.isFullscreen.error,fullScreenChange);
+		if (keys.keyFullScreen) gameScreen.addEventListener("touchstart",fullscreenTouchToggle);
+		if (touchlayout) disableTouchcontroller();
+	}
+	function fullScreenChange() {
+		if (!Supports.isFullScreen()) exitFullScreen(true);
+	}
+	function gotoFullScreen() {
+		if (Supports.isFullscreen&&!Supports.isFullScreen()) {
+			Supports.setFullScreen(root);
+			orgScalex=gameScreen.style.scalex;
+			orgScaley=gameScreen.style.scaley;
+			root.style.display="block";
+			root.style.position="absolute";
+			screenContainer.style.position="absolute";
+			root.style.left=root.style.right=root.style.top=root.style.bottom="0px";
+			Supports.addEventListener(window,"resize",fullScreenResizer);
+			Supports.addEventListener(window,Supports.isFullscreen.on,fullScreenChange);
+			Supports.addEventListener(window,Supports.isFullscreen.error,fullScreenChange);
+			if (keys.keyFullScreen) gameScreen.removeEventListener("touchstart",fullscreenTouchToggle);
+			if (touchlayout) enableTouchcontroller();
+		}
+	}
+	function toggleFullScreen() {
+		if (Supports.isFullscreen)
+			if (Supports.isFullScreen()) exitFullScreen(); else gotoFullScreen();
+	}
+	function fullscreenTouchToggle(e) {
+		if (e.touches.length > 1) {
+			gotoFullScreen();
+			e.preventDefault();
+		}
+	}
+	var root=document.createElement("div");
+	root.style.display="inline";
+	root.style.backgroundColor="#000";
+	var screenContainer=document.createElement("div");
+	root.appendChild(screenContainer);
+	
+	/* Destruction */
+	function destroy() {
+		running=resources=0;
+		if (audio) for (var a in audio.channels) audio.channels[a].destroy();
+	}
+		
+	/* Fake node */
 	this.createElement=function(nodeName,model,domnode) {
 
 		if (!model) model=[];
@@ -362,6 +758,14 @@ var DOMInator=function(useCanvas,aliasmode){
 					case "lineHeight":{
 						this.attributes.prints=0;
 						this.style[k]=v;
+						if ((k=="width")||(k=="height")) this.attributes.blit=0;
+						break;
+					}
+					case "backgroundImage":
+					case "backgroundPositionY":
+					case "backgroundPositionX":{
+						this.style[k]=v;
+						this.attributes.blit=0;
 						break;
 					}
 					case "opacity":{
@@ -405,6 +809,32 @@ var DOMInator=function(useCanvas,aliasmode){
 				if (this.style.originXunit==1) tx=w/100*this.style.originX; else tx=this.style.originX;
 				if (this.style.originYunit==1) ty=h/100*this.style.originY; else ty=this.style.originY;
 
+				if (this.style.backgroundImage&&!this.attributes.blit) {
+					this.attributes.blit={
+						dx:0,
+						dy:0,
+						x:-this.style.backgroundPositionX,
+						y:-this.style.backgroundPositionY,
+						w:this.style.width,
+						h:this.style.height
+					};
+					if (this.attributes.blit.x<0) {
+						this.attributes.blit.dx=-this.attributes.blit.x;
+						this.attributes.blit.w+=this.attributes.blit.x;
+						this.attributes.blit.x=0;
+					}
+					if ((this.attributes.blit.x+this.attributes.blit.w)>this.style.backgroundImage.img.width)
+						this.attributes.blit.w=this.style.backgroundImage.img.width-this.attributes.blit.x;
+					if (this.attributes.blit.y<0) {
+						this.attributes.blit.dy=-this.attributes.blit.y;
+						this.attributes.blit.h+=this.attributes.blit.y;
+						this.attributes.blit.y=0;
+					}
+					if ((this.attributes.blit.y+this.attributes.blit.h)>this.style.backgroundImage.img.height)
+						this.attributes.blit.h=this.style.backgroundImage.img.height-this.attributes.blit.y;
+					if ((this.attributes.blit.w>0)&&(this.attributes.blit.h>0)) this.attributes.blit.valid=1;
+				}
+
 				/* Composite mode (for correct group filters) */
 				if (this.__first&&this.__isComposite) {
 					var cctx;
@@ -423,8 +853,8 @@ var DOMInator=function(useCanvas,aliasmode){
 						cctx.fillRect(0,0,this.style.width,this.style.height);
 					}
 
-					if (this.style.backgroundImage)
-						cctx.drawImage(this.style.backgroundImage.img,-this.style.backgroundPositionX,-this.style.backgroundPositionY,this.style.width,this.style.height,0,0,this.style.width,this.style.height);
+					if (this.style.backgroundImage&&this.attributes.blit.valid)
+						cctx.drawImage(this.style.backgroundImage.img,this.attributes.blit.x,this.attributes.blit.y,this.attributes.blit.w,this.attributes.blit.h,this.attributes.blit.dx,this.attributes.blit.dy,this.attributes.blit.w,this.attributes.blit.h);
 
 					if (this.attributes.printstext) {
 						if (!this.attributes.prints) this.attributes.prints=recalculatePrints(this);
@@ -476,8 +906,8 @@ var DOMInator=function(useCanvas,aliasmode){
 						ctx.fillRect(border,border,this.style.width,this.style.height);
 					}
 
-					if (this.style.backgroundImage)
-						ctx.drawImage(this.style.backgroundImage.img,-this.style.backgroundPositionX,-this.style.backgroundPositionY,this.style.width,this.style.height,border,border,this.style.width,this.style.height);
+					if (this.style.backgroundImage&&this.attributes.blit.valid)
+						ctx.drawImage(this.style.backgroundImage.img,this.attributes.blit.x,this.attributes.blit.y,this.attributes.blit.w,this.attributes.blit.h,border+this.attributes.blit.dx,border+this.attributes.blit.dy,this.attributes.blit.w,this.attributes.blit.h);
 
 					if (border) {
 						ctx.beginPath();
@@ -559,13 +989,258 @@ var DOMInator=function(useCanvas,aliasmode){
 		return model;
   	}
 
-	this.createElement("div",this,createNode(useDom?"div":"canvas"));
+  	gameScreen=this.createElement("div",this,createNode(useDom?"div":"canvas"));
+	screenContainer.appendChild(gameScreen._node);
 	this.setStyle("position","relative");
+
+	this.initialize=function(node) {
+		if (!root.parentNode) node.appendChild(root);
+		scheduleFrame();
+	}
+
+	// CONTROLS: KEYBOARD/TOUCH CONTROLLER
+	var key=this.key={};
+	var keys=this.keys={};
+	var hwkeys=[],touchlayout,
+
+
+	analogTouch=0,keyAtouch=0,keyBtouch=0;
+	var analogMap=[
+		{keyLeft:1,keyRight:0,keyUp:1,keyDown:0},
+		{keyLeft:1,keyRight:0,keyUp:0,keyDown:0},
+		{keyLeft:1,keyRight:0,keyUp:0,keyDown:1},
+		{keyLeft:0,keyRight:0,keyUp:0,keyDown:1},
+		{keyLeft:0,keyRight:1,keyUp:0,keyDown:1},
+		{keyLeft:0,keyRight:1,keyUp:0,keyDown:0},
+		{keyLeft:0,keyRight:1,keyUp:1,keyDown:0},
+		{keyLeft:0,keyRight:0,keyUp:1,keyDown:0}
+	],analogIdle={keyLeft:0,keyRight:0,keyUp:0,keyDown:0},analogCurrent={keyLeft:0,keyRight:0,keyUp:0,keyDown:0};
+
+	function setAnalog(state) {
+		for (var a in analogCurrent)
+			if (analogCurrent[a]!=state[a]) {
+				if (state[a]) keyDown(keys[a]); else keyUp(keys[a]);
+				analogCurrent[a]=state[a];
+			}
+	}
+
+	function touchcontrollerTouchStart(e) {
+		var touch,button;
+		for (var a=0;a<e.changedTouches.length;a++) {
+			touch=e.changedTouches[a];
+			for (var b=0;b<touchlayout.length;b++) {
+				button=touchlayout[b];
+				if (
+					(touch.clientX>=button.x1*document.body.clientWidth)&&
+					(touch.clientX<=button.x2*document.body.clientWidth)&&
+					(touch.clientY>=button.y1*document.body.clientHeight)&&
+					(touch.clientY<=button.y2*document.body.clientHeight)
+				) {
+					button.pressed=1;
+					button.id=touch.identifier;
+					switch (button.type) {
+						case 1:{
+							button.center={x:touch.clientX,y:touch.clientY};
+							setAnalog(analogIdle);
+							break;
+						}
+						default:{ keyDown(keys[button.button]); }
+					}
+				}
+			}
+		}
+		e.preventDefault(); 
+	}
+	
+	function touchcontrollerTouchEnd(e) {
+		var touch,button;
+		for (var a=0;a<e.changedTouches.length;a++) {
+			touch=e.changedTouches[a];
+			for (var b=0;b<touchlayout.length;b++) {
+				button=touchlayout[b];
+				if (button.pressed&&(button.id==touch.identifier)) {
+					button.id=button.pressed=0;
+					switch (button.type) {
+						case 1:{
+							setAnalog(analogIdle);
+							button.status=0;
+							break;
+						}
+						default:{ keyUp(keys[button.button]); }
+					}
+				}
+			}
+		}
+		e.preventDefault(); 
+	}
+
+	function touchcontrollerTouchMove(e) {
+		var touch,button,pos,ang,dx,dy,dist;
+		for (var a=0;a<e.changedTouches.length;a++) {
+			touch=e.changedTouches[a];
+			for (var b=0;b<touchlayout.length;b++) {
+				button=touchlayout[b];
+				if (button.pressed&&(button.id==touch.identifier)) {
+					switch (button.type) {
+						case 1:{
+							pos=analogIdle;
+							dx=button.center.x-touch.clientX;
+							dy=button.center.y-touch.clientY;
+							dist=Math.sqrt(Math.pow(dx,2)+Math.pow(dy,2));
+							if (dist>button.deadzone) {
+								ang=(Math.atan2(dx,dy)  * 180 / Math.PI)-22;
+								if (ang < 0) ang = 360 + ang;
+								pos=analogMap[Math.floor(ang/45)];
+							}
+							setAnalog(pos);
+							break;
+						}
+					}
+				}
+			}
+		}
+		e.preventDefault(); 
+	}
+
+	function enableTouchcontroller() {
+		Supports.addEventListener(root,"touchstart",touchcontrollerTouchStart);
+		Supports.addEventListener(root,"touchend",touchcontrollerTouchEnd);
+		Supports.addEventListener(root,"touchmove",touchcontrollerTouchMove);
+	}
+
+	function disableTouchcontroller() {
+		Supports.removeEventListener(root,"touchstart",touchcontrollerTouchStart);
+		Supports.removeEventListener(root,"touchend",touchcontrollerTouchEnd);
+		Supports.removeEventListener(root,"touchmove",touchcontrollerTouchMove);
+	}
+	
+	function keyDown(key) {
+		hwkeys[key]=1;
+		if (key==keys.keyFullScreen) toggleFullScreen();
+	};
+	function keyUp(key) { if (hwkeys[key]==1) hwkeys[key]=2; else hwkeys[key]=0; };
+	function onkeydown(e) { keyDown(e.keyCode); e.preventDefault(); };
+	function onkeyup(e) { keyUp(e.keyCode); };
+
+	// CONTROLS: POINTER
+	var pointer=this.pointer={x:0,y:0,width:1,height:1};
+	var detectPositionInPage=0,positionInPage=0;
+	function getPositionInPage(obj) {
+		var x = y = 0;
+		if (obj.offsetParent) {
+			do {
+				x += obj.offsetLeft;
+				y += obj.offsetTop;
+			} while (obj = obj.offsetParent);
+		}
+		return {x:x,y:y};
+	}
+	function touchHandler(e) {
+		if (!positionInPage) positionInPage=getPositionInPage(gameScreen._node);
+		if (e.changedTouches.length==1) {
+			var touch=e.changedTouches[0];
+			posx = touch.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+			posy = touch.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+			keyDown(-1);
+			pointer.x=Math.floor((posx-positionInPage.x)/gameScreen.style.scalex);
+			pointer.y=Math.floor((posy-positionInPage.y)/gameScreen.style.scaley);
+			e.preventDefault();
+		}
+	}		
+
+	// CONTROLS
+	var controls;
+	this.setControls=function(cont) {
+		controls=cont;
+
+		if (controls.keyboard) {
+			for (var a in controls.keyboard) keys[a]=controls.keyboard[a];
+			gameScreen.addEventListener("keydown",onkeydown);
+			gameScreen.addEventListener("keyup",onkeyup);
+			if (keys.keyFullScreen) gameScreen.addEventListener("touchstart",fullscreenTouchToggle);
+		}
+		// POINTER CONTROLS
+		if (controls.pointer) {
+			keys.keyPointer=-1;
+			detectPositionInPage=1;
+			gameScreen.setStyle("cursor","none");
+			switch (controls.pointer.id) {
+				case "mouse":{
+					gameScreen.addEventListener("mousemove",function(e){
+						if (!positionInPage) positionInPage=getPositionInPage(gameScreen._node);
+						var posx = 0;
+						var posy = 0;
+						if (!e) { var e = window.event; }
+						if (e.pageX || e.pageY) {
+							posx = e.pageX;
+							posy = e.pageY;
+						}
+						else if (e.clientX || e.clientY) {
+							posx = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+							posy = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+						}
+						pointer.x=Math.floor((posx-positionInPage.x)/gameScreen.style.scalex);
+						pointer.y=Math.floor((posy-positionInPage.y)/gameScreen.style.scaley);
+					});
+					gameScreen.addEventListener("mousedown",function(e){
+						keyDown(-1);
+						e.preventDefault();
+					});
+					gameScreen.addEventListener("mouseup",function(e){
+						keyUp(-1);
+						e.preventDefault();
+					});
+					break;
+				}
+				case "touch":{
+					gameScreen.addEventListener("touchstart",touchHandler);
+					gameScreen.addEventListener("touchmove",touchHandler);
+					gameScreen.addEventListener("touchend",function(e){ keyUp(-1); });
+					break;
+				}
+			}
+		}
+		// TOUCH CONTROLLER
+		if (controls.touchcontroller&&DOMInator.TOUCHLAYOUTS[controls.touchcontroller.layout]) touchlayout=Supports.clone(DOMInator.TOUCHLAYOUTS[controls.touchcontroller.layout].buttons);
+	}
+
+	function updateControls() {
+		if (keys) {
+			var ckey;
+			for (var a in keys) {
+				ckey=hwkeys[keys[a]];
+				if (ckey>0) {
+					if (key[a]) key[a] ++;
+					else key[a] = 1;
+					hwkeys[keys[a]]=(ckey==2?0:3);
+				}
+				else if (key[a] > 0) key[a] = -1;
+				else if (key[a]) key[a] ++;
+				else key[a] = 0;
+			}			
+		}
+		if (detectPositionInPage) {
+			detectPositionInPage++;
+			if (detectPositionInPage>25) {
+				positionInPage=0;
+				detectPositionInPage=1;
+			}
+		}
+	}
+
+	this.setAttribute("tabIndex", 1);
+	(function(obj){setTimeout(function() { obj._node.focus(); }, 1000);})(this);
+
+	/* Filters */
+
+	this.addFilter=function(filter) { filters.push(filter); }
+
+	// RENDERER SPECIFIC METHODS
 
 	if (useDom) {
 
 		var filterzindex=100;
-		sources.out=this._node;
+		sources.out=this;
 		
 		function addDivSource(name,style) {
 			if (!sources[name]) {
@@ -579,14 +1254,17 @@ var DOMInator=function(useCanvas,aliasmode){
 			return sources[name];
 		}
 
-		this.addFilter=function(filter) { 
-			if (!filter.of||(filter.every==0))
+		function finalizeFilters() {
+			for (var i=0;i<filters.length;i++) {
+				var filter=filters[i];
+				var image=filter.image?resources.items[filter.image]:0;		
+				if (!filter.of||(filter.every==0))
 				if (filter.generate) {
 					switch (filter.generate) {
 						case "texture":{
-							var source=addDivSource(filter.to,this.style);
+							var source=addDivSource(filter.to,sources.out.style);
 							source.style.opacity=filter.alpha||1;
-							source.style.backgroundImage="url('"+filter.image.url+"')";
+							source.style.backgroundImage="url('"+image.url+"')";
 							break;
 						}
 					}
@@ -598,12 +1276,17 @@ var DOMInator=function(useCanvas,aliasmode){
 						sources[filter.blit].style.zIndex=filterzindex;
 						source.appendChild(sources[filter.blit]);
 					}
-				}					
-		};
+				}	
+			}
+		}
 
-		this.destroy=function(){};
+		this.destroy=function(){
+			destroy();
+			if (root.parentNode) root.parentNode.removeChild(root);
+		};
 		
 		this.frame=function(){};
+		this.rawFrame=function(){};
 
 	} else {
 
@@ -624,14 +1307,25 @@ var DOMInator=function(useCanvas,aliasmode){
 			return sources[name];
 		}
 
+		function finalizeFilters() {
+			for (var i=0;i<filters.length;i++) {
+				var filter=filters[i];
+				if (filter.image) filter._image=resources.items[filter.image];
+			}
+		}
+
 		function removeCanvasSource(source) {
 			if (source&&source.node&&source.node.parentNode) source.node.parentNode.removeChild(source.node);
 		}
 
-		this.addFilter=function(filter) { filters.push(filter); }
-
 		this.destroy=function() {
+			destroy();
 			for (var a in sources) removeCanvasSource(sources[a]);
+			if (root.parentNode) root.parentNode.removeChild(root);
+		}
+
+		this.rawFrame=function() {
+			if (this.style.width&&this.style.height) this.redraw(sources.out.ctx,1);
 		}
 		
 		this.frame=function() {
@@ -651,10 +1345,10 @@ var DOMInator=function(useCanvas,aliasmode){
 									pixelateStyle(source.node);
 									pixelatedContext(source.ctx);
 									source.ctx.globalAlpha=filter.alpha||1;
-									var tx=Math.ceil(this.style.width/filter.image.img.width),ty=Math.ceil(this.style.height/filter.image.img.height);
+									var tx=Math.ceil(this.style.width/filter._image.img.width),ty=Math.ceil(this.style.height/filter._image.img.height);
 									for (var y=0;y<ty;y++)
 										for (var x=0;x<tx;x++)
-											source.ctx.drawImage(filter.image.img,x*filter.image.img.width,y*filter.image.img.height);
+											source.ctx.drawImage(filter._image.img,x*filter._image.img.width,y*filter._image.img.height);
 									break;
 								}
 								case "color":{
@@ -695,6 +1389,137 @@ var DOMInator=function(useCanvas,aliasmode){
 		}
 	}
 }
+
+DOMInator.CONTROLS={
+	pointer:{
+		keyboard:{
+			keyFullScreen: {label:"Fullscreen",isDisabled:!Supports.isFullscreen,subLabel:"Touch with two fingers the game area to enable fullscreen and touch controls.",subLabelDisabled:!Supports.isTouch,default:70}
+		},
+		pointer:{
+			id:{
+				options:[
+					{id:"mouse",label:"Mouse (click for Trigger)"},
+					{id:"touch",label:"Touch screen (tap for Trigger)",isDisabled:!Supports.isTouch}
+				],
+				default:Supports.pointerMode()
+			}
+		}
+	},
+	standard:{
+		keyboard:{
+			keyUp: {label:"Up",default:38},
+			keyDown: {label:"Down",default:40},
+			keyLeft: {label:"Left",default:37},
+			keyRight: {label:"Right",default:39},
+			keyA: {label:"A/Start",default:90},
+			keyB: {label:"B/Option",default:88},
+			keyFullScreen: {label:"Fullscreen",isDisabled:!Supports.isFullscreen,subLabel:"Touch with two fingers the game area to enable fullscreen and touch controls.",subLabelDisabled:!Supports.isTouch,default:70}
+		},
+		touchcontroller:{
+			layout:{
+				default:"joypad"
+			}
+		}
+	}
+};
+
+DOMInator.TOUCHLAYOUTS={
+	joypad:{
+		label:"Stick on left, A bottom/right, B top/right",
+		buttons:[
+			{x1:0,y1:0,x2:0.5,y2:1,type:1,deadzone:10},
+			{x1:0.5,y1:0,x2:1,y2:0.5,button:"keyB"},
+			{x1:0.5,y1:0.5,x2:1,y2:1,button:"keyA"}
+		]
+	},
+	sidedpad:{
+		label:"Horizontally: stick, B then A button",
+		buttons:[
+			{x1:0,y1:0,x2:0.33,y2:1,type:1,deadzone:10},
+			{x1:0.33,y1:0,x2:0.66,y2:1,button:"keyB"},
+			{x1:0.66,y1:0,x2:1,y2:1,button:"keyA"}
+		]
+	}
+};
+
+DOMInator.RENDERERS=[
+	{id:0,label:"DOM"},
+	{id:1,label:"Canvas",isDisabled:!Supports.isCanvas}
+];
+
+DOMInator.FILTERS={
+	none:[
+		{
+			label:"(None)",
+			filter:[{render:1}]
+		}
+	],
+	retro:[
+		{
+			label:"Scanlines",
+			filter:[
+		        {"generate":"texture","image":"scanlines","alpha":0.1,"to":"scanlines"},
+		        {"render":1},
+		        {"blit":"scanlines"}
+		    ]
+		},
+		{
+			label:"Disabled",
+			filter:[{render:1}]
+		},
+		{
+			label:"Retro LCD",
+			filter:[
+		        {"generate":"texture","image":"scanlines","alpha":0.1,"to":"scanlines"},
+		        {"render":1,"to":"currentframe"},
+		        {"blit":"currentframe","alpha":0.4},
+		        {"blit":"scanlines"}
+		    ]
+		},		
+		{
+			label:"Retro CRT",
+			filter:[
+		        {"generate":"texture","image":"crt","alpha":0.1,"to":"crt"},
+		        {"generate":"texture","image":"scanlines","alpha":0.2,"to":"scanlines"},
+		        {"generate":"noise","to":"noise","live":1},
+		        {"render":1,"to":"currentframe"},
+		        {"blit":"currentframe"},
+		        {"blit":"trailframe","filter":"saturate(5)","alpha":0.4},
+		        {"blit":"currentframe","to":"trailframe","alpha":0.6},
+		        {"every":0,"of":2,"blit":"scanlines"},
+		        {"every":1,"of":2,"blit":"scanlines","top":1},
+		        {"blit":"crt"},
+		        {"blit":"noise","alpha":0.1},
+		        {"blit":"currentframe","filter":"blur(10px)","alpha":0.5},			        
+		    ]	
+		},
+		{
+			label:"Compat Retro CRT",
+			filter:[
+		        {"generate":"texture","image":"crt","alpha":0.1,"to":"crt"},
+		        {"generate":"texture","image":"scanlines","alpha":0.2,"to":"scanlines"},
+		        {"generate":"noise","to":"noise","live":1},
+		        {"render":1,"to":"currentframe"},
+		        {"blit":"oldframe","alpha":0.5,"left":-1,"top":-1},
+		        {"blit":"oldframe","alpha":0.5,"left":-1,"top":0},
+		        {"blit":"oldframe","alpha":0.5,"left":-1,"top":1},
+		        {"blit":"oldframe","alpha":0.5,"left":0,"top":-1},
+		        {"blit":"oldframe","alpha":0.5,"left":0,"top":0},
+		        {"blit":"oldframe","alpha":0.5,"left":0,"top":1},
+		        {"blit":"oldframe","alpha":0.5,"left":1,"top":-1},
+		        {"blit":"oldframe","alpha":0.5,"left":1,"top":0},
+		        {"blit":"oldframe","alpha":0.5,"left":1,"top":1},
+		        {"blit":"currentframe","alpha":0.7},
+		        {"every":0,"of":2,"blit":"scanlines"},
+		        {"every":1,"of":2,"blit":"scanlines","top":1},
+		        {"blit":"crt"},
+		        {"blit":"noise","alpha":0.1},
+		        {"blit":"currentframe","to":"oldframe"}
+		    ]	
+		}
+	]
+};
+
 
 /*
  * Game library
@@ -806,17 +1631,13 @@ function Box(parent, type, sub, statemanager, useCanvas, aliasmode) {
 		at: function(s) { return this.setX(s.x || 0).setY(s.y || 0); },
 		size: function(s) { return this.setWidth(s.width || 0).setHeight(s.height || 0); },
 		setHitbox: function(h) {
-			this.hitbox = Box.clone(h instanceof Array ? h : [h]);
+			this.hitbox = Supports.clone(h instanceof Array ? h : [h]);
 			this.screen.dirtyRects(this);
 			return this;
 		},
 		// Rectangles
 		getRects: function() {
-			if (!this.rects) {
-				if (this.screen.statsmanager) this.screen.stats.updatedRects[this.uid]=this;
-				this.screen.stats.calculatedRects++;
-				this.rects=Box.getRects(this);
-			}
+			if (!this.rects) this.rects=Box.getRects(this);
 			return this.rects;
 		},
 		// Animation
@@ -940,164 +1761,36 @@ function Box(parent, type, sub, statemanager, useCanvas, aliasmode) {
 		if (parent.removed) box.remove();
 		else box.screen.scheduleObjectChange(box);
 	} else {
-		// DOM Callbacks
-		function onkeydown(e) {
-			box.keyDown(e.keyCode);
-			e.preventDefault();
-		};
-		function onkeyup(e) { box.keyUp(e.keyCode); };
-		// SCREEN - Stats
-		box.stats = {
-			updatedRects:{},
-			// Process based
-			frameProcessStart: 0,
-			frameProcessEnd: 0,
-			frameProcessTime: 0,
-			garbageCount: 0,
-			calculatedRects: 0,
-			movedCells: 0,
-			overload:0,
-			cellsCount:0,
-			cellsUsage:0,
-			listUsage:0,
-			iteratedObjects:0,
-			load:0,
-			// Persistent / Process Based
-			elementsCount: 0,
-			uidsCount: 1,
-			typesCount: 0,
-			nodesOnScreen:0,
-			runningCount:0,
-			// Render based
-			frameRenderStart: 0,
-			frameRenderEnd: 0,
-			frameRenderTime: 0,
-			changesCount: 0,
-			objectChangedCount: 0,
-			objectWastedCount:0
-		};
-		box.loadingNode=box.node.createElement("div");
-		box.loadingNode.setAttribute("innerHTML","Loading...");
-		box.loadingNode.setStyle("fontFamily","sans-serif");
-		box.loadingNode.setStyle("fontSize",12);
-		box.loadingNode.setStyle("color","#ccc");
-		box.loadingNode.setStyle("width",100);
-		box.loadingNode.setStyle("height",20);
-		box.loadingNode.setStyle("lineheight",20);		
-		box.loadingNode.setStyle("left",5);
-		box.loadingNode.setStyle("top",5);
-		box.node.appendChild(box.loadingNode);
-		box.statsmanager = 0;
-		// DOMINATOR PROXY
-		box.addFilter=function(filter){
-			filter=Box.clone(filter);
-			if (filter.image) filter.image=this.resources.items[filter.image];
-			this.node.addFilter(filter);
-		},
-		// AUDIO
-		box.enableAudio=function(volume) {
-			if (!this.audio) {
-				window.AudioContext=window.AudioContext||window.webkitAudioContext;
-				if (window.AudioContext) {
-					this.audio={
-						context: new AudioContext(),
-						channels:{},
-						defaults:{}
-					};
-					this.audio.gainNode=this.audio.context.createGain();
-					this.audio.gainNode.connect(this.audio.context.destination);
-					this.audio.gainNode.gain.value=volume;
-				}
-			}
-		};
-		box.addAudioChannel=function(name,data) {
-			if (this.audio) {
-				var channel=this.audio.channels[name]={
-					gainNode:this.audio.context.createGain(),
-					looping:data.looping,
-					playing:{},
-					volume:data.volume===undefined?1:data.volume,
-					applyEffect:function(effect) { Box.applyEffect(box,this,effect); },
-					stop:function() {
-						for (var a in this.playing) if (this.playing[a]) this.playing[a].stop();
-						this.applyEffect({name:"setvolume"});
-					},
-					destroy:function() {
-						this.stop();
-						this.gainNode.disconnect();
-					}
-				};
-				channel.gainNode.connect(this.audio.gainNode);
-				channel.gainNode.gain.value=channel.volume;
-				if (data.samples)
-					for (var i=0;i<data.samples.length;i++)
-						this.audio.defaults[data.samples[i]]=name;
-			}
-		}
-		box.getAudioChannel=function(channel) {
-			if (this.audio) return this.audio.channels[channel];
-			else return 0;
-		};
-		box.getAudio=function(name,channel) {
-			if (this.audio&&this.resources.items[name]) {
-				if (channel===undefined) channel=this.audio.defaults[name];
-				var ch=this.audio.channels[channel];
-				if (ch) return ch.playing[name];
-			} else return 0;
-		};
-		box.playAudio=function(name,channel,looping,effect) {
-			if (this.audio&&this.resources.items[name]) {
-				if (channel===undefined) channel=this.audio.defaults[name];
-				var ch=this.audio.channels[channel];
-				if (ch) {
-					var audio=this.getAudio(name,channel);
-					if (audio) audio.stop();
-					audio=ch.playing[name]={
-						source:this.audio.context.createBufferSource(),
-						gainNode:this.audio.context.createGain(),
-						initTime:this.audio.context.currentTime,
-						channel:ch,
-						volume:1,
-						looping:looping||((looping===undefined)&&ch.looping),
-						stop:function() {
-							audio.source.stop(0);
-							audio.gainNode.disconnect();
-							audio.source.disconnect();
-							audio.channel.playing[name]=0;
-						},
-						applyEffect:function(effect) { Box.applyEffect(box,this,effect); },
-						getter:function(attr){
-							switch (attr) {
-								case "position":{
-									var pos=(box.audio.context.currentTime-this.initTime)*this.source.playbackRate.value;
-									return !this.looping&&(pos>this.source.buffer.duration)?this.source.buffer.duration:pos;
-								}
-								case "length":{
-									return this.source.buffer.duration;
-								}
-								case "times":{
-									var times=((box.audio.context.currentTime-this.initTime)*this.source.playbackRate.value)/this.source.buffer.duration;
-									return !this.looping&&(times>1)?1:times;
-								}
-							}
-						}
-					}
-					audio.source.buffer=this.resources.items[name];
-					if (audio.looping) audio.source.loop=true;
-					audio.source.connect(audio.gainNode);
-					audio.gainNode.connect(ch.gainNode);
-					audio.gainNode.gain.value=audio.volume;
-					if (effect) audio.applyEffect(effect);
-					audio.source.start(0);
-				}
-			}
-		};
-		// STATES
-		box.setStatsManager = function(obj) {
-			this.statsmanager = obj;
-			obj.initialize(this);
+
+		// FILTERS (DOMInator Proxy)
+		box.addFilter=function(filter){ return this.node.addFilter(filter); }
+
+		// AUDIO (DOMInator Proxy)
+		box.enableAudio=function(volume) { return this.node.enableAudio(volume); }
+		box.addAudioChannel=function(name,data) { return this.node.addAudioChannel(name,data); }
+		box.getAudioChannel=function(channel) { return this.node.getAudioChannel(channel); }
+		box.getAudio=function(name,channel) { return this.node.getAudio(name,channel); }
+		box.playAudio=function(name,channel,looping,effect) { return this.node.playAudio(name,channel,looping,effect); }
+
+		// CONTROLS (DOMInator Proxy)
+		box.setControls = function(controls) {
+			this.node.setControls(controls);
+			this.keys=this.node.keys;
+			this.key=this.node.key;
+			this.pointer=this.node.pointer;
 			return this;
 		};
+
+		// ABORT
+		box.abort = function() { return this.node.abort(); };	
+
+		// RESOURCES LOADER (DOMInator Proxy)	
+		box.setResourcesRoot = function(path) { return this.node.setResourcesRoot(path); };
+		box.getResourcesRoot = function() { return this.node.getResourcesRoot(); };
+		box.getResource = function(name) { return this.node.getResource(name); };		
+		box.addResource = function(name, data) { return this.node.addResource(name, data); };		
+		box.loadResources = function(cb)  { return this.node.loadResources(cb); };	
+
 		// RECTANGLES
 		box.dirtyRects=function(obj,casacade) {
 			if (!obj.removed) {
@@ -1152,14 +1845,7 @@ function Box(parent, type, sub, statemanager, useCanvas, aliasmode) {
 				for (var i=0;i<obj.childs.length;i++) this.recalculateRects(obj.childs[i],except);
 			}
 		};
-		// SCREEN - Initialization
-		box.resources = {
-			callback: 0,
-			current: 0,
-			loader: [],
-			root: "",
-			items: {}
-		};
+
 		// SCREEN - UID generator
 		box.uids = { 0: box };
 		box.newUID = function(obj) {
@@ -1167,121 +1853,20 @@ function Box(parent, type, sub, statemanager, useCanvas, aliasmode) {
 			do {
 				uid = Math.floor(Math.random() * 100000000);
 			} while (box.uids[uid]);
-			this.stats.uidsCount++;
 			obj.uid = uid;
 			box.uids[uid] = obj;
 			return uid;
 		};
-		box.releaseUID = function(uid) {
-			this.stats.uidsCount--;
-			delete this.uids[uid];
-		};
-		// SCREEN - Keyboard
-		box.key = {};
-		box.hwkeys = [];
-		box.node.setAttribute("tabIndex", 1);
-		setTimeout(function() { box.node.focus(); }, 1000);
-		box.node.addEventListener("keydown",onkeydown);
-		box.node.addEventListener("keyup",onkeyup);
-		box.keyDown = function(key) { this.hwkeys[key]=1; };
-		box.keyUp = function(key) { if (this.hwkeys[key]==1) this.hwkeys[key]=2; else this.hwkeys[key]=0; };
-		box.setKeys = function(keys) {
-			this.keys = keys;
-			return this;
-		};
-		box.setGridSize = function(size) {
-			if (size) this.gridsize=size;
-			return this;
-		};
-		box.updateKeys = function() {
-			var key;
-			for (var a in this.keys) {
-				key=this.hwkeys[this.keys[a]];
-				if (key>0) {
-					if (this.key[a]) this.key[a] ++;
-					else this.key[a] = 1;
-					this.hwkeys[this.keys[a]]=(key==2?0:3);
-				}
-				else if (this.key[a] > 0) this.key[a] = -1;
-				else if (this.key[a]) this.key[a] ++;
-				else this.key[a] = 0;
-			}
-		};
-		// SCREEN - Pointer
-		box.positionInPage=0;
-		box.pointer = {x:0,y:0,width:1,height:1};
-		function getPositionInPage(obj) {
-			var x = y = 0;
-			if (obj.offsetParent) {
-				do {
-					x += obj.offsetLeft;
-					y += obj.offsetTop;
-				} while (obj = obj.offsetParent);
-			}
-			return {x:x,y:y};
-		}
-		function touchHandler(e) {
-			if (!box.positionInPage) box.positionInPage=getPositionInPage(box.node._node);
-			if (e.changedTouches.length==1) {
-				var touch=e.changedTouches[0];
-				posx = touch.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
-				posy = touch.clientY + document.body.scrollTop + document.documentElement.scrollTop;
-				box.keyDown(-1);
-				box.pointer.x=Math.floor((posx-box.positionInPage.x)/box.scale);
-				box.pointer.y=Math.floor((posy-box.positionInPage.y)/box.scale);
-				e.preventDefault();
-			}
-		}
-		box.enablePointer = function (mode) {
-			this.keys.keyPointer=-1;
-			box.getPositionInPage=1;
-			box.node.setStyle("cursor","none");
-			switch (mode) {
-				case "mouse":{
-					box.node.addEventListener("mousemove",function(e){
-						if (!box.positionInPage) box.positionInPage=getPositionInPage(box.node._node);
-						var posx = 0;
-						var posy = 0;
-						if (!e) { var e = window.event; }
-						if (e.pageX || e.pageY) {
-							posx = e.pageX;
-							posy = e.pageY;
-						}
-						else if (e.clientX || e.clientY) {
-							posx = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
-							posy = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
-						}
-						box.pointer.x=Math.floor((posx-box.positionInPage.x)/box.scale);
-						box.pointer.y=Math.floor((posy-box.positionInPage.y)/box.scale);
-					});
-					box.node.addEventListener("mousedown",function(e){
-						box.keyDown(-1);
-						e.preventDefault();
-					});
-					box.node.addEventListener("mouseup",function(e){
-						box.keyUp(-1);
-						e.preventDefault();
-					});
-					break;
-				}
-				case "touch":{
-					box.node.addEventListener("touchstart",touchHandler);
-					box.node.addEventListener("touchmove",touchHandler);
-					box.node.addEventListener("touchend",function(e){ box.keyUp(-1); });
-					break;
-				}
-			}
-		}
-		// SCREEN - Garbage management
+		box.releaseUID = function(uid) { delete this.uids[uid]; };
+
+		// SCREEN - Garbage management		
 		box.garbage = { objects: [] };
 		box.addObject = function(tox, type, statemanager) {
-			this.stats.elementsCount++;
 			var obj = Box(tox, type, 1, statemanager);
 			return obj;
 		};
 		box.removeObject = function(obj, skipchilds) {
 			if (!obj.removed) {
-				this.stats.elementsCount--;
 				obj.removed = 1;
 				for (var a in obj.type) this.types[a].length--;
 				if (!skipchilds)
@@ -1293,19 +1878,15 @@ function Box(parent, type, sub, statemanager, useCanvas, aliasmode) {
 			}
 		};
 		box.destroy = function() {
-			this.resources = 0;
 			for (var i in this.uids) this.removeObject(this.uids[i], 1);
 			this.clean();
-			if (this.node.parentNode) this.node.parentNode.removeChild(this.node._node);
 			if (this.timeout) clearTimeout(this.timeout);
-			if (this.audio) for (var a in this.audio.channels) this.audio.channels[a].destroy();
 			this.node.destroy();
 			this.timeout=-1;
 		};
 		box.clean = function() {
 			var obj;
 			for (var i = 0; i < this.garbage.objects.length; i++) {
-				this.stats.garbageCount++;
 				obj = this.garbage.objects[i];
 				for (var a in obj.type) this.removeObjectType(obj, a, 1);
 				this.removeCell(obj);
@@ -1314,10 +1895,12 @@ function Box(parent, type, sub, statemanager, useCanvas, aliasmode) {
 			}
 			this.garbage.objects.length=0;
 		};
+
 		// SCREEN - Render management
 		box.changes = {};
 		box.scheduleObjectChange = function(obj,recursive) {
-			if (this.isOnScreen(obj)||obj.onscreen) this.changes[obj.uid] = obj;
+			if (this.isOnScreen(obj)||obj.onscreen) // @TODO: this optimization is wrong :( If container (i.e. scene translates after change is not true anymore)
+			this.changes[obj.uid] = obj;
 			if (recursive)
 				for (var i=0;i<obj.childs.length;i++)
 					if (!obj.childs[i].removed) this.scheduleObjectChange(obj.childs[i],1);
@@ -1330,21 +1913,12 @@ function Box(parent, type, sub, statemanager, useCanvas, aliasmode) {
 		};
 		box.applyChanges = function() {
 			var obj, displayed, pad, node, w, h,rect,onscreen=0,oc;
-			this.stats.objectChangedCount = 0;
-			this.stats.objectWastedCount=0;
-			this.stats.changesCount=0;
-			this.stats.frameRenderStart = Box.getTimestamp();
 			for (var a in this.changes) {
-				oc=this.stats.changesCount;
 				obj = this.changes[a];
 				delete this.changes[a];
 				if (obj.removed) {
 					if (obj.node) {
-						if (obj.node.parentNode) {
-							this.stats.nodesOnScreen--;
-							this.stats.changesCount++;
-							obj.node.parentNode.removeChild(obj.node);
-						}
+						if (obj.node.parentNode) obj.node.parentNode.removeChild(obj.node);
 						delete obj.node;
 					}
 				} else {
@@ -1356,118 +1930,94 @@ function Box(parent, type, sub, statemanager, useCanvas, aliasmode) {
 					if (h < 0) h = 0;
 					onscreen=this.isOnScreen(obj);
 					displayed = obj.visible && w && h;
-					if (!obj.displayed&&displayed) {
-						node.setStyle("display","block");
-						this.stats.changesCount++;
-					}
-					if (obj.displayed&&!displayed) {
-						node.setStyle("display","none");
-						this.stats.changesCount++;
-					}
+					if (!obj.displayed&&displayed) node.setStyle("display","block");
+					if (obj.displayed&&!displayed) node.setStyle("display","none");
 					if (!obj.cleanprops.tileX || !obj.cleanprops.tileY || !obj.cleanprops.frame ||
 						!obj.cleanprops.width) {
 						node.setStyle("backgroundPositionX",-obj.tileX - (obj.frame * obj.width));
 						node.setStyle("backgroundPositionY", -obj.tileY);
 						obj.cleanprops.tileX = obj.cleanprops.tileY = obj.cleanprops.frame = 1;
-						this.stats.changesCount++;
 					}
 					if (!obj.cleanprops.width || !obj.cleanprops.border) {
 						node.setStyle("width",w);
 						obj.cleanprops.width = 1;
-						this.stats.changesCount++;
 					}
 					if (!obj.cleanprops.height || !obj.cleanprops.border) {
 						node.setStyle("height",h);
 						obj.cleanprops.height = 1;
-						this.stats.changesCount++;
 					}
 					if (!obj.cleanprops.color) {
 						node.setStyle("color",obj.color);
 						obj.cleanprops.color = 1;
-						this.stats.changesCount++;
 					}
 					if (!obj.cleanprops.bgcolor) {
 						node.setStyle("backgroundColor",obj.bgcolor);
 						obj.cleanprops.bgcolor = 1;
-						this.stats.changesCount++;
 					}
 					if (!obj.cleanprops.border) {
 						node.setStyle("borderWidth",obj.border?1:0);
 						node.setStyle("borderColor",obj.border);
 						obj.cleanprops.border = 1;
-						this.stats.changesCount++;
 					}
 					if (!obj.cleanprops.zIndex) {
 						node.setStyle("zIndex",obj.zIndex);
 						obj.cleanprops.zIndex = 1;
-						this.stats.changesCount++;
 					}
 					if (!obj.cleanprops.textAlign) {
 						node.setStyle("textAlign",obj.textAlign);
 						obj.cleanprops.textAlign = 1;
-						this.stats.changesCount++;
 					}
-					Box._translator(this,node,obj);
+					if (!obj.cleanprops.x || !obj.cleanprops.y || !obj.cleanprops.z || !obj.cleanprops.scale  || !obj.cleanprops.flipX || !obj.cleanprops.flipY || !obj.cleanprops.angle) {
+						node.setStyle("scalex",obj.flipX ? -obj.scale : obj.scale);
+						node.setStyle("scaley",obj.flipY ? -obj.scale : obj.scale);
+						node.setStyle("rotate",obj.angle);
+						node.setStyle("left",Math.floor(obj.x));
+						node.setStyle("top",Math.floor(obj.y + obj.z));
+						obj.cleanprops.x = obj.cleanprops.y = obj.cleanprops.z = obj.cleanprops.flipX = obj.cleanprops.flipY = obj.cleanprops.angle = 1;
+					}
+					if (!obj.cleanprops.originX || !obj.cleanprops.originY) {
+						node.setStyle("originX",obj.originX);
+						node.setStyle("originY",obj.originY);
+						obj.cleanprops.originX = obj.cleanprops.originY = 1;
+					}
 					if (!obj.cleanprops.alpha) {
 						node.setStyle("opacity",obj.alpha);
 						obj.cleanprops.alpha = 1;
-						this.stats.changesCount++;
 					}
 					if (!obj.cleanprops.font) {
 						node.setStyle("fontFamily",obj.font);
 						obj.cleanprops.font = 1;
-						this.stats.changesCount++;
 					}
 					if (!obj.cleanprops.lineHeight) {
 						node.setStyle("lineHeight",obj.lineHeight);
 						obj.cleanprops.lineHeight = 1;
-						this.stats.changesCount++;
 					}
 					if (!obj.cleanprops.fontSize) {
 						node.setStyle("fontSize",obj.fontSize);
 						obj.cleanprops.fontSize = 1;
-						this.stats.changesCount++;
 					}
 					if (!obj.cleanprops.outline) {
 						node.setStyle("outline",obj.outline);
 						obj.cleanprops.outline = 1;
-						this.stats.changesCount++;
 					}
 					if (!obj.cleanprops.image) {
-						if (obj.image) node.setStyle("backgroundImage", this.resources.items[obj.image]);
+						if (obj.image) node.setStyle("backgroundImage", this.node.getResource(obj.image));
 						else node.setStyle("backgroundImage","");
 						obj.cleanprops.image = 1;
-						this.stats.changesCount++;
 					}
 					if (!obj.cleanprops.html) {
 						if (obj.html !== undefined) node.setAttribute("innerHTML",obj.html);
 						obj.cleanprops.html = 1;
-						this.stats.changesCount++;
 					}
 					obj.displayed = displayed;
-					if (!node.parentNode) {
-						this.stats.changesCount++;
-						this.stats.nodesOnScreen++;
-						obj.parent.node.appendChild(node);
-					}
-					if (onscreen&&!obj.node.parentNode) {
-						this.stats.changesCount++;
-						this.stats.nodesOnScreen--;
-						obj.parent.node.appendChild(obj.node);
-					} else if (!onscreen&&obj.node.parentNode) {
-						this.stats.changesCount++;
-						this.stats.nodesOnScreen--;
-						obj.parent.node.removeChild(obj.node);
-					}
+					if (!node.parentNode) obj.parent.node.appendChild(node);
+					if (onscreen&&!obj.node.parentNode) obj.parent.node.appendChild(obj.node);
+					else if (!onscreen&&obj.node.parentNode) obj.parent.node.removeChild(obj.node);
 				}
 				obj.onscreen=onscreen;
-				if (oc!=this.stats.changesCount) this.stats.objectChangedCount++;
-				else this.stats.objectWastedCount++;
 			}
-			this.stats.frameRenderEnd = Box.getTimestamp();
-			this.stats.frameRenderTime =this.stats.frameRenderEnd - this.stats.frameRenderStart;
-			if (this.statsmanager && this.statsmanager.onApplyChanges) this.statsmanager.onApplyChanges(this);
 		};
+
 		// SCREEN - Type manager
 		box.types = {};
 		box.addObjectType = function(obj, type) {
@@ -1476,7 +2026,6 @@ function Box(parent, type, sub, statemanager, useCanvas, aliasmode) {
 			else if (!obj.type[type]) {
 				this.dirtygrid[obj.uid] = 1;
 				if (!this.types[type]) {
-					this.stats.typesCount++;
 					this.types[type] = {
 						typeId: type,
 						length:1,
@@ -1494,10 +2043,8 @@ function Box(parent, type, sub, statemanager, useCanvas, aliasmode) {
 				this.dirtygrid[obj.uid] = 1;
 				this.types[type].items.splice(this.types[type].items.indexOf(obj), 1);
 				delete obj.type[type];
-				if (!this.types[type].items.length) {
-					this.stats.typesCount--;
-					delete this.types[type];
-				} else if (!skipcount) this.types[type].length--;
+				if (!this.types[type].items.length) delete this.types[type];
+				else if (!skipcount) this.types[type].length--;
 			}
 		};
 		box.getType=function(id){
@@ -1509,12 +2056,17 @@ function Box(parent, type, sub, statemanager, useCanvas, aliasmode) {
 			if (type)
 				for (var i=0;i<type.items.length;i++) if (!type.items[i].removed) return type.items[i];
 		};
+
 		// SCREEN - Grid manager
 		box.grid = {};
 		box.gridreference=0;
 		box.gridcoords={x:0,y:0};
 		box.gridsize = { width: 128, height: 128 };
 		box.dirtygrid = {};
+		box.setGridSize = function(size) {
+			if (size) this.gridsize=size;
+			return this;
+		};
 		box.setGridReference=function(obj) {
 			this.gridreference=obj;
 			this.gridcoords.x=0;
@@ -1565,10 +2117,7 @@ function Box(parent, type, sub, statemanager, useCanvas, aliasmode) {
 					for (var i = 0; i < obj.cell.length; i++) {
 						delete this.grid[obj.cell[i]].items[obj.uid];
 						this.grid[obj.cell[i]].length--;
-						if (!this.grid[obj.cell[i]].length) {
-							this.stats.cellsCount--;
-							delete this.grid[obj.cell[i]];
-						}
+						if (!this.grid[obj.cell[i]].length) delete this.grid[obj.cell[i]];
 					}
 					obj.cell = 0;
 					obj.cellsignature = 0;
@@ -1581,13 +2130,9 @@ function Box(parent, type, sub, statemanager, useCanvas, aliasmode) {
 				var cellsignature = this.getCellsSignature(obj);
 				if (!obj.cell || (cellsignature != obj.cellsignature)) {
 					var cell = this.getCells(obj);
-					this.stats.movedCells++;
 					if (obj.cell) this.removeCell(obj);
 					for (var i = 0; i < cell.length; i++) {
-						if (!this.grid[cell[i]]) {
-							this.stats.cellsCount++;
-							this.grid[cell[i]] = {items:{},length:0};
-						}
+						if (!this.grid[cell[i]]) this.grid[cell[i]] = {items:{},length:0};
 						this.grid[cell[i]].items[obj.uid]=obj;
 						this.grid[cell[i]].length++;
 					}
@@ -1601,6 +2146,7 @@ function Box(parent, type, sub, statemanager, useCanvas, aliasmode) {
 			var ret = 0;
 			for (var a in this.dirtygrid) this.updateCell(this.uids[a]);
 		},
+
 		// SCREEN - Collisions
 		box.iterateCollisions=function(a,b,getcollision,dx,dy,ignorehitbox,extra,cb) {
 			if (!a||a.removed) return;
@@ -1609,20 +2155,15 @@ function Box(parent, type, sub, statemanager, useCanvas, aliasmode) {
 			var col,ret;
 			// Collision with type
 			if (b instanceof Array) {
-				this.stats.listUsage++;
-				for (var x=0;x<b.length;x++) {
-					this.stats.iteratedObjects++;
+				for (var x=0;x<b.length;x++)
 					if (!b[x].removed&&(a!==b[x])&&(col=Box.isColliding(a,b[x],getcollision,dx,dy,ignorehitbox)))
 						if (ret=cb(col,a,b[x],extra)) return ret;
-				}
 			} else if (b.typeId) {
-				this.stats.cellsUsage++;
 				this.updateGrid();
 				var cur,itm, cells = this.getCells(a,dx,dy,b.typeId), done = {};
 				for (var c = 0; c < cells.length; c++)
 					if (cur = this.grid[cells[c]])
 						for (var o in cur.items) {
-							this.stats.iteratedObjects++;
 							itm=cur.items[o];
 							if (!itm.removed && (a !== itm) && (!done[itm.uid])) {
 								done[itm.uid] = 1;
@@ -1634,136 +2175,40 @@ function Box(parent, type, sub, statemanager, useCanvas, aliasmode) {
 						}
 			} else if (col=Box.isColliding(a,b,getcollision,dx,dy,ignorehitbox)) return cb(col,a,b,extra);
 		},
-		// SCREEN - Destroying/Abort
-		box.abort = function() { this.timeout = -1; };
-		// SCREEN - Resources loader
-		box.resources = {
-			callback: 0,
-			current: 0,
-			loader: [],
-			root: "",
-			items: {}
-		};
-		box.setResourcesRoot = function(path) { this.resources.root = path; };
-		box.addResource = function(name, data) { this.resources.loader.push([name, data]); };
-		box.loadNextResource = function() {
-			if (box.resources)
-				if (box.resources.loader.length) {
-					box.resources.current = box.resources.loader.splice(0, 1)[0];
-					var file = box.resources.root + box.resources.current[1];
-					var ext = file.substr(file.lastIndexOf(".") + 1).toLowerCase();
-					switch (ext) {
-						case "font":{ // @todo: Add to every game!
-							var fontFamily=box.resources.current[1];
-							var detector = document.createElement("div");
-							var span = document.createElement("span");
-							detector.style.position="absolute";
-							detector.style.overflow="hidden";
-							detector.style.left="-200px";
-							detector.style.top="-99999px";
-							detector.style.width = "99999px";
-							detector.style.height = "200px";
-							detector.style.fontSize = "100px";
-							detector.appendChild(span);
-							span.innerHTML="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-							span.style.fontFamily= "arial";
-							document.body.appendChild(detector);
-							var oh=span.offsetWidth;
-							span.style.fontFamily= "\""+fontFamily.substr(0,fontFamily.lastIndexOf("."))+"\", arial";
-							var int=setInterval(function() {
-								if (oh!=span.offsetWidth) {
-									document.body.removeChild(detector);
-									clearTimeout(int);
-									box.loadNextResource();
-								}
-							},100);
-							break;
-						}
-						case "png":{
-							var cache = document.createElement("img");
-							cache.style.visibility = "hidden";
-							cache.style.position = "absolute";
-							cache.src = file;
-							cache.onload = function() {
-								document.body.removeChild(cache);
-								box.resources.items[box.resources.current[0]] = {url:file,img:cache};
-								if (box.resources) setTimeout(box.loadNextResource, 100);
-							};
-							document.body.appendChild(cache);
-							break;
-						}
-						case "json":{
-							Box.getFile(file,function(text){
-								box.resources.items[box.resources.current[0]] = JSON.parse(text);
-								box.loadNextResource();
-							});
-							break;
-						}
-						case "ogg":
-						case "mp3":{
-							if (box.audio) {
-							  var request = new XMLHttpRequest();
-							  request.open('GET', file, true);
-							  request.responseType = 'arraybuffer';
-							  request.onload = function() {
-								box.audio.context.decodeAudioData(request.response, function(buffer) {
-								  box.resources.items[box.resources.current[0]] = buffer;
-								  box.loadNextResource();
-								}, function(e){
-									console.warn("Audio error with "+file,e);
-								});
-							  }
-							  request.send();
-							} else box.loadNextResource();
-						  break;
-						}
-					}
-				} else {
-					box.node.removeChild(box.loadingNode);
-					delete box.loadingNode;
-					box.resources.callback();
-					box.resources.callback = 0;
-				}
-		};
-		box.loadResources = function(cb) {
-			box.resources.callback = cb;
-			box.loadNextResource();
-		};
+
 		// SCREEN - Code execution
 		box.needrunning=[];
 		box.updateNeedRunning=function(obj){
 			var needrunning=!obj.removed&&obj.uid&&(obj.animations[obj.animation]||obj.states[obj.state]||obj.states[obj.nextState]);
-			if (!obj.coderunning&&needrunning) {
-				this.stats.runningCount++;
-				this.needrunning.push(obj);
-			} else if (obj.coderunning&&!needrunning) {
-				this.stats.runningCount--;
-				this.needrunning[this.needrunning.indexOf(obj)]=0;
-			}
+			if (!obj.coderunning&&needrunning) this.needrunning.push(obj);
+			else if (obj.coderunning&&!needrunning) this.needrunning[this.needrunning.indexOf(obj)]=0;
 			obj.coderunning=needrunning;
 		};
 		box.runCode = function(obj) {
+			// STATE CHANGE
 			var i, statedata, state = obj.state;
 			if (obj.nextState != state) {
 				obj.state = obj.nextState;
 				statedata = obj.getState();
 				for (i = 0; i < statedata.code.length; i++) statedata.code[i][2][1] = {};
-					if (obj.stateManager) obj.stateManager.change(obj, state, obj.state,statedata);
+				if (obj.stateManager) obj.stateManager.change(obj, state, obj.state,statedata);
 			} else statedata = obj.getState();
+
+			// STATE CODE
 			if (!obj.removed && obj.running && statedata.code)
 				for (i = 0; i < statedata.code.length; i++)
 					if (statedata.code[i][0] && statedata.code[i][1]) statedata.code[i][1].apply( obj, statedata.code[i][2]);
-				for (i = 0; i < statedata.code.length; i++) if (!statedata.code[i][0]) statedata.code.splice(i--, 1);
-					var animation = obj.animations[obj.animation];
-				if (typeof animation == "string") animation = obj.animations[animation];
-				if (animation && obj.animationplay)
-					if (obj.animationcount) obj.animationcount--;
+			for (i = 0; i < statedata.code.length; i++) if (!statedata.code[i][0]) statedata.code.splice(i--, 1);
+			
+			// ANIMATION
+			var animation = obj.animations[obj.animation];
+			if (typeof animation == "string") animation = obj.animations[animation];
+			if (animation && obj.animationplay)
+				if (obj.animationcount) obj.animationcount--;
 				else {
 					var
-					animationframes = animation.frames instanceof Array ? animation.frames :
-					0,
-					animationframescount = animation.frames instanceof Array ?
-					animationframes.length : animation.frames;
+					animationframes = animation.frames instanceof Array ? animation.frames : 0,
+					animationframescount = animation.frames instanceof Array ? animationframes.length : animation.frames;
 					if (obj.animationframe + 1 >= (animationframescount || 1))
 						if (animation.loopTo !== undefined) obj.animationframe = animation.loopTo < 0 ? animationframescount - 1 + animation.loopTo : animation.loopTo;
 					else obj.animationplay = 0;
@@ -1772,87 +2217,32 @@ function Box(parent, type, sub, statemanager, useCanvas, aliasmode) {
 					obj.animationcount = animation.speed === undefined ? 4 : animation.speed;
 				}
 		};
+
 		// SCREEN - Frames manager
-		box.skipFrames = 0;
-		box.timeout = 0;
-		box.fps = 0;
-		box.mspf = 0;
-		box.frameTimestamp = 0;
-		box.framedone=1;
-		box.setFps = function(fps) {
-			box.fps = fps;
-			box.mspf = 1000 / fps;
+		box.setFps=function(fps) {
+			this.node.setFps(fps);
 			return this;
-		};
-		box.setFps(25);
-		box.doApplyChanges = function() {
-			box.applyChanges();
-			box.framedone=1;
-		};
-		box.doProcessFrame = function() { box.processFrame(); };
-		box.scheduleFrame = function() {
-			clearTimeout(this.timeout);
-			var wait = this.mspf - Box.getTimestamp() + this.frameTimestamp;
-			if (wait<=0) {
-				this.stats.overload=-wait;
-				this.stats.load=1;
-				wait=1;
-			} else {
-				this.stats.overload=0;
-				this.stats.load=1-(wait/this.mspf);
-			}
-			if (wait) this.timeout = setTimeout(box.doProcessFrame, wait);
-			else this.processFrame();
-		};
-		box.processFrame = function() {
-			if (!this.removed) {
-				if (this.getPositionInPage) {
-					this.getPositionInPage++;
-					if (this.getPositionInPage>box.fps) {
-						this.positionInPage=0;
-						this.getPositionInPage=1;
-					}
+		}
+		box.addSkipFrames=function(frames) { return this.node.addSkipFrames(frames); }
+		box.getFps=function() { return this.node.getFps(); }
+		box.getMspf=function() { return this.node.getMspf(); }
+		box.node.setRenderer(function(cb) { box.applyChanges();});
+		box.node.setGameCycle(function(cb) {
+			box.runCode(box);
+			box.needrunning.sort(box.sortPriority);
+			for (i = 0; i < box.needrunning.length; i++)
+				if (box.needrunning[i]) box.runCode(box.needrunning[i]);
+				else {
+					box.needrunning.splice(i,1);
+					i--;
 				}
-				this.stats.garbageCount = 0;
-				this.stats.calculatedRects = 0;
-				this.stats.movedCells = 0;
-				this.stats.cellsUsage=0;
-				this.stats.listUsage=0;
-				this.stats.iteratedObjects=0;
-				if (this.statsmanager) this.stats.updatedRects={};
-				this.frameTimestamp = this.stats.frameProcessStart = Box.getTimestamp();
-				if (!this.resources.loader.length) {
-					this.runCode(this);
-					this.needrunning.sort(this.sortPriority);
-					for (i = 0; i < this.needrunning.length; i++)
-						if (this.needrunning[i]) this.runCode(this.needrunning[i]);
-						else {
-							this.needrunning.splice(i,1);
-							i--;
-						}
-					this.clean();
-					this.updateKeys();
-					if (this.framedone) {
-						this.framedone=0;
-						if (window.requestAnimationFrame) window.requestAnimationFrame(this.doApplyChanges);
-						else setTimeout(this.doApplyChanges,box.mspf/2);
-					}
-					if (this.skipFrames) {
-						this.skipFrames--;
-						this.processFrame();
-					} else if (this.timeout != -1) this.scheduleFrame();
-				} else if (this.timeout != -1) this.scheduleFrame();
-				this.stats.frameProcessEnd = Box.getTimestamp();
-				this.stats.frameProcessTime = this.stats.frameProcessEnd - this.stats.frameProcessStart;
-				if (this.statsmanager && this.statsmanager.onProcessFrame) this.statsmanager.onProcessFrame(this);
-				this.node.frame();
-			}
-		};
+			box.clean();
+		});
+
 		// SCREEN - Finalize
 		box.parent = 0;
-		parent.appendChild(box.node._node);
 		box.node.parentNode=parent;
-		box.processFrame();
+		box.node.initialize(parent);
 	}
 	return box;
 }
@@ -1931,42 +2321,7 @@ Box._ = {
 	}
 };
 
-// @todo: Servono i translator multipli?
-Box._translator=function(self,node,obj) {
-	if (!obj.cleanprops.x || !obj.cleanprops.y || !obj.cleanprops.z || !obj.cleanprops.scale  || !obj.cleanprops.flipX || !obj.cleanprops.flipY || !obj.cleanprops.angle) {
-		node.setStyle("scalex",obj.flipX ? -obj.scale : obj.scale);
-		node.setStyle("scaley",obj.flipY ? -obj.scale : obj.scale);
-		node.setStyle("rotate",obj.angle);
-		node.setStyle("left",Math.floor(obj.x));
-		node.setStyle("top",Math.floor(obj.y + obj.z));
-		obj.cleanprops.x = obj.cleanprops.y = obj.cleanprops.z = obj.cleanprops.flipX = obj.cleanprops.flipY = obj.cleanprops.angle = 1;
-		self.stats.changesCount++;
-	}
-	if (!obj.cleanprops.originX || !obj.cleanprops.originY) {
-		node.setStyle("originX",obj.originX);
-		node.setStyle("originY",obj.originY);
-		obj.cleanprops.originX = obj.cleanprops.originY = 1;
-		self.stats.changesCount++;
-	}
-}
-
-// AUDIO
-Box.applyEffect=function(box,node,effect) {
-	var currTime = box.audio.context.currentTime+0.0001;
-	switch (effect.name) {
-		case "fade":{
-			node.gainNode.gain.linearRampToValueAtTime(effect.fromVolume===undefined?node.gainNode.gain.value:effect.fromVolume, currTime);
-			node.gainNode.gain.linearRampToValueAtTime(effect.toVolume===undefined?node.volume:effect.toVolume, currTime + (effect.length===undefined?1:effect.length));
-			break;
-		}
-		case "setvolume":{
-			node.gainNode.gain.setValueAtTime(effect.volume===undefined?node.volume:effect.volume, currTime);
-			break;
-		}
-	}
-}
 // UTILS
-Box.getTimestamp = function() { return (new Date()).getTime(); };
 Box.sortPriority = function(a, b) { return !a && !b ? 0 : !a ? 1: !b ? -1 : a.priority - b.priority ? a.priority < b.priority ? -1 : 1 : 0; };
 Box.limit = function(val, min, max) {
 	if (val < min) return min;
@@ -1974,7 +2329,6 @@ Box.limit = function(val, min, max) {
 	else return val;
 };
 Box.capitalize = function(str) { return str.substr(0, 1).toUpperCase() + str.substr(1); };
-Box.clone = function(obj) { return typeof obj == "object" ? JSON.parse(JSON.stringify(obj)) : obj; };
 // UTILS - Distances
 Box.distanceX = function(a, b, dx1) {
 	if (a && b) {
@@ -2034,8 +2388,6 @@ Box.angleToward=function(v) {
 Box.vectorLength=function(v) { return FIX(Math.sqrt((v.forceX*v.forceX)+(v.forceY*v.forceY))); }
 // UTILS - Rectangles
 Box.getRects=function(obj){
-	//if (this.screen.statsmanager) this.screen.stats.updatedRects[this.uid]=this;
-	//this.screen.stats.calculatedRects++;
 	var pr = obj.parent ? obj.parent.getRects() : Box._baserects,
 		dx=obj.x-(obj===obj.screen?obj.screen.gridcoords.x:0),
 		dy=obj.y-(obj===obj.screen?obj.screen.gridcoords.y:0),
@@ -2191,16 +2543,6 @@ Box.Cache = function() {
 		}
 	};
 };
-Box.getFile = function(file, cb) {
-	var xmlhttp = new XMLHttpRequest();
-	xmlhttp.onreadystatechange = function() {
-		if (xmlhttp.readyState == 4)
-			if ((xmlhttp.status == 200)||(xmlhttp.status==0)) cb(xmlhttp.responseText);
-			else cb();
-	};
-	xmlhttp.open("GET", file, true);
-	xmlhttp.send();
-};
 
 /*
  * GAME ENGINE
@@ -2214,16 +2556,6 @@ function Wright(gameId,container,mods) {
 	}
 
 	var ANGLETOLLERANCE=45;
-	var CONTROLS={
-		standard:{
-			keyUp: {label:"Up",keyCode:38},
-			keyDown: {label:"Down",keyCode:40},
-			keyLeft: {label:"Left",keyCode:37},
-			keyRight: {label:"Right",keyCode:39},
-			keyA: {label:"A/Start",keyCode:90},
-			keyB: {label:"B/Option",keyCode:88}
-		}
-	};
 	var DEFAULTHARDWARE={
 		width: 320,
 		height: 200,
@@ -2293,94 +2625,7 @@ function Wright(gameId,container,mods) {
 		221:"]",
 		222:"'"
 	};
-	var POINTERS=[
-		{id:"mouse",label:"Mouse (click for Trigger)"},
-		{id:"touch",label:"Touch screen (tap for Trigger)"}
-	];
-	var RENDERERS=[
-		{id:0,label:"DOM"},
-		{id:1,label:"Canvas"}
-	];
-	var FILTERS={
-		none:[
-			{
-				label:"(None)",
-				filter:[{render:1}]
-			}
-		],
-		retro:[
-			{
-				label:"Scanlines",
-				filter:[
-			        {"generate":"texture","image":"scanlines","alpha":0.1,"to":"scanlines"},
-			        {"render":1},
-			        {"blit":"scanlines"}
-			    ]
-			},
-			{
-				label:"Disabled",
-				filter:[{render:1}]
-			},
-			{
-				label:"Retro LCD",
-				filter:[
-			        {"generate":"texture","image":"scanlines","alpha":0.1,"to":"scanlines"},
-			        {"render":1,"to":"currentframe"},
-			        {"blit":"currentframe","alpha":0.4},
-			        {"blit":"scanlines"}
-			    ]
-			},
-			{
-				label:"test",
-				filter:[
-					{"render":1,"to":"currentframe"},
-			        {"blit":"currentframe"}			        
-			    ]	
-			},
-			{
-				label:"Retro CRT",
-				filter:[
-			        {"generate":"texture","image":"crt","alpha":0.1,"to":"crt"},
-			        {"generate":"texture","image":"scanlines","alpha":0.2,"to":"scanlines"},
-			        {"generate":"noise","to":"noise","live":1},
-			        {"render":1,"to":"currentframe"},
-			        {"blit":"currentframe"},
-			        {"blit":"trailframe","filter":"saturate(5)","alpha":0.4},
-			        {"blit":"currentframe","to":"trailframe","alpha":0.6},
-			        {"every":0,"of":2,"blit":"scanlines"},
-			        {"every":1,"of":2,"blit":"scanlines","top":1},
-			        {"blit":"crt"},
-			        {"blit":"noise","alpha":0.1},
-			        {"blit":"currentframe","filter":"blur(10px)","alpha":0.5},			        
-			    ]	
-			},
-			{
-				label:"Compat Retro CRT",
-				filter:[
-			        {"generate":"texture","image":"crt","alpha":0.1,"to":"crt"},
-			        {"generate":"texture","image":"scanlines","alpha":0.2,"to":"scanlines"},
-			        {"generate":"noise","to":"noise","live":1},
-			        {"render":1,"to":"currentframe"},
-			        {"blit":"oldframe","alpha":0.5,"left":-1,"top":-1},
-			        {"blit":"oldframe","alpha":0.5,"left":-1,"top":0},
-			        {"blit":"oldframe","alpha":0.5,"left":-1,"top":1},
-			        {"blit":"oldframe","alpha":0.5,"left":0,"top":-1},
-			        {"blit":"oldframe","alpha":0.5,"left":0,"top":0},
-			        {"blit":"oldframe","alpha":0.5,"left":0,"top":1},
-			        {"blit":"oldframe","alpha":0.5,"left":1,"top":-1},
-			        {"blit":"oldframe","alpha":0.5,"left":1,"top":0},
-			        {"blit":"oldframe","alpha":0.5,"left":1,"top":1},
-			        {"blit":"currentframe","alpha":0.7},
-			        {"every":0,"of":2,"blit":"scanlines"},
-			        {"every":1,"of":2,"blit":"scanlines","top":1},
-			        {"blit":"crt"},
-			        {"blit":"noise","alpha":0.1},
-			        {"blit":"currentframe","to":"oldframe"}
-			    ]	
-			}
-		]
-	};
-
+	
 	var LABELEXP = /\%([^\%]*)\%/g;
 
 	var game, system, camera, gametypes;
@@ -2585,7 +2830,6 @@ function Wright(gameId,container,mods) {
 			return item;
 		}
 	};
-
 
 	var Code = {
 		Log: function(data) { printLog(this, this, data); },
@@ -3219,7 +3463,7 @@ function Wright(gameId,container,mods) {
 					case "key": { ret=game.key; break; }
 					case "stencil":{
 						p=get(from, tox, struct[++id]);
-						if (curtape.stencils[p]) ret = Box.clone(curtape.stencils[p]);
+						if (curtape.stencils[p]) ret = Supports.clone(curtape.stencils[p]);
 						else {
 							console.warn("Stencil ["+p+"] not found.");
 							ret=0;
@@ -3228,7 +3472,7 @@ function Wright(gameId,container,mods) {
 					}
 					case "resource":{
 						p=get(from, tox, struct[++id]);
-						if (game.resources.items[p]) ret = Box.clone(game.resources.items[p]);
+						if (ret=game.getResource(p)) ret = Supports.clone(ret);
 						else {
 							console.warn("Resource ["+p+"] not found.");
 							ret=0;
@@ -3266,7 +3510,7 @@ function Wright(gameId,container,mods) {
 						break;
 					}
 					case "merged":{ ret=merge(from,tox,ret); break; }
-					case "new":{ ret = Box.clone(get(from, tox, struct[++id])); break; }
+					case "new":{ ret = Supports.clone(get(from, tox, struct[++id])); break; }
 					case "arrayOf":{
 						p = get(from, tox, struct[++id]);
 						ret = [];
@@ -3334,6 +3578,26 @@ function Wright(gameId,container,mods) {
 						p = get(from, tox, struct[++id]);
 						if (p instanceof Array) ret = p[Math.floor(seededRandom() * p.length)];
 						else ret = p;
+						break;
+					}
+					case "minimum":{
+						var c;
+						p = get(from, tox, struct[++id]);
+						ret=get(from, tox, p[0]);
+						for (var i=1;i<p.length;i++) {
+							c=get(from, tox, p[i]);
+							if (c<ret) ret=c;
+						}
+						break;
+					}
+					case "maximum":{
+						var c;
+						p = get(from, tox, struct[++id]);
+						ret=get(from, tox, p[0]);
+						for (var i=1;i<p.length;i++) {
+							c=get(from, tox, p[i]);
+							if (c>ret) ret=c;
+						}
 						break;
 					}
 					case "decide":{ ret = decide(from, tox, get(from, tox, struct[++id])); break; }
@@ -3447,7 +3711,6 @@ function Wright(gameId,container,mods) {
 												height: get(from, tox, item.height) || 1
 											});
 										});
-										if (game.statsmanager&&p.__debugcollides) game.statsmanager._complexCollision.push(rect);
 									}
 									if (args.covering) args.sortby = "zIndex";
 									if (args.sortby) {
@@ -3772,7 +4035,7 @@ function Wright(gameId,container,mods) {
 	// APPLY OBJECT CHANGES
 
 	function addCamera(from,tox,area) {
-		var cam=Box.clone(area);
+		var cam=Supports.clone(area);
 		for (var a in cam) cam[a]= get(from, tox, cam[a]);
 		camera.cameras.push(cam);
 	}
@@ -3842,7 +4105,7 @@ function Wright(gameId,container,mods) {
 					case "hitbox":{
 						var hb = [];
 						iterateComposedList(from, tox, get(from, tox, template.hitbox), function(item) {
-							hb.push(Box.clone(item));
+							hb.push(Supports.clone(item));
 						});
 						from.setHitbox(hb);
 						break;
@@ -3911,7 +4174,7 @@ function Wright(gameId,container,mods) {
 		};
 		variables.idScene = idscene;
 		variables.randomSeed = (new Date()).getTime();
-		game.skipFrames = 1;
+		game.addSkipFrames(1);
 		if (firstrun) {
 			hud = game.add("layer").size(game).setZIndex(20);
 			if (curtape.execute) execute(scene, scene, curtape.execute);
@@ -3937,19 +4200,27 @@ function Wright(gameId,container,mods) {
 	// BOOTSTRAPPER
 
 	function plugTape(transition, audiochannel, idscene, tape) {
+		var channels=[];
 		if (!scene) transition = 0;
 		switch (transition) { // Fade out/fade in
 			case 1:{
 				gamerunning = 0;
 				iterateComposedList(scene, scene, audiochannel, function(item) {
 					var channel=game.getAudioChannel(item);
-					if (channel) channel.applyEffect({name:"fade",toVolume:0,length:game.mspf/100});
+					if (channel) {
+						channels.push([channel,channel.volume]);
+						channel.applyEffect({name:"fade",toVolume:0,length:game.getMspf()/100});
+					}
 				});
 				game.undo(Code.Fade).do(Code.Fade,{
 					as: scene,
 					to: 0,
 					then: function() {
 						game.undo(Code.Fade);
+						for (var i=0;i<channels.length;i++) {
+							channels[i][0].stop();
+							channels[i][0].applyEffect({name:"setvolume",volume:channels[i][1]})
+						}
 						plugTape(-1, audiochannel, idscene, curtape);
 					}
 				});
@@ -3965,7 +4236,7 @@ function Wright(gameId,container,mods) {
 					if (channel) channel.stop();
 				});
 				game.undo(Code.Delay).do(Code.Delay,{
-					delay: Math.ceil(game.fps/2),
+					delay: Math.ceil(game.getFps()/2),
 					then: function() {
 						game.undo(Code.Delay);
 						plugTape(-2, audiochannel, idscene, curtape);
@@ -3973,21 +4244,17 @@ function Wright(gameId,container,mods) {
 				});
 				break;
 			}
-			default:{
-				iterateComposedList(scene, scene, audiochannel, function(item) {
-					var channel=game.getAudioChannel(item);
-					if (channel) channel.stop();
-				});
+			default:{				
 				if (tape) {
 					curtape = tape;
 					Storage.initialize(tape);
 				}
 				if (curtape.scenes[idscene]) runScene(idscene, curtape.scenes[idscene], transition);
 				else {
-					var file = game.resources.root + (curtape.hardware.scenes || "scenes") +"/" + idscene + ".json";
+					var file = game.getResourcesRoot() + (curtape.hardware.scenes || "scenes") +"/" + idscene + ".json";
 					var cache = filecache.has(file);
 					if (cache) runScene(idscene, JSON.parse(cache), transition);
-					else Box.getFile(file, function(text) {
+					else Supports.getFile(file, function(text) {
 						filecache.add(file, text);
 						runScene(idscene, JSON.parse(text), transition);
 					});
@@ -3995,125 +4262,6 @@ function Wright(gameId,container,mods) {
 			}
 		}
 	}
-
-	// GAME ENGINE STATS (Not used ATM)
-
-	var Monitor={
-		_complexCollision:[],
-		initialize:function(ob){
-			if(!this.initialized && window.SmoothieChart) {
-				this.initialized=1;
-				var smc=document.createElement("canvas");
-				smc.width=400;
-				smc.height=100;
-				document.getElementById("debugdock").appendChild(smc);
-				this.smoothie = new SmoothieChart();
-				this.smoothie.streamTo(smc);
-				this.smoothieline = new TimeSeries();
-				this.smoothie.addTimeSeries(this.smoothieline);
-			}
-			if (ob.node._node.getContext) {
-				this.canvas=0;
-				this.ctx=ob.node._node.getContext("2d");
-			} else {
-				if (this.canvas) this.canvas.parentNode.removeChild(this.canvas);
-				this._complexCollision=[];
-				this.canvas=document.createElement("canvas");
-				this.canvas.style.zIndex=10000;
-				this.canvas.style.position="absolute";
-				this.canvas.style.left=0;
-				this.canvas.style.top=0;
-				this.ctx=this.canvas.getContext("2d");
-				ob.node.appendChild(this.canvas);				
-			}
-		},
-		debugRect:function(ob,showchanged){
-			var r;
-			if (this.canvas&&showchanged) {
-				this.canvas.width=ob.width;
-				this.canvas.height=ob.height;
-			}
-			for (var j in ob.uids){
-				o=ob.uids[j];
-				if (o.__debugrect){
-					a=o.getRects().rect;
-					this.ctx.strokeStyle=o.__debugrect;
-					this.ctx.strokeRect(a.x+o.screen.gridcoords.x+0.5,a.y+o.screen.gridcoords.y+0.5,a.width-1,a.height-1);
-				}
-				if (o.__debugscreen){
-					a=o.getRects().screen;
-					this.ctx.strokeStyle=o.__debugscreen;
-					this.ctx.fillStyle="#000";
-					this.ctx.strokeRect(a.x+o.screen.gridcoords.x+0.5,a.y+o.screen.gridcoords.y+0.5,a.width-1,a.height-1);
-					if (!o.onscreen) {
-						this.ctx.fillStyle="rgba(255,255,0,0.8)";
-						this.ctx.fillRect(a.x+o.screen.gridcoords.x,a.y+o.screen.gridcoords.y,a.width,a.height);
-					}
-				}
-				if (o.__debugouter){
-					a=o.getRects().outer;
-					this.ctx.strokeStyle=o.__debugouter;
-					this.ctx.strokeRect(a.x+o.screen.gridcoords.x+0.5,a.y+o.screen.gridcoords.y+0.5,a.width-1,a.height-1);
-				}
-				if (o.__debughitbox){
-					a=o.getRects().rect;
-					this.ctx.fillStyle=o.__debughitbox;
-					if (o.hitbox)
-						for (var i=0;i<o.hitbox.length;i++)
-							this.ctx.fillRect(a.x+o.hitbox[i].x+o.screen.gridcoords.x,a.y+o.hitbox[i].y+o.screen.gridcoords.y,o.hitbox[i].width,o.hitbox[i].height);
-				}
-			}
-			for (var i in ob.stats.updatedRects) {
-				o=ob.stats.updatedRects[i];
-				a=o.getRects().screen;
-				this.ctx.strokeStyle="#f00";
-				this.ctx.strokeRect(a.x+o.screen.gridcoords.x+0.5,a.y+o.screen.gridcoords.y+0.5,a.width-1,a.height-1);
-			}
-			if (showchanged) {
-				for (var i=0;i<this._complexCollision.length;i++) {
-					a=this._complexCollision[i];
-					this.ctx.strokeStyle="#f00";
-					this.ctx.strokeRect(a.x+game.gridcoords.x+0.5,a.y+game.gridcoords.y+0.5,a.width-1,a.height-1);
-					this.ctx.fillStyle="rgba(255,0,0,0.7)";
-					for (var j=0;j<a.hitbox.length;j++) {
-						o=a.hitbox[j];
-						this.ctx.fillRect(a.x+game.gridcoords.x+o.x,a.y+game.gridcoords.y+o.y,o.width,o.height);
-					}
-				}
-				this._complexCollision=[];
-			}
-		},
-		onProcessFrame:function(ob){
-			if (this.smoothie) {
-				//this.smoothieline.append(new Date().getTime(), ob.stats.garbageCount);
-				//this.smoothieline.append(new Date().getTime(), ob.stats.calculatedRects);
-				//this.smoothieline.append(new Date().getTime(), ob.stats.frameProcessTime/40);
-				//this.smoothieline.append(new Date().getTime(), ob.stats.overload);
-				//this.smoothieline.append(new Date().getTime(), ob.stats.elementsCount);
-				//this.smoothieline.append(new Date().getTime(), ob.stats.uidsCount);
-				//this.smoothieline.append(new Date().getTime(), ob.stats.typesCount);
-				//this.smoothieline.append(new Date().getTime(), ob.stats.movedCells);
-				//this.smoothieline.append(new Date().getTime(), ob.stats.cellsCount);
-				//this.smoothieline.append(new Date().getTime(), ob.stats.cellsUsage);
-				//this.smoothieline.append(new Date().getTime(), ob.stats.iteratedObjects);
-				//this.smoothieline.append(new Date().getTime(), ob.stats.runningCount);
-				//this.smoothieline.append(new Date().getTime(), ob.stats.load);
-				//this.smoothieline.append(new Date().getTime(), ob.stats.objectWastedCount);
-				//this.smoothieline.append(new Date().getTime(), ob.stats.listUsage);
-			}
-			this.debugRect(ob,true);
-		},
-		onApplyChanges:function(ob){
-			if (this.smoothie) {
-				//this.smoothieline.append(new Date().getTime(), ob.stats.frameRenderTime);
-				//this.smoothieline.append(new Date().getTime(), ob.stats.changesCount);
-				this.smoothieline.append(new Date().getTime(), ob.stats.objectChangedCount);
-				//this.smoothieline.append(new Date().getTime(),game.node.getElementsByTagName("div").length);
-				//this.smoothieline.append(new Date().getTime(),ob.stats.nodesOnScreen);
-			}
-			this.debugRect(ob);
-		}
-	};
 
 	// GUI CREATION
 
@@ -4127,10 +4275,9 @@ function Wright(gameId,container,mods) {
 
 	// KEYBOARD SETTINGS
 
-	var controls,controlsmode,settingkey=0;
+	var controlset,controlsmode,usercontrols,settingkey=0;
 	function waitKey(e) {
-		controls[settingkey.id]=e.keyCode;
-		localStorage["wrightControls_"+controlsmode]=JSON.stringify(controls);
+		usercontrols.keyboard[settingkey.id]=e.keyCode;
 		settingkey.elm.value=keySymbol(e.keyCode);
 		settingkey=0;
 		Supports.removeEventListener(document,"keydown",waitKey);
@@ -4158,53 +4305,53 @@ function Wright(gameId,container,mods) {
 	tv.style.margin="auto";
 
 	function runGame(mode) {
+		var controls={};
+		for (var a in controlsset) controls[a]=usercontrols[a];
 		tv.innerHTML="";
 		game = Box(tv, "game", 0, 0, mode.renderer, hardware.aliasMode||"pixelated");
-		game.setGridSize(hardware.gridSize).setKeys(controls).setColor("#fff").setBgcolor("#000").size(hardware).setFps(hardware.fps||25).setScale(mode.scale).setOriginX(0).setOriginY(0).do(Code.GameManager);
+		game.setGridSize(hardware.gridSize).setControls(controls).setColor("#fff").setBgcolor("#000").size(hardware).setFps(hardware.fps||25).setScale(mode.scale).setOriginX(0).setOriginY(0);
+		game.getState("default").do(Code.GameManager);
 		if (mode.volume&&gamedata.audioChannels) game.enableAudio(mode.volume/100);
-		if (hardware.usePointer) game.enablePointer(mode.pointer||Supports.pointerMode());
 		tv.style.width = (game.width * game.scale) + "px";
 		tv.style.height = (game.height * game.scale) + "px";
 		game.setResourcesRoot("tapes/" + gameId + "/");
 		for (var k in gamedata.resources) game.addResource(k, gamedata.resources[k]);
 		for (var k in gamedata.audioChannels) game.addAudioChannel(k, gamedata.audioChannels[k]);
-		game.loadResources(function() {
-			if (mode.filter)
-				for (var i=0;i<mode.filter.length;i++) game.addFilter(mode.filter[i]);
-			plugTape(0, 0, "intro", gamedata);
-			// game.setStatsManager(Monitor); // Uncomment for stats.
-		});
+		if (mode.filter) for (var i=0;i<mode.filter.length;i++) game.addFilter(mode.filter[i]);
+		game.loadResources(function() { plugTape(0, 0, "intro", gamedata); });
 	}
 
 	/*
 	 * INITIALIZATION
 	 */
 
-	Box.getFile("tapes/" + gameId + "/tape.json?" + Math.random(), function(text) {
+	Supports.getFile("tapes/" + gameId + "/tape.json?" + Math.random(), function(text) {
 		filecache = Box.Cache();
 		gamedata = JSON.parse(text);
 		hardware = gamedata.hardware || DEFAULTHARDWARE;
 		if (!gamedata.scenes) gamedata.scenes = { intro: {} };
 		var cheatslist=gamedata.cheats;
 		var hasAudio=gamedata.audioChannels;
-		var hasPointer=gamedata.hardware.usePointer;
 		controlsmode=hardware.controls||"standard";
-		var controlsset=CONTROLS[controlsmode];
-		if (localStorage["wrightControls_"+controlsmode]) controls=JSON.parse(localStorage["wrightControls_"+controlsmode]);
-		else controls={};
-		for (var a in controlsset) if (controls[a]===undefined) controls[a]=controlsset[a].keyCode;
+		controlsset=DOMInator.CONTROLS[controlsmode];
+		if (localStorage["wrightControls_"+controlsmode]) usercontrols=JSON.parse(localStorage["wrightControls_"+controlsmode]);
+		else usercontrols={};
+		for (var a in controlsset) {
+			if (!usercontrols[a]) usercontrols[a]={};
+			for (var b in controlsset[a])
+				if (usercontrols[a][b]===undefined) usercontrols[a][b]=controlsset[a][b].default;
+		}
 		var scale=mods.scale||(localStorage["wrightScale"]*1)||3;
 		var volume=(mods.volume===undefined?((localStorage["wrightVolume"]||100)*1):mods.volume)||0;
-		var pointer=(mods.pointer===undefined?(localStorage["wrightPointer"]||Supports.pointerMode()):mods.pointer)||"mouse";
 		var renderer=(mods.renderer===undefined?localStorage["wrightRenderer"]*1:mods.renderer)||0;
-		var filters=(hardware.filter instanceof Array?hardware.filter:FILTERS[hardware.filter])||FILTERS.none;
+		var filters=(hardware.filter instanceof Array?hardware.filter:DOMInator.FILTERS[hardware.filter])||DOMInator.FILTERS.none;
 		var filter=(mods.filter===undefined?localStorage["wrightFilter"]:mods.filter)||filters[0].label;
 		if (!Supports.supportsScaling) scale=1;
 		if (mods.noui) {
 			var filterset;
 			for (var i=0;i<filters.length;i++)
 				if (filters[i].label==filter) filterset=filters[i].filter;
-			runGame({scale:scale,volume:hasAudio?volume:0,renderer:renderer,filter:filterset||FILTERS.none[0].filter});
+			runGame({scale:scale,volume:hasAudio?volume:0,renderer:renderer,filter:filterset||DOMInator.FILTERS.none[0].filter});
 		} else {
 			var havecheats,row,itm,magazine=node(tv,"div","magazine");
 			node(magazine,"div","logo","Wright!");
@@ -4217,36 +4364,56 @@ function Wright(gameId,container,mods) {
 					node(row,"div","screenshot").style.backgroundImage="url('tapes/"+gameId+"/screenshots/"+gamedata.screenshots[i]+"')";
 			}
 			node(article,"h3",0,"Settings");
+			if (controlsset.keyboard)
+				for (var a in controlsset.keyboard)
+					if (!controlsset.keyboard[a].isDisabled) {
+						row=node(article,"p");
+						node(row,"span","label",controlsset.keyboard[a].label+":");
+						itm=node(row,"input","input");
+						itm.setAttribute("readonly","readonly");
+						itm.setAttribute("_id",a);
+						itm.value=keySymbol(usercontrols.keyboard[a]);
+						Supports.addEventListener(itm,"click",setupKey);
+						if (controlsset.keyboard[a].subLabel&&!controlsset.keyboard[a].subLabelDisabled) {
+							row=node(article,"p");
+							node(row,"span","",controlsset.keyboard[a].subLabel).style.fontSize="12px";
+						}
+					}
 
-			for (var a in controlsset) {
+			var touchcontrollerCombo;
+			if (controlsset.touchcontroller&&Supports.isFullscreen) {
 				row=node(article,"p");
-				node(row,"span","label",controlsset[a].label+":");
-				itm=node(row,"input","input");
-				itm.setAttribute("readonly","readonly");
-				itm.setAttribute("_id",a);
-				itm.value=keySymbol(controls[a]);
-				Supports.addEventListener(itm,"click",setupKey);
+				node(row,"span","label","Touch controls:");
+				touchcontrollerCombo=node(row,"select","input");
+				for (var i in DOMInator.TOUCHLAYOUTS) {
+					itm=node(touchcontrollerCombo,"option",0,DOMInator.TOUCHLAYOUTS[i].label);
+					itm.value=i;
+					if (usercontrols.touchcontroller.layout==i) itm.setAttribute("selected","selected");
+				}
 			}
 
-			if (hasPointer) {
+			var pointerCombo;
+			if (controlsset.pointer) {
 				row=node(article,"p");
 				node(row,"span","label","Pointer/Gun:");
 				pointerCombo=node(row,"select","input");
-				for (var i=0;i<POINTERS.length;i++) {
-					itm=node(pointerCombo,"option",0,POINTERS[i].label);
-					itm.value=POINTERS[i].id;
-					if (pointer==POINTERS[i].id) itm.setAttribute("selected","selected");
-				}
+				for (var i=0;i<controlsset.pointer.id.options.length;i++)
+					if (!controlsset.pointer.id.options[i].isDisabled) {
+						itm=node(pointerCombo,"option",0,controlsset.pointer.id.options[i].label);
+						itm.value=controlsset.pointer.id.options[i].id;
+						if (usercontrols.pointer.id==controlsset.pointer.id.options[i].id) itm.setAttribute("selected","selected");
+					}
 			}
 
 			row=node(article,"p");
 			node(row,"span","label","Renderer:");
 			var rendererCombo=node(row,"select","input");
-			for (var i=0;i<RENDERERS.length;i++) {
-				itm=node(rendererCombo,"option",0,RENDERERS[i].label);
-				itm.value=RENDERERS[i].id;
-				if (renderer==RENDERERS[i].id) itm.setAttribute("selected","selected");
-			}
+			for (var i=0;i<DOMInator.RENDERERS.length;i++)
+				if (!DOMInator.RENDERERS[i].isDisabled) {
+					itm=node(rendererCombo,"option",0,DOMInator.RENDERERS[i].label);
+					itm.value=DOMInator.RENDERERS[i].id;
+					if (renderer==DOMInator.RENDERERS[i].id) itm.setAttribute("selected","selected");
+				}
 
 			row=node(article,"p");
 			node(row,"span","label","Screen filter:");
@@ -4270,10 +4437,11 @@ function Wright(gameId,container,mods) {
 				node(row,"span","label","Sound:");
 				var audioCombo=node(row,"select","input");
 				node(audioCombo,"option",0,"Disabled");
-				for (var i=10;i<=100;i+=10) {
-					itm=node(audioCombo,"option",0,"Volume "+i+"%");
-					if (i==volume) itm.setAttribute("selected","selected");
-				}
+				if (Supports.isAudio)
+					for (var i=10;i<=100;i+=10) {
+						itm=node(audioCombo,"option",0,"Volume "+i+"%");
+						if (i==volume) itm.setAttribute("selected","selected");
+					}
 			}
 
 			node(article,"h3",0,"Cheats");
@@ -4291,16 +4459,17 @@ function Wright(gameId,container,mods) {
 			itm=node(node(article,"p","runner"),"button",0,"Start game");
 			Supports.addEventListener(itm,"click",function(){
 				var filterset;
+				if (pointerCombo) usercontrols.pointer.id=pointerCombo.options[pointerCombo.selectedIndex].value;
+				if (touchcontrollerCombo) usercontrols.touchcontroller.layout=touchcontrollerCombo.options[touchcontrollerCombo.selectedIndex].value;
+				localStorage["wrightControls_"+controlsmode]=JSON.stringify(usercontrols);
 				renderer=localStorage["wrightRenderer"]=rendererCombo.options[rendererCombo.selectedIndex].value*1;
 				scale=localStorage["wrightScale"]=resolutionCombo.selectedIndex+1;
 				filter=localStorage["wrightFilter"]=filterCombo.options[filterCombo.selectedIndex].value;
 				for (var i=0;i<filters.length;i++)
 					if (filters[i].label==filter) filterset=filters[i].filter;
-				if (hasPointer) pointer=localStorage["wrightPointer"]=pointerCombo.options[pointerCombo.selectedIndex].value;
-				else pointer=0;
 				if (hasAudio) volume=localStorage["wrightVolume"]=audioCombo.selectedIndex*10; else volume=0;
 				Supports.removeEventListener(document,"keydown",waitKey);
-				runGame({scale:scale,volume:volume,pointer:pointer,renderer:renderer,filter:filterset||FILTERS.none[0].filter});
+				runGame({scale:scale,volume:volume,renderer:renderer,filter:filterset||DOMInator.FILTERS.none[0].filter});
 			});
 			node(magazine,"h4",0,"Wright engine &copy;2015");
 		}
