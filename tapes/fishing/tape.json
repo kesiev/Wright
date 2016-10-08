@@ -1,0 +1,983 @@
+{
+  "name":"Almost Fishing",
+  "author":"KesieV",
+  "year":2016,
+  "genre":"Fishing",
+  "description":"Some time ago I added the 'Olympic' game to the Wright! Magazine collection, which collects 3 arcade versions of olympic sports. Wright! Magazine includes the 'Almost' videogame sub-serie, that collects sports games. So why 'Olympic' isn't called 'Almost Olympics'? There is a little secret behind the 'Almost' series: I mostly dislike sports but, while I've some kind of knowledge of olympic games, since I've watched them on TV few times and played Track & Fields (1983) on my Commodore 64, I never played or watched soccer or golf, which are part of the 'Almost' series. Long story short, 'Almost' games comes from nearly zero knowledge about that topic, which requires me to ask friends, study articles (mostly from Wikipedia) or other videogame conversions in order to put them together. But this 'Almost Fishing' is a tiny bittersweet exception. When I was a kid I used to stay with my father instead of the rest of the family during summer vacations. Sometimes we used to wake up pretty early in the morning, load my grandfather old Panda car with a fishing rod, some hooks, buckets and worms and then go fishing. Probably due to the sleepiness, probably due to my being introvert, I've some kind of mixed memories of me sitting in that car. From one side, I was very sad of leaving my sisters and cousins, in order to stay with someone really older than me for the rest of the day - my father, grandfather and grandmother. From the other one, I was spending a full day my father, which used to come at home very late in the evening during workdays, and that was great. But I'm sure of how the landscape was out of the window: the terraced houses, the rough roads, the closed shops, highway, tunnels, then sun again, the bright sea, cliffs and finally the docks. My father used to try to show me how to prepare the lure many times but I wasn't very good at hand works (and, most of the times, still I am), to teach me how to use the rod but I've never caught anything, to tell me how to appreciate the sea landscape but my thoughts were always far away. I was just counting the minutes to the end, thinking on what to do next and trying to say awake. And now I'm sitting here far from the sea, writing the code of a sketchy fishing videogame alone during my lunch break, making sprites of fish and rods I've never understood and thinking about how much time I've lost with my father. But if I had known what to do, the true meaning of that moments and how I could have enjoy them, probably I'd know my father better. And this game name would be just 'Fishing'. Plot! Ready for the Califorina Seaside Fishing competition? You've 3 minutes for catching as much as you can! Use UP/DOWN/LEFT/RIGHT for moving the crosshair on the sea and the A BUTTON for casting the line. Use LEFT/RIGHT for moving the rod and the A BUTTON for spinning the reel. Keep the lure on the fish for a while and it will bite! Once the fish bitten, use LEFT/RIGHT for drawing the line and the A BUTTON for spinning the reel: try to contrast the fish strength while pulling it to the river but don't let it go or break your line! Good luck!",
+  "screenshots":[ "fishing-1.png", "fishing-2.png" ],
+  "hardware":{
+    "width":256,
+    "height":192,
+    "filter":"retro"
+  },
+  "cheats":{},
+  "resources":{
+    "logo":"logo.png",
+    "spectrum":"spectrum.font",
+    "sprites":"sprites.png",
+    "crt":"../default/crt.png",
+    "defaultsprites":"../default/sprites.png",
+    "scanlines":"../default/scanlines.png"
+  },
+  "stencils":{
+    "behaviourApplyTension":{
+      "code":{
+        "name":"Execute",
+        "data":[
+          { "set":{ "currentTension":0 } },
+          { "sum":{ "_":[ "objectTyped", "rod", "tensionX" ] }, "to":{ "_":[ "this", "forceX" ] } },
+          { "sum":{ "_":[ "objectTyped", "rod", "tensionY" ] }, "to":{ "_":[ "this", "forceY" ] } },
+          {
+            "when":{ "_":[ "objectTyped", "fish" ] },
+            "execute":[
+              { "sum":{ "_":[ "objectTyped", "fish", "tensionX" ] }, "to":{ "_":[ "this", "forceX" ] } },
+              { "sum":{ "_":[ "objectTyped", "fish", "tensionY" ] }, "to":{ "_":[ "this", "forceY" ] } },
+              {
+                "when":{ "_":[ "objectTyped", "rod", "tensionY", "isGreaterThan", 2 ] },
+                "execute":{
+                  "when":{ "_":[ "objectTyped", "fish", "tensionX" ] },
+                  "sum":{ "_":[ "objectTyped", "rod", "tensionX", "-", { "_":[ "objectTyped", "fish", "tensionX" ] }, "abs" ] },
+                  "to":{ "_":[ "this", "currentTension" ] }
+                },
+                "elseExecute":{ "set":{ "currentTension":-1 } }
+              },
+              { "sum":{ "_":[ "this", "currentTension" ] }, "to":{ "_":[ "this", "tension" ] } },
+              { "when":{ "_":[ "this", "tension", "isLessThan", 0 ] }, "set":{ "tension":0 } },
+              {
+                "when":{ "_":[ "this", "tension", "isGreaterThan", { "_":[ "variable", "maxTension" ] } ] },
+                "execute":[
+                  { "set":{ "tension":{ "_":[ "variable", "maxTension" ] } } },
+                  { "as":{ "_":[ "object", "removeonbreak" ] }, "remove":1 },
+                  { "as":{ "_":[ "objectTyped", "rod" ] }, "set":{ "state":"retire" } },
+                  {
+                    "object":{
+                      "type":"message",
+                      "width":256, "height":40,
+                      "x":0, "y":76,
+                      "color":"#f0f",
+                      "font":"spectrum", "fontSize":40, "lineHeight":40, "outline":"#000", "textAlign":"center", "html":"LINE BREAK",
+                      "cycle":0,
+                      "states":{
+                        "code":{
+                          "name":"Sequence",
+                          "data":{ "sum":0.7, "to":{ "_":[ "this", "cycle" ] }, "set":{ "x":{ "_":[ "this", "cycle", "sin", "*", 2 ] } }, "wait":1, "loop":1 }
+                        }
+                      }
+                    },
+                    "into":{ "_":"scenehud" }
+                  }
+                ]
+              }
+            ]
+          },
+          { "multiply":0.2, "to":{ "_":[ "this", "forceX" ] } },
+          { "multiply":0.2, "to":{ "_":[ "this", "forceY" ] } }
+        ]
+      }
+    },
+    "behaviourSetDistance":{
+      "code":{ "name":"Execute", "data":{ "as":{ "_":"scene" }, "set":{ "distance":{ "_":[ "that", "tip", "y", "-", 167, "/", 2.25, "floor", "abs" ] } } } }
+    },
+    "behaviourSetTip":{
+      "code":{ "name":"Execute", "data":{ "as":{ "_":[ "this", "tip" ] }, "set":{ "x":{ "_":[ "that", "x", "+", 4 ] }, "y":{ "_":[ "that", "y", "+", 4 ] } } } }
+    },
+    "fish":{
+      "type":[ "fish", "removeonbreak" ],
+      "image":"sprites", "tileX":8, "width":24, "height":16,
+      "zIndex":20,
+      "animations":{ "idle":{ "frames":4, "loopTo":0 } },
+      "animation":"idle",
+      "catching":0,
+      "escaped":0,
+      "tensionX":0,
+      "tensionY":0,
+      "states":[
+        {
+          "code":[
+            {
+              "name":"Sequence",
+              "data":[
+                { "set":{ "_":[ "randomValue", { "_":[ "stencil", "fishTypes" ] } ] } },
+                {
+                  "set":{
+                    "tileY":32,
+                    "x":{ "_":[ "randomNumber", [ { "_":[ "this", "area", "x" ] }, { "_":[ "this", "area", "x", "+", { "_":[ "this", "area", "width" ] }, "-", 24 ] } ] ] }, "y":{ "_":[ "randomNumber", [ { "_":[ "this", "area", "y" ] }, { "_":[ "this", "area", "y", "+", { "_":[ "this", "area", "height" ] }, "-", 16 ] } ] ] },
+                    "visible":0,
+                    "catching":0
+                  }
+                },
+                { "wait":30 },
+                { "set":{ "visible":0 }, "wait":1 },
+                { "set":{ "visible":1 }, "wait":1, "cycles":10, "loopTo":-1 },
+                { "wait":25 },
+                { "set":{ "tileY":16 } },
+                { "wait":289 },
+                { "set":{ "tileY":16 }, "wait":1 },
+                { "set":{ "tileY":32 }, "wait":1, "cycles":10, "loopTo":-1 },
+                { "wait":25 },
+                { "set":{ "visible":0 } },
+                { "wait":30 },
+                { "wait":1, "loop":0 }
+              ]
+            },
+            {
+              "name":"Sequence",
+              "data":[
+                { "sumVector":{ "angle":{ "_":[ "randomNumber", [ 0, 360 ] ] }, "length":{ "_":[ "randomValue", [ 0.1, 0.2, 0.5, 1 ] ] } } },
+                { "wait":{ "_":[ "randomNumber", [ 25, 50 ] ] }, "loopTo":0 }
+              ]
+            },
+            {
+              "name":"Execute",
+              "data":[
+                {
+                  "when":{ "_":[ "this", "collidesWith", { "_":[ "objectTyped", "lure" ] } ] },
+                  "execute":[
+                    { "sum":1, "to":{ "_":[ "this", "catching" ] } },
+                    {
+                      "when":{ "_":[ "this", "catching", "floor", "%", 2 ] },
+                      "sum":1,
+                      "to":{ "_":[ "that", "x" ] },
+                      "elseExecute":{ "subtract":1, "to":{ "_":[ "that", "x" ] } }
+                    },
+                    { "when":{ "_":[ "this", "catching", "isGreaterThan", { "_":[ "this", "catchingTime" ] } ] }, "set":{ "state":"caught" } }
+                  ],
+                  "elseExecute":{ "when":{ "_":[ "this", "catching" ] }, "subtract":0.1, "to":{ "_":[ "this", "catching" ] } }
+                },
+                { "set":{ "flipX":{ "_":[ "this", "forceX", "isLessThan", 0 ] } } }
+              ]
+            },
+            { "name":"Physics", "data":{ "walls":{ "area":{ "_":[ "this", "area" ] }, "restitution":1 }, "limitX":[ -1, 1 ], "limitY":[ -1, 1 ] } }
+          ]
+        },
+        {
+          "name":"caught",
+          "set":{ "type":"caught", "tileY":16, "visible":1 },
+          "execute":[
+            { "as":{ "_":[ "object", "tensionindicator" ] }, "set":{ "visible":1 } },
+            {
+              "object":{
+                "type":"message",
+                "width":256, "height":40,
+                "x":0, "y":76,
+                "color":"#f00",
+                "font":"spectrum", "fontSize":40, "lineHeight":40, "outline":"#000", "textAlign":"center", "html":"FISH!",
+                "cycle":0,
+                "states":{
+                  "code":[
+                    {
+                      "name":"Sequence",
+                      "data":[
+                        { "sum":0.5, "to":{ "_":[ "this", "cycle" ] }, "set":{ "x":{ "_":[ "this", "cycle", "sin", "*", 2 ] } }, "wait":1, "loop":1, "cycles":50 },
+                        { "remove":1 }
+                      ]
+                    },
+                    { "name":"Sequence", "data":[ { "set":{ "color":"#f00" }, "wait":2 }, { "set":{ "color":"#fff" }, "wait":2, "loopTo":0 } ] }
+                  ]
+                }
+              },
+              "into":{ "_":"scenehud" }
+            }
+          ],
+          "code":[
+            {
+              "name":"Sequence",
+              "data":[
+                {
+                  "set":{
+                    "tensionX":{ "_":[ "randomValue", { "_":[ "this", "tensionXStrength" ] } ] },
+                    "tensionY":{ "_":[ "randomValue", { "_":[ "this", "tensionYStrength" ] } ] }
+                  }
+                },
+                { "wait":{ "_":[ "randomNumber", { "_":[ "this", "movingTiming" ] } ] }, "loopTo":0 }
+              ]
+            },
+            {
+              "name":"Execute",
+              "data":[
+                {
+                  "when":{ "_":[ "this", "tensionX", "isLessThan", 0 ] },
+                  "set":{ "x":{ "_":[ "objectTyped", "lure", "x", "-", 20 ] }, "flipX":0 },
+                  "elseExecute":{ "set":{ "x":{ "_":[ "objectTyped", "lure", "x", "+", 4 ] }, "flipX":1 } }
+                },
+                { "set":{ "y":{ "_":[ "objectTyped", "lure", "y", "-", 4 ] } } },
+                { "when":{ "_":[ "this", "y", "isLessThan", 65 ] }, "sum":1, "to":{ "_":[ "this", "escaped" ] } },
+                { "when":{ "_":[ "this", "escaped", "isGreaterThan", 30 ] }, "set":{ "state":"escaped" } }
+              ]
+            }
+          ]
+        },
+        {
+          "name":"retire",
+          "set":{ "type":"caughtfish", "tileX":8, "tileY":48, "width":16, "height":24, "zIndex":27, "frame":0, "animation":"none" },
+          "code":{
+            "name":"Execute",
+            "data":{
+              "set":{ "x":{ "_":[ "objectTyped", "lure", "x", "-", 8 ] }, "y":{ "_":[ "objectTyped", "lure", "y", "+", 4 ] }, "flipX":{ "_":[ "this", "flipX", "not" ] } }
+            }
+          }
+        },
+        {
+          "name":"escaped",
+          "set":{ "tensionX":0, "tensionY":0 },
+          "execute":[
+            { "object":{ "_":[ "stencil", "splash" ] } },
+            {
+              "object":{
+                "type":"message",
+                "width":256, "height":40,
+                "x":0, "y":76,
+                "color":"#0ff",
+                "font":"spectrum", "fontSize":40, "lineHeight":40, "outline":"#000", "textAlign":"center", "html":"FISH ESCAPED!",
+                "cycle":0,
+                "states":{
+                  "code":{
+                    "name":"Sequence",
+                    "data":[
+                      { "sum":0.15, "to":{ "_":[ "this", "cycle" ] }, "set":{ "y":{ "_":[ "this", "cycle", "sin", "*", 3, "+", 76 ] } }, "wait":1, "loop":1, "cycles":75 },
+                      { "remove":1 }
+                    ]
+                  }
+                }
+              },
+              "into":{ "_":"scenehud" }
+            },
+            { "as":{ "_":[ "object", "tensionindicator" ] }, "set":{ "visible":0 } },
+            { "remove":1 }
+          ]
+        }
+      ]
+    },
+    "fishTypes":[
+      {
+        "name":"Yellowfin croaker",
+        "area":{ "width":256, "height":50, "x":0, "y":84 },
+        "catchingTime":40,
+        "movingLimit":[ -1, 1 ],
+        "movingSpeed":[ 0.1, 0.2, 0.5, 1 ],
+        "movingTiming":[ 125, 125 ],
+        "portrait":0,
+        "tensionXStrength":[ -4, -5, 4, 5 ],
+        "tensionYStrength":[ -1, -1.5, -2 ],
+        "weight":1.36,
+        "weightvariable":0.6
+      },
+      {
+        "name":"California corbina",
+        "area":{ "width":256, "height":50, "x":0, "y":84 },
+        "catchingTime":30,
+        "movingLimit":[ -1, 1 ],
+        "movingSpeed":[ 0.1, 0.2, 0.5, 1 ],
+        "movingTiming":[ 50, 100 ],
+        "portrait":1,
+        "tensionXStrength":[ -3, -4, 3, 4 ],
+        "tensionYStrength":[ -0.5, -1, -1.5 ],
+        "weight":2.39,
+        "weightvariable":0.6
+      },
+      {
+        "name":"Spotfin croaker",
+        "area":{ "width":256, "height":50, "x":0, "y":84 },
+        "catchingTime":20,
+        "movingLimit":[ -1, 1 ],
+        "movingSpeed":[ 0.1, 0.2, 0.5, 1 ],
+        "movingTiming":[ 25, 100 ],
+        "portrait":2,
+        "tensionXStrength":[ -1, -4, 1, 4 ],
+        "tensionYStrength":[ -1, -1.5, -2 ],
+        "weight":3.67,
+        "weightvariable":0.6
+      },
+      {
+        "name":"Leopard shark",
+        "area":{ "width":256, "height":50, "x":0, "y":84 },
+        "catchingTime":10,
+        "movingLimit":[ -1, 1 ],
+        "movingSpeed":[ 0.1, 0.2, 0.5, 1 ],
+        "movingTiming":[ 25, 50 ],
+        "portrait":3,
+        "tensionXStrength":[ -3, -6, 3, 6 ],
+        "tensionYStrength":[ -1, -1.5, -2 ],
+        "weight":21.05,
+        "weightvariable":0.6
+      }
+    ],
+    "hook":{
+      "type":[ "hook", "fishingrod", "allfishingrod", "removeonbreak" ],
+      "image":"sprites", "tileX":56, "width":8, "height":8,
+      "zIndex":20, "y":192,
+      "forceY":-25,
+      "animations":{ "hook":{ "frame":0 }, "underwater":{ "frames":[ 1, 2 ], "loopTo":0 } },
+      "animation":"hook",
+      "currentTension":0,
+      "tension":0,
+      "tensionX":0,
+      "tip":{ "_":[ "new", { "width":1, "height":1, "x":0, "y":0 } ] },
+      "states":[
+        {
+          "like":{ "_":[ "stencil", "behaviourSetTip" ] },
+          "code":[
+            { "name":"Physics", "data":{ "gravityY":1 } },
+            {
+              "name":"Execute",
+              "data":{
+                "when":{ "_":[ "this", "forceY", "isGreaterThan", 0, "and", { "_":[ "this", "y", "isGreaterThan", { "_":[ "this", "destY" ] } ] } ] },
+                "execute":{ "set":{ "y":{ "_":[ "this", "destY" ] }, "forceX":0, "forceY":0, "state":"underwater" } }
+              }
+            }
+          ]
+        },
+        {
+          "name":"underwater",
+          "like":[ { "_":[ "stencil", "behaviourSetTip" ] }, { "_":[ "stencil", "behaviourApplyTension" ] }, { "_":[ "stencil", "behaviourSetDistance" ] } ],
+          "set":{ "type":"lure", "animation":"underwater" },
+          "execute":{ "object":{ "_":[ "stencil", "splash" ] } },
+          "code":[
+            {
+              "name":"Execute",
+              "data":{
+                "when":{ "_":[ "this", "y", "isGreaterThan", 167 ] },
+                "execute":[ { "as":{ "_":[ "object", "fishingrod" ] }, "set":{ "state":"retire" } }, { "as":{ "_":[ "object", "caught" ] }, "set":{ "state":"retire" } } ]
+              }
+            },
+            {
+              "name":"Sequence",
+              "data":[
+                { "wait":1, "loop":1, "until":{ "_":[ "this", "currentTension", "isGreaterThan", 6 ] } },
+                { "object":{ "_":[ "stencil", "splash" ] } },
+                { "wait":2, "loopTo":0 }
+              ]
+            },
+            {
+              "name":"Physics",
+              "data":{ "walls":{ "area":{ "width":224, "height":112, "x":16, "y":64 }, "limitX":[ -2, 2 ], "limitY":[ -2, 2 ], "restitution":0 } }
+            }
+          ]
+        },
+        {
+          "name":"retire",
+          "like":{ "_":[ "stencil", "behaviourSetTip" ] },
+          "set":{ "forceX":0, "forceY":-5, "animation":"hook", "retire":1 },
+          "execute":{ "as":{ "_":"scene" }, "set":{ "distance":0 } },
+          "code":[
+            { "name":"Execute", "data":{ "when":{ "_":[ "this", "y", "isGreaterThan", 256 ] }, "set":{ "state":"idle" } } },
+            { "name":"Physics", "data":{ "gravityY":1 } }
+          ]
+        }
+      ]
+    },
+    "reticle":{
+      "type":"reticle",
+      "image":"sprites", "tileX":8, "width":24, "height":16,
+      "zIndex":40, "x":116, "y":64,
+      "animations":{ "idle":{ "frames":2, "loopTo":0 } },
+      "animation":"idle",
+      "states":{
+        "code":[
+          { "name":"Player", "data":{ "horizontal":{ "control":1, "gotoZero":1 }, "vertical":{ "control":1, "gotoZero":1 } } },
+          {
+            "name":"Execute",
+            "data":{
+              "when":{ "_":[ "keyA", "isHit" ] },
+              "execute":[
+                {
+                  "object":[
+                    { "set":{ "_":[ "stencil", "rod" ] } },
+                    { "set":{ "_":[ "stencil", "hook" ] }, "x":{ "_":[ "that", "x", "+", 8 ] }, "destY":{ "_":[ "that", "y", "+", 4 ] } },
+                    { "set":{ "_":[ "stencil", "rope" ] } }
+                  ]
+                },
+                { "remove":1 }
+              ]
+            }
+          },
+          { "name":"Physics", "data":{ "walls":{ "area":{ "width":224, "height":112, "x":16, "y":64 }, "restitution":0 } } }
+        ]
+      }
+    },
+    "rod":{
+      "type":[ "rod", "fishingrod", "allfishingrod" ],
+      "image":"sprites", "width":8, "height":176,
+      "zIndex":30, "x":{ "_":[ "randomNumber", [ 0, 248 ] ] }, "y":192,
+      "forceY":-20,
+      "tensionX":0,
+      "tensionY":0,
+      "tip":{ "_":[ "new", { "width":1, "height":1, "x":0, "y":0 } ] },
+      "states":[
+        {
+          "like":{ "_":[ "stencil", "behaviourSetTip" ] },
+          "code":[
+            { "name":"Physics", "data":{ "gravityY":1 } },
+            { "name":"Execute", "data":{ "when":{ "_":[ "this", "y", "isLessThan", 16 ] }, "execute":{ "set":{ "y":16, "state":"fishing" } } } }
+          ]
+        },
+        {
+          "name":"fishing",
+          "like":{ "_":[ "stencil", "behaviourSetTip" ] },
+          "code":{
+            "name":"Execute",
+            "data":[
+              {
+                "when":{ "_":[ "keyLeft", "isDown" ] },
+                "subtract":1,
+                "to":{ "_":[ "this", "tensionX" ] },
+                "elseExecute":{
+                  "when":{ "_":[ "keyRight", "isDown" ] },
+                  "sum":1,
+                  "to":{ "_":[ "this", "tensionX" ] },
+                  "elseExecute":{
+                    "when":{ "_":[ "this", "tensionX", "abs", "isLessThan", 0.1 ] },
+                    "set":{ "tensionX":0 },
+                    "elseExecute":{
+                      "when":{ "_":[ "this", "tensionX", "isGreaterThan", 0 ] },
+                      "subtract":0.1,
+                      "to":{ "_":[ "this", "tensionX" ] },
+                      "elseExecute":{ "sum":0.1, "to":{ "_":[ "this", "tensionX" ] } }
+                    }
+                  }
+                }
+              },
+              {
+                "when":{ "_":[ "keyA", "isDown" ] },
+                "sum":0.1,
+                "to":{ "_":[ "this", "tensionY" ] },
+                "elseExecute":{ "subtract":0.1, "to":{ "_":[ "this", "tensionY" ] } }
+              },
+              { "set":{ "tensionX":{ "_":[ "this", "tensionX", "limitValue", [ -5, 5 ] ] }, "tensionY":{ "_":[ "this", "tensionY", "limitValue", [ -0.2, 3 ] ] } } },
+              { "set":{ "x":{ "_":[ "this", "x", "+", { "_":[ "this", "tensionX" ] }, "limitValue", [ 0, 248 ] ] }, "y":{ "_":[ "this", "tensionY", "+", 16 ] } } }
+            ]
+          }
+        },
+        {
+          "name":"retire",
+          "like":{ "_":[ "stencil", "behaviourSetTip" ] },
+          "set":{ "forceX":0, "forceY":0 },
+          "code":[
+            { "name":"Execute", "data":{ "when":{ "_":[ "this", "y", "isGreaterThan", 256 ] }, "execute":{ "set":{ "retire":1, "state":"idle" } } } },
+            { "name":"Physics", "data":{ "gravityY":1 } }
+          ]
+        }
+      ]
+    },
+    "rope":{
+      "type":[ "allfishingrod", "removeonbreak" ],
+      "height":1,
+      "zIndex":25,
+      "originX":0, "originY":0,
+      "bgcolor":"#fff",
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":{
+            "set":{
+              "width":{ "_":[ "objectTyped", "hook", "tip", "distanceTo", { "_":[ "objectTyped", "rod", "tip" ] } ] },
+              "x":{ "_":[ "objectTyped", "rod", "tip", "x" ] }, "y":{ "_":[ "objectTyped", "rod", "tip", "y" ] },
+              "angle":{ "_":[ "objectTyped", "rod", "tip", "angleTo", { "_":[ "objectTyped", "hook", "tip" ] }, "-", 90 ] }
+            }
+          }
+        }
+      }
+    },
+    "sealine":{
+      "width":0, "height":1,
+      "zIndex":28,
+      "bgcolor":"#fff",
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[
+            { "wait":{ "_":[ "randomNumber", [ 10, 25 ] ] } },
+            { "set":{ "width":{ "_":[ "randomNumber", [ 5, 20 ] ] }, "x":{ "_":[ "randomNumber", [ 0, 246 ] ] }, "y":{ "_":[ "randomNumber", [ 65, 175 ] ] } } },
+            { "subtract":2, "to":{ "_":[ "this", "width" ] } },
+            { "sum":1, "to":{ "_":[ "this", "x" ] } },
+            { "wait":2, "loopTo":-2, "until":{ "_":[ "this", "width", "isLessThan", 0 ] } },
+            { "loopTo":0 }
+          ]
+        }
+      }
+    },
+    "splash":{
+      "image":"defaultsprites", "tileX":64, "tileY":144, "width":16, "height":16,
+      "zIndex":21, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "animations":{ "spark":{ "frames":4, "speed":0 } },
+      "animation":"spark",
+      "states":{ "code":{ "name":"Sequence", "data":[ { "wait":4 }, { "remove":1 } ] } }
+    }
+  },
+  "execute":[
+    { "as":{ "_":"variable" }, "set":{ "highscore":{ "_":[ "storage", "hi" ] }, "maxTension":200 } },
+    { "when":{ "_":[ "variable", "highscore", "not" ] }, "as":{ "_":"variable" }, "set":{ "highscore":10 } }
+  ],
+  "scenes":{
+    "intro":{
+      "object":[
+        { "width":256, "height":64, "x":0, "y":0, "bgcolor":"#0ff" },
+        { "width":256, "height":128, "zIndex":1, "x":0, "y":64, "bgcolor":"#00f" },
+        {
+          "image":"logo", "width":195, "height":71,
+          "zIndex":50, "x":32, "y":20,
+          "cycle":0,
+          "states":{
+            "code":{
+              "name":"Sequence",
+              "data":{ "sum":0.1, "to":{ "_":[ "this", "cycle" ] }, "set":{ "y":{ "_":[ "this", "cycle", "sin", "*", 5, "+", 20 ] } }, "wait":1, "loop":1 }
+            }
+          }
+        },
+        {
+          "box":"label", "width":256,
+          "zIndex":100, "x":0, "y":110,
+          "color":"#fff",
+          "font":"spectrum", "fontSize":20, "lineHeight":20, "outline":"#000", "textAlign":"center", "html":"PRESS START",
+          "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "visible":0 }, "wait":10 }, { "set":{ "visible":1 }, "wait":10, "loopTo":0 } ] } }
+        },
+        {
+          "width":160, "height":10,
+          "zIndex":100, "x":48, "y":163,
+          "bgcolor":"#f00", "color":"#fff",
+          "font":"spectrum", "lineHeight":10, "textAlign":"center", "html":"BEST SCORE"
+        },
+        {
+          "width":256, "height":20,
+          "zIndex":100, "x":0, "y":170,
+          "color":"#fff",
+          "font":"spectrum", "lineHeight":20, "outline":"#000", "textAlign":"center", "html":{ "_":[ "variable", "highscore", ".", " kg" ] }
+        }
+      ],
+      "execute":{ "times":10, "object":{ "_":[ "stencil", "sealine" ] } },
+      "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"game" } } }
+    },
+    "game":{
+      "object":[
+        { "width":256, "height":64, "x":0, "y":0, "bgcolor":"#0ff" },
+        { "width":256, "height":112, "zIndex":1, "x":0, "y":64, "bgcolor":"#00f" },
+        { "image":"sprites", "tileX":24, "tileY":48, "width":256, "height":16, "zIndex":2, "x":0, "y":176 }
+      ],
+      "set":{ "allweight":0, "min":3, "sec":0 },
+      "execute":[
+        {
+          "object":[
+            { "width":84, "height":10, "x":86, "y":2, "bgcolor":"#f00", "color":"#fff", "font":"spectrum", "lineHeight":10, "textAlign":"center", "html":"TIME" },
+            { "width":80, "height":10, "x":0, "y":2, "bgcolor":"#00f", "color":"#fff", "font":"spectrum", "lineHeight":10, "html":"&nbsp;DISTANCE" },
+            {
+              "width":80, "height":10,
+              "x":176, "y":2,
+              "bgcolor":"#00f", "color":"#fff",
+              "font":"spectrum", "lineHeight":10, "textAlign":"right", "html":"WEIGHT&nbsp;"
+            },
+            {
+              "type":"tensionindicator",
+              "image":"sprites", "tileX":64, "tileY":8, "width":8, "height":8,
+              "zIndex":20, "x":0, "y":166,
+              "visible":0,
+              "states":{ "code":{ "name":"Execute", "data":{ "set":{ "x":{ "_":[ "objectTyped", "fish", "tensionX", "*", 18, "+", 128 ] } } } } }
+            },
+            {
+              "type":"tensionindicator",
+              "image":"sprites", "tileX":56, "tileY":8, "width":8, "height":8,
+              "zIndex":20, "x":0, "y":178,
+              "visible":0,
+              "states":{ "code":{ "name":"Execute", "data":{ "set":{ "x":{ "_":[ "objectTyped", "rod", "tensionX", "*", 18, "+", 128 ] } } } } }
+            },
+            {
+              "type":"hud",
+              "hudType":"label", "label":"%number|scene.min|0|2%'%number|scene.sec|0|2%\"",
+              "width":256, "height":40,
+              "x":0, "y":8,
+              "color":"#ff0",
+              "font":"spectrum", "fontSize":30, "lineHeight":30, "outline":"#000", "textAlign":"center"
+            },
+            {
+              "type":"hud",
+              "hudType":"label", "label":"%number|scene.distance% mt",
+              "width":80, "height":40,
+              "x":0, "y":4,
+              "color":"#0ff",
+              "font":"spectrum", "fontSize":20, "lineHeight":30, "outline":"#000", "textAlign":"center"
+            },
+            {
+              "type":"hud",
+              "hudType":"label", "label":"%number|scene.allweight% kg",
+              "width":80, "height":40,
+              "x":176, "y":4,
+              "color":"#0ff",
+              "font":"spectrum", "fontSize":20, "lineHeight":30, "outline":"#000", "textAlign":"center"
+            },
+            {
+              "type":"tensionindicator",
+              "width":240, "height":10,
+              "x":8, "y":155,
+              "visible":0,
+              "color":"#fff",
+              "font":"spectrum", "lineHeight":10, "outline":"#000", "html":"TENSION"
+            },
+            { "type":"tensionindicator", "image":"sprites", "tileX":8, "tileY":72, "width":240, "height":14, "x":8, "y":170, "visible":0 },
+            {
+              "type":"tensionindicator",
+              "box":"label", "image":"sprites", "tileX":8, "tileY":86, "height":14,
+              "zIndex":10, "x":8, "y":170,
+              "visible":0,
+              "states":{
+                "code":{ "name":"Execute", "data":{ "set":{ "width":{ "_":[ "objectTyped", "hook", "tension", "/", { "_":[ "variable", "maxTension" ] }, "*", 240 ] } } } }
+              }
+            }
+          ],
+          "into":{ "_":"scenehud" }
+        },
+        { "times":10, "object":{ "_":[ "stencil", "sealine" ] } }
+      ],
+      "states":[
+        {
+          "execute":{
+            "object":{
+              "type":"message",
+              "width":256, "height":30,
+              "x":0, "y":76,
+              "color":"#f00",
+              "font":"spectrum", "fontSize":40, "lineHeight":40, "outline":"#000", "textAlign":"center", "html":"LET'S FISH",
+              "cycle":0,
+              "states":{
+                "code":[
+                  {
+                    "name":"Sequence",
+                    "data":[
+                      { "sum":0.5, "to":{ "_":[ "this", "cycle" ] }, "set":{ "y":{ "_":[ "this", "cycle", "sin", "*", 2, "+", 76 ] } }, "wait":1, "loop":1, "cycles":50 },
+                      { "as":{ "_":"scene" }, "set":{ "state":"fishing" } },
+                      { "remove":1 }
+                    ]
+                  },
+                  { "name":"Sequence", "data":[ { "set":{ "color":"#00f" }, "wait":2 }, { "set":{ "color":"#0ff" }, "wait":2, "loopTo":0 } ] }
+                ]
+              }
+            },
+            "into":{ "_":"scenehud" }
+          }
+        },
+        {
+          "name":"fishing",
+          "code":[
+            {
+              "name":"Sequence",
+              "data":[
+                { "wait":{ "_":[ "randomValue", [ 75, 125 ] ] } },
+                {
+                  "decide":[
+                    {
+                      "when":{ "_":[ "object", "cloud", "count", "isLessThan", 2 ] },
+                      "options":{
+                        "object":{
+                          "type":"cloud",
+                          "image":"sprites", "tileX":128, "tileY":16, "width":32, "height":16,
+                          "zIndex":1, "x":256, "y":{ "_":[ "randomValue", [ 20, 45 ] ] },
+                          "flipX":{ "_":[ "randomValue", [ 0, 1 ] ] },
+                          "speed":{ "_":[ "randomValue", [ 0.1, 0.2, 0.4 ] ] },
+                          "states":{
+                            "code":{
+                              "name":"Execute",
+                              "data":{
+                                "when":{ "_":[ "this", "x", "isGreaterThan", -32 ] },
+                                "subtract":{ "_":[ "this", "speed" ] },
+                                "to":{ "_":[ "this", "x" ] },
+                                "elseExecute":{ "remove":1 }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "when":{ "_":[ "object", "ship", "count", "isLessThan", 3 ] },
+                      "options":{
+                        "object":{
+                          "type":"ship",
+                          "image":"sprites", "tileX":128, "tileY":32, "width":8, "height":8,
+                          "zIndex":2, "x":-8, "y":56, "frame":{ "_":[ "randomNumber", [ 0, 3 ] ] },
+                          "speed":{ "_":[ "randomValue", [ 0.1, 0.2, 0.4 ] ] },
+                          "states":{
+                            "code":{
+                              "name":"Execute",
+                              "data":{ "when":{ "_":[ "this", "x", "isLessThan", 256 ] }, "sum":{ "_":[ "this", "speed" ] }, "to":{ "_":[ "this", "x" ] }, "elseExecute":{ "remove":1 } }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  ]
+                },
+                { "loopTo":0 }
+              ]
+            },
+            {
+              "name":"Sequence",
+              "data":[
+                { "wait":25 },
+                {
+                  "when":{ "_":[ "this", "sec", "isEqualTo", 0 ] },
+                  "execute":{
+                    "when":{ "_":[ "scene", "min" ] },
+                    "execute":[ { "subtract":1, "to":{ "_":[ "this", "min" ] } }, { "set":{ "sec":59 } } ],
+                    "elseExecute":{ "set":{ "state":"timeup" } }
+                  },
+                  "elseExecute":{ "subtract":1, "to":{ "_":[ "this", "sec" ] } }
+                },
+                { "loopTo":0 }
+              ]
+            },
+            {
+              "name":"Sequence",
+              "data":[
+                { "as":{ "_":[ "object", "allfishingrod" ] }, "remove":1 },
+                { "as":{ "_":[ "object", "caughtfish" ] }, "remove":1 },
+                { "when":{ "_":[ "objectTyped", "fish", "not" ] }, "object":{ "_":[ "stencil", "fish" ] } },
+                { "object":{ "_":[ "stencil", "reticle" ] } },
+                { "wait":1, "loop":1, "until":{ "_":[ "objectTyped", "rod", "retire" ] } },
+                { "as":{ "_":[ "object", "tensionindicator" ] }, "set":{ "visible":0 } },
+                { "wait":25 },
+                { "as":{ "_":[ "object", "message" ] }, "remove":1 },
+                { "when":{ "_":[ "objectTyped", "caughtfish" ] }, "set":{ "state":"caught" } },
+                { "wait":1, "loopTo":0 }
+              ]
+            }
+          ]
+        },
+        {
+          "name":"caught",
+          "set":{
+            "fishweight":{
+              "_":[
+                "objectTyped",
+                "caughtfish",
+                "weight",
+                "+",
+                { "_":[ "objectTyped", "caughtfish", "weightvariable", "/", 100, "*", { "_":[ "randomNumber", [ 0, 100 ] ] } ] },
+                "*",
+                100,
+                "ceil",
+                "/",
+                100
+              ]
+            },
+            "weightbonus":0
+          },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              {
+                "object":[
+                  {
+                    "type":"bonusscreen",
+                    "image":"sprites", "tileX":8, "tileY":100, "width":80, "height":120,
+                    "x":168, "y":192, "frame":{ "_":[ "objectTyped", "caughtfish", "portrait" ] },
+                    "forceY":72,
+                    "states":{
+                      "code":{
+                        "name":"Execute",
+                        "data":{
+                          "when":{ "_":[ "this", "y", "isGreaterThan", 48 ] },
+                          "execute":[ { "subtract":{ "_":[ "this", "forceY" ] }, "to":{ "_":[ "this", "y" ] } }, { "multiply":0.5, "to":{ "_":[ "this", "forceY" ] } } ]
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "type":"bonusscreen",
+                    "width":160, "height":10,
+                    "x":-144, "y":73,
+                    "bgcolor":"#f00", "color":"#fff",
+                    "font":"spectrum", "lineHeight":10, "textAlign":"center", "html":"YOU CAUGHT",
+                    "forceX":77,
+                    "states":{
+                      "code":{
+                        "name":"Execute",
+                        "data":{
+                          "when":{ "_":[ "this", "x", "isLessThan", 8 ] },
+                          "execute":[ { "sum":{ "_":[ "this", "forceX" ] }, "to":{ "_":[ "this", "x" ] } }, { "multiply":0.5, "to":{ "_":[ "this", "forceX" ] } } ]
+                        }
+                      }
+                    }
+                  },
+                  {
+                    "type":"bonusscreen",
+                    "width":160, "height":50,
+                    "x":-144, "y":85,
+                    "color":"#fff",
+                    "font":"spectrum", "fontSize":40, "lineHeight":20, "outline":"#000", "textAlign":"center", "html":{ "_":[ "objectTyped", "caughtfish", "name" ] },
+                    "forceX":77,
+                    "states":{
+                      "code":{
+                        "name":"Execute",
+                        "data":{
+                          "when":{ "_":[ "this", "x", "isLessThan", 8 ] },
+                          "execute":[ { "sum":{ "_":[ "this", "forceX" ] }, "to":{ "_":[ "this", "x" ] } }, { "multiply":0.5, "to":{ "_":[ "this", "forceX" ] } } ]
+                        }
+                      }
+                    }
+                  }
+                ],
+                "into":{ "_":"scenehud" }
+              },
+              { "wait":10 },
+              {
+                "object":{
+                  "type":[ "bonusscreen", "hud" ],
+                  "hudType":"label", "label":"%number|scene.weightbonus% kg",
+                  "width":160, "height":30,
+                  "x":-144, "y":136,
+                  "color":"#ff0",
+                  "font":"spectrum", "fontSize":40, "lineHeight":20, "outline":"#000", "textAlign":"center",
+                  "forceX":77,
+                  "states":{
+                    "code":[
+                      {
+                        "name":"Execute",
+                        "data":{
+                          "when":{ "_":[ "this", "x", "isLessThan", 8 ] },
+                          "execute":[ { "sum":{ "_":[ "this", "forceX" ] }, "to":{ "_":[ "this", "x" ] } }, { "multiply":0.5, "to":{ "_":[ "this", "forceX" ] } } ]
+                        }
+                      },
+                      { "name":"Sequence", "data":[ { "set":{ "color":"#f00" }, "wait":5 }, { "set":{ "color":"#fff" }, "wait":5, "loopTo":0 } ] }
+                    ]
+                  }
+                },
+                "into":{ "_":"scenehud" }
+              },
+              { "sum":0.05, "to":{ "_":[ "scene", "weightbonus" ] }, "wait":1 },
+              { "sum":0.05, "to":{ "_":[ "scene", "allweight" ] } },
+              { "loopTo":-2, "until":{ "_":[ "scene", "weightbonus", "isGreaterThan", { "_":[ "scene", "fishweight" ] }, "or", { "_":[ "keyA", "isHit" ] } ] } },
+              { "sum":{ "_":[ "scene", "fishweight", "-", { "_":[ "scene", "weightbonus" ] } ] }, "to":{ "_":[ "scene", "allweight" ] } },
+              { "as":{ "_":"scene" }, "set":{ "weightbonus":{ "_":[ "scene", "fishweight" ] } } },
+              { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+              { "as":{ "_":[ "object", "bonusscreen" ] }, "remove":1 },
+              { "set":{ "state":"fishing" } }
+            ]
+          }
+        },
+        {
+          "name":"timeup",
+          "execute":[
+            { "as":{ "_":[ "objectTyped", "fish" ] }, "remove":1 },
+            { "as":{ "_":[ "objectTyped", "reticle" ] }, "remove":1 },
+            { "as":{ "_":[ "object", "tensionindicator" ] }, "set":{ "visible":0 } },
+            { "as":{ "_":[ "object", "fishingrod" ] }, "set":{ "state":"retire" } }
+          ],
+          "code":{
+            "name":"Sequence",
+            "data":[
+              {
+                "object":{
+                  "type":"message",
+                  "width":256, "height":30,
+                  "x":0, "y":76,
+                  "color":"#f00",
+                  "font":"spectrum", "fontSize":40, "lineHeight":40, "outline":"#000", "textAlign":"center", "html":"TIME UP",
+                  "cycle":0,
+                  "states":{
+                    "code":[
+                      {
+                        "name":"Sequence",
+                        "data":[
+                          { "sum":0.5, "to":{ "_":[ "this", "cycle" ] }, "set":{ "x":{ "_":[ "this", "cycle", "sin", "*", 2 ] } }, "wait":1, "loop":1, "cycles":50 },
+                          { "remove":1 }
+                        ]
+                      },
+                      { "name":"Sequence", "data":[ { "set":{ "color":"#f00" }, "wait":2 }, { "set":{ "color":"#ff0" }, "wait":2, "loopTo":0 } ] }
+                    ]
+                  }
+                },
+                "into":{ "_":"scenehud" }
+              },
+              { "wait":50 },
+              {
+                "object":{
+                  "width":160, "height":10,
+                  "x":48, "y":53,
+                  "bgcolor":"#f00", "color":"#fff",
+                  "font":"spectrum", "lineHeight":10, "textAlign":"center", "html":"YOUR SCORE"
+                },
+                "into":{ "_":"scenehud" }
+              },
+              { "wait":20 },
+              {
+                "object":{
+                  "width":256, "height":40,
+                  "x":0, "y":63,
+                  "color":"#fff",
+                  "font":"spectrum", "fontSize":40, "lineHeight":30, "outline":"#000", "textAlign":"center", "html":{ "_":[ "scene", "allweight", ".", " kg" ] }
+                },
+                "into":{ "_":"scenehud" }
+              },
+              { "wait":20 },
+              {
+                "object":{
+                  "width":160, "height":10,
+                  "x":48, "y":103,
+                  "bgcolor":"#f00", "color":"#fff",
+                  "font":"spectrum", "lineHeight":10, "textAlign":"center", "html":"BEST SCORE"
+                },
+                "into":{ "_":"scenehud" }
+              },
+              { "wait":20 },
+              {
+                "object":{
+                  "width":256, "height":40,
+                  "x":0, "y":113,
+                  "color":"#fff",
+                  "font":"spectrum", "fontSize":40, "lineHeight":30, "outline":"#000", "textAlign":"center", "html":{ "_":[ "variable", "highscore", ".", " kg" ] }
+                },
+                "into":{ "_":"scenehud" }
+              },
+              { "wait":20 },
+              {
+                "when":{ "_":[ "scene", "allweight", "isGreaterThan", { "_":[ "variable", "highscore" ] } ] },
+                "execute":[
+                  { "as":{ "_":"variable" }, "set":{ "highscore":{ "_":[ "scene", "allweight" ] } } },
+                  { "as":{ "_":"storage" }, "set":{ "hi":{ "_":[ "scene", "allweight" ] } } },
+                  {
+                    "object":{
+                      "type":"message",
+                      "width":256, "height":30,
+                      "x":0, "y":140,
+                      "color":"#fff",
+                      "font":"spectrum", "fontSize":40, "lineHeight":40, "outline":"#000", "textAlign":"center", "html":"NEW RECORD",
+                      "cycle":0,
+                      "states":{
+                        "code":[
+                          {
+                            "name":"Sequence",
+                            "data":{ "sum":0.5, "to":{ "_":[ "this", "cycle" ] }, "set":{ "y":{ "_":[ "this", "cycle", "sin", "*", 2, "+", 140 ] } }, "wait":1, "loop":1 }
+                          },
+                          { "name":"Sequence", "data":[ { "set":{ "color":"#0ff" }, "wait":2 }, { "set":{ "color":"#fff" }, "wait":2, "loopTo":0 } ] }
+                        ]
+                      }
+                    },
+                    "into":{ "_":"scenehud" }
+                  }
+                ],
+                "elseExecute":{
+                  "object":{
+                    "type":"message",
+                    "width":256, "height":30,
+                    "x":0, "y":140,
+                    "color":"#f0f",
+                    "font":"spectrum", "fontSize":40, "lineHeight":40, "outline":"#000", "textAlign":"center", "html":"GAME OVER",
+                    "cycle":0,
+                    "states":{
+                      "code":{
+                        "name":"Sequence",
+                        "data":{ "sum":0.5, "to":{ "_":[ "this", "cycle" ] }, "set":{ "x":{ "_":[ "this", "cycle", "sin", "*", 2 ] } }, "wait":1, "loop":1 }
+                      }
+                    }
+                  },
+                  "into":{ "_":"scenehud" }
+                }
+              },
+              { "wait":25 },
+              { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+              { "gotoScene":"intro" }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}
