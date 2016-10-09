@@ -123,9 +123,7 @@ var DOMInator=function(useCanvas,aliasmode){
 		for (var a in extracss) node.style[a]=extracss[a];
 		return node;
 	}
-	function resetContext(ctx) {
-		if (pixelated) pixelatedContext(ctx);
-	}
+	function resetContext(ctx) { if (pixelated) pixelatedContext(ctx); }
 
 	/* Z-Index handling */
 	function __disconnect(obj) {
@@ -368,40 +366,7 @@ var DOMInator=function(useCanvas,aliasmode){
 	};
 
 	/* Game cycle */
-	var skipFrames=0,timeout=0,fps=0,mspf=0,frameTimestamp=0,framedone=1,gamecycle=0,renderer=0,self=this;
-	/*
-	@TODO: Keeping rendering and gamecycle on the same place slows down everything a lot.
-	var ts,time,skipFrames=0,timeout=0,fps=0,mspf=0,frameTimestamp=0,gamecycle=0,renderer=0,self=this;	
-	function scheduleFrame() {
-		if (running) {
-			ts=Supports.getTimestamp();
-			time=ts-frameTimestamp;
-			if (time>=mspf)  {
-				if (skipFrames)
-					skipFrames--;
-				else 
-					if (loading) {
-						renderer();
-						self.rawFrame();
-					} else {
-						gamecycle();
-						updateControls();
-						renderer();
-						self.frame();
-					}
-				frameTimestamp = ts;
-				time=0;
-			}
-			if (window.requestAnimationFrame) window.requestAnimationFrame(scheduleFrame);
-			else {
-				time=mspf-time;
-				if (time<1) time=1;
-				timeout=setTimeout(scheduleFrame,time);
-			}
-		}
-	}
-	*/
-	
+	var skipFrames=0,timeout=0,fps=0,mspf=0,frameTimestamp=0,framedone=1,gamecycle=0,renderer=0,self=this;	
 	function doRenderer() {
 		renderer();
 		self.frame();
@@ -436,7 +401,6 @@ var DOMInator=function(useCanvas,aliasmode){
 			}
 		}
 	}
-	
 	this.addSkipFrames=function(frames){ skipFrames+=frames; }
 	this.setGameCycle=function(cb) { gamecycle=cb; }
 	this.setRenderer=function(cb) { renderer=cb;}
@@ -591,9 +555,7 @@ var DOMInator=function(useCanvas,aliasmode){
 		if (keys.keyFullScreen) gameScreen.addEventListener("touchstart",fullscreenTouchToggle);
 		if (touchlayout) disableTouchcontroller();
 	}
-	function fullScreenChange() {
-		if (!Supports.isFullScreen()) exitFullScreen(true);
-	}
+	function fullScreenChange() { if (!Supports.isFullScreen()) exitFullScreen(true); }
 	function gotoFullScreen() {
 		if (Supports.isFullscreen&&!Supports.isFullScreen()) {
 			Supports.setFullScreen(root);
@@ -634,13 +596,10 @@ var DOMInator=function(useCanvas,aliasmode){
 		
 	/* Fake node */
 	this.createElement=function(nodeName,model,domnode) {
-
-		if (!model) model=[];
-
+		if (!model) model={};
 		model.style={};
 		model.attributes={};
 		model.__draw=1;
-
 		if (domnode)
 			model._node=domnode;
 		else if (useDom) {
@@ -653,7 +612,6 @@ var DOMInator=function(useCanvas,aliasmode){
 			model.__add=__add;
 			model.__repri=__repri;    		
 		}
-
 		if (model._node) {
 
 			// DOM Mode (or root canvas)
@@ -715,6 +673,7 @@ var DOMInator=function(useCanvas,aliasmode){
 						this._node.style[k]=v;
 					}
 				}
+
 				/* Canvas scaling */
 				if (resize&&useCanvas) {
 					this._node.width=this.style.width;
@@ -723,9 +682,7 @@ var DOMInator=function(useCanvas,aliasmode){
 					this._node.style.height=(this.style.height*this.style.scaley)+"px";
 				}
 			}
-
 			model.setAttribute=function(k,v) { this.attributes[k]=this._node[k]=v; }
-
 			model.addEventListener=function(evt,cb,rt) { Supports.addEventListener(this._node,evt,cb,rt); }
 			model.removeEventListener=function(evt,cb,rt) { Supports.removeEventListener(this._node,evt,cb,rt); }
 			model.focus=function() { this._node.focus(); }
@@ -779,7 +736,6 @@ var DOMInator=function(useCanvas,aliasmode){
 				}
 				this.__draw=(this.style.display!="none")&&(this.style.opacity>0);
 			}
-
 			model.setAttribute=function(k,v) {
 				switch (k) {
 					case "innerHTML":{
@@ -790,9 +746,7 @@ var DOMInator=function(useCanvas,aliasmode){
 				}
 				this.attributes[k]=v;
 			}
-
 			model.addEventListener= model.removeEventListener = model.focus = function() { }
-
 		}
 
 		if (useDom) {
@@ -998,13 +952,10 @@ var DOMInator=function(useCanvas,aliasmode){
 		scheduleFrame();
 	}
 
-	// CONTROLS: KEYBOARD/TOUCH CONTROLLER
+	/* Controls: keyboard/touch controller */
 	var key=this.key={};
 	var keys=this.keys={};
-	var hwkeys=[],touchlayout,
-
-
-	analogTouch=0,keyAtouch=0,keyBtouch=0;
+	var hwkeys=[],touchlayout,analogTouch=0,keyAtouch=0,keyBtouch=0;
 	var analogMap=[
 		{keyLeft:1,keyRight:0,keyUp:1,keyDown:0},
 		{keyLeft:1,keyRight:0,keyUp:0,keyDown:0},
@@ -1015,7 +966,6 @@ var DOMInator=function(useCanvas,aliasmode){
 		{keyLeft:0,keyRight:1,keyUp:1,keyDown:0},
 		{keyLeft:0,keyRight:0,keyUp:1,keyDown:0}
 	],analogIdle={keyLeft:0,keyRight:0,keyUp:0,keyDown:0},analogCurrent={keyLeft:0,keyRight:0,keyUp:0,keyDown:0};
-
 	function setAnalog(state) {
 		for (var a in analogCurrent)
 			if (analogCurrent[a]!=state[a]) {
@@ -1023,7 +973,6 @@ var DOMInator=function(useCanvas,aliasmode){
 				analogCurrent[a]=state[a];
 			}
 	}
-
 	function touchcontrollerTouchStart(e) {
 		var touch,button;
 		for (var a=0;a<e.changedTouches.length;a++) {
@@ -1051,7 +1000,6 @@ var DOMInator=function(useCanvas,aliasmode){
 		}
 		e.preventDefault(); 
 	}
-	
 	function touchcontrollerTouchEnd(e) {
 		var touch,button;
 		for (var a=0;a<e.changedTouches.length;a++) {
@@ -1073,7 +1021,6 @@ var DOMInator=function(useCanvas,aliasmode){
 		}
 		e.preventDefault(); 
 	}
-
 	function touchcontrollerTouchMove(e) {
 		var touch,button,pos,ang,dx,dy,dist;
 		for (var a=0;a<e.changedTouches.length;a++) {
@@ -1101,19 +1048,16 @@ var DOMInator=function(useCanvas,aliasmode){
 		}
 		e.preventDefault(); 
 	}
-
 	function enableTouchcontroller() {
 		Supports.addEventListener(root,"touchstart",touchcontrollerTouchStart);
 		Supports.addEventListener(root,"touchend",touchcontrollerTouchEnd);
 		Supports.addEventListener(root,"touchmove",touchcontrollerTouchMove);
 	}
-
 	function disableTouchcontroller() {
 		Supports.removeEventListener(root,"touchstart",touchcontrollerTouchStart);
 		Supports.removeEventListener(root,"touchend",touchcontrollerTouchEnd);
 		Supports.removeEventListener(root,"touchmove",touchcontrollerTouchMove);
 	}
-	
 	function keyDown(key) {
 		hwkeys[key]=1;
 		if (key==keys.keyFullScreen) toggleFullScreen();
@@ -1148,11 +1092,10 @@ var DOMInator=function(useCanvas,aliasmode){
 		}
 	}		
 
-	// CONTROLS
+	/* Controls: mouse/touch pointer */
 	var controls;
 	this.setControls=function(cont) {
 		controls=cont;
-
 		if (controls.keyboard) {
 			for (var a in controls.keyboard) keys[a]=controls.keyboard[a];
 			gameScreen.addEventListener("keydown",onkeydown);
@@ -1203,7 +1146,6 @@ var DOMInator=function(useCanvas,aliasmode){
 		// TOUCH CONTROLLER
 		if (controls.touchcontroller&&DOMInator.TOUCHLAYOUTS[controls.touchcontroller.layout]) touchlayout=Supports.clone(DOMInator.TOUCHLAYOUTS[controls.touchcontroller.layout].buttons);
 	}
-
 	function updateControls() {
 		if (keys) {
 			var ckey;
@@ -1228,15 +1170,14 @@ var DOMInator=function(useCanvas,aliasmode){
 		}
 	}
 
+	/* Game page element focus */
 	this.setAttribute("tabIndex", 1);
 	(function(obj){setTimeout(function() { obj._node.focus(); }, 1000);})(this);
 
 	/* Filters */
-
 	this.addFilter=function(filter) { filters.push(filter); }
 
 	// RENDERER SPECIFIC METHODS
-
 	if (useDom) {
 
 		var filterzindex=100;
@@ -1536,7 +1477,7 @@ function Box(parent, type, sub, statemanager, useCanvas, aliasmode) {
 		cleanprops: {},
 		displayed: 0,
 		coderunning:0,
-		onscreen:0,
+		isdirty:1,
 		// Code
 		running:1,
 		// Object types
@@ -1720,6 +1661,7 @@ function Box(parent, type, sub, statemanager, useCanvas, aliasmode) {
 	for (var i = 0; i < Box._dirtyrectsprops.length; i++)
 		box["set" + Box.capitalize(Box._dirtyrectsprops[i])] = (function(k) {
 			return function(v) {
+				v=v||0;
 				if (this[k] != v) {
 					this[k] = v;
 					this.cleanprops[k] = 0;
@@ -1728,9 +1670,17 @@ function Box(parent, type, sub, statemanager, useCanvas, aliasmode) {
 				return this;
 			};
 		})(Box._dirtyrectsprops[i]);
-	for (var i = 0; i < Box._casacadedirtyrectsprops.length; i++)
+	for (var i = 0; i < Box._casacadedirtyrectsprops.length; i++) {
+		box["update" + Box.capitalize(Box._casacadedirtyrectsprops[i])] = (function(k) {
+			return function() {
+				this.cleanprops[k] = 0;
+				this.screen.dirtyRects(this,1);
+				return this;
+			};
+		})(Box._casacadedirtyrectsprops[i]);
 		box["set" + Box.capitalize(Box._casacadedirtyrectsprops[i])] = (function(k) {
 			return function(v) {
+				v=v||0;
 				if (this[k] != v) {
 					this[k] = v;
 					this.cleanprops[k] = 0;
@@ -1739,9 +1689,19 @@ function Box(parent, type, sub, statemanager, useCanvas, aliasmode) {
 				return this;
 			};
 		})(Box._casacadedirtyrectsprops[i]);
-	for (var i = 0; i < Box._translaterectsprops.length; i++)
+	}
+	for (var i = 0; i < Box._translaterectsprops.length; i++) {
+		box["update" + Box.capitalize(Box._translaterectsprops[i])] = (function(k) {
+			return function() {
+				this.cleanprops[k] = 0;
+				if (this==this.screen.gridreference) this.screen.gridcoords[k]=this[k];
+				this.screen.translateRects(this,k,0);
+				return this;
+			};
+		})(Box._translaterectsprops[i]);
 		box["set" + Box.capitalize(Box._translaterectsprops[i])] = (function(k) {
 			return function(v) {
+				v=v||0;
 				if (this[k] != v) {
 					var d=v-this[k];
 					this[k] = v;
@@ -1752,6 +1712,7 @@ function Box(parent, type, sub, statemanager, useCanvas, aliasmode) {
 				return this;
 			};
 		})(Box._translaterectsprops[i]);
+	}
 	// INIT - Subobject or Screen
 	if (sub) {
 		// BOX - Finalize
@@ -1812,29 +1773,32 @@ function Box(parent, type, sub, statemanager, useCanvas, aliasmode) {
 		},
 		box.translateRects=function(obj,k,v) {
 			if (!obj.removed) {
-				var onscreen=obj.onscreen;
 				if (obj===this.gridreference) {
+					var cells=box.mergeCells({},box,0,0,"*"); // Get cells before moving...
 					if (obj.screen.rects) {
 						obj.screen.rects.rect[k]=FIX(obj.screen.rects.rect[k]-v);
 						obj.screen.rects.screen[k]=FIX(obj.screen.rects.screen[k]-v);
 						obj.screen.rects.outer[k]=FIX(obj.screen.rects.outer[k]-v);
 					}
-					onscreen=this.isOnScreen(obj);
-					if (onscreen||obj.onscreen)  this.scheduleObjectChange(obj,1);
 					// Recalculate all translations except into gridreference.
 					// - Cancel previous translation - skip them is unconvenient.
 					// - Outer rectangles don't need redraw since are still at their place.
 					this.recalculateRects(this,obj);
+					if (obj.node.parentNode||this.isOnScreen(obj)) { // If the grid reference is or was on screen...
+						this.scheduleObjectChange(obj); // ...schedule its change...
+						box.mergeCells(cells,box,0,0,"*"); // ...merge new cells after moving...
+						box.scheduleObjectOnScreenChange(1,cells); // ...schedule show/hide objects with changed onscreen state
+					}
 				} else {
 					this.dirtygrid[obj.uid] = 1;
 					if (obj.rects) {
 						obj.rects.rect[k]=FIX(obj.rects.rect[k]+v);
 						obj.rects.screen[k]=FIX(obj.rects.screen[k]+v);
 						obj.rects.outer[k]=FIX(obj.rects.outer[k]+v);
-						onscreen=this.isOnScreen(obj);
-					} else onscreen=1; // Since we don't know if the next position will be onscreen we will check this later
-					if (onscreen||obj.onscreen) this.scheduleObjectChange(obj);
+					}
 					for (var i = 0; i < obj.childs.length; i++) this.translateRects(obj.childs[i],k,v);
+					if (obj.node.parentNode||this.isOnScreen(obj)) // If the object is or was on screen...
+						this.scheduleObjectChange(obj,1);  // ...schedule its change and its children...
 				}
 			}
 		};
@@ -1874,7 +1838,6 @@ function Box(parent, type, sub, statemanager, useCanvas, aliasmode) {
 				this.updateNeedRunning(obj);
 				this.garbage.objects.push(obj);
 				if (obj.node.parentNode) this.scheduleObjectChange(obj); // Removal is casacaded by browser :)
-				else  this.unscheduleObjectChange(obj);
 			}
 		};
 		box.destroy = function() {
@@ -1897,124 +1860,147 @@ function Box(parent, type, sub, statemanager, useCanvas, aliasmode) {
 		};
 
 		// SCREEN - Render management
-		box.changes = {};
+		box.unrender={};
+		box.scheduleObjectOnScreenChange=function(recursive,cells) {
+			var i,j,cell,obj,onscreen;		
+			for (i in cells) { // For every cell ID...
+				cell=box.grid[i]; // ...get the cell...
+				if (cell&&cell.length) for (j in cell.items) { // ...and if not empty, for every object...
+					obj=cell.items[j]; // ...get it and...
+					onscreen=this.isOnScreen(obj); // check if it is on screen now and...
+					if (onscreen!=!!obj.node.parentNode) box.scheduleObjectChange(cell.items[j],recursive); // ... if changed, schedule object change.
+				}
+			}
+		}
 		box.scheduleObjectChange = function(obj,recursive) {
-			if (this.isOnScreen(obj)||obj.onscreen) // @TODO: this optimization is wrong :( If container (i.e. scene translates after change is not true anymore)
-			this.changes[obj.uid] = obj;
+			obj.isdirty=1;
+			if (obj.removed) box.unrender[obj.uid]=obj;
 			if (recursive)
 				for (var i=0;i<obj.childs.length;i++)
 					if (!obj.childs[i].removed) this.scheduleObjectChange(obj.childs[i],1);
 		};
-		box.unscheduleObjectChange = function(obj) { delete this.changes[obj.uid]; };
 		box.isOnScreen=function(obj){
-			if (obj.unoptimize) return true;
+			if (obj.type.unoptimize) return true;
 			var rect=obj.getRects().screen;
 			return !((rect.x+this.gridcoords.x>=this.width)||((rect.x+this.gridcoords.x+rect.width)<1)||(rect.y+this.gridcoords.y>=this.height)||((rect.y+this.gridcoords.y+rect.height)<1));
 		};
 		box.applyChanges = function() {
-			var obj, displayed, pad, node, w, h,rect,onscreen=0,oc;
-			for (var a in this.changes) {
-				obj = this.changes[a];
-				delete this.changes[a];
-				if (obj.removed) {
-					if (obj.node) {
-						if (obj.node.parentNode) obj.node.parentNode.removeChild(obj.node);
-						delete obj.node;
-					}
-				} else {
-					pad = obj.border ? 2 : 0;
-					node = obj.node;
-					w = obj.width - pad;
-					h = obj.height - pad;
-					if (w < 0) w = 0;
-					if (h < 0) h = 0;
-					onscreen=this.isOnScreen(obj);
-					displayed = obj.visible && w && h;
-					if (!obj.displayed&&displayed) node.setStyle("display","block");
-					if (obj.displayed&&!displayed) node.setStyle("display","none");
-					if (!obj.cleanprops.tileX || !obj.cleanprops.tileY || !obj.cleanprops.frame ||
-						!obj.cleanprops.width) {
-						node.setStyle("backgroundPositionX",-obj.tileX - (obj.frame * obj.width));
-						node.setStyle("backgroundPositionY", -obj.tileY);
-						obj.cleanprops.tileX = obj.cleanprops.tileY = obj.cleanprops.frame = 1;
-					}
-					if (!obj.cleanprops.width || !obj.cleanprops.border) {
-						node.setStyle("width",w);
-						obj.cleanprops.width = 1;
-					}
-					if (!obj.cleanprops.height || !obj.cleanprops.border) {
-						node.setStyle("height",h);
-						obj.cleanprops.height = 1;
-					}
-					if (!obj.cleanprops.color) {
-						node.setStyle("color",obj.color);
-						obj.cleanprops.color = 1;
-					}
-					if (!obj.cleanprops.bgcolor) {
-						node.setStyle("backgroundColor",obj.bgcolor);
-						obj.cleanprops.bgcolor = 1;
-					}
-					if (!obj.cleanprops.border) {
-						node.setStyle("borderWidth",obj.border?1:0);
-						node.setStyle("borderColor",obj.border);
-						obj.cleanprops.border = 1;
-					}
-					if (!obj.cleanprops.zIndex) {
-						node.setStyle("zIndex",obj.zIndex);
-						obj.cleanprops.zIndex = 1;
-					}
-					if (!obj.cleanprops.textAlign) {
-						node.setStyle("textAlign",obj.textAlign);
-						obj.cleanprops.textAlign = 1;
-					}
-					if (!obj.cleanprops.x || !obj.cleanprops.y || !obj.cleanprops.z || !obj.cleanprops.scale  || !obj.cleanprops.flipX || !obj.cleanprops.flipY || !obj.cleanprops.angle) {
-						node.setStyle("scalex",obj.flipX ? -obj.scale : obj.scale);
-						node.setStyle("scaley",obj.flipY ? -obj.scale : obj.scale);
-						node.setStyle("rotate",obj.angle);
-						node.setStyle("left",Math.floor(obj.x));
-						node.setStyle("top",Math.floor(obj.y + obj.z));
-						obj.cleanprops.x = obj.cleanprops.y = obj.cleanprops.z = obj.cleanprops.flipX = obj.cleanprops.flipY = obj.cleanprops.angle = 1;
-					}
-					if (!obj.cleanprops.originX || !obj.cleanprops.originY) {
-						node.setStyle("originX",obj.originX);
-						node.setStyle("originY",obj.originY);
-						obj.cleanprops.originX = obj.cleanprops.originY = 1;
-					}
-					if (!obj.cleanprops.alpha) {
-						node.setStyle("opacity",obj.alpha);
-						obj.cleanprops.alpha = 1;
-					}
-					if (!obj.cleanprops.font) {
-						node.setStyle("fontFamily",obj.font);
-						obj.cleanprops.font = 1;
-					}
-					if (!obj.cleanprops.lineHeight) {
-						node.setStyle("lineHeight",obj.lineHeight);
-						obj.cleanprops.lineHeight = 1;
-					}
-					if (!obj.cleanprops.fontSize) {
-						node.setStyle("fontSize",obj.fontSize);
-						obj.cleanprops.fontSize = 1;
-					}
-					if (!obj.cleanprops.outline) {
-						node.setStyle("outline",obj.outline);
-						obj.cleanprops.outline = 1;
-					}
-					if (!obj.cleanprops.image) {
-						if (obj.image) node.setStyle("backgroundImage", this.node.getResource(obj.image));
-						else node.setStyle("backgroundImage","");
-						obj.cleanprops.image = 1;
-					}
-					if (!obj.cleanprops.html) {
-						if (obj.html !== undefined) node.setAttribute("innerHTML",obj.html);
-						obj.cleanprops.html = 1;
-					}
-					obj.displayed = displayed;
-					if (!node.parentNode) obj.parent.node.appendChild(node);
-					if (onscreen&&!obj.node.parentNode) obj.parent.node.appendChild(obj.node);
-					else if (!onscreen&&obj.node.parentNode) obj.parent.node.removeChild(obj.node);
+			var obj, displayed, pad, node, w, h,rect,onscreen,oc;
+			box.updateGrid();
+
+			// Removed objects
+			var i,j,cell,cells=box.getCells(box,0,0,"*");
+			cells.push("*"); // Unoptimized objects
+			for (i in box.unrender) {
+				obj=box.unrender[i];
+				if (obj.node) {
+					if (obj.node.parentNode) obj.node.parentNode.removeChild(obj.node);
+					delete obj.node;
 				}
-				obj.onscreen=onscreen;
+				delete box.unrender[i];
+			}
+
+			// Changed onscreen objects
+			for (i=0;i<cells.length;i++) {
+				cell=box.grid[cells[i]];
+				if (cell&&cell.length) for (j in cell.items) {
+					obj=cell.items[j];
+					node = obj.node;
+					if (node&&obj.isdirty) {
+						obj.isdirty=0;
+						pad = obj.border ? 2 : 0;
+						w = obj.width - pad;
+						h = obj.height - pad;
+						if (w < 0) w = 0;
+						if (h < 0) h = 0;
+						onscreen=this.isOnScreen(obj);
+						displayed = obj.visible && w && h;
+						if (!obj.displayed&&displayed) node.setStyle("display","block");
+						if (obj.displayed&&!displayed) node.setStyle("display","none");
+						if (!obj.cleanprops.tileX || !obj.cleanprops.tileY || !obj.cleanprops.frame || !obj.cleanprops.width) {
+							node.setStyle("backgroundPositionX",-obj.tileX - (obj.frame * obj.width));
+							node.setStyle("backgroundPositionY", -obj.tileY);
+							obj.cleanprops.tileX = obj.cleanprops.tileY = obj.cleanprops.frame = 1;
+						}
+						if (!obj.cleanprops.width || !obj.cleanprops.border) {
+							node.setStyle("width",w);
+							obj.cleanprops.width = 1;
+						}
+						if (!obj.cleanprops.height || !obj.cleanprops.border) {
+							node.setStyle("height",h);
+							obj.cleanprops.height = 1;
+						}
+						if (!obj.cleanprops.color) {
+							node.setStyle("color",obj.color);
+							obj.cleanprops.color = 1;
+						}
+						if (!obj.cleanprops.bgcolor) {
+							node.setStyle("backgroundColor",obj.bgcolor);
+							obj.cleanprops.bgcolor = 1;
+						}
+						if (!obj.cleanprops.border) {
+							node.setStyle("borderWidth",obj.border?1:0);
+							node.setStyle("borderColor",obj.border);
+							obj.cleanprops.border = 1;
+						}
+						if (!obj.cleanprops.zIndex) {
+							node.setStyle("zIndex",obj.zIndex);
+							obj.cleanprops.zIndex = 1;
+						}
+						if (!obj.cleanprops.textAlign) {
+							node.setStyle("textAlign",obj.textAlign);
+							obj.cleanprops.textAlign = 1;
+						}
+						if (!obj.cleanprops.x || !obj.cleanprops.y || !obj.cleanprops.z || !obj.cleanprops.scale  || !obj.cleanprops.flipX || !obj.cleanprops.flipY || !obj.cleanprops.angle) {
+							node.setStyle("scalex",obj.flipX ? -obj.scale : obj.scale);
+							node.setStyle("scaley",obj.flipY ? -obj.scale : obj.scale);
+							node.setStyle("rotate",obj.angle);
+							node.setStyle("left",Math.floor(obj.x));
+							node.setStyle("top",Math.floor(obj.y + obj.z));
+							obj.cleanprops.x = obj.cleanprops.y = obj.cleanprops.z = obj.cleanprops.flipX = obj.cleanprops.flipY = obj.cleanprops.angle = obj.cleanprops.scale = 1;
+						}
+						if (!obj.cleanprops.originX || !obj.cleanprops.originY) {
+							node.setStyle("originX",obj.originX);
+							node.setStyle("originY",obj.originY);
+							obj.cleanprops.originX = obj.cleanprops.originY = 1;
+						}
+						if (!obj.cleanprops.alpha) {
+							node.setStyle("opacity",obj.alpha);
+							obj.cleanprops.alpha = 1;
+						}
+						if (!obj.cleanprops.font) {
+							node.setStyle("fontFamily",obj.font);
+							obj.cleanprops.font = 1;
+						}
+						if (!obj.cleanprops.lineHeight) {
+							node.setStyle("lineHeight",obj.lineHeight);
+							obj.cleanprops.lineHeight = 1;
+						}
+						if (!obj.cleanprops.fontSize) {
+							node.setStyle("fontSize",obj.fontSize);
+							obj.cleanprops.fontSize = 1;
+						}
+						if (!obj.cleanprops.outline) {
+							node.setStyle("outline",obj.outline);
+							obj.cleanprops.outline = 1;
+						}
+						if (!obj.cleanprops.image) {
+							if (obj.image) node.setStyle("backgroundImage", this.node.getResource(obj.image));
+							else node.setStyle("backgroundImage","");
+							obj.cleanprops.image = 1;
+						}
+						if (!obj.cleanprops.html) {
+							if (obj.html !== undefined) node.setAttribute("innerHTML",obj.html);
+							obj.cleanprops.html = 1;
+						}
+						obj.displayed = displayed;
+						//if (!node.parentNode) { obj.parent.node.appendChild(node); zzz+="zzz+++,"; } //@TODO: tolto
+						if (onscreen&&!node.parentNode)
+							obj.parent.node.appendChild(node);
+						else if (!onscreen&&node.parentNode)
+							obj.parent.node.removeChild(node);
+					}
+				}
 			}
 		};
 
@@ -2086,10 +2072,24 @@ function Box(parent, type, sub, statemanager, useCanvas, aliasmode) {
 				cx1 = Math.floor((outer.x +dx) / this.gridsize.width),
 				cy1 = Math.floor((outer.y +dy) / this.gridsize.height),
 				cx2 = Math.ceil((outer.x +dx+ outer.width) / this.gridsize.width),
-				cy2 = Math.ceil((outer.y + dy+outer.height) / this.gridsize.height);
+				cy2 = Math.ceil((outer.y + dy+outer.height) / this.gridsize.height);			
 			var ret=cx1 + "," + cy1 + "-" + cx2 + "," + cy2 + "-";
 			if (obj.type) for (var a in obj.type) ret+= a+"-";
 			return ret;
+		};
+		box.mergeCells = function(cells,obj,dx,dy,addtype) {
+			dx=dx||0;
+			dy=dy||0;
+			var
+				outer = obj.getRects ? obj.getRects().outer : Box.getRects(obj).outer,
+				cx1 = Math.floor((outer.x +dx) / this.gridsize.width),
+				cy1 = Math.floor((outer.y +dy) / this.gridsize.height),
+				cx2 = Math.ceil((outer.x +dx+ outer.width) / this.gridsize.width),
+				cy2 = Math.ceil((outer.y + dy+outer.height) / this.gridsize.height);
+			for (var x = cx1; x < cx2; x++)
+				for (var y = cy1; y < cy2; y++)
+					cells[x + "," + y+"-"+addtype]=1;
+			return cells;
 		};
 		box.getCells = function(obj,dx,dy,addtype) {
 			dx=dx||0;
@@ -2105,20 +2105,26 @@ function Box(parent, type, sub, statemanager, useCanvas, aliasmode) {
 				for (var x = cx1; x < cx2; x++)
 					for (var y = cy1; y < cy2; y++)
 						cells.push(x + "," + y+"-"+addtype);
-			else
+			else {
+				if (obj.type.unoptimize) cells.push("*");
+				for (var x = cx1; x < cx2; x++)
+						for (var y = cy1; y < cy2; y++)
+							cells.push(x + "," + y+"-*");
 				for (var a in obj.type)
 					for (var x = cx1; x < cx2; x++)
 						for (var y = cy1; y < cy2; y++)
 							cells.push(x + "," + y+"-"+a);
+			}
 			return cells;
 		};
 		box.removeCell = function(obj) {
 				if (obj.cell) {
-					for (var i = 0; i < obj.cell.length; i++) {
-						delete this.grid[obj.cell[i]].items[obj.uid];
-						this.grid[obj.cell[i]].length--;
-						if (!this.grid[obj.cell[i]].length) delete this.grid[obj.cell[i]];
-					}
+					for (var i = 0; i < obj.cell.length; i++)
+						if (this.grid[obj.cell[i]].length==1) delete this.grid[obj.cell[i]];
+						else {
+							delete this.grid[obj.cell[i]].items[obj.uid];
+							this.grid[obj.cell[i]].length--;
+						}
 					obj.cell = 0;
 					obj.cellsignature = 0;
 				}
@@ -2880,22 +2886,9 @@ function Wright(gameId,container,mods) {
 					for (var i = 0; i < this._events.execute.length; i++)
 						execute(this, this._events.execute[i][0], this._events.execute[i][1]);
 				delete this._events;
-				if (ox != this.x) {
-					this.screen.dirtygrid[this.uid] = 1;
-					this.cleanprops.x = 0;
-					if (!this.removed) this.screen.scheduleObjectChange(this);
-				}
-				if (oy != this.y) {
-					this.screen.dirtygrid[this.uid] = 1;
-					this.cleanprops.y = 0;
-					if (!this.removed) this.screen.scheduleObjectChange(this);
-				}
-				if (oz != this.z) {
-					this.rects=0;
-					this.screen.dirtygrid[this.uid] = 1;
-					this.cleanprops.z = 0;
-					if (!this.removed) this.screen.scheduleObjectChange(this);
-				}
+				if (ox != this.x) this.updateX();
+				if (oy != this.y) this.updateY();
+				if (oz != this.z) this.updateZ();
 			}
 		},
 		Player: function(data) {
@@ -3916,16 +3909,8 @@ function Wright(gameId,container,mods) {
 						if (placeInto) {
 							var col=Box.isOutside(item, placeInto, true);
 							if (col) {
-								item.x = FIX(item.x + col.x - col.rx);
-								item.y = FIX(item.y + col.y - col.ry);
-								if (item.screen) {
-									item.screen.translateRect(item,"x",col.x-col.rx);
-									item.screen.translateRect(item,"y",col.y-col.ry);
-									item.screen.dirtygrid[item.uid] = 1;
-									item.cleanprops.x = 0;
-									item.cleanprops.y = 0;
-									item.screen.scheduleObjectChange(item);
-								}
+								item.setX(FIX(item.x + col.x - col.rx));
+								item.setY(FIX(item.y + col.y - col.ry));
 							}
 						}
 					}
