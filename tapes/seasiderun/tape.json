@@ -81,15 +81,15 @@
     "codeRouteCheckpoint":[
       {
         "object":[
-          { "unoptimize":1, "image":"seaside-strips", "width":1175, "height":30, "x":0, "y":90 },
-          { "unoptimize":1, "width":1175, "height":30, "x":1325, "y":90, "bgcolor":"#7f7f7f" }
+          { "type":"unoptimize", "image":"seaside-strips", "width":1175, "height":30, "x":0, "y":90 },
+          { "type":"unoptimize", "width":1175, "height":30, "x":1325, "y":90, "bgcolor":"#7f7f7f" }
         ],
         "into":{ "_":"that" }
       },
       {
         "when":{ "_":[ "variable", "position", "isGreaterThan", { "_":[ "variable", "nextCheckpoint" ] } ] },
         "execute":[
-          { "object":{ "unoptimize":1, "image":"road-objects", "tileY":400, "width":256, "height":120, "zIndex":20, "x":1122, "y":0 }, "into":{ "_":"that" } },
+          { "object":{ "type":"unoptimize", "image":"road-objects", "tileY":400, "width":256, "height":120, "zIndex":20, "x":1122, "y":0 }, "into":{ "_":"that" } },
           {
             "as":{ "_":"that" },
             "set":{
@@ -124,7 +124,7 @@
         "when":{ "_":[ "variable", "position", "isGreaterThan", { "_":[ "variable", "nextLeftSide" ] } ] },
         "execute":[
           {
-            "object":{ "unoptimize":1, "image":"road-objects", "width":80, "height":120, "zIndex":2, "x":1140, "y":0, "frame":{ "_":[ "randomValue", [ 0, 2 ] ] } },
+            "object":{ "type":"unoptimize", "image":"road-objects", "width":80, "height":120, "zIndex":2, "x":1140, "y":0, "frame":{ "_":[ "randomValue", [ 0, 2 ] ] } },
             "into":{ "_":"that" }
           },
           { "as":{ "_":"variable" }, "set":{ "nextLeftSide":{ "_":[ "variable", "position", "+", 10 ] } } }
@@ -134,7 +134,7 @@
         "when":{ "_":[ "variable", "position", "isGreaterThan", { "_":[ "variable", "nextRightSide" ] } ] },
         "execute":[
           {
-            "object":{ "unoptimize":1, "image":"road-objects", "tileY":120, "width":162, "height":120, "zIndex":2, "x":1330, "y":0, "frame":1 },
+            "object":{ "type":"unoptimize", "image":"road-objects", "tileY":120, "width":162, "height":120, "zIndex":2, "x":1330, "y":0, "frame":1 },
             "into":{ "_":"that" }
           },
           { "as":{ "_":"variable" }, "set":{ "nextRightSide":{ "_":[ "variable", "position", "+", 10 ] } } }
@@ -144,15 +144,15 @@
     "codeRouteSeaside":[
       {
         "object":[
-          { "unoptimize":1, "image":"seaside-strips", "width":1175, "height":30, "x":0, "y":90 },
-          { "unoptimize":1, "width":1175, "height":30, "x":1325, "y":90, "bgcolor":"#7f7f7f" }
+          { "type":"unoptimize", "image":"seaside-strips", "width":1175, "height":30, "x":0, "y":90 },
+          { "type":"unoptimize", "width":1175, "height":30, "x":1325, "y":90, "bgcolor":"#7f7f7f" }
         ],
         "into":{ "_":"that" }
       },
       {
         "when":{ "_":[ "variable", "position", "isGreaterThan", { "_":[ "variable", "nextStart" ] } ] },
         "execute":[
-          { "object":{ "unoptimize":1, "image":"road-objects", "tileY":280, "width":256, "height":120, "zIndex":20, "x":1122, "y":0 }, "into":{ "_":"that" } },
+          { "object":{ "type":"unoptimize", "image":"road-objects", "tileY":280, "width":256, "height":120, "zIndex":20, "x":1122, "y":0 }, "into":{ "_":"that" } },
           { "as":{ "_":"variable" }, "set":{ "nextStart":"off" } }
         ]
       },
@@ -161,7 +161,7 @@
         "execute":[
           {
             "object":{
-              "unoptimize":1,
+              "type":"unoptimize",
               "image":"road-objects", "width":80, "height":120,
               "zIndex":2, "x":1140, "y":0, "frame":{ "_":[ "randomValue", [ 0, 0, 0, 0, 1, 2 ] ] }
             },
@@ -175,7 +175,7 @@
         "execute":[
           {
             "object":{
-              "unoptimize":1,
+              "type":"unoptimize",
               "image":"road-objects", "tileY":120, "width":162, "height":120,
               "zIndex":2, "x":1330, "y":0, "frame":{ "_":[ "randomNumber", [ 0, 1 ] ] }
             },
@@ -189,7 +189,7 @@
         "execute":[
           {
             "object":{
-              "unoptimize":1,
+              "type":"unoptimize",
               "image":"road-objects", "tileX":156, "tileY":240, "width":52, "height":40,
               "zIndex":10, "x":{ "_":[ "randomValue", [ 1178, 1273 ] ] }, "y":80, "frame":{ "_":[ "randomNumber", [ 0, 2 ] ] },
               "states":[
