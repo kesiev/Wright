@@ -11,13 +11,21 @@ function FIX(value) { return Math.round(value * PREC) / PREC; }
  */
 
 var Supports = (function(){
-	var vendors=["Khtml","ms","O","Moz","Webkit"],div=document.createElement('div');
+	var vendors=["Khtml","ms","O","Moz","Webkit"],div=document.createElement('div'),csscache={};
 	var ret={
 		css:function(prop){
-			var len=vendors.length;
-			if (prop in div.style) return prop;
-			prop=prop.replace(/^[a-z]/, function(val) { return val.toUpperCase(); });
-			while (len--) if (vendors[len]+prop in div.style) return vendors[len]+prop;
+			if (csscache[prop]===undefined) {
+				var len=vendors.length;
+				if (prop in div.style) return prop;
+				prop=prop.replace(/^[a-z]/, function(val) {
+					csscache[prop]=val.toUpperCase();
+					return csscache[prop];
+				});
+				while (len--) if (vendors[len]+prop in div.style) {
+					csscache[prop]=vendors[len]+prop;
+					return csscache[prop];
+				}
+			} else return csscache[prop];
 		},
 		setCss:function(obj,prop,value) { if (prop=this.css(prop)) obj[prop]=value; },
 		browser:function(substr){ return navigator.userAgent.toLowerCase().indexOf(substr) > -1; },		
@@ -33,21 +41,87 @@ var Supports = (function(){
 			if (node.removeEventListener) node.removeEventListener(evt,cb,rt);
 			else node.detachEvent("on"+evt,cb)
 		},
-		setFullScreen:function(node) { if (Supports.isFullscreen) node[Supports.isFullscreen.request](); },
-		exitFullScreen:function() { if (Supports.isFullscreen) document[Supports.isFullscreen.exit](); },
-		isFullScreen:function() { return Supports.isFullscreen?!!document[Supports.isFullscreen.is]:false; }
+		setFullScreen:function(node) {
+			if (Supports.nativeFullscreen) node[Supports.nativeFullscreen.request]();
+			else if (!this._fullscreen.node) {
+				this._fullscreen.node=node;
+				this._fullscreen.position=node.style.position;
+				this._fullscreen.left=node.style.left;
+				this._fullscreen.right=node.style.right;
+				this._fullscreen.top=node.style.top;
+				this._fullscreen.bottom=node.style.bottom;
+				this._fullscreen.zIndex=node.style.zIndex;
+				this._fullscreen.overflow=document.body.overflow;
+				node.style.position="fixed";
+				node.style.left=node.style.right=node.style.top=node.style.bottom="0px";
+				node.style.zIndex=100000;
+				document.body.overflow="hidden";
+				if (this._fullscreen.onchange) this._fullscreen.onchange();
+				if (this._fullscreen.onresize) this._fullscreen.onresize();
+			}
+		},
+		exitFullScreen:function() {
+			if (Supports.nativeFullscreen)
+				document[Supports.nativeFullscreen.exit]();
+			else if (this._fullscreen.node) {
+				this._fullscreen.node.style.position=this._fullscreen.position;
+				this._fullscreen.node.style.left=this._fullscreen.left;
+				this._fullscreen.node.style.right=this._fullscreen.right;
+				this._fullscreen.node.style.top=this._fullscreen.top;
+				this._fullscreen.node.style.bottom=this._fullscreen.bottom;
+				this._fullscreen.node.style.zIndex=this._fullscreen.zIndex;
+				document.body.overflow=this._fullscreen.overflow;
+				this._fullscreen.node=0;				
+				if (this._fullscreen.onchange) this._fullscreen.onchange();
+				if (this._fullscreen.onresize) this._fullscreen.onresize();
+			}
+		},
+		isFullScreen:function() {
+			if (Supports.nativeFullscreen) return !!document[Supports.nativeFullscreen.is];
+			else return !!this._fullscreen.node;
+		},
+		onFullScreenChange:function(fullScreenChange,fullScreenResize) {
+			if (Supports.nativeFullscreen) {
+				this.addEventListener(window,this.nativeFullscreen.on,fullScreenChange);
+			} else {
+				this._fullscreen.onchange=fullScreenChange;
+				this._fullscreen.onresize=fullScreenResize;
+			}
+			this.addEventListener(window,"resize",fullScreenResize);
+		},
+		offFullScreenChange:function(fullScreenChange,fullScreenResize) {
+			if (Supports.nativeFullscreen) {
+				this.removeEventListener(window,this.nativeFullscreen.on,fullScreenChange);
+			} else {
+				this._fullscreen.onchange=0;
+				this._fullscreen.onresize=0;
+			}
+			this.removeEventListener(window,"resize",fullScreenResize);
+		},
+		onFullScreenError:function(fullScreenError) {
+			if (Supports.nativeFullscreen) this.addEventListener(window,this.nativeFullscreen.error,fullScreenError);
+			else this._fullscreen.onerror=fullScreenError;
+		},
+		offFullScreenError:function(fullScreenError) {
+			if (Supports.nativeFullscreen) this.removeEventListener(window,this.nativeFullscreen.error,fullScreenError);
+			else this._fullscreen.onerror=0;
+		}
 	}
 	ret.supportsScaling=ret.css("transform")&&ret.css("transformOrigin");
 	ret.isFirefox=ret.browser("firefox");
 	ret.isTouch=!!('ontouchstart' in window || navigator.maxTouchPoints);
 	window.AudioContext=ret.isAudio=window.AudioContext||window.webkitAudioContext;
-	if (div.requestFullscreen) ret.isFullscreen={request:"requestFullscreen",exit:"exitFullscreen",is:"fullscreenEnabled",on:"fullscreenchange",error:"fullscreenerror"};
-	else if (div.webkitRequestFullscreen) ret.isFullscreen={request:"webkitRequestFullscreen",exit:"webkitExitFullscreen",is:"webkitIsFullScreen",on:"webkitfullscreenchange",error:"webkitfullscreenerror"};
-	else if (div.mozRequestFullScreen) ret.isFullscreen={request:"mozRequestFullScreen",exit:"mozCancelFullScreen",is:"fullscreenElement",on:"mozfullscreenchange",error:"mozfullscreenerror"};
-	else if (div.msRequestFullscreen) ret.isFullscreen={request:"msRequestFullscreen",exit:"msExitFullscreen",is:"msFullscreenElement",on:"MSFullscreenChange",error:"msfullscreenerror"};
-	else ret.isFullscreen=false;
+	ret.isSafari=navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1;
+	if (div.requestFullscreen) ret.nativeFullscreen={request:"requestFullscreen",exit:"exitFullscreen",is:"fullscreenEnabled",on:"fullscreenchange",error:"fullscreenerror"};
+	else if (div.webkitRequestFullscreen) ret.nativeFullscreen={request:"webkitRequestFullScreen",exit:"webkitExitFullscreen",is:"webkitIsFullScreen",on:"webkitfullscreenchange",error:"webkitfullscreenerror"};
+	else if (div.mozRequestFullScreen) ret.nativeFullscreen={request:"mozRequestFullScreen",exit:"mozCancelFullScreen",is:"mozFullScreenElement",on:"mozfullscreenchange",error:"mozfullscreenerror"};
+	else if (div.msRequestFullscreen) ret.nativeFullscreen={request:"msRequestFullscreen",exit:"msExitFullscreen",is:"msFullscreenElement",on:"MSFullscreenChange",error:"msfullscreenerror"};
+	else ret.nativeFullscreen=false;
+	if (ret.isSafari) ret.nativeFullscreen=false; // @FIXME: Safari mobile doesn't support fullscreen and desktop one doesn't support keyboard input... :\
+	ret._fullscreen={};
 	var elem = document.createElement('canvas');
   	ret.isCanvas=!!(elem.getContext && elem.getContext('2d'));
+
 	return ret;
 })();
 // TIME
@@ -68,8 +142,9 @@ Supports.applyEffect=function(context,node,effect) {
 		}
 	}
 }
-// OBJECTS
+// OBJECTS/VARIABLES
 Supports.clone = function(obj) { return typeof obj == "object" ? JSON.parse(JSON.stringify(obj)) : obj; };
+Supports.isNaN = function(obj) { return obj !== obj; }
 // FILE
 Supports.getFile = function(file, cb) {
 	var xmlhttp = new XMLHttpRequest();
@@ -90,6 +165,12 @@ var DOMInator=function(useCanvas,aliasmode){
 	var useDom=!useCanvas,pixelated=aliasmode=="pixelated",degtorad=3.14/180,octx,canvas,bregexp=/<br>/gi,extracss={},txtarea = document.createElement("textarea");
 	var transformProp=Supports.css("transform"),transformOriginProp=Supports.css("transformOrigin");
 	var from,to,source,sources={},filters=[],filter,running=1;
+	var guide=document.createElement("div");
+	guide.style.position="absolute";
+	guide.style.left=guide.style.top="0px";
+	guide.style.width=guide.style.height="100%";
+	guide.style.zIndex=100;
+	guide.style.opacity=0.5;
 
 	if (pixelated) pixelateStyle(extracss);
 
@@ -368,8 +449,10 @@ var DOMInator=function(useCanvas,aliasmode){
 	/* Game cycle */
 	var skipFrames=0,timeout=0,fps=0,mspf=0,frameTimestamp=0,framedone=1,gamecycle=0,renderer=0,self=this;	
 	function doRenderer() {
-		renderer();
-		self.frame();
+		if (!skipFrames) {
+			renderer();
+			self.frame();
+		}
 		framedone=1;
 	}
 	function scheduleFrame() {
@@ -390,14 +473,14 @@ var DOMInator=function(useCanvas,aliasmode){
 				gamecycle();
 				updateControls();
 				if (framedone) {
-					framedone=0;
-					if (window.requestAnimationFrame) window.requestAnimationFrame(doRenderer);
-					else setTimeout(doRenderer,mspf/2);
+					if (skipFrames) skipFrames--;
+					else if (timeout != -1) {
+						framedone=0;
+						if (window.requestAnimationFrame) window.requestAnimationFrame(doRenderer);
+						else setTimeout(doRenderer,mspf/2);
+					}
 				}
-				if (skipFrames) {
-					skipFrames--;
-					scheduleFrame();
-				} else if (timeout != -1) scheduleFrame();
+				scheduleFrame();
 			}
 		}
 	}
@@ -426,12 +509,15 @@ var DOMInator=function(useCanvas,aliasmode){
 		current: 0,
 		loader: [],
 		root: "",
+		systemroot: "",
 		items: {}
 	};
 	function loadNextResource() {
 		if (resources&&resources.loader.length) {
+			var file;
 			resources.current = resources.loader.splice(0, 1)[0];
-			var file = resources.root + resources.current[1];
+			if (resources.current[1].substr(0,1)=="~") file = resources.systemroot+resources.current[1].substr(1);
+			else file = resources.root + resources.current[1];
 			var ext = file.substr(file.lastIndexOf(".") + 1).toLowerCase();
 			switch (ext) {
 				case "font":{
@@ -509,8 +595,13 @@ var DOMInator=function(useCanvas,aliasmode){
 		}
 	}
 	this.setResourcesRoot = function(path) { resources.root = path; };
+	this.setSystemRoot = function(path) { resources.systemroot = path; };
 	this.getResourcesRoot = function(path) { return resources.root };
-	this.addResource = function(name, data) { resources.loader.push([name, data]); };		
+	this.addResource = function(name, data) {
+		for (var i=0;i<resources.loader.length;i++)
+			if (resources.loader[i][0]==name) return;
+		resources.loader.push([name, data]);
+	};
 	this.getResource=function(name) { return resources.items[name];}
 	this.loadResources=function(cb) {
 		resources.callback = cb;
@@ -529,8 +620,26 @@ var DOMInator=function(useCanvas,aliasmode){
 	}
 
 	/* Fullscreen handler */
-	var gameScreen=0,orgScalex=0,orgScaley=0;
-	function fullScreenResizer() {
+	var gameScreen=0,orgScalex=0,orgScaley=0,guidetimeout;
+
+	function removeGuide() {
+		if (guidetimeout) {
+			root.removeChild(guide);
+			clearTimeout(guidetimeout);
+			guidetimeout=0;
+		}
+	}
+
+	function showGuide() {
+		if (guide) {
+			if (guidetimeout) clearTimeout(guidetimeout);
+			else root.appendChild(guide);
+			guidetimeout=setTimeout(removeGuide,3000);
+		}
+	}
+
+	function fullScreenResizer() {	
+		showGuide();	
 		var width=document.body.clientWidth;
 		var height=document.body.clientHeight;
 		var scalex=width/gameScreen.style.width,scaley=height/gameScreen.style.height;
@@ -541,7 +650,8 @@ var DOMInator=function(useCanvas,aliasmode){
 		screenContainer.style.left=Math.floor((width-(gameScreen.style.width*scalex))/2)+"px";
 		screenContainer.style.top=Math.floor((height-(gameScreen.style.height*scalex))/2)+"px";
 	}
-	function exitFullScreen(noexit) {		
+	function exitFullScreen(noexit) {
+		removeGuide();	
 		if (!noexit) Supports.exitFullScreen();
 		root.style.display="inline";
 		root.style.position="";
@@ -549,32 +659,29 @@ var DOMInator=function(useCanvas,aliasmode){
 		screenContainer.style.position="";
 		gameScreen.setStyle("scalex",orgScalex);
 		gameScreen.setStyle("scaley",orgScaley);
-		Supports.removeEventListener(window,"resize",fullScreenResizer);
-		Supports.removeEventListener(window,Supports.isFullscreen.on,fullScreenChange);
-		Supports.removeEventListener(window,Supports.isFullscreen.error,fullScreenChange);
+		Supports.offFullScreenChange(fullScreenChange,fullScreenResizer);
+		Supports.offFullScreenError(fullScreenChange);
 		if (keys.keyFullScreen) gameScreen.addEventListener("touchstart",fullscreenTouchToggle);
 		if (touchlayout) disableTouchcontroller();
 	}
 	function fullScreenChange() { if (!Supports.isFullScreen()) exitFullScreen(true); }
 	function gotoFullScreen() {
-		if (Supports.isFullscreen&&!Supports.isFullScreen()) {
-			Supports.setFullScreen(root);
+		if (!Supports.isFullScreen()) {
 			orgScalex=gameScreen.style.scalex;
 			orgScaley=gameScreen.style.scaley;
 			root.style.display="block";
 			root.style.position="absolute";
 			screenContainer.style.position="absolute";
 			root.style.left=root.style.right=root.style.top=root.style.bottom="0px";
-			Supports.addEventListener(window,"resize",fullScreenResizer);
-			Supports.addEventListener(window,Supports.isFullscreen.on,fullScreenChange);
-			Supports.addEventListener(window,Supports.isFullscreen.error,fullScreenChange);
+			Supports.onFullScreenChange(fullScreenChange,fullScreenResizer);
+			Supports.onFullScreenError(fullScreenChange);
 			if (keys.keyFullScreen) gameScreen.removeEventListener("touchstart",fullscreenTouchToggle);
 			if (touchlayout) enableTouchcontroller();
+			Supports.setFullScreen(root);
 		}
 	}
 	function toggleFullScreen() {
-		if (Supports.isFullscreen)
-			if (Supports.isFullScreen()) exitFullScreen(); else gotoFullScreen();
+		if (Supports.isFullScreen()) exitFullScreen(); else gotoFullScreen();
 	}
 	function fullscreenTouchToggle(e) {
 		if (e.touches.length > 1) {
@@ -955,7 +1062,7 @@ var DOMInator=function(useCanvas,aliasmode){
 	/* Controls: keyboard/touch controller */
 	var key=this.key={};
 	var keys=this.keys={};
-	var hwkeys=[],touchlayout,analogTouch=0,keyAtouch=0,keyBtouch=0;
+	var hwkeys=[],touchlayout=0,analogTouch=0,keyAtouch=0,keyBtouch=0;
 	var analogMap=[
 		{keyLeft:1,keyRight:0,keyUp:1,keyDown:0},
 		{keyLeft:1,keyRight:0,keyUp:0,keyDown:0},
@@ -1144,7 +1251,26 @@ var DOMInator=function(useCanvas,aliasmode){
 			}
 		}
 		// TOUCH CONTROLLER
-		if (controls.touchcontroller&&DOMInator.TOUCHLAYOUTS[controls.touchcontroller.layout]) touchlayout=Supports.clone(DOMInator.TOUCHLAYOUTS[controls.touchcontroller.layout].buttons);
+		if (controls.touchcontroller&&DOMInator.TOUCHLAYOUTS[controls.touchcontroller.layout]) {
+			touchlayout=Supports.clone(DOMInator.TOUCHLAYOUTS[controls.touchcontroller.layout].buttons);
+			for (var i=0;i<touchlayout.length;i++) {
+				var area=document.createElement("div");
+				area.style.textAlign="center";
+				area.style.position="absolute";
+				area.style.left=(touchlayout[i].x1*100)+"%";
+				area.style.top=(touchlayout[i].y1*100)+"%";
+				area.style.width=((touchlayout[i].x2-touchlayout[i].x1)*100)+"%";
+				area.style.height=((touchlayout[i].y2-touchlayout[i].y1)*100)+"%";
+				area.style.backgroundColor=touchlayout[i].bgcolor;
+				area.style.overflow="hidden";
+				area.style.fontSize="8vw";
+				area.style.fontFamily="sans-serif";
+				area.style.color=touchlayout[i].color;
+				area.style.borderRadius="10px";
+				area.innerHTML=touchlayout[i].label;
+				guide.appendChild(area);
+			}
+		}
 	}
 	function updateControls() {
 		if (keys) {
@@ -1175,7 +1301,10 @@ var DOMInator=function(useCanvas,aliasmode){
 	(function(obj){setTimeout(function() { obj._node.focus(); }, 1000);})(this);
 
 	/* Filters */
-	this.addFilter=function(filter) { filters.push(filter); }
+	this.addFilter=function(filter) {
+		if (filter.image) this.addResource(filter.image,filter.image);
+		filters.push(filter);
+	}
 
 	// RENDERER SPECIFIC METHODS
 	if (useDom) {
@@ -1334,7 +1463,7 @@ var DOMInator=function(useCanvas,aliasmode){
 DOMInator.CONTROLS={
 	pointer:{
 		keyboard:{
-			keyFullScreen: {label:"Fullscreen",isDisabled:!Supports.isFullscreen,subLabel:"Touch with two fingers the game area to enable fullscreen and touch controls.",subLabelDisabled:!Supports.isTouch,default:70}
+			keyFullScreen: {label:"Fullscreen",subLabel:"Touch with two fingers the game area to enable fullscreen and touch controls.",subLabelDisabled:!Supports.isTouch,default:70}
 		},
 		pointer:{
 			id:{
@@ -1354,31 +1483,67 @@ DOMInator.CONTROLS={
 			keyRight: {label:"Right",default:39},
 			keyA: {label:"A/Start",default:90},
 			keyB: {label:"B/Option",default:88},
-			keyFullScreen: {label:"Fullscreen",isDisabled:!Supports.isFullscreen,subLabel:"Touch with two fingers the game area to enable fullscreen and touch controls.",subLabelDisabled:!Supports.isTouch,default:70}
+			keyFullScreen: {label:"Fullscreen",subLabel:"Touch with two fingers the game area to enable fullscreen and touch controls.",subLabelDisabled:!Supports.isTouch,default:70}
 		},
 		touchcontroller:{
 			layout:{
-				default:"joypad"
+				allowed:["platformerpad","joypad","sidedpad"],
+				default:"platformerpad"
+			}
+		}
+	},
+	paddles:{
+		keyboard:{
+			keyUp1: {label:"Player 1 up",default:87},
+			keyDown1: {label:"Player 1 down",default:83},
+			keyUp2: {label:"Player 2 up",default:38},
+			keyDown2: {label:"Player 2 down",default:40},
+			keyA: {label:"Start",default:32},
+			keyFullScreen: {label:"Fullscreen",subLabel:"Touch with two fingers the game area to enable fullscreen and touch controls.",subLabelDisabled:!Supports.isTouch,default:70}
+		},
+		touchcontroller:{
+			layout:{
+				allowed:["paddlespad"],
+				default:"paddlespad"
 			}
 		}
 	}
 };
 
 DOMInator.TOUCHLAYOUTS={
+	platformerpad:{
+		label:"Horizontally: stick, B then A button. Another up button on top right.",
+		buttons:[
+			{x1:0,y1:0,x2:0.33,y2:1,type:1,deadzone:10,bgcolor:"#f00",color:"#000",label:"Stick"},
+			{x1:0.33,y1:0,x2:1,y2:0.5,button:"keyUp",bgcolor:"#0f0",color:"#000",label:"Up"},
+			{x1:0.33,y1:0.5,x2:0.66,y2:1,button:"keyB",bgcolor:"#0f0",color:"#000",label:"B"},
+			{x1:0.66,y1:0.5,x2:1,y2:1,button:"keyA",bgcolor:"#00f",color:"#000",label:"A"}
+		]
+	},
 	joypad:{
 		label:"Stick on left, A bottom/right, B top/right",
 		buttons:[
-			{x1:0,y1:0,x2:0.5,y2:1,type:1,deadzone:10},
-			{x1:0.5,y1:0,x2:1,y2:0.5,button:"keyB"},
-			{x1:0.5,y1:0.5,x2:1,y2:1,button:"keyA"}
+			{x1:0,y1:0,x2:0.5,y2:1,type:1,deadzone:10,bgcolor:"#f00",color:"#000",label:"Stick"},
+			{x1:0.5,y1:0,x2:1,y2:0.5,button:"keyB",bgcolor:"#0f0",color:"#000",label:"B"},
+			{x1:0.5,y1:0.5,x2:1,y2:1,button:"keyA",bgcolor:"#00f",color:"#000",label:"A"}
 		]
 	},
 	sidedpad:{
 		label:"Horizontally: stick, B then A button",
 		buttons:[
-			{x1:0,y1:0,x2:0.33,y2:1,type:1,deadzone:10},
-			{x1:0.33,y1:0,x2:0.66,y2:1,button:"keyB"},
-			{x1:0.66,y1:0,x2:1,y2:1,button:"keyA"}
+			{x1:0,y1:0,x2:0.33,y2:1,type:1,deadzone:10,bgcolor:"#f00",color:"#000",label:"Stick"},
+			{x1:0.33,y1:0,x2:0.66,y2:1,button:"keyB",bgcolor:"#0f0",color:"#000",label:"B"},
+			{x1:0.66,y1:0,x2:1,y2:1,button:"keyA",bgcolor:"#00f",color:"#000",label:"A"}
+		]
+	},
+	paddlespad:{
+		label:"Player 1 up/down buttons on left, Player 2 on right",
+		buttons:[
+			{x1:0,y1:0,x2:0.4,y2:0.5,button:"keyUp1",bgcolor:"#f00",color:"#000",label:"Up 1"},
+			{x1:0,y1:0.5,x2:0.4,y2:1,button:"keyDown1",bgcolor:"#ff0",color:"#000",label:"Down 1"},
+			{x1:0.6,y1:0,x2:1,y2:0.5,button:"keyUp2",bgcolor:"#00f",color:"#000",label:"Up 2"},
+			{x1:0.6,y1:0.5,x2:1,y2:1,button:"keyDown2",bgcolor:"#f0f",color:"#000",label:"Down 2"},
+			{x1:0.4,y1:0,x2:0.6,y2:1,button:"keyA",bgcolor:"#fff",color:"#000",label:"Start"},
 		]
 	}
 };
@@ -1399,7 +1564,7 @@ DOMInator.FILTERS={
 		{
 			label:"Scanlines",
 			filter:[
-		        {"generate":"texture","image":"scanlines","alpha":0.1,"to":"scanlines"},
+		        {"generate":"texture","image":"~/scanlines.png","alpha":0.1,"to":"scanlines"},
 		        {"render":1},
 		        {"blit":"scanlines"}
 		    ]
@@ -1411,7 +1576,7 @@ DOMInator.FILTERS={
 		{
 			label:"Retro LCD",
 			filter:[
-		        {"generate":"texture","image":"scanlines","alpha":0.1,"to":"scanlines"},
+		        {"generate":"texture","image":"~/scanlines.png","alpha":0.1,"to":"scanlines"},
 		        {"render":1,"to":"currentframe"},
 		        {"blit":"currentframe","alpha":0.4},
 		        {"blit":"scanlines"}
@@ -1420,8 +1585,8 @@ DOMInator.FILTERS={
 		{
 			label:"Retro CRT",
 			filter:[
-		        {"generate":"texture","image":"crt","alpha":0.1,"to":"crt"},
-		        {"generate":"texture","image":"scanlines","alpha":0.2,"to":"scanlines"},
+		        {"generate":"texture","image":"~/crt.png","alpha":0.1,"to":"crt"},
+		        {"generate":"texture","image":"~/scanlines.png","alpha":0.2,"to":"scanlines"},
 		        {"generate":"noise","to":"noise","live":1},
 		        {"render":1,"to":"currentframe"},
 		        {"blit":"currentframe"},
@@ -1437,8 +1602,8 @@ DOMInator.FILTERS={
 		{
 			label:"Compat Retro CRT",
 			filter:[
-		        {"generate":"texture","image":"crt","alpha":0.1,"to":"crt"},
-		        {"generate":"texture","image":"scanlines","alpha":0.2,"to":"scanlines"},
+		        {"generate":"texture","image":"~/crt.png","alpha":0.1,"to":"crt"},
+		        {"generate":"texture","image":"~/scanlines.png","alpha":0.2,"to":"scanlines"},
 		        {"generate":"noise","to":"noise","live":1},
 		        {"render":1,"to":"currentframe"},
 		        {"blit":"oldframe","alpha":0.5,"left":-1,"top":-1},
@@ -1720,7 +1885,10 @@ function Box(parent, type, sub, statemanager, useCanvas, aliasmode) {
 		parent.childs.push(box);
 		box.screen.newUID(box);
 		if (parent.removed) box.remove();
-		else box.screen.scheduleObjectChange(box);
+		else {
+			box.screen.scheduleObjectChange(box);
+			box.screen.scheduleObjectMovement(box);
+		}
 	} else {
 
 		// FILTERS (DOMInator Proxy)
@@ -1747,68 +1915,11 @@ function Box(parent, type, sub, statemanager, useCanvas, aliasmode) {
 
 		// RESOURCES LOADER (DOMInator Proxy)	
 		box.setResourcesRoot = function(path) { return this.node.setResourcesRoot(path); };
+		box.setSystemRoot = function(path) { return this.node.setSystemRoot(path); };
 		box.getResourcesRoot = function() { return this.node.getResourcesRoot(); };
 		box.getResource = function(name) { return this.node.getResource(name); };		
 		box.addResource = function(name, data) { return this.node.addResource(name, data); };		
 		box.loadResources = function(cb)  { return this.node.loadResources(cb); };	
-
-		// RECTANGLES
-		box.dirtyRects=function(obj,casacade) {
-			if (!obj.removed) {
-				obj.rects=0;
-				this.dirtygrid[obj.uid] = 1;
-				this.scheduleObjectChange(obj);
-				if (casacade)
-					for (var i = 0; i < obj.childs.length; i++) this.dirtyRects(obj.childs[i],1);
-			}
-		};
-		box.translateRect=function(obj,k,v) {
-			if (obj.rects) {
-				obj.rects.rect[k]=FIX(obj.rects.rect[k]+v);
-				obj.rects.screen[k]=FIX(obj.rects.screen[k]+v);
-				obj.rects.outer[k]=FIX(obj.rects.outer[k]+v);
-			}
-			if (obj.childs)
-				for (var i = 0; i < obj.childs.length; i++) this.translateRect(obj.childs[i],k,v);
-		},
-		box.translateRects=function(obj,k,v) {
-			if (!obj.removed) {
-				if (obj===this.gridreference) {
-					var cells=box.mergeCells({},box,0,0,"*"); // Get cells before moving...
-					if (obj.screen.rects) {
-						obj.screen.rects.rect[k]=FIX(obj.screen.rects.rect[k]-v);
-						obj.screen.rects.screen[k]=FIX(obj.screen.rects.screen[k]-v);
-						obj.screen.rects.outer[k]=FIX(obj.screen.rects.outer[k]-v);
-					}
-					// Recalculate all translations except into gridreference.
-					// - Cancel previous translation - skip them is unconvenient.
-					// - Outer rectangles don't need redraw since are still at their place.
-					this.recalculateRects(this,obj);
-					if (obj.node.parentNode||this.isOnScreen(obj)) { // If the grid reference is or was on screen...
-						this.scheduleObjectChange(obj); // ...schedule its change...
-						box.mergeCells(cells,box,0,0,"*"); // ...merge new cells after moving...
-						box.scheduleObjectOnScreenChange(1,cells); // ...schedule show/hide objects with changed onscreen state
-					}
-				} else {
-					this.dirtygrid[obj.uid] = 1;
-					if (obj.rects) {
-						obj.rects.rect[k]=FIX(obj.rects.rect[k]+v);
-						obj.rects.screen[k]=FIX(obj.rects.screen[k]+v);
-						obj.rects.outer[k]=FIX(obj.rects.outer[k]+v);
-					}
-					for (var i = 0; i < obj.childs.length; i++) this.translateRects(obj.childs[i],k,v);
-					if (obj.node.parentNode||this.isOnScreen(obj)) // If the object is or was on screen...
-						this.scheduleObjectChange(obj,1);  // ...schedule its change and its children...
-				}
-			}
-		};
-		box.recalculateRects=function(obj,except) {
-			if (!obj.removed&&(obj!=except)) {
-				obj.rects=0;
-				this.dirtygrid[obj.uid] = 1;
-				for (var i=0;i<obj.childs.length;i++) this.recalculateRects(obj.childs[i],except);
-			}
-		};
 
 		// SCREEN - UID generator
 		box.uids = { 0: box };
@@ -1837,7 +1948,7 @@ function Box(parent, type, sub, statemanager, useCanvas, aliasmode) {
 					for (var i = 0; i < obj.childs.length; i++) this.removeObject(obj.childs[i]);
 				this.updateNeedRunning(obj);
 				this.garbage.objects.push(obj);
-				if (obj.node.parentNode) this.scheduleObjectChange(obj); // Removal is casacaded by browser :)
+				if (obj.node.parentNode) this.scheduleObjectRemove(obj); // Removal is casacaded by browser :)
 			}
 		};
 		box.destroy = function() {
@@ -1859,61 +1970,106 @@ function Box(parent, type, sub, statemanager, useCanvas, aliasmode) {
 			this.garbage.objects.length=0;
 		};
 
-		// SCREEN - Render management
-		box.unrender={};
-		box.scheduleObjectOnScreenChange=function(recursive,cells) {
-			var i,j,cell,obj,onscreen;		
-			for (i in cells) { // For every cell ID...
-				cell=box.grid[i]; // ...get the cell...
-				if (cell&&cell.length) for (j in cell.items) { // ...and if not empty, for every object...
-					obj=cell.items[j]; // ...get it and...
-					onscreen=this.isOnScreen(obj); // check if it is on screen now and...
-					if (onscreen!=!!obj.node.parentNode) box.scheduleObjectChange(cell.items[j],recursive); // ... if changed, schedule object change.
+		// RECTANGLES
+		box.cellstoupdate={}; // Cells to be updated (on screen + left from screen)
+		box.objectstoupdate={}; // Not visible single objects to be updated (went out of scene when moving by itself)
+
+		box.dirtyRects=function(obj,casacade) {
+			if (!obj.removed) {
+				obj.rects=0;
+				this.dirtygrid[obj.uid] = 1;
+				this.scheduleObjectMovement(obj);
+				if (casacade)
+					for (var i = 0; i < obj.childs.length; i++) this.dirtyRects(obj.childs[i],1);
+			}
+		};
+		box.translateRect=function(obj,k,v) {
+			if (obj.rects) {
+				obj.rects.rect[k]=FIX(obj.rects.rect[k]+v);
+				obj.rects.screen[k]=FIX(obj.rects.screen[k]+v);
+				obj.rects.outer[k]=FIX(obj.rects.outer[k]+v);
+			}
+			if (obj.childs)
+				for (var i = 0; i < obj.childs.length; i++) this.translateRect(obj.childs[i],k,v);
+		},
+		box.translateRects=function(obj,k,v) {
+			if (!obj.removed) {
+				if (obj===this.gridreference) {
+					box.mergeCells(box.cellstoupdate,box,0,0,"*"); // Prepare scrolled cells to be updated later, for removing no longer visible objects.
+					if (obj.screen.rects) {
+						obj.screen.rects.rect[k]=FIX(obj.screen.rects.rect[k]-v);
+						obj.screen.rects.screen[k]=FIX(obj.screen.rects.screen[k]-v);
+						obj.screen.rects.outer[k]=FIX(obj.screen.rects.outer[k]-v);
+					}
+					// Recalculate all translations except into gridreference.
+					// - Cancel previous translation - skip them is unconvenient.
+					// - Outer rectangles don't need redraw since are still at their place.
+					this.recalculateRects(this,obj);
+					this.scheduleObjectMovement(obj);  // Schedule its movement changes (visibility will be checked there)				
+				} else {
+					this.dirtygrid[obj.uid] = 1;
+					if (obj.rects) {
+						obj.rects.rect[k]=FIX(obj.rects.rect[k]+v);
+						obj.rects.screen[k]=FIX(obj.rects.screen[k]+v);
+						obj.rects.outer[k]=FIX(obj.rects.outer[k]+v);
+					}
+					for (var i = 0; i < obj.childs.length; i++) this.translateRects(obj.childs[i],k,v); // Translate all childs rects.
+					this.scheduleObjectMovement(obj,1); // Schedule its movement change (visibility will be checked there)
 				}
 			}
+		};
+		box.recalculateRects=function(obj,except) {
+			if (!obj.removed&&(obj!=except)) {
+				obj.rects=0;
+				this.dirtygrid[obj.uid] = 1;
+				for (var i=0;i<obj.childs.length;i++) this.recalculateRects(obj.childs[i],except);
+			}
+		};
+
+		// SCREEN - Render management
+		box.scheduleObjectMovement = function(obj,recursive) {
+			obj.isdirty=1;
+			if (obj.node.parentNode&&!this.isOnScreen(obj)) // If this object left the screen...
+				box.objectstoupdate[obj.uid]=obj; // ...prepare for removal.
+			// ... else it will be updated since it's in a visible cell.
+			if (recursive)
+				for (var i=0;i<obj.childs.length;i++)
+					if (!obj.childs[i].removed) this.scheduleObjectMovement(obj.childs[i],1);
 		}
 		box.scheduleObjectChange = function(obj,recursive) {
 			obj.isdirty=1;
-			if (obj.removed) box.unrender[obj.uid]=obj;
 			if (recursive)
 				for (var i=0;i<obj.childs.length;i++)
 					if (!obj.childs[i].removed) this.scheduleObjectChange(obj.childs[i],1);
+		};
+		box.scheduleObjectRemove = function(obj,recursive) {
+			obj.isdirty=1;
+			box.objectstoupdate[obj.uid]=obj;
+			if (recursive)
+				for (var i=0;i<obj.childs.length;i++)
+					if (!obj.childs[i].removed) this.scheduleObjectRemove(obj.childs[i],1);
 		};
 		box.isOnScreen=function(obj){
 			if (obj.type.unoptimize) return true;
 			var rect=obj.getRects().screen;
 			return !((rect.x+this.gridcoords.x>=this.width)||((rect.x+this.gridcoords.x+rect.width)<1)||(rect.y+this.gridcoords.y>=this.height)||((rect.y+this.gridcoords.y+rect.height)<1));
 		};
-		box.applyChanges = function() {
-			var obj, displayed, pad, node, w, h,rect,onscreen,oc;
-			box.updateGrid();
-
-			// Removed objects
-			var i,j,cell,cells=box.getCells(box,0,0,"*");
-			cells.push("*"); // Unoptimized objects
-			for (i in box.unrender) {
-				obj=box.unrender[i];
-				if (obj.node) {
-					if (obj.node.parentNode) obj.node.parentNode.removeChild(obj.node);
-					delete obj.node;
-				}
-				delete box.unrender[i];
-			}
-
-			// Changed onscreen objects
-			for (i=0;i<cells.length;i++) {
-				cell=box.grid[cells[i]];
-				if (cell&&cell.length) for (j in cell.items) {
-					obj=cell.items[j];
-					node = obj.node;
-					if (node&&obj.isdirty) {
-						obj.isdirty=0;
+		box.applyChange=function(obj) {
+			var displayed, pad, w, h,onscreen;
+			var node = obj.node;
+			onscreen=this.isOnScreen(obj);
+			if (node) {
+				if (obj.isdirty) {
+					obj.isdirty=0;
+					if (obj.removed) {
+						if (obj.node.parentNode) obj.node.parentNode.removeChild(obj.node);
+						delete obj.node;
+					} else {
 						pad = obj.border ? 2 : 0;
 						w = obj.width - pad;
 						h = obj.height - pad;
 						if (w < 0) w = 0;
 						if (h < 0) h = 0;
-						onscreen=this.isOnScreen(obj);
 						displayed = obj.visible && w && h;
 						if (!obj.displayed&&displayed) node.setStyle("display","block");
 						if (obj.displayed&&!displayed) node.setStyle("display","none");
@@ -1994,13 +2150,34 @@ function Box(parent, type, sub, statemanager, useCanvas, aliasmode) {
 							obj.cleanprops.html = 1;
 						}
 						obj.displayed = displayed;
-						//if (!node.parentNode) { obj.parent.node.appendChild(node); zzz+="zzz+++,"; } //@TODO: tolto
-						if (onscreen&&!node.parentNode)
-							obj.parent.node.appendChild(node);
-						else if (!onscreen&&node.parentNode)
-							obj.parent.node.removeChild(node);
+						if (onscreen&&!node.parentNode) obj.parent.node.appendChild(node);
+						else if (!onscreen&&node.parentNode) obj.parent.node.removeChild(node);
 					}
+				} else {
+					if (onscreen&&!node.parentNode) obj.parent.node.appendChild(node);
+					else if (!onscreen&&node.parentNode) obj.parent.node.removeChild(node);
 				}
+			}
+		}
+
+		box.applyChanges = function() {
+			var a,j,cell;
+			box.updateGrid(); // Make sure that all cells are correctly set up
+
+			// Updates single changed objects
+			for (a in box.objectstoupdate) {
+				box.applyChange(box.objectstoupdate[a]);
+				delete box.objectstoupdate[a];
+			}
+
+			// Updates cells scheduled for update and visible cells
+			box.mergeCells(box.cellstoupdate,box,0,0,"*"); // Add visible cells to the one to update
+			box.cellstoupdate["*"]=1; // Add unoptimized objects to the one to update
+			for (a in box.cellstoupdate) {
+				cell=box.grid[a];
+				if (cell&&cell.length)
+					for (j in cell.items) box.applyChange(cell.items[j]);
+				delete box.cellstoupdate[a];
 			}
 		};
 
@@ -2554,7 +2731,7 @@ Box.Cache = function() {
  * GAME ENGINE
  */
 
-function Wright(gameId,container,mods) {
+function Wright(gameId,mods) {
 
 	function seededRandom() {
 		variables.randomSeed = (variables.randomSeed * 9301 + 49297) % 233280;
@@ -2577,6 +2754,7 @@ function Wright(gameId,container,mods) {
 		19:"Pause/break",
 		20:"Caps lock",
 		27:"Escape",
+		32:"Space",
 		33:"Page up",
 		34:"Page down",
 		35:"End",
@@ -3642,6 +3820,7 @@ function Wright(gameId,container,mods) {
 					case "abs":{ ret = FIX(Math.abs(ret)); break; }
 					case "floor":{ ret = FIX(Math.floor(ret)); break; }
 					case "ceil":{ ret = FIX(Math.ceil(ret)); break; }
+					case "round":{ ret = FIX(Math.round(ret)); break; }
 					case "pointAt":{
 						p=get(from, tox, struct[++id]);
 						ret= {x:ret.x+(p&&p.x?p.x:0),y:ret.y+(p&&p.y?p.y:0),width:1,height:1};
@@ -4279,17 +4458,23 @@ function Wright(gameId,container,mods) {
 		Supports.addEventListener(document,"keydown",waitKey);
 	}
 	function keySymbol(code) { return (KEYSYMBOLS[code]||String.fromCharCode(code))+" ("+code+")"; }
+	function getAlternative(alternatives) {  for (var i=0;i<alternatives.length;i++) if ((alternatives[i]!==undefined)&&(!Supports.isNaN(alternatives[i]))&&(alternatives[i]!==null)) return alternatives[i];}
 
 	/*
 	 * GAME STARTER
 	 */
 
 	if (!mods) mods={};
-	container.innerHTML="";
-	tv = node(container,"div");
+	if (!mods.gameContainer) return false; // No game container specified
+	if (!mods.tapesRoot) mods.tapesRoot="";
+	if (!mods.systemRoot) mods.systemRoot="system";
+
+	mods.gameContainer.innerHTML="";
+	tv = node(mods.gameContainer,"div");
 	tv.style.margin="auto";
 
 	function runGame(mode) {
+		if (mods.onRun) mods.onRun();
 		var controls={};
 		for (var a in controlsset) controls[a]=usercontrols[a];
 		tv.innerHTML="";
@@ -4299,7 +4484,8 @@ function Wright(gameId,container,mods) {
 		if (mode.volume&&gamedata.audioChannels) game.enableAudio(mode.volume/100);
 		tv.style.width = (game.width * game.scale) + "px";
 		tv.style.height = (game.height * game.scale) + "px";
-		game.setResourcesRoot("tapes/" + gameId + "/");
+		game.setResourcesRoot(mods.tapesRoot + gameId + "/");
+		game.setSystemRoot(mods.systemRoot);
 		for (var k in gamedata.resources) game.addResource(k, gamedata.resources[k]);
 		for (var k in gamedata.audioChannels) game.addAudioChannel(k, gamedata.audioChannels[k]);
 		if (mode.filter) for (var i=0;i<mode.filter.length;i++) game.addFilter(mode.filter[i]);
@@ -4310,78 +4496,104 @@ function Wright(gameId,container,mods) {
 	 * INITIALIZATION
 	 */
 
-	Supports.getFile("tapes/" + gameId + "/tape.json?" + Math.random(), function(text) {
+	Supports.getFile(mods.tapesRoot + gameId + "/tape.json?" + Math.random(), function(text) {
 		filecache = Box.Cache();
 		gamedata = JSON.parse(text);
-		hardware = gamedata.hardware || DEFAULTHARDWARE;
 		if (!gamedata.scenes) gamedata.scenes = { intro: {} };
+
+		// Detect game features
+		hardware = getAlternative([
+			gamedata.hardware,
+			DEFAULTHARDWARE
+		]);
+		controlsmode=getAlternative([
+			hardware.controls,
+			"standard"
+		]);
 		var cheatslist=gamedata.cheats;
 		var hasAudio=gamedata.audioChannels;
-		controlsmode=hardware.controls||"standard";
+		var filters=getAlternative([
+			hardware.filter instanceof Array?hardware.filter:null,
+			typeof hardware.filter == "string"?DOMInator.FILTERS[hardware.filter]:null,
+			DOMInator.FILTERS.none
+		]);
+
+		// Get controls
 		controlsset=DOMInator.CONTROLS[controlsmode];
-		if (localStorage["wrightControls_"+controlsmode]) usercontrols=JSON.parse(localStorage["wrightControls_"+controlsmode]);
-		else usercontrols={};
+		usercontrols=getAlternative([
+			localStorage["wrightControls_"+controlsmode]?JSON.parse(localStorage["wrightControls_"+controlsmode]):null,
+			{}
+		]);
 		for (var a in controlsset) {
-			if (!usercontrols[a]) usercontrols[a]={};
-			for (var b in controlsset[a])
-				if (usercontrols[a][b]===undefined) usercontrols[a][b]=controlsset[a][b].default;
+			usercontrols[a]=getAlternative([usercontrols[a],{}]);
+			for (var b in controlsset[a]) usercontrols[a][b]=getAlternative([usercontrols[a][b],controlsset[a][b].default]);
 		}
-		var scale=mods.scale||(localStorage["wrightScale"]*1)||3;
-		var volume=(mods.volume===undefined?((localStorage["wrightVolume"]||100)*1):mods.volume)||0;
-		var renderer=(mods.renderer===undefined?localStorage["wrightRenderer"]*1:mods.renderer)||0;
-		var filters=(hardware.filter instanceof Array?hardware.filter:DOMInator.FILTERS[hardware.filter])||DOMInator.FILTERS.none;
-		var filter=(mods.filter===undefined?localStorage["wrightFilter"]:mods.filter)||filters[0].label;
+
+		// Get screen settings
+		var scale;
 		if (!Supports.supportsScaling) scale=1;
-		if (mods.noui) {
-			var filterset;
-			for (var i=0;i<filters.length;i++)
-				if (filters[i].label==filter) filterset=filters[i].filter;
-			runGame({scale:scale,volume:hasAudio?volume:0,renderer:renderer,filter:filterset||DOMInator.FILTERS.none[0].filter});
-		} else {
-			var havecheats,row,itm,magazine=node(tv,"div","magazine");
-			node(magazine,"div","logo","Wright!");
-			node(magazine,"h1",0,gamedata.genre||"Game");
-			var article=node(magazine,"div","article");
-			node(article,"div","text","<h2>"+(gamedata.name||"No title")+"</h2><h3>"+(gamedata.author||"Unknown author")+", "+(gamedata.year||"Unknown year")+"</h3><p class='content'>"+(gamedata.description||"We're sorry but the description of this game is missing and is not available. Just play the game!"));
-			if (gamedata.screenshots) {
-				row=node(article,"p","screenshots");
-				for (var i=0;i<gamedata.screenshots.length;i++)
-					node(row,"div","screenshot").style.backgroundImage="url('tapes/"+gameId+"/screenshots/"+gamedata.screenshots[i]+"')";
-			}
-			node(article,"h3",0,"Settings");
+		else scale=getAlternative([
+			mods.scale,
+			localStorage["wrightScale"]*1,
+			2
+		]);
+		var renderer=getAlternative([
+			mods.renderer,
+			localStorage["wrightRenderer"]*1,
+			Supports.isCanvas?1:0
+		]);
+		var filter=getAlternative([
+			mods.filter,
+			localStorage["wrightFilter"],
+			filters[0].label
+		]);
+		
+		// Get audio settings
+		var volume=getAlternative([
+			mods.volume,
+			(localStorage["wrightVolume"]||100)*1,
+			0
+		]);
+
+		if (mods.settingsContainer) {
+			var sublabels="",havecheats,row,itm;
+
+			node(mods.settingsContainer,"div","section","Settings");
 			if (controlsset.keyboard)
 				for (var a in controlsset.keyboard)
 					if (!controlsset.keyboard[a].isDisabled) {
-						row=node(article,"p");
-						node(row,"span","label",controlsset.keyboard[a].label+":");
-						itm=node(row,"input","input");
+						row=node(mods.settingsContainer,"div","row");
+						node(row,"div","label",controlsset.keyboard[a].label+":");
+						itm=node(node(row,"div","value"),"input","input");
 						itm.setAttribute("readonly","readonly");
 						itm.setAttribute("_id",a);
 						itm.value=keySymbol(usercontrols.keyboard[a]);
 						Supports.addEventListener(itm,"click",setupKey);
 						if (controlsset.keyboard[a].subLabel&&!controlsset.keyboard[a].subLabelDisabled) {
-							row=node(article,"p");
-							node(row,"span","",controlsset.keyboard[a].subLabel).style.fontSize="12px";
+							sublabels+="<li>"+controlsset.keyboard[a].subLabel+"</li>";
+							node(mods.settingsContainer,"div","sublabel",controlsset.keyboard[a].subLabel);
 						}
 					}
 
 			var touchcontrollerCombo;
-			if (controlsset.touchcontroller&&Supports.isFullscreen) {
-				row=node(article,"p");
+			if (controlsset.touchcontroller) {
+				row=node(mods.settingsContainer,"div","row");
 				node(row,"span","label","Touch controls:");
-				touchcontrollerCombo=node(row,"select","input");
-				for (var i in DOMInator.TOUCHLAYOUTS) {
+				touchcontrollerCombo=node(node(row,"div","value"),"select","input");
+				console.log(controlsset);
+				for (var j=0;j<controlsset.touchcontroller.layout.allowed.length;j++) {
+					var i=controlsset.touchcontroller.layout.allowed[j];
 					itm=node(touchcontrollerCombo,"option",0,DOMInator.TOUCHLAYOUTS[i].label);
 					itm.value=i;
 					if (usercontrols.touchcontroller.layout==i) itm.setAttribute("selected","selected");
-				}
+				}				
 			}
 
 			var pointerCombo;
 			if (controlsset.pointer) {
-				row=node(article,"p");
+				row=node(mods.settingsContainer,"div","row");
 				node(row,"span","label","Pointer/Gun:");
-				pointerCombo=node(row,"select","input");
+				pointerCombo=node(node(row,"div","value"),"select","input");
 				for (var i=0;i<controlsset.pointer.id.options.length;i++)
 					if (!controlsset.pointer.id.options[i].isDisabled) {
 						itm=node(pointerCombo,"option",0,controlsset.pointer.id.options[i].label);
@@ -4390,9 +4602,9 @@ function Wright(gameId,container,mods) {
 					}
 			}
 
-			row=node(article,"p");
+			row=node(mods.settingsContainer,"div","row");
 			node(row,"span","label","Renderer:");
-			var rendererCombo=node(row,"select","input");
+			var rendererCombo=node(node(row,"div","value"),"select","input");
 			for (var i=0;i<DOMInator.RENDERERS.length;i++)
 				if (!DOMInator.RENDERERS[i].isDisabled) {
 					itm=node(rendererCombo,"option",0,DOMInator.RENDERERS[i].label);
@@ -4400,27 +4612,27 @@ function Wright(gameId,container,mods) {
 					if (renderer==DOMInator.RENDERERS[i].id) itm.setAttribute("selected","selected");
 				}
 
-			row=node(article,"p");
+			row=node(mods.settingsContainer,"div","row");
 			node(row,"span","label","Screen filter:");
-			var filterCombo=node(row,"select","input");
+			var filterCombo=node(node(row,"div","value"),"select","input");
 			for (var i=0;i<filters.length;i++) {
 				itm=node(filterCombo,"option",0,filters[i].label);
 				itm.value=filters[i].label;
 				if (filter==filters[i].label) itm.setAttribute("selected","selected");
 			}
 
-			row=node(article,"p");
+			row=node(mods.settingsContainer,"div","row");
 			node(row,"span","label","Resolution:");
-			var resolutionCombo=node(row,"select","input"),resolutions=Supports.supportsScaling?7:1;
+			var resolutionCombo=node(node(row,"div","value"),"select","input"),resolutions=Supports.supportsScaling?7:1;
 			for (var i=1;i<resolutions;i++) {
 				itm=node(resolutionCombo,"option",0,(hardware.width*i)+"x"+(hardware.height*i)+" (x"+i+")");
 				if (i==scale) itm.setAttribute("selected","selected");
 			}
 
 			if (hasAudio) {
-				row=node(article,"p");
+				row=node(mods.settingsContainer,"div","row");
 				node(row,"span","label","Sound:");
-				var audioCombo=node(row,"select","input");
+				var audioCombo=node(node(row,"div","value"),"select","input");
 				node(audioCombo,"option",0,"Disabled");
 				if (Supports.isAudio)
 					for (var i=10;i<=100;i+=10) {
@@ -4429,19 +4641,19 @@ function Wright(gameId,container,mods) {
 					}
 			}
 
-			node(article,"h3",0,"Cheats");
+			node(mods.settingsContainer,"div","section","Cheats");
 			for (var a in cheatslist) {
 				havecheats=true;
-				row=node(article,"p");
+				row=node(mods.settingsContainer,"div","row");
 				itm=node(row,"input");
 				itm.type="checkbox";
 				itm.setAttribute("_id",a);
 				Supports.addEventListener(itm,"click",function() { cheats[this.getAttribute("_id")]=this.checked;});
 				node(row,"span",0,cheatslist[a]);
 			}
-			if (!havecheats) node(article,"p",0,"Sorry, no cheats for this game. Is all up to you!");
+			if (!havecheats) node(mods.settingsContainer,"div","row","Sorry, no cheats for this game. It's all up to you!");
 			
-			itm=node(node(article,"p","runner"),"button",0,"Start game");
+			itm=node(node(mods.settingsContainer,"div","startgamerow"),"button","startgame","Start game");
 			Supports.addEventListener(itm,"click",function(){
 				var filterset;
 				if (pointerCombo) usercontrols.pointer.id=pointerCombo.options[pointerCombo.selectedIndex].value;
@@ -4450,13 +4662,17 @@ function Wright(gameId,container,mods) {
 				renderer=localStorage["wrightRenderer"]=rendererCombo.options[rendererCombo.selectedIndex].value*1;
 				scale=localStorage["wrightScale"]=resolutionCombo.selectedIndex+1;
 				filter=localStorage["wrightFilter"]=filterCombo.options[filterCombo.selectedIndex].value;
-				for (var i=0;i<filters.length;i++)
-					if (filters[i].label==filter) filterset=filters[i].filter;
+				for (var i=0;i<filters.length;i++) if (filters[i].label==filter) filterset=filters[i].filter;
 				if (hasAudio) volume=localStorage["wrightVolume"]=audioCombo.selectedIndex*10; else volume=0;
 				Supports.removeEventListener(document,"keydown",waitKey);
+				mods.settingsContainer.innerHTML=sublabels?"<ul>"+sublabels+"</ul>":"";
 				runGame({scale:scale,volume:volume,renderer:renderer,filter:filterset||DOMInator.FILTERS.none[0].filter});
 			});
-			node(magazine,"h4",0,"Wright engine &copy;2015");
+		} else {
+			var filterset;
+			for (var i=0;i<filters.length;i++)
+				if (filters[i].label==filter) filterset=filters[i].filter;
+			runGame({scale:scale,volume:hasAudio?volume:0,renderer:renderer,filter:filterset||DOMInator.FILTERS.none[0].filter});
 		}
 	});
 
@@ -4475,11 +4691,7 @@ function Wright(gameId,container,mods) {
 	}
 }
 
-var _WRIGHT;
-function runWright(name,container,mods) {
-	if (_WRIGHT) _WRIGHT.destroy();
-	setTimeout(function(){
-		window.scrollTo(0, 0);
-		_WRIGHT=Wright(name,container||document.getElementById("wrightContainer"),mods);
-	},10);
+function runSingleWright(name,mods) {
+	if (window._WRIGHT) window._WRIGHT.destroy();
+	window._WRIGHT=Wright(name,mods);
 }
