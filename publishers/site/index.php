@@ -13,28 +13,23 @@ $game=0;
 
 function fillTemplate($tmpl,$data) {
 	do {
-		$done=false;
-		$tmpl= preg_replace_callback(
-	        '/%%%([^%\n]*)%%%/',
-	        function ($matches) use ($data,&$done) {
-	        	$done=true;
-	        	$out="";
-	        	switch (substr($matches[1],0,1)) {
-	        		case "=":{
-	        			$out=file_get_contents(substr($matches[1],1));
-	        			break;
-	        		}
-	        		default:{
-	        			$spl=preg_split("/\./",$matches[1]);
-			        	$out=$data;
-			        	for ($i=0;$i<count($spl);$i++) $out=$out[$spl[$i]];
-	        		}
-	        	}
-	        	return $out;
-	        },
-	        $tmpl
-	    );
-	} while ($done);
+		$found=preg_match('/%%%([^%\n]*)%%%/',$tmpl,$match,PREG_OFFSET_CAPTURE);
+		if ($found) {
+        	$out="";
+        	switch (substr($match[1][0],0,1)) {
+        		case "=":{
+        			$out=file_get_contents(substr($match[1][0],1));
+        			break;
+        		}
+        		default:{
+        			$spl=preg_split("/\./",$match[1][0]);
+		        	$out=$data;
+		        	for ($i=0;$i<count($spl);$i++) $out=$out[$spl[$i]];
+        		}
+        	}
+        	$tmpl=substr($tmpl,0,$match[0][1]).$out.substr($tmpl,$match[0][1]+strlen($match[0][0]));
+		}		
+	} while ($found);
 	return $tmpl;
 }
 
