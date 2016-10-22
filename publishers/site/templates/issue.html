@@ -1,0 +1,33 @@
+<html>
+	<head>
+		<title>%%%name%%% - Wright! Magazine</title>
+		%%%=templates/headers.html%%%
+		<link rel="stylesheet" href="%%%urlroot%%%fonts/stylesheet.css" type="text/css" charset="utf-8" />
+		<script type="text/javascript" src="%%%urlroot%%%js/wright.js?a=1"></script>
+	</head>
+	<body onload="runSingleWright('%%%issueid%%%',{tapesRoot:'%%%urltapes%%%',systemRoot:'%%%urlroot%%%system',gameContainer:document.getElementById('game'),settingsContainer:document.getElementById('settings'),onRun:function(){document.getElementById('body').innerHTML='';}})">
+		%%%=templates/headerbar.html%%%
+		<div id="banner">
+			<div class="image" style="background-image:url('%%%urltapes%%%%%%issueid%%%/screenshots/%%%screenshots.1%%%')"></div>
+			<div class="filter"></div>
+			<div class="text">
+				<h1><a href="#settings">%%%name%%%</a></h1>
+				<p>%%%genre%%%, &copy; %%%author%%% %%%year%%%</p>
+			</div>
+		</div>
+		<div id="game"></div>
+		<div id="body">
+			<p>
+				<img src="%%%urltapes%%%%%%issueid%%%/screenshots/%%%screenshots.0%%%" class="articleimage">
+				%%%description%%%
+			</p>
+			<p class="small">
+				(Want to share something? You can find me <a href="https://twitter.com/KesieV">on Twitter</a>!)
+			</p>
+		</div>
+		<div id="settingscontainer">
+			<div id="settings"></div>
+		</div>
+		%%%=templates/footerbar.html%%%
+	</body>
+</html>
