@@ -621,7 +621,6 @@ var DOMInator=function(useCanvas,aliasmode){
 
 	/* Fullscreen handler */
 	var gameScreen=0,orgScalex=0,orgScaley=0,guidetimeout;
-
 	function removeGuide() {
 		if (guidetimeout) {
 			root.removeChild(guide);
@@ -629,7 +628,6 @@ var DOMInator=function(useCanvas,aliasmode){
 			guidetimeout=0;
 		}
 	}
-
 	function showGuide() {
 		if (guide) {
 			if (guidetimeout) clearTimeout(guidetimeout);
@@ -637,7 +635,6 @@ var DOMInator=function(useCanvas,aliasmode){
 			guidetimeout=setTimeout(removeGuide,3000);
 		}
 	}
-
 	function fullScreenResizer() {	
 		showGuide();	
 		var width=document.body.clientWidth;
@@ -663,6 +660,7 @@ var DOMInator=function(useCanvas,aliasmode){
 		Supports.offFullScreenError(fullScreenChange);
 		if (keys.keyFullScreen) gameScreen.addEventListener("touchstart",fullscreenTouchToggle);
 		if (touchlayout) disableTouchcontroller();
+		gameScreen.restoreFocus();
 	}
 	function fullScreenChange() { if (!Supports.isFullScreen()) exitFullScreen(true); }
 	function gotoFullScreen() {
@@ -678,6 +676,7 @@ var DOMInator=function(useCanvas,aliasmode){
 			if (keys.keyFullScreen) gameScreen.removeEventListener("touchstart",fullscreenTouchToggle);
 			if (touchlayout) enableTouchcontroller();
 			Supports.setFullScreen(root);
+			gameScreen.restoreFocus();
 		}
 	}
 	function toggleFullScreen() {
@@ -1298,7 +1297,8 @@ var DOMInator=function(useCanvas,aliasmode){
 
 	/* Game page element focus */
 	this.setAttribute("tabIndex", 1);
-	(function(obj){setTimeout(function() { obj._node.focus(); }, 1000);})(this);
+	this.restoreFocus=function() { setTimeout(function() { gameScreen.focus(); }, 1000); }
+	this.restoreFocus();
 
 	/* Filters */
 	this.addFilter=function(filter) {
@@ -4580,7 +4580,6 @@ function Wright(gameId,mods) {
 				row=node(mods.settingsContainer,"div","row");
 				node(row,"span","label","Touch controls:");
 				touchcontrollerCombo=node(node(row,"div","value"),"select","input");
-				console.log(controlsset);
 				for (var j=0;j<controlsset.touchcontroller.layout.allowed.length;j++) {
 					var i=controlsset.touchcontroller.layout.allowed[j];
 					itm=node(touchcontrollerCombo,"option",0,DOMInator.TOUCHLAYOUTS[i].label);
