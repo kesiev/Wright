@@ -3,7 +3,7 @@
   "author":"KesieV",
   "year":2015,
   "genre":"Adventure",
-  "description":"All the titles of The Legend Of Zelda series are stunningly aging very well, mostly because of their design, which hardly ages, but what surprises me is that there are few titles still around with the same genre. People loves the Zelda formula - there are many indies lookalikes out there and one of the most successful demos of Akihabara, back to 2010, was The Legend Of Sadness, a very quick implementation of the Zelda mechanics. Anyway, nothing is better than that game for improving again camera management with multiple scrolling directions and give to The Legend Of Sadness a second chapter! I've heavily used the excellent Tiled for making the dungeon, and a code generator for converting everything for Wright!. Plot? No! This time I've prepared a nice scroller after the title screen! Move Klin with UP/DOWN/LEFT/RIGHT, attack with A BUTTON and switch weapon (when you've found that) with the B BUTTON!",
+  "description":"<p>All the titles of <a href='https://en.wikipedia.org/wiki/The_Legend_of_Zelda'>The Legend Of Zelda</a> series are stunningly aging very well, mostly because of their design, which hardly ages, but what surprises me is that there are few titles still around with the same genre.</p><p>People loves the Zelda formula - there are many indies lookalikes out there and one of the most successful demos of <a href='http://www.kesiev.com/akihabara/'>Akihabara</a>, back to 2010, was <a href='http://www.kesiev.com/akihabara/demo/game-tlol.html'>The Legend Of Sadness</a>, a very quick implementation of the Zelda mechanics.</p><p>Anyway, nothing is better than that game for improving again camera management with multiple scrolling directions and give to The Legend Of Sadness a second chapter! I've heavily used the excellent <a href='http://www.mapeditor.org/'>Tiled</a> for making the dungeon, and a code generator for converting everything for Wright!.</p><p>Plot?</p><p>No! This time I've prepared a nice scroller after the title screen! Move Klin with UP/DOWN/LEFT/RIGHT, attack with A BUTTON and switch weapon (when you've found that) with the B BUTTON!</p>",
   "screenshots":["tlos2-1.png","tlos2-2.png"],
   "hardware":{
     "width":256,
@@ -20,9 +20,7 @@
     "tlos-bg":"tlos-bg.png",
     "defaultsprites":"../default/sprites.png",
     "frameh":"../default/frame-h.png",
-    "framev":"../default/frame-v.png",
-    "crt":"../default/crt.png",
-    "scanlines":"../default/scanlines.png"
+    "framev":"../default/frame-v.png"
   },
   "stencils":{
     "spark":{
@@ -574,22 +572,25 @@
       "image":"tlos-bg", "tileX":0, "tileY":32, "width":16, "height":16,
       "visible":0,
       "states":{
-        "code":{
-          "name":"Sequence",
-          "data":[
-            { "wait":1, "loop":1, "until":{ "_":[ "this", "collidesWith", { "_":[ "objectTyped", "player" ] } ] } },
-            { "as":{ "_":[ "objectTyped", "player" ] }, "set":{ "forceX":0, "forceY":-2, "forceZ":0, "state":"auto" } },
-            { "wait":10 },
-            { "set":{ "type":[ "wall", "block" ], "visible":1 } },
-            { "object":{ "_":[ "stencil", "smoke" ] } },
-            { "as":{ "_":[ "objectTyped", "player" ] }, "set":{ "forceY":0 } },
-            { "sum":1, "to":{ "_":[ "objectTyped", "boss", "x" ] }, "wait":1 },
-            { "subtract":1, "to":{ "_":[ "objectTyped", "boss", "x" ] }, "wait":1, "cycles":10, "loopTo":-1 },
-            { "wait":10 },
-            { "as":{ "_":[ "object", "boss" ] }, "set":{ "state":"start" } },
-            { "as":{ "_":[ "objectTyped", "player" ] }, "set":{ "state":"default" } }
-          ]
-        }
+        "code":[
+          {
+            "name":"Sequence",
+            "data":[
+              { "wait":1, "loop":1, "until":{ "_":[ "this", "collidesWith", { "_":[ "objectTyped", "player" ] } ] } },
+              { "as":{ "_":[ "objectTyped", "player" ] }, "set":{ "forceX":0, "forceY":-2, "forceZ":0, "state":"auto" } },
+              { "wait":10 },
+              { "set":{ "type":[ "wall", "block" ], "visible":1 } },
+              { "object":{ "_":[ "stencil", "smoke" ] } },
+              { "as":{ "_":[ "objectTyped", "player" ] }, "set":{ "forceY":0 } },
+              { "sum":1, "to":{ "_":[ "objectTyped", "boss", "x" ] }, "wait":1 },
+              { "subtract":1, "to":{ "_":[ "objectTyped", "boss", "x" ] }, "wait":1, "cycles":10, "loopTo":-1 },
+              { "wait":10 },
+              { "as":{ "_":[ "object", "boss" ] }, "set":{ "state":"start" } },
+              { "as":{ "_":[ "objectTyped", "player" ] }, "set":{ "state":"default" } }
+            ]
+          },
+          { "name":"ZPerspective" }
+        ]
       }
     },
     "break":[

@@ -1,0 +1,143 @@
+{
+  "name":"Sdong",
+  "author":"KesieV",
+  "year":2016,
+  "genre":"Tennis?",
+  "description":"<p>Wright! Magazine uses a custom built Javascript game engine with any other external dependence that uses some standardized technologies for video, audio and input processing that are usually implemented in most of the web browsers - so that means that Wright! games can run on multiple operating systems and devices, included mobile one with touch screen.</p><p>You can use it as a complete game engine as I'm doing within this magazine, but the Wright! engine was built for being as short in length and as much lightweight as possible, so you can read its code, understand how it works and - eventually - use it as inspiration for your own projects. Yeah, It's missing comments and some good documentation but... It's how it worked when game source codes used to be printed on magazine, so Wright! is opensourced and MIT licensed by design.</p><p>It implements a 2D renderer for drawing stuff on the screen, that uses DOM elements (i.e. the stuff you can usually find in a web page, like images and text - but used in the wrong way) or a <a href='http://www.w3schools.com/html/html5_canvas.asp'>CANVAS element</a>, in which you can draw what you want, that was introduced with HTML5 few years ago and works like true 2D libraries like <a href='https://www.libsdl.org/'>the old good SDL libraries</a>, which is way better for videogames. You usually can switch the rendere when starting a game - nothing relevant changes.</p><p>So what's the point of having 2 renderers on a web game engine? Early web game developers that already discoverd the potential of Javascript back in the '90s, when it was just used for field validation in forms, used to move HTML tags on the page for making small games, so I decided to use the same technique for celebrating them. Later I decided to try porting everything to the CANVAS tag, as I did for the <a href='http://www.kesiev.com/akihabara/'>Akihabara</a> game library in 2010, keeping everything compatible as a challenge. The result is: Wright! engine covers almost 30 years of web game development techniques in a single project. Just because.</p><p>It contains a custom made rectangle-based physics engine that's quite sketchy but short, fast and works enough for most of the arcade games I'm going to develop. Obviously some of the games that were suggested to me by friends along these years mostly needed a full featured engine, like a pinball, golf or fishing games, but, despite the hate I had for these bad people, early videogames on 8 bit machines used to work fine mostly without physics... so - Wright! game engine physics engine is limited but pretty enough for me :)</p><p>Scripting is done mostly via JSON with a technique I use to call 'stencils': everything in this game is described by a set of key/values I call 'stencil', which defines how it looks (i.e. the bat of pong has a long height, short width and a white color) and how it behaves (i.e. moves up and down with keys and blinks when winning). Multiple stencils can be merged together in order to create object variants, so the left and right Pong bats have a basic stencil that describes how they look and move, but the left one is merged with another stencil that places it on that side of the screen and moves with the player 1 keys and the right one with the opposite. That makes the code of most of the games reusable from game to game - and that's why most of them are made in just two weeks of lunch breaks :)</p><p>Music mainly uses HTML5's <a href='https://developer.mozilla.org/it/docs/Web/API/Web_Audio_API'>Web Audio API</a>, adding audio channels (i.e. different default volume for music and sound effects), simplified sound effects (i.e. fading) that can be automatically applied by some game elements, like music fading together with screen.</p><p>Many advanced features of a game engine have been cut or implemented with simplicity in mind: animations are implemented with a simple frame-by-frame sequence, artificial intelligence is implemented ad-hoc for every game using the JSON scripting language that decides object logic, memory management is done mainly by the Javascript virtual machine and networking play and localization are still missing - and not planned.</p><p>Wright! engine doesn't use any tilemap implementation in order to keep game code simple but uses a 'clustering' technique instead, in which every object in the game is automatically gathered in a grid of groups depending on their position on the screen, so just the clusters around the visible part of the scene are rendered - and only clusters around an object are evaluated in collisions. That means that, while there isn't a clear implementation of tilemaps, everything is in a giant tilemap!</p><p>Wright! changed a lot of times during these years, changing, dropping and adding features but one thing still amazes me every time, despite I've developed this by my own: once found a funny and fair compromise, a game is always possible. The <a href='https://en.wikipedia.org/wiki/No_Man%27s_Sky'>No Man's Sky</a> demake called 'Bounds Unknown' has a simple <a href='https://en.wikipedia.org/wiki/Superformula'>superformula</a> implementation in its own JSON code!</p><p>To celebrate the control system rewrite, that allow multiple control configurations and touch screen layouts, let's play a competitive offline multiplayer game! Well... probably one of the oldest ever made. Whatever.</p><p>Plot!</p><p>This is like tennis, but in the future! Kick the ball back to your opponent field and let him lose it! Use the START button for starting a new match and use UP/DOWN for moving your bat. Good luck!",
+  "screenshots":[ "sdong-1.png", "sdong-2.png" ],
+  "hardware":{
+    "width":256,
+    "height":192,
+    "controls":"paddles",
+    "filter":"retro"
+  },
+  "audioChannels":{
+    "sfx":{ "volume":1, "samples":[ "bounce", "score" ] }
+  },
+  "cheats":{},
+  "resources":{
+    "spectrum":"spectrum.font",
+    "bounce":"audio/bounce.ogg",
+    "score":"audio/score.ogg"
+  },
+  "stencils":{
+    "bat":{
+      "type":"bat",
+      "width":4, "height":24,
+      "bgcolor":"#fff",
+      "states":[
+        {
+          "set":{ "y":83, "visible":1, "forceY":0 },
+          "code":[
+            {
+              "name":"Execute",
+              "data":[
+                {
+                  "when":{ "_":[ { "_":[ "this", "moveDown" ] }, "isDown" ] },
+                  "sum":1,
+                  "to":{ "_":[ "this", "forceY" ] },
+                  "elseExecute":{ "when":{ "_":[ { "_":[ "this", "moveUp" ] }, "isDown" ] }, "subtract":1, "to":{ "_":[ "this", "forceY" ] } }
+                },
+                { "set":{ "forceY":{ "_":[ "this", "forceY", "*", 0.8 ] } } }
+              ]
+            },
+            { "name":"Physics", "data":{ "walls":{ "type":"wall", "restitution":0 } } }
+          ]
+        },
+        { "name":"won", "code":{ "name":"Sequence", "data":[ { "set":{ "visible":0 }, "wait":10 }, { "set":{ "visible":1 }, "wait":10, "loopTo":0 } ] } }
+      ]
+    },
+    "goal":{
+      "width":8, "height":192,
+      "y":0,
+      "bgcolor":"#f00",
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":{
+            "when":{ "_":[ "this", "collidesWith", { "_":[ "objectTyped", "ball" ] } ] },
+            "execute":[ { "as":{ "_":"that" }, "remove":1 }, { "as":{ "_":"scene" }, "set":{ "scored":{ "_":[ "that", "pointFor" ] } } } ]
+          }
+        }
+      }
+    }
+  },
+  "scenes":{
+    "intro":{
+      "object":[
+        { "type":"wall", "width":272, "height":8, "x":-8, "y":0, "bgcolor":"#fff" },
+        { "type":"wall", "width":272, "height":8, "x":-8, "y":184, "bgcolor":"#fff" },
+        { "width":1, "height":176, "x":128, "y":8, "bgcolor":"#fff" },
+        { "type":"player1", "set":{ "_":[ "stencil", "bat" ] }, "x":8, "angleEnd":160, "angleStart":20, "moveDown":"keyDown1", "moveUp":"keyUp1" },
+        { "type":"player2", "set":{ "_":[ "stencil", "bat" ] }, "x":244, "angleEnd":210, "angleStart":340, "moveDown":"keyDown2", "moveUp":"keyUp2" },
+        { "set":{ "_":[ "stencil", "goal" ] }, "x":-16, "pointFor":"player2" },
+        { "set":{ "_":[ "stencil", "goal" ] }, "x":264, "pointFor":"player1" },
+        {
+          "type":"hud",
+          "hudType":"label", "label":"%number|scene.player1%",
+          "width":120, "height":30,
+          "x":0, "y":16,
+          "font":"spectrum", "fontSize":60, "textAlign":"right"
+        },
+        { "type":"hud", "hudType":"label", "label":"%number|scene.player2%", "width":120, "height":30, "x":136, "y":16, "font":"spectrum", "fontSize":60 }
+      ],
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[
+            { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+            { "set":{ "player1":0, "player2":0, "scored":{ "_":[ "randomValue", [ "player1", "player2" ] ] } } },
+            { "as":{ "_":[ "object", "bat" ] }, "set":{ "state":"default" } },
+            {
+              "object":{
+                "type":"ball",
+                "width":8, "height":8,
+                "x":124, "y":92,
+                "bgcolor":"#fff",
+                "speed":2,
+                "states":{
+                  "code":{
+                    "name":"Physics",
+                    "data":{
+                      "walls":[
+                        { "type":"wall", "restitution":1, "execute":{ "playAudio":"bounce" } },
+                        {
+                          "type":"bat",
+                          "execute":[
+                            { "playAudio":"bounce" },
+                            { "sum":1, "to":{ "_":[ "this", "speed" ] } },
+                            {
+                              "applyVector":{
+                                "angle":{ "_":[ "proportionalValue", { "proportion":[ { "_":[ "that", "y" ] }, { "_":[ "that", "y", "+", { "_":[ "that", "height" ] } ] }, { "_":[ "that", "angleStart" ] }, { "_":[ "that", "angleEnd" ] } ], "value":{ "_":[ "this", "y" ] } } ] },
+                                "length":{ "_":[ "this", "speed" ] }
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            },
+            { "wait":25 },
+            {
+              "as":{ "_":[ "objectTyped", "ball" ] },
+              "applyVector":{
+                "angle":{ "_":[ "randomNumber", [ { "_":[ "objectTyped", { "_":[ "scene", "scored" ] }, "angleStart" ] }, { "_":[ "objectTyped", { "_":[ "scene", "scored" ] }, "angleEnd" ] } ] ] },
+                "length":{ "_":[ "this", "speed" ] }
+              }
+            },
+            { "set":{ "scored":0 } },
+            { "wait":1, "loop":1, "until":{ "_":[ "scene", "scored" ] } },
+            { "sum":1, "to":{ "_":[ "this", { "_":[ "this", "scored" ] } ] }, "playAudio":"score" },
+            { "wait":25, "loopTo":2, "until":{ "_":[ "this", { "_":[ "this", "scored" ] }, "isGreaterThan", 10 ] } },
+            { "as":{ "_":[ "objectTyped", { "_":[ "this", "scored" ] } ] }, "set":{ "state":"won" } },
+            { "wait":25 },
+            { "loopTo":0 }
+          ]
+        }
+      }
+    }
+  }
+}
