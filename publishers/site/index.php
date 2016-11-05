@@ -74,12 +74,13 @@ if (isset($_GET)) {
 				$issueid=$_GET["issueid"];
 				$gameroot=$_CONFIG["pathtapes"].$issueid."/";
 				$gamefile=$gameroot."tape.json";
-				if (!is_file($gamefile)) $issueid=0;
-				$loadeddata=json_decode(file_get_contents($gamefile),true);
-				foreach ($data as $key => $value) $loadeddata[$key]=$value;
-				$loadeddata["gameroot"]=$gameroot;
-				$loadeddata["issueid"]=$issueid;
-				echo fillTemplate(file_get_contents("templates/issue.html"),$loadeddata);
+				if (is_file($gamefile)) {
+					$loadeddata=json_decode(file_get_contents($gamefile),true);
+					foreach ($data as $key => $value) $loadeddata[$key]=$value;
+					$loadeddata["gameroot"]=$gameroot;
+					$loadeddata["issueid"]=$issueid;
+					echo fillTemplate(file_get_contents("templates/issue.html"),$loadeddata);
+				} else $notfound=true;
 			}
 			break;
 		}
