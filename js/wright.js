@@ -3137,6 +3137,23 @@ function Wright(gameId,mods) {
 				this.setZIndex(Math.floor(local.startingZ + this.y + this.height + local.add));
 			}
 		},
+		Datasette: function(data, local) {
+			if (gamerunning && (!data.when || get(this, this, data.when)) && (local.running === undefined)) {
+				var tapedata="",prompttext="",reader=new RegExp("\\["+curtape.name+":([^\\]]*)\\]");
+				local.running=1;
+				if (data.firstExecute) execute(this, this, data.firstExecute);				
+				if (data.data!==undefined) tapedata=get(this, this, data.data);
+				if (data.prompt!==undefined) prompttext=get(this, this, data.prompt);
+				if (tapedata) tapedata="["+curtape.name+":"+tapedata+"]";
+				tapedata=prompt(prompttext,tapedata);
+				if (tapedata) {
+					tapedata=tapedata.match(reader);
+					if (tapedata&&(tapedata.length==2)) tapedata=tapedata[1];
+					else tapedata="";
+				} else tapedata="";
+				if (data.execute) execute(this, tapedata, data.execute);
+			}
+		},
 		Execute: function(data) {
 			if (gamerunning) execute(this, this, data);
 		},
@@ -3250,7 +3267,7 @@ function Wright(gameId,mods) {
 		},
 		GameManager: function() {
 			updateHud();
-			if (scene && camera && camera.follow) {
+			if (scene && camera && camera.follow && !camera.follow.removed) {
 				var nextcamera, gx, gy, dx, dy,sx=0,sy=0, rect = camera.follow.getRects ? camera.follow.getRects().rect : camera.follow;
 				if (camera.cameras) {
 					if (camera.currentCamera && !Box.isColliding(rect, camera.currentCamera,0,0,0,1)) {
