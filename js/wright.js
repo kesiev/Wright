@@ -3942,15 +3942,24 @@ function Wright(gameId,mods) {
 					case "search":{
 						sub=0;
 						p=get(from, tox, struct[++id]);
-						for (var a in p) p[a]=get(from,tox,p[a]);
-						for (var a in ret) {
-							sub=1;
-							for (var b in p)
-								if (ret[a][b]!==p[b]) {
-									sub=0;
+						if (typeof p == "object") {
+							for (var a in p) p[a]=get(from,tox,p[a]);
+							for (var a in ret) {
+								sub=1;
+								for (var b in p)
+									if (ret[a][b]!==p[b]) {
+										sub=0;
+										break;
+									}
+								if (sub) break;
+							}
+						} else {
+							sub=0;
+							for (var a in ret)
+								if (ret[a]==p) {
+									sub=1;
 									break;
 								}
-							if (sub) break;
 						}
 						if (sub) ret=ret[a];
 						else ret=0;
