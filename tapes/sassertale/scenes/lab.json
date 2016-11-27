@@ -1,0 +1,1034 @@
+{
+  "cutscenes":{
+    "LOOKbottle":[
+      {
+        "when":{ "_":[ "variable", "player", "flags", "labliq" ] },
+        "subsequence":[
+          { "set":{ "andFollow":1, "face":"bottle", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+          {
+            "when":{ "_":[ "this", "arrived" ] },
+            "subsequence":[
+              { "set":{ "lines":[ "Interesting bottle with a purple liquid..." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+              { "set":{ "andSkipUpdate":1, "progressFlag":"labliq", "setTo":2 }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+              { "set":{ "addItem":"bottle", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+              { "set":{ "lines":[ "Check." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } }
+            ]
+          }
+        ]
+      },
+      {
+        "when":{ "_":[ "variable", "player", "flags", "labliq", "not" ] },
+        "set":{ "andComment":[ "A bottle with some strange liquid." ], "andFollow":1, "walkTo":"bottle", "who":"main" },
+        "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+      }
+    ],
+    "LOOKcalendar":[
+      {
+        "when":{ "_":[ "variable", "player", "flags", "labcal", "isGreaterEqualThan", 5 ] },
+        "set":{ "andComment":[ "Today is clearly the 3rd. Justice is served." ], "andFollow":1, "walkTo":"calendar", "who":"main" },
+        "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+      },
+      {
+        "when":{ "_":[ "variable", "player", "flags", "labcal", "isEqualTo", 2 ] },
+        "subsequence":[
+          { "set":{ "andFollow":1, "face":"calendar", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+          {
+            "when":{ "_":[ "this", "arrived" ] },
+            "subsequence":[
+              {
+                "set":{ "lines":[ "Outrageous! This calendar is lying to everyone!", "It's not the 31th...", "LIE!" ], "who":"main" },
+                "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+              },
+              { "set":{ "andSkipUpdate":1, "progressFlag":"labcal", "setTo":3 }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+              { "set":{ "addItem":"day31", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+              { "set":{ "lines":[ "It's not the 1st...", "LIE! LIE!" ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+              { "set":{ "andSkipUpdate":1, "progressFlag":"labcal", "setTo":4 }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+              { "set":{ "addItem":"day1", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+              { "set":{ "lines":[ "And it's not the 2nd...", "LIE! LIE! LIE!" ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+              { "set":{ "andSkipUpdate":1, "progressFlag":"labcal", "setTo":5 }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+              { "set":{ "addItem":"day2", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+              { "set":{ "lines":[ "Sun justice is served." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } }
+            ]
+          }
+        ]
+      },
+      {
+        "when":{ "_":[ "variable", "player", "flags", "labcal", "isEqualTo", 1 ] },
+        "set":{ "andComment":[ "A quite vague but effective calendar." ], "andFollow":1, "walkTo":"calendar", "who":"main" },
+        "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+      },
+      {
+        "when":{ "_":[ "variable", "player", "flags", "labcal", "not" ] },
+        "set":{
+          "andComment":[ "What's clear is that today is the 31th.", "What's not is the year and the month.", "That's truly innovative." ],
+          "andFollow":1,
+          "walkTo":"calendar",
+          "who":"main"
+        },
+        "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+      }
+    ],
+    "LOOKcar":[
+      { "set":{ "andFollow":1, "walkTo":"car", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+      {
+        "when":{ "_":[ "this", "arrived" ] },
+        "subsequence":[
+          { "set":{ "with":"colin", "andFaceBack":1, "lines":[ "Is this my machine, Colin?" ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+          {
+            "set":{
+              "with":"main",
+              "andFaceBack":1,
+              "lines":[ "That's a car, not a machine...", "...despite the difference is uncanny.", "Moreover that's a toy car. You can't fit in." ],
+              "who":"colin"
+            },
+            "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+          },
+          {
+            "set":{ "with":"colin", "andFaceBack":1, "lines":[ "Isn't this bigger on the inside?" ], "who":"main" },
+            "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+          }
+        ]
+      }
+    ],
+    "LOOKfolder":[
+      {
+        "when":{ "_":[ "variable", "player", "flags", "labfld", "isEqualTo", 1 ] },
+        "subsequence":[
+          { "set":{ "andFollow":1, "face":"folder", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+          {
+            "when":{ "_":[ "this", "arrived" ] },
+            "subsequence":[
+              { "set":{ "andSkipUpdate":1, "progressFlag":"labfld", "setTo":2 }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+              { "set":{ "lines":[ "The cover says 'important'." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+              { "wait":25 },
+              { "set":{ "addItem":"folder", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+              { "set":{ "lines":[ "Better keeping it safe." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } }
+            ]
+          }
+        ]
+      },
+      {
+        "when":{ "_":[ "variable", "player", "flags", "labfld", "not" ] },
+        "set":{
+          "andComment":[ "A folder full of important documents.", "Well. At least this is what the stamp over it says." ],
+          "andFollow":1,
+          "walkTo":"folder",
+          "who":"main"
+        },
+        "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+      }
+    ],
+    "LOOKlibrary":[
+      {
+        "when":{ "_":[ "variable", "player", "flags", "labkbd", "isGreaterEqualThan", 3 ] },
+        "set":{
+          "andComment":[ "A memorable place.", "Here I learned the limits of Vatican keyboards.", "No negative numbers. So poetic." ],
+          "andFollow":1,
+          "walkTo":"library",
+          "who":"main"
+        },
+        "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+      },
+      {
+        "when":{ "_":[ "variable", "player", "flags", "labkbd", "isEqualTo", 2 ] },
+        "subsequence":[
+          { "set":{ "andFollow":1, "face":"library", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+          {
+            "when":{ "_":[ "this", "arrived" ] },
+            "subsequence":[
+              { "set":{ "andSkipUpdate":1, "progressFlag":"labkbd", "setTo":3 }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+              { "set":{ "lines":[ "There are a lot of weird manuals here. Like..." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+              { "as":{ "_":[ "objectTyped", "main" ] }, "set":{ "animation":"pick", "animationFrames":0, "state":"animated" } },
+              { "wait":25 },
+              { "as":{ "_":[ "objectTyped", "main" ] }, "set":{ "state":"default" } },
+              {
+                "set":{
+                  "lines":[
+                    "...this 'Vatican keyboards for dummies' one.",
+                    "...",
+                    "It looks like it can't enter negative numbers...",
+                    "Since...",
+                    "'Nothing interesting happened before year zero'",
+                    "Quite limited.",
+                    "How can I input '13 million years ago' in that machine?"
+                  ],
+                  "who":"main"
+                },
+                "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+              },
+              { "as":{ "_":[ "objectTyped", "main" ] }, "set":{ "animation":"pick", "animationFrames":0, "state":"animated" } },
+              { "wait":25 },
+              { "as":{ "_":[ "objectTyped", "main" ] }, "set":{ "state":"default" } }
+            ]
+          }
+        ]
+      },
+      {
+        "when":{ "_":[ "variable", "player", "flags", "labkbd", "isEqualTo", 1 ] },
+        "set":{ "andComment":[ "Manuals. Manuals. Manuals." ], "andFollow":1, "walkTo":"library", "who":"main" },
+        "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+      },
+      {
+        "when":{ "_":[ "variable", "player", "flags", "labkbd", "not" ] },
+        "set":{ "andComment":[ "A lot of books about human history.", "...", "And a sentai movie DVD." ], "andFollow":1, "walkTo":"library", "who":"main" },
+        "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+      }
+    ],
+    "LOOKphonebox":[
+      { "set":{ "andFollow":1, "walkTo":"phonebox", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+      {
+        "when":{ "_":[ "this", "arrived" ] },
+        "subsequence":[
+          { "set":{ "with":"colin", "andFaceBack":1, "lines":[ "Is this my machine, Colin?" ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+          {
+            "set":{ "with":"main", "andFaceBack":1, "lines":[ "Yes.", "That's the machine you COULD PROBABLY use." ], "who":"colin" },
+            "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+          },
+          { "set":{ "with":"colin", "andFaceBack":1, "lines":[ "Why all these caps?" ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+          {
+            "set":{
+              "with":"main",
+              "andFaceBack":1,
+              "lines":[ "You can't use it because its owner is pretty possessive...", "...and we need 1.21 jigowatts to make it work again." ],
+              "who":"colin"
+            },
+            "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+          },
+          {
+            "set":{ "with":"colin", "andFaceBack":1, "lines":[ "What the hell is a jigowatt, Colin?" ], "who":"main" },
+            "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+          }
+        ]
+      }
+    ],
+    "LOOKplate":[
+      {
+        "when":{ "_":[ "variable", "player", "flags", "labpla" ] },
+        "subsequence":[
+          { "set":{ "andFollow":1, "face":"plate", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+          {
+            "when":{ "_":[ "this", "arrived" ] },
+            "subsequence":[
+              { "set":{ "lines":[ "Plate with holes and cups." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+              { "set":{ "andSkipUpdate":1, "progressFlag":"labpla", "setTo":2 }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+              { "set":{ "addItem":"plate", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+              { "set":{ "lines":[ "Check." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } }
+            ]
+          }
+        ]
+      },
+      {
+        "when":{ "_":[ "variable", "player", "flags", "labpla", "not" ] },
+        "subsequence":[
+          { "set":{ "andFollow":1, "walkTo":"plate", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+          {
+            "when":{ "_":[ "this", "arrived" ] },
+            "subsequence":[
+              {
+                "set":{ "with":"colin", "andFaceBack":1, "lines":[ "Why is there a baking-pan here?" ], "who":"main" },
+                "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+              },
+              { "set":{ "with":"main", "andFaceBack":1, "lines":[ "I used it for my research." ], "who":"colin" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+              {
+                "set":{ "with":"colin", "andFaceBack":1, "lines":[ "Are you in chemistry now, Colin?" ], "who":"main" },
+                "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+              },
+              {
+                "set":{
+                  "with":"main",
+                  "andFaceBack":1,
+                  "lines":[ "...", "No...", "I... just cooked some muffins and...", "...you know, I ate them while studying." ],
+                  "who":"colin"
+                },
+                "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+              },
+              { "set":{ "with":"colin", "andFaceBack":1, "lines":[ "Ow. Okay. Okay. I got it." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } }
+            ]
+          }
+        ]
+      }
+    ],
+    "LOOKrockinghorse":[
+      { "set":{ "andFollow":1, "walkTo":"rockinghorse", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+      {
+        "when":{ "_":[ "this", "arrived" ] },
+        "subsequence":[
+          {
+            "when":{ "_":[ "variable", "player", "flags", "labkbd", "isGreaterEqualThan", 2 ] },
+            "set":{ "lines":[ "A rocking horse with a 'Vatican keyboard' on it.", "Obviously." ], "who":"main" },
+            "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+          },
+          {
+            "when":{ "_":[ "variable", "player", "flags", "labkbd", "isEqualTo", 1 ] },
+            "subsequence":[
+              { "set":{ "andSkipUpdate":1, "progressFlag":"labkbd", "setTo":2 }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+              {
+                "set":{
+                  "lines":[
+                    "This rocking horse has a strange keyboard on it.",
+                    "It looks just tied with some plastic handcuffs... anyway...",
+                    "A label says 'Vatican Keyboard'.",
+                    "...",
+                    "What is a 'Vatican keyboard'?"
+                  ],
+                  "who":"main"
+                },
+                "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+              }
+            ]
+          },
+          {
+            "when":{ "_":[ "variable", "player", "flags", "labkbd", "not" ] },
+            "set":{
+              "lines":[ "A toy horse tied with plastic handcuffs.", "You can get into the saddle and rock...", "...but all its wild and animal power is now harnessed." ],
+              "who":"main"
+            },
+            "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+          },
+          {
+            "when":{ "_":[ "variable", "player", "flags", "labkbd", "isEqualTo", 4 ] },
+            "set":{ "lines":[ "Anyway I managed to setup the right coordinates." ], "who":"main" },
+            "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+          },
+          {
+            "when":{ "_":[ "variable", "player", "flags", "labfue", "isEqualTo", 2 ] },
+            "set":{ "lines":[ "I filled this thing fuel tank so energy shouldn't be a problem." ], "who":"main" },
+            "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+          },
+          {
+            "when":{ "_":[ "variable", "player", "flags", "labfue", "isEqualTo", 2, "and", { "_":[ "variable", "player", "flags", "labkbd", "isEqualTo", 4 ] } ] },
+            "subsequence":[
+              {
+                "set":{
+                  "with":"main",
+                  "andFaceBack":1,
+                  "lines":[ "The time machine is completed!", "You have just to get into the saddle and say a voice command." ],
+                  "who":"colin"
+                },
+                "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+              },
+              {
+                "set":{ "lines":[ "Oh. Is this voice controlled?", "What a great piece of technology!", "So..." ], "who":"main" },
+                "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+              },
+              { "set":{ "andFollow":1, "face":"rockinghorse", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+              { "as":{ "_":[ "objectTyped", "main" ] }, "set":{ "animation":"pick", "animationFrames":0, "state":"animated" } },
+              { "wait":25 },
+              { "as":{ "_":[ "objectTyped", "rockinghorse" ] }, "remove":1 },
+              { "as":{ "_":[ "objectTyped", "main" ] }, "set":{ "x":377, "y":50, "flipX":0, "animation":"idleHorse", "idleAnimation":"idleHorse" } },
+              { "set":{ "lines":[ "Three...", "Two...", "One...", "START!" ], "who":"main", "withFrames":[ 8, 10 ] }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+              { "wait":25 },
+              { "set":{ "lines":[ "GO!" ], "who":"main", "withFrames":[ 8, 10 ] }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+              { "wait":25 },
+              { "set":{ "lines":[ "TIME TRAVEL ENABLED!" ], "who":"main", "withFrames":[ 8, 10 ] }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+              { "wait":25 },
+              { "set":{ "lines":[ "...Colin?" ], "who":"main", "withFrames":[ 8, 10 ] }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+              { "set":{ "lines":[ "Mushroom." ], "who":"colin" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+              { "set":{ "lines":[ "What?" ], "who":"main", "withFrames":[ 8, 10 ] }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+              { "as":{ "_":[ "objectTyped", "main" ] }, "set":{ "visible":0 } },
+              { "set":{ "lines":[ "*Pop!*" ], "who":"main", "withFrames":[ 8, 10 ] }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+              { "wait":25 },
+              {
+                "set":{
+                  "lines":[ "He's gone. Nice work, Colin.", "Well...", "I hope he will find the stolen time machine...", "And fix the mess the theft did in time...", "..." ],
+                  "who":"colin"
+                },
+                "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+              },
+              { "as":{ "_":[ "objectTyped", "colin" ] }, "set":{ "flipX":{ "_":[ "this", "flipX", "not" ] } }, "wait":25, "loop":1, "cycles":4 },
+              { "set":{ "lines":[ "Coffee break!" ], "who":"colin" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+              { "set":{ "gotoScene":"past" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } }
+            ]
+          }
+        ]
+      }
+    ],
+    "LOOKtable":{
+      "set":{ "andComment":[ "Surprisingly enough, it's just an ordinary table." ], "andFollow":1, "walkTo":"table", "who":"main" },
+      "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+    },
+    "LOOKtablestuff":{
+      "set":{
+        "andComment":[ "Few muffins, crumbles and research papers.", "Someone worked hard these days." ],
+        "andFollow":1,
+        "walkTo":"tablestuff",
+        "who":"main"
+      },
+      "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+    },
+    "LOOKwindow":[
+      { "set":{ "andFollow":1, "walkTo":"window", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+      {
+        "when":{ "_":[ "this", "arrived" ] },
+        "execute":[
+          {
+            "when":{ "_":[ "variable", "player", "flags", "labcal", "isGreaterEqualThan", 2 ] },
+            "subsequence":{ "set":{ "lines":[ "The sun never lies. Today is the 3rd of the month." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } }
+          },
+          {
+            "when":{ "_":[ "variable", "player", "flags", "labcal", "isEqualTo", 1 ] },
+            "subsequence":[
+              { "set":{ "andSkipUpdate":1, "progressFlag":"labcal", "setTo":2 }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+              {
+                "set":{
+                  "lines":[ "It's been a long time since I didn't try to do it again.", "Let's see if I'm rusty or not. Well.", "The brightness of the light..." ],
+                  "who":"main"
+                },
+                "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+              },
+              { "as":{ "_":[ "objectTyped", "main" ] }, "set":{ "flipX":{ "_":[ "this", "flipX", "not" ] } }, "wait":25 },
+              { "set":{ "lines":[ "The position of the sun in the sky..." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+              { "as":{ "_":[ "objectTyped", "main" ] }, "set":{ "flipX":{ "_":[ "this", "flipX", "not" ] } }, "wait":25 },
+              { "set":{ "lines":[ "The length of the shadows..." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+              { "as":{ "_":[ "objectTyped", "main" ] }, "set":{ "flipX":{ "_":[ "this", "flipX", "not" ] } }, "wait":25, "loop":1, "cycles":4 },
+              { "set":{ "lines":[ "Today is the 3rd of the month. Bingo." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } }
+            ]
+          },
+          {
+            "when":{ "_":[ "variable", "player", "flags", "labcal", "not" ] },
+            "subsequence":[
+              {
+                "set":{
+                  "lines":[
+                    "Sun is shining, the weather is sweet.",
+                    "Make you want to move your dancing feet.",
+                    "To the rescue, here I am.",
+                    "Want you to know ya, where I stand."
+                  ],
+                  "who":"main"
+                },
+                "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+              },
+              { "set":{ "with":"main", "andFaceBack":1, "lines":[ "Pretty catchy, Sassertal." ], "who":"colin" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+              { "set":{ "with":"colin", "andFaceBack":1, "lines":[ "Thank you, Colin." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } }
+            ]
+          }
+        ]
+      }
+    ],
+    "TALKcolin":[
+      { "set":{ "andFaceBack":1, "andFollow":1, "face":"colin", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+      {
+        "when":{ "_":[ "this", "arrived" ] },
+        "execute":{
+          "when":{ "_":[ "variable", "player", "flags", "labcol" ] },
+          "elseExecute":{
+            "subsequence":[
+              {
+                "set":{ "lines":[ "Cough. Cough. Hello, Mr. Sassertal.", "I've got good news and bad news. Which one do you want to hear?" ], "who":"colin" },
+                "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+              },
+              {
+                "set":{ "choices":[ "The good one.", "good", "The bad one.", "bad", "Both simultaneously.", "both" ] },
+                "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+              },
+              {
+                "when":{ "_":[ "this", "choice", "isEqualTo", "good" ] },
+                "subsequence":{
+                  "set":{
+                    "lines":[ "Good one.", "My muffins didn't sink this time.", "Bad one.", "Your time machine isn't ready as I promised.", "Sorry, Sas." ],
+                    "who":"colin"
+                  },
+                  "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+                }
+              },
+              {
+                "when":{ "_":[ "this", "choice", "isEqualTo", "bad" ] },
+                "subsequence":{
+                  "set":{
+                    "lines":[ "Bad one.", "Your time machine isn't ready as I promised, but...", "Good one.", "I purchased the striped tie I wear for you too." ],
+                    "who":"colin"
+                  },
+                  "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+                }
+              },
+              {
+                "when":{ "_":[ "this", "choice", "isEqualTo", "both" ] },
+                "subsequence":{
+                  "set":{ "lines":[ "...", "TI IF MF EE ML AG CO HO ID NT EO BD RA OY-KEN!", "Happy?" ], "who":"colin" },
+                  "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+                }
+              },
+              {
+                "set":{
+                  "lines":[
+                    "Thank you for the report, Colin.",
+                    "But I need to take photos of the Miocene epoch.",
+                    "I have to use them for my lecture tomorrow.",
+                    "I really need your time machine.",
+                    "Is there something I can do?"
+                  ],
+                  "who":"main"
+                },
+                "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+              },
+              {
+                "set":{
+                  "lines":[
+                    "Probably I seemed negative but that's a pretty easy problem.",
+                    "The time machine is quite unstable...",
+                    "Some parts are not working as designed...",
+                    "I consumed all of the fuel units for testing...",
+                    "I can't remember the precise date of the only supported jump..."
+                  ],
+                  "who":"colin"
+                },
+                "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+              },
+              { "set":{ "lines":[ "..." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+              {
+                "set":{ "lines":[ "...but the rest is perfect.", "If you can help me with this mess you'll have your photos in no time." ], "who":"colin" },
+                "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+              },
+              { "set":{ "lines":[ "I don't think I've any other option.", "I'll fix it for you." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+              { "set":{ "lines":[ "I'll try to help you as much as I can." ], "who":"colin" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+              { "set":{ "andSkipUpdate":1, "progressFlag":"labcol", "setTo":1 }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } }
+            ]
+          },
+          "subsequence":[
+            { "set":{ "with":"main", "andFaceBack":1, "lines":[ "How's going, Sassertal?" ], "who":"colin" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+            { "set":{ "with":"colin", "andFaceBack":1, "lines":[ "I was wondering..." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+            {
+              "set":{
+                "choices":[
+                  "What is a fuel unit?",
+                  "fuel",
+                  "Why is there only a specific time?",
+                  "time",
+                  "Which part is not working as designed?",
+                  "key",
+                  "Never mind.",
+                  "done"
+                ]
+              },
+              "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+            },
+            {
+              "when":{ "_":[ "this", "choice", "isEqualTo", "fuel" ] },
+              "subsequence":[
+                { "set":{ "andSkipUpdate":1, "progressFlag":"labfue", "setTo":1 }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+                { "set":{ "andSkipUpdate":1, "progressFlag":"labpla", "setTo":1 }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+                { "set":{ "andSkipUpdate":1, "progressFlag":"labliq", "setTo":1 }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+                {
+                  "set":{
+                    "with":"main",
+                    "andFaceBack":1,
+                    "lines":[ "The time machine works with mushroom-shaped units...", "...made with a particular solidified liquid." ],
+                    "who":"colin"
+                  },
+                  "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+                },
+                { "set":{ "with":"colin", "andFaceBack":1, "lines":[ "Why mushroom-shaped?" ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+                {
+                  "set":{ "with":"main", "andFaceBack":1, "lines":[ "It's a funny shape. I liked it." ], "who":"colin" },
+                  "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+                }
+              ]
+            },
+            {
+              "when":{ "_":[ "this", "choice", "isEqualTo", "time" ] },
+              "subsequence":[
+                { "set":{ "andSkipUpdate":1, "progressFlag":"labcal", "setTo":1 }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+                { "set":{ "andSkipUpdate":1, "progressFlag":"labkbd", "setTo":1 }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+                { "set":{ "andSkipUpdate":1, "progressFlag":"labfld", "setTo":1 }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+                {
+                  "set":{
+                    "with":"main",
+                    "andFaceBack":1,
+                    "lines":[
+                      "Time is mushroom-shaped and my machine can jump...",
+                      "...only on the most curved part of this mushroom.",
+                      "That's the top, so we must know it's exact year."
+                    ],
+                    "who":"colin"
+                  },
+                  "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+                },
+                { "set":{ "with":"colin", "andFaceBack":1, "lines":[ "Why mushroom-shaped?" ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+                {
+                  "set":{ "with":"main", "andFaceBack":1, "lines":[ "It's a funny shape. I liked it." ], "who":"colin" },
+                  "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+                }
+              ]
+            },
+            {
+              "when":{ "_":[ "this", "choice", "isEqualTo", "key" ] },
+              "subsequence":[
+                { "set":{ "andSkipUpdate":1, "progressFlag":"labkey", "setTo":1 }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+                {
+                  "set":{ "with":"main", "andFaceBack":1, "lines":[ "The time machine keyboard is..." ], "who":"colin" },
+                  "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+                },
+                { "set":{ "with":"colin", "andFaceBack":1, "lines":[ "Why mushroom-shaped?" ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+                {
+                  "set":{
+                    "with":"main",
+                    "andFaceBack":1,
+                    "lines":[
+                      "It's not mushroom-shaped. But it's a good idea.",
+                      "Anyway, I used a particular keyboard I found around.",
+                      "It was built in a little state I can't remember the name.",
+                      "The manual should be around somewhere."
+                    ],
+                    "who":"colin"
+                  },
+                  "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+                }
+              ]
+            },
+            { "when":{ "_":[ "this", "choice", "isEqualTo", "done", "not" ] }, "loopTo":2 },
+            { "set":{ "lines":[ "Good luck!" ], "who":"colin" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } }
+          ]
+        }
+      }
+    ],
+    "USEbottleWITHplate":{ "subsequence":{ "_":[ "scene", "cutscenes", "USEplateWITHbottle" ] } },
+    "USEday1WITHrockinghorse":{
+      "when":{ "_":[ "variable", "player", "flags", "labkbd", "isEqualTo", 4 ] },
+      "set":{ "andComment":[ "The number one trick worked. Why not trying another one?" ], "andFollow":1, "walkTo":"rockinghorse", "who":"main" },
+      "elseExecute":{
+        "subsequence":[
+          { "set":{ "andFollow":1, "face":"rockinghorse", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+          {
+            "when":{ "_":[ "this", "arrived" ] },
+            "subsequence":[
+              { "set":{ "lines":[ "Number one is for winners." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+              { "subsequence":{ "_":[ "scene", "cutscenes", "_removenumber" ] } },
+              { "set":{ "andSkipUpdate":1, "setFlag":"labstk", "setTo":1 }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+              { "set":{ "removeItem":"day1", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+              { "set":{ "lines":[ "Gold medal." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } }
+            ]
+          }
+        ]
+      },
+      "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+    },
+    "USEday2WITHrockinghorse":{
+      "when":{ "_":[ "variable", "player", "flags", "labkbd", "isEqualTo", 4 ] },
+      "set":{ "andComment":[ "The number one trick worked. Why not trying another one?" ], "andFollow":1, "walkTo":"rockinghorse", "who":"main" },
+      "elseExecute":{
+        "subsequence":[
+          { "set":{ "andFollow":1, "face":"rockinghorse", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+          {
+            "when":{ "_":[ "this", "arrived" ] },
+            "subsequence":[
+              { "set":{ "andFollow":1, "face":"rockinghorse", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+              {
+                "when":{ "_":[ "this", "arrived" ] },
+                "subsequence":[
+                  { "set":{ "lines":[ "Two is better than one." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+                  { "subsequence":{ "_":[ "scene", "cutscenes", "_removenumber" ] } },
+                  { "set":{ "andSkipUpdate":1, "setFlag":"labstk", "setTo":2 }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+                  { "set":{ "removeItem":"day2", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+                  { "set":{ "lines":[ "Maxigood." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+    },
+    "USEday31WITHrockinghorse":{
+      "when":{ "_":[ "variable", "player", "flags", "labkbd", "isEqualTo", 4 ] },
+      "set":{ "andComment":[ "The number one trick worked. Why not trying another one?" ], "andFollow":1, "walkTo":"rockinghorse", "who":"main" },
+      "elseExecute":{
+        "subsequence":[
+          { "set":{ "andFollow":1, "face":"rockinghorse", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+          {
+            "when":{ "_":[ "this", "arrived" ] },
+            "subsequence":[
+              { "set":{ "andFollow":1, "face":"rockinghorse", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+              {
+                "when":{ "_":[ "this", "arrived" ] },
+                "subsequence":[
+                  { "set":{ "lines":[ "31. What a number." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+                  { "subsequence":{ "_":[ "scene", "cutscenes", "_removenumber" ] } },
+                  { "set":{ "andSkipUpdate":1, "setFlag":"labstk", "setTo":31 }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+                  { "set":{ "removeItem":"day31", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+                  { "set":{ "lines":[ "Et voila'." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+    },
+    "USEfilledplateWITHwindow":[
+      { "set":{ "andFollow":1, "walkTo":"window", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+      {
+        "when":{ "_":[ "this", "arrived" ] },
+        "subsequence":[
+          { "set":{ "lines":[ "Mumble. Mumble." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+          { "set":{ "andFollow":1, "walkTo":"calendar", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+          { "set":{ "lines":[ "Mumble. Mumble." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+          { "set":{ "andFollow":1, "face":"window", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+          {
+            "set":{ "lines":[ "Experiment.", "Which season is it today?", "Let's put this plate outside." ], "who":"main" },
+            "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+          },
+          { "set":{ "removeItem":"filledplate", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+          { "set":{ "lines":[ "Let's wait a little..." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+          { "wait":25 },
+          { "set":{ "lines":[ "And..." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+          { "set":{ "addItem":"muffins", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+          {
+            "set":{ "lines":[ "We've purple coloured muffins.", "That means that is hot outside...", "...and today is summer." ], "who":"main" },
+            "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+          },
+          { "set":{ "with":"main", "andFaceBack":1, "lines":[ "Impressive science." ], "who":"colin" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } }
+        ]
+      }
+    ],
+    "USEfolderWITHcolin":[
+      { "set":{ "andFaceBack":1, "andFollow":1, "face":"colin", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+      {
+        "when":{ "_":[ "this", "arrived" ] },
+        "subsequence":[
+          {
+            "set":{ "with":"colin", "andFaceBack":1, "lines":[ "Dear Colin. I found these important papers...", "Are these yours?" ], "who":"main" },
+            "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+          },
+          { "set":{ "removeItem":"folder", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+          { "set":{ "with":"main", "andFaceBack":1, "lines":[ "..." ], "who":"colin" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+          { "wait":25 },
+          {
+            "set":{ "with":"main", "andFaceBack":1, "lines":[ "Yeah. These are my studies about the shape of time." ], "who":"colin" },
+            "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+          },
+          { "set":{ "with":"colin", "andFaceBack":1, "lines":[ "Mushroom-shaped." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+          {
+            "set":{ "with":"main", "andFaceBack":1, "lines":[ "Right. Right.", "Well. This page is quite important for using the time machine." ], "who":"colin" },
+            "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+          },
+          { "set":{ "addItem":"notes", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+          {
+            "set":{
+              "with":"main",
+              "andFaceBack":1,
+              "lines":[ "There are the right coordinates for the top of the time.", "Which is your destination." ],
+              "who":"colin"
+            },
+            "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+          },
+          { "set":{ "with":"colin", "andFaceBack":1, "lines":[ "Thank you!" ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+          { "set":{ "with":"main", "andFaceBack":1, "lines":[ "De nada, amigo." ], "who":"colin" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } }
+        ]
+      }
+    ],
+    "USEmuffinsWITHrockinghorse":[
+      { "set":{ "andFollow":1, "face":"rockinghorse", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+      {
+        "when":{ "_":[ "this", "arrived" ] },
+        "subsequence":[
+          { "set":{ "lines":[ "I bet that these mushroom-shaped muffins are the right fuel." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+          { "set":{ "progressFlag":"labfue", "setTo":2 }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+          { "set":{ "removeItem":"muffins", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+          {
+            "set":{ "lines":[ "They fitted the plug in the mouth.", "Some lights around the keyboard are blinking, so it probably worked." ], "who":"main" },
+            "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+          }
+        ]
+      }
+    ],
+    "USEnotesWITHrockinghorse":[
+      { "set":{ "andFollow":1, "face":"rockinghorse", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+      {
+        "when":{ "_":[ "this", "arrived" ] },
+        "subsequence":{
+          "when":{ "_":[ "variable", "player", "flags", "labstk", "isEqualTo", 1, "and", { "_":[ "variable", "player", "flags", "labkbd", "isEqualTo", 3 ] } ] },
+          "elseExecute":{
+            "set":{ "lines":[ "I still can't configure the time machine.", "Negative numbers, stupid keyboard." ], "who":"main" },
+            "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+          },
+          "subsequence":[
+            { "set":{ "lines":[ "...", "Uhm.", "Come on..." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+            {
+              "set":{ "with":"colin", "andFaceBack":1, "lines":[ "Dear Colin, may I ask you a question?" ], "who":"main" },
+              "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+            },
+            { "set":{ "with":"main", "andFaceBack":1, "lines":[ "Surely, Mr. Sassertal." ], "who":"colin" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+            {
+              "set":{ "with":"colin", "andFaceBack":1, "lines":[ "Can you see the number one I sticked to the machine?" ], "who":"main" },
+              "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+            },
+            {
+              "set":{ "with":"main", "andFaceBack":1, "lines":[ "Yes. It's nice. I love the number one.", "It looks like a little mushroom." ], "who":"colin" },
+              "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+            },
+            {
+              "set":{
+                "with":"colin",
+                "andFaceBack":1,
+                "lines":[ "...", "Anyway. It also looks like a minus so...", "If I input the coordinates like this..." ],
+                "who":"main"
+              },
+              "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+            },
+            { "set":{ "andSkipUpdate":1, "progressFlag":"labkbd", "setTo":4 }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+            { "set":{ "with":"rockinghorse", "removeItem":"notes", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+            {
+              "set":{ "with":"colin", "andFaceBack":1, "lines":[ "...it looks like a negative number, right?" ], "who":"main" },
+              "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+            },
+            {
+              "set":{ "with":"main", "andFaceBack":1, "lines":[ "Yes. That looks like a negative number from here.", "It could work. Nice idea." ], "who":"colin" },
+              "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+            },
+            { "set":{ "with":"colin", "andFaceBack":1, "lines":[ "Honestly, Colin." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+            { "wait":75 },
+            { "set":{ "with":"colin", "andFaceBack":1, "lines":[ "Why could it work?" ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+            {
+              "set":{
+                "with":"main",
+                "andFaceBack":1,
+                "lines":[
+                  "Coordinates are read by a camera on the side...",
+                  "Processed by a complex algorithm of computer vision...",
+                  "...and then converted to a number.",
+                  "So the machine will read the minus.",
+                  "As I said, great idea Sas."
+                ],
+                "who":"colin"
+              },
+              "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+            },
+            { "set":{ "with":"colin", "andFaceBack":1, "lines":[ "...", "Okay." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } }
+          ]
+        }
+      }
+    ],
+    "USEplateWITHbottle":[
+      { "set":{ "lines":[ "Carefully. Carefully." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+      { "set":{ "andSkipUpdate":1, "removeItem":"plate" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+      { "set":{ "removeItem":"bottle" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+      { "set":{ "lines":[ "*glub* *glub* *glub*", "Done." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+      { "set":{ "addItem":"filledplate" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+      {
+        "set":{
+          "lines":[ "I understand that this game is missing audio...", "But why have I to play effects with the voice?", "Programmers are way too lazy these days." ],
+          "who":"main"
+        },
+        "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+      }
+    ],
+    "_removenumber":{
+      "when":{ "_":[ "variable", "player", "flags", "labstk" ] },
+      "subsequence":[
+        { "set":{ "lines":[ "Goodbye old number." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+        {
+          "when":{ "_":[ "variable", "player", "flags", "labstk", "isEqualTo", 1 ] },
+          "set":{ "addItem":"day1", "andSkipUpdate":1, "who":"main" },
+          "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+        },
+        {
+          "when":{ "_":[ "variable", "player", "flags", "labstk", "isEqualTo", 2 ] },
+          "set":{ "addItem":"day2", "andSkipUpdate":1, "who":"main" },
+          "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+        },
+        {
+          "when":{ "_":[ "variable", "player", "flags", "labstk", "isEqualTo", 31 ] },
+          "set":{ "addItem":"day31", "andSkipUpdate":1, "who":"main" },
+          "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+        },
+        { "set":{ "setFlag":"labstk", "setTo":0 }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+        { "set":{ "lines":[ "Aaaand..." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } }
+      ]
+    },
+    "intro":[
+      { "set":{ "cutsceneStartsOn":"colin" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+      { "wait":25 },
+      { "set":{ "lines":[ "Uhm..." ], "who":"colin" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+      { "as":{ "_":[ "objectTyped", "colin" ] }, "set":{ "flipX":{ "_":[ "this", "flipX", "not" ] } }, "wait":25, "loop":1, "cycles":4 },
+      {
+        "set":{
+          "lines":[ "Sassertal hasn't arrived yet.", "The machine isn't ready and I'm terribly late on the schedule.", "Probably I still have time for..." ],
+          "who":"colin"
+        },
+        "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+      },
+      { "object":{ "set":{ "_":[ "resource", "data", "characters", "main" ] }, "x":639, "y":50 } },
+      { "set":{ "andFollow":1, "andY":120, "walkToX":549, "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+      {
+        "set":{ "with":"colin", "andFaceBack":1, "lines":[ "Mister Colin!", "I apologise for being late.", "Well well.", "Where is the machine?" ], "who":"main" },
+        "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+      }
+    ]
+  },
+  "object":{
+    "type":"background",
+    "image":"lab", "width":640, "height":144,
+    "x":0, "y":0
+  },
+  "set":{
+    "_":[ "stencil", "defaultScene" ]
+  },
+  "updateScene":[
+    { "as":{ "_":[ "object", "sceneelement" ] }, "remove":1 },
+    {
+      "object":[
+        {
+          "type":"sceneelement",
+          "set":{ "_":[ "stencil", "sceneObject" ] },
+          "label":"Table",
+          "image":"objects", "tileX":0, "tileY":0, "width":120, "height":48,
+          "x":230, "y":82,
+          "cutscene":"LOOKtable",
+          "interaction":"Look at the table",
+          "oid":"table"
+        },
+        {
+          "type":"sceneelement",
+          "set":{ "_":[ "stencil", "sceneObjectOnTop" ] },
+          "label":"Stuff",
+          "image":"objects", "tileX":120, "tileY":0, "width":81, "height":17,
+          "x":260, "y":84,
+          "cutscene":"LOOKtablestuff",
+          "frontY":40,
+          "interaction":"Look at the stuff on table",
+          "oid":"tablestuff",
+          "onTopOf":"table"
+        },
+        {
+          "type":"sceneelement",
+          "set":{ "_":[ "stencil", "sceneObjectOnWall" ] },
+          "label":"Window",
+          "image":"objects", "tileX":201, "tileY":0, "width":76, "height":47,
+          "x":245, "y":7,
+          "cutscene":"LOOKwindow",
+          "frontY":30,
+          "interaction":"Look at the window",
+          "oid":"window"
+        },
+        {
+          "type":"sceneelement",
+          "set":{ "_":[ "stencil", "sceneObjectOnWall" ] },
+          "label":"Calendar",
+          "image":"objects", "tileX":169, "tileY":17, "width":29, "height":40,
+          "x":162, "y":12,
+          "execute":[
+            { "when":{ "_":[ "variable", "player", "flags", "labcal", "isEqualTo", 3 ] }, "set":{ "tileX":263, "tileY":95 } },
+            { "when":{ "_":[ "variable", "player", "flags", "labcal", "isEqualTo", 4 ] }, "set":{ "tileX":292, "tileY":95 } },
+            { "when":{ "_":[ "variable", "player", "flags", "labcal", "isGreaterEqualThan", 5 ] }, "set":{ "tileX":321, "tileY":95 } }
+          ],
+          "cutscene":"LOOKcalendar",
+          "frontY":30,
+          "interaction":"Look at the calendar",
+          "oid":"calendar"
+        },
+        {
+          "type":"sceneelement",
+          "set":{ "_":[ "stencil", "sceneObject" ] },
+          "label":"Phone Box",
+          "image":"objects", "tileX":277, "tileY":0, "width":55, "height":95,
+          "x":15, "y":30,
+          "cutscene":"LOOKphonebox",
+          "interaction":"Look at the phone box",
+          "oid":"phonebox"
+        },
+        {
+          "type":"sceneelement",
+          "set":{ "_":[ "stencil", "sceneObject" ] },
+          "label":"Rocking horse",
+          "image":"objects", "tileX":101, "tileY":48, "width":68, "height":54,
+          "x":384, "y":74,
+          "execute":[
+            { "when":{ "_":[ "variable", "player", "flags", "labstk", "isEqualTo", 31 ] }, "set":{ "tileX":332, "tileY":0 } },
+            { "when":{ "_":[ "variable", "player", "flags", "labstk", "isEqualTo", 1 ] }, "set":{ "tileX":400, "tileY":0 } },
+            { "when":{ "_":[ "variable", "player", "flags", "labstk", "isEqualTo", 2 ] }, "set":{ "tileX":468, "tileY":0 } },
+            { "when":{ "_":[ "variable", "player", "flags", "labkbd", "isEqualTo", 4 ] }, "set":{ "tileX":350, "tileY":54 } }
+          ],
+          "cutscene":"LOOKrockinghorse",
+          "interaction":"Look at the rocking horse",
+          "oid":"rockinghorse"
+        },
+        {
+          "type":"sceneelement",
+          "set":{ "_":[ "stencil", "sceneObject" ] },
+          "label":"Library",
+          "image":"objects", "tileX":0, "tileY":48, "width":101, "height":82,
+          "x":442, "y":3,
+          "cutscene":"LOOKlibrary",
+          "interaction":"Look at the library",
+          "oid":"library"
+        },
+        {
+          "type":"sceneelement",
+          "set":{ "_":[ "stencil", "sceneObject" ] },
+          "label":"Techno car",
+          "image":"objects", "tileX":169, "tileY":57, "width":94, "height":59,
+          "x":546, "y":92,
+          "cutscene":"LOOKcar",
+          "frontY":-24,
+          "interaction":"Look at the futuristic car",
+          "oid":"car"
+        },
+        {
+          "type":"sceneelement",
+          "set":{ "_":[ "resource", "data", "characters", "colin" ] },
+          "x":74, "y":20,
+          "cutscene":"TALKcolin",
+          "interaction":"Talk with Colin"
+        },
+        { "type":[ "sceneelement", "walkable" ], "width":640, "height":64, "x":0, "y":80 }
+      ]
+    },
+    {
+      "when":{ "_":[ "variable", "player", "flags", "labfld", "or", 0, "isLessEqualThan", 1 ] },
+      "object":{
+        "type":"sceneelement",
+        "set":{ "_":[ "stencil", "sceneObjectOnTop" ] },
+        "label":"Folder",
+        "image":"objects", "tileX":120, "tileY":17, "width":32, "height":19,
+        "x":316, "y":76,
+        "cutscene":"LOOKfolder",
+        "frontY":40,
+        "interaction":"Look at the folder",
+        "oid":"folder",
+        "onTopOf":"tablestuff"
+      }
+    },
+    {
+      "when":{ "_":[ "variable", "player", "flags", "labpla", "or", 0, "isLessEqualThan", 1 ] },
+      "object":{
+        "type":"sceneelement",
+        "set":{ "_":[ "stencil", "sceneObjectOnTop" ] },
+        "label":"Plate",
+        "image":"objects", "tileX":101, "tileY":102, "width":20, "height":14,
+        "x":236, "y":85,
+        "cutscene":"LOOKplate",
+        "frontY":40,
+        "interaction":"Look at the plate",
+        "oid":"plate",
+        "onTopOf":"tablestuff"
+      }
+    },
+    {
+      "when":{ "_":[ "variable", "player", "flags", "labliq", "or", 0, "isLessEqualThan", 1 ] },
+      "object":{
+        "type":"sceneelement",
+        "set":{ "_":[ "stencil", "sceneObject" ] },
+        "label":"Bottle",
+        "image":"objects", "tileX":152, "tileY":17, "width":16, "height":26,
+        "x":549, "y":65,
+        "cutscene":"LOOKbottle",
+        "interaction":"Look at the bottle",
+        "oid":"bottle"
+      }
+    },
+    {
+      "when":{ "_":[ "variable", "player", "flags", "labliq", "or", 0, "isLessEqualThan", 1 ] },
+      "object":{
+        "type":"sceneelement",
+        "set":{ "_":[ "stencil", "sceneObject" ] },
+        "label":"Bottle",
+        "image":"objects", "tileX":152, "tileY":17, "width":16, "height":26,
+        "x":549, "y":65,
+        "cutscene":"LOOKbottle",
+        "interaction":"Look at the bottle",
+        "oid":"bottle"
+      }
+    }
+  ]
+}

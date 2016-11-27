@@ -1,0 +1,1194 @@
+{
+  "cutscenes":{
+    "GOTOleftside":[
+      { "set":{ "andFollow":1, "andY":108, "walkToX":358, "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+      { "set":{ "andFollow":1, "andY":108, "walkToX":283, "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+      { "set":{ "setFlag":"passid", "setTo":0 }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } }
+    ],
+    "GOTOrightside":[
+      { "set":{ "andFollow":1, "andY":108, "walkToX":283, "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+      { "set":{ "andFollow":1, "andY":108, "walkToX":358, "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+      { "set":{ "setFlag":"passid", "setTo":1 }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } }
+    ],
+    "LOOKanvil":{
+      "when":{ "_":[ "variable", "player", "flags", "pasrck" ] },
+      "elseExecute":{
+        "set":{
+          "andComment":[
+            "This anvil tried to kill me but I was quicker than it.",
+            "The writing on the side says 'one hundred tons' so...",
+            "It probably weights enough for killing a person.",
+            "And enough for not being picked by me.",
+            "So, sorry. I'm not going to pick this weight up."
+          ],
+          "andFollow":1,
+          "walkTo":"anvil",
+          "who":"main"
+        },
+        "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+      },
+      "subsequence":[
+        { "set":{ "andFollow":1, "face":"anvil", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+        {
+          "when":{ "_":[ "this", "arrived" ] },
+          "subsequence":[
+            { "set":{ "with":"chicken", "lines":[ "Thank you for the metallic gift but..." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+            { "as":{ "_":[ "objectTyped", "main" ] }, "set":{ "animation":"pick", "animationFrames":0, "state":"animated" } },
+            { "wait":25 },
+            { "as":{ "_":[ "objectTyped", "main" ] }, "set":{ "state":"default" } },
+            { "set":{ "setFlag":"pasobj", "setTo":0 }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+            { "set":{ "with":"chicken", "lines":[ "Nope." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } }
+          ]
+        }
+      ]
+    },
+    "LOOKbranch":[
+      { "set":{ "andFollow":1, "walkTo":"branch", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+      {
+        "when":{ "_":[ "this", "arrived" ] },
+        "subsequence":[
+          { "set":{ "andSkipUpdate":1, "progressFlag":"pasbra", "setTo":1 }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+          {
+            "set":{
+              "lines":[
+                "A tree branch with a curious flat shape.",
+                "This tree is a... a... 'Tabula Arbor'.",
+                "It's called like this for his windsurf-like branches.",
+                "...",
+                "'Tabula Arbor' is a great name. I'll use it in my lecture tomorrow."
+              ],
+              "who":"main"
+            },
+            "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+          }
+        ]
+      }
+    ],
+    "LOOKbridge":[
+      { "set":{ "andFollow":1, "walkTo":"bridge", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+      {
+        "when":{ "_":[ "this", "arrived" ] },
+        "subsequence":[
+          { "set":{ "with":"bridge", "lines":[ "This plank can be useful." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+          {
+            "when":{ "_":[ "variable", "player", "flags", "pasbri", "isEqualTo", "plank1" ] },
+            "subsequence":[
+              { "set":{ "andSkipUpdate":1, "setFlag":"pasbri", "setTo":"" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+              { "set":{ "addItem":"plank1", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } }
+            ]
+          },
+          {
+            "when":{ "_":[ "variable", "player", "flags", "pasbri", "isEqualTo", "plank2" ] },
+            "subsequence":[
+              { "set":{ "andSkipUpdate":1, "setFlag":"pasbri", "setTo":"" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+              { "set":{ "addItem":"plank2", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } }
+            ]
+          },
+          { "set":{ "lines":[ "Mine." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } }
+        ]
+      }
+    ],
+    "LOOKcatapult":{
+      "set":{
+        "andComment":[ "I'm ready to go.", "There.", "Where no man has gone before.", "At least, 13 million years ago." ],
+        "andFollow":1,
+        "walkTo":"catapult",
+        "who":"main"
+      },
+      "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+    },
+    "LOOKchicken":{
+      "when":{ "_":[ "variable", "player", "flags", "pasrck" ] },
+      "elseExecute":{
+        "set":{
+          "andComment":[
+            "A rubber chicken with a pulley in the middle.",
+            "Some early communities of the Island of Monkeys...",
+            "...used it along cables as mean of transport or...",
+            "...as ingredient for mystical spells.",
+            "Anyway, it has no use nowadays, so I'll leave that where it is."
+          ],
+          "andFollow":1,
+          "walkTo":"chicken",
+          "who":"main"
+        },
+        "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+      },
+      "subsequence":[
+        { "set":{ "andFollow":1, "face":"chicken", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+        {
+          "when":{ "_":[ "this", "arrived" ] },
+          "subsequence":[
+            { "set":{ "with":"chicken", "lines":[ "Thank you for the geeky gift but..." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+            { "as":{ "_":[ "objectTyped", "main" ] }, "set":{ "animation":"pick", "animationFrames":0, "state":"animated" } },
+            { "wait":25 },
+            { "as":{ "_":[ "objectTyped", "main" ] }, "set":{ "state":"default" } },
+            { "set":{ "setFlag":"pasobj", "setTo":0 }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+            { "set":{ "with":"chicken", "lines":[ "Nope." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } }
+          ]
+        }
+      ]
+    },
+    "LOOKcliff":{
+      "set":{ "andComment":[ "A deep deep deep...", "...deep deep deep...", "...deep and deadly cliff." ], "andFollow":1, "walkTo":"cliff", "who":"main" },
+      "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+    },
+    "LOOKfloorstone":{
+      "when":{ "_":[ "variable", "player", "flags", "pasrck", "and", { "_":[ { "_":[ "variable", "player", "inventory" ] }, "search", "stone" ] } ] },
+      "elseExecute":{
+        "when":{ "_":[ { "_":[ "variable", "player", "inventory" ] }, "search", "stone" ] },
+        "set":{ "andComment":[ "Collecting stones is a pleasant hobby.", "But sadly it's not for me." ], "andFollow":1, "walkTo":"floorstone", "who":"main" },
+        "elseExecute":{
+          "subsequence":[
+            { "set":{ "andFollow":1, "face":"floorstone", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+            {
+              "when":{ "_":[ "this", "arrived" ] },
+              "subsequence":[
+                {
+                  "set":{
+                    "lines":[ "A stone my new friend Pietrolastricus sent to me.", "It doesn't happen so often that a Miocene guy send you a gift.", "I'll gladly pick it up." ],
+                    "who":"main"
+                  },
+                  "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+                },
+                { "set":{ "andSkipUpdate":1, "setFlag":"pasobj", "setTo":"" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+                { "set":{ "addItem":"stone", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } }
+              ]
+            }
+          ]
+        },
+        "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+      },
+      "subsequence":[
+        { "set":{ "andFollow":1, "face":"floorstone", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+        {
+          "when":{ "_":[ "this", "arrived" ] },
+          "subsequence":[
+            { "set":{ "with":"chicken", "lines":[ "Thank you for the monotonous gift but..." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+            { "as":{ "_":[ "objectTyped", "main" ] }, "set":{ "animation":"pick", "animationFrames":0, "state":"animated" } },
+            { "wait":25 },
+            { "as":{ "_":[ "objectTyped", "main" ] }, "set":{ "state":"default" } },
+            { "set":{ "setFlag":"pasobj", "setTo":0 }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+            { "set":{ "with":"chicken", "lines":[ "Nope." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } }
+          ]
+        }
+      ]
+    },
+    "LOOKhandcuffs":{
+      "when":{ "_":[ "variable", "player", "flags", "passid" ] },
+      "elseExecute":{
+        "set":{
+          "with":"handcuffs",
+          "lines":[
+            "I got it. I can fix the time machine.",
+            "I have just to look that pieces intensively from here...",
+            "...and try to rewind time with my mind...",
+            "*UNNGH!*",
+            "...",
+            "It's not working."
+          ],
+          "who":"main"
+        },
+        "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+      },
+      "subsequence":[
+        { "set":{ "andFollow":1, "face":"handcuffs", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+        {
+          "when":{ "_":[ "this", "arrived" ] },
+          "subsequence":[
+            {
+              "set":{ "with":"handcuffs", "lines":[ "I surely can repair the machine with these plastic handcuffs.", "I can do it. I can do it." ], "who":"main" },
+              "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+            },
+            { "set":{ "andSkipUpdate":1, "progressFlag":"pasmac", "setTo":2 }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+            { "set":{ "addItem":"handcuffs", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+            {
+              "set":{ "lines":[ "Now I have just to invent the time machine again.", "Pffft.", "I'll go back home in no time.", "...", "Yeah." ], "who":"main" },
+              "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+            }
+          ]
+        }
+      ]
+    },
+    "LOOKmachine":{
+      "when":{ "_":[ "variable", "player", "flags", "passid", "not" ] },
+      "set":{
+        "with":"machine",
+        "lines":[
+          "My only way out from this time is...",
+          "First.",
+          "On the other side of a deep cliff.",
+          "Second.",
+          "Stuck on a tree.",
+          "Is there any prize for two numbers?"
+        ],
+        "who":"main"
+      },
+      "elseExecute":{
+        "set":{
+          "andComment":[
+            "My time machine is stuck on that tree.",
+            "I need it for going back to my time.",
+            "I'll use it once my photos of the Miocene epoch are ready but...",
+            "Knowing that my ticket back is OK and I'll not die here...",
+            "Can make my day brighter."
+          ],
+          "andFollow":1,
+          "walkTo":"machine",
+          "who":"main"
+        },
+        "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+      },
+      "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+    },
+    "LOOKreadystone":{
+      "set":{
+        "andComment":[ "My plan is going along nicely.", "He. He. He.", "...", "Because...", "Do you know my plan, right?" ],
+        "andFollow":1,
+        "walkTo":"readystone",
+        "who":"main"
+      },
+      "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+    },
+    "LOOKspotno":{
+      "set":{
+        "andComment":[
+          "The X on the floor makes this spot very interesting.",
+          "If I had a showel, I'll surely dig for a treasure but...",
+          "Pirates didn't exist 13 million years ago, so I think that...",
+          "...this X is here by chance."
+        ],
+        "andFollow":1,
+        "walkTo":"spotno",
+        "who":"main"
+      },
+      "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+    },
+    "LOOKspotyes":{ "set":{ "andComment":[ "Mumble. Mumble." ], "andFollow":1, "walkTo":"spotyes", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+    "NOTotherside":{
+      "set":{
+        "andComment":[ "There is this deep and deadly cliff in the middle and...", "Since I don't want to die, I prefer to stay here, thanks." ],
+        "andFollow":1,
+        "walkTo":"nototherside",
+        "who":"main"
+      },
+      "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+    },
+    "TALKhouse":{
+      "subsequence":[
+        {
+          "set":{ "with":"house", "lines":[ "Wh... What is that?", "A house with a window in this age?", "...", "Quite anachronistic." ], "who":"main" },
+          "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+        }
+      ]
+    },
+    "TALKpietrolastricus":[
+      { "set":{ "andFollow":1, "walkTo":"pietrolastricus", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+      {
+        "when":{ "_":[ "this", "arrived" ] },
+        "execute":{
+          "when":{ "_":[ "variable", "player", "flags", "pasrck", "isEqualTo", 2 ] },
+          "elseExecute":{
+            "subsequence":[
+              { "as":{ "_":[ "objectTyped", "main" ] }, "set":{ "flipX":0 } },
+              { "set":{ "lines":[ "HEY YOU! ON THE TREE!" ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+              {
+                "set":{
+                  "choices":[
+                    "Why are you trying to kill me?",
+                    "why",
+                    "How did you invent anvil in Miocene?",
+                    "anvil",
+                    "How's the view from up there?",
+                    "view",
+                    "What is your name?",
+                    "name"
+                  ]
+                },
+                "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+              },
+              {
+                "when":{ "_":[ "this", "choice", "isEqualTo", "why" ] },
+                "subsequence":[
+                  {
+                    "set":{ "atX":8, "atY":8, "lines":[ "*Uh! Uh! AAAWH! AAAAWH! AAAAAAAWH!*" ], "withBgcolor":"#55ffff" },
+                    "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+                  },
+                  { "wait":25 },
+                  {
+                    "set":{
+                      "lines":[
+                        "Probably you expect me to understand these screams.",
+                        "It could be a nice gag for this game but...",
+                        "...sadly I can't understand a thing.",
+                        "But I guess he has its good reasons.",
+                        "At least, by hearing the length and the pitch of the screams."
+                      ],
+                      "who":"main"
+                    },
+                    "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+                  }
+                ]
+              },
+              {
+                "when":{ "_":[ "this", "choice", "isEqualTo", "anvil" ] },
+                "subsequence":[
+                  {
+                    "set":{ "atX":8, "atY":8, "lines":[ "*AAAAHW! AAAWWH! Ugh! Ugh! AAAAWH!*" ], "withBgcolor":"#55ffff" },
+                    "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+                  },
+                  { "wait":25 },
+                  {
+                    "set":{
+                      "lines":[
+                        "Uhm.",
+                        "Interesting.",
+                        "He says that it wasn't invented by him. Nor by humanity.",
+                        "The mindbenders alien race brought them on earth.",
+                        "He is throwing them from that tree as part of its rebellion.",
+                        "..."
+                      ],
+                      "who":"main"
+                    },
+                    "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+                  },
+                  { "wait":25 },
+                  { "set":{ "lines":[ "Honestly.", "Do you expect me to understand that screams?" ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } }
+                ]
+              },
+              {
+                "when":{ "_":[ "this", "choice", "isEqualTo", "view" ] },
+                "subsequence":[
+                  { "set":{ "atX":8, "atY":8, "lines":[ "*Uh! Uh!*" ], "withBgcolor":"#55ffff" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+                  { "wait":25 },
+                  { "set":{ "lines":[ "'Pretty nice'" ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+                  { "set":{ "atX":8, "atY":8, "lines":[ "*Ah! Uh! Uh!*" ], "withBgcolor":"#55ffff" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+                  { "wait":25 },
+                  { "set":{ "lines":[ "'I can see a river.'" ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+                  { "set":{ "atX":8, "atY":8, "lines":[ "*AAW! Uh! Uh!*" ], "withBgcolor":"#55ffff" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+                  { "wait":25 },
+                  { "set":{ "lines":[ "'A brontosaurus is drinking water from there.'" ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+                  { "set":{ "atX":8, "atY":8, "lines":[ "*AAHW! Uh! Uh!*" ], "withBgcolor":"#55ffff" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+                  { "wait":25 },
+                  { "set":{ "lines":[ "'Looking at the sun, today is the 3rd of September.'" ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+                  { "wait":25 },
+                  { "set":{ "lines":[ "Seriously.", "I.", "CAN'T.", "UNDERSTAND." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } }
+                ]
+              },
+              {
+                "when":{ "_":[ "this", "choice", "isEqualTo", "name" ] },
+                "subsequence":[
+                  {
+                    "when":{ "_":[ "variable", "player", "flags", "pasnam", "not" ] },
+                    "subsequence":[
+                      { "set":{ "andSkipUpdate":1, "progressFlag":"pasnam", "setTo":1 }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+                      { "wait":75 },
+                      { "set":{ "lines":[ "No answer?", "...", "Did he understand my words?" ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+                      { "wait":25 },
+                      { "as":{ "_":[ "objectTyped", "main" ] }, "set":{ "flipX":{ "_":[ "this", "flipX", "not" ] } }, "wait":25, "loop":1, "cycles":4 },
+                      { "set":{ "lines":[ "Probably I have to guess its name.", "So..." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } }
+                    ]
+                  },
+                  { "set":{ "lines":[ "Your name is..." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+                  {
+                    "set":{ "choices":[ "Rick...", "rick", "Sound...", "sound", "Pietro...", "pietro", "Piero...", "piero" ] },
+                    "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+                  },
+                  { "set":{ "guess":{ "_":[ "this", "choice" ] } } },
+                  { "set":{ "lines":[ "...and your surname is..." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+                  {
+                    "set":{ "choices":[ "... Blaster.", "blaster", "... Lastricus.", "lastricus", "... Lapithecus.", "lapithecus", "... Roll.", "roll" ] },
+                    "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+                  },
+                  { "set":{ "guess":{ "_":[ "this", "guess", ".", { "_":[ "this", "choice" ] } ] } } },
+                  {
+                    "when":{ "_":[ "this", "guess", "isEqualTo", "soundblaster" ] },
+                    "set":{ "lines":[ "Soundblaster is a nice name.", "You mainly just make noises...", "...in a game without any sound. Don't you think?" ], "who":"main" },
+                    "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+                  },
+                  {
+                    "when":{ "_":[ "this", "guess", "isEqualTo", "pierolapithecus" ] },
+                    "set":{ "lines":[ "Time to check if the name paleoanthropologist gave your race is right." ], "who":"main" },
+                    "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+                  },
+                  { "wait":25 },
+                  {
+                    "when":{ "_":[ "this", "guess", "isEqualTo", "pietrolastricus" ] },
+                    "elseExecute":[
+                      {
+                        "_":[
+                          "decide",
+                          {
+                            "options":[
+                              {
+                                "subsequence":[
+                                  { "set":{ "atX":8, "atY":8, "lines":[ "*AAAAAAW!*" ], "withBgcolor":"#55ffff" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+                                  {
+                                    "object":{ "type":[ "sceneelement", "throw" ], "image":"objects", "tileX":418, "tileY":71, "width":41, "height":25, "zIndex":10000, "x":106, "y":-24 }
+                                  },
+                                  { "sum":12, "to":{ "_":[ "objectTyped", "throw", "y" ] }, "wait":1, "loop":1, "cycles":10 },
+                                  { "as":{ "_":[ "object", "onground" ] }, "remove":1 },
+                                  { "sum":1, "to":{ "_":[ "objectTyped", "throw", "x" ] }, "wait":1 },
+                                  { "subtract":1, "to":{ "_":[ "objectTyped", "throw", "x" ] }, "wait":1 },
+                                  { "cycles":10, "loopTo":-2 },
+                                  { "set":{ "setFlag":"pasobj", "setTo":"chicken" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+                                  { "wait":25 },
+                                  {
+                                    "set":{ "lines":[ "Wh... what is that?", "A rubber chicken with a pulley in the middle?" ], "who":"main" },
+                                    "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+                                  }
+                                ]
+                              },
+                              {
+                                "subsequence":[
+                                  { "set":{ "atX":8, "atY":8, "lines":[ "*Uh! Uh! AAAAW!*" ], "withBgcolor":"#55ffff" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+                                  {
+                                    "object":{ "type":[ "sceneelement", "throw" ], "image":"objects", "tileX":418, "tileY":96, "width":46, "height":24, "zIndex":10000, "x":106, "y":-24 }
+                                  },
+                                  { "sum":12, "to":{ "_":[ "objectTyped", "throw", "y" ] }, "wait":1, "loop":1, "cycles":10 },
+                                  { "as":{ "_":[ "object", "onground" ] }, "remove":1 },
+                                  { "sum":1, "to":{ "_":[ "objectTyped", "throw", "x" ] }, "wait":1 },
+                                  { "subtract":1, "to":{ "_":[ "objectTyped", "throw", "x" ] }, "wait":1 },
+                                  { "cycles":10, "loopTo":-2 },
+                                  { "set":{ "setFlag":"pasobj", "setTo":"anvil" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+                                  { "wait":25 },
+                                  {
+                                    "set":{ "lines":[ "Another anvil.", "I wonder how many of these he has on that tree." ], "who":"main" },
+                                    "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+                                  }
+                                ]
+                              },
+                              {
+                                "subsequence":[
+                                  { "set":{ "atX":8, "atY":8, "lines":[ "..." ], "withBgcolor":"#55ffff" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+                                  { "wait":25 },
+                                  { "set":{ "lines":[ "He reserved me just merciless silence." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } }
+                                ]
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "subsequence":[
+                      { "set":{ "atX":8, "atY":8, "lines":[ "*!!!*" ], "withBgcolor":"#55ffff" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+                      {
+                        "object":{ "type":[ "sceneelement", "throw" ], "image":"objects", "tileX":121, "tileY":102, "width":25, "height":22, "zIndex":10000, "x":116, "y":-24 }
+                      },
+                      { "sum":12, "to":{ "_":[ "objectTyped", "throw", "y" ] }, "wait":1, "loop":1, "cycles":10 },
+                      { "as":{ "_":[ "object", "onground" ] }, "remove":1 },
+                      { "sum":1, "to":{ "_":[ "objectTyped", "throw", "x" ] }, "wait":1 },
+                      { "subtract":1, "to":{ "_":[ "objectTyped", "throw", "x" ] }, "wait":1 },
+                      { "cycles":10, "loopTo":-2 },
+                      { "set":{ "setFlag":"pasobj", "setTo":"stone" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+                      { "wait":25 },
+                      {
+                        "set":{ "lines":[ "This time we've got a plain boring stone.", "I wonder if I guessed the right name." ], "who":"main" },
+                        "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+                      }
+                    ]
+                  },
+                  {
+                    "when":{ "_":[ "this", "guess", "isEqualTo", "pietrolastricus", "not" ] },
+                    "set":{ "lines":[ "Whatever. Probably he is still angry." ], "who":"main" },
+                    "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+                  },
+                  {
+                    "when":{ "_":[ "this", "guess", "isEqualTo", "rickroll" ] },
+                    "set":{ "lines":[ "But I never gonna give you up.", "Never gonna let you down.", "Never gonna run around and -", "- desert -", "- you." ], "who":"main" },
+                    "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+                  }
+                ]
+              }
+            ]
+          },
+          "subsequence":[
+            { "set":{ "lines":[ "HEY YOU! HUMANOID CREATURE FROM THE PAST!" ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+            { "set":{ "atX":8, "atY":8, "lines":[ "*AWWW?!*" ], "withBgcolor":"#55ffff" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+            { "set":{ "lines":[ "I'm going to give you a BRAND NEW name!" ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+            { "set":{ "atX":8, "atY":8, "lines":[ "*Uh? Uh? AAAWH?!*" ], "withBgcolor":"#55ffff" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+            { "set":{ "andFollow":1, "andY":90, "walkToX":88, "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+            { "set":{ "lines":[ "And you're going to like that..." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+            { "set":{ "andFollow":1, "andY":90, "walkToX":137, "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+            { "set":{ "lines":[ "...very..." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+            { "set":{ "andFollow":1, "andY":90, "walkToX":177, "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+            { "set":{ "lines":[ "...very..." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+            { "set":{ "andFollow":1, "andY":90, "walkToX":205, "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+            { "set":{ "lines":[ "...much!" ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+            { "set":{ "atX":8, "atY":8, "lines":[ "*Uh?*" ], "withBgcolor":"#55ffff" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+            { "set":{ "lines":[ "And..." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+            { "as":{ "_":[ "objectTyped", "catapult", "hitbox" ] }, "set":{ "width":0, "height":0 } },
+            { "set":{ "andFollow":1, "andY":115, "walkToX":205, "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+            { "set":{ "lines":[ "The name is..." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+            { "set":{ "choices":[ "Duke...", "X", "Mario...", "X", "The Legend Of...", "X", "Alex...", "X" ] }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+            { "set":{ "lines":[ "...and your surname is..." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+            { "set":{ "choices":[ "... Kidd.", "X", "... Zelda.", "X", "... Bros.", "X", "... Nukem.", "X" ] }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+            { "set":{ "atX":8, "atY":8, "lines":[ "*...?*" ], "withBgcolor":"#55ffff" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+            { "set":{ "lines":[ "Here we go!" ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+            { "set":{ "atX":8, "atY":8, "lines":[ "*AAAAGGGGHHHHHH!*" ], "withBgcolor":"#55ffff" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+            {
+              "object":{ "type":[ "sceneelement", "throw" ], "image":"objects", "tileX":418, "tileY":96, "width":46, "height":24, "zIndex":10000, "x":106, "y":-24 }
+            },
+            { "sum":12, "to":{ "_":[ "objectTyped", "throw", "y" ] }, "wait":1, "loop":1, "cycles":5 },
+            { "as":{ "_":[ "objectTyped", "catapult" ] }, "set":{ "flipX":1 } },
+            { "as":{ "_":[ "objectTyped", "main" ] }, "set":{ "animation":"jump", "animationFrames":0, "state":"animated" } },
+            { "sum":12, "to":{ "_":[ "objectTyped", "throw", "y" ] } },
+            { "subtract":12, "to":{ "_":[ "objectTyped", "main", "y" ] } },
+            { "wait":1, "cycles":5, "loopTo":-2 },
+            { "subtract":12, "to":{ "_":[ "objectTyped", "main", "y" ] }, "wait":1, "loop":1, "cycles":5 },
+            { "wait":75 },
+            { "set":{ "atX":8, "atY":8, "lines":[ "*Ugh?!*" ], "withBgcolor":"#55ffff" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+            { "set":{ "gotoScene":"treetop" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } }
+          ]
+        }
+      }
+    ],
+    "USEday2WITHfloorstone":{ "subsequence":{ "_":[ "scene", "cutscenes", "USEday31WITHfloorstone" ] } },
+    "USEday31WITHfloorstone":{
+      "set":{ "andComment":[ "Jan-ken-pon. Paper versus Rock. I won!" ], "andFollow":1, "walkTo":"floorstone", "who":"main" },
+      "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+    },
+    "USElargeplankWITHreadystone":[
+      { "set":{ "andFollow":1, "face":"readystone", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+      {
+        "when":{ "_":[ "this", "arrived" ] },
+        "execute":[
+          {
+            "when":{ "_":[ "variable", "player", "flags", "pasobj" ] },
+            "elseExecute":{
+              "when":{ "_":[ { "_":[ "variable", "player", "inventory" ] }, "search", "stone", "not" ] },
+              "elseExecute":{
+                "subsequence":[
+                  { "set":{ "andSkipUpdate":1, "progressFlag":"pasrck", "setTo":2 }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+                  { "set":{ "removeItem":"largeplank", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+                  {
+                    "set":{ "with":"readystone", "lines":[ "And now...", "Ladies and gentlemen...", "One more thing." ], "who":"main" },
+                    "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+                  }
+                ]
+              },
+              "subsequence":{
+                "set":{ "with":"readystone", "lines":[ "Refusing a gift is bad manners, Mr. Sassertal.", "Better bringing Pietrolastricus' gift with me." ], "who":"main" },
+                "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+              }
+            },
+            "subsequence":{
+              "set":{ "with":"readystone", "lines":[ "Better making some room before placing it." ], "who":"main" },
+              "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+            }
+          }
+        ]
+      }
+    ],
+    "USElithictoolWITHbranch":[
+      { "set":{ "andFollow":1, "face":"branch", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+      {
+        "when":{ "_":[ "this", "arrived" ] },
+        "subsequence":[
+          {
+            "set":{
+              "lines":[ "It's time for the truth.", "Will this tool work well enough for cutting wood...", "...and build the first wooden home in human history?" ],
+              "who":"main"
+            },
+            "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+          },
+          { "set":{ "andSkipUpdate":1, "setFlag":"pasbra", "setTo":3 }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+          { "set":{ "andSkipUpdate":1, "removeItem":"lithictool" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+          { "set":{ "addItem":"plank1", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+          {
+            "set":{
+              "lines":[
+                "Sigh. It broke.",
+                "So, since there are weak probabilities of making another tool...",
+                "...I can confirm that 13 million years ago there weren't cottages.",
+                "But I've got this 'Tabula Arbor' branch now.",
+                "It oddly looks like a wooden plank."
+              ],
+              "who":"main"
+            },
+            "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+          }
+        ]
+      }
+    ],
+    "USEplank1WITHcliff":[
+      { "set":{ "andFollow":1, "walkTo":"cliff", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+      {
+        "when":{ "_":[ "this", "arrived" ] },
+        "subsequence":[
+          {
+            "set":{ "with":"cliff", "lines":[ "'A missing bridge is less useful than an actual one.'" ], "who":"main" },
+            "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+          },
+          { "set":{ "andSkipUpdate":1, "setFlag":"pasbri", "setTo":"plank1" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+          { "set":{ "removeItem":"plank1", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+          { "set":{ "lines":[ "Built." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } }
+        ]
+      }
+    ],
+    "USEplank1WITHplank2":{
+      "when":{ "_":[ { "_":[ "variable", "player", "inventory" ] }, "search", "handcuffs", "not" ] },
+      "elseExecute":{
+        "when":{ "_":[ "variable", "player", "flags", "passid" ] },
+        "elseExecute":{
+          "subsequence":[
+            {
+              "set":{ "with":"machine", "lines":[ "Did you know?", "Madrid adventurers are obsessed by plastic handcuffs..." ], "who":"main" },
+              "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+            },
+            { "set":{ "andSkipUpdate":1, "removeItem":"plank1" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+            { "set":{ "andSkipUpdate":1, "removeItem":"plank2" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+            { "set":{ "removeItem":"handcuffs", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+            { "set":{ "with":"machine", "lines":[ "...for a reason!" ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+            { "set":{ "addItem":"largeplank", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+            { "set":{ "with":"machine", "lines":[ "Vamos, amigos!" ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } }
+          ]
+        },
+        "subsequence":{
+          "set":{
+            "with":"machine",
+            "lines":[
+              "Yeah. Probably I'm able to join these two planks now...",
+              "...but since I've just disintegrated a time machine...",
+              "...and I just threw a rock...",
+              "...better moving to the other side before being creative again."
+            ],
+            "who":"main"
+          },
+          "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+        }
+      },
+      "subsequence":{
+        "set":{ "with":"machine", "lines":[ "Safety first. A larger bridge is a good idea but...", "How can I tie together these two planks?" ], "who":"main" },
+        "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+      }
+    },
+    "USEplank2WITHcliff":[
+      { "set":{ "andFollow":1, "walkTo":"cliff", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+      {
+        "when":{ "_":[ "this", "arrived" ] },
+        "subsequence":[
+          { "set":{ "with":"cliff", "lines":[ "Heigh-ho, heigh-ho, It's off to work we go." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+          { "set":{ "andSkipUpdate":1, "setFlag":"pasbri", "setTo":"plank2" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+          { "set":{ "removeItem":"plank2", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+          { "set":{ "lines":[ "I keep on singing all day long, Heigh-ho." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } }
+        ]
+      }
+    ],
+    "USEplank2WITHplank1":{ "subsequence":{ "_":[ "scene", "cutscenes", "USEplank1WITHplank2" ] } },
+    "USEstoneWITHfloorstone":[
+      { "set":{ "andFollow":1, "face":"floorstone", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+      {
+        "when":{ "_":[ "this", "arrived" ] },
+        "execute":[
+          {
+            "when":{ "_":[ "variable", "player", "flags", "pasbra", "isGreaterEqualThan", 2 ] },
+            "subsequence":{ "set":{ "lines":[ "Better not trying my luck another time." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } }
+          },
+          {
+            "when":{ "_":[ "variable", "player", "flags", "pasbra", "isEqualTo", 1 ] },
+            "subsequence":[
+              { "as":{ "_":[ "objectTyped", "main" ] }, "set":{ "flipX":{ "_":[ "this", "flipX", "not" ] } }, "wait":25, "loop":1, "cycles":4 },
+              {
+                "set":{
+                  "lines":[
+                    "Experiment.",
+                    "Primitive men used to hit rocks in order to make tools.",
+                    "In 2014 we experimented with monkeys that...",
+                    "...it could be happened by chance. So...",
+                    "If I use this rock and hit the other one..."
+                  ],
+                  "who":"main"
+                },
+                "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+              },
+              { "set":{ "andSkipUpdate":1, "setFlag":"pasbra", "setTo":2 }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+              { "set":{ "andSkipUpdate":1, "setFlag":"pasobj", "setTo":"" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+              { "set":{ "removeItem":"stone", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+              { "wait":25 },
+              { "set":{ "lines":[ "Hey!" ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+              { "set":{ "addItem":"lithictool", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+              {
+                "set":{
+                  "lines":[
+                    "Look at this lithic tool I've made!",
+                    "Well... It looks sharp enough for cutting stuff and...",
+                    "Well...",
+                    "It comes with an handle too.",
+                    "And how Colin would say...",
+                    "'Impressive science.'"
+                  ],
+                  "who":"main"
+                },
+                "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+              }
+            ]
+          },
+          {
+            "when":{ "_":[ "variable", "player", "flags", "pasbra", "not" ] },
+            "subsequence":[ { "set":{ "lines":[ "Jan-ken-pon. Rock versus Rock. Even." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } } ]
+          }
+        ]
+      }
+    ],
+    "USEstoneWITHmachine":[
+      { "set":{ "andFollow":1, "face":"machine", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+      {
+        "when":{ "_":[ "this", "arrived" ] },
+        "subsequence":[
+          {
+            "set":{ "with":"machine", "lines":[ "The pitcher is ready.", "The crowd is screaming!" ], "who":"main" },
+            "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+          },
+          { "as":{ "_":[ "objectTyped", "main" ] }, "set":{ "idleAnimation":"idleBack" } },
+          { "set":{ "lines":[ "GO!", "*UUNGH!*" ], "who":"main", "withAnimation":"idleBack" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+          { "set":{ "removeItem":"stone" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+          { "as":{ "_":[ "objectTyped", "main" ] }, "set":{ "animation":"throw", "animationFrames":0, "state":"animated" } },
+          { "wait":10 },
+          {
+            "object":{
+              "image":"objects", "tileX":121, "tileY":102, "width":25, "height":22,
+              "zIndex":10000, "x":{ "_":[ "objectTyped", "main", "x" ] }, "y":{ "_":[ "objectTyped", "main", "y" ] },
+              "states":{ "code":{ "name":"Sequence", "data":[ { "subtract":10, "to":{ "_":[ "this", "y" ] }, "wait":1, "loop":1, "cycles":20 }, { "remove":1 } ] } }
+            }
+          },
+          { "wait":30 },
+          { "sum":1, "to":{ "_":[ "objectTyped", "machine", "x" ] }, "wait":1 },
+          { "subtract":1, "to":{ "_":[ "objectTyped", "machine", "x" ] }, "wait":1 },
+          { "cycles":10, "loopTo":-2 },
+          { "sum":4, "to":{ "_":[ "objectTyped", "machine", "y" ] }, "wait":1, "loop":1, "cycles":15 },
+          { "sum":1, "to":{ "_":[ "objectTyped", "machine", "x" ] }, "wait":1 },
+          { "subtract":1, "to":{ "_":[ "objectTyped", "machine", "x" ] }, "wait":1 },
+          { "cycles":10, "loopTo":-2 },
+          { "set":{ "progressFlag":"pasmac", "setTo":1 }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+          { "wait":75 },
+          { "set":{ "lines":[ "Oops." ], "who":"main", "withAnimation":"idleBack" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+          { "wait":25 },
+          { "as":{ "_":[ "objectTyped", "main" ] }, "set":{ "idleAnimation":"idle" } },
+          {
+            "set":{
+              "lines":[
+                "I admit that I've PROBABLY done something wrong.",
+                "BUT!",
+                "The machine totally DISINTEGRATED after touching the ground!",
+                "I mean. It's all Colin fault if I'll die here!",
+                "...",
+                "But no one will tell him the truth if I'll die.",
+                "Damn luky Colin.",
+                "..."
+              ],
+              "who":"main"
+            },
+            "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+          }
+        ]
+      }
+    ],
+    "USEstoneWITHspotyes":[
+      { "set":{ "andFollow":1, "face":"spotyes", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+      {
+        "when":{ "_":[ "this", "arrived" ] },
+        "subsequence":[
+          { "set":{ "with":"spotyes", "lines":[ "Uhm.", "I've got an idea." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+          { "set":{ "andSkipUpdate":1, "progressFlag":"pasrck", "setTo":1 }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+          { "set":{ "removeItem":"stone", "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+          {
+            "set":{
+              "with":"readystone",
+              "lines":[
+                "Time to pay a visit to our Pietrolastricus friend...",
+                "...to thank him for his rocky present and...",
+                "...to ask about the anvils he has. There's something fishy here."
+              ],
+              "who":"main"
+            },
+            "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+          },
+          { "wait":25 },
+          { "set":{ "with":"readystone", "lines":[ "'Ask'..." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+          { "wait":25 },
+          { "set":{ "with":"readystone", "lines":[ "Whatever." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } }
+        ]
+      }
+    ],
+    "intro":[
+      { "set":{ "andSkipUpdate":1, "setFlag":"pasmac", "setTo":-1 }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+      { "set":{ "setFlag":"pasbri", "setTo":"plank2" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+      { "set":{ "cutsceneStartsOn":"nothing" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+      { "wait":25 },
+      {
+        "set":{ "atX":8, "atY":8, "lines":[ "Earth. 13 million years ago." ], "withBgcolor":"#000", "withBorder":"#fff" },
+        "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+      },
+      { "wait":25 },
+      {
+        "object":{
+          "type":[ "sceneelement", "falling" ],
+          "follow":1,
+          "image":"objects", "tileX":464, "tileY":54, "width":71, "height":51,
+          "zIndex":10000, "x":370, "y":-50
+        }
+      },
+      { "wait":75 },
+      { "sum":4, "to":{ "_":[ "objectTyped", "falling", "y" ] }, "wait":1, "loop":1, "cycles":9 },
+      { "sum":1, "to":{ "_":[ "objectTyped", "falling", "x" ] }, "wait":1 },
+      { "subtract":1, "to":{ "_":[ "objectTyped", "falling", "x" ] }, "wait":1 },
+      { "cycles":10, "loopTo":-2 },
+      { "set":{ "setFlag":"pasmac", "setTo":0 }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+      { "wait":25 },
+      {
+        "set":{ "atX":160, "atY":8, "lines":[ "Oh. Dang. The machine is stuck on that tree!" ], "withBgcolor":"#ff55ff" },
+        "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+      },
+      { "object":{ "set":{ "_":[ "resource", "data", "characters", "main" ] }, "x":-79, "y":50 } },
+      { "set":{ "andFollow":1, "andY":118, "walkToX":129, "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+      {
+        "set":{
+          "lines":[
+            "Me and the machine have been transported in different places.",
+            "Luckly I fell on a bush and I'm okay.",
+            "But I have to bring my equine companion down."
+          ],
+          "who":"main"
+        },
+        "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+      },
+      { "wait":25 },
+      {
+        "set":{ "lines":[ "I should have a long chat with Colin once my photos are ready.", "But at least..." ], "who":"main" },
+        "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+      },
+      { "as":{ "_":[ "objectTyped", "main" ] }, "set":{ "flipX":{ "_":[ "this", "flipX", "not" ] } }, "wait":25 },
+      { "set":{ "lines":[ "The position of the sun in the sky..." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+      { "as":{ "_":[ "objectTyped", "main" ] }, "set":{ "flipX":{ "_":[ "this", "flipX", "not" ] } }, "wait":25 },
+      { "set":{ "lines":[ "The length of the shadows..." ], "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+      { "as":{ "_":[ "objectTyped", "main" ] }, "set":{ "flipX":{ "_":[ "this", "flipX", "not" ] } }, "wait":25, "loop":1, "cycles":4 },
+      {
+        "set":{ "lines":[ "Today is the 13 million years ago.", "So the year is right.", "Let's work now... I have to...", "HEY!" ], "who":"main" },
+        "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+      },
+      { "set":{ "andFollow":1, "andY":118, "walkToX":205, "who":"main" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+      { "as":{ "_":[ "objectTyped", "main" ] }, "set":{ "flipX":1 } },
+      {
+        "object":{ "type":[ "sceneelement", "throw" ], "image":"objects", "tileX":418, "tileY":96, "width":46, "height":24, "zIndex":10000, "x":106, "y":-24 }
+      },
+      { "sum":12, "to":{ "_":[ "objectTyped", "throw", "y" ] }, "wait":1, "loop":1, "cycles":10 },
+      { "sum":1, "to":{ "_":[ "objectTyped", "throw", "x" ] }, "wait":1 },
+      { "subtract":1, "to":{ "_":[ "objectTyped", "throw", "x" ] }, "wait":1 },
+      { "cycles":10, "loopTo":-2 },
+      { "wait":25 },
+      {
+        "set":{ "lines":[ "Someone on that tree tried to kill me with this anvil!", "HEY! YOU!" ], "who":"main" },
+        "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+      },
+      { "as":{ "_":[ "objectTyped", "main" ] }, "set":{ "flipX":0 } },
+      {
+        "set":{ "lines":[ "Wait. An anvil 13 million years ago?", "Something wrong is clearly happening!" ], "who":"main" },
+        "subsequence":{ "_":[ "stencil", "SCUSA" ] }
+      },
+      { "set":{ "setFlag":"pasobj", "setTo":"anvil" }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } }
+    ]
+  },
+  "object":{
+    "type":"background",
+    "image":"past", "width":525, "height":144,
+    "x":0, "y":0
+  },
+  "set":{
+    "_":[ "stencil", "defaultScene" ]
+  },
+  "updateScene":[
+    { "as":{ "_":[ "object", "sceneelement" ] }, "remove":1 },
+    {
+      "when":{ "_":[ "variable", "player", "flags", "pasobj", "isEqualTo", "anvil" ] },
+      "object":{
+        "type":[ "sceneelement", "onground" ],
+        "set":{ "_":[ "stencil", "sceneObject" ] },
+        "label":"Anvil",
+        "image":"objects", "tileX":418, "tileY":96, "width":46, "height":24,
+        "x":106, "y":96,
+        "cutscene":"LOOKanvil",
+        "interaction":"Look at the murder weapon",
+        "oid":"anvil"
+      }
+    },
+    {
+      "when":{ "_":[ "variable", "player", "flags", "pasobj", "isEqualTo", "chicken" ] },
+      "object":{
+        "type":[ "sceneelement", "onground" ],
+        "set":{ "_":[ "stencil", "sceneObject" ] },
+        "label":"Chicken",
+        "image":"objects", "tileX":418, "tileY":71, "width":41, "height":25,
+        "x":106, "y":96,
+        "cutscene":"LOOKchicken",
+        "interaction":"Look at the chicken with a pulley",
+        "oid":"chicken"
+      }
+    },
+    {
+      "when":{ "_":[ "variable", "player", "flags", "pasobj", "isEqualTo", "stone" ] },
+      "object":{
+        "type":[ "sceneelement", "onground" ],
+        "set":{ "_":[ "stencil", "sceneObject" ] },
+        "label":"Stone",
+        "image":"objects", "tileX":121, "tileY":102, "width":25, "height":22,
+        "x":116, "y":96,
+        "cutscene":"LOOKfloorstone",
+        "interaction":"Look at the stone",
+        "oid":"floorstone"
+      }
+    },
+    {
+      "when":{ "_":[ "variable", "player", "flags", "pasmac", "isEqualTo", -1, "not" ] },
+      "execute":[
+        {
+          "when":{ "_":[ "variable", "player", "flags", "pasmac", "not" ] },
+          "object":{
+            "type":"sceneelement",
+            "set":{ "_":[ "stencil", "sceneObjectOnWall" ] },
+            "label":"Machine",
+            "image":"objects", "tileX":464, "tileY":54, "width":71, "height":51,
+            "x":370, "y":-14,
+            "cutscene":"LOOKmachine",
+            "frontY":84,
+            "interaction":"Look at the machine",
+            "oid":"machine"
+          }
+        },
+        {
+          "when":{ "_":[ "variable", "player", "flags", "pasmac", "isEqualTo", 1 ] },
+          "object":{
+            "type":"sceneelement",
+            "set":{ "_":[ "stencil", "sceneObject" ] },
+            "label":"Handcuffs",
+            "image":"objects", "tileX":418, "tileY":54, "width":35, "height":17,
+            "x":402, "y":88,
+            "cutscene":"LOOKhandcuffs",
+            "interaction":"Look at the plastic handcuffs",
+            "oid":"handcuffs"
+          }
+        }
+      ]
+    },
+    {
+      "when":{ "_":[ "variable", "player", "flags", "pasrck" ] },
+      "object":{
+        "type":[ "sceneelement" ],
+        "set":{ "_":[ "stencil", "sceneObject" ] },
+        "label":"Stone",
+        "image":"objects", "tileX":121, "tileY":102, "width":25, "height":22,
+        "x":155, "y":96,
+        "cutscene":"LOOKreadystone",
+        "interaction":"Look at the stone",
+        "oid":"readystone"
+      },
+      "elseExecute":{
+        "when":{
+          "_":[
+            { "_":[ "variable", "player", "inventory" ] },
+            "search",
+            "largeplank",
+            "and",
+            { "_":[ { "_":[ "variable", "player", "inventory" ] }, "search", "stone" ] }
+          ]
+        },
+        "object":{
+          "type":"sceneelement",
+          "set":{ "_":[ "stencil", "sceneObjectOnWall" ] },
+          "label":"Spot",
+          "width":36, "height":13,
+          "x":148, "y":112,
+          "cutscene":"LOOKspotyes",
+          "interaction":"Look at the interesting spot",
+          "oid":"spotyes"
+        },
+        "elseExecute":{
+          "object":{
+            "type":"sceneelement",
+            "set":{ "_":[ "stencil", "sceneObjectOnWall" ] },
+            "label":"Spot",
+            "width":36, "height":13,
+            "x":148, "y":112,
+            "cutscene":"LOOKspotno",
+            "interaction":"Look at the interesting spot",
+            "oid":"spotno"
+          }
+        }
+      }
+    },
+    {
+      "when":{ "_":[ "variable", "player", "flags", "pasrck", "isGreaterEqualThan", 2 ] },
+      "object":{
+        "type":[ "sceneelement" ],
+        "set":{ "_":[ "stencil", "sceneObject" ] },
+        "label":"Catapult",
+        "image":"objects", "tileX":536, "tileY":32, "width":101, "height":48,
+        "x":114, "y":75,
+        "cutscene":"LOOKcatapult",
+        "interaction":"Look at the catapult",
+        "oid":"catapult"
+      }
+    },
+    {
+      "when":{ "_":[ "variable", "player", "flags", "pasbra", "or", 0, "isLessEqualThan", 2 ] },
+      "object":{
+        "type":"sceneelement",
+        "set":{ "_":[ "stencil", "sceneObjectOnWall" ] },
+        "label":"Branch",
+        "image":"objects", "tileX":536, "tileY":0, "width":48, "height":32,
+        "x":72, "y":16,
+        "cutscene":"LOOKbranch",
+        "frontY":40,
+        "interaction":"Look at the branch",
+        "oid":"branch"
+      }
+    },
+    {
+      "when":{ "_":[ "variable", "player", "flags", "pasbri", "not" ] },
+      "execute":{
+        "when":{ "_":[ "variable", "player", "flags", "passid", "not" ] },
+        "object":[
+          {
+            "type":"sceneelement",
+            "set":{ "_":[ "stencil", "sceneObjectOnWall" ] },
+            "label":"Cliff",
+            "width":25, "height":64,
+            "x":310, "y":80,
+            "cutscene":"LOOKcliff",
+            "frontX":-37,
+            "frontY":-35,
+            "interaction":"Look the cliff",
+            "oid":"cliff"
+          },
+          { "type":[ "sceneelement", "walkable" ], "width":300, "height":64, "x":0, "y":80 },
+          {
+            "type":"sceneelement",
+            "set":{ "_":[ "stencil", "sceneObjectOnWall" ] },
+            "label":"Other side",
+            "width":131, "height":64,
+            "x":344, "y":80,
+            "cutscene":"NOTotherside",
+            "frontX":-127,
+            "frontY":-35,
+            "interaction":"Go to the other side",
+            "oid":"nototherside"
+          }
+        ],
+        "elseExecute":{
+          "object":[
+            {
+              "type":"sceneelement",
+              "set":{ "_":[ "stencil", "sceneObjectOnWall" ] },
+              "label":"Cliff",
+              "width":25, "height":64,
+              "x":310, "y":80,
+              "cutscene":"LOOKcliff",
+              "frontX":37,
+              "frontY":-35,
+              "interaction":"Look the cliff",
+              "oid":"cliff"
+            },
+            { "type":[ "sceneelement", "walkable" ], "width":131, "height":64, "x":344, "y":80 },
+            {
+              "type":"sceneelement",
+              "set":{ "_":[ "stencil", "sceneObjectOnWall" ] },
+              "label":"Other side",
+              "width":300, "height":64,
+              "x":0, "y":80,
+              "cutscene":"NOTotherside",
+              "frontX":227,
+              "frontY":-35,
+              "interaction":"Go to the other side",
+              "oid":"nototherside"
+            }
+          ]
+        }
+      },
+      "elseExecute":{
+        "when":{ "_":[ "variable", "player", "flags", "passid", "not" ] },
+        "object":[
+          {
+            "type":"sceneelement",
+            "set":{ "_":[ "stencil", "sceneObjectOnWall" ] },
+            "label":"Plank",
+            "image":"objects", "tileX":175, "tileY":116, "width":88, "height":16,
+            "x":275, "y":100,
+            "cutscene":"LOOKbridge",
+            "frontX":-54,
+            "frontY":-8,
+            "interaction":"Look the plank",
+            "oid":"bridge"
+          },
+          { "type":[ "sceneelement", "walkable" ], "width":300, "height":64, "x":0, "y":80 },
+          {
+            "type":"sceneelement",
+            "set":{ "_":[ "stencil", "sceneObjectOnWall" ] },
+            "label":"Other side",
+            "width":131, "height":64,
+            "x":344, "y":80,
+            "cutscene":"GOTOrightside",
+            "frontX":-127,
+            "frontY":-35,
+            "interaction":"Go to the other side",
+            "oid":"gotoright"
+          }
+        ],
+        "elseExecute":{
+          "object":[
+            {
+              "type":"sceneelement",
+              "set":{ "_":[ "stencil", "sceneObjectOnWall" ] },
+              "label":"Plank",
+              "image":"objects", "tileX":175, "tileY":116, "width":88, "height":16,
+              "x":275, "y":100,
+              "cutscene":"LOOKbridge",
+              "frontX":54,
+              "frontY":-8,
+              "interaction":"Look the plank",
+              "oid":"bridge"
+            },
+            { "type":[ "sceneelement", "walkable" ], "width":131, "height":64, "x":344, "y":80 },
+            {
+              "type":"sceneelement",
+              "set":{ "_":[ "stencil", "sceneObjectOnWall" ] },
+              "label":"Other side",
+              "width":300, "height":64,
+              "x":0, "y":80,
+              "cutscene":"GOTOleftside",
+              "frontX":97,
+              "frontY":-35,
+              "interaction":"Go to the other side",
+              "oid":"gotoleft"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "object":{
+        "type":"sceneelement",
+        "set":{ "_":[ "stencil", "sceneObjectOnWall" ] },
+        "label":"Someone",
+        "width":166, "height":30,
+        "x":0, "y":0,
+        "cutscene":"TALKpietrolastricus",
+        "frontX":-20,
+        "frontY":80,
+        "interaction":"Look at someone on the tree",
+        "oid":"pietrolastricus"
+      }
+    },
+    {
+      "object":{
+        "type":"sceneelement",
+        "set":{ "_":[ "stencil", "sceneObjectOnWall" ] },
+        "label":"House",
+        "width":50, "height":144,
+        "x":475, "y":0,
+        "cutscene":"TALKhouse",
+        "interaction":"Look at the house",
+        "oid":"house"
+      }
+    }
+  ]
+}

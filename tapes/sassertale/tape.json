@@ -1,0 +1,792 @@
+{
+  "name":"Sassertale",
+  "author":"KesieV",
+  "year":2016,
+  "genre":"Point &amp; click adventure",
+  "description":"<p>Oh, come on.</p><p>We're all aware of the existence of <a href='https://en.wikipedia.org/wiki/Urban_legend'>urban legends</a> and, in the Internet era, the lies have even shorter legs.</p></p><p>At least, that's the optimistic theory of the promoters of the <i>enhanced digital natives</i> - but information are often interpretations and truth is just an information coming from a trusted channels. We're rediscovering this the hard way during these days.</p><p>Time only changes the interpretations, these trusted channels and how you can reach them.</p><p>Back to the high school I wasn't exactly a genius in history but I clearly remember that I learned that Egyptian slaves built the pyramids. Probably I can't remember dates or names but I still remember the <i>infographics</i> here and there on the book pages. Okay, nothing outstanding till here.</p><p>In 2003 Mark Lehner, Archeaologist, <a href='http://harvardmagazine.com/2003/07/who-built-the-pyramids-html'>has found the city of the pyramid builders</a>, proving that <i>they were not slaves</i>.</p><p>Today we still don't know the truth... I mean: we don't even know <i>how</i> they made it. There are still theories <a href='https://www.brown.edu/Departments/Joukowsky_Institute/undergrad/prizes/Rigby2016.pdf'>in 2016</a>!</p><p>But that's not the point. There is a long chain of trust along the different channels this <i>presumed truth</i> travelled, from the Judeo-Christian tradition to catechism illustrated books, school and Hollywood films. Every channel trusted someone else in order to build its own sightly different version of the truth and that continues until it reaches you.</p><p>What does it mean? We don't have to trust anybody? Are the first hand facts the only <i>truly true</i> things? That means that every lesson learned by humanity in history has to be lived by every single human in order to be believed, in a monotonous spiral of repeated events. Probably that's the point of people who says that <i>war is good for humanity</i>, since the value of peace is evaluated when is truly missing, with a first person experience. Moreover, every lived experience is filtered by its past, thoughts, perspective and knowledge - so it's just a more intimate interpretation. I don't think that's the right way.</p><p>In my humble opinion, we should live and learn many versions of the same truth instead, ignoring the temptation of just looking for the interpretations that match our way of thinking - or running away from the one we think that are deeply controversial, subjective or <i>false</i>. Then we have to measure all of them with all the tools we have: science, experience, faith and, why not, trust. After a while, we'll have our version of that truth we can trade with others, being aware that they did the same with their own version.</p><p>It would be more easy if truth is everything that's not a lie. But we aren't machines and many of us likes to <i>customize</i> everything a bit, in order to spice up our lives, create something new or leave a sign of our existence. That's why I love humanity, but be aware of that and don't waste this gift.</p><p>Plot!</p><p>Just play the game! Use the pointer for selecting and interacting with scene objects. You can combine the objects in your inventory, on the lower part ofthe screen, selecting them in the wanted order. Good luck!</p>",
+  "screenshots":[ "sassertale-1.png", "sassertale-2.png" ],
+  "hardware":{
+    "width":320,
+    "height":200,
+    "controls":"pointer",
+    "filter":"retro"
+  },
+  "cheats":{},
+  "resources":{
+    "cga":"cga.font",
+    "characters":"characters.png",
+    "data":"data.json",
+    "lab":"lab.png",
+    "objects":"objects.png",
+    "past":"past.png",
+    "sprites":"sprites.png",
+    "storageroom":"storageroom.png",
+    "title":"title.png",
+    "treetop":"treetop.png"
+  },
+  "stencils":{
+    "codeLoadGame":{
+      "when":{ "_":[ "storage", "d" ] },
+      "execute":[
+        {
+          "as":{ "_":"variable" },
+          "set":{ "player":{ "_":[ "storage", "d" ] }, "respawnX":{ "_":[ "storage", "x" ] }, "respawnY":{ "_":[ "storage", "y" ] }, "runCutscene":0 }
+        },
+        { "gotoScene":{ "_":[ "storage", "s" ] }, "withTransition":3 }
+      ],
+      "elseExecute":{ "_":[ "stencil", "codeNewGame" ] }
+    },
+    "codeNewGame":[
+      { "as":{ "_":"variable" }, "set":{ "player":{ "_":[ "new", { "flags":{}, "inventory":[] } ] } } },
+      { "as":{ "_":"variable" }, "set":{ "runCutscene":"intro" } },
+      { "gotoScene":"lab", "withTransition":3 }
+    ],
+    "SCUSA":[
+      { "wait":1 },
+      {
+        "when":{ "_":[ "this", "cutsceneStartsOn" ] },
+        "subsequence":[
+          { "as":{ "_":[ "objectTyped", { "_":[ "this", "cutsceneStartsOn" ] } ] }, "set":{ "follow":1, "cameraSmoothness":1 } },
+          { "set":{ "cameraSmoothness":1 } },
+          { "wait":1 },
+          { "as":{ "_":[ "object", "cover" ] }, "remove":1 },
+          { "set":{ "cameraSmoothness":0.1 } },
+          { "set":{ "cutsceneStartsOn":0 } }
+        ]
+      },
+      {
+        "when":{ "_":[ "this", "addItem" ] },
+        "subsequence":[
+          { "set":{ "subj":{ "_":[ "objectTyped", { "_":[ "this", "who" ] } ] } } },
+          {
+            "when":{ "_":[ "this", "subj" ] },
+            "subsequence":[
+              { "as":{ "_":[ "this", "subj" ] }, "set":{ "animation":"pick", "animationFrames":0, "state":"animated" } },
+              { "wait":25 },
+              { "as":{ "_":[ "this", "subj" ] }, "set":{ "state":"default" } }
+            ]
+          },
+          {
+            "when":{ "_":[ { "_":[ "variable", "player", "inventory" ] }, "search", { "_":[ "this", "addItem" ] }, "not" ] },
+            "execute":[ { "as":{ "_":[ "this", "addItem" ] }, "pushInto":{ "_":[ "variable", "player", "inventory" ] } }, { "_":[ "stencil", "updateInventory" ] } ]
+          },
+          { "when":{ "_":[ "this", "andSkipUpdate", "not" ] }, "execute":{ "_":[ "scene", "updateScene" ] } },
+          { "set":{ "addItem":0, "andSkipUpdate":0, "who":0 } }
+        ]
+      },
+      {
+        "when":{ "_":[ "this", "gotoScene" ] },
+        "subsequence":[
+          { "wait":25 },
+          {
+            "when":{ "_":[ "this", "withCutscene" ] },
+            "as":{ "_":"variable" },
+            "set":{ "runCutscene":{ "_":[ "that", "withCutscene" ] } },
+            "elseExecute":{ "as":{ "_":"variable" }, "set":{ "runCutscene":"intro" } }
+          },
+          { "set":{ "withCutscene":0 } },
+          { "gotoScene":{ "_":[ "this", "gotoScene" ] }, "withTransition":3 },
+          { "wait":25 }
+        ]
+      },
+      {
+        "when":{ "_":[ "this", "removeItem" ] },
+        "subsequence":[
+          { "set":{ "subj":{ "_":[ "objectTyped", { "_":[ "this", "who" ] } ] }, "wobj":{ "_":[ "objectTyped", { "_":[ "this", "with" ] } ] } } },
+          {
+            "when":{ "_":[ "this", "wobj" ] },
+            "execute":{
+              "when":{
+                "_":[
+                  "this",
+                  "subj",
+                  "x",
+                  "+",
+                  { "_":[ "this", "subj", "width", "/", 2 ] },
+                  "isLessThan",
+                  { "_":[ "this", "wobj", "x", "+", { "_":[ "this", "wobj", "width", "/", 2 ] } ] }
+                ]
+              },
+              "as":{ "_":[ "this", "subj" ] },
+              "set":{ "flipX":0 },
+              "elseExecute":{ "as":{ "_":[ "this", "subj" ] }, "set":{ "flipX":1 } }
+            }
+          },
+          {
+            "when":{ "_":[ "this", "subj" ] },
+            "subsequence":[
+              { "as":{ "_":[ "this", "subj" ] }, "set":{ "animation":"pick", "animationFrames":0, "state":"animated" } },
+              { "wait":25 },
+              { "as":{ "_":[ "this", "subj" ] }, "set":{ "state":"default" } }
+            ]
+          },
+          {
+            "when":{ "_":[ { "_":[ "variable", "player", "inventory" ] }, "search", { "_":[ "this", "removeItem" ] } ] },
+            "execute":[ { "unpush":{ "_":[ "this", "removeItem" ] }, "from":{ "_":[ "variable", "player", "inventory" ] } }, { "_":[ "stencil", "updateInventory" ] } ]
+          },
+          { "when":{ "_":[ "this", "andSkipUpdate", "not" ] }, "execute":{ "_":[ "scene", "updateScene" ] } },
+          { "set":{ "with":0, "andSkipUpdate":0, "removeItem":0, "who":0 } }
+        ]
+      },
+      {
+        "when":{ "_":[ "this", "progressFlag" ] },
+        "execute":{
+          "when":{
+            "_":[
+              "variable",
+              "player",
+              "flags",
+              { "_":[ "this", "progressFlag" ] },
+              "not",
+              "or",
+              { "_":[ "variable", "player", "flags", { "_":[ "this", "progressFlag" ] }, "isLessThan", { "_":[ "this", "setTo" ] } ] }
+            ]
+          },
+          "subsequence":[
+            { "assign":{ "_":[ "this", "setTo" ] }, "to":{ "_":[ "variable", "player", "flags", { "_":[ "this", "progressFlag" ] } ] } },
+            { "when":{ "_":[ "this", "andSkipUpdate", "not" ] }, "execute":{ "_":[ "scene", "updateScene" ] } },
+            { "set":{ "andSkipUpdate":0, "progressFlag":0, "setTo":0 } }
+          ]
+        }
+      },
+      {
+        "when":{ "_":[ "this", "setFlag" ] },
+        "subsequence":[
+          { "assign":{ "_":[ "this", "setTo" ] }, "to":{ "_":[ "variable", "player", "flags", { "_":[ "this", "setFlag" ] } ] } },
+          { "when":{ "_":[ "this", "andSkipUpdate", "not" ] }, "execute":{ "_":[ "scene", "updateScene" ] } },
+          { "set":{ "andSkipUpdate":0, "setFlag":0, "setTo":0 } }
+        ]
+      },
+      {
+        "when":{ "_":[ "this", "walkTo" ] },
+        "subsequence":[
+          { "set":{ "subj":{ "_":[ "objectTyped", { "_":[ "this", "who" ] } ] }, "wobj":{ "_":[ "objectTyped", { "_":[ "that", "walkTo" ] } ] } } },
+          {
+            "as":{ "_":[ "this", "subj" ] },
+            "set":{
+              "follow":{ "_":[ "that", "andFollow" ] },
+              "done":0,
+              "walkX":{ "_":[ "that", "wobj", "x", "+", { "_":[ "that", "wobj", "width", "/", 2 ] }, "+", { "_":[ "that", "wobj", "frontX" ] } ] },
+              "walkY":{ "_":[ "that", "wobj", "y", "+", { "_":[ "that", "wobj", "height" ] }, "+", { "_":[ "that", "wobj", "frontY" ] } ] },
+              "state":"walking"
+            }
+          },
+          { "wait":1, "loop":1, "until":{ "_":[ "this", "subj", "done" ] } },
+          { "set":{ "arrived":{ "_":[ "this", "subj", "arrived" ] } } },
+          { "as":{ "_":[ "this", "subj" ] }, "set":{ "follow":0 } },
+          {
+            "when":{ "_":[ "this", "andComment", "and", { "_":[ "this", "arrived" ] } ] },
+            "execute":{ "set":{ "with":{ "_":[ "this", "walkTo" ] }, "lines":{ "_":[ "this", "andComment" ] } } },
+            "elseExecute":{ "set":{ "who":0 } }
+          },
+          { "as":{ "_":"this" }, "set":{ "andComment":0, "andFollow":0, "walkTo":0 } }
+        ]
+      },
+      {
+        "when":{ "_":[ "this", "walkToX" ] },
+        "subsequence":[
+          { "set":{ "subj":{ "_":[ "objectTyped", { "_":[ "this", "who" ] } ] } } },
+          {
+            "as":{ "_":[ "this", "subj" ] },
+            "set":{ "follow":{ "_":[ "that", "andFollow" ] }, "done":0, "walkX":{ "_":[ "that", "walkToX" ] }, "walkY":{ "_":[ "that", "andY" ] }, "state":"walking" }
+          },
+          { "wait":1, "loop":1, "until":{ "_":[ "this", "subj", "done" ] } },
+          { "set":{ "arrived":{ "_":[ "this", "subj", "arrived" ] } } },
+          { "as":{ "_":[ "this", "subj" ] }, "set":{ "follow":0 } },
+          { "as":{ "_":"this" }, "set":{ "andFollow":0, "walkToX":0, "who":0 } }
+        ]
+      },
+      {
+        "when":{ "_":[ "this", "face" ] },
+        "subsequence":[
+          { "set":{ "face":{ "_":[ "objectTyped", { "_":[ "that", "face" ] } ] }, "subj":{ "_":[ "objectTyped", { "_":[ "this", "who" ] } ] } } },
+          {
+            "set":{
+              "prevX":{ "_":[ "this", "subj", "x" ] },
+              "prevY":{ "_":[ "this", "subj", "y" ] },
+              "walkX":{ "_":[ "this", "face", "x", "+", { "_":[ "this", "face", "width", "/", 2 ] }, "+", { "_":[ "that", "face", "frontX" ] } ] },
+              "walkY":{ "_":[ "this", "face", "y", "+", { "_":[ "this", "face", "height" ] }, "+", { "_":[ "that", "face", "frontY" ] } ] }
+            }
+          },
+          {
+            "as":{ "_":[ "this", "subj" ] },
+            "set":{
+              "x":{ "_":[ "that", "walkX", "+", 30, "-", { "_":[ "that", "subj", "width", "/", 2 ] } ] }, "y":{ "_":[ "that", "walkY", "-", { "_":[ "that", "subj", "height" ] } ] }
+            }
+          },
+          {
+            "when":{ "_":[ "this", "subj", "collidesWith", { "_":[ "object", "wall" ] } ] },
+            "subtract":30,
+            "to":{ "_":[ "this", "walkX" ] },
+            "elseExecute":{ "sum":30, "to":{ "_":[ "this", "walkX" ] } }
+          },
+          { "as":{ "_":[ "this", "subj" ] }, "set":{ "x":{ "_":[ "that", "prevX" ] }, "y":{ "_":[ "that", "prevY" ] } } },
+          {
+            "as":{ "_":[ "this", "subj" ] },
+            "set":{ "follow":{ "_":[ "that", "andFollow" ] }, "done":0, "walkX":{ "_":[ "that", "walkX" ] }, "walkY":{ "_":[ "that", "walkY" ] }, "state":"walking" }
+          },
+          { "wait":1, "loop":1, "until":{ "_":[ "this", "subj", "done" ] } },
+          { "set":{ "arrived":{ "_":[ "this", "subj", "arrived" ] } } },
+          {
+            "when":{ "_":[ "this", "arrived" ] },
+            "execute":[
+              {
+                "when":{
+                  "_":[
+                    "this",
+                    "subj",
+                    "x",
+                    "+",
+                    { "_":[ "this", "subj", "width", "/", 2 ] },
+                    "isLessThan",
+                    { "_":[ "this", "face", "x", "+", { "_":[ "this", "face", "width", "/", 2 ] } ] }
+                  ]
+                },
+                "as":{ "_":[ "this", "subj" ] },
+                "set":{ "flipX":0 },
+                "elseExecute":{ "as":{ "_":[ "this", "subj" ] }, "set":{ "flipX":1 } }
+              },
+              {
+                "when":{ "_":[ "this", "andFaceBack" ] },
+                "execute":{
+                  "when":{
+                    "_":[
+                      "this",
+                      "subj",
+                      "x",
+                      "+",
+                      { "_":[ "this", "subj", "width", "/", 2 ] },
+                      "isLessThan",
+                      { "_":[ "this", "face", "x", "+", { "_":[ "this", "face", "width", "/", 2 ] } ] }
+                    ]
+                  },
+                  "as":{ "_":[ "this", "face" ] },
+                  "set":{ "flipX":1 },
+                  "elseExecute":{ "as":{ "_":[ "this", "face" ] }, "set":{ "flipX":0 } }
+                }
+              }
+            ]
+          },
+          { "as":{ "_":[ "this", "subj" ] }, "set":{ "follow":0 } },
+          { "as":{ "_":"this" }, "set":{ "andFaceBack":0, "andFollow":0, "face":0, "who":0 } }
+        ]
+      },
+      {
+        "when":{ "_":[ "this", "lines" ] },
+        "subsequence":[
+          { "set":{ "counter":0, "subj":{ "_":[ "objectTyped", { "_":[ "this", "who" ] } ] }, "wobj":{ "_":[ "objectTyped", { "_":[ "this", "with" ] } ] } } },
+          {
+            "when":{ "_":[ "this", "wobj" ] },
+            "execute":[
+              {
+                "when":{
+                  "_":[
+                    "this",
+                    "subj",
+                    "x",
+                    "+",
+                    { "_":[ "this", "subj", "width", "/", 2 ] },
+                    "isLessThan",
+                    { "_":[ "this", "wobj", "x", "+", { "_":[ "this", "wobj", "width", "/", 2 ] } ] }
+                  ]
+                },
+                "as":{ "_":[ "this", "subj" ] },
+                "set":{ "flipX":0 },
+                "elseExecute":{ "as":{ "_":[ "this", "subj" ] }, "set":{ "flipX":1 } }
+              },
+              {
+                "when":{ "_":[ "this", "andFaceBack" ] },
+                "execute":{
+                  "when":{
+                    "_":[
+                      "this",
+                      "subj",
+                      "x",
+                      "+",
+                      { "_":[ "this", "subj", "width", "/", 2 ] },
+                      "isLessThan",
+                      { "_":[ "this", "wobj", "x", "+", { "_":[ "this", "wobj", "width", "/", 2 ] } ] }
+                    ]
+                  },
+                  "as":{ "_":[ "this", "wobj" ] },
+                  "set":{ "flipX":1 },
+                  "elseExecute":{ "as":{ "_":[ "this", "wobj" ] }, "set":{ "flipX":0 } }
+                }
+              }
+            ]
+          },
+          {
+            "when":{ "_":[ "this", "withAnimation" ] },
+            "execute":{ "as":{ "_":[ "that", "subj" ] }, "set":{ "animation":{ "_":[ "that", "withAnimation" ] }, "animationFrames":0, "state":"animated" } },
+            "elseExecute":[
+              { "when":{ "_":[ "this", "withFrames", "not" ] }, "set":{ "withFrames":[ 0, 2 ] } },
+              { "as":{ "_":[ "that", "subj" ] }, "set":{ "animationFrames":{ "_":[ "that", "withFrames" ] }, "state":"animated" } }
+            ]
+          },
+          {
+            "object":{
+              "set":{ "_":[ "stencil", "balloon" ] },
+              "x":{ "_":[ "that", "atX" ] }, "y":{ "_":[ "that", "atY" ] },
+              "bgcolor":{ "_":[ "that", "withBgcolor", "or", "#000" ] }, "border":{ "_":[ "that", "withBorder" ] },
+              "html":{ "_":[ "that", "lines", { "_":[ "that", "counter" ] } ] },
+              "placedOver":{ "_":[ "that", "subj" ] }
+            }
+          },
+          { "wait":5 },
+          { "wait":1, "loop":1, "until":{ "_":[ "keyPointer", "isHit" ] } },
+          { "as":{ "_":[ "object", "balloon" ] }, "remove":1 },
+          { "sum":1, "to":{ "_":[ "this", "counter" ] } },
+          { "loopTo":-5, "until":{ "_":[ "this", "lines", { "_":[ "this", "counter" ] }, "not" ] } },
+          { "as":{ "_":[ "that", "subj" ] }, "set":{ "state":"default" } },
+          {
+            "as":{ "_":"this" },
+            "set":{ "with":0, "andFaceBack":0, "atX":0, "atY":0, "lines":0, "who":0, "withAnimation":0, "withBgcolor":0, "withBorder":0, "withFrames":0 }
+          }
+        ]
+      },
+      {
+        "when":{ "_":[ "this", "choices" ] },
+        "subsequence":[
+          { "object":{ "type":"choiceselector", "width":320, "height":56, "zIndex":30, "x":0, "y":144, "bgcolor":"#000" }, "into":{ "_":"scenehud" } },
+          { "set":{ "counter":0 } },
+          { "as":{ "_":"variable" }, "set":{ "choiceSelected":"" } },
+          {
+            "times":4,
+            "execute":[
+              {
+                "when":{ "_":[ "this", "choices", { "_":[ "this", "counter" ] } ] },
+                "object":{
+                  "set":{ "_":[ "stencil", "choicesOption" ] },
+                  "y":{ "_":[ 144, "+", { "_":[ "that", "counter", "*", 6 ] } ] },
+                  "html":{ "_":[ "that", "choices", { "_":[ "that", "counter" ] } ] },
+                  "optionValue":{ "_":[ "that", "choices", { "_":[ "that", "counter", "+", 1 ] } ] }
+                },
+                "into":{ "_":"scenehud" }
+              },
+              { "sum":2, "to":{ "_":[ "this", "counter" ] } }
+            ]
+          },
+          { "wait":1, "loop":1, "until":{ "_":[ "variable", "choiceSelected" ] } },
+          { "as":{ "_":[ "object", "choiceselector" ] }, "remove":1 },
+          { "set":{ "choice":{ "_":[ "variable", "choiceSelected" ] }, "choices":0 } }
+        ]
+      },
+      { "wait":1 }
+    ],
+    "balloon":{
+      "type":"balloon",
+      "width":200, "height":30,
+      "zIndex":20000,
+      "visible":0,
+      "color":"#fff",
+      "font":"cga", "fontSize":8, "lineHeight":10, "outline":"#000", "textAlign":"center",
+      "states":{
+        "execute":[
+          {
+            "when":{ "_":[ "this", "placedOver" ] },
+            "set":{
+              "x":{ "_":[ "this", "placedOver", "x", "-", 60 ] }, "y":{ "_":[ "this", "placedOver", "y", "-", 30 ] },
+              "bgcolor":{ "_":[ "this", "placedOver", "dialogueColor" ] }
+            }
+          },
+          { "when":{ "_":[ "this", "x", "isLessThan", 0 ] }, "set":{ "x":0 } },
+          {
+            "when":{ "_":[ "this", "x", "isGreaterThan", { "_":[ "scene", "width", "-", { "_":[ "this", "width" ] } ] } ] },
+            "set":{ "x":{ "_":[ "scene", "width", "-", { "_":[ "this", "width" ] } ] } }
+          },
+          { "when":{ "_":[ "this", "y", "isLessThan", 0 ] }, "set":{ "y":{ "_":[ "scene", "y", "*", -1, "+", 114 ] } } },
+          { "when":{ "_":[ "this", "y", "isGreaterThan", { "_":[ "scene", "height", "-", { "_":[ "this", "height" ] } ] } ] }, "set":{ "y":0 } },
+          { "set":{ "follow":1, "visible":1 } }
+        ]
+      }
+    },
+    "behaviourInteractive":{
+      "execute":{
+        "when":{ "_":[ "this", "oid", "and", { "_":[ "this", "interactiveSetup", "not" ] } ] },
+        "execute":[
+          { "set":{ "type":{ "_":[ "that", "oid" ] }, "interactiveSetup":1 } },
+          {
+            "object":{
+              "type":"interactive",
+              "label":{ "_":[ "that", "label" ] },
+              "width":{ "_":[ "that", "width" ] }, "height":{ "_":[ "that", "height", "-", 5 ] },
+              "y":5,
+              "cutscene":{ "_":[ "that", "cutscene" ] },
+              "interaction":{ "_":[ "that", "interaction" ] },
+              "oid":{ "_":[ "that", "oid" ] },
+              "states":{ "code":{ "name":"Execute", "data":{ "set":{ "zIndex":{ "_":[ "this", "parent", "zIndex" ] } } } } }
+            },
+            "as":{ "_":"that" },
+            "into":{ "_":"this" },
+            "execute":{ "when":{ "_":[ "that", "interaction" ] }, "set":{ "type":"dointeraction" } }
+          }
+        ]
+      }
+    },
+    "character":{
+      "image":"characters", "width":80, "height":80,
+      "hitbox":{ "width":32, "height":10, "x":24, "y":70 },
+      "done":1,
+      "frontX":0,
+      "frontY":4,
+      "idleAnimation":"idle",
+      "states":[
+        {
+          "like":{ "_":[ "stencil", "behaviourInteractive" ] },
+          "set":{ "animation":{ "_":[ "this", "idleAnimation" ] } },
+          "execute":{ "set":{ "done":1 } },
+          "code":{ "name":"ZPerspective" }
+        },
+        {
+          "name":"animated",
+          "code":[
+            { "name":"ZPerspective" },
+            {
+              "name":"Sequence",
+              "data":[
+                {
+                  "when":{ "_":[ "this", "animationFrames" ] },
+                  "set":{ "frame":{ "_":[ "randomNumber", { "_":[ "this", "animationFrames" ] } ] }, "animation":"none" }
+                },
+                { "wait":{ "_":[ "randomNumber", [ 2, 5 ] ] }, "loopTo":0 }
+              ]
+            }
+          ]
+        },
+        {
+          "name":"walking",
+          "set":{ "animation":"walking", "arrived":0 },
+          "execute":[
+            { "set":{ "destination":{ "_":[ "new", { "width":80, "height":80 } ] } } },
+            { "as":{ "_":[ "this", "destination" ] }, "set":{ "x":{ "_":[ "that", "walkX", "-", 40 ] }, "y":{ "_":[ "that", "walkY", "-", 70 ] } } },
+            { "applyVector":{ "toward":{ "_":[ "this", "destination" ] }, "length":2 } },
+            { "set":{ "flipX":{ "_":[ "this", "forceX", "isLessThan", 0 ] } } }
+          ],
+          "code":[
+            {
+              "name":"Execute",
+              "data":{ "when":{ "_":[ "this", "distanceTo", { "_":[ "this", "destination" ] }, "isLessThan", 2 ] }, "set":{ "arrived":1, "state":"default" } }
+            },
+            { "name":"Physics", "data":{ "walls":{ "type":"wall", "execute":{ "set":{ "state":"default" } } } } },
+            { "name":"ZPerspective" }
+          ]
+        }
+      ]
+    },
+    "choicesOption":{
+      "type":"choiceselector",
+      "width":320, "height":12,
+      "zIndex":40, "x":0,
+      "color":"#fff",
+      "font":"cga", "fontSize":8, "lineHeight":12,
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":{
+            "when":{ "_":[ "this", "collidesWith", { "_":[ "objectTyped", "cursor" ] } ] },
+            "execute":[
+              { "set":{ "color":"#ff55ff" } },
+              { "when":{ "_":[ "keyPointer", "isHit" ] }, "as":{ "_":"variable" }, "set":{ "choiceSelected":{ "_":[ "that", "optionValue" ] } } }
+            ],
+            "elseExecute":{ "set":{ "color":"#fff" } }
+          }
+        }
+      }
+    },
+    "cursor":{
+      "type":"cursor",
+      "image":"sprites", "width":15, "height":15,
+      "zIndex":80000,
+      "hitbox":{ "width":1, "height":1, "x":7, "y":7 },
+      "states":[
+        {
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "wait":2 },
+              { "set":{ "x":{ "_":[ "pointer", "x", "-", 7 ] }, "y":{ "_":[ "pointer", "y", "-", 7 ] } } },
+              {
+                "when":{ "_":[ "variable", "cursorEnabled" ] },
+                "execute":[
+                  { "as":{ "_":"variable" }, "set":{ "command":"", "tip":"" } },
+                  {
+                    "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "walkable" ] }, "sortBy":"zIndex" } ] },
+                    "as":{ "_":"variable" },
+                    "set":{
+                      "command":"walk",
+                      "tip":"Walk here",
+                      "walkX":{ "_":[ "pointer", "x", "-", { "_":[ "scene", "x" ] } ] },
+                      "walkY":{ "_":[ "pointer", "y", "-", { "_":[ "scene", "y" ] } ] }
+                    }
+                  },
+                  {
+                    "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "dointeraction" ] }, "sortBy":"zIndex" } ] },
+                    "as":{ "_":"that" },
+                    "execute":{ "as":{ "_":"variable" }, "set":{ "command":"cutscene", "cutscene":{ "_":[ "that", "cutscene" ] }, "tip":{ "_":[ "that", "interaction" ] } } }
+                  },
+                  {
+                    "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "inventoryitem" ] } ] },
+                    "as":{ "_":"that" },
+                    "execute":{
+                      "as":{ "_":"variable" },
+                      "set":{ "command":"use", "tip":{ "_":[ "Use ", ".", { "_":[ "that", "label" ] }, ".", " with " ] }, "useItem":{ "_":[ "that", "oid" ] } }
+                    }
+                  },
+                  {
+                    "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "option" ] } ] },
+                    "as":{ "_":"that" },
+                    "execute":{ "as":{ "_":"variable" }, "set":{ "command":"option", "optionId":{ "_":[ "that", "optionId" ] }, "tip":{ "_":[ "that", "label" ] } } }
+                  },
+                  {
+                    "when":{ "_":[ "keyPointer", "isHit", "and", { "_":[ "variable", "command" ] } ] },
+                    "execute":{
+                      "when":{ "_":[ "variable", "command", "isEqualTo", "use" ] },
+                      "set":{ "state":"useWith" },
+                      "elseExecute":{ "as":{ "_":"variable" }, "set":{ "confirmed":1, "cursorEnabled":0 } }
+                    }
+                  }
+                ]
+              },
+              { "wait":1, "loopTo":1 }
+            ]
+          }
+        },
+        {
+          "name":"useWith",
+          "execute":{ "as":{ "_":"variable" }, "set":{ "tipPrefix":{ "_":[ "variable", "tip" ] } } },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "wait":2 },
+              { "set":{ "x":{ "_":[ "pointer", "x", "-", 7 ] }, "y":{ "_":[ "pointer", "y", "-", 7 ] } } },
+              { "as":{ "_":"variable" }, "set":{ "tip":{ "_":[ "variable", "tipPrefix" ] }, "useWith":0 } },
+              {
+                "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "inventoryitem" ] } ] },
+                "as":{ "_":"that" },
+                "execute":{
+                  "when":{ "_":[ "this", "oid", "isNotEqualTo", { "_":[ "variable", "useItem" ] } ] },
+                  "as":{ "_":"variable" },
+                  "set":{
+                    "cutscene":{ "_":[ "USE", ".", { "_":[ "variable", "useItem" ] }, ".", "WITH", ".", { "_":[ "that", "oid" ] } ] },
+                    "tip":{ "_":[ "variable", "tipPrefix", ".", { "_":[ "that", "label" ] } ] },
+                    "useWith":1
+                  }
+                }
+              },
+              {
+                "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "interactive" ] }, "sortBy":"zIndex" } ] },
+                "as":{ "_":"that" },
+                "execute":{
+                  "as":{ "_":"variable" },
+                  "set":{
+                    "cutscene":{ "_":[ "USE", ".", { "_":[ "variable", "useItem" ] }, ".", "WITH", ".", { "_":[ "that", "oid" ] } ] },
+                    "tip":{ "_":[ "variable", "tipPrefix", ".", { "_":[ "that", "label" ] } ] },
+                    "useWith":1
+                  }
+                }
+              },
+              {
+                "when":{ "_":[ "keyPointer", "isHit" ] },
+                "execute":[ { "when":{ "_":[ "variable", "useWith" ] }, "as":{ "_":"variable" }, "set":{ "confirmed":1, "cursorEnabled":0 } }, { "set":{ "state":"default" } } ]
+              },
+              { "wait":1, "loopTo":1 }
+            ]
+          }
+        }
+      ]
+    },
+    "defaultScene":{
+      "cameraX":0, "cameraY":0, "cameraWidth":320, "cameraHeight":164, "cameraFocusX":55, "cameraFocusY":0, "cameraFocusWidth":210, "cameraFocusHeight":164,
+      "execute":[
+        {
+          "object":[
+            { "_":[ "stencil", "cursor" ] },
+            { "width":320, "height":56, "x":0, "y":144, "bgcolor":"#000" },
+            {
+              "type":"hud",
+              "hudType":"label", "label":"%text|variable.tip%",
+              "width":320, "height":12,
+              "zIndex":10, "x":0, "y":144,
+              "color":"#fff",
+              "font":"cga", "fontSize":8, "lineHeight":12, "outline":"#000", "textAlign":"center"
+            },
+            { "type":"cover", "width":320, "height":200, "zIndex":30000, "x":0, "y":0, "bgcolor":"#000" },
+            {
+              "type":"option",
+              "label":"Save game",
+              "image":"sprites", "tileX":0, "tileY":16, "width":32, "height":22,
+              "zIndex":10, "x":288, "y":154,
+              "optionId":"save"
+            },
+            {
+              "type":"option",
+              "label":"Load game",
+              "image":"sprites", "tileX":32, "tileY":16, "width":32, "height":22,
+              "zIndex":10, "x":288, "y":176,
+              "optionId":"load"
+            }
+          ],
+          "into":{ "_":"scenehud" }
+        },
+        { "_":[ "stencil", "updateInventory" ] }
+      ],
+      "states":{
+        "execute":[ { "set":{ "width":{ "_":[ "objectTyped", "background", "width" ] } } }, { "_":[ "this", "updateScene" ] } ],
+        "code":{
+          "name":"Sequence",
+          "data":[
+            { "wait":1 },
+            {
+              "when":{ "_":[ "variable", "runCutscene" ] },
+              "elseExecute":{
+                "subsequence":[
+                  {
+                    "object":{
+                      "follow":1,
+                      "set":{ "_":[ "resource", "data", "characters", "main" ] },
+                      "cameraSmoothness":1,
+                      "x":{ "_":[ "variable", "respawnX" ] }, "y":{ "_":[ "variable", "respawnY" ] }
+                    }
+                  },
+                  { "wait":1 },
+                  { "as":{ "_":[ "object", "cover" ] }, "remove":1 }
+                ]
+              },
+              "subsequence":{ "_":[ "scene", "cutscenes", { "_":[ "variable", "runCutscene" ] } ] }
+            },
+            { "as":{ "_":[ "objectTyped", "main" ] }, "set":{ "follow":1, "cameraSmoothness":0.1 } },
+            { "as":{ "_":"variable" }, "set":{ "command":"", "confirmed":0, "cursorEnabled":1, "runCutscene":0, "tip":"" } },
+            { "wait":1, "loop":1, "until":{ "_":[ "variable", "confirmed" ] } },
+            {
+              "when":{ "_":[ "variable", "command", "isEqualTo", "walk" ] },
+              "subsequence":[
+                {
+                  "as":{ "_":[ "objectTyped", "main" ] },
+                  "set":{ "done":0, "walkX":{ "_":[ "variable", "walkX" ] }, "walkY":{ "_":[ "variable", "walkY" ] }, "state":"walking" }
+                },
+                { "wait":1, "loop":1, "until":{ "_":[ "objectTyped", "main", "done" ] } }
+              ]
+            },
+            {
+              "when":{ "_":[ "variable", "command", "isEqualTo", "cutscene" ] },
+              "subsequence":{ "_":[ "scene", "cutscenes", { "_":[ "variable", "cutscene" ] } ] }
+            },
+            {
+              "when":{ "_":[ "variable", "command", "isEqualTo", "option" ] },
+              "execute":[
+                {
+                  "when":{ "_":[ "variable", "optionId", "isEqualTo", "save" ] },
+                  "subsequence":[
+                    { "set":{ "choices":[ "Yes, save the current game.", "yes", "No, don't do it.", "no" ] }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+                    {
+                      "when":{ "_":[ "this", "choice", "isEqualTo", "yes" ] },
+                      "execute":[
+                        {
+                          "as":{ "_":"storage" },
+                          "set":{
+                            "x":{ "_":[ "objectTyped", "main", "x" ] }, "y":{ "_":[ "objectTyped", "main", "y" ] },
+                            "d":{ "_":[ "variable", "player" ] },
+                            "s":{ "_":[ "variable", "idScene" ] }
+                          }
+                        },
+                        { "object":{ "set":{ "_":[ "stencil", "message" ] }, "html":"Game saved." }, "into":{ "_":"scenehud" } }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "when":{ "_":[ "variable", "optionId", "isEqualTo", "load" ] },
+                  "subsequence":[
+                    { "set":{ "choices":[ "Yes, restore the previous saved game.", "yes", "No, don't do it.", "no" ] }, "subsequence":{ "_":[ "stencil", "SCUSA" ] } },
+                    { "when":{ "_":[ "this", "choice", "isEqualTo", "yes" ] }, "execute":[ { "_":[ "stencil", "codeLoadGame" ] }, { "wait":25 } ] }
+                  ]
+                }
+              ]
+            },
+            {
+              "when":{ "_":[ "variable", "command", "isEqualTo", "use" ] },
+              "execute":{
+                "when":{ "_":[ "scene", "cutscenes", { "_":[ "variable", "cutscene" ] } ] },
+                "elseExecute":{ "subsequence":{ "_":[ "randomValue", { "_":[ "resource", "data", "cantuse" ] } ] } },
+                "subsequence":{ "_":[ "scene", "cutscenes", { "_":[ "variable", "cutscene" ] } ] }
+              }
+            },
+            { "loopTo":2 }
+          ]
+        }
+      }
+    },
+    "inventoryItem":{ "type":"inventoryitem", "width":32, "height":22, "zIndex":10 },
+    "message":{
+      "width":300, "height":16,
+      "zIndex":30000, "x":10, "y":64,
+      "bgcolor":"#fff", "border":"#ff55ff", "color":"#000",
+      "font":"cga", "fontSize":8, "lineHeight":16, "textAlign":"center",
+      "states":{ "code":{ "name":"Sequence", "data":[ { "wait":75 }, { "remove":1 } ] } }
+    },
+    "sceneObjectModel":{
+      "type":"wall",
+      "width":80, "height":80,
+      "done":1,
+      "frontX":0,
+      "frontY":4,
+      "states":{
+        "like":{ "_":[ "stencil", "behaviourInteractive" ] },
+        "execute":[
+          { "set":{ "hitbox":{ "_":[ "new", { "width":0, "height":10, "x":0, "y":0 } ] } } },
+          { "as":{ "_":[ "this", "hitbox" ] }, "set":{ "width":{ "_":[ "that", "width" ] }, "y":{ "_":[ "that", "height", "-", 10 ] } } }
+        ]
+      }
+    },
+    "sceneObject":{ "set":{ "_":[ "stencil", "sceneObjectModel" ] }, "frontX":0, "frontY":4, "states":{ "code":{ "name":"ZPerspective" } } },
+    "sceneObjectOnTop":{
+      "done":1,
+      "frontX":0,
+      "frontY":4,
+      "states":{
+        "like":{ "_":[ "stencil", "behaviourInteractive" ] },
+        "code":{ "name":"Execute", "data":{ "set":{ "zIndex":{ "_":[ "objectTyped", { "_":[ "this", "onTopOf" ] }, "zIndex", "+", 1 ] } } } }
+      }
+    },
+    "sceneObjectOnWall":{
+      "zIndex":1,
+      "hitbox":{ "width":1, "height":1, "x":0, "y":0 },
+      "done":1,
+      "frontX":0,
+      "frontY":4,
+      "states":{ "like":{ "_":[ "stencil", "behaviourInteractive" ] } }
+    },
+    "updateInventory":[
+      { "as":{ "_":[ "object", "inventoryitem" ] }, "remove":1 },
+      { "set":{ "counter":0 } },
+      {
+        "times":14,
+        "execute":[
+          {
+            "when":{ "_":[ "variable", "player", "inventory", { "_":[ "this", "counter" ] } ] },
+            "object":{
+              "set":{ "_":[ "stencil", "inventoryItem" ] },
+              "x":{ "_":[ "that", "counter", "%", 7, "*", 32 ] }, "y":{ "_":[ "that", "counter", "/", 7, "floor", "*", 22, "+", 156 ] },
+              "item":{ "_":[ "resource", "data", "items", { "_":[ "variable", "player", "inventory", { "_":[ "that", "counter" ] } ] } ] }
+            },
+            "as":{ "_":"that" },
+            "into":{ "_":"scenehud" },
+            "execute":{ "set":{ "_":[ "this", "item" ] } }
+          },
+          { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+        ]
+      }
+    ]
+  },
+  "scenes":{
+    "intro":{
+      "object":{
+        "width":320, "height":100,
+        "x":0, "y":80,
+        "color":"#fff",
+        "font":"cga", "fontSize":8, "lineHeight":10, "textAlign":"center", "html":"Made with<br>Wright! Game Engine<br>and<br>SCUSA Adventure Sub-Engine"
+      },
+      "states":{ "code":{ "name":"Sequence", "data":[ { "wait":75 }, { "gotoScene":"title", "withTransition":3 } ] } }
+    }
+  }
+}

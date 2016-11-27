@@ -1,0 +1,69 @@
+{
+  "object":[
+    { "_":[ "stencil", "cursor" ] },
+    { "image":"title", "width":320, "height":200, "x":0, "y":0 },
+    {
+      "width":320, "height":20,
+      "zIndex":10, "x":0, "y":130,
+      "color":"#fff",
+      "font":"cga", "fontSize":8, "outline":"#000", "textAlign":"center", "html":"Load game",
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":{
+            "when":{ "_":[ "this", "collidesWith", { "_":[ "objectTyped", "cursor" ] } ] },
+            "execute":[ { "set":{ "color":"#ff55ff" } }, { "when":{ "_":[ "keyPointer", "isHit" ] }, "execute":{ "_":[ "stencil", "codeLoadGame" ] } } ],
+            "elseExecute":{ "set":{ "color":"#fff" } }
+          }
+        }
+      }
+    },
+    {
+      "width":320, "height":20,
+      "zIndex":10, "x":0, "y":150,
+      "color":"#fff",
+      "font":"cga", "fontSize":8, "outline":"#000", "textAlign":"center", "html":"New game",
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":{
+            "when":{ "_":[ "this", "collidesWith", { "_":[ "objectTyped", "cursor" ] } ] },
+            "execute":[ { "set":{ "color":"#ff55ff" } }, { "when":{ "_":[ "keyPointer", "isHit" ] }, "execute":{ "_":[ "stencil", "codeNewGame" ] } } ],
+            "elseExecute":{ "set":{ "color":"#fff" } }
+          }
+        }
+      }
+    }
+  ],
+  "states":{
+    "code":{
+      "name":"Sequence",
+      "data":[
+        { "wait":25 },
+        {
+          "object":{
+            "image":"title", "tileY":200, "width":0, "height":59,
+            "zIndex":10, "x":24, "y":20,
+            "states":{
+              "code":{
+                "name":"Sequence",
+                "data":[
+                  { "sum":2, "to":{ "_":[ "this", "width" ] }, "wait":1, "loop":1, "cycles":136 },
+                  { "wait":25 },
+                  {
+                    "object":{
+                      "width":320, "height":20,
+                      "zIndex":10, "x":0, "y":82,
+                      "bgcolor":"#55ffff", "color":"#fff",
+                      "font":"cga", "fontSize":8, "outline":"#000", "textAlign":"center", "html":"The true legend of the time fixers."
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
