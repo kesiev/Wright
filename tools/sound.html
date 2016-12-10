@@ -1,0 +1,214 @@
+<html>
+	<head>
+		<title>Wright! Music tool</title>		
+	</head>
+	<body>
+      <input id="musicfile" type="text" value="../tapes/wtype/wat_is_luv.ogg">
+      <input type="button" value="Start" onclick="start()"><input style="position:fixed;width:100px;height:100px;right:10px;top:10px" type="button" value="Stop" onclick="stop()">
+       <input style="position:fixed;width:100px;right:10px;top:30px" onkeydown="keydown(event)">
+
+      
+
+
+      <hr>
+      <span id="data"></span>
+      <hr>
+      <textarea id="inout"></textarea>
+      <hr>
+      <input type="button" value="Load" onclick="doSet()">
+      <hr>
+      <input type="button" value="Save" onclick="doGet()">
+	</body>
+	<script>
+
+
+  var started=false,loaded=false;var initTime=0;
+  var audio=null;var source;
+    window.AudioContext = window.AudioContext || window.webkitAudioContext;
+    var context = new AudioContext();
+
+  var dataset=[],
+  newdata;
+
+  function load(url,done) {
+    // Fix up prefixing
+
+      console.log("Loading "+url);
+      var request = new XMLHttpRequest();
+      request.open('GET', url, true);
+      request.responseType = 'arraybuffer';
+
+      // Decode asynchronously
+      request.onload = function() {
+        context.decodeAudioData(request.response, function(buffer) {
+          console.log("Loaded.");
+          audio = buffer;
+          done();
+        }, function(){
+          console.log("Error decoding.");
+        });
+      }
+      request.send();
+  }
+
+  function stop() {
+    console.log("Stopped.");
+    if (started) {
+      source.stop();
+      started=false;
+    }
+    updatelist();
+  }
+
+  function play(at) {
+    for (var i=0;i<dataset.length;i++) delete dataset[i].isNew;
+      newdata=[];
+      if (!at) at=0;
+      stop();
+   source = context.createBufferSource(); // creates a sound source
+  source.connect(context.destination);       // connect the source to the context's destination (the speakers)
+        source.buffer = audio;                    // tell the source which sound to play
+        setTimeout(function(){
+          started=true;
+          source.start(0,at);                           // play the source now
+          initTime=context.currentTime-at;
+          console.log("playing...");
+
+        },500)
+  }
+
+  function monitor() {
+    if (source&&started) {
+      var pos=context.currentTime-initTime;
+      for (var i=0;i<dataset.length;i++) {
+        var node=document.getElementById("row_"+i);
+        if (node) node.style.backgroundColor=dataset[i].time<=(pos+0.1)?"#0ff":"#fff";
+      }
+    }
+      setTimeout(monitor,40);
+  }
+    monitor();
+
+  // ---
+
+  function updatelist() {
+    if (newdata) {
+      for (var i=0;i<newdata.length;i++)
+        dataset.push({time:newdata[i],isNew:1,_code:""});
+      dataset.sort(function(a,b){
+        if (a.time<b.time) return -1;
+        else if (a.time>b.time) return 1;
+        else return 0;
+      });
+      newdata=[];
+    }
+    var html="<table>";
+    var s=0,d=0,x=0,c=0;
+    for (var i=0;i<dataset.length;i++) {
+      if (i==0) d=dataset[i].time;
+      else {
+        x=dataset[i].time-d;
+        s+=x;
+        c++;
+        d=dataset[i].time;
+        console.log(x);
+      }
+      boldup=(i>0)&&(dataset[i].time-dataset[i-1].time<0.18);
+      bolddown=(i<dataset.length-1)&&(dataset[i+1].time-dataset[i].time<0.18);
+      html+="<tr id='row_"+i+"'><td><input type=button value='DEL' onclick='deleteitem("+i+")'></td>";
+      html+="<td>"+i+"</td>";
+      html+="<td style='";
+      html+=(dataset[i].isNew?"border:1px solid #f00;":"");
+      html+=(boldup||bolddown?"font-weight:bold;":"");
+      html+="'>"+dataset[i].time+"</td>"
+      html+="<td><input style='width:600px' type=text id='code_"+i+"' onkeyup='savecode(\""+i+"\")' value='"+dataset[i]._code+"'></td>";
+      html+="<td><input type=button value='Play' onclick='start("+dataset[i].time+")'></td>";
+      html+="<td><input id='check_"+i+"' type=checkbox "+(dataset[i].strong?"checked":"")+" onclick='flag("+i+",\"strong\")'></td>"
+      html+="<td><input type=button value='^' onclick='move("+i+",-0.01)'></td>";
+      html+="<td><input type=button value='v' onclick='move("+i+",0.01)'></td>";
+      if (boldup||bolddown) {
+        if (boldup) html+="<td><input type=button value='Merge up' onclick='merge("+i+",-1)'></td>";
+        if (bolddown) html+="<td><input type=button value='Merge down' onclick='merge("+i+",1)'></td>";
+        if (!dataset[i].isNew) html+="<td><input type=button value='Delete' onclick='deleteitem("+i+")'></td>";
+      }
+      html+="<tr>";
+    }
+    document.getElementById("data").innerHTML=html+"(avg: "+(s/c)+")";
+  }
+
+  function savecode(id) {
+    var cb=document.getElementById("code_"+id);
+    dataset[id]._code=cb.value;
+  }
+
+  function flag(id,type) {
+    var cb=document.getElementById("check_"+id);
+    if (cb.checked) dataset[id][type]=1; else delete dataset[id][type];
+    console.log("set",id,",",type,"to",dataset[id][type]);
+  }
+
+  function merge(id,side) {
+    dataset[id].time=(dataset[id].time+dataset[id+side].time)/2;
+    dataset.splice(id+side,1);
+    updatelist();
+  }
+
+  function move(id,side) {
+    dataset[id].time+=side;
+    dataset[id].time=Math.floor((dataset[id].time)*100)/100
+    updatelist();
+  }
+
+  function start(at) {
+      stop();
+    if (loaded) {
+        play(at);
+    } else {
+      loaded=true;
+      load(document.getElementById("musicfile").value,function(){
+        play(at);
+      });
+    }
+  }
+
+  function deleteitem(id) {
+    dataset.splice(id,1);
+    updatelist();
+  }
+
+  function keydown(e) {
+    if (started)
+      newdata.push(Math.floor((context.currentTime-initTime)*100)/100);
+  }
+
+  function doGet() {
+    var out=[],err="";;
+    for (var i=0;i<dataset.length;i++) {      
+      delete dataset[i].isNew;
+      var elm=JSON.parse(JSON.stringify(dataset[i]));
+      if (elm._code) {
+        try {
+          elm.code=JSON.parse(elm._code);
+        } catch (e) {
+          err+="Can't parse "+i+":"+elm._code+"\n";
+        }
+      } else
+        delete elm.code;
+      delete elm._code;
+      out.push(elm);
+    }
+    document.getElementById("inout").value=err?err:JSON.stringify(out);
+  updatelist();
+  }
+
+  function doSet() {
+    dataset=JSON.parse(document.getElementById("inout").value);
+    for (var i=0;i<dataset.length;i++) {
+      dataset[i].time=Math.floor(dataset[i].time*100)/100;
+      dataset[i]._code=dataset[i].code?JSON.stringify(dataset[i].code):"";
+    }
+  updatelist();
+  }
+
+</script>
+</html>
