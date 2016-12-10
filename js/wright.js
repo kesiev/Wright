@@ -362,6 +362,7 @@ var DOMInator=function(useCanvas,aliasmode){
 			audio.gainNode.gain.value=volume;
 		}
 	};
+	this.isAudioEnabled=function() { return !!audio }
 	this.addAudioChannel=function(name,data) {
 		if (audio) {
 			var channel=audio.channels[name]={
@@ -1896,6 +1897,7 @@ function Box(parent, type, sub, statemanager, useCanvas, aliasmode) {
 
 		// AUDIO (DOMInator Proxy)
 		box.enableAudio=function(volume) { return this.node.enableAudio(volume); }
+		box.isAudioEnabled=function() { return this.node.isAudioEnabled(); }
 		box.addAudioChannel=function(name,data) { return this.node.addAudioChannel(name,data); }
 		box.getAudioChannel=function(channel) { return this.node.getAudioChannel(channel); }
 		box.getAudio=function(name,channel) { return this.node.getAudio(name,channel); }
@@ -3674,6 +3676,7 @@ function Wright(gameId,mods) {
 					case "hud":{ ret = hud; break; }
 					case "scenehud":{ ret = scenehud; break; }
 					case "storage":{ ret=Storage; break; }
+					case "audioEnabled":{ ret=game.isAudioEnabled(); break; }
 					case "audio":{
 						var ch,nm=get(from, tox, struct[++id]);
 						if (struct[id+1]=="withChannel") {
