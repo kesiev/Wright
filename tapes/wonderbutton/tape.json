@@ -1,0 +1,1948 @@
+{
+  "name":"Wonderbutton",
+  "author":"KesieV",
+  "year":2016,
+  "genre":"Platformer",
+  "description":"<p>Happy Holidays!</p><p>When I was around 15 all I wanted for christmas and my gaming life was a <a href='https://en.wikipedia.org/wiki/Game_Boy'>Nintendo Game Boy</a>. You can find some good videogame-related reasons in the <a href='geekfighter'>Geek Fighters</a> rant but, if you need something one more <i>human</i>, it was its bundled game <a href='https://en.wikipedia.org/wiki/Tetris_(Game_Boy)'>Tetris</a> (1989). Some of my friends used to play Tetris in system link mode during day trips. They weren't <i>devoted gamers</i> like me but, on that bus, they sounded in my head like <i>'Hey, we are best friends and we're so gamers that we can't stop gaming together!'</i>. It mixed our common <i>better gaming system</i> syndrome with my uncertainty in relations: having a Game Boy must improve my status of gamer and friend - not mentioning that the Game Boy had a number of great videogames.</p><p>My father thought that <i>consoles are just computers you can't program</i>, cartridges were more pricey than tapes and floppy disks and we already had a bunch of home computers, so having one of these things was out of question.<p>So, that summer came and, as usual, I was spending it <a href='waterseal'>in Sicily with my family</a>.</p><p>My mother was probably busy somewhere in Palermo, so she left me to my aunt Giulia hairdresser studio for a while. I was very into this Game Boy affair and, as sometime still sadly happens now, I couldn't contain the obsession. Giulia easily discovered my wish and she promised me that she would have bought me that so desidered <i>videogame</i>. I remember every moment from that promise as a dream: it's the time to say goodbye to bad home computer portings and my loneliness - few cartridges and a system link cable was going to fix my life.</p><p>The time of coming back home in Lombardy came and Giulia and I was still without my saviour. I was terribly sad: that momemnt of redemption was crumbling under my feet. But then, Giulia came. And I clearly remember her words: 'It's better than that black-and-white videogame!'. She handed me the Game Boy competitor, the <a href='https://en.wikipediaorg/wiki/Game_Gear'>Sega Game Gear</a> with its <a href='https://en.wikipedia.org/wiki/Alien_Syndrome'>Alien Syndrome</a> (1992) port. I smiled.</p><p>I just smiled.</p><p>I'm still ashamed of that moment. She gifted me with <i>a better version</i> of my dream and I just smiled. It <i>wasn't a Game Boy</i>. It's not going to <i>fix my life</i>. But, as usually happens, life decided to teach me the lesson in its sarcastic-karmik way.</p><p>The Sega Game Gear battery life was notoriously short, forcing me to play it in short bursts when around - it never managed to accompany me for a whole trip. It needed an incredible amount of batteries, so I mostly played it plugged to the wall and at home - mostly alone. Then, a friend of mine - richer than me - got a Game Gear too, with a great number of cartridges, leaving me in the dust with my 2-3 games to play. Cherry on top? One of these few games I had was - as the critics said - <i>'the best handheld fighting game ever released'</i>, <a href='https://en.wikipedia.org/wiki/Fatal_Fury_Special'>Fatal Fury Special</a> (1993). I owned and played to the death a masterpiece of videogames like a true gamer. A game that no one of my Game Boy friends ever played - but a game that I nearly never managed to show them.</p><p><i>Lesson learned, life.</i></p><p>Few years later my family gifted my little sister Rosalia with a Game Boy Pocket and, surprise, I discovered that Game Boy videogames were <i>actually way better</i> than Game Gear ones - and history in some way confirmed it. She was at the hospital when my father brought me to a mart nearby: I had to choose a videogame for her. I smiled and picked up its <a href='https://en.wikipedia.org/wiki/Battle_Arena_Toshinden'>Battle Arena Toshinden</a> (1996) port. It had a lot of <i>manga-style</i> images and she liked them a lot - but it also was, in my humble opinion, <i>the best handheld fighting game ever released</i> to a Game Boy. I closed the circle and made peace with life.</p><p>I decided to wrap all the games I liked to build during these years in Wright! Mag in a single Game Boy styled game as a memento. I hope you'll like it!</p><p>Plot!</p><p>You are a brave hero and... Just play the game! Use the BUTTON for jumping and press it again while midair to stomping your sword to the ground! Good luck!</p>",
+  "screenshots":[ "wonderbutton-1.png", "wonderbutton-2.png" ],
+  "hardware":{
+    "width":160,
+    "height":144,
+    "controls":"onebutton",
+    "filter":"retro"
+  },
+  "audioChannels":{
+    "sfx":{
+      "volume":1,
+      "samples":[ "coin", "explode", "hurt", "jump", "sword", "xp", "stomp", "psyche", "levelup", "heart", "slay", "doublejump", "checkpoint", "buy", "break" ]
+    },
+    "music":{ "volume":0.8, "looping":1, "samples":[ "bossMusic", "introMusic", "stageMusic" ] }
+  },
+  "cheats":{},
+  "resources":{
+    "bossMusic":"boss.ogg",
+    "break":"break.ogg",
+    "buy":"buy.ogg",
+    "checkpoint":"checkpoint.ogg",
+    "coin":"coin.ogg",
+    "doublejump":"doublejump.ogg",
+    "explode":"explode.ogg",
+    "gameboy":"gameboy.font",
+    "heart":"heart.ogg",
+    "hurt":"hurt.ogg",
+    "introMusic":"intro.ogg",
+    "jump":"jump.ogg",
+    "levelup":"levelup.ogg",
+    "psyche":"psyche.ogg",
+    "slay":"slay.ogg",
+    "sprites":"sprites.png",
+    "stageMusic":"stage.ogg",
+    "stomp":"stomp.ogg",
+    "sword":"sword.ogg",
+    "tiles":"tiles.png",
+    "title":"title.png",
+    "xp":"xp.ogg"
+  },
+  "stencils":{
+    "codeBossMovement":{
+      "code":{
+        "name":"Execute",
+        "data":[
+          { "sum":0.1, "to":{ "_":[ "this", "timer" ] } },
+          { "set":{ "x":{ "_":[ "this", "centerX", "+", { "_":[ "this", "timer", "cos", "*", { "_":[ "this", "xRadius" ] } ] } ] } } },
+          { "sum":0.3, "to":{ "_":[ "this", "timer2" ] } },
+          { "set":{ "y":{ "_":[ "this", "centerY", "+", { "_":[ "this", "timer2", "cos", "*", { "_":[ "this", "yRadius" ] } ] } ] } } }
+        ]
+      }
+    },
+    "codeBottomSword":{
+      "as":{ "_":[ "this", "sword" ] },
+      "execute":[
+        { "set":{ "type":[ "playerAttack", "verticalAttack" ], "removeType":"horizontalAttack", "attackType":"vertical" } },
+        {
+          "as":{ "_":[ "this", "hitbox" ] },
+          "set":{
+            "width":{ "_":[ "that", "swordHeight" ] }, "height":{ "_":[ "that", "swordWidth" ] },
+            "x":{ "_":[ 16, "-", { "_":[ "that", "swordWidth" ] }, "/", 2, "floor" ] }, "y":0
+          }
+        },
+        { "set":{ "x":{ "_":[ "that", "x" ] }, "y":{ "_":[ "that", "y", "+", 16 ] }, "visible":1, "flipX":{ "_":[ "that", "flipX" ] }, "angle":90 } }
+      ]
+    },
+    "codeCheckVariables":[
+      { "when":{ "_":[ "variable", "gold", "isLessThan", 0 ] }, "as":{ "_":"variable" }, "set":{ "gold":0 } },
+      { "when":{ "_":[ "variable", "gold", "isGreaterThan", 999 ] }, "as":{ "_":"variable" }, "set":{ "gold":999 } },
+      { "when":{ "_":[ "variable", "hp", "isLessThan", 0 ] }, "as":{ "_":"variable" }, "set":{ "hp":0 } },
+      {
+        "when":{ "_":[ "variable", "hp", "isGreaterThan", { "_":[ "variable", "maxHp" ] } ] },
+        "as":{ "_":"variable" },
+        "set":{ "hp":{ "_":[ "variable", "maxHp" ] } }
+      },
+      {
+        "when":{ "_":[ "variable", "xp", "isGreaterThan", { "_":[ "variable", "maxXp" ] } ] },
+        "execute":[
+          {
+            "when":{ "_":[ "variable", "level", "isLessThan", 10 ] },
+            "execute":[
+              { "playAudio":"levelup" },
+              { "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "html":"LEVEL<br>UP", "speed":1.5 }, "as":{ "_":[ "objectTyped", "player" ] } },
+              { "sum":1, "to":{ "_":[ "variable", "level" ] } },
+              { "as":{ "_":[ "objectTyped", "playersword" ] }, "set":{ "damage":{ "_":[ "variable", "level" ] } } }
+            ],
+            "elseExecute":{ "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "html":"LEVEL<br>MAX", "speed":1.5 }, "as":{ "_":[ "objectTyped", "player" ] } }
+          },
+          { "as":{ "_":"variable" }, "set":{ "maxXp":{ "_":{ "_":[ "variable", "level", "*", 20 ] } }, "xp":0 } }
+        ]
+      }
+    ],
+    "codeFoeDepleteHit":{ "when":{ "_":[ "that", "stickToPlayer" ] }, "as":{ "_":[ "objectTyped", "player" ] }, "set":{ "playAudio":"stomp", "state":"stun" } },
+    "codeFoeHit":[
+      { "playAudio":"sword" },
+      { "set":{ "gotDamage":{ "_":[ "that", "damage" ] } } },
+      { "object":[ { "_":[ "stencil", "spark" ] }, { "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "html":{ "_":[ "that", "gotDamage" ] } } ] },
+      { "subtract":{ "_":[ "this", "gotDamage" ] }, "to":{ "_":[ "this", "hp" ] } },
+      {
+        "when":{ "_":[ "this", "hp", "isLessEqualThan", 0 ] },
+        "set":{ "state":"dead" },
+        "elseExecute":[ { "set":{ "forceY":-3, "invulnerability":20 } }, { "_":[ "stencil", "codeFoeDepleteHit" ] } ]
+      }
+    ],
+    "codeFrontSword":{
+      "as":{ "_":[ "this", "sword" ] },
+      "execute":[
+        { "set":{ "type":[ "playerAttack", "horizontalAttack" ], "removeType":"verticalAttack", "y":{ "_":[ "that", "y" ] }, "visible":1, "angle":0 } },
+        {
+          "when":{ "_":[ "that", "flipX" ] },
+          "execute":[
+            { "set":{ "x":{ "_":[ "that", "x", "-", 16 ] }, "flipX":1, "attackType":"left" } },
+            {
+              "as":{ "_":[ "this", "hitbox" ] },
+              "set":{
+                "width":{ "_":[ "that", "swordWidth" ] }, "height":{ "_":[ "that", "swordHeight" ] },
+                "x":{ "_":[ 16, "-", { "_":[ "that", "swordWidth" ] } ] }, "y":{ "_":[ 16, "-", { "_":[ "that", "swordHeight" ] }, "/", 2, "floor" ] }
+              }
+            }
+          ],
+          "elseExecute":[
+            { "set":{ "x":{ "_":[ "that", "x", "+", 16 ] }, "flipX":0, "attackType":"right" } },
+            {
+              "as":{ "_":[ "this", "hitbox" ] },
+              "set":{
+                "width":{ "_":[ "that", "swordWidth" ] }, "height":{ "_":[ "that", "swordHeight" ] },
+                "x":0, "y":{ "_":[ 16, "-", { "_":[ "that", "swordHeight" ] }, "/", 2, "floor" ] }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "codeGenerateLoot":{
+      "execute":[
+        {
+          "times":{ "_":[ "this", "maxHp" ] },
+          "execute":{
+            "when":{ "_":[ "variable", "hp", "isLessThan", { "_":[ "variable", "maxHp" ] } ] },
+            "execute":{
+              "when":{ "_":[ "randomValue", [ 0, 0, 1 ] ] },
+              "execute":{ "object":{ "_":[ "stencil", "heart" ] } },
+              "elseExecute":{ "object":{ "_":[ "stencil", "coin" ] } }
+            },
+            "elseExecute":{ "object":{ "_":[ "stencil", "coin" ] } }
+          }
+        },
+        { "object":{ "set":{ "_":[ "stencil", "xp" ] }, "xp":{ "_":[ "that", "maxHp" ] } } }
+      ]
+    },
+    "codeMission":{
+      "when":{ "_":[ "this", "missionRunTrigger", "isEqualTo", { "_":[ "variable", "missionTrigger" ] } ] },
+      "execute":[
+        { "subtract":1, "to":{ "_":[ "variable", "missionAmount" ] } },
+        {
+          "when":{ "_":[ "variable", "missionAmount", "isLessEqualThan", 0 ] },
+          "execute":[
+            { "as":{ "_":[ "object", "missionhud" ] }, "set":{ "visible":0 } },
+            { "sum":{ "_":[ "variable", "missionGold" ] }, "to":{ "_":[ "variable", "gold" ] } },
+            { "sum":{ "_":[ "variable", "missionXp" ] }, "to":{ "_":[ "variable", "xp" ] } },
+            { "_":[ "stencil", "codeCheckVariables" ] },
+            { "set":{ "frame":0 } },
+            { "sum":1, "to":{ "_":[ "variable", "missionProgress", { "_":[ "variable", "missionSet" ] } ] } },
+            { "as":{ "_":"variable" }, "set":{ "missionAmount":0, "missionKey":0, "missionTrigger":"none" } },
+            { "as":{ "_":[ "object", "missionLabel" ] }, "remove":1 },
+            {
+              "object":{
+                "set":{ "_":[ "stencil", "missionLabel" ] },
+                "html":{ "_":[ "QUEST COMPLETED!<br>", ".", { "_":[ "variable", "missionXp" ] }, ".", "XP &#40;", ".", { "_":[ "variable", "missionGold" ] } ] }
+              },
+              "into":{ "_":"scenehud" }
+            }
+          ]
+        }
+      ]
+    },
+    "codeNoSword":{ "as":{ "_":[ "this", "sword" ] }, "execute":{ "set":{ "removeType":[ "playerAttack", "horizontalAttack", "verticalAttack" ], "visible":0 } } },
+    "codeRespawn":[
+      { "as":{ "_":[ "object", "bossarea" ] }, "set":{ "state":"default" } },
+      { "as":{ "_":[ "objectTyped", "player" ] }, "remove":1 },
+      { "as":{ "_":"variable" }, "set":{ "hp":3 } },
+      {
+        "as":{ "_":[ "objectTyped", "currentcheckpoint" ] },
+        "execute":{
+          "object":{ "set":{ "_":[ "stencil", "player" ] }, "x":{ "_":[ "that", "x" ] }, "y":{ "_":[ "that", "y", "-", 16 ] }, "flipX":{ "_":[ "that", "startFlipX" ] } }
+        }
+      }
+    ],
+    "codeSideSet":{ "when":{ "_":[ "this", "forceX", "isGreaterThan", 0 ] }, "set":{ "flipX":0 }, "elseExecute":{ "set":{ "flipX":1 } } },
+    "sparkle":{ "set":{ "_":[ "stencil", "cloud" ] }, "tileX":112, "tileY":16 },
+    "spark":{
+      "image":"sprites", "tileX":0, "tileY":0, "width":16, "height":16,
+      "zIndex":10000, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "animations":{ "spark":{ "frames":4, "speed":0 } },
+      "animation":"spark",
+      "states":{ "code":{ "name":"Sequence", "data":[ { "wait":4 }, { "remove":1 } ] } }
+    },
+    "removeWithCloud":[
+      {
+        "object":{
+          "set":{ "_":[ "stencil", "cloud" ] },
+          "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] }
+        }
+      },
+      { "remove":1 }
+    ],
+    "removeWithSpark":[ { "object":{ "set":{ "_":[ "stencil", "spark" ] } } }, { "remove":1 } ],
+    "removeWithSparkle":[
+      {
+        "object":{
+          "set":{ "_":[ "stencil", "sparkle" ] },
+          "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] }
+        }
+      },
+      { "remove":1 }
+    ],
+    "modelPopupLabel":{
+      "width":100, "height":20,
+      "zIndex":10000, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "that", "y", "-", 15 ] },
+      "color":"#0f380f",
+      "font":"gameboy", "fontSize":8, "lineHeight":10, "outline":"#9bbc0f", "textAlign":"center",
+      "speed":0.5,
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[ { "subtract":{ "_":[ "this", "speed" ] }, "to":{ "_":[ "this", "y" ] }, "wait":1, "loop":1, "cycles":15 }, { "remove":1 } ]
+        }
+      }
+    },
+    "modelRespawningFoe":{
+      "state":"waiting",
+      "states":[
+        {
+          "name":"waiting",
+          "execute":[
+            {
+              "when":{ "_":[ "this", "prepared", "not" ] },
+              "execute":{ "set":{ "orgHp":{ "_":[ "this", "hp" ] }, "orgX":{ "_":[ "this", "x" ] }, "orgY":{ "_":[ "this", "y" ] }, "prepared":1 } }
+            },
+            {
+              "set":{
+                "removeType":[ "foe", "foeAttack" ],
+                "x":{ "_":[ "this", "orgX" ] }, "y":{ "_":[ "this", "orgY" ] },
+                "visible":0,
+                "forceX":0, "forceY":0,
+                "blocked":1,
+                "flyGravity":0,
+                "hp":{ "_":[ "this", "orgHp" ] }
+              }
+            }
+          ],
+          "code":{
+            "name":"Execute",
+            "data":{ "when":{ "_":[ "this", "distanceTo", { "_":[ "objectTyped", "player" ] }, "isLessThan", 160 ] }, "set":{ "visible":1, "state":"default" } }
+          }
+        },
+        {
+          "name":"waitrespawn",
+          "set":{ "removeType":[ "foe", "foeAttack" ], "visible":0 },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "set":{ "x":{ "_":[ "this", "orgX" ] }, "y":{ "_":[ "this", "orgY" ] } } },
+              { "wait":1, "loop":1, "until":{ "_":[ "this", "distanceTo", { "_":[ "objectTyped", "player" ] }, "isGreaterThan", 160 ] } },
+              { "set":{ "state":"waiting" } }
+            ]
+          }
+        }
+      ]
+    },
+    "modelFoe":{
+      "set":{ "_":[ "stencil", "modelRespawningFoe" ] },
+      "image":"sprites",
+      "zIndex":8,
+      "blocked":1,
+      "hp":3,
+      "maxHp":3,
+      "states":[
+        {
+          "like":[ { "_":[ "stencil", "foeBehaviour" ] }, { "_":[ "stencil", "foeHitableBehaviour" ] }, { "_":[ "stencil", "modelRestartWhenFar" ] } ],
+          "execute":{ "set":{ "type":[ "foe", "foeAttack" ] } },
+          "code":{
+            "name":"Execute",
+            "data":{
+              "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "enemywall" ] } ] },
+              "execute":{
+                "when":{ "_":[ "this", "blocked" ] },
+                "execute":{ "when":{ "_":[ "this", "distanceTo", { "_":[ "objectTyped", "player" ] }, "isLessThan", 40 ] }, "set":{ "blocked":0 } },
+                "elseExecute":{
+                  "when":{ "_":[ "this", "y", "isGreaterThan", { "_":[ "objectTyped", "player", "y" ] } ] },
+                  "subtract":1,
+                  "to":{ "_":[ "this", "y" ] },
+                  "elseExecute":{ "sum":1, "to":{ "_":[ "this", "y" ] } }
+                }
+              },
+              "elseExecute":{ "set":{ "state":"free" } }
+            }
+          }
+        },
+        {
+          "name":"dead",
+          "execute":[
+            { "playAudio":"slay" },
+            { "_":[ "stencil", "codeMission" ] },
+            { "_":[ "stencil", "codeGenerateLoot" ] },
+            { "when":{ "_":[ "this", "removeOnDead" ] }, "remove":1, "elseExecute":{ "set":{ "state":"waitrespawn" } } }
+          ]
+        }
+      ]
+    },
+    "modelRestartWhenFar":{
+      "code":{
+        "name":"Execute",
+        "data":{ "when":{ "_":[ "this", "distanceTo", { "_":[ "objectTyped", "player" ] }, "isGreaterThan", 220 ] }, "set":{ "state":"waitrespawn" } }
+      }
+    },
+    "stageModel":{
+      "bgcolor":"#9bbc0f",
+      "execute":[
+        { "stopChannel":"music", "applyEffect":{ "name":"setvolume", "volume":0.8 }, "toChannel":"music" },
+        { "playAudio":"stageMusic" },
+        {
+          "object":[
+            {
+              "type":"hud",
+              "hudType":"label", "label":"LV.%number|variable.level|0|2% &#40;%number|variable.gold|0|3%",
+              "width":160, "height":8,
+              "zIndex":10, "x":0, "y":0,
+              "bgcolor":"#9bbc0f", "color":"#0f380f",
+              "font":"gameboy", "fontSize":8, "lineHeight":8
+            },
+            {
+              "type":"hud",
+              "hudType":"label", "label":"XP %number|variable.xp|0|3%-%number|variable.maxXp|0|3%",
+              "width":160, "height":8,
+              "zIndex":10, "x":0, "y":8,
+              "bgcolor":"#9bbc0f", "color":"#0f380f",
+              "font":"gameboy", "fontSize":8, "lineHeight":8
+            },
+            {
+              "image":"sprites", "tileX":64, "tileY":0, "width":80, "height":8,
+              "zIndex":20, "x":80, "y":0,
+              "states":{ "code":{ "name":"Execute", "data":{ "set":{ "width":{ "_":[ "variable", "maxHp", "*", 8 ] } } } } }
+            },
+            {
+              "image":"sprites", "tileX":64, "tileY":8, "width":80, "height":8,
+              "zIndex":30, "x":80, "y":0,
+              "states":{ "code":{ "name":"Execute", "data":{ "set":{ "width":{ "_":[ "variable", "hp", "*", 8 ] } } } } }
+            },
+            { "width":80, "height":6, "zIndex":20, "x":80, "y":9, "border":"#0f380f" },
+            {
+              "width":80, "height":6,
+              "zIndex":30, "x":80, "y":9,
+              "bgcolor":"#0f380f",
+              "states":{ "code":{ "name":"Execute", "data":{ "set":{ "width":{ "_":[ "variable", "xp", "/", { "_":[ "variable", "maxXp" ] }, "*", 80 ] } } } } }
+            },
+            {
+              "type":[ "hud", "missionhud" ],
+              "hudType":"label", "label":"%number|variable.missionAmount|0|3%",
+              "width":30, "height":8,
+              "zIndex":10, "x":130, "y":136,
+              "visible":0,
+              "bgcolor":"#9bbc0f", "color":"#0f380f",
+              "font":"gameboy", "fontSize":8, "lineHeight":8, "textAlign":"right"
+            },
+            { "type":[ "missionicon", "missionhud" ], "image":"sprites", "width":16, "height":16, "x":114, "y":128, "visible":0, "bgcolor":"#9bbc0f" }
+          ],
+          "into":{ "_":"scenehud" }
+        }
+      ],
+      "states":{
+        "name":"gotoending",
+        "code":{
+          "name":"Sequence",
+          "data":[
+            { "object":{ "width":160, "height":144, "zIndex":1000, "x":0, "y":0, "bgcolor":"#9bbc0f" }, "into":{ "_":"scenehud" } },
+            { "wait":25 },
+            { "gotoScene":"ending", "withTransition":2 }
+          ]
+        }
+      }
+    },
+    "player":{
+      "follow":1,
+      "image":"sprites", "tileY":32, "width":16, "height":16,
+      "zIndex":10,
+      "execute":{
+        "object":{
+          "type":"playersword",
+          "image":"sprites", "tileY":48, "width":16, "height":16,
+          "zIndex":10,
+          "hitbox":{ "width":0, "height":0, "x":0, "y":0 },
+          "execute":{ "set":{ "_":[ "stencil", "dataSwords", { "_":[ "variable", "sword" ] } ] } },
+          "damage":{ "_":[ "variable", "level" ] },
+          "stickToPlayer":1
+        },
+        "set":{ "sword":{ "_":"that" } }
+      },
+      "animations":{
+        "vertical":{ "frame":5 },
+        "hit":{ "frame":7 },
+        "idle":{ "frame":0 },
+        "jump":{ "frame":4 },
+        "stun":{ "frame":6 },
+        "walk":{ "frames":[ 1, 2, 3 ], "speed":3, "loopTo":0 }
+      },
+      "jumpHeight":-8,
+      "movingSpeed":2,
+      "states":[
+        {
+          "set":{ "animation":"stun" },
+          "execute":{ "playAudio":"stomp" },
+          "code":{
+            "name":"Sequence",
+            "data":[ { "set":{ "visible":{ "_":[ "this", "visible", "not" ] } }, "wait":1, "loop":1, "cycles":14 }, { "set":{ "forceY":-2, "state":"walking" } } ]
+          }
+        },
+        {
+          "name":"walking",
+          "like":[ { "_":[ "stencil", "playerBehaviour" ] }, { "_":[ "stencil", "playerHitableBehaviour" ] }, { "_":[ "stencil", "playerEnvironmentBehaviour" ] } ],
+          "execute":[
+            { "set":{ "type":"player" } },
+            {
+              "when":{ "_":[ "this", "flipX" ] },
+              "set":{ "forceX":{ "_":[ "this", "movingSpeed", "*", -1 ] } },
+              "elseExecute":{ "set":{ "forceX":{ "_":[ "this", "movingSpeed" ] } } }
+            }
+          ],
+          "code":[
+            { "_":[ "stencil", "playerPhysics" ] },
+            {
+              "name":"Execute",
+              "data":[
+                {
+                  "when":{ "_":[ "this", "touchDown" ] },
+                  "execute":[ { "set":{ "animation":"walk" } }, { "when":{ "_":[ "keyA", "isHit" ] }, "set":{ "forceY":{ "_":[ "this", "jumpHeight" ] }, "playAudio":"jump" } } ],
+                  "elseExecute":[ { "when":{ "_":[ "keyA", "isHit" ] }, "set":{ "playAudio":"doublejump", "state":"vertical" } }, { "set":{ "animation":"jump" } } ]
+                },
+                { "_":[ "stencil", "codeSideSet" ] },
+                { "_":[ "stencil", "codeFrontSword" ] }
+              ]
+            }
+          ]
+        },
+        {
+          "name":"vertical",
+          "like":[ { "_":[ "stencil", "playerBehaviour" ] }, { "_":[ "stencil", "playerHitableBehaviour" ] }, { "_":[ "stencil", "playerEnvironmentBehaviour" ] } ],
+          "execute":{ "set":{ "flipX":{ "_":[ "this", "flipX", "not" ] }, "forceX":0, "forceY":-4, "animation":"vertical" } },
+          "code":[
+            { "_":[ "stencil", "playerPhysics" ] },
+            {
+              "name":"Execute",
+              "data":[
+                {
+                  "when":{ "_":[ "this", "forceY", "isLessThan", 1, "and", { "_":[ "this", "touchDown" ] } ] },
+                  "object":{ "_":[ "stencil", "spark" ] },
+                  "set":{ "state":"walking" },
+                  "playAudio":"stomp"
+                },
+                { "_":[ "stencil", "codeBottomSword" ] }
+              ]
+            }
+          ]
+        },
+        {
+          "name":"stun",
+          "like":[ { "_":[ "stencil", "playerBehaviour" ] }, { "_":[ "stencil", "playerHitableBehaviour" ] }, { "_":[ "stencil", "playerEnvironmentBehaviour" ] } ],
+          "set":{ "forceY":-6, "animation":"stun" },
+          "execute":{ "when":{ "_":[ "this", "flipX" ] }, "set":{ "forceX":2 }, "elseExecute":{ "set":{ "forceX":-2 } } },
+          "code":[
+            { "_":[ "stencil", "playerPhysics" ] },
+            {
+              "name":"Execute",
+              "data":[
+                { "when":{ "_":[ "this", "forceY", "isLessThan", 1, "and", { "_":[ "this", "touchDown" ] } ] }, "set":{ "state":"walking" } },
+                { "_":[ "stencil", "codeNoSword" ] }
+              ]
+            }
+          ]
+        },
+        {
+          "name":"hit",
+          "like":{ "_":[ "stencil", "playerBehaviour" ] },
+          "set":{ "forceY":-4, "animation":"hit", "invulnerability":10 },
+          "execute":{ "playAudio":"hurt" },
+          "code":[
+            { "_":[ "stencil", "playerPhysics" ] },
+            {
+              "name":"Execute",
+              "data":[
+                { "when":{ "_":[ "this", "forceY", "isLessThan", 1, "and", { "_":[ "this", "touchDown" ] } ] }, "set":{ "state":"walking" } },
+                { "_":[ "stencil", "codeNoSword" ] }
+              ]
+            }
+          ]
+        },
+        {
+          "name":"dead",
+          "set":{ "follow":0, "removeType":"player", "forceX":0, "forceY":-4, "animation":"hit" },
+          "execute":[ { "as":{ "_":[ "this", "sword" ] }, "remove":1 }, { "playAudio":"psyche" } ],
+          "code":[
+            {
+              "name":"Sequence",
+              "data":[ { "wait":3 }, { "sum":90, "to":{ "_":[ "this", "angle" ] }, "cycles":20, "loopTo":0 }, { "_":[ "stencil", "codeRespawn" ] } ]
+            },
+            { "name":"Physics", "data":{ "gravityY":0.3 } }
+          ]
+        },
+        {
+          "name":"saved",
+          "set":{ "follow":1, "forceY":-10, "animation":"stun" },
+          "execute":{ "as":{ "_":[ "object", "playersword" ] }, "remove":1 },
+          "code":[
+            { "_":[ "stencil", "playerPhysics" ] },
+            {
+              "name":"Sequence",
+              "data":[
+                { "playAudio":"explode" },
+                {
+                  "times":4,
+                  "object":{
+                    "set":{ "_":[ "stencil", "cloud" ] },
+                    "x":{ "_":[ "that", "x", "+", { "_":[ "randomNumber", [ -8, 16 ] ] } ] }, "y":{ "_":[ "that", "y", "+", { "_":[ "randomNumber", [ -8, 16 ] ] } ] }
+                  }
+                },
+                { "wait":5 },
+                { "wait":1, "loop":1, "until":{ "_":[ "this", "touchDown" ] } },
+                { "playAudio":"stomp" },
+                { "set":{ "forceX":0, "forceY":0, "animation":"idle" } },
+                { "wait":25 },
+                { "set":{ "flipX":{ "_":[ "this", "flipX", "not" ] } }, "playAudio":"xp", "wait":10, "loop":1, "cycles":4 },
+                { "set":{ "state":"victory" } }
+              ]
+            }
+          ]
+        },
+        {
+          "name":"victory",
+          "code":[
+            {
+              "name":"Sequence",
+              "data":[
+                {
+                  "object":{
+                    "width":160, "height":30,
+                    "x":0, "y":30,
+                    "bgcolor":"#9bbc0f", "color":"#0f380f",
+                    "font":"gameboy", "fontSize":8, "lineHeight":10, "textAlign":"center", "html":"THE CURSE IS LIFTED!<br>YOU SAVED<br>BUTTONLAND!"
+                  },
+                  "into":{ "_":"scenehud" }
+                },
+                { "set":{ "animation":"victory" } },
+                { "set":{ "flipX":{ "_":[ "this", "flipX", "not" ] } } },
+                { "set":{ "frame":6 }, "playAudio":"jump" },
+                { "wait":10 },
+                { "set":{ "frame":8 }, "playAudio":"break" },
+                { "wait":10, "loopTo":-4 }
+              ]
+            },
+            { "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "as":{ "_":"scene" }, "set":{ "state":"gotoending" } } }
+          ]
+        }
+      ]
+    },
+    "playerBehaviour":{
+      "code":{
+        "name":"Execute",
+        "data":{
+          "when":{ "_":[ "this", "invulnerability" ] },
+          "execute":[ { "subtract":1, "to":{ "_":[ "this", "invulnerability" ] } }, { "set":{ "visible":{ "_":[ "this", "visible", "not" ] } } } ],
+          "elseExecute":{ "set":{ "visible":1 } }
+        }
+      }
+    },
+    "playerEnvironmentBehaviour":{
+      "code":{
+        "name":"Execute",
+        "data":[
+          {
+            "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "checkpoint" ] } ] },
+            "execute":{
+              "when":{ "_":[ "that", "isCurrentCheckpoint", "not" ] },
+              "execute":[
+                { "playAudio":"checkpoint" },
+                { "as":{ "_":[ "objectTyped", "currentcheckpoint" ] }, "set":{ "removeType":"currentcheckpoint", "animation":"off", "isCurrentCheckpoint":0 } },
+                {
+                  "as":{ "_":"that" },
+                  "set":{ "type":"currentcheckpoint", "animation":"on", "isCurrentCheckpoint":1, "startFlipX":{ "_":[ "that", "flipX" ] }, "state":"bump" }
+                }
+              ]
+            }
+          },
+          {
+            "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "coin" ] } ] },
+            "execute":[
+              { "playAudio":"coin" },
+              { "as":{ "_":"that" }, "execute":{ "_":[ "stencil", "removeWithSparkle" ] } },
+              { "sum":1, "to":{ "_":[ "variable", "gold" ] } },
+              { "_":[ "stencil", "codeCheckVariables" ] },
+              { "set":{ "missionRunTrigger":"coin" }, "execute":{ "_":[ "stencil", "codeMission" ] } }
+            ]
+          },
+          {
+            "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "xp" ] } ] },
+            "execute":[
+              { "playAudio":"xp" },
+              { "as":{ "_":"that" }, "execute":{ "_":[ "stencil", "removeWithSparkle" ] } },
+              { "sum":1, "to":{ "_":[ "variable", "xp" ] } },
+              { "_":[ "stencil", "codeCheckVariables" ] },
+              { "set":{ "missionRunTrigger":"xp" }, "execute":{ "_":[ "stencil", "codeMission" ] } }
+            ]
+          },
+          {
+            "when":{ "_":[ "objectTyped", "playersword", "collidesWith", { "_":[ "object", "breakable" ] } ] },
+            "execute":{
+              "when":{ "_":[ "that", "level", "isLessEqualThan", { "_":[ "variable", "level" ] }, "or", { "_":[ "that", "level", "not" ] } ] },
+              "execute":{
+                "when":{ "_":[ "that", "attackType", "isEqualTo", { "_":[ "objectTyped", "playersword", "attackType" ] }, "or", { "_":[ "that", "attackType", "not" ] } ] },
+                "as":{ "_":"that" },
+                "execute":[ { "playAudio":"break" }, { "_":[ "stencil", "removeWithCloud" ] } ]
+              }
+            }
+          }
+        ]
+      }
+    },
+    "playerHitableBehaviour":{
+      "code":{
+        "name":"Execute",
+        "data":{
+          "when":{ "_":[ "this", "invulnerability", "not", "and", { "_":[ "this", "collidesWith", { "_":[ "object", "foeAttack" ] } ] } ] },
+          "execute":[
+            { "subtract":1, "to":{ "_":[ "variable", "hp" ] } },
+            { "_":[ "stencil", "codeCheckVariables" ] },
+            { "object":{ "_":[ "stencil", "spark" ] } },
+            { "when":{ "_":[ "variable", "hp", "isLessEqualThan", 0 ] }, "execute":{ "set":{ "state":"dead" } }, "elseExecute":{ "set":{ "state":"hit" } } }
+          ]
+        }
+      }
+    },
+    "playerPhysics":{
+      "name":"Physics",
+      "data":{
+        "walls":[
+          {
+            "type":"wall",
+            "restitutionX":1,
+            "restitutionY":0,
+            "firstExecute":[
+              { "when":{ "_":[ "this", "touchLeft", "or", { "_":[ "this", "touchRight" ] } ] }, "playAudio":"stomp" },
+              { "_":[ "stencil", "playerPhysicsGround" ] }
+            ]
+          },
+          { "type":"onlytop", "restitutionX":1, "restitutionY":0, "firstExecute":{ "_":[ "stencil", "playerPhysicsGround" ] }, "only":{ "top":1 } }
+        ],
+        "gravityY":0.8,
+        "limitX":[ -8, 8 ],
+        "limitY":[ -8, 8 ]
+      }
+    },
+    "playerPhysicsGround":{
+      "when":{ "_":[ "this", "forceY", "isGreaterThan", 2 ] },
+      "execute":[
+        { "playAudio":"break" },
+        { "object":{ "set":{ "_":[ "stencil", "cloud" ] }, "x":{ "_":[ "that", "x", "+", 4 ] }, "y":{ "_":[ "that", "y", "+", 12 ] } } }
+      ]
+    },
+    "foeBehaviour":{
+      "code":{
+        "name":"Execute",
+        "data":{
+          "when":{ "_":[ "this", "invulnerability" ] },
+          "execute":[ { "subtract":1, "to":{ "_":[ "this", "invulnerability" ] } }, { "set":{ "visible":{ "_":[ "this", "visible", "not" ] } } } ],
+          "elseExecute":{ "set":{ "visible":1 } }
+        }
+      }
+    },
+    "foeHitableBehaviour":{
+      "code":{
+        "name":"Execute",
+        "data":{
+          "when":{ "_":[ "this", "invulnerability", "not", "and", { "_":[ "this", "collidesWith", { "_":[ "object", "playerAttack" ] } ] } ] },
+          "execute":{ "_":[ "stencil", "codeFoeHit" ] }
+        }
+      }
+    },
+    "foePhysics":{
+      "name":"Physics",
+      "data":{ "walls":{ "type":"enemywall", "restitutionX":1, "restitutionY":0.4 }, "gravityY":0.8, "limitX":[ -8, 8 ], "limitY":[ -8, 8 ] }
+    },
+    "foeSideHitableBehaviour":{
+      "code":{
+        "name":"Execute",
+        "data":{
+          "when":{ "_":[ "this", "invulnerability", "not" ] },
+          "execute":[
+            { "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "horizontalAttack" ] } ] }, "execute":{ "_":[ "stencil", "codeFoeHit" ] } },
+            { "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "verticalAttack" ] } ] }, "execute":{ "_":[ "stencil", "codeFoeDepleteHit" ] } }
+          ]
+        }
+      }
+    },
+    "bonusModel":{
+      "image":"sprites",
+      "zIndex":8, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "that", "y", "-", 5 ] },
+      "forceX":{ "_":[ "randomNumber", [ -2, 2 ] ] }, "forceY":{ "_":[ "randomNumber", [ -8, -5 ] ] },
+      "invulnerability":10,
+      "timer":125,
+      "states":{
+        "code":[
+          {
+            "name":"Physics",
+            "data":{ "walls":{ "type":"enemywall", "restitutionX":1, "restitutionY":0.8, "frictionX":0.8 }, "gravityY":0.8, "limitX":[ -8, 8 ], "limitY":[ -8, 8 ] }
+          },
+          {
+            "name":"Execute",
+            "data":{
+              "when":{ "_":[ "this", "invulnerability" ] },
+              "subtract":1,
+              "to":{ "_":[ "this", "invulnerability" ] },
+              "elseExecute":[
+                { "subtract":1, "to":{ "_":[ "this", "timer" ] } },
+                { "when":{ "_":[ "this", "timer", "isLessThan", 25 ] }, "set":{ "visible":{ "_":[ "this", "visible", "not" ] } } },
+                {
+                  "when":{ "_":[ "this", "timer" ] },
+                  "execute":{ "when":{ "_":[ "this", "collidesWith", { "_":[ "objectTyped", "player" ] } ] }, "execute":[ { "executeAction":"pick" }, { "remove":1 } ] },
+                  "elseExecute":{ "remove":1 }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "coin":{
+      "set":{ "_":[ "stencil", "bonusModel" ] },
+      "tileX":0, "tileY":16, "width":8, "height":8,
+      "animations":{ "flip":{ "frames":[ 0, 1, 2, 1 ], "speed":1, "loopTo":0 } },
+      "animation":"flip",
+      "missionRunTrigger":"coin",
+      "states":{
+        "actions":{
+          "name":"pick",
+          "execute":[
+            { "playAudio":"coin" },
+            { "_":[ "stencil", "codeMission" ] },
+            { "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "html":"1&#40;" } },
+            { "sum":1, "to":{ "_":[ "variable", "gold" ] } },
+            { "_":[ "stencil", "codeCheckVariables" ] }
+          ]
+        }
+      }
+    },
+    "heart":{
+      "set":{ "_":[ "stencil", "bonusModel" ] },
+      "tileX":0, "tileY":24, "width":8, "height":8,
+      "animations":{ "shine":{ "frames":3, "speed":1, "loopTo":0 } },
+      "animation":"shine",
+      "missionRunTrigger":"heart",
+      "states":{
+        "actions":{
+          "name":"pick",
+          "execute":[
+            { "playAudio":"heart" },
+            { "_":[ "stencil", "codeMission" ] },
+            { "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "html":"1HP" } },
+            { "sum":1, "to":{ "_":[ "variable", "hp" ] } },
+            { "_":[ "stencil", "codeCheckVariables" ] }
+          ]
+        }
+      }
+    },
+    "xp":{
+      "set":{ "_":[ "stencil", "bonusModel" ] },
+      "tileX":24, "tileY":24, "width":8, "height":8,
+      "animations":{ "flip":{ "frames":3, "speed":1, "loopTo":0 } },
+      "animation":"flip",
+      "missionRunTrigger":"xp",
+      "states":{
+        "actions":{
+          "name":"pick",
+          "execute":[
+            { "playAudio":"xp" },
+            { "_":[ "stencil", "codeMission" ] },
+            { "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "html":{ "_":[ "that", "xp", ".", "XP" ] } } },
+            { "sum":{ "_":[ "this", "xp" ] }, "to":{ "_":[ "variable", "xp" ] } },
+            { "_":[ "stencil", "codeCheckVariables" ] }
+          ]
+        }
+      }
+    },
+    "bossArea":{
+      "type":"bossarea",
+      "states":[
+        {
+          "execute":{
+            "when":{ "_":[ "objectTyped", "bosselement" ] },
+            "execute":[
+              { "stopChannel":"music" },
+              { "playAudio":"stageMusic" },
+              { "as":{ "_":[ "object", "bosselement" ] }, "execute":{ "_":[ "stencil", "removeWithSpark" ] } }
+            ]
+          },
+          "code":{
+            "name":"Execute",
+            "data":{
+              "when":{ "_":[ "this", "collidesWith", { "_":[ "objectTyped", "player" ] } ] },
+              "execute":[ { "stopChannel":"music" }, { "playAudio":"bossMusic" }, { "set":{ "state":"runBoss" } } ]
+            }
+          }
+        },
+        { "name":"runBoss", "execute":{ "object":{ "set":{ "_":[ "stencil", "bossWitch" ] } } } }
+      ]
+    },
+    "bossWitch":{
+      "type":"bosselement",
+      "image":"sprites", "tileX":96, "tileY":96, "width":16, "height":16,
+      "zIndex":8, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "that", "y" ] },
+      "animations":{ "defeated":{ "frame":2 }, "idle":{ "frames":2, "loopTo":0 } },
+      "animation":"idle",
+      "hp":100,
+      "maxHp":100,
+      "missionRunTrigger":"witch",
+      "timer":0,
+      "timer2":0,
+      "xRadius":5,
+      "yRadius":3,
+      "states":[
+        {
+          "like":{ "_":[ "stencil", "codeBossMovement" ] },
+          "execute":[
+            { "object":{ "_":[ "stencil", "spark" ] } },
+            {
+              "set":{ "centerX":{ "_":[ "this", "x" ] }, "centerY":{ "_":[ "this", "y" ] }, "orgCenterX":{ "_":[ "this", "x" ] }, "orgCenterY":{ "_":[ "this", "y" ] } }
+            }
+          ],
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "set":{ "visible":{ "_":[ "this", "visible", "not" ] } }, "wait":1, "loop":1, "cycles":20 },
+              { "wait":10 },
+              { "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "html":"HA!" }, "wait":20, "loop":1, "cycles":3 },
+              { "wait":10 },
+              { "set":{ "state":"attack" } }
+            ]
+          }
+        },
+        {
+          "name":"attack",
+          "like":[ { "_":[ "stencil", "codeBossMovement" ] }, { "_":[ "stencil", "foeBehaviour" ] }, { "_":[ "stencil", "foeHitableBehaviour" ] } ],
+          "set":{ "type":[ "foe", "foeAttack" ] },
+          "code":[
+            {
+              "name":"Sequence",
+              "data":[
+                { "set":{ "nextX":{ "_":[ "this", "orgCenterX", "+", { "_":[ "randomValue", [ -50, -25, 0, 25, 50 ] ] } ] } } },
+                { "set":{ "nextY":{ "_":[ "this", "orgCenterY", "+", { "_":[ "randomValue", [ -20, -10, 0, 10 ] ] } ] } } },
+                { "when":{ "_":[ "this", "centerX", "isLessThan", { "_":[ "this", "nextX" ] } ] }, "sum":1, "to":{ "_":[ "this", "centerX" ] } },
+                { "when":{ "_":[ "this", "centerX", "isGreaterEqualThan", { "_":[ "this", "nextX" ] } ] }, "subtract":1, "to":{ "_":[ "this", "centerX" ] } },
+                { "when":{ "_":[ "this", "centerY", "isLessThan", { "_":[ "this", "nextY" ] } ] }, "sum":1, "to":{ "_":[ "this", "centerY" ] } },
+                { "when":{ "_":[ "this", "centerY", "isGreaterEqualThan", { "_":[ "this", "nextY" ] } ] }, "subtract":1, "to":{ "_":[ "this", "centerY" ] } },
+                { "wait":1, "cycles":25, "loopTo":-4 },
+                { "loopTo":0 }
+              ]
+            },
+            {
+              "name":"Sequence",
+              "data":[
+                {
+                  "when":{ "_":[ "object", "bossminion", "count", "isLessThan", 3 ] },
+                  "decide":{
+                    "options":[
+                      {
+                        "object":{
+                          "type":[ "bossminion", "bosselement" ],
+                          "set":{ "_":[ "stencil", "blob" ] },
+                          "x":{ "_":[ "that", "orgCenterX", "+", { "_":[ "randomValue", [ -50, -25, 0, 25, 50 ] ] } ] }, "y":660,
+                          "removeOnDead":1
+                        }
+                      },
+                      {
+                        "object":{
+                          "type":[ "bossminion", "bosselement" ],
+                          "set":{ "_":[ "stencil", "crab" ] },
+                          "x":{ "_":[ "that", "orgCenterX", "+", { "_":[ "randomValue", [ -50, -25, 0, 25, 50 ] ] } ] }, "y":660,
+                          "removeOnDead":1
+                        }
+                      },
+                      { "object":{ "type":[ "bossminion", "bosselement" ], "set":{ "_":[ "stencil", "bat" ] }, "at":{ "_":"that" }, "removeOnDead":1 } }
+                    ]
+                  }
+                },
+                { "wait":{ "_":[ "this", "hp", "+", 25 ] } },
+                { "loopTo":0 }
+              ]
+            }
+          ]
+        },
+        {
+          "name":"dead",
+          "set":{ "follow":1, "removeType":[ "foe", "foeAttack" ], "animation":"defeated" },
+          "execute":[
+            { "execute":{ "applyEffect":{ "name":"fade", "toVolume":0, "length":0.5 }, "toChannel":"music" } },
+            { "as":{ "_":[ "object", "bossminion" ] }, "execute":{ "_":[ "stencil", "removeWithSpark" ] } }
+          ],
+          "code":[
+            { "name":"Sequence", "data":[ { "subtract":0.3, "to":{ "_":[ "this", "y" ] }, "wait":1, "loop":1, "cycles":120 }, { "set":{ "state":"explode" } } ] },
+            { "name":"Sequence", "data":{ "set":{ "flipX":{ "_":[ "this", "flipX", "not" ] } }, "wait":10, "loop":1 } },
+            {
+              "name":"Sequence",
+              "data":[
+                { "sum":1, "to":{ "_":[ "this", "x" ] }, "wait":1 },
+                { "subtract":1, "to":{ "_":[ "this", "x" ] }, "wait":1, "cycles":5, "loopTo":-1 },
+                { "wait":10, "loopTo":0 }
+              ]
+            },
+            {
+              "name":"Sequence",
+              "data":[
+                { "playAudio":"slay" },
+                {
+                  "object":{
+                    "set":{ "_":[ "stencil", "cloud" ] },
+                    "x":{ "_":[ "that", "x", "+", { "_":[ "randomNumber", [ -8, 16 ] ] } ] }, "y":{ "_":[ "that", "y", "+", { "_":[ "randomNumber", [ -8, 16 ] ] } ] }
+                  }
+                },
+                { "wait":5, "cycles":10, "loopTo":-2 },
+                { "playAudio":"slay" },
+                {
+                  "times":2,
+                  "object":{
+                    "set":{ "_":[ "stencil", "cloud" ] },
+                    "x":{ "_":[ "that", "x", "+", { "_":[ "randomNumber", [ -8, 16 ] ] } ] }, "y":{ "_":[ "that", "y", "+", { "_":[ "randomNumber", [ -8, 16 ] ] } ] }
+                  }
+                },
+                { "wait":3, "cycles":10, "loopTo":-2 },
+                { "playAudio":"slay" },
+                {
+                  "times":3,
+                  "object":{
+                    "set":{ "_":[ "stencil", "cloud" ] },
+                    "x":{ "_":[ "that", "x", "+", { "_":[ "randomNumber", [ -8, 16 ] ] } ] }, "y":{ "_":[ "that", "y", "+", { "_":[ "randomNumber", [ -8, 16 ] ] } ] }
+                  }
+                },
+                { "wait":3, "loopTo":-2 }
+              ]
+            }
+          ]
+        },
+        {
+          "name":"explode",
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "playAudio":"explode" },
+              {
+                "times":30,
+                "object":{
+                  "set":{ "_":[ "stencil", "cloud" ] },
+                  "x":{ "_":[ "that", "x", "+", { "_":[ "randomNumber", [ -24, 32 ] ] } ] }, "y":{ "_":[ "that", "y", "+", { "_":[ "randomNumber", [ -24, 32 ] ] } ] }
+                }
+              },
+              { "set":{ "visible":0 } },
+              { "wait":75 },
+              { "as":{ "_":[ "objectTyped", "player" ] }, "set":{ "state":"saved" } }
+            ]
+          }
+        }
+      ]
+    },
+    "bumpingModel":{
+      "states":{
+        "name":"bump",
+        "set":{ "forceY":-4 },
+        "code":{
+          "name":"Sequence",
+          "data":[
+            { "sum":{ "_":[ "this", "forceY" ] }, "to":{ "_":[ "this", "y" ] } },
+            { "sum":1, "to":{ "_":[ "this", "forceY" ] } },
+            { "wait":1, "cycles":9, "loopTo":0 },
+            { "wait":25 },
+            { "set":{ "state":"default" } }
+          ]
+        }
+      }
+    },
+    "checkpoint":{
+      "type":"checkpoint",
+      "set":{ "_":[ "stencil", "bumpingModel" ] },
+      "image":"sprites", "tileX":48, "tileY":16, "width":16, "height":16,
+      "zIndex":5,
+      "animations":{ "off":{ "frames":[ 3, 2, 1, 0 ], "speed":1 }, "on":{ "frames":4, "speed":1 } }
+    },
+    "mission":{
+      "set":{ "_":[ "stencil", "bumpingModel" ] },
+      "image":"sprites", "tileX":0, "tileY":64, "width":16, "height":16,
+      "zIndex":9,
+      "disableTimer":0,
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":{
+            "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "playerAttack" ] } ] },
+            "execute":[
+              {
+                "when":{ "_":[ "stencil", "missions", { "_":[ "this", "frame" ] }, { "_":[ "variable", "missionProgress", { "_":[ "this", "frame" ] } ] } ] },
+                "execute":{
+                  "when":{
+                    "_":[
+                      "stencil",
+                      "missions",
+                      { "_":[ "this", "frame" ] },
+                      { "_":[ "variable", "missionProgress", { "_":[ "this", "frame" ] } ] },
+                      "missionKey",
+                      "isNotEqualTo",
+                      { "_":[ "variable", "missionKey" ] }
+                    ]
+                  },
+                  "execute":[
+                    {
+                      "as":{ "_":"variable" },
+                      "set":{ "_":[ "stencil", "missions", { "_":[ "that", "frame" ] }, { "_":[ "variable", "missionProgress", { "_":[ "that", "frame" ] } ] } ] }
+                    },
+                    {
+                      "as":{ "_":[ "objectTyped", "missionicon" ] },
+                      "set":{ "tileX":{ "_":[ "variable", "missionTileX" ] }, "tileY":{ "_":[ "variable", "missionTileY" ] } }
+                    },
+                    { "as":{ "_":[ "object", "missionhud" ] }, "set":{ "visible":1 } },
+                    { "as":{ "_":[ "object", "missionLabel" ] }, "remove":1 },
+                    {
+                      "object":{ "set":{ "_":[ "stencil", "missionLabel" ] }, "html":{ "_":[ "NEW QUEST:<br>", ".", { "_":[ "variable", "missionLabel" ] } ] } },
+                      "into":{ "_":"scenehud" }
+                    }
+                  ]
+                },
+                "elseExecute":[
+                  { "set":{ "frame":0 } },
+                  { "as":{ "_":[ "object", "missionLabel" ] }, "remove":1 },
+                  { "object":{ "set":{ "_":[ "stencil", "missionLabel" ] }, "html":"ALL QUESTS<br>COMPLETED!" }, "into":{ "_":"scenehud" } }
+                ]
+              },
+              { "set":{ "state":"bump" } }
+            ]
+          }
+        }
+      }
+    },
+    "shop":{
+      "set":{ "_":[ "stencil", "bumpingModel" ] },
+      "image":"sprites", "tileX":96, "tileY":64, "width":16, "height":16,
+      "zIndex":9,
+      "disableTimer":0,
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":{
+            "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "playerAttack" ] } ] },
+            "execute":[
+              {
+                "when":{ "_":[ "stencil", "shops", { "_":[ "this", "frame" ] }, { "_":[ "variable", "shopsProgress", { "_":[ "this", "frame" ] } ] } ] },
+                "as":{ "_":"that" },
+                "execute":{
+                  "when":{ "_":[ "variable", "gold", "isGreaterEqualThan", { "_":[ "this", "price" ] } ] },
+                  "execute":[
+                    { "sum":1, "to":{ "_":[ "variable", "shopsProgress", { "_":[ "that", "frame" ] } ] } },
+                    { "subtract":{ "_":[ "this", "price" ] }, "to":{ "_":[ "variable", "gold" ] } },
+                    { "execute":{ "_":[ "this", "onBuy" ] } },
+                    { "as":{ "_":[ "object", "missionLabel" ] }, "remove":1 },
+                    {
+                      "object":{ "set":{ "_":[ "stencil", "missionLabel" ] }, "html":{ "_":[ "YOU PURCHASED<br>", ".", { "_":[ "that", "product" ] } ] } },
+                      "into":{ "_":"scenehud" }
+                    }
+                  ],
+                  "elseExecute":[
+                    { "as":{ "_":[ "object", "missionLabel" ] }, "remove":1 },
+                    {
+                      "object":{
+                        "set":{ "_":[ "stencil", "missionLabel" ] },
+                        "html":{ "_":[ { "_":[ "that", "product" ] }, ".", "<br>PRICE: &#40;", ".", { "_":[ "that", "price" ] } ] }
+                      },
+                      "into":{ "_":"scenehud" }
+                    }
+                  ]
+                },
+                "elseExecute":[
+                  { "set":{ "frame":0 } },
+                  { "as":{ "_":[ "object", "missionLabel" ] }, "remove":1 },
+                  { "object":{ "set":{ "_":[ "stencil", "missionLabel" ] }, "html":"SOLD<br>OUT!" }, "into":{ "_":"scenehud" } }
+                ]
+              },
+              { "set":{ "state":"bump" } }
+            ]
+          }
+        }
+      }
+    },
+    "captionModel":{
+      "type":[ "caption", "introelement" ],
+      "width":158, "height":0,
+      "zIndex":20, "x":1, "y":100,
+      "color":"#0f380f",
+      "font":"gameboy", "fontSize":8, "lineHeight":10, "textAlign":"center",
+      "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "this", "height", "isLessThan", 48 ] }, "sum":1, "to":{ "_":[ "this", "height" ] } } } }
+    },
+    "cloud":{
+      "image":"sprites", "tileX":24, "tileY":16, "width":8, "height":8,
+      "zIndex":10000,
+      "animations":{ "spark":{ "frames":3, "speed":1 } },
+      "animation":"spark",
+      "states":{ "code":{ "name":"Sequence", "data":[ { "wait":6 }, { "remove":1 } ] } }
+    },
+    "dataSwords":[ { "frame":0, "swordHeight":6, "swordWidth":8 }, { "frame":1, "swordHeight":7, "swordWidth":12 }, { "frame":2, "swordHeight":7, "swordWidth":16 } ],
+    "missionLabel":{
+      "type":"missionLabel",
+      "width":160, "height":20,
+      "x":0, "y":-4,
+      "bgcolor":"#8bac0f", "color":"#0f380f",
+      "font":"gameboy", "fontSize":8, "lineHeight":10, "outline":"#9bbc0f", "textAlign":"center",
+      "playAudio":"buy",
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[
+            { "sum":4, "to":{ "_":[ "this", "y" ] }, "wait":1, "loop":1, "cycles":5 },
+            { "wait":50 },
+            { "subtract":4, "to":{ "_":[ "this", "y" ] }, "wait":1, "loop":1, "cycles":5 },
+            { "remove":1 }
+          ]
+        }
+      }
+    },
+    "missions":[
+      [],
+      [
+        {
+          "missionAmount":50,
+          "missionGold":0,
+          "missionId":0,
+          "missionKey":"1-0",
+          "missionLabel":"GET COINS!",
+          "missionSet":1,
+          "missionTileX":16,
+          "missionTileY":64,
+          "missionTrigger":"coin",
+          "missionXp":10
+        },
+        {
+          "missionAmount":150,
+          "missionGold":0,
+          "missionId":1,
+          "missionKey":"1-1",
+          "missionLabel":"MORE COINS!",
+          "missionSet":1,
+          "missionTileX":16,
+          "missionTileY":64,
+          "missionTrigger":"coin",
+          "missionXp":30
+        },
+        {
+          "missionAmount":250,
+          "missionGold":0,
+          "missionId":2,
+          "missionKey":"1-2",
+          "missionLabel":"A LOT OF COINS!",
+          "missionSet":1,
+          "missionTileX":16,
+          "missionTileY":64,
+          "missionTrigger":"coin",
+          "missionXp":60
+        },
+        {
+          "missionAmount":350,
+          "missionGold":0,
+          "missionId":3,
+          "missionKey":"1-3",
+          "missionLabel":"COIN FRENZY!",
+          "missionSet":1,
+          "missionTileX":16,
+          "missionTileY":64,
+          "missionTrigger":"coin",
+          "missionXp":90
+        }
+      ],
+      [
+        {
+          "missionAmount":10,
+          "missionGold":5,
+          "missionId":0,
+          "missionKey":"2-0",
+          "missionLabel":"KILL BLOBS!",
+          "missionSet":2,
+          "missionTileX":0,
+          "missionTileY":96,
+          "missionTrigger":"blob",
+          "missionXp":5
+        },
+        {
+          "missionAmount":10,
+          "missionGold":10,
+          "missionId":1,
+          "missionKey":"2-1",
+          "missionLabel":"KILL CRABS!",
+          "missionSet":2,
+          "missionTileX":32,
+          "missionTileY":96,
+          "missionTrigger":"crab",
+          "missionXp":10
+        },
+        {
+          "missionAmount":30,
+          "missionGold":30,
+          "missionId":2,
+          "missionKey":"2-2",
+          "missionLabel":"SLAY BLOBS!",
+          "missionSet":2,
+          "missionTileX":0,
+          "missionTileY":96,
+          "missionTrigger":"blob",
+          "missionXp":20
+        },
+        {
+          "missionAmount":30,
+          "missionGold":60,
+          "missionId":3,
+          "missionKey":"2-3",
+          "missionLabel":"SLAY CRABS!",
+          "missionSet":2,
+          "missionTileX":32,
+          "missionTileY":96,
+          "missionTrigger":"crab",
+          "missionXp":30
+        },
+        {
+          "missionAmount":10,
+          "missionGold":120,
+          "missionId":4,
+          "missionKey":"2-4",
+          "missionLabel":"KILL BATS!",
+          "missionSet":2,
+          "missionTileX":64,
+          "missionTileY":96,
+          "missionTrigger":"bat",
+          "missionXp":40
+        },
+        {
+          "missionAmount":30,
+          "missionGold":240,
+          "missionId":5,
+          "missionKey":"2-5",
+          "missionLabel":"SLAY BATS!",
+          "missionSet":2,
+          "missionTileX":64,
+          "missionTileY":96,
+          "missionTrigger":"bat",
+          "missionXp":50
+        }
+      ],
+      [
+        {
+          "missionAmount":30,
+          "missionGold":20,
+          "missionId":0,
+          "missionKey":"3-0",
+          "missionLabel":"GET CRYSTALS!",
+          "missionSet":3,
+          "missionTileX":48,
+          "missionTileY":64,
+          "missionTrigger":"xp",
+          "missionXp":0
+        },
+        {
+          "missionAmount":60,
+          "missionGold":40,
+          "missionId":1,
+          "missionKey":"3-1",
+          "missionLabel":"MORE CRYSTALS!",
+          "missionSet":3,
+          "missionTileX":48,
+          "missionTileY":64,
+          "missionTrigger":"xp",
+          "missionXp":0
+        },
+        {
+          "missionAmount":90,
+          "missionGold":80,
+          "missionId":2,
+          "missionKey":"3-2",
+          "missionLabel":"A LOT OF CRYSTALS!",
+          "missionSet":3,
+          "missionTileX":48,
+          "missionTileY":64,
+          "missionTrigger":"xp",
+          "missionXp":0
+        },
+        {
+          "missionAmount":120,
+          "missionGold":160,
+          "missionId":3,
+          "missionKey":"3-3",
+          "missionLabel":"CRYSTALS FRENZY!",
+          "missionSet":3,
+          "missionTileX":48,
+          "missionTileY":64,
+          "missionTrigger":"xp",
+          "missionXp":0
+        }
+      ]
+    ],
+    "bat":{
+      "set":{ "_":[ "stencil", "modelFoe" ] },
+      "tileX":64, "tileY":96, "width":16, "height":16,
+      "animations":{ "moving":{ "frames":2, "loopTo":0 } },
+      "animation":"moving",
+      "flyGravity":0,
+      "missionRunTrigger":"bat",
+      "states":{
+        "name":"free",
+        "like":[ { "_":[ "stencil", "foeBehaviour" ] }, { "_":[ "stencil", "foeHitableBehaviour" ] }, { "_":[ "stencil", "modelRestartWhenFar" ] } ],
+        "code":[
+          {
+            "name":"Physics",
+            "data":{
+              "walls":{ "type":"flyenemywall", "restitutionX":1, "restitutionY":1 },
+              "gravityY":{ "_":[ "this", "flyGravity" ] },
+              "limitX":[ -8, 8 ],
+              "limitY":[ -2, 2 ]
+            }
+          },
+          {
+            "name":"Sequence",
+            "data":[
+              {
+                "when":{ "_":[ "this", "x", "isGreaterThan", { "_":[ "objectTyped", "player", "x" ] } ] },
+                "set":{ "forceX":-1 },
+                "elseExecute":{ "set":{ "forceX":1 } }
+              },
+              { "set":{ "flyGravity":0.2 }, "wait":{ "_":[ "randomNumber", [ 25, 37 ] ] } },
+              { "set":{ "flyGravity":-0.2 }, "wait":{ "_":[ "randomNumber", [ 25, 37 ] ] } },
+              { "loopTo":0 }
+            ]
+          },
+          { "name":"Execute", "data":{ "when":{ "_":[ "this", "forceX" ] }, "set":{ "flipX":{ "_":[ "this", "forceX", "isLessThan", 0 ] } } } }
+        ]
+      }
+    },
+    "blob":{
+      "set":{ "_":[ "stencil", "modelFoe" ] },
+      "tileX":0, "tileY":96, "width":16, "height":16,
+      "animations":{ "moving":{ "frames":2, "loopTo":0 } },
+      "animation":"moving",
+      "missionRunTrigger":"blob",
+      "states":{
+        "name":"free",
+        "like":[ { "_":[ "stencil", "foeBehaviour" ] }, { "_":[ "stencil", "foeHitableBehaviour" ] }, { "_":[ "stencil", "modelRestartWhenFar" ] } ],
+        "code":[
+          { "_":[ "stencil", "foePhysics" ] },
+          {
+            "name":"Sequence",
+            "data":[ { "set":{ "forceX":0 }, "wait":25 }, { "set":{ "forceX":{ "_":[ "randomValue", [ -2, 2 ] ] } }, "wait":25 }, { "loopTo":0 } ]
+          }
+        ]
+      }
+    },
+    "crab":{
+      "set":{ "_":[ "stencil", "modelFoe" ] },
+      "tileX":32, "tileY":96, "width":16, "height":16,
+      "animations":{ "moving":{ "frames":2, "loopTo":0 } },
+      "animation":"moving",
+      "hp":9,
+      "maxHp":9,
+      "missionRunTrigger":"crab",
+      "states":{
+        "name":"free",
+        "like":[ { "_":[ "stencil", "foeBehaviour" ] }, { "_":[ "stencil", "foeSideHitableBehaviour" ] }, { "_":[ "stencil", "modelRestartWhenFar" ] } ],
+        "code":[
+          { "_":[ "stencil", "foePhysics" ] },
+          {
+            "name":"Sequence",
+            "data":[ { "set":{ "forceX":0 }, "wait":40 }, { "set":{ "forceX":{ "_":[ "randomValue", [ -2, 2 ] ] } }, "wait":10 }, { "loopTo":0 } ]
+          },
+          { "name":"Execute", "data":{ "when":{ "_":[ "this", "forceX" ] }, "set":{ "flipX":{ "_":[ "this", "forceX", "isLessThan", 0 ] } } } }
+        ]
+      }
+    },
+    "shops":[
+      [],
+      [
+        { "onBuy":{ "sum":1, "to":{ "_":[ "variable", "maxHp" ] } }, "price":50, "product":"HEART" },
+        { "onBuy":{ "sum":1, "to":{ "_":[ "variable", "maxHp" ] } }, "price":100, "product":"HEART" },
+        { "onBuy":{ "sum":1, "to":{ "_":[ "variable", "maxHp" ] } }, "price":200, "product":"HEART" },
+        { "onBuy":{ "sum":1, "to":{ "_":[ "variable", "maxHp" ] } }, "price":300, "product":"HEART" },
+        { "onBuy":{ "sum":1, "to":{ "_":[ "variable", "maxHp" ] } }, "price":500, "product":"HEART" },
+        { "onBuy":{ "sum":1, "to":{ "_":[ "variable", "maxHp" ] } }, "price":700, "product":"HEART" },
+        { "onBuy":{ "sum":1, "to":{ "_":[ "variable", "maxHp" ] } }, "price":900, "product":"HEART" }
+      ],
+      [
+        {
+          "onBuy":[
+            { "sum":1, "to":{ "_":[ "variable", "sword" ] } },
+            { "as":{ "_":[ "objectTyped", "playersword" ] }, "set":{ "_":[ "stencil", "dataSwords", { "_":[ "variable", "sword" ] } ] } }
+          ],
+          "price":500,
+          "product":"SWORD"
+        },
+        {
+          "onBuy":[
+            { "sum":1, "to":{ "_":[ "variable", "sword" ] } },
+            { "as":{ "_":[ "objectTyped", "playersword" ] }, "set":{ "_":[ "stencil", "dataSwords", { "_":[ "variable", "sword" ] } ] } }
+          ],
+          "price":800,
+          "product":"RAPIER"
+        }
+      ]
+    ],
+    "sign":{ "image":"sprites", "tileX":0, "tileY":80, "width":16, "height":16, "zIndex":5 },
+    "A":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":8, "tileY":0 },
+    "B":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":16, "tileY":0 },
+    "C":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":24, "tileY":0 },
+    "D":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":8, "tileY":8 },
+    "E":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":16, "tileY":8 },
+    "F":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":24, "tileY":8 },
+    "G":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":8, "tileY":16 },
+    "H":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":16, "tileY":16 },
+    "I":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":24, "tileY":16 },
+    "J":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":32, "tileY":0 },
+    "K":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":40, "tileY":0 },
+    "L":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":48, "tileY":0 },
+    "M":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":32, "tileY":8 },
+    "N":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":40, "tileY":8 },
+    "O":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":48, "tileY":8 },
+    "P":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":32, "tileY":16 },
+    "Q":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":40, "tileY":16 },
+    "#":{ "type":[ "wall", "enemywall", "flyenemywall" ], "image":"tiles", "tileX":0, "tileY":0, "width":8, "height":8 },
+    "R":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":48, "tileY":16 },
+    "S":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":0, "tileY":8 },
+    "$":{ "type":"coin", "image":"tiles", "tileX":8, "tileY":40, "width":8, "height":8 },
+    "(":{ "type":[ "wall", "breakable", "enemywall", "flyenemywall" ], "image":"tiles", "tileX":16, "tileY":32, "width":8, "height":8, "attackType":"right" },
+    ")":{ "type":[ "wall", "breakable", "enemywall", "flyenemywall" ], "image":"tiles", "tileX":16, "tileY":40, "width":8, "height":8, "attackType":"left" },
+    "*":{ "type":"xp", "image":"tiles", "tileX":8, "tileY":32, "width":8, "height":8 },
+    "-":{ "type":[ "wall", "breakable", "enemywall", "flyenemywall" ], "image":"tiles", "tileX":0, "tileY":24, "width":8, "height":8, "level":3 },
+    ",":{ "set":{ "_":[ "stencil", "." ] }, "tileX":0, "tileY":56 },
+    "a":{ "set":{ "_":[ "stencil", "." ] }, "tileX":0, "tileY":64 },
+    "b":{ "set":{ "_":[ "stencil", "." ] }, "tileX":0, "tileY":72 },
+    "c":{ "set":{ "_":[ "stencil", "." ] }, "tileX":8, "tileY":48 },
+    "d":{ "set":{ "_":[ "stencil", "." ] }, "tileX":8, "tileY":56 },
+    "e":{ "set":{ "_":[ "stencil", "." ] }, "tileX":8, "tileY":64 },
+    ".":{ "image":"tiles", "tileX":0, "tileY":48, "width":8, "height":8 },
+    "f":{ "set":{ "_":[ "stencil", "." ] }, "tileX":8, "tileY":72 },
+    "g":{ "set":{ "_":[ "stencil", "." ] }, "tileX":16, "tileY":48 },
+    "h":{ "set":{ "_":[ "stencil", "." ] }, "tileX":16, "tileY":56 },
+    "i":{ "set":{ "_":[ "stencil", "." ] }, "tileX":16, "tileY":64 },
+    "j":{ "set":{ "_":[ "stencil", "." ] }, "tileX":16, "tileY":72 },
+    "=":{ "type":[ "wall", "breakable", "enemywall", "flyenemywall" ], "image":"tiles", "tileX":0, "tileY":32, "width":8, "height":8, "level":6 },
+    "^":{ "type":[ "onlytop", "enemywall" ], "image":"tiles", "tileX":8, "tileY":24, "width":8, "height":8 },
+    "|":{ "type":[ "enemywall", "flyenemywall" ], "image":"tiles", "tileX":16, "tileY":24, "width":8, "height":8, "visible":0 },
+    "~":{ "type":[ "wall", "breakable", "enemywall", "flyenemywall" ], "image":"tiles", "tileX":0, "tileY":40, "width":8, "height":8, "level":9 }
+  },
+  "scenes":{
+    "intro":{
+      "object":[
+        {
+          "type":"logo",
+          "image":"title", "tileY":256, "width":132, "height":75,
+          "zIndex":10, "x":0, "y":0,
+          "radius":150,
+          "timer":0,
+          "states":[
+            {
+              "code":{
+                "name":"Execute",
+                "data":{
+                  "when":{ "_":[ "this", "radius" ] },
+                  "execute":[
+                    { "subtract":2, "to":{ "_":[ "this", "radius" ] } },
+                    { "sum":0.2, "to":{ "_":[ "this", "timer" ] } },
+                    {
+                      "set":{
+                        "x":{ "_":[ "this", "timer", "sin", "*", { "_":[ "this", "radius" ] }, "+", 16 ] }, "y":{ "_":[ "this", "timer", "cos", "*", { "_":[ "this", "radius" ] }, "+", 10 ] }
+                      }
+                    }
+                  ],
+                  "elseExecute":{ "set":{ "state":"idle" } }
+                }
+              }
+            },
+            {
+              "name":"idle",
+              "execute":{ "object":{ "width":160, "height":112, "x":0, "y":16, "bgcolor":"#8bac0f" }, "playAudio":"explode" },
+              "code":{ "name":"Sequence", "data":{ "set":{ "visible":{ "_":[ "this", "visible", "not" ] } }, "wait":1, "loop":1, "cycles":10 } }
+            }
+          ]
+        },
+        {
+          "width":160, "height":10,
+          "zIndex":20, "x":0, "y":134,
+          "color":"#0f380f",
+          "font":"gameboy", "fontSize":8, "lineHeight":10, "outline":"#9bbc0f", "textAlign":"center", "html":"2016 - Wright Mag!"
+        },
+        {
+          "type":"pressstart",
+          "width":160, "height":10,
+          "zIndex":20, "x":0, "y":104,
+          "color":"#0f380f",
+          "font":"gameboy", "fontSize":8, "lineHeight":10, "outline":"#9bbc0f", "textAlign":"center", "html":"PRESS BUTTON!",
+          "states":[
+            { "code":{ "name":"Sequence", "data":{ "set":{ "visible":{ "_":[ "this", "visible", "not" ] } }, "wait":10, "loop":1 } } },
+            { "name":"selected", "code":{ "name":"Sequence", "data":{ "set":{ "visible":{ "_":[ "this", "visible", "not" ] } }, "wait":1, "loop":1 } } }
+          ]
+        }
+      ],
+      "bgcolor":"#9bbc0f",
+      "execute":{
+        "as":{ "_":"variable" },
+        "set":{
+          "gold":0,
+          "hp":3,
+          "level":1,
+          "maxHp":3,
+          "maxXp":20,
+          "missionProgress":{ "_":[ "new", [ 0, 0, 0, 0, 0, 0, 0 ] ] },
+          "shopsProgress":{ "_":[ "new", [ 0, 0, 0, 0, 0, 0, 0 ] ] },
+          "sword":0,
+          "xp":0
+        }
+      },
+      "states":[
+        { "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "set":{ "playAudio":"xp", "state":"start" } } } },
+        {
+          "name":"start",
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "as":{ "_":[ "objectTyped", "pressstart" ] }, "set":{ "state":"selected" } },
+              { "wait":25 },
+              { "object":{ "width":160, "height":144, "zIndex":1000, "x":0, "y":0, "bgcolor":"#9bbc0f" }, "into":{ "_":"scenehud" } },
+              { "as":{ "_":[ "object", "logo" ] }, "remove":1 },
+              { "wait":25 },
+              { "gotoScene":"story", "withTransition":2 }
+            ]
+          }
+        }
+      ]
+    },
+    "story":{
+      "object":[
+        { "type":"introelement", "image":"title", "width":160, "height":96, "x":0, "y":0 },
+        { "type":"introelement", "width":160, "height":48, "zIndex":10, "x":0, "y":96, "bgcolor":"#9bbc0f" }
+      ],
+      "bgcolor":"#9bbc0f",
+      "execute":[ { "stopChannel":"music", "applyEffect":{ "name":"setvolume", "volume":0.8 }, "toChannel":"music" }, { "playAudio":"introMusic" } ],
+      "states":[
+        {
+          "code":[
+            { "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "set":{ "state":"skip" } } },
+            {
+              "name":"Sequence",
+              "data":[
+                { "wait":25 },
+                { "object":{ "set":{ "_":[ "stencil", "captionModel" ] }, "html":"Once upon a time there was a peaceful town called Buttonland." } },
+                { "wait":150 },
+                { "as":{ "_":[ "object", "caption" ] }, "remove":1 },
+                { "object":{ "set":{ "_":[ "stencil", "captionModel" ] }, "html":"One bad day, a mysterious horde of evil monsters invaded the village." } },
+                {
+                  "object":{
+                    "type":"introelement",
+                    "image":"title", "tileY":96, "width":160, "height":64,
+                    "zIndex":1, "y":96,
+                    "py":96,
+                    "timer":0,
+                    "states":{
+                      "code":{
+                        "name":"Execute",
+                        "data":[
+                          { "when":{ "_":[ "this", "py", "isGreaterThan", 38 ] }, "subtract":0.3, "to":{ "_":[ "this", "py" ] } },
+                          { "set":{ "y":{ "_":[ "this", "timer", "cos", "abs", "*", -5, "+", { "_":[ "this", "py" ] } ] } } },
+                          { "sum":0.2, "to":{ "_":[ "this", "timer" ] } }
+                        ]
+                      }
+                    }
+                  }
+                },
+                { "wait":150 },
+                { "as":{ "_":[ "object", "caption" ] }, "remove":1 },
+                { "object":{ "set":{ "_":[ "stencil", "captionModel" ] }, "html":"'Everybody! Run!'<br>Screamed the major of Buttonland.<br>'We need help!'" } },
+                { "wait":150 },
+                { "as":{ "_":[ "object", "caption" ] }, "remove":1 },
+                { "object":{ "set":{ "_":[ "stencil", "captionModel" ] }, "html":"'I'm here, people of Buttonland!' Said the brave Hero. 'Come on, monsters!'" } },
+                {
+                  "object":{
+                    "type":"introelement",
+                    "image":"title", "tileY":160, "width":88, "height":96,
+                    "zIndex":2, "x":160,
+                    "timer":0,
+                    "states":[
+                      {
+                        "code":{
+                          "name":"Execute",
+                          "data":[
+                            { "when":{ "_":[ "this", "x", "isGreaterThan", 72 ] }, "subtract":1, "to":{ "_":[ "this", "x" ] }, "elseExecute":{ "set":{ "state":"still" } } },
+                            { "set":{ "y":{ "_":[ "this", "timer", "cos", "abs", "*", 3 ] } } },
+                            { "sum":0.2, "to":{ "_":[ "this", "timer" ] } }
+                          ]
+                        }
+                      },
+                      {
+                        "name":"still",
+                        "code":{
+                          "name":"Execute",
+                          "data":[ { "set":{ "y":{ "_":[ "this", "timer", "cos", "*", 2, "+", 2 ] } } }, { "sum":0.05, "to":{ "_":[ "this", "timer" ] } } ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                { "wait":150 },
+                { "as":{ "_":[ "object", "caption" ] }, "remove":1 },
+                { "object":{ "set":{ "_":[ "stencil", "captionModel" ] }, "html":"The Hero was so brave and strong that monsters were shaking in fear!" } },
+                { "wait":150 },
+                { "as":{ "_":[ "object", "caption" ] }, "remove":1 },
+                { "object":{ "set":{ "_":[ "stencil", "captionModel" ] }, "html":"But all of a sudden, an evil laugh echoed around Buttonland. 'Ha! Ha! Haa!'" } },
+                { "wait":150 },
+                { "as":{ "_":[ "object", "caption" ] }, "remove":1 },
+                { "object":{ "set":{ "_":[ "stencil", "captionModel" ] }, "html":"'It's time for our revenge, little Hero.' Said the witch from the sky." } },
+                {
+                  "object":{
+                    "type":[ "introelement", "witch" ],
+                    "image":"title", "tileX":88, "tileY":160, "width":59, "height":39,
+                    "zIndex":4,
+                    "px":10,
+                    "py":-45,
+                    "timer":0,
+                    "states":[
+                      {
+                        "code":{
+                          "name":"Execute",
+                          "data":[
+                            { "when":{ "_":[ "this", "py", "isLessThan", 10 ] }, "sum":1, "to":{ "_":[ "this", "py" ] } },
+                            {
+                              "set":{
+                                "x":{ "_":[ "this", "timer", "sin", "*", 3, "+", { "_":[ "this", "px" ] } ] }, "y":{ "_":[ "this", "timer", "cos", "*", 3, "+", { "_":[ "this", "py" ] } ] }
+                              }
+                            },
+                            { "sum":0.2, "to":{ "_":[ "this", "timer" ] } }
+                          ]
+                        }
+                      },
+                      {
+                        "name":"leave",
+                        "code":{
+                          "name":"Execute",
+                          "data":[
+                            {
+                              "when":{ "_":[ "this", "py", "isGreaterThan", -45 ] },
+                              "execute":[ { "subtract":1, "to":{ "_":[ "this", "py" ] } }, { "sum":1, "to":{ "_":[ "this", "px" ] } } ],
+                              "elseExecute":{ "remove":1 }
+                            },
+                            {
+                              "set":{
+                                "x":{ "_":[ "this", "timer", "sin", "*", 3, "+", { "_":[ "this", "px" ] } ] }, "y":{ "_":[ "this", "timer", "cos", "*", 3, "+", { "_":[ "this", "py" ] } ] }
+                              }
+                            },
+                            { "sum":0.2, "to":{ "_":[ "this", "timer" ] } }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                { "wait":150 },
+                { "as":{ "_":[ "object", "caption" ] }, "remove":1 },
+                { "object":{ "set":{ "_":[ "stencil", "captionModel" ] }, "html":"'From now, you will run forever and from every battle!' Shouted the witch." } },
+                { "wait":150 },
+                { "as":{ "_":[ "object", "caption" ] }, "remove":1 },
+                { "object":{ "set":{ "_":[ "stencil", "captionModel" ] }, "html":"'I will never run, Witch! And I will beat you!' Smiled proudly the hero." } },
+                { "wait":150 },
+                { "as":{ "_":[ "object", "caption" ] }, "remove":1 },
+                {
+                  "object":{ "set":{ "_":[ "stencil", "captionModel" ] }, "html":"'Ha! Ha! Haa! We will see, my scared hero!' And then, the witch shaked her wand." }
+                },
+                { "wait":25 },
+                {
+                  "object":{
+                    "type":"introelement",
+                    "width":10, "height":10,
+                    "zIndex":3, "x":30, "y":20,
+                    "bgcolor":"#9bbc0f",
+                    "centerX":5,
+                    "centerY":5,
+                    "states":{
+                      "code":{
+                        "name":"Execute",
+                        "data":{
+                          "when":{ "_":[ "this", "width", "isLessThan", 300 ] },
+                          "execute":[
+                            { "sum":2, "to":{ "_":[ "this", "width" ] } },
+                            { "sum":2, "to":{ "_":[ "this", "height" ] } },
+                            { "sum":1, "to":{ "_":[ "this", "centerX" ] } },
+                            { "sum":1, "to":{ "_":[ "this", "centerY" ] } },
+                            { "sum":10, "to":{ "_":[ "this", "angle" ] } },
+                            { "subtract":1, "to":{ "_":[ "this", "x" ] } },
+                            { "subtract":1, "to":{ "_":[ "this", "y" ] } }
+                          ]
+                        }
+                      }
+                    }
+                  }
+                },
+                { "wait":125 },
+                { "as":{ "_":[ "object", "caption" ] }, "remove":1 },
+                { "object":{ "set":{ "_":[ "stencil", "captionModel" ] }, "html":"A flash blinked around the poor hero and then he disappeared." } },
+                { "wait":125 },
+                { "as":{ "_":[ "object", "caption" ] }, "remove":1 },
+                { "object":{ "set":{ "_":[ "stencil", "captionModel" ] }, "html":"'Ha! Ha! Haaa! Now is the time to conquer the village!' And then..." } },
+                { "wait":125 },
+                { "as":{ "_":[ "object", "caption" ] }, "remove":1 },
+                { "object":{ "set":{ "_":[ "stencil", "captionModel" ] }, "html":"...the witch flew away. Where was the hero gone? Was Buttonland doomed?" } },
+                { "as":{ "_":[ "objectTyped", "witch" ] }, "set":{ "state":"leave" } },
+                { "wait":125 },
+                { "set":{ "state":"skip" } }
+              ]
+            }
+          ]
+        },
+        {
+          "name":"skip",
+          "execute":{ "applyEffect":{ "name":"fade", "toVolume":0, "length":0.5 }, "toChannel":"music" },
+          "code":{
+            "name":"Sequence",
+            "data":[ { "as":{ "_":[ "object", "introelement" ] }, "remove":1 }, { "wait":25 }, { "gotoScene":"stage", "withTransition":2 } ]
+          }
+        }
+      ]
+    },
+    "ending":{
+      "object":{
+        "width":152, "height":1000,
+        "x":4, "y":144,
+        "color":"#0f380f",
+        "font":"gameboy", "fontSize":8, "lineHeight":10, "textAlign":"center", "html":"WONDERBUTTON<br>2016<br>A tribute to the great action adventures of '90s.<br><br><br>Graphics by:<br>KesieV Norimaki<br><br><br>Story by:<br>KesieV Norimaki<br><br><br>Code by:<br>KesieV Norimaki<br><br><br>Music by:<br>Heartbeat<br><br><br>SFX made with:<br>BFXR Tool<br><br><br>Big thanks to:<br><br>Bianca<br><br>Stefano \"Il Kusagari\" Fioretto<br><br>Romolo Camplani<br><br>Il Marsicano<br><br>All Akihabara age friends<br><br><br><br><br><br><br><br><br><br><br><br>To be a hero, just try running to the opposite side.",
+        "forceY":-0.5,
+        "states":{ "code":{ "name":"Physics" } }
+      },
+      "bgcolor":"#9bbc0f",
+      "execute":[ { "stopChannel":"music", "applyEffect":{ "name":"setvolume", "volume":0.8 }, "toChannel":"music" }, { "playAudio":"stageMusic" } ],
+      "states":[
+        {
+          "code":[
+            { "name":"Sequence", "data":[ { "wait":1400 }, { "set":{ "state":"skip" } } ] },
+            { "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "set":{ "state":"skip" } } }
+          ]
+        },
+        {
+          "name":"skip",
+          "execute":{ "applyEffect":{ "name":"fade", "toVolume":0, "length":0.5 }, "toChannel":"music" },
+          "code":{ "name":"Sequence", "data":[ { "wait":25 }, { "gotoScene":"intro", "withTransition":2 } ] }
+        }
+      ]
+    },
+    "stage":{
+      "object":[
+        { "set":{ "_":[ "stencil", "player" ] }, "x":312, "y":416 },
+        { "set":{ "_":[ "stencil", "blob" ] }, "x":328, "y":312 },
+        { "set":{ "_":[ "stencil", "checkpoint" ] }, "x":328, "y":448 },
+        { "set":{ "_":[ "stencil", "blob" ] }, "x":296, "y":248 },
+        { "set":{ "_":[ "stencil", "blob" ] }, "x":376, "y":248 },
+        { "set":{ "_":[ "stencil", "sign" ] }, "x":504, "y":240 },
+        { "set":{ "_":[ "stencil", "sign" ] }, "x":336, "y":232 },
+        { "set":{ "_":[ "stencil", "mission" ] }, "x":336, "y":248, "frame":3 },
+        { "set":{ "_":[ "stencil", "blob" ] }, "x":408, "y":96 },
+        { "set":{ "_":[ "stencil", "blob" ] }, "x":360, "y":152 },
+        { "set":{ "_":[ "stencil", "blob" ] }, "x":312, "y":40 },
+        { "set":{ "_":[ "stencil", "blob" ] }, "x":480, "y":40 },
+        { "set":{ "_":[ "stencil", "blob" ] }, "x":536, "y":152 },
+        { "set":{ "_":[ "stencil", "shop" ] }, "x":504, "y":256, "frame":2 },
+        { "set":{ "_":[ "stencil", "shop" ] }, "x":480, "y":96, "frame":1 },
+        { "set":{ "_":[ "stencil", "sign" ] }, "x":480, "y":80 },
+        { "set":{ "_":[ "stencil", "mission" ] }, "x":288, "y":152, "frame":2 },
+        { "set":{ "_":[ "stencil", "sign" ] }, "x":288, "y":136 },
+        { "set":{ "_":[ "stencil", "checkpoint" ] }, "x":440, "y":160 },
+        { "set":{ "_":[ "stencil", "blob" ] }, "x":552, "y":256 },
+        { "set":{ "_":[ "stencil", "blob" ] }, "x":48, "y":184 },
+        { "set":{ "_":[ "stencil", "blob" ] }, "x":144, "y":184 },
+        { "set":{ "_":[ "stencil", "blob" ] }, "x":128, "y":0 },
+        { "set":{ "_":[ "stencil", "blob" ] }, "x":144, "y":0 },
+        { "set":{ "_":[ "stencil", "blob" ] }, "x":112, "y":0 },
+        { "set":{ "_":[ "stencil", "crab" ] }, "x":176, "y":40 },
+        { "set":{ "_":[ "stencil", "checkpoint" ] }, "x":96, "y":160 },
+        { "set":{ "_":[ "stencil", "crab" ] }, "x":16, "y":96 },
+        { "set":{ "_":[ "stencil", "crab" ] }, "x":88, "y":40 },
+        { "set":{ "_":[ "stencil", "blob" ] }, "x":96, "y":272 },
+        { "set":{ "_":[ "stencil", "crab" ] }, "x":656, "y":176 },
+        { "set":{ "_":[ "stencil", "crab" ] }, "x":696, "y":176 },
+        { "set":{ "_":[ "stencil", "blob" ] }, "x":656, "y":104 },
+        { "set":{ "_":[ "stencil", "blob" ] }, "x":696, "y":104 },
+        { "set":{ "_":[ "stencil", "crab" ] }, "x":712, "y":416 },
+        { "set":{ "_":[ "stencil", "crab" ] }, "x":736, "y":416 },
+        { "set":{ "_":[ "stencil", "crab" ] }, "x":760, "y":416 },
+        { "set":{ "_":[ "stencil", "sign" ] }, "x":632, "y":456 },
+        { "set":{ "_":[ "stencil", "mission" ] }, "x":632, "y":472, "frame":1 },
+        { "set":{ "_":[ "stencil", "checkpoint" ] }, "x":632, "y":296 },
+        { "set":{ "_":[ "stencil", "crab" ] }, "x":632, "y":32 },
+        { "set":{ "_":[ "stencil", "crab" ] }, "x":656, "y":32 },
+        { "set":{ "_":[ "stencil", "checkpoint" ] }, "x":104, "y":768 },
+        { "set":{ "_":[ "stencil", "bat" ] }, "x":24, "y":600 },
+        { "set":{ "_":[ "stencil", "bat" ] }, "x":216, "y":600 },
+        { "set":{ "_":[ "stencil", "bat" ] }, "x":128, "y":648 },
+        { "set":{ "_":[ "stencil", "bat" ] }, "x":32, "y":704 },
+        { "set":{ "_":[ "stencil", "bat" ] }, "x":224, "y":704 },
+        { "set":{ "_":[ "stencil", "bat" ] }, "x":312, "y":744 },
+        { "set":{ "_":[ "stencil", "bat" ] }, "x":416, "y":744 },
+        { "set":{ "_":[ "stencil", "bat" ] }, "x":520, "y":744 },
+        { "set":{ "_":[ "stencil", "crab" ] }, "x":344, "y":784 },
+        { "set":{ "_":[ "stencil", "crab" ] }, "x":432, "y":784 },
+        { "set":{ "_":[ "stencil", "crab" ] }, "x":512, "y":784 },
+        { "set":{ "_":[ "stencil", "blob" ] }, "x":480, "y":784 },
+        { "set":{ "_":[ "stencil", "blob" ] }, "x":392, "y":784 },
+        { "set":{ "_":[ "stencil", "blob" ] }, "x":296, "y":784 },
+        { "set":{ "_":[ "stencil", "blob" ] }, "x":320, "y":712 },
+        { "set":{ "_":[ "stencil", "blob" ] }, "x":408, "y":720 },
+        { "set":{ "_":[ "stencil", "blob" ] }, "x":504, "y":720 },
+        { "set":{ "_":[ "stencil", "checkpoint" ] }, "x":736, "y":768 },
+        { "set":{ "_":[ "stencil", "blob" ] }, "x":568, "y":704 },
+        { "set":{ "_":[ "stencil", "blob" ] }, "x":600, "y":704 },
+        { "set":{ "_":[ "stencil", "crab" ] }, "x":632, "y":704 },
+        { "set":{ "_":[ "stencil", "bat" ] }, "x":576, "y":648 },
+        { "set":{ "_":[ "stencil", "bat" ] }, "x":728, "y":656 },
+        { "set":{ "_":[ "stencil", "bat" ] }, "x":616, "y":680 },
+        { "set":[ { "_":[ "stencil", "bossArea" ] } ], "width":176, "height":48, "x":320, "y":608 },
+        { "set":{ "_":[ "stencil", "sign" ] }, "x":488, "y":448, "frame":1 },
+        { "set":{ "_":[ "stencil", "sign" ] }, "x":368, "y":376, "frame":1 },
+        { "set":{ "_":[ "stencil", "sign" ] }, "x":392, "y":376, "frame":1 },
+        { "set":{ "_":[ "stencil", "sign" ] }, "x":272, "y":312, "frame":2 }
+      ],
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "tileWidth":8,
+        "tileHeight":8,
+        "map":[
+          "JLPRPRPRPRPRPRPRPRPRPRPRMNOMNOPQQQQQQQQQQQQRPQQQQQQQQQQQQRPQQQQRPQQQRPQNNNRPQQRPQQQQQQQQQQRPQQQQQQRP",
+          "MOhhihhcbbdcbbdcbbdcdjaaPQRMNO                                         MNO                 |      JL",
+          "#O    |cbbdcbbdcbbdcd jaJKLMNO     **      $ $ $ $ $         $ $ $     MNO     **       $$ |      PR",
+          "PR ** |caadcaadcaadcd  jMNOM#O                                         M#NL    **       $$ |      JK",
+          "KL ** |cbbdcbbdcbbdcd   PQRPQR     ^^  ., ,..,.....,     ,...,,        MNNR###             |   ^^^PQ",
+          "QR    |cbadcbadcbadcd   (((((( **      JL JKKKKKKKKL     JKKKKL        MNOjaa#             |      JL",
+          "KL    |caadcaadcaadcd...((((((         MO PQQQQQQQQR     MNQQQR        MNO jb###############      PR",
+          "QR    |ABCACABBCACACJLJLJKKKKL ^^   ** PR               ,MO^^^^     $  MNO  ababbbaabababbaj   ^^^JK",
+          "JL    |GHIGIGHHIGIGIPRPRM#NNNO         ##        $ $  ^^^MOeeee        MNO  jjjjjjjjjjjjjjj       PQ",
+          "MO,.   cbbdcbbdcbbdcdbaaMNNNNO      ^^ JL$$  $    $ $    MOeffe     $  PQR    $$  $$   $$   $$    JL",
+          "MO^^   caadcaadcaadcdbabMNNNNO **      MO$$           ^^^PReeee        ---    $$  $$   $$   $$ ^^^PR",
+          "PR     cbbdcbbdcbbdcdaaaMNNNNO         MO        ,..,,...,,eeee.     ..---                        JK",
+          "JL     cbadcbadcbadcdjbjPQQNNO ^^      MO.       ##JL#JLJKKKKKKKKL   JKKKKKL--JL--JL---JL---JL    PQ",
+          "PR.,,.,caadcaadcaadcd j JKLMNO         MO^^^   ^^##PR#PRPQQNNNNNQR   PQNNNQR--PR--PR---PR---PR    JL",
+          "KLACACACACACACACaadcd   MNOMNO     ffffPR .                MNNNR       MNOhh  hi  hi   ii   ii    PR",
+          "QRPRPRPRPRPRPRPR^^^^^   MNOMNO     caad##^^^               PQQR      **M#O                        JK",
+          "JLhhihihhhiihhhi     $$ M#OPQR     cbbdJL,      $$$$        #        **MNO                     ^^^PQ",
+          "MO                   $$ MNNKKL   JLcaadMO^^^                #,   ...,.,MNO     $ $ $ $ $ $ $      JL",
+          "M#                      MNNNNO   MOcaadMO,,.,,,,.,.,        JL   JLJLJLMNO                        MO",
+          "MO                   ^^^MNNNNO $ MNKKKKNNKL#JKKKKKKL        PR   PRPRPRMNO                     ^^^MO",
+          "MO                      MNOMNO   PNNNNNQQQR#PQQQQQQR             JLJLJLMNO                        MO",
+          "PR     ,.,g,  .g,g,     MNOMNO $  MNNNO               .  ,       PRPRPRMNO,..    .,,,.,.,..    ,,,#O",
+          "KL^^^^ACACACACACACAC    MNOMNO    PQQQR  *            ^^^^             MNNKKL----JKKKKKKKKL----JKKNO",
+          "QR    PRPRPRPRPRPRPR    PQRMNO $                              *        PQQQQR----PQQQNNQQQR----PQQNO",
+          "JL    jbbbbaaaabajjj    JKKN#O           ^            ,  ,             #JLcd     cdcdMO           MO",
+          "PR^^^^ jjjbbjbajj       MNNNNO $         e            ^^^^    ^        #MOcd     cdcd#O           MO",
+          "KL        jj jj         MNNNNO          ^^^^^^                e        #PRcd   $ cdcdMO^^$$   $$^^MO",
+          "QR                      MNNQQR          eeeeee  ^^^   .  .   ^^^^^^    JKLjj   $ cdcdPR           PR",
+          "JL^^^^^^^^^^^^^JLJLJL $ MNO###          efeefe        ^^^^   eeeeee    MNO     $ cdcdJL           ##",
+          "MO             PRPRPR   MNOJKL          eeeeee               efeefe  ,.PQR     $ jjcdMO  ^^ $$    JL",
+          "#O           * JLJLJL $ MNOPQR   .,....,eeeeee..,..,,.       eeeeee  JKKL#     $   jjMO           MO",
+          "MO             PRPRPR   MNO###   JKKKKKKKKKKKKKKKKKKKL    ,,.eeeeee,.MN#OJL  * $ *   MO   $$   $$ MO",
+          "MO          ^^JLJLJL  $ MNOJL#   MNNNNNNNNNNNNNNNNNNNO    JKKKKKKKKKLMNNOMO   * *    M#           PR",
+          "PR            PRPRPR    MNOMNL^^^PQQQQQQQQQQQQQQQQQQQR    PQQQQNNQQQRPQQRPR    *     PR$$ ^^   ^^ AC",
+          "KL            JLJLJL  $ PQRMNR          cbbabd                 PR                    JL     $$    MO",
+          "QR  ,g, .g.   PRPRPR#   iihMO#          cbbbbd                     $$$ )))           MO           MO",
+          "JL^^^^^^^^^^^^^^^^^^#      PR#^^^       cbabad          $          $$$ )))           PR     ^^    MO",
+          "M#                       JKKKL          cbbbbd         $ $             JKL^^^        )) $$        M#",
+          "MO                       PQQQR....    ,.caaaad,,...           .,,.,,,,,MNO,..,,,...,.)) $$      $$MO",
+          "PR                       JKKKKKKKL    JKKKKKKKLJKKL           JKKKKKKKLMNNLJKKLJKKLJLJL^^^        MO",
+          "JL^^^     $$$  $$        PQQQQQQNO    PQQQQQQQRMNNO           PQQQQQQQRPQQRP#QRPQQRPRPR        ^^^MO",
+          "MO                  $    JKKKKKKNO    JKKKKKKKLMNNO^^^^^^^^^^^JKKKKKKKKKKKL                       MO",
+          "MO   #                   PQQQQQQQR----PQNNNNNQRPQQR           PQQQQQQQQQQQR                       MO",
+          "MO^^^#  ^^   ^^  ^^ $ ^^^J#KKKKL        MNNNO                          JKKL   $$$   $$$  $$$  $$  PR",
+          "PR                       PQQQQNO        PQQQR          ,,,,,,          MNNO  $                    AC",
+          "JL                  $    JKKKLMO   $$           $ $    ######          MNNO $     ,,   ,.   .,  ..MO",
+          "MO   $$$     $$       ^^^MNQQRPR   $             $     caaaad          PQQR $     ^^  |^^   ^^  ^^#O",
+          "MO   $$$     $$     $    MNK#L      $                  caaabd          ))))           |           MO",
+          "PR                       PQQQR..   $          ..,,,,,  cbaaad          )))),g.        |           MO",
+          "JL                     JKKKKKKKL   $$         #######  cabaad          JKKL^^^   a    |           MO",
+          "MO^^^   #^^#    #^^#   MNNNNNNNO              caabbbd  cabaad     $ $$ MNNO      b   AC           M#",
+          "MO      #  #    #  #   PQQQQQQQR,             caabbad  cbbaad     $$ $ #NNO      a   MO,.g....,g..PR",
+          "MO      j  j    j  j   jjJKKKLJKL             cbababd  ^^^^^^          MNNO   ^      MNBBBBBBBBBBBBB",
+          "MO^^^                    M#NNOMNO             cbbbbad  caaaad    ,,.,..MNNO   e      MNQQQQQQQQQQQQQ",
+          "PR                       MNNNOMNO             cbbaaad  cbbabd    ^^^^^^MNNO  ^^^^^^  MOiiiiihiihihAC",
+          "JL                       PQQQRPQR             caabbbd  cbaabd    caaabaMNNOg eeeeee  PR           MO",
+          "MO^^^                    --------             cababbd  cbaaad    cabbaaMNNOggefeefe  cd  $ $ $ $  MO",
+          "PR,,,..,.,,.    .,...,..,--------.,..,,.,.,,.,caabbbd,.caaaad.,,,cbbbbaMN#Oggeeeeeeggcd   $ $ $   #O",
+          "JKKKKKKKKKKL====JKKKKKKKKKKKKLJKLJKKKKKKKKKLJK#KKKKLJK#KKKKLJKKLJKKKKLJNNNOggeeeeegggcd,g,....,,g.MO",
+          "PQQQQQQQQQQR====PQQQQQQQQQQQQRPQRPQQNNNNQQQRPQQQNNNOMNQQQQQRPQQRPQNNNOMNNNNBBBBBBBBBBBBBBBC^^^^ABBMN",
+          "JKKKKKKKKKKLabaaJKKKKKKKLJKKKKKKKKKLPQQRJKKKKKKLMNNOPRJKKKKKKKLJKLPQQRPQQQQNNNNNNNNNNNNNNNO    MNNPQ",
+          "PQQQQQQQQQQRbbbaPQQQQQQQRMNNNNNNNNNOJKKLMNN#NNNOMN#NKLMNNNNNNNOMNOJLJLJKKKLMNNNNNNNNNNNNNNO    MNOJK",
+          "ABBBBBBBBBBCbabbABBBBBBBCMNNNNNN#NNOMNNOMNNNNNNOMNNNNOMNNNN#NNOPQRPRPRMN#NOMNNNNNNNNNNNNNNO^^^^MNOMN",
+          "PQQQQQQQQQQRaabaPQQQQQQQRPQQQQQQQQQRPQQRPQQQQQQRPQQQQRPQQQQQQQRJKLJKKLMNNNOPQQQQQQQQQQQQQNO    MNRMN",
+          "ABBBBBBBBBBCbbaaABBBBBBBCABBBBBCJKKLJKKLffffffffffffffffffffffJNNOPQQRPQQQReeeeeeeeeeeeeeMO    MOeMN",
+          "PQQQQQQQQQQRbaabPQQQQQQQRDEEHSHIMNNOMNNOecdecdecdecdecdecdecdeMNNOJKKKKKKKLeeeeeeeeeeeeeeMO^^^^MOeMN",
+          "ABBBBBBBBBBCabbbABBBBBBBBEEFaabaPQQRPQQRecdecdecdecdecdecdecdePQQRPQQQQQQQReeeeeeeeeeeeeeMO    MOeMN",
+          "GHHHHHHHHHHIaaaaGHHHHHSHHHHIbbbaABBCJKKLecdecdecdecdecdecdecdeABBBSCACeeeeeeeeeeeeeeeeeeeMO $$ MOeMN",
+          "ACababbaaabbbbaaaaabbaaaaababaabDEEFMNNOecdecdecdecdecdecdecde~~~~~~~~eeeeejjjejjjejjjeeeMO^^^^MOeMN",
+          "DFabbbabbbaabbbabjjjjjjjjjjjjjbaDEEFPQQRecdecdecdecdecdecdecde~~~~~~~~eeeee g e g e g eeeMO    MOeMN",
+          "DFjjjjjjjjjjaaaaj             jjDESFSABCjjjjjjjjjjjjjjjjjjjjjjGHIABCDF^^^^e h e h e h eeeMO $$ MOeMN",
+          "GI  $$      jjba *              DEEFSDEF||||||||||||||||||||||ACSGHIDFeeeeeeeeeeeeeeeeeeeMO^^^^MOeMN",
+          "AC            jj *           $$ GHHISDEFffffffffffffffffffffffDFACACDFeeeeeeeeeeeeeeeeeeeMO    MOePQ",
+          "DF ^^^^          *   $$         ACABCDEFecdeeeeeeeeeeeeeeeecdeDFDFDFDF^^^^ejjjejjjejjjeeeMO $$ MOeJK",
+          "DF        ^^^^              ^^^^DFDEFDEFecdeeeeeeeeeeeeeeeecdeDFDFDFDFe g e g e g e g eeePR^^^^PReMN",
+          "DF    $$            ^^^^        DFDEFDEFecdeeeeeeeeeeeeeeeecdeSIGIGIGIj h j h j h j h jjj=f    f=jMN",
+          "DF                              DFDSFDEFecdeejjjeeeeeejjjeecdeACSSSSAC^^^^               =f    f= MN",
+          "GI   ^^^^       $$        ^^    DFDEFDEFecdej g jeeeej g jecdeDFABCSGI                   =f    f= PQ",
+          "BC                      *       DFDEFDSFecdj  h  jeej  h  jcdeDFSSSABCABBBBBBBC^^^^ABBCABBBBBBBBBBBB",
+          "HI             ^^^^     *  $$   GIGHIGHIecd       ee       cdeDFABCGHIGHHHHHHHI||||GHHIGHHHHHHHHHHHH",
+          "AC      ^^^             *       ABBCABBCecd       ee       cdeDFDEFABCSeeeeeeee^^^^eeeeeeeeeeeeeeeAB",
+          "DF          $$     $$     ^^^^  DEEFDEEIjjj       jj       jjjGIGHIGHIfeeeeeeee    eeeeeeeeeeeeeeeDE",
+          "DF $$   *                       GHHIDEFABBBBBBBBBBBBBBBBBBBBBBBBBBBBBCfeeeeeeee^^^^eeeeeeeeeeeeeeeDE",
+          "GI      *  ^^^^   ^^^^          ABBCDEFDEESEEEEEEEEEEEEEEEEEEEEEEEEEEFfeeeSSeee    eeeeeeeeeeeeeeeDE",
+          "BC^^^^  *                       GHHIGHIGHHHHHHHHHHHHHHHHHHHHHHHHHHHHHIfeeeSSeee^^^^eeeeeeeeeeeeeeeDE",
+          "HI                      ^^  $$  ACABCABBBCSSABBBCACACACABBBCABBCABCABCfeeeeeeee    eeeeeeeeSSeeeeeGH",
+          "BC                ^^^^          DFDEFDEEEFACDEEEFDFDFDFDEEEFDEHIDEFDEFfeeeeeeee^^^^eeeeeeeeSSeeeeeAC",
+          "HI ^^^^        $$          ^^^^ DFGHIGHHHIDFDEESFDFDFDFGHHHIGIACDEIGHIfjjjjjjjj    jjeeeeeeeeeeeeeDF",
+          "AC                     **       DFABBBBBBCGIGHHHIGIDFGIeACABBCGIGIABBBBBBBBBBBBBBBBBCeeeeeeeeeeeeeDF",
+          "DF            ^^^^     **       DFGHHHHHHIeeeeeeecdDFACeGIGHHIeABCGHHHHHHHHHHHHHHHHHIeeeejjjjjjjjjGI",
+          "DF       $$                     DSeeeeeecdeeeeeeecdGIGIeeecdeeeGHIecdefeeeeeeeeeeeeeeeeeeABBBBC^^^AB",
+          "GI $                ABBBBBBBBBBBEFeeeeeecdeeeeeeecdeeeeeeecdeeeeeeecdefeeeeeeeeeeeeeeeeeeDEHHHI   DE",
+          "BC $    ^^^^        GHHHEEHHHHHHHIeeeeeecdeeeeeeecdeeeeeeecdeeeeeeecdefeeeeeeeeeeeeeeeeeeDFeeee^^^DE",
+          "HI $            $$  =eeeDFeeeeecdeejjjeecdeejjjeecdeejjjeecdeejjjeecdefeeeeeeeeeSSeeeeeeeDFeeee   DE",
+          "AC              $$  =eeeGIeeeeecdej g jecdej g jecdej g jecdej g jecdefeeeeeeeeeSSeeeeeeeDFeeee^^^DE",
+          "DF^^^               =eee=eejjjj^^j  h  j^^j  h  j^^j  h  j^^j  h  j^^jfeeeSSeeeeeeeeeeeeeGIeeee   DE",
+          "DF                  =eee=ej    cd       cd       cd       cd       cd feeeSSeeeeeeeeeeeeeeeeeee ACDE",
+          "DF,,,.,., , .  . , .=eee=j     cd       cd       cd       cd       cd fjjjjjjjjjjjjjjjjjjjjjjjj DFDE",
+          "DFACACACACACACACACACACACSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSGIGH",
+          "GIDFDFGIGIDFGIGIDFGIGIDFACACACACACACACACACACACACACACACACACACACACACACACACACACACACACACACACACACACACABBC"
+        ]
+      }
+    }
+  }
+}
