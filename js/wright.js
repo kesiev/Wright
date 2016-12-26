@@ -1508,6 +1508,18 @@ DOMInator.CONTROLS={
 				default:"paddlespad"
 			}
 		}
+	},
+	onebutton:{
+		keyboard:{
+			keyA: {label:"Button",default:32},
+			keyFullScreen: {label:"Fullscreen",subLabel:"Touch with two fingers the game area to enable fullscreen and touch controls.",subLabelDisabled:!Supports.isTouch,default:70}
+		},
+		touchcontroller:{
+			layout:{
+				allowed:["onebutton"],
+				default:"onebutton"
+			}
+		}
 	}
 };
 
@@ -1545,6 +1557,12 @@ DOMInator.TOUCHLAYOUTS={
 			{x1:0.6,y1:0,x2:1,y2:0.5,button:"keyUp2",bgcolor:"#00f",color:"#000",label:"Up 2"},
 			{x1:0.6,y1:0.5,x2:1,y2:1,button:"keyDown2",bgcolor:"#f0f",color:"#000",label:"Down 2"},
 			{x1:0.4,y1:0,x2:0.6,y2:1,button:"keyA",bgcolor:"#fff",color:"#000",label:"Start"},
+		]
+	},
+	onebutton:{
+		label:"Touch anywhere",
+		buttons:[
+			{x1:0,y1:0,x2:1,y2:1,button:"keyA",bgcolor:"#fff",color:"#000",label:"Button"}
 		]
 	}
 };
