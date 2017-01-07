@@ -1,0 +1,327 @@
+{
+  "name":"LCD",
+  "author":"KesieV",
+  "year":2017,
+  "genre":"Puzzle",
+  "description":"<p>There are a lot reasons to be a retrogamer - even for new generations. In the 80s and 90s the world was living a <i>digital melting pot</i>, where an unbelivable amount of different technologies lived at the same time and indifferent places.<br>During that years the boundaries between states, especially in Europe, were broken, allowing these <i>technological microcosmos</i> to touch, exchange andevolve each other.<br>The <a href='https://europa.eu/european-union/about-eu/history_en'>European Union</a> website labels these two decades as <b>The changing face of Europe</b> and <b>A Europe without frontiers</b>: the fall of the Berlin Wall, the birth of the <i>Single Market</i> of the 80s and its further expansion are clear signals of these changes.</p><p>There are a lot of interesting tales about gaming to be told about that years. I'd like to tell you one of them.</p><p> <a href='https://en.wikipedia.org/wiki/Handheld_electronic_game#History'>Handheld videogames history</a> starts with the first Mattel LED devices in 1978. One year later the japanese genius Gunpei Yokoi got inspiration by a bored businessman hitting random buttons on his calculator and invented the well known <a href='https://en.wikipedia.org/wiki/Game_%26_Watch'>Game &amp; Watch series</a> of LCD handheld videogames.<br>In the 1984 <a href='https://en.wikipedia.org/wiki/Tetris'>Tetris</a> started spreading all over the world: it was born from the head of the russian artificial intelligence researcher Alexey Pajitnov and, due to the lively russian political scenario, his concept managed to escaped to UK and then spreaded all over the world without control. Once in Japan, the <i>Tetris concept</i> met the Game Boy, made by the very same Yokoi of the LCD games, and became that <a href='https://en.wikipedia.org/wiki/Tetris_(Game_Boy)'>Game Boy version</a> (1989) that conquered everybody - <a href='wonderbutton'>me too</a>.<br>Tetris managed to reach China too and, despite we don't clearly know the full backstory, in the late 80s an American company imported and started selling a Chinese made LCD handheld videogame: it was called the <a href='http://bojoga.com.br/brick-game/'>Apollo</a> and contained Tetris. You see it coming: our Apollo started the invasion of the <i>Brick Games</i> you can still see around and buy for few dollars (or euros).<br></p><p>Let's move to Brazil: during that years the Game Boy was still very hard to find even in specialized stores and the Game &amp; Watch series didn't have a fair price. At that time the child would have to choose between a cheap LCD handheld, an action figure, or a Playmobil.<br>Our Apollo was the best choice for your handheld gaming needs: 20 or 30 games in one for a cheap price was a great opportunity for brazilian school kids - and parents. The demand was so high that Apollo became hard to find too and vendors have begun to look for sources of purchase. The Asian companies got in and clandestinely landed hundreds of thousands of Brick Game models for street vendors. By the end of that generation there were brick games with up to 9999 <i>games</i>. They were small variations of the same game that for some reason counted as an individual game.</p><p>Starting from Tetris, more concepts were <i>ported</i> on these cheap devices, like <a href='https://en.wikipedia.org/wiki/Arkanoid'>Arkanoid</a> (1986), <a href='https://en.wikipedia.org/wiki/Pong'>Pong</a> (1972), <a href='https://en.wikipedia.org/wiki/Snake_(video_game)'>Snake</a> (1976), <a href='https://en.wikipedia.org/wiki/Battle_City_(video_game)'>Battle City</a> (1985) and many others.<br><i>Brick Games</i> also evolved in technology too, featuring multi-channel sound, voice synthesis or digital sounds samples, and internal CMOS memory which can save the current game progress and high scores when the system is turned off.</p><p>Can you see it? There is a whole <i>alternate history</i> of gaming into these cheap handhelds. How many forgotten stories that 20 years are hiding? Become a <i>retrogamer</i> now! :)</p><p>Plot!</p><p>Well. Drop pieces. Make lines. Use LEFT/RIGHT for moving the current piece, the A BUTTON for rotating it and DOWN for making it fall faster. Good luck!</p>",
+  "screenshots":[ "lcd-1.png", "lcd-2.png" ],
+  "hardware":{
+    "width":342,
+    "height":462,
+    "aliasMode":"aliased"
+  },
+  "audioChannels":{
+    "sfx":{ "volume":1, "samples":[ "drop", "line", "move", "rotate", "gameover", "start" ] }
+  },
+  "cheats":{},
+  "resources":{
+    "background":"background.png",
+    "drop":"drop.ogg",
+    "gameover":"gameover.ogg",
+    "lcd":"lcd.png",
+    "line":"line.ogg",
+    "move":"move.ogg",
+    "rotate":"rotate.ogg",
+    "start":"start.ogg"
+  },
+  "stencils":{
+    "codeCheckBlock":{ "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "block" ] } ] }, "assign":1, "to":{ "_":[ "scene", "touched" ] } },
+    "codeChooseNext":[
+      {
+        "when":{ "_":[ "scene", "nextBag", "count", "isEqualTo", 0 ] },
+        "execute":[ { "set":{ "nextBag":{ "_":[ "new", [ 0, 1, 2, 3, 4, 5, 6 ] ] } } }, { "shuffle":{ "_":[ "scene", "nextBag" ] } } ]
+      },
+      { "set":{ "nextPiece":{ "_":[ "scene", "nextBag", 0 ] } } },
+      { "set":{ "nextRotation":{ "_":[ "randomNumber", [ 0, { "_":[ "stencil", "pieces", { "_":[ "scene", "nextPiece" ] }, "count", "-", 1 ] } ] ] } } },
+      { "unpushAt":0, "from":{ "_":[ "scene", "nextBag" ] } }
+    ],
+    "codeNextPiece":[
+      { "set":{ "currentPiece":{ "_":[ "this", "nextPiece" ] }, "currentRotation":{ "_":[ "this", "nextRotation" ] }, "currentX":71, "currentY":-77 } },
+      {
+        "set":{
+          "tilemap":{
+            "set":{ "type":"dropping" },
+            "x":{ "_":[ "scene", "currentX" ] }, "y":{ "_":[ "scene", "currentY" ] },
+            "skipResize":true,
+            "tileWidth":22,
+            "tileHeight":22,
+            "map":{ "_":[ "stencil", "pieces", { "_":[ "scene", "currentPiece" ] }, { "_":[ "scene", "currentRotation" ] } ] }
+          }
+        }
+      },
+      { "_":[ "stencil", "codeChooseNext" ] },
+      { "as":{ "_":[ "object", "next" ] }, "remove":1 },
+      {
+        "set":{
+          "tilemap":{
+            "set":{ "type":"next" },
+            "x":241, "y":92,
+            "skipResize":true,
+            "tileWidth":22,
+            "tileHeight":22,
+            "map":{ "_":[ "stencil", "pieces", { "_":[ "scene", "nextPiece" ] }, { "_":[ "scene", "nextRotation" ] } ] }
+          }
+        }
+      }
+    ],
+    "digit":{
+      "image":"lcd", "width":13, "height":24,
+      "zIndex":10,
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":{
+            "when":{ "_":[ "scene", { "_":[ "this", "variableName" ] }, "isGreaterEqualThan", { "_":[ "this", "variableThreshold" ] } ] },
+            "set":{ "frame":{ "_":[ "scene", { "_":[ "this", "variableName" ] }, "/", { "_":[ "this", "variableDigit" ] }, "floor", "%", 10 ] }, "visible":1 },
+            "elseExecute":{ "set":{ "visible":0 } }
+          }
+        }
+      }
+    },
+    "pieces":[
+      [ [ "....", "####", "....", "...." ], [ "..#.", "..#.", "..#.", "..#." ], [ "....", "....", "####", "...." ], [ ".#..", ".#..", ".#..", ".#.." ] ],
+      [ [ "#...", "###.", "....", "...." ], [ ".##.", ".#..", ".#..", "...." ], [ "....", "###.", "..#.", "...." ], [ ".#..", ".#..", "##..", "...." ] ],
+      [ [ "..#.", "###.", "....", "...." ], [ ".#..", ".#..", ".##.", "...." ], [ "....", "###.", "#...", "...." ], [ "##..", ".#..", ".#..", "...." ] ],
+      [ [ ".##.", ".##.", "....", "...." ] ],
+      [ [ ".##.", "##..", "....", "...." ], [ ".#..", ".##.", "..#.", "...." ], [ "....", ".##.", "##..", "...." ], [ "#...", "##..", ".#..", "...." ] ],
+      [ [ ".#..", "###.", "....", "...." ], [ ".#..", ".##.", ".#..", "...." ], [ "....", "###.", ".#..", "...." ], [ ".#..", "##..", ".#..", "...." ] ],
+      [ [ "##..", ".##.", "....", "...." ], [ "..#.", ".##.", ".#..", "...." ], [ "....", "##..", ".##.", "...." ], [ ".#..", "##..", "#...", "...." ] ]
+    ],
+    "#":{ "type":"tile", "image":"lcd", "tileX":0, "tileY":24, "width":22, "height":22, "zIndex":1 }
+  },
+  "execute":{},
+  "scenes":{
+    "intro":{
+      "object":[
+        { "image":"background", "width":342, "height":12, "zIndex":100, "x":0, "y":0 },
+        { "image":"background", "tileY":12, "width":342, "height":450, "x":0, "y":12 },
+        { "type":"block", "width":224, "height":4, "zIndex":2000, "x":0, "y":452 },
+        { "type":"block", "width":4, "height":552, "zIndex":2000, "x":0, "y":-100 },
+        { "type":"block", "width":4, "height":552, "zIndex":2000, "x":226, "y":-100 },
+        { "set":{ "_":[ "stencil", "digit" ] }, "x":314, "y":14, "variableDigit":1, "variableName":"score", "variableThreshold":0 },
+        { "set":{ "_":[ "stencil", "digit" ] }, "x":301, "y":14, "variableDigit":10, "variableName":"score", "variableThreshold":10 },
+        { "set":{ "_":[ "stencil", "digit" ] }, "x":288, "y":14, "variableDigit":100, "variableName":"score", "variableThreshold":100 },
+        { "set":{ "_":[ "stencil", "digit" ] }, "x":275, "y":14, "variableDigit":1000, "variableName":"score", "variableThreshold":1000 },
+        { "set":{ "_":[ "stencil", "digit" ] }, "x":262, "y":14, "variableDigit":10000, "variableName":"score", "variableThreshold":10000 },
+        { "set":{ "_":[ "stencil", "digit" ] }, "x":249, "y":14, "variableDigit":100000, "variableName":"score", "variableThreshold":100000 },
+        { "set":{ "_":[ "stencil", "digit" ] }, "x":259, "y":213, "variableDigit":10, "variableName":"level", "variableThreshold":-1 },
+        { "set":{ "_":[ "stencil", "digit" ] }, "x":302, "y":213, "variableDigit":1, "variableName":"level", "variableThreshold":-1 }
+      ],
+      "level":0,
+      "score":0,
+      "states":[
+        {
+          "execute":[
+            { "as":{ "_":[ "object", "tile" ] }, "remove":1 },
+            {
+              "set":{
+                "tilemap":{
+                  "x":5, "y":11,
+                  "skipResize":true,
+                  "tileWidth":22,
+                  "tileHeight":22,
+                  "map":[
+                    "##########",
+                    "..........",
+                    "#...##.##.",
+                    "#..#...#.#",
+                    "#..#...#.#",
+                    "#..#...#.#",
+                    "###.##.##.",
+                    "..........",
+                    "##########",
+                    "..........",
+                    ".##...###.",
+                    "..##....#.",
+                    "..........",
+                    "#...#.....",
+                    "#...##..#.",
+                    "##..#...#.",
+                    "........#.",
+                    ".##..#..#.",
+                    ".##..##...",
+                    "......#..."
+                  ]
+                }
+              }
+            }
+          ],
+          "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "set":{ "playAudio":"start", "state":"newgame" } } }
+        },
+        {
+          "name":"newgame",
+          "execute":[
+            { "as":{ "_":[ "object", "tile" ] }, "remove":1 },
+            {
+              "set":{
+                "das":0,
+                "gameOverLine":{ "_":[ "new", { "width":220, "height":100, "x":5, "y":-89 } ] },
+                "level":0,
+                "lineChecker":{ "_":[ "new", { "width":220, "height":1, "x":5, "y":0 } ] },
+                "lineFaller":{ "_":[ "new", { "width":220, "height":0, "x":0, "y":0 } ] },
+                "nextBag":{ "_":[ "new", [] ] },
+                "score":0
+              }
+            },
+            { "_":[ "stencil", "codeChooseNext" ] }
+          ],
+          "code":{ "name":"Execute", "data":{ "set":{ "state":"play" } } }
+        },
+        {
+          "name":"play",
+          "code":[
+            {
+              "name":"Sequence",
+              "data":[
+                { "when":{ "_":[ "scene", "gameOverLine", "collidesWith", { "_":[ "object", "block" ] } ] }, "set":{ "state":"gameover" } },
+                { "_":[ "stencil", "codeNextPiece" ] },
+                { "set":{ "timer":{ "_":[ 20, "-", { "_":[ "this", "level", "/", 10, "floor", "*", 2 ] } ] } } },
+                { "wait":1 },
+                { "subtract":1, "to":{ "_":[ "this", "timer" ] }, "loopTo":-1, "until":{ "_":[ "keyDown", "isDown", "or", { "_":[ "this", "timer", "not" ] } ] } },
+                { "as":{ "_":[ "object", "dropping" ] }, "sum":22, "to":{ "_":[ "this", "y" ] } },
+                { "set":{ "touched":0 } },
+                { "as":{ "_":[ "object", "dropping" ] }, "execute":{ "_":[ "stencil", "codeCheckBlock" ] } },
+                {
+                  "when":{ "_":[ "this", "touched" ] },
+                  "execute":[
+                    { "sum":1, "to":{ "_":[ "scene", "score" ] }, "playAudio":"drop" },
+                    { "as":{ "_":[ "object", "dropping" ] }, "execute":{ "subtract":22, "to":{ "_":[ "this", "y" ] } } },
+                    { "times":16, "execute":{ "as":{ "_":[ "objectTyped", "dropping" ] }, "set":{ "type":"block", "removeType":"dropping" } } }
+                  ],
+                  "elseExecute":{ "sum":22, "to":{ "_":[ "scene", "currentY" ] } }
+                },
+                { "loopTo":2, "until":{ "_":[ "object", "dropping", "not" ] } },
+                { "set":{ "state":"checklines" } }
+              ]
+            },
+            {
+              "name":"Execute",
+              "data":{
+                "when":{ "_":[ "objectTyped", "dropping" ] },
+                "execute":[
+                  { "set":{ "moved":0, "rotate":0 } },
+                  { "when":{ "_":[ "keyRight", "isDown" ] }, "set":{ "moved":22 }, "elseExecute":{ "when":{ "_":[ "keyLeft", "isDown" ] }, "set":{ "moved":-22 } } },
+                  { "when":{ "_":[ "keyA", "isHit" ] }, "set":{ "rotate":1 } },
+                  { "when":{ "_":[ "keyLeft", "isReleased", "or", { "_":[ "keyRight", "isReleased" ] } ] }, "set":{ "das":0, "moved":0 } },
+                  { "when":{ "_":[ "keyLeft", "isHit", "or", { "_":[ "keyRight", "isHit" ] } ] }, "set":{ "das":0, "nextDas":5 } },
+                  {
+                    "when":{ "_":[ "this", "moved" ] },
+                    "execute":{
+                      "when":{ "_":[ "this", "das" ] },
+                      "subtract":1,
+                      "to":{ "_":[ "this", "das" ] },
+                      "elseExecute":[
+                        { "as":{ "_":[ "object", "dropping" ] }, "sum":{ "_":[ "that", "moved" ] }, "to":{ "_":[ "this", "x" ] } },
+                        { "set":{ "das":{ "_":[ "this", "nextDas" ] }, "touched":0 } },
+                        { "set":{ "nextDas":1 } },
+                        { "as":{ "_":[ "object", "dropping" ] }, "execute":{ "_":[ "stencil", "codeCheckBlock" ] } },
+                        {
+                          "when":{ "_":[ "this", "touched" ] },
+                          "execute":{ "as":{ "_":[ "object", "dropping" ] }, "execute":{ "subtract":{ "_":[ "that", "moved" ] }, "to":{ "_":[ "this", "x" ] } } },
+                          "elseExecute":{ "sum":{ "_":[ "this", "moved" ] }, "to":{ "_":[ "scene", "currentX" ] }, "playAudio":"move" }
+                        }
+                      ]
+                    }
+                  },
+                  {
+                    "when":{ "_":[ "this", "rotate" ] },
+                    "execute":{
+                      "times":{ "_":[ "stencil", "pieces", { "_":[ "scene", "currentPiece" ] }, "count" ] },
+                      "execute":{
+                        "when":{ "_":[ "this", "rotate" ] },
+                        "execute":[
+                          { "playAudio":"rotate" },
+                          { "as":{ "_":[ "object", "dropping" ] }, "remove":1 },
+                          {
+                            "set":{
+                              "currentRotation":{ "_":[ "this", "currentRotation", "+", 1, "%", { "_":[ "stencil", "pieces", { "_":[ "scene", "currentPiece" ] }, "count" ] } ] }
+                            }
+                          },
+                          {
+                            "set":{
+                              "tilemap":{
+                                "set":{ "type":"dropping" },
+                                "x":{ "_":[ "scene", "currentX" ] }, "y":{ "_":[ "scene", "currentY" ] },
+                                "skipResize":true,
+                                "tileWidth":22,
+                                "tileHeight":22,
+                                "map":{ "_":[ "stencil", "pieces", { "_":[ "scene", "currentPiece" ] }, { "_":[ "scene", "currentRotation" ] } ] }
+                              }
+                            }
+                          },
+                          { "set":{ "touched":0 } },
+                          { "as":{ "_":[ "object", "dropping" ] }, "execute":{ "_":[ "stencil", "codeCheckBlock" ] } },
+                          { "when":{ "_":[ "this", "touched", "not" ] }, "set":{ "rotate":0 } }
+                        ]
+                      }
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name":"checklines",
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "set":{ "bonus":10 } },
+              { "as":{ "_":[ "scene", "lineChecker" ] }, "set":{ "y":451 } },
+              {
+                "when":{ "_":[ "scene", "lineChecker", "complexCollidesWith", { "subject":{ "_":[ "object", "block" ] }, "all":1 }, "count", "isEqualTo", 10 ] },
+                "elseExecute":{ "subtract":22, "to":{ "_":[ "scene", "lineChecker", "y" ] } },
+                "subsequence":[
+                  {
+                    "when":{ "_":[ "scene", "level", "isLessThan", 99 ] },
+                    "execute":[ { "sum":1, "to":{ "_":[ "scene", "level" ] } }, { "when":{ "_":[ "scene", "level", "%", 10, "isEqualTo", 0 ] }, "playAudio":"start" } ]
+                  },
+                  { "sum":{ "_":[ "scene", "bonus" ] }, "to":{ "_":[ "scene", "score" ] }, "playAudio":"line" },
+                  { "multiply":2, "to":{ "_":[ "scene", "bonus" ] } },
+                  { "as":{ "_":[ "scene", "lineFaller" ] }, "set":{ "width":1, "height":1, "x":5, "y":{ "_":[ "scene", "lineChecker", "y" ] } } },
+                  { "as":{ "_":[ "scene", "lineFaller", "collidesWith", { "_":[ "object", "block" ] } ] }, "remove":1 },
+                  { "sum":22, "to":{ "_":[ "scene", "lineFaller", "x" ] } },
+                  { "wait":1, "cycles":10, "loopTo":-2 },
+                  { "as":{ "_":[ "scene", "lineFaller" ] }, "set":{ "width":220, "height":{ "_":[ "scene", "lineChecker", "y", "+", 89 ] }, "x":5, "y":-89 } },
+                  {
+                    "as":{ "_":[ "scene", "lineFaller", "complexCollidesWith", { "subject":{ "_":[ "object", "block" ] }, "all":1 } ] },
+                    "sum":22,
+                    "to":{ "_":[ "this", "y" ] }
+                  }
+                ]
+              },
+              { "loopTo":-1, "until":{ "_":[ "scene", "lineChecker", "y", "isLessThan", 11 ] } },
+              { "set":{ "state":"play" } }
+            ]
+          }
+        },
+        {
+          "name":"gameover",
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "set":{ "fill":429 }, "playAudio":"gameover" },
+              {
+                "set":{
+                  "tilemap":{
+                    "x":5, "y":{ "_":[ "scene", "fill" ] },
+                    "skipResize":true,
+                    "tileWidth":22,
+                    "tileHeight":22,
+                    "map":[
+                      "##########"
+                    ]
+                  }
+                }
+              },
+              { "subtract":22, "to":{ "_":[ "scene", "fill" ] } },
+              { "wait":1, "cycles":20, "loopTo":-2 },
+              { "wait":25 },
+              { "set":{ "state":"default" } }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}
