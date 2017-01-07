@@ -3093,40 +3093,41 @@ function Wright(gameId,mods) {
 			if (gamerunning && (!data.when || get(this, this, data.when))) {
 				var d, horizontal = get(this, this, data.horizontal),
 					vertical = get(this, this, data.vertical),
-					jump = get(this, this, data.jump);
+					jump = get(this, this, data.jump),
+					controlsEnabled = !get(this, this, data.controlsDisabledWhen);
 				if (horizontal)
 					if (typeof horizontal == "object") {
 						var control = get(this, this, horizontal.control),
 							speed = get(this, this, horizontal.speed),
 							gotoZero = get(this, this, horizontal.gotoZero),
 							zeroValue = get(this, this, horizontal.zeroValue) || 0;
-						if (control) d = _Code.pad("keyLeft", "keyRight") * (speed === undefined ? 1 : speed);
+						if (controlsEnabled&&control) d = _Code.pad("keyLeft", "keyRight") * (speed === undefined ? 1 : speed);
 						else d = 0;
 						if (gotoZero && !d)
 							if (Math.abs(zeroValue-this.forceX) < gotoZero) d = zeroValue-this.forceX;
 							else d = gotoZero * (this.forceX-zeroValue > 0 ? -1 : 1);
 						this.forceX += d;
-					} else this.forceX += _Code.pad("keyLeft", "keyRight");
+					} else this.forceX += controlsEnabled?_Code.pad("keyLeft", "keyRight"):0;
 				if (vertical)
 					if (typeof vertical == "object") {
 						var control = get(this, this, vertical.control),
 							speed = get(this, this, vertical.speed),
 							gotoZero = get(this, this, vertical.gotoZero),
 							zeroValue = get(this, this, vertical.zeroValue) || 0;
-						if (control) d = _Code.pad("keyUp", "keyDown") * (speed === undefined ? 1 : speed);
+						if (controlsEnabled&&control) d = _Code.pad("keyUp", "keyDown") * (speed === undefined ? 1 : speed);
 						else d = 0;
 						if (gotoZero && !d)
 							if (Math.abs(zeroValue-this.forceY) < gotoZero) d = zeroValue-this.forceY;
 							else d = gotoZero * (this.forceY-zeroValue > 0 ? -1 : 1);
 						this.forceY += d;
-					} else this.forceY += _Code.pad("keyUp", "keyDown");
+					} else this.forceY += controlsEnabled?_Code.pad("keyUp", "keyDown"):0;
 				if (jump) {
 					var forceY = get(this, this, jump.forceY),
 						cut = get(this, this, jump.cut),
 						count = get(this, this, jump.count),
 						audio = get(this, this, jump.playAudio);
 					if (this.touchDown) {
-						if (game.key.keyUp == 1) {
+						if (controlsEnabled&&(game.key.keyUp == 1)) {
 							this.forceY = forceY;
 							if (audio) game.playAudio(audio);
 							this.currentJump = {
@@ -3139,7 +3140,7 @@ function Wright(gameId,mods) {
 							this.forceY *= cut;
 							this.currentJump.cut = 1;
 						}
-						if (count && (this.currentJump.count < count) && (game.key.keyUp == 1)) {
+						if (count && (this.currentJump.count < count) && (controlsEnabled&&(game.key.keyUp == 1))) {
 							this.forceY = forceY;
 							this.currentJump.count++;
 						}
@@ -3338,6 +3339,8 @@ function Wright(gameId,mods) {
 		tilemap:function(template,father,from,tox) {
 			iterateComposedList(from, tox, get(from, tox, template.tilemap), function(tilemap) {
 				var map = get(from, tox, tilemap.map),
+					skipResize = get(from, tox, tilemap.skipResize),
+					set = get(from, tox, tilemap.set),
 					tile = mw = mh = 0,
 					tilewidth = get(from, tox, tilemap.tileWidth) || 16,
 					tileheight = get(from, tox, tilemap.tileHeight) || 16,
@@ -3355,13 +3358,15 @@ function Wright(gameId,mods) {
 							if (tilez !== undefined) tile.setZIndex(tilez);
 							if (alpha !== undefined) tile.setAlpha(alpha);
 							applyStencil(tile, tox, curtape.stencils[map[y][x]]);
+							if (set) applyStencil(tile, tox, set);
 							if (tile.x + tile.width > mw) mw = tile.x + tile.width;
 							if (tile.y + tile.height > mh) mh = tile.y + tile.height;
 						}
-				from.size({
-					width: (tilemap.width || mw),
-					height: (tilemap.height || mh)
-				});
+				if (!skipResize)
+					from.size({
+						width: (tilemap.width || mw),
+						height: (tilemap.height || mh)
+					});
 			});
 		},
 
@@ -4103,6 +4108,13 @@ function Wright(gameId,mods) {
 						var from= get(item, curtox, line.from);
 						if (from && (from instanceof Array)) {
 							var pos=from.indexOf(get(item, curtox, line.unpush));
+							if (pos!=-1) from.splice(pos,1);
+						}
+					}
+					if (line.unpushAt !== undefined) {
+						var from= get(item, curtox, line.from);
+						if (from && (from instanceof Array)) {
+							var pos=get(item, curtox, line.unpushAt);
 							if (pos!=-1) from.splice(pos,1);
 						}
 					}
