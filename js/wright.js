@@ -2094,7 +2094,7 @@ function Box(parent, type, sub, statemanager, useCanvas, aliasmode) {
 						if (!obj.displayed&&displayed) node.setStyle("display","block");
 						if (obj.displayed&&!displayed) node.setStyle("display","none");
 						if (!obj.cleanprops.tileX || !obj.cleanprops.tileY || !obj.cleanprops.frame || !obj.cleanprops.width) {
-							node.setStyle("backgroundPositionX",-obj.tileX - (obj.frame * obj.width));
+							node.setStyle("backgroundPositionX",-obj.tileX - (obj.frame * obj.width || 0));
 							node.setStyle("backgroundPositionY", -obj.tileY);
 							obj.cleanprops.tileX = obj.cleanprops.tileY = obj.cleanprops.frame = 1;
 						}
