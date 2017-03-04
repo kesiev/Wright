@@ -11,7 +11,7 @@ function FIX(value) { return Math.round(value * PREC) / PREC; }
  */
 
 var Supports = (function(){
-	var vendors=["Khtml","ms","O","Moz","Webkit"],div=document.createElement('div'),csscache={};
+	var vendors=["Khtml","ms","O","Moz","Webkit"],div=document.createElement('div'),csscache={},fakestorage={};
 	var ret={
 		css:function(prop){
 			if (csscache[prop]===undefined) {
@@ -105,7 +105,10 @@ var Supports = (function(){
 		offFullScreenError:function(fullScreenError) {
 			if (Supports.nativeFullscreen) this.removeEventListener(window,this.nativeFullscreen.error,fullScreenError);
 			else this._fullscreen.onerror=0;
-		}
+		},
+		setStorage:function(key,value) { if (this.isLocalStorage) window.localStorage[key]=value; else fakestorage[key]=value; },
+		getStorage:function(key) { if (this.isLocalStorage) return window.localStorage[key]; else return fakestorage[key]; },
+		dumpStorage:function() { if (this.isLocalStorage) return window.localStorage; else return fakestorage; }
 	}
 	ret.supportsScaling=ret.css("transform")&&ret.css("transformOrigin");
 	ret.isFirefox=ret.browser("firefox");
@@ -121,7 +124,7 @@ var Supports = (function(){
 	ret._fullscreen={};
 	var elem = document.createElement('canvas');
   	ret.isCanvas=!!(elem.getContext && elem.getContext('2d'));
-
+  	ret.isLocalStorage=!!window.localStorage;
 	return ret;
 })();
 // TIME
@@ -145,26 +148,320 @@ Supports.applyEffect=function(context,node,effect) {
 // OBJECTS/VARIABLES
 Supports.clone = function(obj) { return typeof obj == "object" ? JSON.parse(JSON.stringify(obj)) : obj; };
 Supports.isNaN = function(obj) { return obj !== obj; }
+// URL HANDLING
+Supports.getUrlParameter = function(name) {
+  return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [null, ''])[1].replace(/\+/g, '%20')) || null;
+}
 // FILE
 Supports.getFile = function(file, cb) {
 	var xmlhttp = new XMLHttpRequest();
-	xmlhttp.onreadystatechange = function() {
-		if (xmlhttp.readyState == 4)
-			if ((xmlhttp.status == 200)||(xmlhttp.status==0)) cb(xmlhttp.responseText);
-			else cb();
-	};
+	if (cb)
+		xmlhttp.onreadystatechange = function() {
+			if (xmlhttp.readyState == 4)
+				if ((xmlhttp.status == 200)||(xmlhttp.status==0)) cb(xmlhttp.responseText);
+				else cb();
+		};
 	xmlhttp.open("GET", file, true);
 	xmlhttp.send();
 };
+Supports.callUrl = function(method, url,  data, cb) {
+	var postdata,xmlhttp = new XMLHttpRequest();
+	xmlhttp.open(method, url, true);
+	if ((method == "POST")&&data.postData) {
+		postdata = "";
+		for(var a in data.postData) postdata += a + "=" + encodeURIComponent(data.postData[a]) + "&";
+		postdata=postdata.substring(0, postdata.length-1);
+		xmlhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	}
+	if(data.header) for (var a in data.header) xmlhttp.setRequestHeader(a, data.header[a]);
+	if (cb)
+		xmlhttp.onreadystatechange = function() {
+			if (xmlhttp.readyState == 4)
+				if ((xmlhttp.status == 200)||(xmlhttp.status==0)) cb(xmlhttp.responseText);
+				else cb();
+		};
+	xmlhttp.send(postdata);
+};
+
+/*
+ * Pipelines.
+ */
+
+var Controllers=function(controller,config,game,gameconfig){
+	var self=this,issender,control,storage,dategap;
+	this.controller=controller;
+	this.config=config;
+	this.game=game;
+	this.gameconfig=gameconfig;
+
+	this.keyUp=function(key) { if (issender) controller.sendToReceiver(self,"U"+key); };
+	this.keyDown=function(key) { if (issender) controller.sendToReceiver(self,"D"+key); };
+	this.generatePin=function() {
+		var pin="";
+		for (var i=0;i<6;i++) pin+=Math.floor(Math.random()*10);
+		return pin;
+	}
+	this.initializeSender=function(cb) {
+		issender=1;
+		var sendstorage={},prefix="GAME_"+gameconfig.tapeName+"_";
+		var storage=Supports.dumpStorage();
+		for (var a in storage)
+			if (a.substr(0,prefix.length)==prefix) sendstorage[a]=storage[a];
+		this.showMessageSender("Preparing sender...");
+		controller.prepareSender(self,function(){
+			controller.initializeSender(self,function(){
+				controller.connectToReceiver(self,function(){
+					controller.sendToReceiver(self,"C["+self.game+"]"+JSON.stringify({
+						gameconfig:gameconfig,
+						storage:sendstorage,
+						date:(new Date()).getTime()
+					}));
+				});
+			});
+		});
+	};
+	this.showMessageReceiver=function(text) {
+		config.node.innerHTML="<div style='font-size:100px;padding-top:10%;letter-spacing:-10px;color:#fbf8e0;font-weight:bold'>Wright!</div><div style='font-size:30px;line-height:40px;padding:10%'>"+text+"</div>";
+	}
+	this.showMessageSender=function(text) {
+		config.node.innerHTML="<div style='font-family:sans-serif;text-align:center'>"+text+"</div>";
+	}
+	this.initializeReceiver=function() {
+		config.node.style.backgroundColor="#000";
+		config.node.style.position="absolute";
+		config.node.style.color="#fff";
+		config.node.style.textAlign="center";
+		config.node.style.fontFamily="sans-serif";
+		config.node.style.left=config.node.style.right=config.node.style.top=config.node.style.bottom="0px";
+		issender=0;
+		Supports.nativeFullscreen=0;
+		this.showMessageReceiver("Preparing...");
+		controller.prepareReceiver(self,function(){
+			controller.initializeReceiver(self,function(){
+				controller.idleReceiver(self);
+			});
+		});
+	};
+	this.storeOnSender=function(key,value) {
+		storage[key]=value;
+		controller.sendToSender(self,"S"+key+"~"+value);
+	},
+	this.askDatasette=function(text,data,cb) {
+		this.datasetteCallback=cb;
+		controller.sendToSender(self,"T"+JSON.stringify({text:text,data:data}));
+	},
+	this.loadOnReceiver=function(key) { return storage[key]; },
+	this.senderDisconnected=function() {
+		if (this.wright) this.wright.destroy();
+		controller.idleReceiver(self);
+	}
+	this.receiverGetDate=function() { return new Date(Date.now()+dategap); }
+	this.receiverHandleMessage=function(data) {
+		if (data.substr(0,2)=="C[") {
+			this.game=data.substr(2,data.indexOf("]")-2);
+			data=JSON.parse(data.substr(data.indexOf("]")+1));
+			dategap=data.date-(new Date()).getTime();
+			this.gameconfig=data.gameconfig;
+			this.gameconfig.gameContainer=config.node;	
+			this.gameconfig.controller={isScreen:1,controller:this};		
+			this.gameconfig.tapesRoot=config.tapesRoot;
+			this.gameconfig.systemRoot=config.systemRoot;
+			storage={};
+			for (var a in data.storage) storage[a]=data.storage[a];
+			this.gameconfig.onReady=function() {
+				self.wright.getGame().node.gotoFullScreen();
+				controller.sendToSender(self,"R");	
+			}
+			this.wright=runSingleWright(this.game,this.gameconfig);
+		} else if (data[0]=="U") this.wright.getGame().node.keyUp(JSON.parse(data.substr(1))*1);
+		else if (data[0]=="D") this.wright.getGame().node.keyDown(JSON.parse(data.substr(1))*1);
+		else if (data[0]=="T") this.datasetteCallback(data.substr(1));
+	}
+	this.senderHandleMessage=function(data) {
+		if (data=="R") {
+			this.gameconfig.gameContainer=config.node;
+			this.gameconfig.controller={isPad:1,controller:this};
+			this.gameconfig.onReady=function() {
+				var game=self.wright.getGame().node;
+				self.tutorialNode=game.createElement("div");
+				self.tutorialNode.setAttribute("innerHTML","You should see the game running on the remote display.<br><br>This box is your remote controller. Click it for using your device keyboard for playing. Touch it with two fingers for using the touch controls.");
+				self.tutorialNode.setStyle("textAlign","center");
+				self.tutorialNode.setStyle("fontFamily","sans-serif");
+				self.tutorialNode.setStyle("fontSize",12);
+				self.tutorialNode.setStyle("color","#ccc");
+				self.tutorialNode.setStyle("width",300);
+				self.tutorialNode.setStyle("height",200);
+				self.tutorialNode.setStyle("lineHeight",20);		
+				self.tutorialNode.setStyle("left",10);
+				self.tutorialNode.setStyle("top",10);
+				game.appendChild(self.tutorialNode);
+			}
+			this.wright=runSingleWright(this.game,this.gameconfig);
+		} else if (data.substr(0,1)=="S")
+			Supports.setStorage(data.substr(1,data.indexOf("~")-1),data.substr(data.indexOf("~")+1));
+		else if (data.substr(0,1)=="T") {
+			var ask=JSON.parse(data.substr(1));
+			var out=prompt(ask.text,ask.data)
+			this.controller.sendToReceiver(self,"T"+out);
+		}
+	}
+	return this;
+};
+Controllers.methods={};
+Controllers.methods.PeerJS={
+	label:"Use another web browser as screen.",
+	isSenderSupported:function() {
+		var defaultConfig = {'iceServers': [{ 'url': 'stun:stun.l.google.com:19302' }]};
+		var RTCPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection;
+		if (typeof RTCPeerConnection === 'undefined') return false;
+		else {
+		  var pc,dc;
+		  try {
+		      pc = new RTCPeerConnection(defaultConfig, {optional: [{RtpDataChannels: true}]});
+		      dc = pc.createDataChannel('_PEERJSTEST');
+		    } catch (e) {
+		      return false;
+		    }
+		    return true;
+		}
+	},	
+	showSettings:function(node) {
+		if (location.protocol.toLowerCase()=="https:")
+			node.innerHTML="<div class='row'>Sorry but remote play is not supported via HTTPS. Click <a href='http://"+location.hostname+location.pathname+"'>here</a> to switch to plain HTTP.</div>";
+		else	
+			node.innerHTML="<div class='row'>Open another device web browser on <b>kesiev.com/wright/screen</b> and copy the displayed code.</div><div class='row'><div class='label'>Code:</div><div class='value'><input class='input' type=text id='_code' value='"+(Supports.getStorage("PEERJS_CODE")||"")+"'></div></div>";
+	},
+	getSettings:function(settings) {
+		var code=document.getElementById("_code").value;
+		if (!code) return "Please insert the screen code to enable remote play.";
+		Supports.setStorage("PEERJS_CODE",code);
+		settings.PeerJSSessionId=code;
+	},
+	prepare:function(self,cb) {
+		var script=document.createElement("script")
+		script.src="//cdn.peerjs.com/0.3/peer.js";
+		script.onload=function(){ cb(); }
+		document.getElementsByTagName("head")[0].appendChild(script);
+	},
+	prepareSender:function(self,cb) { this.prepare(self,cb)},
+	prepareReceiver:function(self,cb) { this.prepare(self,cb)},
+	initializeSender:function(self,cb) {
+		self.peer = new Peer({key: self.config.PeerJSApiKey});
+		self.peer.on('open', function(id) { cb(); });
+		self.peer.on('error', function(id) {
+			self.showMessageSender("Sorry. This browser is not supported.")
+		});
+	},
+	idleReceiver:function(self) {
+		self.showMessageReceiver("Choose a game in <b>kesiev.com/wright</b> with your device, select <b>"+this.label+"</b> and insert this code:<br><br><b>"+self.config.PeerJSSessionId+"</b>");
+	},
+	initializeReceiver:function(self,cb) {
+		if (!self.config.PeerJSSessionId) self.config.PeerJSSessionId=self.generatePin();
+		self.peer = new Peer(self.config.PeerJSSessionId,{key: self.config.PeerJSApiKey});
+		self.peer.on('open', function(id) {
+			self.config.PeerJSSessionId=id;			
+			self.peer.on('connection', function(conn) {
+			  self.conn=conn;
+			  conn.on('data', function(data){
+			    self.receiverHandleMessage(data);
+			  });
+			  conn.on('close', function(data){
+			    self.senderDisconnected();
+			  });
+			});
+			cb();
+		});
+		self.peer.on('error', function(id) {
+			self.showMessageReceiver("Sorry. This browser is not supported.")
+		});
+	},	
+	connectToReceiver:function(self,cb) {
+		if (self.config.PeerJSSessionId) {
+			self.showMessageSender("Connecting to "+self.config.PeerJSSessionId+"...")
+			self.conn = self.peer.connect(self.config.PeerJSSessionId);
+			self.conn.on('open', function(){
+			  self.conn.on('data', function(data){
+			    self.senderHandleMessage(data);
+			  });
+			  cb();
+			});
+		} else self.showMessageSender("You have to specify the screen code!");
+	},	
+	sendToReceiver:function(self,data) {
+		self.conn.send(data);
+	},
+	sendToSender:function(self,data) {
+		self.conn.send(data);
+	}
+}
+Controllers.methods.Chromecast={
+	label:"Use Chromecast as screen.",
+	isSenderSupported:function() { return window.chrome; },	
+	prepareSender:function(self,cb) {
+		window['__onGCastApiAvailable'] = function(isAvailable) { if (isAvailable) { cb(); } };
+		var script=document.createElement("script")
+		script.src="//www.gstatic.com/cv/js/sender/v1/cast_sender.js";
+		document.getElementsByTagName("head")[0].appendChild(script);
+	},
+	setupChromecastSession:function(self,e) {
+		self.session = e;
+        self.session.addUpdateListener(function(isAlive){ });
+        self.session.addMessageListener(self.config.ChromecastNamespace, function(namespace, message){ self.senderHandleMessage(message); });
+	},
+	initializeSender:function(self,cb) {
+		var sessionRequest = new chrome.cast.SessionRequest(self.config.ChromecastApplicationID);
+        var apiConfig = new chrome.cast.ApiConfig(sessionRequest,
+          function(e){ self.controller.setupChromecastSession(self,e);},
+          function(e){          	
+          	if (e==="available") cb();
+          	else self.showMessageSender("Looking for Chromecast devices...")
+          });
+       chrome.cast.initialize(apiConfig, function(){}, function(){});
+	},
+	prepareReceiver:function(self,cb) {		
+		var script=document.createElement("script")
+		script.src="//www.gstatic.com/cast/sdk/libs/receiver/2.0.0/cast_receiver.js";
+		script.onload=function(){ cb(); }
+		document.getElementsByTagName("head")[0].appendChild(script);
+	},
+	initializeReceiver:function(self,cb) {
+		self.castReceiverManager = cast.receiver.CastReceiverManager.getInstance();
+		self.messageBus = self.castReceiverManager.getCastMessageBus(self.config.ChromecastNamespace);
+		self.castReceiverManager.onReady=function(event) { cb(); }
+		self.castReceiverManager.onSenderConnected=function(event) { self.senderId=event.senderId; }
+		self.castReceiverManager.onSenderDisconnected = function(event) { self.senderDisconnected(); };
+        self.messageBus.onMessage=function(event) { self.receiverHandleMessage(event.data); }
+        self.castReceiverManager.start();
+	},		
+	idleReceiver:function(self) {
+		self.showMessageReceiver("Waiting...");
+	},
+	connectToReceiver:function(self,cb) {
+		self.showMessageSender("Ready to play?<br><br><input type=button id='_code' value='Select Chromecast'>");
+		document.getElementById("_code").onclick=function() {
+			chrome.cast.requestSession(function(e) {
+				self.controller.setupChromecastSession(self,e);
+				self.showMessageSender("Connecting...");
+				cb();
+	        }, function(e){});
+		}
+	},	
+	sendToReceiver:function(self,data) {
+		if (self.session != null) self.session.sendMessage(self.config.ChromecastNamespace, data);
+	},
+	sendToSender:function(self,data) {
+		self.messageBus.send(self.senderId, data);
+	}
+}
 
 /*
  * DOM-Canvas rendering and controls.
  */
 
-var DOMInator=function(useCanvas,aliasmode){
+var DOMInator=function(useCanvas,aliasmode,controller){
 	var useDom=!useCanvas,pixelated=aliasmode=="pixelated",degtorad=3.14/180,octx,canvas,bregexp=/<br>/gi,extracss={},txtarea = document.createElement("textarea");
 	var transformProp=Supports.css("transform"),transformOriginProp=Supports.css("transformOrigin");
-	var from,to,source,sources={},filters=[],filter,running=1;
+	var from,to,source,sources={},filters=[],filter,running=1;	
 	var guide=document.createElement("div");
 	guide.style.position="absolute";
 	guide.style.left=guide.style.top="0px";
@@ -447,44 +744,55 @@ var DOMInator=function(useCanvas,aliasmode){
 		}
 	};
 
-	/* Game cycle */
-	var skipFrames=0,timeout=0,fps=0,mspf=0,frameTimestamp=0,framedone=1,gamecycle=0,renderer=0,self=this;	
-	function doRenderer() {
-		if (!skipFrames) {
-			renderer();
-			self.frame();
-		}
-		framedone=1;
-	}
-	function scheduleFrame() {
+	/* Game cycle and frameskip throttle */
+	var skipFrames=0,timeout=0,fps=0,mspf=0,frameTimestamp=0,gamecycle=0,renderer=0,self=this;
+	var benchTimeout,nextCycleAt=0,frameskipped=0,frameskip=0,frameskipScore=0,frameskipThresholdMin=-3,frameskipThresholdMax=3,maxFrameskip=5;
+
+	function scheduleNextFrame(ts) {
 		clearTimeout(timeout);
 		var wait = mspf - Supports.getTimestamp() + frameTimestamp;
 		if (wait<=0) wait=1;
-		if (wait) timeout = setTimeout(runGameCycle, wait);
-		else runGameCycle();
+		timeout = setTimeout(scheduleFrame, wait);			
 	};
-	function runGameCycle() {
+
+	function scheduleFrame() {
 		if (running) {
+			var ts=Supports.getTimestamp();
+			frameTimestamp=ts;
+			nextCycleAt=ts+mspf;
 			if (loading) {
 				renderer();
 				self.rawFrame();
-				if (timeout != -1) scheduleFrame();
 			} else {
-				frameTimestamp = Supports.getTimestamp();
+				if (skipFrames) skipFrames--;
 				gamecycle();
 				updateControls();
-				if (framedone) {
-					if (skipFrames) skipFrames--;
-					else if (timeout != -1) {
-						framedone=0;
-						if (window.requestAnimationFrame) window.requestAnimationFrame(doRenderer);
-						else setTimeout(doRenderer,mspf/2);
-					}
-				}
-				scheduleFrame();
 			}
+			if (!loading) {
+				if (frameskipped>=frameskip) {
+					if (!skipFrames) {
+						renderer();
+						self.frame();
+					}
+					frameskipped=0;
+					clearTimeout(benchTimeout);
+					benchTimeout=setTimeout(function(){
+						var ts=Supports.getTimestamp();
+						if (ts>=nextCycleAt) frameskipScore--; else frameskipScore++;
+						if (frameskipScore>frameskipThresholdMax) {
+							frameskipScore=0;
+							if (frameskip>0) frameskip--;
+						} else if (frameskipScore<frameskipThresholdMin) {
+							frameskipScore=0;
+							if (frameskip<maxFrameskip) frameskip++;
+						}
+					},1);
+				} else frameskipped++;
+			}
+			scheduleNextFrame();
 		}
 	}
+
 	this.addSkipFrames=function(frames){ skipFrames+=frames; }
 	this.setGameCycle=function(cb) { gamecycle=cb; }
 	this.setRenderer=function(cb) { renderer=cb;}
@@ -498,6 +806,7 @@ var DOMInator=function(useCanvas,aliasmode){
 		running=0;
 		if (timeout) {
 			clearTimeout(timeout);
+			clearTimeout(benchTimeout);
 			timeout=-1;
 		}
 	}
@@ -506,6 +815,9 @@ var DOMInator=function(useCanvas,aliasmode){
 	/* Resources management */
 	var loading=1,resources = {
 		loadingNode:0,
+		loadingFrame:0,
+		loadingProgress:0,
+		loading:-1,
 		callback: 0,
 		current: 0,
 		loader: [],
@@ -514,9 +826,11 @@ var DOMInator=function(useCanvas,aliasmode){
 		items: {}
 	};
 	function loadNextResource() {
-		if (resources&&resources.loader.length) {
+		resources.loading++;
+		if (resources&&(resources.loading<resources.loader.length)) {
 			var file;
-			resources.current = resources.loader.splice(0, 1)[0];
+			resources.loadingProgress.setStyle("width",Math.ceil(100/resources.loader.length*resources.loading));
+			resources.current = resources.loader[resources.loading];
 			if (resources.current[1].substr(0,1)=="~") file = resources.systemroot+resources.current[1].substr(1);
 			else file = resources.root + resources.current[1];
 			var ext = file.substr(file.lastIndexOf(".") + 1).toLowerCase();
@@ -590,6 +904,8 @@ var DOMInator=function(useCanvas,aliasmode){
 			finalizeFilters();
 			loading=0;
 			resources.loadingNode.parentNode.removeChild(resources.loadingNode);
+			resources.loadingFrame.parentNode.removeChild(resources.loadingFrame);
+			resources.loadingProgress.parentNode.removeChild(resources.loadingProgress);
 			delete resources.loadingNode;
 			resources.callback();
 			resources.callback = 0;
@@ -613,15 +929,31 @@ var DOMInator=function(useCanvas,aliasmode){
 		resources.loadingNode.setStyle("color","#ccc");
 		resources.loadingNode.setStyle("width",100);
 		resources.loadingNode.setStyle("height",20);
-		resources.loadingNode.setStyle("lineheight",20);		
-		resources.loadingNode.setStyle("left",5);
-		resources.loadingNode.setStyle("top",5);
+		resources.loadingNode.setStyle("lineHeight",20);		
+		resources.loadingNode.setStyle("left",10);
+		resources.loadingNode.setStyle("top",10);
 		this.appendChild(resources.loadingNode);
+		resources.loadingFrame=this.createElement("div");
+		resources.loadingFrame.setStyle("borderWidth",1);
+		resources.loadingFrame.setStyle("borderStyle","solid");
+		resources.loadingFrame.setStyle("borderColor","#ccc");
+		resources.loadingFrame.setStyle("width",100);
+		resources.loadingFrame.setStyle("height",10);
+		resources.loadingFrame.setStyle("left",10);
+		resources.loadingFrame.setStyle("top",35);
+		this.appendChild(resources.loadingFrame);
+		resources.loadingProgress=this.createElement("div");
+		resources.loadingProgress.setStyle("backgroundColor","#ccc");
+		resources.loadingProgress.setStyle("width",0);
+		resources.loadingProgress.setStyle("height",12);
+		resources.loadingProgress.setStyle("left",10);
+		resources.loadingProgress.setStyle("top",35);
+		this.appendChild(resources.loadingProgress);
 		loadNextResource();
 	}
 
 	/* Fullscreen handler */
-	var gameScreen=0,orgScalex=0,orgScaley=0,guidetimeout;
+	var touchCommandFullScreen,gameScreen=0,orgScalex=0,orgScaley=0,guidetimeout;
 	function removeGuide() {
 		if (guidetimeout) {
 			root.removeChild(guide);
@@ -630,10 +962,11 @@ var DOMInator=function(useCanvas,aliasmode){
 		}
 	}
 	function showGuide() {
-		if (guide) {
+		if (guide&&(!controller||controller.isPad)) {
 			if (guidetimeout) clearTimeout(guidetimeout);
 			else root.appendChild(guide);
-			guidetimeout=setTimeout(removeGuide,3000);
+			if (controller&&controller.isPad) guidetimeout=1;
+			else guidetimeout=setTimeout(removeGuide,3000);
 		}
 	}
 	function fullScreenResizer() {	
@@ -641,6 +974,11 @@ var DOMInator=function(useCanvas,aliasmode){
 		var width=document.body.clientWidth;
 		var height=document.body.clientHeight;
 		var scalex=width/gameScreen.style.width,scaley=height/gameScreen.style.height;
+		if (controller&&controller.isScreen&&!controller.controller.gameconfig.fullScreen)
+			if (((gameScreen.style.width*orgScalex)<=width)&&((gameScreen.style.height*orgScaley)<=height)) {
+				scalex=orgScalex;
+				scaley=orgScaley;
+			}
 		if (scaley<scalex) scalex=scaley;
 		if (useDom) scalex=Math.floor(scalex)||1;
 		gameScreen.setStyle("scalex",scalex);
@@ -659,11 +997,17 @@ var DOMInator=function(useCanvas,aliasmode){
 		gameScreen.setStyle("scaley",orgScaley);
 		Supports.offFullScreenChange(fullScreenChange,fullScreenResizer);
 		Supports.offFullScreenError(fullScreenChange);
-		if (keys.keyFullScreen) gameScreen.addEventListener("touchstart",fullscreenTouchToggle);
+		if (keys.keyFullScreen) {
+			gameScreen.addEventListener("touchstart",fullscreenTouchDetector);
+			gameScreen.addEventListener("touchend",fullscreenTouchToggle);
+		}
 		if (touchlayout) disableTouchcontroller();
 		gameScreen.restoreFocus();
 	}
-	function fullScreenChange() { if (!Supports.isFullScreen()) exitFullScreen(true); }
+	function fullScreenChange() {
+		if (!Supports.isFullScreen()) exitFullScreen(true);
+		else fullScreenResizer();
+	}
 	function gotoFullScreen() {
 		if (!Supports.isFullScreen()) {
 			orgScalex=gameScreen.style.scalex;
@@ -674,7 +1018,10 @@ var DOMInator=function(useCanvas,aliasmode){
 			root.style.left=root.style.right=root.style.top=root.style.bottom="0px";
 			Supports.onFullScreenChange(fullScreenChange,fullScreenResizer);
 			Supports.onFullScreenError(fullScreenChange);
-			if (keys.keyFullScreen) gameScreen.removeEventListener("touchstart",fullscreenTouchToggle);
+			if (keys.keyFullScreen) {
+				gameScreen.removeEventListener("touchend",fullscreenTouchToggle);
+				gameScreen.removeEventListener("touchstart",fullscreenTouchDetector);
+			}
 			if (touchlayout) enableTouchcontroller();
 			Supports.setFullScreen(root);
 			gameScreen.restoreFocus();
@@ -683,8 +1030,11 @@ var DOMInator=function(useCanvas,aliasmode){
 	function toggleFullScreen() {
 		if (Supports.isFullScreen()) exitFullScreen(); else gotoFullScreen();
 	}
+	function fullscreenTouchDetector(e) {
+		touchCommandFullScreen=e.touches.length>1;
+	}
 	function fullscreenTouchToggle(e) {
-		if (e.touches.length > 1) {
+		if (touchCommandFullScreen) {
 			gotoFullScreen();
 			e.preventDefault();
 		}
@@ -697,6 +1047,8 @@ var DOMInator=function(useCanvas,aliasmode){
 	
 	/* Destruction */
 	function destroy() {
+		self.abort();
+		exitFullScreen();
 		running=resources=0;
 		if (audio) for (var a in audio.channels) audio.channels[a].destroy();
 	}
@@ -797,7 +1149,7 @@ var DOMInator=function(useCanvas,aliasmode){
 		} else {
 
 			// Canvas Mode
-			model.setStyle=function(k,v) {		
+			model.setStyle=function(k,v) {
 				switch (k) {
 					case "originY":
 					case "originX":{
@@ -1059,10 +1411,27 @@ var DOMInator=function(useCanvas,aliasmode){
 		scheduleFrame();
 	}
 
+	/* Date */
+	if (controller&&controller.isScreen)
+		this.getDate=function() { return controller.controller.receiverGetDate(); }
+	else
+		this.getDate=function() { return new Date(); }
+
+	/* Datasette */
+	if (controller&&controller.isScreen)
+		this.showDatasette=function(text,data,cb) {
+			controller.controller.askDatasette(text,data,cb);
+		}
+	else
+		this.showDatasette=function(text,data,cb) {
+			data=prompt(text,data);
+			cb(data);
+		}
+
 	/* Controls: keyboard/touch controller */
 	var key=this.key={};
 	var keys=this.keys={};
-	var hwkeys=[],touchlayout=0,analogTouch=0,keyAtouch=0,keyBtouch=0;
+	var hwkeys={},touchlayout=0,analogTouch=0,keyAtouch=0,keyBtouch=0;
 	var analogMap=[
 		{keyLeft:1,keyRight:0,keyUp:1,keyDown:0},
 		{keyLeft:1,keyRight:0,keyUp:0,keyDown:0},
@@ -1167,9 +1536,13 @@ var DOMInator=function(useCanvas,aliasmode){
 	}
 	function keyDown(key) {
 		hwkeys[key]=1;
-		if (key==keys.keyFullScreen) toggleFullScreen();
+		if ((key==keys.keyFullScreen)&&(!controller||controller.isPad)) toggleFullScreen();
+		else if (controller&&controller.isPad) controller.controller.keyDown(key);
 	};
-	function keyUp(key) { if (hwkeys[key]==1) hwkeys[key]=2; else hwkeys[key]=0; };
+	function keyUp(key) {
+		if (hwkeys[key]==1) hwkeys[key]=2; else hwkeys[key]=0;
+		if (controller&&controller.isPad) controller.controller.keyUp(key);
+	};
 	function onkeydown(e) { keyDown(e.keyCode); e.preventDefault(); };
 	function onkeyup(e) { keyUp(e.keyCode); };
 
@@ -1207,7 +1580,10 @@ var DOMInator=function(useCanvas,aliasmode){
 			for (var a in controls.keyboard) keys[a]=controls.keyboard[a];
 			gameScreen.addEventListener("keydown",onkeydown);
 			gameScreen.addEventListener("keyup",onkeyup);
-			if (keys.keyFullScreen) gameScreen.addEventListener("touchstart",fullscreenTouchToggle);
+			if (keys.keyFullScreen) {
+				gameScreen.addEventListener("touchstart",fullscreenTouchDetector);
+				gameScreen.addEventListener("touchend",fullscreenTouchToggle);
+			}
 		}
 		// POINTER CONTROLS
 		if (controls.pointer) {
@@ -1306,6 +1682,31 @@ var DOMInator=function(useCanvas,aliasmode){
 		if (filter.image) this.addResource(filter.image,filter.image);
 		filters.push(filter);
 	}
+
+	// STORAGE
+	if (!controller||controller.isPad)
+		this.storage={
+			initialize:function(tap){this.id=tap.name; },
+			setter:function(key,value) { Supports.setStorage("GAME_"+this.id+"_"+key,JSON.stringify(value)); },
+			getter:function(key){
+				var ret=Supports.getStorage("GAME_"+this.id+"_"+key);
+				return ret&&(ret!="undefined")?JSON.parse(ret):undefined;
+			}
+		}
+	else if (controller.isScreen)
+		this.storage={
+			initialize:function(tap){this.id=tap.name; },
+			setter:function(key,value) { controller.controller.storeOnSender("GAME_"+this.id+"_"+key,JSON.stringify(value)); },
+			getter:function(key){
+				var ret=controller.controller.loadOnReceiver("GAME_"+this.id+"_"+key);
+				return ret&&(ret!="undefined")?JSON.parse(ret):undefined;
+			}
+		};
+
+	// CONTROLLERS SUPPORT
+	this.keyUp=function(key) { keyUp(key)};
+	this.keyDown=function(key) { keyDown(key)};
+	this.gotoFullScreen=function(key) { gotoFullScreen()};
 
 	// RENDERER SPECIFIC METHODS
 	if (useDom) {
@@ -1650,7 +2051,7 @@ DOMInator.FILTERS={
  * Game library
  */
 
-function Box(parent, type, sub, statemanager, useCanvas, aliasmode) {
+function Box(parent, type, sub, statemanager, useCanvas, aliasmode, controller) {
 
 	var box = {
 		// Logic
@@ -1822,7 +2223,7 @@ function Box(parent, type, sub, statemanager, useCanvas, aliasmode) {
 		box.node=box.screen.node.createElement("div");
 	} else {
 		box.screen = box;
-		box.node=new DOMInator(useCanvas,aliasmode);
+		box.node=new DOMInator(useCanvas,aliasmode,controller);
 	}
 
 	// INIT - Style
@@ -1920,6 +2321,15 @@ function Box(parent, type, sub, statemanager, useCanvas, aliasmode) {
 		box.getAudioChannel=function(channel) { return this.node.getAudioChannel(channel); }
 		box.getAudio=function(name,channel) { return this.node.getAudio(name,channel); }
 		box.playAudio=function(name,channel,looping,effect) { return this.node.playAudio(name,channel,looping,effect); }
+
+		// STORAGE (DOMInator Proxy)
+		box.getStorage=function() { return this.node.storage};
+
+		// STORAGE (DOMInator Proxy)
+		box.showDatasette=function(text,data,cb) { return this.node.showDatasette(text,data,cb)};
+
+		// DATE (DOMInator Proxy)
+		box.getDate=function() { return this.node.getDate()};
 
 		// CONTROLS (DOMInator Proxy)
 		box.setControls = function(controls) {
@@ -2833,7 +3243,7 @@ function Wright(gameId,mods) {
 	var LABELEXP = /\%([^\%]*)\%/g;
 
 	var game, system, camera, gametypes;
-	var tv=0, scenehud=0, hardware=0, gamedata=0, filecache=0, hud=0, scene=0, variables=0, gamerunning=0, curtape=0, database = 0, cheats={};
+	var tv=0, scenehud=0, hardware=0, gamedata=0, filecache=0, hud=0, scene=0, variables=0, gamerunning=0, curtape=0, database = 0, cheats=0;
 
 	function printLog(from,tox,text) {
 		if (typeof text == "string") console.log(fillPlaceholders(from,tox,text));
@@ -3075,7 +3485,7 @@ function Wright(gameId,mods) {
 				this.z = FIX(this.z + this.forceZ);
 				if (walls) iterateComposedList(this, this, walls, _Code.wallsZ);
 				if (this._events.firstExecute.length)
-					for (var i = 0; i < this._events.firstExecute.length; i++)
+					for (var i = 0; i < this._events.firstExecute.length; i++)						
 						execute(this, this._events.firstExecute[i][0], this._events.firstExecute[i][1]);
 				if (this._events.forceX != 1) this.forceX = _Code.applyLimit(FIX(this.forceX * this._events.forceX), limitX);
 				if (this._events.forceY != 1) this.forceY = _Code.applyLimit(FIX(this.forceY * this._events.forceY), limitY);
@@ -3160,19 +3570,21 @@ function Wright(gameId,mods) {
 		},
 		Datasette: function(data, local) {
 			if (gamerunning && (!data.when || get(this, this, data.when)) && (local.running === undefined)) {
+				var self=this;
 				var tapedata="",prompttext="",reader=new RegExp("\\["+curtape.name+":([^\\]]*)\\]");
 				local.running=1;
 				if (data.firstExecute) execute(this, this, data.firstExecute);				
 				if (data.data!==undefined) tapedata=get(this, this, data.data);
 				if (data.prompt!==undefined) prompttext=get(this, this, data.prompt);
 				if (tapedata) tapedata="["+curtape.name+":"+tapedata+"]";
-				tapedata=prompt(prompttext,tapedata);
-				if (tapedata) {
-					tapedata=tapedata.match(reader);
-					if (tapedata&&(tapedata.length==2)) tapedata=tapedata[1];
-					else tapedata="";
-				} else tapedata="";
-				if (data.execute) execute(this, tapedata, data.execute);
+				game.showDatasette(prompttext,tapedata,function(tapedata){
+					if (tapedata) {
+						tapedata=tapedata.match(reader);
+						if (tapedata&&(tapedata.length==2)) tapedata=tapedata[1];
+						else tapedata="";
+					} else tapedata="";
+					if (data.execute) execute(self, tapedata, data.execute);
+				});
 			}
 		},
 		Execute: function(data) {
@@ -3534,17 +3946,6 @@ function Wright(gameId,mods) {
 
 	}
 
-	var Storage={
-		initialize:function(tap){ this.id=tap.name; },
-		setter:function(key,value) { if (window.localStorage) localStorage["GAME_"+this.id+"_"+key]=JSON.stringify(value); },
-		getter:function(key){
-			if (window.localStorage) {
-				var ret=localStorage["GAME_"+this.id+"_"+key];
-				return ret&&(ret!="undefined")?JSON.parse(ret):undefined;
-			}
-		}
-	};
-
 	// HUD
 
 	function hudget(from,tox,str) {
@@ -3603,7 +4004,7 @@ function Wright(gameId,mods) {
 				elm = huds[i];
 				switch (elm.hudType) {
 					case "label":{
-						elm.setHtml(fillPlaceholders(scene,scene,elm.label));
+						elm.setHtml(fillPlaceholders(elm,elm,elm.label));
 						break;
 					}
 				}
@@ -3698,7 +4099,7 @@ function Wright(gameId,mods) {
 					case "currentCamera":{ ret = camera.currentCamera; break; }
 					case "hud":{ ret = hud; break; }
 					case "scenehud":{ ret = scenehud; break; }
-					case "storage":{ ret=Storage; break; }
+					case "storage":{ ret=game.getStorage(); break; }
 					case "audioEnabled":{ ret=game.isAudioEnabled(); break; }
 					case "audio":{
 						var ch,nm=get(from, tox, struct[++id]);
@@ -3710,10 +4111,11 @@ function Wright(gameId,mods) {
 						break;
 					}
 					case "date":{
-						p=new Date();
+						p=game.getDate();
 						ret={
 							allMilliseconds:p.getTime(),
 							allDays:Math.floor(p.getTime()/86400000),
+							allSeconds:Math.floor(p.getTime()/1000),
 							day:p.getDate(),
 							month:p.getMonth(),
 							year:p.getFullYear(),
@@ -4091,6 +4493,7 @@ function Wright(gameId,mods) {
 								linelocal: []
 							});
 						} else console.warn("Skipping sequence",line.subsequence);
+
 					if (line.set) iterateComposedList(item, curtox, get(item, curtox, line.set), function(subitem) { applyStencil(item, curtox, subitem); });
 					if (line.sum !== undefined) set(item, curtox, line.to, FIX(get(item, curtox, line.to) + get(item, curtox, line.sum)));
 					if (line.subtract !== undefined) set(item, curtox, line.to, FIX(get(item, curtox, line.to) - get(item, curtox, line.subtract)));
@@ -4183,6 +4586,7 @@ function Wright(gameId,mods) {
 						else if (line.toChannel!==undefined) element=game.getAudioChannel(get(item,curtox,line.toChannel));
 						if (element) element.applyEffect(get(item,curtox,line.applyEffect));
 					}
+					if (line.publishScore&&mods.onPublishScore) mods.onPublishScore(get(item,curtox,line.publishScore)*1||0);
 					if (line.executeAction !== undefined) {
 						var statedata = item.getState();
 						iterateComposedList(item, curtox, get(item, curtox, line.executeAction),
@@ -4396,7 +4800,7 @@ function Wright(gameId,mods) {
 			height: game.height
 		};
 		variables.idScene = idscene;
-		variables.randomSeed = (new Date()).getTime();
+		variables.randomSeed = game.getDate().getTime();
 		game.addSkipFrames(1);
 		if (firstrun) {
 			hud = game.add("layer").size(game).setZIndex(20);
@@ -4470,7 +4874,7 @@ function Wright(gameId,mods) {
 			default:{				
 				if (tape) {
 					curtape = tape;
-					Storage.initialize(tape);
+					game.getStorage().initialize(tape);
 				}
 				if (curtape.scenes[idscene]) runScene(idscene, curtape.scenes[idscene], transition);
 				else {
@@ -4537,18 +4941,29 @@ function Wright(gameId,mods) {
 		var controls={};
 		for (var a in controlsset) controls[a]=usercontrols[a];
 		tv.innerHTML="";
-		game = Box(tv, "game", 0, 0, mode.renderer, hardware.aliasMode||"pixelated");
-		game.setGridSize(hardware.gridSize).setControls(controls).setColor("#fff").setBgcolor("#000").size(hardware).setFps(hardware.fps||25).setScale(mode.scale).setOriginX(0).setOriginY(0);
-		game.getState("default").do(Code.GameManager);
-		if (mode.volume&&gamedata.audioChannels) game.enableAudio(mode.volume/100);
-		tv.style.width = (game.width * game.scale) + "px";
-		tv.style.height = (game.height * game.scale) + "px";
-		game.setResourcesRoot(mods.tapesRoot + gameId + "/");
-		game.setSystemRoot(mods.systemRoot);
-		for (var k in gamedata.resources) game.addResource(k, gamedata.resources[k]);
-		for (var k in gamedata.audioChannels) game.addAudioChannel(k, gamedata.audioChannels[k]);
-		if (mode.filter) for (var i=0;i<mode.filter.length;i++) game.addFilter(mode.filter[i]);
-		game.loadResources(function() { plugTape(0, 0, "intro", gamedata); });
+		if (mods.controller&&mods.controller.isPad) {
+			this.game=game = Box(tv, "game", 0, 0, 0, "aliased",mods.controller);
+			game.setControls(controls).setColor("#fff").setBgcolor("#000").size(DEFAULTHARDWARE).setFps(DEFAULTHARDWARE.fps).setScale(1).setOriginX(0).setOriginY(0);
+			tv.style.width = (game.width * game.scale) + "px";
+			tv.style.height = (game.height * game.scale) + "px";
+			mods.onReady();
+		} else {
+			this.game=game = Box(tv, "game", 0, 0, mode.renderer, hardware.aliasMode||"pixelated",mods.controller);
+			game.setGridSize(hardware.gridSize).setControls(controls).setColor("#fff").setBgcolor("#000").size(hardware).setFps(hardware.fps||25).setScale(mode.scale).setOriginX(0).setOriginY(0);
+			game.getState("default").do(Code.GameManager);
+			if (mode.volume&&gamedata.audioChannels) game.enableAudio(mode.volume/100);
+			tv.style.width = (game.width * game.scale) + "px";
+			tv.style.height = (game.height * game.scale) + "px";
+			game.setResourcesRoot(mods.tapesRoot + gameId + "/");
+			game.setSystemRoot(mods.systemRoot);
+			for (var k in gamedata.resources) game.addResource(k, gamedata.resources[k]);
+			for (var k in gamedata.audioChannels) game.addAudioChannel(k, gamedata.audioChannels[k]);
+			if (mode.filter) for (var i=0;i<mode.filter.length;i++) game.addFilter(mode.filter[i]);
+			game.loadResources(function() {
+				if (mods.onReady) mods.onReady();
+				plugTape(0, 0, "intro", gamedata);
+			});
+		}
 	}
 
 	/*
@@ -4580,7 +4995,8 @@ function Wright(gameId,mods) {
 		// Get controls
 		controlsset=DOMInator.CONTROLS[controlsmode];
 		usercontrols=getAlternative([
-			localStorage["wrightControls_"+controlsmode]?JSON.parse(localStorage["wrightControls_"+controlsmode]):null,
+			mods.controls,
+			Supports.getStorage("wrightControls_"+controlsmode)?JSON.parse(Supports.getStorage("wrightControls_"+controlsmode)):null,
 			{}
 		]);
 		for (var a in controlsset) {
@@ -4588,36 +5004,64 @@ function Wright(gameId,mods) {
 			for (var b in controlsset[a]) usercontrols[a][b]=getAlternative([usercontrols[a][b],controlsset[a][b].default]);
 		}
 
+		// Get cheats
+		cheats=getAlternative([
+			mods.cheats,
+			{}
+		]);
+
 		// Get screen settings
 		var scale;
 		if (!Supports.supportsScaling) scale=1;
 		else scale=getAlternative([
 			mods.scale,
-			localStorage["wrightScale"]*1,
+			Supports.getStorage("wrightScale")*1,
 			2
+		]);
+		var remoteScale=getAlternative([
+			mods.remoteScale,
+			Supports.getStorage("wrightRemoteScale")*1,
+			0
 		]);
 		var renderer=getAlternative([
 			mods.renderer,
-			localStorage["wrightRenderer"]*1,
+			Supports.getStorage("wrightRenderer")*1,
 			Supports.isCanvas?1:0
+		]);
+		var remoteRenderer=getAlternative([
+			mods.remoteRenderer,
+			Supports.getStorage("wrightRemoteRenderer")*1,
+			1
 		]);
 		var filter=getAlternative([
 			mods.filter,
-			localStorage["wrightFilter"],
+			Supports.getStorage("wrightFilter"),
+			filters[0].label
+		]);
+		var remoteFilter=getAlternative([
+			mods.filter,
+			Supports.getStorage("wrightRemoteFilter"),
 			filters[0].label
 		]);
 		
 		// Get audio settings
 		var volume=getAlternative([
 			mods.volume,
-			(localStorage["wrightVolume"]||100)*1,
+			(Supports.getStorage("wrightVolume")||100)*1,
 			0
 		]);
+		var remoteVolume=getAlternative([
+			mods.volume,
+			(Supports.getStorage("wrightRemoteVolume")||100)*1,
+			100
+		]);
+
+		var playModeEnabled=!gamedata.hardware||(gamedata.hardware.controls!="pointer"); // @TODO: Add touch support to remote games
 
 		if (mods.settingsContainer) {
 			var sublabels="",havecheats,row,itm;
 
-			node(mods.settingsContainer,"div","section","Settings");
+			node(mods.settingsContainer,"div","section","Controls");
 			if (controlsset.keyboard)
 				for (var a in controlsset.keyboard)
 					if (!controlsset.keyboard[a].isDisabled) {
@@ -4660,17 +5104,73 @@ function Wright(gameId,mods) {
 					}
 			}
 
+			function updatePlaymodeSettings() {
+				var option=playmodeCombo.selectedIndex;
+				var playmode=Controllers.methods[playmodeCombo.options[option].value];
+				localSettings.style.display=option==0?"block":"none";
+				remoteSettings.style.display=option!=0?"block":"none";
+				if (playmode&&playmode.showSettings) playmode.showSettings(playmodeSettings);
+				else playmodeSettings.innerHTML="<div class='row'><i>No settings needed for this play mode.</i></div>";					
+			}
+
+			node(mods.settingsContainer,"div","section","Screen");
 			row=node(mods.settingsContainer,"div","row");
-			node(row,"span","label","Renderer:");
-			var rendererCombo=node(node(row,"div","value"),"select","input");
-			for (var i=0;i<DOMInator.RENDERERS.length;i++)
-				if (!DOMInator.RENDERERS[i].isDisabled) {
-					itm=node(rendererCombo,"option",0,DOMInator.RENDERERS[i].label);
-					itm.value=DOMInator.RENDERERS[i].id;
-					if (renderer==DOMInator.RENDERERS[i].id) itm.setAttribute("selected","selected");
+			node(row,"span","label","Play mode:");
+			var playmodeCombo=node(node(row,"div","value"),"select","input");
+			node(playmodeCombo,"option",0,"Play on this device.");
+			var playmodeSettings=node(mods.settingsContainer,"div");			
+			var remoteSettings=node(mods.settingsContainer,"div");
+			var localSettings=node(mods.settingsContainer,"div");
+
+			if (playModeEnabled) {
+				playmodeCombo.onchange=updatePlaymodeSettings;
+				for (var i in Controllers.methods)
+					if (Controllers.methods[i].isSenderSupported()) {
+						itm=node(playmodeCombo,"option",0,Controllers.methods[i].label);
+						itm.value=i;
+					}
+
+				row=node(remoteSettings,"div","row");
+				node(row,"span","label","Screen filter:");
+				var remoteFilterCombo=node(node(row,"div","value"),"select","input");
+				for (var i=0;i<filters.length;i++) {
+					itm=node(remoteFilterCombo,"option",0,filters[i].label);
+					itm.value=filters[i].label;
+					if (remoteFilter==filters[i].label) itm.setAttribute("selected","selected");
 				}
 
-			row=node(mods.settingsContainer,"div","row");
+				row=node(remoteSettings,"div","row");
+				node(row,"span","label","Renderer:");
+				var remoteRendererCombo=node(node(row,"div","value"),"select","input");
+				for (var i=0;i<DOMInator.RENDERERS.length;i++)
+					if (!DOMInator.RENDERERS[i].isDisabled) {
+						itm=node(remoteRendererCombo,"option",0,DOMInator.RENDERERS[i].label);
+						itm.value=DOMInator.RENDERERS[i].id;
+						if (remoteRenderer==DOMInator.RENDERERS[i].id) itm.setAttribute("selected","selected");
+					}
+				
+				row=node(remoteSettings,"div","row");
+				node(row,"span","label","Resolution:");
+				var remoteResolutionCombo=node(node(row,"div","value"),"select","input"),resolutions=Supports.supportsScaling?7:1;
+				node(remoteResolutionCombo,"option",0,"Full screen");
+				for (var i=1;i<resolutions;i++) {
+					itm=node(remoteResolutionCombo,"option",0,(hardware.width*i)+"x"+(hardware.height*i)+" (x"+i+")");
+					if (i==remoteScale) itm.setAttribute("selected","selected");
+				}
+
+				if (hasAudio) {
+					row=node(remoteSettings,"div","row");
+					node(row,"span","label","Sound:");
+					var remoteAudioCombo=node(node(row,"div","value"),"select","input");
+					node(remoteAudioCombo,"option",0,"Disabled");
+					for (var i=10;i<=100;i+=10) {
+						itm=node(remoteAudioCombo,"option",0,"Volume "+i+"%");
+						if (i==remoteVolume) itm.setAttribute("selected","selected");
+					}
+				}	
+			}
+
+			row=node(localSettings,"div","row");
 			node(row,"span","label","Screen filter:");
 			var filterCombo=node(node(row,"div","value"),"select","input");
 			for (var i=0;i<filters.length;i++) {
@@ -4679,7 +5179,17 @@ function Wright(gameId,mods) {
 				if (filter==filters[i].label) itm.setAttribute("selected","selected");
 			}
 
-			row=node(mods.settingsContainer,"div","row");
+			row=node(localSettings,"div","row");
+			node(row,"span","label","Renderer:");
+			var rendererCombo=node(node(row,"div","value"),"select","input");
+			for (var i=0;i<DOMInator.RENDERERS.length;i++)
+				if (!DOMInator.RENDERERS[i].isDisabled) {
+					itm=node(rendererCombo,"option",0,DOMInator.RENDERERS[i].label);
+					itm.value=DOMInator.RENDERERS[i].id;
+					if (renderer==DOMInator.RENDERERS[i].id) itm.setAttribute("selected","selected");
+				}
+			
+			row=node(localSettings,"div","row");
 			node(row,"span","label","Resolution:");
 			var resolutionCombo=node(node(row,"div","value"),"select","input"),resolutions=Supports.supportsScaling?7:1;
 			for (var i=1;i<resolutions;i++) {
@@ -4688,7 +5198,7 @@ function Wright(gameId,mods) {
 			}
 
 			if (hasAudio) {
-				row=node(mods.settingsContainer,"div","row");
+				row=node(localSettings,"div","row");
 				node(row,"span","label","Sound:");
 				var audioCombo=node(node(row,"div","value"),"select","input");
 				node(audioCombo,"option",0,"Disabled");
@@ -4697,7 +5207,7 @@ function Wright(gameId,mods) {
 						itm=node(audioCombo,"option",0,"Volume "+i+"%");
 						if (i==volume) itm.setAttribute("selected","selected");
 					}
-			}
+			}			
 
 			node(mods.settingsContainer,"div","section","Cheats");
 			for (var a in cheatslist) {
@@ -4710,21 +5220,58 @@ function Wright(gameId,mods) {
 				node(row,"span",0,cheatslist[a]);
 			}
 			if (!havecheats) node(mods.settingsContainer,"div","row","Sorry, no cheats for this game. It's all up to you!");
+
+			updatePlaymodeSettings();
 			
 			itm=node(node(mods.settingsContainer,"div","startgamerow"),"button","startgame","Start game");
 			Supports.addEventListener(itm,"click",function(){
-				var filterset;
 				if (pointerCombo) usercontrols.pointer.id=pointerCombo.options[pointerCombo.selectedIndex].value;
 				if (touchcontrollerCombo) usercontrols.touchcontroller.layout=touchcontrollerCombo.options[touchcontrollerCombo.selectedIndex].value;
-				localStorage["wrightControls_"+controlsmode]=JSON.stringify(usercontrols);
-				renderer=localStorage["wrightRenderer"]=rendererCombo.options[rendererCombo.selectedIndex].value*1;
-				scale=localStorage["wrightScale"]=resolutionCombo.selectedIndex+1;
-				filter=localStorage["wrightFilter"]=filterCombo.options[filterCombo.selectedIndex].value;
-				for (var i=0;i<filters.length;i++) if (filters[i].label==filter) filterset=filters[i].filter;
-				if (hasAudio) volume=localStorage["wrightVolume"]=audioCombo.selectedIndex*10; else volume=0;
+				Supports.setStorage("wrightControls_"+controlsmode,JSON.stringify(usercontrols));
 				Supports.removeEventListener(document,"keydown",waitKey);
+
+				var playmode=Controllers.methods[playmodeCombo.options[playmodeCombo.selectedIndex].value];
+				if (playmode) {
+					var ret,controllerSettings=Supports.clone(mods.controllerDefaults)||{};
+					if (playmode.getSettings) ret=playmode.getSettings(controllerSettings);
+					if (ret) {
+						alert(ret);
+						return;
+					} else {
+						controllerSettings.node=mods.gameContainer;
+						Supports.setStorage("wrightRemoteFilter",filter=filterCombo.options[remoteFilterCombo.selectedIndex].value);
+						Supports.setStorage("wrightRemoteRenderer",renderer=remoteRendererCombo.options[remoteRendererCombo.selectedIndex].value*1);
+						Supports.setStorage("wrightRemoteScale",scale=remoteResolutionCombo.selectedIndex);
+						if (hasAudio) Supports.setStorage("wrightRemoteVolume",volume=remoteAudioCombo.selectedIndex*10); else volume=0;					
+						var controller=new Controllers(playmode,controllerSettings,gameId,{
+							tapeName:gamedata.name,
+							controlsset:usercontrols,
+							cheats:cheats,
+							tapesRoot:mods.tapesRoot,
+							fullScreen:scale==0,
+							scale:scale==0?1:scale,
+							volume:volume,
+							renderer:renderer,
+							filter:filter
+						});
+						controller.initializeSender();
+						mods.onRun();
+					}
+				} else {
+					var filterset;
+					Supports.setStorage("wrightFilter",filter=filterCombo.options[filterCombo.selectedIndex].value);
+					for (var i=0;i<filters.length;i++) if (filters[i].label==filter) filterset=filters[i].filter;
+					Supports.setStorage("wrightRenderer",renderer=rendererCombo.options[rendererCombo.selectedIndex].value*1);
+					Supports.setStorage("wrightScale",scale=resolutionCombo.selectedIndex+1);
+					if (hasAudio) Supports.setStorage("wrightVolume",volume=audioCombo.selectedIndex*10); else volume=0;
+					runGame({
+						scale:scale,
+						volume:volume,
+						renderer:renderer,
+						filter:filterset||DOMInator.FILTERS.none[0].filter
+					});
+				}
 				mods.settingsContainer.innerHTML=sublabels?"<ul>"+sublabels+"</ul>":"";
-				runGame({scale:scale,volume:volume,renderer:renderer,filter:filterset||DOMInator.FILTERS.none[0].filter});
 			});
 		} else {
 			var filterset;
@@ -4735,6 +5282,7 @@ function Wright(gameId,mods) {
 	});
 
 	return {
+		getGame:function(){return game},
 		destroy:function() {
 			Supports.removeEventListener(document,"keydown",waitKey);
 			if (game) {
@@ -4751,5 +5299,5 @@ function Wright(gameId,mods) {
 
 function runSingleWright(name,mods) {
 	if (window._WRIGHT) window._WRIGHT.destroy();
-	window._WRIGHT=Wright(name,mods);
+	return window._WRIGHT=Wright(name,mods);
 }
