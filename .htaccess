@@ -1,5 +1,10 @@
 RewriteEngine On
 # Site
+RewriteCond %{SERVER_PORT} 443
+RewriteRule    ^screen/?$    http://www.kesiev.com/wright/screen/    [R,L]    # Force HTTP for screen - PeerJS hosted services do not support it.
+RewriteRule    ^screen$    http://www.kesiev.com/wright/screen/    [R,L]    # Move to the right path if trailing / is missing
+RewriteRule    ^chromecast/$    publishers/chromecast/index.html    [NC,L]    # Chromecast receiver
+RewriteRule    ^screen/?$    publishers/screen/index.html    [NC,L]    # Remote screen
 RewriteRule    ^issue/([a-zA-Z0-9]+)/?$    publishers/site/index.php?page=issue&issueid=$1    [NC,L]    # Issue page
 RewriteRule    ^issues/?$    publishers/site/index.php?page=issues    [NC,L]    # Issues page
 RewriteRule    ^issues/([a-zA-Z0-9]+)/?$    publishers/site/index.php?page=issues&pos=$1    [NC,L]    # Issues # page
