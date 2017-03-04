@@ -1,0 +1,1818 @@
+{
+  "name":"Rockany",
+  "author":"KesieV",
+  "year":2017,
+  "genre":"Shoot'em Up",
+  "description":"<p>'I'm remaking and opensourcing relevant classic videogames. Which one I should feature in my work?' A surprisingly (and relatively) high number of people answered buzzing 'that game where you shoot at asteroids...'. Well. No long investigations needed: it's our classic <a href='https://en.wikipedia.org/wiki/Asteroids_(video_game)'>Asteroids</a> (1979).</p><p>Citing 'Asteroids' as one of the best games of the past gives you such an aura of <i>videogame hipster sommelier</i>, with your hand waving a big glass full of the best <a href='https://en.wikipedia.org/wiki/Shenmue'>Shenmue</a> (1999). Come on. Asteroids was the <i>american Space Invaders</i>, and, despite it surpassed the Taito masterpiece in USA, it is still <i>the game where you shoot at asteroids</i>.</p><p>Okay, stop joking. Asteroids was a very good vector-based shooter and its aesthetics is still an Atari trademark. Even in sci-fi movies sometime futuristic videogames are depicted more like Asteroids than like pixel-based games. Moreover, it sported a good physics model - at least for the time - which was predictable and became, together with his top-down view, a distinguishable gameplay element in other games.</p><p>Element that I personally never liked.</p><p>I have already put Asteroids like gamelay in space battle scenes of that <a href='boundsunknown'>No Man's Sky</a> demake I have done long ago, so I was dropping the idea of implementing it again. But I'm taking the chance of proposing another game concept I can't play very well but I like so much: <a href='http://shmuplations.com/takahashimeijin/'>caravan SHMUPS</a>.</p><p>Caravan SHMUPS are shooters played for score and for a limited time period, from 2 to 5 minutes. It can feature a story but, in most of the case, are games in which you have to rack as many points as you can and as fast as you can. These game were a real huge hit in Japan. From mid-80s to mid-90s the videogames company <a href='https://it.wikipedia.org/wiki/Hudson_Soft'>Hudson</a> together with other companies held an event called <a href='https://www.youtube.com/watch?v=63Qz3XXBRss'>Hudson Caravan</a>: during these events elementary school children from every part of Japan, from pros to total newbies, competed in these furious time-limited shooters. Qualifying matches took two minutes and the final rounds five and the event even appeared in newspapers and the evening news. Do you ever wondered why Japanese are so good in bullet hell SHMUP? Well... you probably have a proprer answer now!</p><p>Plot!</p><p>The earth is in danger! A whole belt of asteroids is going to crash on our planet and, this time, there is nothing to do for saving it! Waiting for their last minutes of life, humans decided to organize the Rockany Festival, a reality show in which spaceship constructors competes each other for the best asteroid-breaking machine. Choose your ship, go to space and break anything within the time limit!</p><p>In spaceship selector, use UP/DOWN for changing model, A BUTTON for confirming and the B BUTTON for going back to the title screen. Move your ship using LEFT/RIGHT for rotating, UP for accelerating and DOWN for braking. Use the A BUTTON for firing - but remember that each ship have its own control scheme!</p>",
+  "screenshots":[ "rockany-1.png", "rockany-2.png" ],
+  "hardware":{
+    "width":256,
+    "height":192,
+    "filter":"retro"
+  },
+  "audioChannels":{
+    "sfx":{ "volume":1, "samples":[ "gameover", "break", "bonus", "laser", "warning", "damage", "comboup", "combomid", "combolost", "drop" ] },
+    "music":{ "volume":0.8, "looping":1, "samples":[ "music", "select" ] }
+  },
+  "cheats":{},
+  "resources":{
+    "bonus":"bonus.ogg",
+    "break":"break.ogg",
+    "combolost":"combolost.ogg",
+    "combomid":"combomid.ogg",
+    "comboup":"comboup.ogg",
+    "damage":"damage.ogg",
+    "drop":"drop.ogg",
+    "gameover":"gameover.ogg",
+    "laser":"laser.ogg",
+    "music":"music.ogg",
+    "select":"select.ogg",
+    "spectrum":"spectrum.font",
+    "sprites":"sprites.png",
+    "warning":"warning.ogg"
+  },
+  "stencils":{
+    "codeBreakCombo":[
+      { "when":{ "_":[ "variable", "combo", "isGreaterThan", 1 ] }, "playAudio":"combolost" },
+      { "as":{ "_":"variable" }, "set":{ "combo":1, "comboTimer":0 } }
+    ],
+    "codeMoveWheel":{
+      "when":{ "_":[ "this", "wheelDestination", "-", { "_":[ "this", "wheelPosition" ] }, "abs", "isLessThan", 0.001 ] },
+      "set":{ "wheelPosition":{ "_":[ "this", "wheelDestination" ] } },
+      "elseExecute":{ "sum":{ "_":[ "this", "wheelDestination", "-", { "_":[ "this", "wheelPosition" ] }, "/", 5 ] }, "to":{ "_":[ "scene", "wheelPosition" ] } }
+    },
+    "codeStars":{
+      "times":20,
+      "object":{
+        "bgcolor":"#fff",
+        "timer":0,
+        "states":{
+          "code":{
+            "name":"Execute",
+            "data":[
+              {
+                "when":{ "_":[ "this", "timer" ] },
+                "execute":{ "set":{ "visible":{ "_":[ "this", "visible", "not" ] } } },
+                "elseExecute":[
+                  {
+                    "set":{
+                      "x":{ "_":[ "randomNumber", [ 0, 255 ] ] }, "y":{ "_":[ "randomNumber", [ 0, 191 ] ] },
+                      "parallax":{ "_":[ "randomValue", [ 0.1, 0.2 ] ] },
+                      "starSize":{ "_":[ "randomNumber", [ 1, 2 ] ] },
+                      "timer":{ "_":[ "randomNumber", [ 125, 250 ] ] }
+                    }
+                  },
+                  { "set":{ "width":{ "_":[ "this", "starSize" ] }, "height":{ "_":[ "this", "starSize" ] } } }
+                ]
+              },
+              {
+                "when":{ "_":[ "objectTyped", "player" ] },
+                "execute":[
+                  { "subtract":{ "_":[ "objectTyped", "player", "forceX", "*", { "_":[ "this", "parallax" ] } ] }, "to":{ "_":[ "this", "x" ] } },
+                  { "subtract":{ "_":[ "objectTyped", "player", "forceY", "*", { "_":[ "this", "parallax" ] } ] }, "to":{ "_":[ "this", "y" ] } }
+                ]
+              },
+              { "_":[ "stencil", "codeWarp" ] }
+            ]
+          }
+        }
+      }
+    },
+    "codeUpdateNextShip":[
+      {
+        "times":{ "_":[ "stencil", "dataShips", "count" ] },
+        "when":{ "_":[ "variable", "totalScore", "isGreaterEqualThan", { "_":[ "stencil", "dataShips", { "_":[ "variable", "unlockedShips" ] }, "unlockAt" ] } ] },
+        "execute":[
+          { "sum":1, "to":{ "_":[ "variable", "unlockedShips" ] } },
+          { "sum":10, "to":{ "_":[ "variable", "shake" ] } },
+          { "as":{ "_":"variable" }, "set":{ "nextShipAt":{ "_":[ "stencil", "dataShips", { "_":[ "variable", "unlockedShips" ] }, "unlockAt" ] } } }
+        ]
+      },
+      {
+        "when":{ "_":[ "variable", "unlockedShips", "isGreaterEqualThan", { "_":[ "stencil", "dataShips", "count" ] } ] },
+        "as":{ "_":"variable" },
+        "set":{ "nextShipAt":0, "totalScore":{ "_":[ "stencil", "dataShips", { "_":[ "stencil", "dataShips", "count", "-", 1 ] }, "unlockAt" ] } }
+      }
+    ],
+    "codeUpgradeCombo":[
+      { "sum":10, "to":{ "_":[ "variable", "comboTimer" ] } },
+      {
+        "when":{ "_":[ "variable", "comboTimer", "isGreaterThan", 50 ] },
+        "execute":[
+          {
+            "when":{ "_":[ "variable", "combo", "isLessThan", 10 ] },
+            "execute":[
+              { "sum":1, "to":{ "_":[ "variable", "combo" ] } },
+              { "when":{ "_":[ "variable", "combo", "isEqualTo", 10 ] }, "elseExecute":{ "playAudio":"combomid" }, "playAudio":"comboup" }
+            ]
+          },
+          { "assign":50, "to":{ "_":[ "variable", "comboTimer" ] } }
+        ]
+      }
+    ],
+    "codeWarp":[
+      { "when":{ "_":[ "this", "x", "isLessThan", { "_":[ "this", "width", "*", -1 ] } ] }, "set":{ "x":256 } },
+      { "when":{ "_":[ "this", "x", "isGreaterThan", 256 ] }, "set":{ "x":{ "_":[ "this", "width", "*", -1 ] } } },
+      { "when":{ "_":[ "this", "y", "isLessThan", { "_":[ "this", "height", "*", -1 ] } ] }, "set":{ "y":192 } },
+      { "when":{ "_":[ "this", "y", "isGreaterThan", 192 ] }, "set":{ "y":{ "_":[ "this", "height", "*", -1 ] } } }
+    ],
+    "spark":{
+      "image":"sprites", "tileY":32, "width":16, "height":16,
+      "zIndex":10000, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "animations":{ "idle":{ "frames":3, "speed":0 } },
+      "animation":"idle",
+      "states":{ "code":{ "name":"Sequence", "data":[ { "wait":3 }, { "remove":1 } ] } }
+    },
+    "removeWithCloud":[ { "object":{ "_":[ "stencil", "cloud" ] } }, { "remove":1 } ],
+    "removeWithSpark":[ { "object":{ "_":[ "stencil", "spark" ] } }, { "remove":1 } ],
+    "modelLargeMessage":{
+      "type":"message",
+      "width":256, "height":40,
+      "x":0, "y":71,
+      "font":"spectrum", "fontSize":60, "lineHeight":30, "outline":"#fff", "textAlign":"center",
+      "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "color":"#f00" }, "wait":2 }, { "set":{ "color":"#000" }, "wait":2, "loopTo":0 } ] } }
+    },
+    "modelPopupLabel":{
+      "width":100, "height":10,
+      "zIndex":10000, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "that", "y", "-", 5 ] },
+      "color":"#fff",
+      "font":"spectrum", "lineHeight":12, "outline":"#000", "textAlign":"center",
+      "speed":0.5,
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[ { "subtract":{ "_":[ "this", "speed" ] }, "to":{ "_":[ "this", "y" ] }, "wait":1, "loop":1, "cycles":15 }, { "remove":1 } ]
+        }
+      }
+    },
+    "modelScorePopup":{
+      "type":"hud",
+      "hudType":"label", "label":"",
+      "width":256, "height":12,
+      "zIndex":10000, "x":0, "y":178,
+      "bgcolor":"#fff", "color":"#000",
+      "font":"spectrum", "lineHeight":12, "textAlign":"center",
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[ { "set":{ "bgcolor":{ "_":[ "this", "color1" ] } }, "wait":3 }, { "set":{ "bgcolor":{ "_":[ "this", "color2" ] } }, "wait":3, "loopTo":0 } ]
+        }
+      }
+    },
+    "modelUnlockMessage":{
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[ { "wait":25 }, { "set":{ "visible":{ "_":[ "this", "visible", "not" ] } }, "wait":1, "loop":1, "cycles":6 }, { "remove":1 } ]
+        }
+      }
+    },
+    "modelWheelSlot":{
+      "image":"sprites", "width":16, "height":16,
+      "zIndex":1,
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":{
+            "set":{
+              "x":{ "_":[ "this", "wheelPosition", "-", 1.57, "+", { "_":[ "scene", "wheelPosition" ] }, "sin", "*", { "_":[ "scene", "wheelRadius" ] }, "+", { "_":[ "scene", "wheelCenterX" ] } ] }, "y":{ "_":[ "this", "wheelPosition", "-", 1.57, "+", { "_":[ "scene", "wheelPosition" ] }, "cos", "*", { "_":[ "scene", "wheelRadius" ] }, "+", { "_":[ "scene", "wheelCenterY" ] } ] }
+            }
+          }
+        }
+      }
+    },
+    "player":{
+      "type":"player",
+      "image":"sprites", "width":16, "height":16,
+      "zIndex":100, "x":120, "y":138,
+      "hitbox":{ "width":10, "height":10, "x":3, "y":3 },
+      "engine":0,
+      "invulnerability":10,
+      "steer":0,
+      "thrust":0,
+      "states":[
+        {
+          "code":[
+            {
+              "name":"Execute",
+              "data":[
+                {
+                  "when":{ "_":[ "keyRight", "isDown" ] },
+                  "sum":{ "_":[ "this", "steeringSpeed" ] },
+                  "to":{ "_":[ "this", "steer" ] },
+                  "elseExecute":{
+                    "when":{ "_":[ "keyLeft", "isDown" ] },
+                    "subtract":{ "_":[ "this", "steeringSpeed" ] },
+                    "to":{ "_":[ "this", "steer" ] },
+                    "elseExecute":{
+                      "when":{ "_":[ "this", "steer", "abs", "isLessThan", { "_":[ "this", "stabilizingSpeed" ] } ] },
+                      "set":{ "steer":0 },
+                      "elseExecute":{
+                        "when":{ "_":[ "this", "steer", "isGreaterThan", 0 ] },
+                        "subtract":{ "_":[ "this", "stabilizingSpeed" ] },
+                        "to":{ "_":[ "this", "steer" ] },
+                        "elseExecute":{ "sum":{ "_":[ "this", "stabilizingSpeed" ] }, "to":{ "_":[ "this", "steer" ] } }
+                      }
+                    }
+                  }
+                },
+                { "set":{ "steer":{ "_":[ "this", "steer", "limitValue", { "_":[ "this", "steeringLimit" ] } ] } } },
+                { "set":{ "angle":{ "_":[ "this", "angle", "+", { "_":[ "this", "steer" ] }, "%", 360 ] } } },
+                {
+                  "when":{ "_":[ "keyUp", "isDown", "and", { "_":[ "this", "thrustSpeed" ] } ] },
+                  "execute":[
+                    { "sum":{ "_":[ "this", "thrustSpeed" ] }, "to":{ "_":[ "this", "thrust" ] } },
+                    { "sum":1, "to":{ "_":[ "this", "engine" ] } },
+                    {
+                      "when":{ "_":[ "this", "engine", "isGreaterThan", 2 ] },
+                      "execute":[
+                        { "set":{ "engine":0 } },
+                        { "object":{ "set":{ "_":[ "stencil", "cloud" ] }, "directionAngle":{ "_":[ "that", "angle", "+", 180 ] }, "thrust":{ "_":[ "that", "thrust" ] } } }
+                      ]
+                    }
+                  ],
+                  "elseExecute":{
+                    "when":{ "_":[ "keyDown", "isDown", "and", { "_":[ "this", "brakingSpeed" ] } ] },
+                    "subtract":{ "_":[ "this", "brakingSpeed" ] },
+                    "to":{ "_":[ "this", "thrust" ] },
+                    "elseExecute":{
+                      "when":{ "_":[ "this", "friction" ] },
+                      "execute":{
+                        "when":{ "_":[ "this", "thrust", "abs", "isLessThan", { "_":[ "this", "friction" ] } ] },
+                        "set":{ "thrust":0 },
+                        "elseExecute":{
+                          "when":{ "_":[ "this", "thrust", "isGreaterThan", 0 ] },
+                          "subtract":{ "_":[ "this", "friction" ] },
+                          "to":{ "_":[ "this", "thrust" ] },
+                          "elseExecute":{ "sum":{ "_":[ "this", "friction" ] }, "to":{ "_":[ "this", "thrust" ] } }
+                        }
+                      }
+                    }
+                  }
+                },
+                { "set":{ "thrust":{ "_":[ "this", "thrust", "limitValue", { "_":[ "this", "thrustLimit" ] } ] } } },
+                { "_":[ "stencil", "codeWarp" ] },
+                { "applyVector":{ "angle":{ "_":[ "this", "angle" ] }, "length":{ "_":[ "this", "thrust" ] } } },
+                {
+                  "when":{ "_":[ "this", "invulnerability" ] },
+                  "execute":[ { "subtract":1, "to":{ "_":[ "this", "invulnerability" ] } }, { "set":{ "visible":{ "_":[ "this", "invulnerability", "%", 2 ] } } } ],
+                  "elseExecute":{ "set":{ "visible":1 } }
+                }
+              ]
+            },
+            { "name":"Sequence", "data":{ "subsequence":{ "_":[ "this", "fireLogic" ] } } },
+            { "name":"Physics" }
+          ],
+          "actions":{
+            "name":"hit",
+            "execute":[
+              { "playAudio":"gameover" },
+              { "_":[ "stencil", "codeBreakCombo" ] },
+              {
+                "when":{ "_":[ "this", "invulnerability", "not" ] },
+                "execute":[
+                  { "subtract":{ "_":[ "that", "damage" ] }, "to":{ "_":[ "this", "health" ] } },
+                  {
+                    "when":{ "_":[ "this", "health", "isLessEqualThan", 0 ] },
+                    "as":{ "_":"scene" },
+                    "set":{ "state":"gameover" },
+                    "elseExecute":[ { "set":{ "invulnerability":25 } }, { "sum":10, "to":{ "_":[ "variable", "shake" ] } } ]
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name":"dead",
+          "execute":[
+            { "as":{ "_":[ "object", "removeondie" ] }, "execute":{ "_":[ "stencil", "removeWithSpark" ] } },
+            { "playAudio":"gameover" },
+            {
+              "times":20,
+              "object":{ "set":{ "_":[ "stencil", "cloud" ] }, "directionAngle":{ "_":[ "randomNumber", [ 0, 360 ] ] }, "thrust":{ "_":[ "randomNumber", [ 3, 8 ] ] } }
+            },
+            { "_":[ "stencil", "removeWithCloud" ] }
+          ]
+        }
+      ]
+    },
+    "playerBulletModel":{
+      "type":"removeondie",
+      "zIndex":5,
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":{
+            "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "playerhitable" ] } ] },
+            "execute":[ { "as":{ "_":"that" }, "executeAction":{ "_":"hit" } }, { "_":[ "stencil", "removeWithSpark" ] } ]
+          }
+        }
+      }
+    },
+    "playerSmallBullet":{
+      "set":{ "_":[ "stencil", "playerBulletModel" ] },
+      "image":"sprites", "tileY":16, "width":16, "height":16,
+      "at":{ "_":"that" },
+      "hitbox":{ "width":8, "height":8, "x":4, "y":4 },
+      "playAudio":"laser",
+      "damage":1,
+      "thrust":0,
+      "time":0,
+      "states":{
+        "code":[
+          {
+            "name":"Execute",
+            "data":[
+              {
+                "when":{ "_":[ "this", "time", "not" ] },
+                "execute":{ "_":[ "stencil", "removeWithSpark" ] },
+                "elseExecute":{ "subtract":1, "to":{ "_":[ "this", "time" ] } }
+              },
+              { "applyVector":{ "angle":{ "_":[ "this", "angle" ] }, "length":{ "_":[ "this", "thrust" ] } } },
+              { "_":[ "stencil", "codeWarp" ] }
+            ]
+          },
+          { "name":"Physics" }
+        ]
+      }
+    },
+    "playerHitableModel":{
+      "states":{
+        "actions":{
+          "name":"hit",
+          "execute":[
+            { "playAudio":"damage" },
+            { "subtract":{ "_":[ "that", "damage" ] }, "to":{ "_":[ "this", "health" ] } },
+            { "when":{ "_":[ "this", "health", "isLessEqualThan", 0 ] }, "executeAction":"dead", "elseExecute":{ "executeAction":"damaged" } }
+          ]
+        }
+      }
+    },
+    "playerMine":{
+      "type":"removeondie",
+      "image":"sprites", "tileX":16, "tileY":16, "width":16, "height":16,
+      "zIndex":5, "at":{ "_":"that" },
+      "animations":{ "idle":{ "frames":2, "speed":1, "loopTo":0 } },
+      "animation":"idle",
+      "playAudio":"drop"
+    },
+    "playerSatellite":{
+      "type":"removeondie",
+      "image":"sprites", "tileY":16, "width":16, "height":16,
+      "zIndex":5, "frame":5,
+      "damage":1,
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":{ "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "playerhitable" ] } ] }, "execute":{ "as":{ "_":"that" }, "executeAction":{ "_":"hit" } } }
+        }
+      }
+    },
+    "playerTurret":{ "type":"removeondie", "image":"sprites", "tileY":16, "width":16, "height":16, "zIndex":5, "frame":5 },
+    "behaviourShake":{
+      "code":{
+        "name":"Execute",
+        "data":{
+          "when":{ "_":[ "variable", "shake" ] },
+          "execute":[
+            { "set":{ "cameraX":{ "_":[ "randomNumber", [ -2, 2 ] ] }, "cameraY":{ "_":[ "randomNumber", [ -2, 2 ] ] } } },
+            { "subtract":1, "to":{ "_":[ "variable", "shake" ] } }
+          ],
+          "elseExecute":{ "set":{ "cameraX":0, "cameraY":0 } }
+        }
+      }
+    },
+    "cloud":{
+      "image":"sprites", "tileX":80, "tileY":32, "width":16, "height":16,
+      "zIndex":10000, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "angle":{ "_":[ "randomNumber", [ 0, 360 ] ] },
+      "animations":{ "idle":{ "frames":4, "speed":1 } },
+      "animation":"idle",
+      "directionAngle":0,
+      "thrust":0,
+      "states":{
+        "execute":{ "applyVector":{ "angle":{ "_":[ "this", "directionAngle" ] }, "length":{ "_":[ "this", "thrust" ] } } },
+        "code":[ { "name":"Sequence", "data":[ { "wait":8 }, { "remove":1 } ] }, { "name":"Physics" } ]
+      }
+    },
+    "dataShips":[
+      {
+        "name":"B4-51C FIGHTER",
+        "friction":0.01,
+        "brakingSpeed":0.1,
+        "description":"The ship I've used for most of the initial playtesting. Uses a triple cannon, friction simulation and fast speed stabilizer.",
+        "fireLogic":[
+          { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+          { "object":{ "set":{ "_":[ "stencil", "playerSmallBullet" ] }, "angle":{ "_":[ "that", "angle" ] }, "thrust":5, "time":50 } },
+          { "object":{ "set":{ "_":[ "stencil", "playerSmallBullet" ] }, "angle":{ "_":[ "that", "angle", "-", 5 ] }, "thrust":3, "time":20 } },
+          { "object":{ "set":{ "_":[ "stencil", "playerSmallBullet" ] }, "angle":{ "_":[ "that", "angle", "+", 5 ] }, "thrust":3, "time":20 } },
+          { "wait":2, "loopTo":0 }
+        ],
+        "health":1,
+        "maxHealth":1,
+        "maxTime":15,
+        "stabilizingSpeed":0.5,
+        "steeringLimit":[ -5, 5 ],
+        "steeringSpeed":1,
+        "thrustLimit":[ 0, 5 ],
+        "thrustSpeed":0.1,
+        "timeBonus":1,
+        "unlockAt":0
+      },
+      {
+        "name":"TRIANGLOID",
+        "friction":0,
+        "frame":1,
+        "brakingSpeed":0.1,
+        "description":"The triangle-shaped spaceship you expected. Zero friction and a strong sniper straight laser.",
+        "fireLogic":[
+          { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+          {
+            "object":{ "set":{ "_":[ "stencil", "playerSmallBullet" ] }, "frame":4, "angle":{ "_":[ "that", "angle" ] }, "thrust":5, "time":50 },
+            "wait":1, "loop":1, "cycles":10
+          },
+          { "wait":10, "loopTo":0 }
+        ],
+        "health":1,
+        "maxHealth":1,
+        "maxTime":15,
+        "stabilizingSpeed":1,
+        "steeringLimit":[ -5, 5 ],
+        "steeringSpeed":1,
+        "thrustLimit":[ 0, 5 ],
+        "thrustSpeed":0.1,
+        "timeBonus":1,
+        "unlockAt":15000
+      },
+      {
+        "name":"ROCK NUKER 3D",
+        "friction":1,
+        "frame":2,
+        "brakingSpeed":0.1,
+        "description":"Aw. What a funny pun. A very slow tank-ship that drops 360-degrees explosives. Not truly in 3D.",
+        "fireLogic":[
+          { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+          {
+            "object":{
+              "set":{ "_":[ "stencil", "playerMine" ] },
+              "states":{
+                "code":{
+                  "name":"Sequence",
+                  "data":[
+                    { "wait":25 },
+                    { "sum":5, "to":{ "_":[ "variable", "shake" ] } },
+                    { "set":{ "counter":0 } },
+                    {
+                      "times":36,
+                      "execute":[
+                        {
+                          "object":{ "set":{ "_":[ "stencil", "playerSmallBullet" ] }, "angle":{ "_":[ "that", "counter", "*", 10 ] }, "thrust":2, "time":20 },
+                          "wait":1, "loop":1, "cycles":10
+                        },
+                        { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+                      ]
+                    },
+                    { "object":{ "set":{ "_":[ "stencil", "flashModel" ] }, "tileX":24, "width":16, "height":16, "at":{ "_":"that" } }, "playAudio":"gameover" },
+                    { "remove":1 }
+                  ]
+                }
+              }
+            }
+          },
+          { "wait":10, "loopTo":0 }
+        ],
+        "health":1,
+        "maxHealth":1,
+        "maxTime":20,
+        "stabilizingSpeed":1,
+        "steeringLimit":[ -5, 5 ],
+        "steeringSpeed":1,
+        "thrustLimit":[ 0, 3 ],
+        "thrustSpeed":0.1,
+        "timeBonus":2,
+        "unlockAt":30000
+      },
+      {
+        "name":"SHOGUN MISS-T",
+        "friction":0.01,
+        "frame":3,
+        "brakingSpeed":0.1,
+        "description":"A nervous japanese spaceship with a huge shotgun cannon. Features innovative AND annoying backward engines!",
+        "fireLogic":[
+          { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+          { "sum":5, "to":{ "_":[ "variable", "shake" ] } },
+          { "subtract":1, "to":{ "_":[ "this", "thrust" ] } },
+          { "playAudio":"break" },
+          {
+            "times":10,
+            "object":{
+              "set":{ "_":[ "stencil", "playerSmallBullet" ] },
+              "frame":3,
+              "angle":{ "_":[ "that", "angle", "+", { "_":[ "randomNumber", [ -25, 25 ] ] } ] },
+              "thrust":5,
+              "time":{ "_":[ "randomNumber", [ 10, 15 ] ] }
+            }
+          },
+          { "wait":10, "loopTo":0 }
+        ],
+        "health":1,
+        "maxHealth":1,
+        "maxTime":15,
+        "stabilizingSpeed":0.5,
+        "steeringLimit":[ -8, 8 ],
+        "steeringSpeed":2,
+        "thrustLimit":[ -1, 5 ],
+        "thrustSpeed":0.1,
+        "timeBonus":1,
+        "unlockAt":45000
+      },
+      {
+        "name":"KIT-3 MINUS",
+        "friction":0.01,
+        "frame":4,
+        "brakingSpeed":0.1,
+        "description":"Put kites in your cannons. That's what I've done with this one: it has two invincible spinning satellites. Now go chopping!",
+        "fireLogic":[
+          {
+            "when":{ "_":[ "this", "satellite1", "not" ] },
+            "execute":[
+              { "set":{ "satelliteangle":0 } },
+              { "object":{ "_":[ "stencil", "playerSatellite" ] }, "as":{ "_":"that" }, "assign":{ "_":"this" }, "to":{ "_":[ "that", "satellite1" ] } },
+              { "object":{ "_":[ "stencil", "playerSatellite" ] }, "as":{ "_":"that" }, "assign":{ "_":"this" }, "to":{ "_":[ "that", "satellite2" ] } }
+            ]
+          },
+          {
+            "as":{ "_":[ "this", "satellite1" ] },
+            "set":{
+              "x":{ "_":[ "objectTyped", "player", "x", "+", { "_":[ "that", "satelliteangle", "sin", "*", 20 ] } ] }, "y":{ "_":[ "objectTyped", "player", "y", "+", { "_":[ "that", "satelliteangle", "cos", "*", 20 ] } ] },
+              "angle":{ "_":[ "that", "satelliteangle", "+", 3.14, "*", -57.2958 ] }
+            }
+          },
+          {
+            "as":{ "_":[ "this", "satellite2" ] },
+            "set":{
+              "x":{ "_":[ "objectTyped", "player", "x", "+", { "_":[ "that", "satelliteangle", "+", 3.14, "sin", "*", 20 ] } ] }, "y":{ "_":[ "objectTyped", "player", "y", "+", { "_":[ "that", "satelliteangle", "+", 3.14, "cos", "*", 20 ] } ] },
+              "angle":{ "_":[ "that", "satelliteangle", "*", -57.2958 ] }
+            }
+          },
+          { "set":{ "satelliteangle":{ "_":[ "this", "satelliteangle", "+", { "_":[ "objectTyped", "player", "thrust", "*", 0.1 ] }, "%", 6.28 ] } } },
+          { "wait":1, "loopTo":-3 }
+        ],
+        "health":1,
+        "maxHealth":1,
+        "maxTime":15,
+        "stabilizingSpeed":0.5,
+        "steeringLimit":[ -5, 5 ],
+        "steeringSpeed":1,
+        "thrustLimit":[ 0, 5 ],
+        "thrustSpeed":0.1,
+        "timeBonus":2,
+        "unlockAt":70000
+      },
+      {
+        "name":"P4 LAHDEEN",
+        "friction":0.01,
+        "frame":5,
+        "brakingSpeed":0.1,
+        "description":"Can spaceships wield a spear? No? WHAT? Have you EVER watched an anime in LIFE?! Heck! Pierce the sky, my valiant knight!",
+        "fireLogic":[
+          {
+            "when":{ "_":[ "this", "satellite1", "not" ] },
+            "execute":[
+              { "set":{ "satelliteangle":0 } },
+              {
+                "object":{ "set":{ "_":[ "stencil", "playerSatellite" ] }, "frame":4 },
+                "as":{ "_":"that" },
+                "assign":{ "_":"this" },
+                "to":{ "_":[ "that", "satellite1" ] }
+              },
+              { "object":{ "_":[ "stencil", "playerSatellite" ] }, "as":{ "_":"that" }, "assign":{ "_":"this" }, "to":{ "_":[ "that", "satellite2" ] } }
+            ]
+          },
+          {
+            "as":{ "_":[ "this", "satellite1" ] },
+            "set":{
+              "x":{ "_":[ "objectTyped", "player", "x", "+", { "_":[ "that", "satelliteangle", "-", 90, "/", 57.2958, "cos", "*", 20 ] } ] }, "y":{ "_":[ "objectTyped", "player", "y", "+", { "_":[ "that", "satelliteangle", "-", 90, "/", 57.2958, "sin", "*", 20 ] } ] },
+              "angle":{ "_":[ "that", "satelliteangle" ] }
+            }
+          },
+          {
+            "as":{ "_":[ "this", "satellite2" ] },
+            "set":{
+              "x":{ "_":[ "objectTyped", "player", "x", "+", { "_":[ "that", "satelliteangle", "-", 90, "/", 57.2958, "cos", "*", 30 ] } ] }, "y":{ "_":[ "objectTyped", "player", "y", "+", { "_":[ "that", "satelliteangle", "-", 90, "/", 57.2958, "sin", "*", 30 ] } ] },
+              "angle":{ "_":[ "that", "satelliteangle" ] }
+            }
+          },
+          { "when":{ "_":[ "keyA", "isHit" ] }, "playAudio":"drop" },
+          {
+            "when":{ "_":[ "keyA", "isDown" ] },
+            "sum":{ "_":[ "this", "satelliteangle", "shortestAngleTo", { "_":[ "objectTyped", "player", "angle" ] }, "/", 4 ] },
+            "to":{ "_":[ "this", "satelliteangle" ] }
+          },
+          { "wait":1, "loopTo":-4 }
+        ],
+        "health":1,
+        "maxHealth":1,
+        "maxTime":15,
+        "stabilizingSpeed":0.5,
+        "steeringLimit":[ -5, 5 ],
+        "steeringSpeed":1,
+        "thrustLimit":[ 0, 5 ],
+        "thrustSpeed":0.1,
+        "timeBonus":1,
+        "unlockAt":95000
+      },
+      {
+        "name":"FI-GHT FA-ST",
+        "friction":0.01,
+        "frame":6,
+        "brakingSpeed":0.1,
+        "description":"So you are our typical soccer-only Italian videogamer. Fear not: now you have have a spaceship with a ball. Happy? Now go!",
+        "fireLogic":[
+          {
+            "when":{ "_":[ "this", "satellite1", "not" ] },
+            "execute":{
+              "object":{
+                "set":{ "_":[ "stencil", "playerSatellite" ] },
+                "x":{ "_":[ "that", "x" ] }, "y":{ "_":[ "that", "y", "+", 16 ] }, "frame":6,
+                "states":{
+                  "code":[
+                    {
+                      "name":"Execute",
+                      "data":[
+                        { "set":{ "forceX":{ "_":[ "this", "forceX", "limitValue", [ -2, 2 ] ] } }, "forceY":{ "_":[ "this", "forceY", "limitValue", [ -2, 2 ] ] } },
+                        { "_":[ "stencil", "codeWarp" ] }
+                      ]
+                    },
+                    { "name":"Physics" }
+                  ]
+                }
+              },
+              "as":{ "_":"that" },
+              "assign":{ "_":"this" },
+              "to":{ "_":[ "that", "satellite1" ] }
+            }
+          },
+          { "when":{ "_":[ "keyA", "isHit" ] }, "playAudio":"drop" },
+          {
+            "when":{ "_":[ "keyA", "isDown" ] },
+            "execute":{ "as":{ "_":[ "this", "satellite1" ] }, "sumVector":{ "angle":{ "_":[ "this", "angleTo", { "_":[ "objectTyped", "player" ] } ] }, "length":1 } }
+          },
+          { "wait":1, "loopTo":-2 }
+        ],
+        "health":1,
+        "maxHealth":1,
+        "maxTime":30,
+        "stabilizingSpeed":0.5,
+        "steeringLimit":[ -5, 5 ],
+        "steeringSpeed":1,
+        "thrustLimit":[ 0, 5 ],
+        "thrustSpeed":0.1,
+        "timeBonus":2,
+        "unlockAt":120000
+      },
+      {
+        "name":"C4-K3 NOTRUE",
+        "friction":0.01,
+        "frame":7,
+        "brakingSpeed":0.1,
+        "description":"It's always good to have a friend. Especially when you have no cannon and the friend is a vulcan turret.",
+        "fireLogic":[
+          {
+            "when":{ "_":[ "keyA", "isHit" ] },
+            "execute":[
+              { "playAudio":"drop" },
+              { "set":{ "turretTimer":0 } },
+              { "when":{ "_":[ "objectTyped", "turret" ] }, "as":{ "_":"that" }, "execute":{ "_":[ "stencil", "removeWithCloud" ] } },
+              { "object":{ "_":[ "stencil", "cloud" ] } },
+              {
+                "object":{ "type":"turret", "set":{ "_":[ "stencil", "playerTurret" ] }, "at":{ "_":"that" }, "frame":7 },
+                "as":{ "_":"that" },
+                "assign":{ "_":"this" },
+                "to":{ "_":[ "that", "satellite1" ] }
+              }
+            ]
+          },
+          {
+            "when":{ "_":[ "objectTyped", "turret" ] },
+            "execute":[
+              { "as":{ "_":[ "this", "satellite1" ] }, "set":{ "angle":{ "_":[ "this", "angleTo", { "_":[ "objectTyped", "player" ] } ] } } },
+              { "sum":1, "to":{ "_":[ "this", "turretTimer" ] } },
+              {
+                "when":{ "_":[ "this", "turretTimer", "isGreaterThan", 3 ] },
+                "execute":[
+                  { "set":{ "turretTimer":0 } },
+                  {
+                    "as":{ "_":[ "this", "satellite1" ] },
+                    "execute":{
+                      "object":{
+                        "set":{ "_":[ "stencil", "playerSmallBullet" ] },
+                        "angle":{ "_":[ "that", "angleTo", { "_":[ "objectTyped", "player" ] } ] },
+                        "thrust":5,
+                        "time":20
+                      }
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          { "wait":1, "loopTo":-2 }
+        ],
+        "health":1,
+        "maxHealth":1,
+        "maxTime":30,
+        "stabilizingSpeed":0.5,
+        "steeringLimit":[ -5, 5 ],
+        "steeringSpeed":1,
+        "thrustLimit":[ 0, 5 ],
+        "thrustSpeed":0.1,
+        "timeBonus":2,
+        "unlockAt":145000
+      },
+      {
+        "name":"PLATOON 5",
+        "friction":0.1,
+        "frame":8,
+        "brakingSpeed":0,
+        "description":"Now you're a ship. Now you're a squid. Move just with your cannon!",
+        "fireLogic":[
+          { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+          {
+            "times":10,
+            "object":{
+              "set":{ "_":[ "stencil", "playerSmallBullet" ] },
+              "frame":3,
+              "angle":{ "_":[ "that", "angle", "+", 180, "+", { "_":[ "randomNumber", [ -25, 25 ] ] } ] },
+              "thrust":5,
+              "time":{ "_":[ "randomNumber", [ 10, 15 ] ] }
+            }
+          },
+          { "set":{ "thrust":3 } },
+          { "loopTo":0 }
+        ],
+        "health":1,
+        "maxHealth":1,
+        "maxTime":15,
+        "stabilizingSpeed":0.5,
+        "steeringLimit":[ -8, 8 ],
+        "steeringSpeed":3,
+        "thrustLimit":[ 0, 5 ],
+        "thrustSpeed":0,
+        "timeBonus":1,
+        "unlockAt":180000
+      },
+      {
+        "name":"U.S.S. NERVO",
+        "friction":0.01,
+        "frame":9,
+        "brakingSpeed":0.1,
+        "description":"Cannon power throttling is connected to combo counter for some weird design reason. Anyway - break everything and all will be fine.",
+        "fireLogic":[
+          { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+          { "set":{ "fireangle":{ "_":[ "variable", "combo", "*", 2 ] } } },
+          {
+            "times":{ "_":[ "variable", "combo", "/", 2, "ceil" ] },
+            "object":{
+              "set":{ "_":[ "stencil", "playerSmallBullet" ] },
+              "angle":{ "_":[ "that", "angle", "+", { "_":[ "randomNumber", [ { "_":[ "that", "fireangle", "*", -1 ] }, { "_":[ "that", "fireangle" ] } ] ] } ] },
+              "thrust":5,
+              "time":{ "_":[ 40, "-", { "_":[ "variable", "combo", "*", 3 ] } ] }
+            }
+          },
+          { "wait":2, "loopTo":0 }
+        ],
+        "health":1,
+        "maxHealth":1,
+        "maxTime":15,
+        "stabilizingSpeed":0.5,
+        "steeringLimit":[ -5, 5 ],
+        "steeringSpeed":1,
+        "thrustLimit":[ 0, 5 ],
+        "thrustSpeed":0.1,
+        "timeBonus":1,
+        "unlockAt":215000
+      },
+      {
+        "name":"5N-AYK SAT",
+        "friction":1,
+        "frame":10,
+        "brakingSpeed":0.1,
+        "description":"I've mounted a tail of satellites to this ship and discovered that the game becomes pretty frustrating. So I've kept this ship for you.",
+        "fireLogic":[
+          { "set":{ "counter":2, "satellite1":{ "_":"this" } } },
+          {
+            "times":4,
+            "execute":[
+              {
+                "object":{ "set":{ "_":[ "stencil", "playerSatellite" ] }, "at":{ "_":[ "objectTyped", "player" ] }, "frame":6 },
+                "as":{ "_":"that" },
+                "assign":{ "_":"this" },
+                "to":{ "_":[ "that", { "_":[ "satellite", ".", { "_":[ "that", "counter" ] } ] } ] }
+              },
+              { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+            ]
+          },
+          { "set":{ "counter":1 } },
+          {
+            "times":5,
+            "execute":[
+              {
+                "when":{
+                  "_":[
+                    "this",
+                    { "_":[ "satellite", ".", { "_":[ "this", "counter" ] } ] },
+                    "distanceTo",
+                    { "_":[ "this", { "_":[ "satellite", ".", { "_":[ "this", "counter", "-", 1 ] } ] } ] },
+                    "isGreaterThan",
+                    10
+                  ]
+                },
+                "execute":[
+                  {
+                    "as":{ "_":[ "this", { "_":[ "satellite", ".", { "_":[ "this", "counter" ] } ] } ] },
+                    "applyVector":{
+                      "angle":{ "_":[ "this", "angleTo", { "_":[ "that", { "_":[ "satellite", ".", { "_":[ "that", "counter", "-", 1 ] } ] } ] } ] },
+                      "length":{ "_":[ "this", "distanceTo", { "_":[ "that", { "_":[ "satellite", ".", { "_":[ "that", "counter", "-", 1 ] } ] } ] }, "-", 10 ] }
+                    }
+                  },
+                  {
+                    "as":{ "_":[ "this", { "_":[ "satellite", ".", { "_":[ "this", "counter" ] } ] } ] },
+                    "set":{ "x":{ "_":[ "this", "x", "+", { "_":[ "this", "forceX" ] } ] }, "y":{ "_":[ "this", "y", "+", { "_":[ "this", "forceY" ] } ] } }
+                  }
+                ]
+              },
+              { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+            ]
+          },
+          { "wait":1, "loopTo":2 }
+        ],
+        "health":1,
+        "maxHealth":1,
+        "maxTime":30,
+        "stabilizingSpeed":1,
+        "steeringLimit":[ -5, 5 ],
+        "steeringSpeed":1,
+        "thrustLimit":[ 0, 3 ],
+        "thrustSpeed":0.1,
+        "timeBonus":2,
+        "unlockAt":250000
+      },
+      {
+        "name":"HYPNOCANNON I",
+        "friction":0.01,
+        "frame":11,
+        "brakingSpeed":0.1,
+        "description":"Tick. Tock. Tick. Tock. This. Time. There. Is. A. Pendulum. Cannon satellite. Orbiting. Around. Change. Side. With. Button.",
+        "fireLogic":[
+          {
+            "when":{ "_":[ "this", "satellite1", "not" ] },
+            "execute":[
+              { "set":{ "satelliteangle":0, "side":0.1, "timer":0 } },
+              { "object":{ "_":[ "stencil", "playerSatellite" ] }, "as":{ "_":"that" }, "assign":{ "_":"this" }, "to":{ "_":[ "that", "satellite1" ] } }
+            ]
+          },
+          { "when":{ "_":[ "keyA", "isHit" ] }, "set":{ "side":{ "_":[ "this", "side", "*", -1 ] } }, "playAudio":"drop" },
+          {
+            "as":{ "_":[ "this", "satellite1" ] },
+            "set":{
+              "x":{ "_":[ "objectTyped", "player", "x", "+", { "_":[ "that", "satelliteangle", "sin", "*", 20 ] } ] }, "y":{ "_":[ "objectTyped", "player", "y", "+", { "_":[ "that", "satelliteangle", "cos", "*", 20 ] } ] },
+              "angle":{ "_":[ "that", "satelliteangle", "+", 3.14, "*", -57.2958 ] }
+            }
+          },
+          { "set":{ "satelliteangle":{ "_":[ "this", "satelliteangle", "+", { "_":[ "this", "side" ] }, "%", 6.28 ] } } },
+          {
+            "when":{ "_":[ "this", "timer", "isGreaterThan", 5 ] },
+            "execute":[
+              { "set":{ "timer":0 } },
+              {
+                "as":{ "_":[ "this", "satellite1" ] },
+                "execute":{ "object":{ "set":{ "_":[ "stencil", "playerSmallBullet" ] }, "angle":{ "_":[ "that", "angle" ] }, "thrust":5, "time":50 } }
+              }
+            ],
+            "elseExecute":{ "sum":1, "to":{ "_":[ "this", "timer" ] } }
+          },
+          { "wait":1, "loopTo":-4 }
+        ],
+        "health":1,
+        "maxHealth":1,
+        "maxTime":15,
+        "stabilizingSpeed":0.5,
+        "steeringLimit":[ -5, 5 ],
+        "steeringSpeed":1,
+        "thrustLimit":[ 0, 5 ],
+        "thrustSpeed":0.1,
+        "timeBonus":2,
+        "unlockAt":300000
+      },
+      {
+        "name":"QWICKSHOT LXIV",
+        "friction":0.01,
+        "frame":12,
+        "brakingSpeed":0.1,
+        "description":"Do you want autofire? Aw, my little cheater. I've built this ship for you: it fires automatically, so you can concentrate on not dying as usual.",
+        "fireLogic":[
+          { "wait":10 },
+          { "object":{ "set":{ "_":[ "stencil", "playerSmallBullet" ] }, "angle":{ "_":[ "that", "angle" ] }, "thrust":5, "time":50 } },
+          { "wait":10 },
+          {
+            "object":[
+              { "set":{ "_":[ "stencil", "playerSmallBullet" ] }, "angle":{ "_":[ "that", "angle", "-", 5 ] }, "thrust":5, "time":40 },
+              { "set":{ "_":[ "stencil", "playerSmallBullet" ] }, "angle":{ "_":[ "that", "angle", "+", 5 ] }, "thrust":5, "time":40 }
+            ],
+            "wait":2, "loop":1, "cycles":2
+          },
+          { "wait":10 },
+          {
+            "object":[
+              { "set":{ "_":[ "stencil", "playerSmallBullet" ] }, "angle":{ "_":[ "that", "angle", "-", 7 ] }, "thrust":5, "time":20 },
+              { "set":{ "_":[ "stencil", "playerSmallBullet" ] }, "angle":{ "_":[ "that", "angle" ] }, "thrust":5, "time":20 },
+              { "set":{ "_":[ "stencil", "playerSmallBullet" ] }, "angle":{ "_":[ "that", "angle", "+", 7 ] }, "thrust":5, "time":20 }
+            ],
+            "wait":2, "loop":1, "cycles":3
+          },
+          { "loopTo":0 }
+        ],
+        "health":1,
+        "maxHealth":1,
+        "maxTime":15,
+        "stabilizingSpeed":0.5,
+        "steeringLimit":[ -5, 5 ],
+        "steeringSpeed":1,
+        "thrustLimit":[ 0, 5 ],
+        "thrustSpeed":0.1,
+        "timeBonus":1,
+        "unlockAt":350000
+      },
+      {
+        "name":"IV-NOVATION",
+        "friction":0.01,
+        "frame":13,
+        "brakingSpeed":0.1,
+        "description":"With this innovative spaceship you can shoot in ALL FOUR (4) directions! What? You are already shooting 360 degrees? Whatever.",
+        "fireLogic":[
+          { "set":{ "fireside":0, "timer":0 } },
+          { "when":{ "_":[ "keyA", "isHit" ] }, "set":{ "fireside":{ "_":[ "this", "fireside", "+", 1, "%", 4 ] } } },
+          {
+            "when":{ "_":[ "this", "timer", "isGreaterThan", 6 ] },
+            "execute":[
+              {
+                "decide":[
+                  {
+                    "when":{ "_":[ "this", "fireside", "isEqualTo", 0 ] },
+                    "options":{ "object":{ "set":{ "_":[ "stencil", "playerSmallBullet" ] }, "angle":0, "thrust":5, "time":60 } }
+                  },
+                  {
+                    "when":{ "_":[ "this", "fireside", "isEqualTo", 1 ] },
+                    "options":{ "object":{ "set":{ "_":[ "stencil", "playerSmallBullet" ] }, "angle":90, "thrust":5, "time":60 } }
+                  },
+                  {
+                    "when":{ "_":[ "this", "fireside", "isEqualTo", 2 ] },
+                    "options":{ "object":{ "set":{ "_":[ "stencil", "playerSmallBullet" ] }, "angle":180, "thrust":5, "time":60 } }
+                  },
+                  {
+                    "when":{ "_":[ "this", "fireside", "isEqualTo", 3 ] },
+                    "options":{ "object":{ "set":{ "_":[ "stencil", "playerSmallBullet" ] }, "angle":270, "thrust":5, "time":60 } }
+                  }
+                ]
+              },
+              { "set":{ "timer":0 } }
+            ],
+            "elseExecute":{ "sum":1, "to":{ "_":[ "this", "timer" ] } }
+          },
+          { "wait":1, "loopTo":1 }
+        ],
+        "health":1,
+        "maxHealth":1,
+        "maxTime":15,
+        "stabilizingSpeed":0.5,
+        "steeringLimit":[ -5, 5 ],
+        "steeringSpeed":1,
+        "thrustLimit":[ 0, 5 ],
+        "thrustSpeed":0.1,
+        "timeBonus":1,
+        "unlockAt":400000
+      },
+      {
+        "name":"STARWING II",
+        "friction":0.01,
+        "frame":14,
+        "brakingSpeed":0.1,
+        "description":"Good job! You cleared the game and deserve a last ship with, finally, a fairly good cannon! Enjoy your 5 seconds time limit too. Thanks for playing! - KesieV",
+        "fireLogic":[
+          { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+          { "object":{ "set":{ "_":[ "stencil", "playerSmallBullet" ] }, "angle":{ "_":[ "that", "angle" ] }, "thrust":5, "time":50 } },
+          { "object":{ "set":{ "_":[ "stencil", "playerSmallBullet" ] }, "angle":{ "_":[ "that", "angle", "-", 5 ] }, "thrust":5, "time":50 } },
+          { "object":{ "set":{ "_":[ "stencil", "playerSmallBullet" ] }, "angle":{ "_":[ "that", "angle", "+", 5 ] }, "thrust":5, "time":50 } },
+          { "wait":2, "loopTo":0 }
+        ],
+        "health":1,
+        "maxHealth":1,
+        "maxTime":5,
+        "stabilizingSpeed":0.5,
+        "steeringLimit":[ -5, 5 ],
+        "steeringSpeed":1,
+        "thrustLimit":[ 0, 5 ],
+        "thrustSpeed":0.1,
+        "timeBonus":1,
+        "unlockAt":460000
+      }
+    ],
+    "flashModel":{
+      "image":"sprites", "tileY":48,
+      "zIndex":500,
+      "states":{
+        "execute":{
+          "times":10,
+          "object":{ "set":{ "_":[ "stencil", "cloud" ] }, "directionAngle":{ "_":[ "randomNumber", [ 0, 360 ] ] }, "thrust":{ "_":[ "randomNumber", [ 3, 5 ] ] } }
+        },
+        "code":{ "name":"Sequence", "data":[ { "wait":4 }, { "remove":1 } ] }
+      }
+    },
+    "asteroidModel":{
+      "type":"playerhitable",
+      "set":{ "_":[ "stencil", "playerHitableModel" ] },
+      "image":"sprites", "tileY":48,
+      "zIndex":10,
+      "damage":1,
+      "spinSpeed":{ "_":[ "randomNumber", [ -5, 5 ] ] },
+      "thrust":{ "_":[ "randomNumber", [ 1, 3 ] ] },
+      "states":{
+        "execute":{
+          "set":{ "directionAngle":{ "_":[ "this", "angleTo", { "_":[ "objectTyped", "player" ] }, "+", 180, "+", { "_":[ "randomNumber", [ -40, 40 ] ] } ] } }
+        },
+        "code":[
+          {
+            "name":"Execute",
+            "data":[
+              { "sum":{ "_":[ "this", "spinSpeed" ] }, "to":{ "_":[ "this", "angle" ] } },
+              { "set":{ "angle":{ "_":[ "this", "angle", "%", 360 ] } } },
+              { "applyVector":{ "angle":{ "_":[ "this", "directionAngle" ] }, "length":{ "_":[ "this", "thrust" ] } } },
+              { "_":[ "stencil", "codeWarp" ] },
+              {
+                "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "player" ] } ] },
+                "execute":[ { "as":{ "_":"that" }, "executeAction":{ "_":"hit" } }, { "executeAction":"break" } ]
+              }
+            ]
+          },
+          { "name":"Physics" }
+        ],
+        "actions":[
+          {
+            "name":"dead",
+            "execute":[
+              { "set":{ "bonus":{ "_":[ "this", "score", "*", { "_":[ "variable", "combo" ] } ] } } },
+              { "sum":{ "_":[ "this", "bonus" ] }, "to":{ "_":[ "variable", "score" ] } },
+              { "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "html":{ "_":[ "that", "bonus", ".", "pts." ] } } },
+              { "when":{ "_":[ "this", "drop" ] }, "execute":{ "times":{ "_":[ "this", "drop" ] }, "object":{ "_":[ "stencil", "timeBonus" ] } } },
+              { "_":[ "stencil", "codeUpgradeCombo" ] },
+              { "executeAction":"break" }
+            ]
+          },
+          { "name":"break", "execute":{ "executeAction":"broken" } }
+        ]
+      }
+    },
+    "asteroidLarge":{
+      "type":"togo",
+      "set":{ "_":[ "stencil", "asteroidModel" ] },
+      "tileX":{ "_":[ "randomNumber", [ 0, { "_":[ "variable", "stage", "/", 3, "floor", "limitValue", [ 0, 2 ] ] } ], "+", 1, "*", 48 ] }, "width":24, "height":24,
+      "drop":4,
+      "health":{ "_":[ "variable", "stage", "limitValue", [ 3, 30 ] ] },
+      "score":100,
+      "states":{
+        "actions":{
+          "name":"broken",
+          "execute":[
+            { "playAudio":"break" },
+            { "sum":5, "to":{ "_":[ "variable", "shake" ] } },
+            { "object":{ "set":{ "_":[ "stencil", "flashModel" ] }, "width":24, "height":24, "at":{ "_":"that" } } },
+            {
+              "times":3,
+              "object":{
+                "set":{ "_":[ "stencil", "asteroidMid" ] },
+                "tileX":{ "_":[ "this", "tileX", "+", 24 ] },
+                "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] }
+              }
+            },
+            { "remove":1 }
+          ]
+        }
+      }
+    },
+    "asteroidMid":{
+      "type":"togo",
+      "set":{ "_":[ "stencil", "asteroidModel" ] },
+      "tileX":24, "width":16, "height":16,
+      "drop":2,
+      "health":{ "_":[ "variable", "stage", "/", 2, "ceil", "limitValue", [ 2, 20 ] ] },
+      "score":50,
+      "states":{
+        "actions":{
+          "name":"broken",
+          "execute":[
+            { "playAudio":"break" },
+            { "sum":5, "to":{ "_":[ "variable", "shake" ] } },
+            { "object":{ "set":{ "_":[ "stencil", "flashModel" ] }, "tileX":24, "width":16, "height":16, "at":{ "_":"that" } } },
+            {
+              "times":6,
+              "object":{
+                "set":{ "_":[ "stencil", "asteroidSmall" ] },
+                "tileX":{ "_":[ "this", "tileX", "+", 16 ] },
+                "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] }
+              }
+            },
+            { "remove":1 }
+          ]
+        }
+      }
+    },
+    "asteroidSmall":{
+      "set":{ "_":[ "stencil", "asteroidModel" ] },
+      "tileX":40, "width":8, "height":8,
+      "drop":{ "_":[ "randomNumber", [ 0, 0, 1 ] ] },
+      "health":1,
+      "score":10,
+      "states":{
+        "actions":{
+          "name":"broken",
+          "execute":[
+            { "playAudio":"break" },
+            { "object":{ "set":{ "_":[ "stencil", "flashModel" ] }, "tileX":40, "width":8, "height":8, "at":{ "_":"that" } } },
+            { "remove":1 }
+          ]
+        }
+      }
+    },
+    "spawner":{
+      "type":"togo",
+      "image":"sprites", "tileX":144, "tileY":32, "width":16, "height":16,
+      "zIndex":3,
+      "animations":{ "idle":{ "frames":2, "speed":1, "loopTo":0 } },
+      "animation":"idle",
+      "playAudio":"warning",
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[
+            { "wait":25 },
+            { "object":{ "set":{ "_":[ "stencil", "asteroidLarge" ] }, "x":{ "_":[ "that", "x", "-", 4 ] }, "y":{ "_":[ "that", "y", "-", 4 ] } } },
+            { "_":[ "stencil", "removeWithCloud" ] }
+          ]
+        }
+      }
+    },
+    "timeBonus":{
+      "image":"sprites", "tileX":48, "tileY":32, "width":16, "height":16,
+      "zIndex":3, "at":{ "_":"that" },
+      "animations":{ "idle":{ "frames":2, "loopTo":0 } },
+      "animation":"idle",
+      "invulnerability":10,
+      "time":250,
+      "states":{
+        "execute":{
+          "applyVector":{ "angle":{ "_":[ "this", "angleTo", { "_":[ "objectTyped", "player" ] }, "+", { "_":[ "randomNumber", [ -20, 20 ] ] } ] }, "length":1 }
+        },
+        "code":[
+          {
+            "name":"Execute",
+            "data":[
+              { "when":{ "_":[ "this", "time", "isLessThan", 25 ] }, "set":{ "visible":{ "_":[ "this", "visible", "not" ] } } },
+              {
+                "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "player" ] } ] },
+                "execute":[
+                  {
+                    "when":{ "_":[ "variable", "time", "isLessThan", { "_":[ "variable", "shipData", "maxTime" ] } ] },
+                    "execute":[
+                      {
+                        "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "html":{ "_":[ "", ".", "+", ".", { "_":[ "variable", "shipData", "timeBonus" ] }, ".", "sec." ] } },
+                        "sum":{ "_":[ "variable", "shipData", "timeBonus" ] },
+                        "to":{ "_":[ "variable", "time" ] }
+                      },
+                      {
+                        "when":{ "_":[ "variable", "time", "isGreaterThan", { "_":[ "variable", "shipData", "maxTime" ] } ] },
+                        "to":{ "_":"variable" },
+                        "set":{ "time":{ "_":[ "variable", "shipData", "maxTime" ] } }
+                      }
+                    ],
+                    "elseExecute":{
+                      "when":{ "_":[ "objectTyped", "player", "health", "isLessThan", { "_":[ "objectTyped", "player", "maxHealth" ] } ] },
+                      "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "html":"+1HP" },
+                      "sum":1,
+                      "to":{ "_":[ "objectTyped", "player", "health" ] },
+                      "elseExecute":{
+                        "object":{
+                          "set":{ "_":[ "stencil", "modelPopupLabel" ] },
+                          "html":{ "_":[ "randomValue", [ "NICE!", "GOOD!", "YEAH!", "WHOA!", "PERFECT", "AWYEA!", "GO!" ] ] }
+                        },
+                        "sum":100,
+                        "to":{ "_":[ "variable", "score" ] }
+                      }
+                    }
+                  },
+                  { "playAudio":"bonus" },
+                  { "_":[ "stencil", "removeWithSpark" ] }
+                ]
+              },
+              { "_":[ "stencil", "codeWarp" ] },
+              { "when":{ "_":[ "this", "time" ] }, "subtract":1, "to":{ "_":[ "this", "time" ] }, "elseExecute":{ "_":[ "stencil", "removeWithSpark" ] } }
+            ]
+          },
+          { "name":"Physics" }
+        ]
+      }
+    }
+  },
+  "execute":[
+    { "when":{ "_":[ "storage", "hiscore", "not" ] }, "as":{ "_":"storage" }, "set":{ "hiscore":{ "_":[ "new", [] ] } } },
+    { "when":{ "_":[ "storage", "totalScore", "not" ] }, "as":{ "_":"storage" }, "set":{ "totalScore":0 } },
+    {
+      "as":{ "_":"variable" },
+      "set":{ "currentShip":0, "hiscore":{ "_":[ "storage", "hiscore" ] }, "totalScore":{ "_":[ "storage", "totalScore" ] }, "unlockedShips":0 }
+    }
+  ],
+  "scenes":{
+    "intro":{
+      "execute":[
+        { "stopChannel":"music" },
+        { "_":[ "stencil", "codeUpdateNextShip" ] },
+        {
+          "object":[
+            {
+              "box":"label", "width":256,
+              "zIndex":20000, "x":0, "y":152,
+              "color":"#fff",
+              "font":"spectrum", "fontSize":20, "lineHeight":20, "outline":"#000", "textAlign":"center", "html":"PRESS START",
+              "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "visible":0 }, "wait":10 }, { "set":{ "visible":1 }, "wait":10, "loopTo":0 } ] } }
+            },
+            {
+              "type":"player",
+              "image":"sprites", "tileY":72, "width":256, "height":39,
+              "zIndex":100, "x":-256, "y":20,
+              "forceX":5, "forceY":0,
+              "explx":10,
+              "states":[
+                {
+                  "code":{
+                    "name":"Execute",
+                    "data":{ "when":{ "_":[ "this", "x", "isLessThan", -30 ] }, "sum":30, "to":{ "_":[ "this", "x" ] }, "elseExecute":{ "set":{ "x":0, "state":"explosions" } } }
+                  }
+                },
+                {
+                  "name":"explosions",
+                  "execute":{ "as":{ "_":"scene" }, "set":{ "state":"go" } },
+                  "code":{
+                    "name":"Sequence",
+                    "data":[
+                      {
+                        "object":{ "set":{ "_":[ "stencil", "flashModel" ] }, "width":24, "height":24, "x":{ "_":[ "that", "explx" ] }, "y":{ "_":[ "randomNumber", [ 20, 40 ] ] } },
+                        "playAudio":"gameover"
+                      },
+                      { "sum":25, "to":{ "_":[ "this", "explx" ] } },
+                      { "wait":1, "cycles":10, "loopTo":0 }
+                    ]
+                  }
+                }
+              ]
+            },
+            { "set":{ "_":[ "stencil", "modelScorePopup" ] }, "label":"MUSIC BY: DARKMAN007 & EA", "color1":"#fff", "color2":"#fff" }
+          ]
+        }
+      ],
+      "states":{
+        "name":"go",
+        "execute":[ { "_":[ "stencil", "codeStars" ] }, { "object":{ "type":"flash", "width":256, "height":192, "zIndex":1000, "x":0, "y":0, "bgcolor":"#fff" } } ],
+        "code":[
+          { "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"selectship", "playAudio":"bonus", "withChannel":"music" } },
+          {
+            "name":"Sequence",
+            "data":[
+              { "wait":1 },
+              { "as":{ "_":[ "object", "flash" ] }, "remove":1 },
+              { "wait":25 },
+              {
+                "times":20,
+                "object":{
+                  "image":"sprites", "tileX":88, "tileY":48, "width":8, "height":8,
+                  "x":-100,
+                  "states":{
+                    "code":{
+                      "name":"Execute",
+                      "data":{
+                        "when":{ "_":[ "this", "x", "isLessThan", -8 ] },
+                        "set":{
+                          "zIndex":{ "_":[ "randomValue", [ 10, 50 ] ] }, "x":{ "_":[ "randomNumber", [ 256, 356 ] ] }, "y":{ "_":[ "randomNumber", [ 0, 184 ] ] },
+                          "speed":{ "_":[ "randomValue", [ -5, -2, -1.5, -1, -0.5, -0.3 ] ] },
+                          "spinSpeed":{ "_":[ "randomValue", [ -2, -1.5, -1, -0.5, 0.5, 1, 1.5, 2 ] ] }
+                        },
+                        "elseExecute":[ { "sum":{ "_":[ "this", "speed" ] }, "to":{ "_":[ "this", "x" ] } }, { "sum":{ "_":[ "this", "spinSpeed" ] }, "to":{ "_":[ "this", "angle" ] } } ]
+                      }
+                    }
+                  }
+                }
+              },
+              { "wait":50 },
+              {
+                "times":5,
+                "object":{
+                  "image":"sprites", "width":16, "height":16,
+                  "zIndex":20, "x":-100,
+                  "angle":90,
+                  "states":{
+                    "code":{
+                      "name":"Execute",
+                      "data":[
+                        {
+                          "when":{ "_":[ "this", "x", "isLessThan", -32 ] },
+                          "set":{
+                            "x":-16, "frame":{ "_":[ "stencil", "dataShips", { "_":[ "randomNumber", [ 0, { "_":[ "variable", "unlockedShips", "-", 1 ] } ] ] }, "frame" ] },
+                            "speed":{ "_":[ "randomNumber", [ 10, 20 ] ] },
+                            "oy":{ "_":[ "randomNumber", [ 69, 132 ] ] }
+                          },
+                          "elseExecute":[
+                            { "sum":{ "_":[ "this", "speed" ] }, "to":{ "_":[ "this", "x" ] } },
+                            { "set":{ "speed":{ "_":[ "this", "speed", "*", 0.9 ] } } },
+                            {
+                              "when":{ "_":[ "this", "speed", "isLessThan", 1 ] },
+                              "set":{ "y":{ "_":[ "this", "x", "/", 2, "sin", "*", 3, "+", { "_":[ "this", "oy" ] } ] }, "speed":-0.1 },
+                              "elseExecute":{ "set":{ "y":{ "_":[ "this", "oy" ] } } }
+                            }
+                          ]
+                        },
+                        { "object":{ "set":{ "_":[ "stencil", "cloud" ] }, "directionAngle":270, "thrust":10 } }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "game":{
+      "follow":1,
+      "execute":[
+        { "stopChannel":"music" },
+        { "playAudio":"music" },
+        {
+          "as":{ "_":"variable" },
+          "set":{ "combo":1, "comboTimer":0, "score":0, "shake":0, "shipData":{ "_":[ "stencil", "dataShips", { "_":[ "variable", "currentShip" ] } ] }, "stage":0 }
+        },
+        { "as":{ "_":"variable" }, "set":{ "time":{ "_":[ "variable", "shipData", "maxTime" ] } } },
+        {
+          "object":[
+            {
+              "type":"hud",
+              "hudType":"label", "label":"%number|variable.score|0|10%",
+              "width":256, "height":30,
+              "x":0, "y":8,
+              "color":"#fff",
+              "font":"spectrum", "lineHeight":10, "outline":"#000", "textAlign":"center"
+            },
+            {
+              "type":"hud",
+              "hudType":"label", "label":"%number|variable.combo%",
+              "width":84, "height":30,
+              "x":0, "y":8,
+              "color":"#fff",
+              "font":"spectrum", "fontSize":40, "lineHeight":20, "outline":"#000", "textAlign":"right",
+              "states":{
+                "code":{
+                  "name":"Execute",
+                  "data":{
+                    "when":{ "_":[ "variable", "combo", "isLessThan", 4 ] },
+                    "set":{ "x":0, "y":8 },
+                    "elseExecute":{
+                      "when":{ "_":[ "variable", "combo", "isLessThan", 8 ] },
+                      "set":{ "x":{ "_":[ "randomNumber", [ -1, 1 ] ] }, "y":{ "_":[ "randomNumber", [ 7, 9 ] ] } },
+                      "elseExecute":{ "set":{ "x":{ "_":[ "randomNumber", [ -2, 2 ] ] }, "y":{ "_":[ "randomNumber", [ 6, 10 ] ] } } }
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "height":1,
+              "x":88, "y":18,
+              "bgcolor":"#fff",
+              "states":{
+                "code":{
+                  "name":"Execute",
+                  "data":{
+                    "set":{ "width":{ "_":[ 80, "/", { "_":[ "objectTyped", "player", "maxHealth" ] }, "*", { "_":[ "objectTyped", "player", "health" ] }, "floor" ] } }
+                  }
+                }
+              }
+            },
+            {
+              "height":1,
+              "x":88, "y":20,
+              "bgcolor":"#fff",
+              "states":{
+                "code":{
+                  "name":"Execute",
+                  "data":{ "set":{ "width":{ "_":[ 80, "/", { "_":[ "variable", "shipData", "maxTime" ] }, "*", { "_":[ "variable", "time" ] }, "floor" ] } } }
+                }
+              }
+            },
+            {
+              "height":1,
+              "x":88, "y":22,
+              "bgcolor":"#fff",
+              "states":{ "code":{ "name":"Execute", "data":{ "set":{ "width":{ "_":[ 1.6, "*", { "_":[ "variable", "comboTimer" ] }, "floor" ] } } } } }
+            }
+          ],
+          "into":{ "_":"scenehud" }
+        },
+        { "_":[ "stencil", "codeStars" ] }
+      ],
+      "states":[
+        {
+          "execute":[
+            { "object":{ "set":{ "_":[ "stencil", "modelLargeMessage" ] }, "html":"GET READY" }, "into":{ "_":"scenehud" } },
+            { "object":{ "set":[ { "_":[ "stencil", "player" ] }, { "_":[ "stencil", "dataShips", { "_":[ "variable", "currentShip" ] } ] } ] } }
+          ],
+          "code":{ "name":"Sequence", "data":[ { "wait":75 }, { "set":{ "state":"play" } } ] }
+        },
+        {
+          "name":"play",
+          "like":{ "_":[ "stencil", "behaviourShake" ] },
+          "execute":{ "as":{ "_":[ "object", "message" ] }, "remove":1 },
+          "code":[
+            {
+              "name":"Execute",
+              "data":{
+                "when":{ "_":[ "variable", "comboTimer" ] },
+                "subtract":1,
+                "to":{ "_":[ "variable", "comboTimer" ] },
+                "elseExecute":{ "_":[ "stencil", "codeBreakCombo" ] }
+              }
+            },
+            {
+              "name":"Sequence",
+              "data":[
+                { "wait":25 },
+                { "subtract":1, "to":{ "_":[ "variable", "time" ] } },
+                { "loopTo":0, "until":{ "_":[ "variable", "time", "not" ] } },
+                { "object":{ "set":{ "_":[ "stencil", "modelLargeMessage" ] }, "html":"TIME OUT" }, "into":{ "_":"scenehud" } },
+                { "set":{ "state":"gameover" } }
+              ]
+            },
+            {
+              "name":"Sequence",
+              "data":[
+                {
+                  "_":[
+                    "decide",
+                    [
+                      {
+                        "options":[
+                          {
+                            "subsequence":[
+                              { "object":{ "set":{ "_":[ "stencil", "spawner" ] }, "x":204, "y":30 } },
+                              { "wait":10 },
+                              { "object":{ "set":{ "_":[ "stencil", "spawner" ] }, "x":48, "y":30 } }
+                            ]
+                          },
+                          {
+                            "subsequence":[
+                              { "object":{ "set":{ "_":[ "stencil", "spawner" ] }, "x":204, "y":138 } },
+                              { "wait":10 },
+                              { "object":{ "set":{ "_":[ "stencil", "spawner" ] }, "x":48, "y":138 } }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "when":{ "_":[ "variable", "stage", "isGreaterThan", 2 ] },
+                        "options":[
+                          {
+                            "subsequence":[
+                              { "object":{ "set":{ "_":[ "stencil", "spawner" ] }, "x":204, "y":30 } },
+                              { "wait":10 },
+                              { "object":{ "set":{ "_":[ "stencil", "spawner" ] }, "x":48, "y":30 } },
+                              { "object":{ "set":{ "_":[ "stencil", "spawner" ] }, "x":204, "y":138 } },
+                              { "wait":10 },
+                              { "object":{ "set":{ "_":[ "stencil", "spawner" ] }, "x":48, "y":138 } }
+                            ]
+                          },
+                          {
+                            "subsequence":[
+                              { "object":{ "set":{ "_":[ "stencil", "spawner" ] }, "x":116, "y":30 } },
+                              { "wait":10 },
+                              { "object":{ "set":{ "_":[ "stencil", "spawner" ] }, "x":48, "y":84 } },
+                              { "object":{ "set":{ "_":[ "stencil", "spawner" ] }, "x":204, "y":84 } },
+                              { "wait":10 },
+                              { "object":{ "set":{ "_":[ "stencil", "spawner" ] }, "x":116, "y":138 } }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "when":{ "_":[ "variable", "stage", "isGreaterThan", 6 ] },
+                        "options":[
+                          {
+                            "subsequence":[
+                              { "object":{ "set":{ "_":[ "stencil", "spawner" ] }, "x":48, "y":30 } },
+                              { "wait":10 },
+                              { "object":{ "set":{ "_":[ "stencil", "spawner" ] }, "x":120, "y":30 } },
+                              { "wait":10 },
+                              { "object":{ "set":{ "_":[ "stencil", "spawner" ] }, "x":204, "y":30 } }
+                            ]
+                          },
+                          {
+                            "subsequence":[
+                              { "object":{ "set":{ "_":[ "stencil", "spawner" ] }, "x":48, "y":138 } },
+                              { "wait":10 },
+                              { "object":{ "set":{ "_":[ "stencil", "spawner" ] }, "x":120, "y":138 } },
+                              { "wait":10 },
+                              { "object":{ "set":{ "_":[ "stencil", "spawner" ] }, "x":204, "y":138 } }
+                            ]
+                          },
+                          {
+                            "subsequence":[
+                              { "object":{ "set":{ "_":[ "stencil", "spawner" ] }, "x":48, "y":84 } },
+                              { "wait":10 },
+                              { "object":{ "set":{ "_":[ "stencil", "spawner" ] }, "x":120, "y":84 } },
+                              { "wait":10 },
+                              { "object":{ "set":{ "_":[ "stencil", "spawner" ] }, "x":204, "y":84 } }
+                            ]
+                          }
+                        ]
+                      },
+                      {
+                        "when":{ "_":[ "variable", "stage", "isGreaterThan", 10 ] },
+                        "options":[
+                          {
+                            "subsequence":[
+                              { "object":{ "set":{ "_":[ "stencil", "spawner" ] }, "x":48, "y":30 } },
+                              { "object":{ "set":{ "_":[ "stencil", "spawner" ] }, "x":204, "y":138 } },
+                              { "wait":10 },
+                              { "object":{ "set":{ "_":[ "stencil", "spawner" ] }, "x":48, "y":84 } },
+                              { "object":{ "set":{ "_":[ "stencil", "spawner" ] }, "x":204, "y":84 } },
+                              { "wait":10 },
+                              { "object":{ "set":{ "_":[ "stencil", "spawner" ] }, "x":48, "y":138 } },
+                              { "object":{ "set":{ "_":[ "stencil", "spawner" ] }, "x":204, "y":30 } }
+                            ]
+                          },
+                          {
+                            "subsequence":[
+                              { "object":{ "set":{ "_":[ "stencil", "spawner" ] }, "x":48, "y":30 } },
+                              { "object":{ "set":{ "_":[ "stencil", "spawner" ] }, "x":204, "y":138 } },
+                              { "wait":10 },
+                              { "object":{ "set":{ "_":[ "stencil", "spawner" ] }, "x":48, "y":138 } },
+                              { "object":{ "set":{ "_":[ "stencil", "spawner" ] }, "x":204, "y":30 } },
+                              { "wait":10 },
+                              { "object":{ "set":{ "_":[ "stencil", "spawner" ] }, "x":120, "y":84 } }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  ]
+                },
+                { "wait":1, "loop":1, "until":{ "_":[ "objectTyped", "togo", "not" ] } },
+                { "sum":1, "to":{ "_":[ "variable", "stage" ] }, "loopTo":0 }
+              ]
+            }
+          ]
+        },
+        {
+          "name":"gameover",
+          "like":{ "_":[ "stencil", "behaviourShake" ] },
+          "execute":[ { "stopChannel":"music" }, { "as":{ "_":[ "objectTyped", "player" ] }, "set":{ "state":"dead" } }, { "publishScore":{ "_":[ "variable", "score" ] } } ],
+          "code":{
+            "name":"Sequence",
+            "data":[              
+              { "wait":50 },
+              { "set":{ "pointsToGo":{ "_":[ "variable", "score" ] }, "unlockedShips":{ "_":[ "variable", "unlockedShips" ] } } },
+              { "as":{ "_":[ "object", "message" ] }, "remove":1 },
+              { "object":{ "set":{ "_":[ "stencil", "modelLargeMessage" ] }, "html":"GAME OVER" }, "into":{ "_":"scenehud" } },
+              {
+                "when":{ "_":[ "variable", "hiscore", { "_":[ "variable", "currentShip" ] }, "not" ] },
+                "assign":0,
+                "to":{ "_":[ "variable", "hiscore", { "_":[ "variable", "currentShip" ] } ] }
+              },
+              {
+                "when":{ "_":[ "variable", "score", "isGreaterThan", { "_":[ "variable", "hiscore", { "_":[ "variable", "currentShip" ] } ] } ] },
+                "execute":[
+                  { "playAudio":"comboup" },
+                  { "object":{ "set":{ "_":[ "stencil", "modelScorePopup" ] }, "label":"NEW HISCORE!", "color1":"#f00", "color2":"#fff" } },
+                  { "assign":{ "_":[ "variable", "score" ] }, "to":{ "_":[ "variable", "hiscore", { "_":[ "variable", "currentShip" ] } ] } },
+                  { "as":{ "_":"storage" }, "set":{ "hiscore":{ "_":[ "variable", "hiscore" ] } } }
+                ],
+                "elseExecute":{
+                  "object":{
+                    "set":{ "_":[ "stencil", "modelScorePopup" ] },
+                    "label":"SHIP HISCORE: %number|this.hiscore|0|10%",
+                    "color1":"#fff",
+                    "color2":"#fff",
+                    "hiscore":{ "_":[ "variable", "hiscore", { "_":[ "variable", "currentShip" ] } ] }
+                  }
+                }
+              },
+              {
+                "when":{ "_":[ "variable", "nextShipAt" ] },
+                "subsequence":[
+                  {
+                    "object":{
+                      "type":"hud",
+                      "hudType":"label", "label":"TOTAL SCORE: %number|variable.totalScore|0|10%",
+                      "width":256, "height":12,
+                      "zIndex":10000, "x":0, "y":110,
+                      "color":"#fff",
+                      "font":"spectrum", "lineHeight":12, "outline":"#000", "textAlign":"center"
+                    }
+                  },
+                  {
+                    "object":{
+                      "type":"hud",
+                      "hudType":"label", "label":"UNLOCK AT: %number|variable.nextShipAt|ALL UNLOCKED!|10%",
+                      "width":256, "height":12,
+                      "zIndex":10000, "x":0, "y":125,
+                      "color":"#f00",
+                      "font":"spectrum", "lineHeight":12, "outline":"#000", "textAlign":"center"
+                    }
+                  },
+                  { "playAudio":"damage" },
+                  {
+                    "when":{ "_":[ "this", "pointsToGo", "isLessThan", 100 ] },
+                    "execute":[ { "sum":{ "_":[ "this", "pointsToGo" ] }, "to":{ "_":[ "variable", "totalScore" ] } }, { "set":{ "pointsToGo":0 } } ],
+                    "elseExecute":[
+                      { "set":{ "slice":{ "_":[ "this", "pointsToGo", "/", 10, "floor" ] } } },
+                      { "subtract":{ "_":[ "this", "slice" ] }, "to":{ "_":[ "this", "pointsToGo" ] } },
+                      { "sum":{ "_":[ "this", "slice" ] }, "to":{ "_":[ "variable", "totalScore" ] } }
+                    ]
+                  },
+                  {
+                    "when":{ "_":[ "this", "unlockedShips", "isNotEqualTo", { "_":[ "variable", "unlockedShips" ] } ] },
+                    "execute":[
+                      { "playAudio":"bonus" },
+                      { "set":{ "unlockedShips":{ "_":[ "variable", "unlockedShips" ] } } },
+                      { "as":{ "_":[ "object", "unlockmessage" ] }, "remove":1 },
+                      {
+                        "object":[
+                          {
+                            "type":[ "hud", "unlockmessage" ],
+                            "set":{ "_":[ "stencil", "modelUnlockMessage" ] },
+                            "hudType":"label", "label":{ "_":[ "stencil", "dataShips", { "_":[ "variable", "unlockedShips", "-", 1 ] }, "name" ] },
+                            "width":256, "height":24,
+                            "zIndex":10000, "x":0, "y":137,
+                            "color":"#f00",
+                            "font":"spectrum", "fontSize":30, "lineHeight":24, "outline":"#fff", "textAlign":"center"
+                          },
+                          {
+                            "type":[ "hud", "unlockmessage" ],
+                            "set":{ "_":[ "stencil", "modelUnlockMessage" ] },
+                            "hudType":"label", "label":"UNLOCKED",
+                            "width":256, "height":12,
+                            "zIndex":10000, "x":0, "y":157,
+                            "color":"#f00",
+                            "font":"spectrum", "lineHeight":12, "outline":"#000", "textAlign":"center"
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  { "_":[ "stencil", "codeUpdateNextShip" ] },
+                  { "wait":1, "loopTo":-4, "until":{ "_":[ "this", "pointsToGo", "not" ] } },
+                  { "as":{ "_":"storage" }, "set":{ "totalScore":{ "_":[ "variable", "totalScore" ] } } }
+                ]
+              },
+              { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+              { "gotoScene":"selectship", "withChannel":"music" }
+            ]
+          }
+        }
+      ]
+    },
+    "selectship":{
+      "execute":[
+        { "stopChannel":"music" },
+        { "playAudio":"select" },
+        { "_":[ "stencil", "codeUpdateNextShip" ] },
+        {
+          "set":{
+            "counter":0,
+            "wheelCenterX":275,
+            "wheelCenterY":57,
+            "wheelPosition":0,
+            "wheelRadius":80,
+            "wheelSlice":{ "_":[ 6.28, "/", { "_":[ "variable", "unlockedShips" ] } ] }
+          }
+        },
+        { "set":{ "wheelDestination":{ "_":[ "variable", "currentShip", "*", { "_":[ "this", "wheelSlice" ] }, "*", -1 ] } } },
+        { "_":[ "stencil", "codeStars" ] },
+        {
+          "object":[
+            {
+              "type":"player",
+              "width":256, "height":30,
+              "zIndex":10, "x":0, "y":10,
+              "color":"#000",
+              "font":"spectrum", "fontSize":36, "lineHeight":30, "outline":"#fff", "textAlign":"center", "html":"CHOOSE YOUR SHIP",
+              "forceX":2, "forceY":2,
+              "anim":0,
+              "states":{
+                "code":{ "name":"Execute", "data":[ { "sum":0.1, "to":{ "_":[ "this", "anim" ] } }, { "set":{ "y":{ "_":[ "this", "anim", "sin", "*", 3, "+", 10 ] } } } ] }
+              }
+            },
+            {
+              "type":[ "hud", "shipname" ],
+              "hudType":"label", "label":"%text|scene.shipData.name%",
+              "width":180, "height":30,
+              "zIndex":10, "x":8, "y":40,
+              "color":"#f00",
+              "font":"spectrum", "fontSize":30, "lineHeight":30, "outline":"#fff"
+            },
+            {
+              "type":"hud",
+              "hudType":"label", "label":"HISCORE: %number|this.hiscore|0|10%",
+              "width":180, "height":12,
+              "zIndex":10, "x":8, "y":65,
+              "color":"#f00",
+              "font":"spectrum", "lineHeight":12, "outline":"#000",
+              "states":{ "code":{ "name":"Execute", "data":{ "set":{ "hiscore":{ "_":[ "variable", "hiscore", { "_":[ "variable", "currentShip" ] }, "or", 0 ] } } } } }
+            },
+            {
+              "type":"hud",
+              "hudType":"label", "label":"%text|scene.shipData.description%",
+              "width":180, "height":130,
+              "zIndex":10, "x":8, "y":80,
+              "color":"#fff",
+              "font":"spectrum", "lineHeight":12
+            },
+            {
+              "width":256, "height":12,
+              "zIndex":10, "x":0, "y":178,
+              "bgcolor":"#fff", "color":"#000",
+              "font":"spectrum", "lineHeight":12, "textAlign":"center", "html":"UP/DOWN: Change - A: Select"
+            }
+          ]
+        },
+        {
+          "times":{ "_":[ "variable", "unlockedShips" ] },
+          "execute":[
+            {
+              "object":{
+                "set":{ "_":[ "stencil", "modelWheelSlot" ] },
+                "frame":{ "_":[ "stencil", "dataShips", { "_":[ "that", "counter" ] }, "frame" ] },
+                "wheelPosition":{ "_":[ "that", "wheelSlice", "*", { "_":[ "that", "counter" ] } ] }
+              }
+            },
+            { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+          ]
+        }
+      ],
+      "states":[
+        {
+          "code":{
+            "name":"Execute",
+            "data":[
+              {
+                "when":{ "_":[ "keyDown", "isHit" ] },
+                "execute":[
+                  { "playAudio":"laser" },
+                  { "as":{ "_":"variable" }, "set":{ "currentShip":{ "_":[ "variable", "currentShip", "+", 1, "%", { "_":[ "variable", "unlockedShips" ] } ] } } },
+                  { "subtract":{ "_":[ "this", "wheelSlice" ] }, "to":{ "_":[ "this", "wheelDestination" ] } }
+                ],
+                "elseExecute":{
+                  "when":{ "_":[ "keyUp", "isHit" ] },
+                  "execute":[
+                    { "playAudio":"laser" },
+                    { "subtract":1, "to":{ "_":[ "variable", "currentShip" ] } },
+                    {
+                      "when":{ "_":[ "variable", "currentShip", "isLessThan", 0 ] },
+                      "as":{ "_":"variable" },
+                      "set":{ "currentShip":{ "_":[ "variable", "unlockedShips", "-", 1 ] } }
+                    },
+                    { "sum":{ "_":[ "this", "wheelSlice" ] }, "to":{ "_":[ "this", "wheelDestination" ] } }
+                  ],
+                  "elseExecute":{
+                    "when":{ "_":[ "keyA", "isHit" ] },
+                    "set":{ "playAudio":"bonus", "state":"selected" },
+                    "elseExecute":{ "when":{ "_":[ "keyB", "isHit" ] }, "gotoScene":"intro", "playAudio":"gameover", "withChannel":"music" }
+                  }
+                }
+              },
+              { "set":{ "shipData":{ "_":[ "stencil", "dataShips", { "_":[ "variable", "currentShip" ] } ] } } },
+              { "_":[ "stencil", "codeMoveWheel" ] }
+            ]
+          }
+        },
+        {
+          "name":"selected",
+          "code":[
+            {
+              "name":"Execute",
+              "data":[ { "as":{ "_":[ "object", "shipname" ] }, "set":{ "visible":{ "_":[ "this", "visible", "not" ] } } }, { "_":[ "stencil", "codeMoveWheel" ] } ]
+            },
+            { "name":"Sequence", "data":[ { "wait":25 }, { "gotoScene":"game", "withChannel":"music" } ] }
+          ]
+        }
+      ]
+    }
+  }
+}
