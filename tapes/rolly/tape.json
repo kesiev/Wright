@@ -93,7 +93,10 @@
         },
         {
           "name":"gameover",
-          "execute":{ "as":{ "_":"storage" }, "set":{ "hiscore":{ "_":[ "variable", "hiscore" ] } } },
+          "execute":[
+            { "as":{ "_":"storage" }, "set":{ "hiscore":{ "_":[ "variable", "hiscore" ] } } },
+            { "publishScore":{ "_":[ "variable", "score" ] } }
+          ],
           "code":{
             "name":"Sequence",
             "data":[

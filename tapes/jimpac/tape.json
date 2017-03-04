@@ -349,9 +349,12 @@
       }
     },
     "gameover":{
-      "execute":{
-        "object":{ "box":"label", "width":256, "height":192, "zIndex":10, "x":0, "y":0, "font":"spectrum", "lineHeight":192, "textAlign":"center", "html":"GAME OVER" }
-      },
+      "execute":[
+        { "publishScore":{ "_":[ "variable", "score" ] } },
+        {
+          "object":{ "box":"label", "width":256, "height":192, "zIndex":10, "x":0, "y":0, "font":"spectrum", "lineHeight":192, "textAlign":"center", "html":"GAME OVER" }
+        }
+      ],
       "states":{
         "code":{
           "name":"Sequence",

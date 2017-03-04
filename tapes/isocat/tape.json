@@ -598,25 +598,28 @@
       }
     },
     "gameover":{
-      "execute":{
-        "object":[
-          {
-            "type":"message",
-            "width":256, "height":30,
-            "x":0, "y":71,
-            "font":"spectrum", "fontSize":60, "lineHeight":30, "textAlign":"center", "html":"GAME OVER",
-            "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "color":"#fff" }, "wait":2 }, { "set":{ "color":"#ccc" }, "wait":2, "loopTo":0 } ] } }
-          },
-          { "type":"score", "width":256, "height":10, "x":0, "y":162, "font":"spectrum", "lineHeight":10, "textAlign":"center", "html":"FINAL SCORE" },
-          {
-            "type":"hud",
-            "hudType":"label", "label":"%number|variable.score|0|8%",
-            "width":256, "height":10,
-            "x":0, "y":174,
-            "font":"spectrum", "lineHeight":12, "textAlign":"center"
-          }
-        ]
-      },
+      "execute":[
+        { "publishScore":{ "_":[ "variable", "score" ] } },
+        {
+          "object":[
+            {
+              "type":"message",
+              "width":256, "height":30,
+              "x":0, "y":71,
+              "font":"spectrum", "fontSize":60, "lineHeight":30, "textAlign":"center", "html":"GAME OVER",
+              "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "color":"#fff" }, "wait":2 }, { "set":{ "color":"#ccc" }, "wait":2, "loopTo":0 } ] } }
+            },
+            { "type":"score", "width":256, "height":10, "x":0, "y":162, "font":"spectrum", "lineHeight":10, "textAlign":"center", "html":"FINAL SCORE" },
+            {
+              "type":"hud",
+              "hudType":"label", "label":"%number|variable.score|0|8%",
+              "width":256, "height":10,
+              "x":0, "y":174,
+              "font":"spectrum", "lineHeight":12, "textAlign":"center"
+            }
+          ]
+        }
+      ],
       "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"intro" } } }
     }
   }

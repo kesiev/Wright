@@ -1622,6 +1622,7 @@
         "color":"#fcfcfc",
         "font":"gameboy", "fontSize":8, "lineHeight":10, "textAlign":"center", "html":"GAME OVER"
       },
+      "execute": { "publishScore":{ "_":[ "variable", "score" ] } },
       "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"intro", "withTransition":3 } } }
     },
     "nextscene":{
@@ -1660,24 +1661,27 @@
         },
         {
           "name":"ending",
-          "execute":{
-            "object":[
-              {
-                "type":"scroller",
-                "width":240, "height":240,
-                "x":8, "y":240,
-                "color":{ "_":[ "variable", "currentScene", "endingColor" ] },
-                "font":"gameboy", "fontSize":8, "lineHeight":10, "textAlign":"center", "html":{ "_":[ "variable", "currentScene", "ending" ] }
-              },
-              {
-                "type":"scroller",
-                "width":240, "height":1240,
-                "x":8, "y":480,
-                "color":{ "_":[ "variable", "currentScene", "creditsColor" ] },
-                "font":"gameboy", "fontSize":8, "lineHeight":10, "textAlign":"center", "html":"TIE-IN MACHINE<br>2017<br>A tribute to slightly forced<br>tie-in videogames from 80s and 90s.<br><br><br>Graphics by:<br>KesieV Norimaki<br><br><br>Story by:<br>KesieV Norimaki<br><br><br>Code by:<br>KesieV Norimaki<br><br><br>Big thanks to:<br>Roberto Garrito<br>Giuseppe Marchese<br>Il Marsicano<br>Bianca<br>Stefano \"Il Kusagari\" Fioretto<br>Romolo Camplani<br>All Akihabara age friends<br><br><br><br><br><br><br><br><br><br>\"This game... is like a movie!\"<br><br>me, playing Resident Evil in 1996"
-              }
-            ]
-          },
+          "execute":[
+            { "publishScore":{ "_":[ "variable", "score" ] } },
+            {
+              "object":[
+                {
+                  "type":"scroller",
+                  "width":240, "height":240,
+                  "x":8, "y":240,
+                  "color":{ "_":[ "variable", "currentScene", "endingColor" ] },
+                  "font":"gameboy", "fontSize":8, "lineHeight":10, "textAlign":"center", "html":{ "_":[ "variable", "currentScene", "ending" ] }
+                },
+                {
+                  "type":"scroller",
+                  "width":240, "height":1240,
+                  "x":8, "y":480,
+                  "color":{ "_":[ "variable", "currentScene", "creditsColor" ] },
+                  "font":"gameboy", "fontSize":8, "lineHeight":10, "textAlign":"center", "html":"TIE-IN MACHINE<br>2017<br>A tribute to slightly forced<br>tie-in videogames from 80s and 90s.<br><br><br>Graphics by:<br>KesieV Norimaki<br><br><br>Story by:<br>KesieV Norimaki<br><br><br>Code by:<br>KesieV Norimaki<br><br><br>Big thanks to:<br>Roberto Garrito<br>Giuseppe Marchese<br>Il Marsicano<br>Bianca<br>Stefano \"Il Kusagari\" Fioretto<br>Romolo Camplani<br>All Akihabara age friends<br><br><br><br><br><br><br><br><br><br>\"This game... is like a movie!\"<br><br>me, playing Resident Evil in 1996"
+                }
+              ]
+            }
+          ],
           "code":{
             "name":"Sequence",
             "data":[

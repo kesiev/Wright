@@ -892,43 +892,46 @@
         },
         {
           "name":"endmatch",
-          "execute":{
-            "when":{ "_":[ "variable", "cpuScore", "isGreaterThan", { "_":[ "variable", "playerScore" ] } ] },
-            "execute":[
-              { "as":{ "_":[ "object", "people" ] }, "set":{ "animation":"happy" } },
-              { "as":{ "_":[ "objectTyped", "ball" ] }, "set":{ "forceX":0, "forceY":0, "ownedBy":0 } },
-              { "as":{ "_":[ "object", "cpuTeam" ] }, "set":{ "state":"winner" } },
-              { "as":{ "_":[ "object", "playerTeam" ] }, "set":{ "state":"loser" } },
-              { "as":{ "_":[ "objectTyped", "cameraMan" ] }, "set":{ "state":"bounce" } },
-              {
-                "object":{
-                  "type":"message",
-                  "box":"label", "width":256, "height":50,
-                  "x":0, "y":71,
-                  "font":"spectrum", "fontSize":60, "lineHeight":50, "outline":"#000000", "textAlign":"center", "html":"YOU LOSE",
-                  "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "color":"#00f" } }, { "wait":2 }, { "set":{ "color":"#fff" } }, { "wait":2 }, { "loopTo":0 } ] } }
-                },
-                "into":{ "_":"scenehud" }
-              }
-            ],
-            "elseExecute":[
-              { "as":{ "_":[ "object", "people" ] }, "set":{ "animation":"happy" } },
-              { "as":{ "_":[ "objectTyped", "ball" ] }, "set":{ "forceX":0, "forceY":0, "ownedBy":0 } },
-              { "as":{ "_":[ "object", "playerTeam" ] }, "set":{ "state":"winner" } },
-              { "as":{ "_":[ "object", "cpuTeam" ] }, "set":{ "state":"loser" } },
-              { "as":{ "_":[ "objectTyped", "cameraMan" ] }, "set":{ "state":"bounce" } },
-              {
-                "object":{
-                  "type":"message",
-                  "box":"label", "width":256, "height":50,
-                  "x":0, "y":71,
-                  "font":"spectrum", "fontSize":60, "lineHeight":50, "outline":"#000000", "textAlign":"center", "html":"YOU WIN!",
-                  "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "color":"#f00" } }, { "wait":2 }, { "set":{ "color":"#fff" } }, { "wait":2 }, { "loopTo":0 } ] } }
-                },
-                "into":{ "_":"scenehud" }
-              }
-            ]
-          },
+          "execute":[
+            {"execute":{ "publishScore":{ "_":[ "variable", "playerScore" ] } } },
+            {
+              "when":{ "_":[ "variable", "cpuScore", "isGreaterThan", { "_":[ "variable", "playerScore" ] } ] },
+              "execute":[
+                { "as":{ "_":[ "object", "people" ] }, "set":{ "animation":"happy" } },
+                { "as":{ "_":[ "objectTyped", "ball" ] }, "set":{ "forceX":0, "forceY":0, "ownedBy":0 } },
+                { "as":{ "_":[ "object", "cpuTeam" ] }, "set":{ "state":"winner" } },
+                { "as":{ "_":[ "object", "playerTeam" ] }, "set":{ "state":"loser" } },
+                { "as":{ "_":[ "objectTyped", "cameraMan" ] }, "set":{ "state":"bounce" } },
+                {
+                  "object":{
+                    "type":"message",
+                    "box":"label", "width":256, "height":50,
+                    "x":0, "y":71,
+                    "font":"spectrum", "fontSize":60, "lineHeight":50, "outline":"#000000", "textAlign":"center", "html":"YOU LOSE",
+                    "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "color":"#00f" } }, { "wait":2 }, { "set":{ "color":"#fff" } }, { "wait":2 }, { "loopTo":0 } ] } }
+                  },
+                  "into":{ "_":"scenehud" }
+                }
+              ],
+              "elseExecute":[
+                { "as":{ "_":[ "object", "people" ] }, "set":{ "animation":"happy" } },
+                { "as":{ "_":[ "objectTyped", "ball" ] }, "set":{ "forceX":0, "forceY":0, "ownedBy":0 } },
+                { "as":{ "_":[ "object", "playerTeam" ] }, "set":{ "state":"winner" } },
+                { "as":{ "_":[ "object", "cpuTeam" ] }, "set":{ "state":"loser" } },
+                { "as":{ "_":[ "objectTyped", "cameraMan" ] }, "set":{ "state":"bounce" } },
+                {
+                  "object":{
+                    "type":"message",
+                    "box":"label", "width":256, "height":50,
+                    "x":0, "y":71,
+                    "font":"spectrum", "fontSize":60, "lineHeight":50, "outline":"#000000", "textAlign":"center", "html":"YOU WIN!",
+                    "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "color":"#f00" } }, { "wait":2 }, { "set":{ "color":"#fff" } }, { "wait":2 }, { "loopTo":0 } ] } }
+                  },
+                  "into":{ "_":"scenehud" }
+                }
+              ]
+            }
+          ],
           "code":{ "name":"Sequence", "data":[ { "wait":200 }, { "gotoScene":"intro" } ] }
         }
       ]

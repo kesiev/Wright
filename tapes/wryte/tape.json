@@ -181,7 +181,10 @@
         },
         {
           "name":"killed",
-          "execute":{ "as":{ "_":[ "object", "anyController" ] }, "remove":1, "playAudio":"explode2", "stopChannel":"music" },
+          "execute":[
+            { "as":{ "_":[ "object", "anyController" ] }, "remove":1, "playAudio":"explode2", "stopChannel":"music" },
+            { "publishScore":{ "_":[ "variable", "score" ] } }
+          ],
           "code":{
             "name":"Sequence",
             "data":[
@@ -206,7 +209,8 @@
           "execute":[
             { "as":{ "_":[ "object", "player" ] }, "set":{ "state":"win" } },
             { "as":{ "_":[ "object", "kills" ] }, "execute":{ "_":[ "stencil", "removeWithExplosion" ] } },
-            { "sum":2000, "to":{ "_":[ "variable", "score" ] } }
+            { "sum":2000, "to":{ "_":[ "variable", "score" ] } },
+            { "publishScore":{ "_":[ "variable", "score" ] } }
           ],
           "code":{
             "name":"Sequence",

@@ -2245,6 +2245,7 @@
             "actions":{
               "name":"bump",
               "execute":[
+                { "publishScore": {"_":["scene","score"] } },
                 {
                   "object":{
                     "box":"label", "width":208, "height":30,
@@ -2298,7 +2299,7 @@
         "states":[
           {
             "code":{ "name":"Execute", "data":{ "set":{ "angle":{ "_":[ "this", "angle", "+", 5, "%", 360 ] } } } },
-            "actions":{ "name":"pick", "execute":[ { "as":{ "_":[ "objectTyped", "player" ] }, "set":{ "state":"idle" } }, { "set":{ "state":"launch" } } ] }
+            "actions":{ "name":"pick", "execute":[ {"publishScore":{"_":["scene","score"]}},{ "as":{ "_":[ "objectTyped", "player" ] }, "set":{ "state":"idle" } }, { "set":{ "state":"launch" } } ] }
           },
           {
             "name":"launch",

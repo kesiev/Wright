@@ -1035,11 +1035,17 @@
         "execute":{
           "when":{ "_":[ "cheat", "unlimitedlives", "or", { "_":[ "cheat", "invulnerablebase" ] }, "or", { "_":[ "cheat", "level3tank" ] }, "not" ] },
           "execute":{
-            "when":{ "_":[ "variable", "campaign", "and", { "_":[ "variable", "score", "isGreaterThan", { "_":[ "variable", "highscore" ] } ] } ] },
+            "when":{ "_":[ "variable", "campaign" ] },
             "execute":[
-              { "as":{ "_":[ "object", "score" ] }, "set":{ "state":"highscore" } },
-              { "as":{ "_":"variable" }, "set":{ "highscore":{ "_":[ "variable", "score" ] } } },
-              { "as":{ "_":"storage" }, "set":{ "highscore":{ "_":[ "variable", "score" ] } } }
+              { "publishScore":{ "_":[ "variable", "score" ] } },
+              {
+                "when":{ "_":[ "variable", "score", "isGreaterThan", { "_":[ "variable", "highscore" ] } ] },
+                "execute":[
+                  { "as":{ "_":[ "object", "score" ] }, "set":{ "state":"highscore" } },
+                  { "as":{ "_":"variable" }, "set":{ "highscore":{ "_":[ "variable", "score" ] } } },
+                  { "as":{ "_":"storage" }, "set":{ "highscore":{ "_":[ "variable", "score" ] } } }
+                ]
+              }
             ]
           }
         },

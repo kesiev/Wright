@@ -160,6 +160,7 @@
         {
           "name":"gameover",
           "execute":[
+            { "publishScore":{ "_":[ "variable", "score" ] } },
             { "as":{ "_":[ "object", "sceneObject" ] }, "remove":1 },
             {
               "object":[
@@ -194,6 +195,7 @@
           "execute":[
             { "sum":{ "_":[ "variable", "lives", "*", 200 ] }, "to":{ "_":[ "variable", "score" ] } },
             { "_":[ "stencil", "codeHighscoreUpdate" ] },
+            { "publishScore":{ "_":[ "variable", "score" ] } },
             { "as":{ "_":[ "object", "sceneObject" ] }, "remove":1 },
             {
               "set":{

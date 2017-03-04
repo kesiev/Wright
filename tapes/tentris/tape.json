@@ -538,21 +538,24 @@
         },
         {
           "name":"gameover",
-          "execute":{
-            "object":{
-              "type":"label",
-              "box":"label", "width":160, "height":160,
-              "zIndex":3000, "x":16, "y":16,
-              "color":"#fff",
-              "font":"spectrum", "fontSize":40, "lineHeight":160, "outline":"#00f", "textAlign":"center", "html":"GAME OVER",
-              "states":{
-                "code":{
-                  "name":"Sequence",
-                  "data":[ { "sum":1, "to":{ "_":[ "this", "x" ] } }, { "wait":1 }, { "subtract":1, "to":{ "_":[ "this", "x" ] } }, { "wait":1, "loopTo":-3 } ]
+          "execute":[
+            { "publishScore":{ "_":[ "variable", "score" ] } },
+            {
+              "object":{
+                "type":"label",
+                "box":"label", "width":160, "height":160,
+                "zIndex":3000, "x":16, "y":16,
+                "color":"#fff",
+                "font":"spectrum", "fontSize":40, "lineHeight":160, "outline":"#00f", "textAlign":"center", "html":"GAME OVER",
+                "states":{
+                  "code":{
+                    "name":"Sequence",
+                    "data":[ { "sum":1, "to":{ "_":[ "this", "x" ] } }, { "wait":1 }, { "subtract":1, "to":{ "_":[ "this", "x" ] } }, { "wait":1, "loopTo":-3 } ]
+                  }
                 }
               }
             }
-          },
+          ],
           "code":{
             "name":"Sequence",
             "data":[
