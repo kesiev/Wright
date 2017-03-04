@@ -459,6 +459,9 @@ function WrightTools() {
 		"playAudio","withEffect","withChannel","withLooping", // Audio playback (set/execution)
 		"stopAudio","stopChannel","applyEffect","toChannel", // Audio directives (execution)
 
+		// Score publishing
+		"publishScore",
+
 		// --- BODY
 
 		0,
@@ -1390,13 +1393,24 @@ function makeRpgProgression(a) {
         localStorage[a]=JSON.stringify(data[a]);
 	}
 
+	function findKeys(data,keys) {
+		for (var a in data) {
+			if (keys[a]!==undefined) keys[a]++;
+			if (data[a] instanceof Object) findKeys(data[a],keys);
+		}
+		return keys;
+	}
+
 	// PUBLIC INTERFACE
 
 	this.ajax=ajax;
 	this.output="";
 	this.tidy=function(text) {
+		var obj=jsonparse(text);
 		this.logs=logs={error:[],warn:[],info:[]};
-		this.output=runtidy(jsonparse(text));
+		this.output=runtidy(obj);
+		var keys=findKeys(obj,{publishScore:0});
+		if (!keys.publishScore) this.logs.warn.push("This game doesn't use publishScore. Highscores won't be published on hiscore tables.")
 		var differences=[];
 		if (!objectEquals(processing,jsonparse(this.output),"<root>",differences)) {
 			logLine("error","Tidy error. Objects are not the equal.");
