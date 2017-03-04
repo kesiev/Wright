@@ -1,0 +1,41 @@
+<html>
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Wright! Telegram</title>
+	<link rel="stylesheet" href="../../fonts/stylesheet.css" type="text/css" charset="utf-8" />
+	<meta name="viewport" id="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<script type="text/javascript" src="../../js/wright.js?a=1"></script>
+</head>
+<body onload="onl()" style="background-color:#000">
+	<div id="game" style="margin:auto"></div>
+</body>
+<script>
+
+function onl() {
+	var game=Supports.getUrlParameter("game");
+	window._hiscore=0;
+	Supports.nativeFullscreen=0;
+	Supports.isLocalStorage=0; // No local storage allowed on Telegram games.
+	if (game)
+		runSingleWright(game,
+			{
+				tapesRoot:'../../tapes/',
+				systemRoot:'../../system/',
+				gameContainer:document.getElementById('game'),
+				scale:1,
+				onReady:function() {
+					window._WRIGHT.getGame().node.gotoFullScreen();
+				},
+				onPublishScore:function(score) {
+					if (score>window._hiscore) {
+						// Send only local highscores
+						window._hiscore=score;
+						Supports.callUrl("POST","bot.php",{postData:{score:score},header:{"SCOREDATA":Supports.getUrlParameter("scoredata")}});
+					}
+				}
+			}
+		);
+}
+
+</script>
+</html>
