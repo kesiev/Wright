@@ -1,0 +1,24 @@
+<html>
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Wright! Chromecast Receiver</title>
+	<link rel="stylesheet" href="../fonts/stylesheet.css" type="text/css" charset="utf-8" />
+	<meta name="viewport" id="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<script type="text/javascript" src="../js/wright.js?a=1"></script>
+</head>
+<body onload="onl()" style="background-color:#000">
+	<div id="receiverBody" style="margin:auto"></div>
+</body>
+<script>
+function onl() {
+	var controller=new Controllers(Controllers.methods.Chromecast,{
+		tapesRoot:'../tapes/',
+		systemRoot:'../system',
+		node:document.getElementById('receiverBody'),
+		ChromecastApplicationID:"60B7E7EC",
+		ChromecastNamespace:"urn:x-cast:com.kesiev.wright"
+	});	
+	controller.initializeReceiver();
+}
+</script>
+</html>
