@@ -1,0 +1,821 @@
+{
+  "name":"Gamatochi",
+  "author":"KesieV",
+  "year":2017,
+  "genre":"Life Simulator",
+  "description":"<p>It's impossible to talk about electronic entertainment in 90s without citing the (in)famous <a href='https://en.wikipedia.org/wiki/Tamagotchi'>Tamagochis</a> (1997). These little <i>egg-shaped watches</i> (Tamagochi is, in fact, a mix of the <i>tamago</i> Japanese word for 'egg' and the english word 'watch') were tiny LCD portable devices in which the player had to feed, heal and play with an adorable virtual life form at any hour of the day, in order to make it grow, evolve and - well - die as late as possible.</p><p>These little time-wasters truly conquered the world, spreading everywhere around the globe and charming people of every age, generating a huge amount of merchandising, derived products like movies and anime, numberless bootleg clones and, like in every huge social phenomenas, pop music songs, weird scandals and exaggerated bans.</p><p>20 years after its appearance, the concept still lives nowadays in less successful clones for mobile devices, as minigames in larger retail videogames or - with more efficacy - in much more evolved <i>life simulators</i> like the still million seller <a href='https://en.wikipedia.org/wiki/Animal_Crossing'>Animal Crossing</a> (2001) by Nintendo.</p><p>My sisters had a number of them - luckily not at the same time - and I measured the devastating effects of these little devices in daily life. Sometime you're so busy that you've to leave your little pet to your friends for a while, in order to keep an eye on it. Well, that happened with these virtual pets tool: every single family member had to understand the meaning of its sounds and reactions in order to give it food when hungry, clean it up when dirty or play with him when he bored. Or when you were bored, of course.<p><p>Isn't incredible that these raw implementations of living pets generated the same effect of true pets on humans? Is empathy so easy to manifest for humans that the <i>living aspect</i> is totally secondary? And, if that is true, when it becomes unreadable, unpredictable and - above all - less expected between other humans?</p><p>Plot!</p><p>Do you know that Starcats comes from eggs? Have you ever wanted to raise your own Starcat, feed and love him like a true pet? Now you can! Watch his egg hatching into your Gamatochi, give him love and see it growing, evolving, changing and... Stop spoilers! How your Starcat will be?</p><p>Use LEFT/RIGHT for selecting a function on the bottom of the display and hit the A BUTTON for confirming. You can hold down the B BUTTON for 5 seconds for hatching a new egg... but why? Remember that your Starcat still lives when you're not watching him, so come back often!</p>",
+  "screenshots":[ "gamatochi-1.png", "gamatochi-2.png" ],
+  "hardware":{
+    "width":320,
+    "height":400
+  },
+  "cheats":{
+    "showStats":"Show internal stats... spoiling the fun. :("
+    },
+  "resources":{
+    "body":"body.png",
+    "sprites":"sprites.png"
+  },
+  "stencils":{
+    "codeFixStats":[  
+      { "set":{ "counter":0 } },
+      {
+        "times":{ "_":[ "scene", "phaseData", "speeds", "count" ] },
+        "execute":[
+          {
+            "when":{ "_":[ "scene", "life", "stats", { "_":[ "this", "counter" ] }, "isLessThan", 0 ] },
+            "assign":0,
+            "to":{ "_":[ "scene", "life", "stats", { "_":[ "this", "counter" ] } ] }
+          },
+          { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+        ]
+      }
+    ],
+    "codeSetPhase":[
+      {
+        "as":{ "_":[ "scene", "life" ] },
+        "set":{
+          "dead":0,
+          "evolve":0,
+          "lastTime":{ "_":[ "date", "allSeconds" ] },
+          "over":{ "_":[ "new", [ 0, 0, 0, 0 ] ] },
+          "stats":{ "_":[ "new", [ 0, 0, 0, 0 ] ] },
+          "timers":{ "_":[ "new", [ 0, 0, 0, 0 ] ] },
+          "yearlife":0
+        }
+      },
+      { "as":{ "_":"scene" }, "set":{ "phaseData":{ "_":[ "stencil", "dataPhases", { "_":[ "scene", "life", "phase" ] } ] } } }
+    ],
+    "codeUpdateTimers":{
+      "when":{ "_":[ "scene", "life", "dead", "not" ] },
+      "execute":[
+        { "set":{ "counter":0, "currentTime":{ "_":[ "date", "allSeconds" ] }, "deadCounter":0 } },
+        { "set":{ "pastTime":{ "_":[ "this", "currentTime", "-", { "_":[ "scene", "life", "lastTime" ] } ] } } },
+        {
+          "when":{ "_":[ "this", "pastTime", "isGreaterThan", 0 ] },
+          "execute":[
+            { "as":{ "_":[ "scene", "life" ] }, "set":{ "lastTime":{ "_":[ "scene", "currentTime" ] } } },
+            { "subtract":{ "_":[ "this", "pastTime" ] }, "to":{ "_":[ "scene", "life", "hatch" ] } },
+            {
+              "when":{ "_":[ "scene", "life", "hatch", "isLessThan", 0 ] },
+              "execute":[
+                { "set":{ "pastTime":{ "_":[ "scene", "life", "hatch", "*", -1 ] } } },
+                { "assign":0, "to":{ "_":[ "scene", "life", "hatch" ] } },
+                { "sum":{ "_":[ "this", "pastTime" ] }, "to":{ "_":[ "scene", "life", "yearlife" ] } },
+                {
+                  "when":{ "_":[ "scene", "life", "yearlife", "isGreaterThan", { "_":[ "scene", "phaseData", "evolveAfter" ] } ] },
+                  "execute":[
+                    { "set":{ "as":{ "_":[ "scene", "life" ] }, "yearlife":{ "_":[ "scene", "phaseData", "evolveAfter" ] } } },
+                    {
+                      "when":{ "_":[ "scene", "phaseData", "evolveTo" ] },
+                      "as":{ "_":[ "scene", "life" ] },
+                      "set":{ "evolve":1 },
+                      "elseExecute":{ "as":{ "_":[ "scene", "life" ] }, "set":{ "dead":1 } }
+                    },
+                    { "set":{ "pastTime":0 } }
+                  ]
+                }
+              ],
+              "elseExecute":{ "set":{ "pastTime":0 } }
+            },
+            {
+              "times":{ "_":[ "scene", "phaseData", "speeds", "count" ] },
+              "when":{ "_":[ "this", "pastTime", "isGreaterThan", 0 ] },
+              "execute":[
+                { "sum":{ "_":[ "this", "pastTime" ] }, "to":{ "_":[ "scene", "life", "timers", { "_":[ "this", "counter" ] } ] } },
+                {
+                  "sum":{
+                    "_":[ "scene", "life", "timers", { "_":[ "this", "counter" ] }, "/", { "_":[ "scene", "phaseData", "speeds", { "_":[ "this", "counter" ] } ] }, "floor" ]
+                  },
+                  "to":{ "_":[ "scene", "life", "stats", { "_":[ "this", "counter" ] } ] }
+                },
+                {
+                  "assign":{ "_":[ "scene", "life", "timers", { "_":[ "this", "counter" ] }, "%", { "_":[ "scene", "phaseData", "speeds", { "_":[ "this", "counter" ] } ] } ] },
+                  "to":{ "_":[ "scene", "life", "timers", { "_":[ "this", "counter" ] } ] }
+                },
+                {
+                  "when":{ "_":[ "scene", "life", "stats", { "_":[ "this", "counter" ] }, "isGreaterThan", 10 ] },
+                  "execute":[
+                    {
+                      "sum":{ "_":[ "scene", "life", "stats", { "_":[ "this", "counter" ] }, "-", 10 ] },
+                      "to":{ "_":[ "scene", "life", "over", { "_":[ "this", "counter" ] } ] }
+                    },
+                    {
+                      "when":{ "_":[ "scene", "life", "over", { "_":[ "this", "counter" ] }, "isGreaterThan", 10 ] },
+                      "assign":10,
+                      "to":{ "_":[ "scene", "life", "over", { "_":[ "this", "counter" ] } ] }
+                    },
+                    { "assign":10, "to":{ "_":[ "scene", "life", "stats", { "_":[ "this", "counter" ] } ] } }
+                  ]
+                },
+                { "when":{ "_":[ "scene", "life", "over", { "_":[ "this", "counter" ] }, "isEqualTo", 10 ] }, "sum":1, "to":{ "_":[ "this", "deadCounter" ] } },
+                { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+              ]
+            },
+            { "when":{ "_":[ "this", "deadCounter", "isGreaterEqualThan", 2 ] }, "assign":1, "to":{ "_":[ "scene", "life", "dead" ] } }
+          ]
+        }
+      ]
+    },
+    "dataPhases":{
+      "ballcat":{
+        "boredAnimation":{ "flip":[ 0, 0 ], "frame1x":80, "frame1y":968, "frame2x":80, "frame2y":968, "rangeX":[ 0, 0 ], "rangeY":[ -1, 0 ] },
+        "dislikeFood":2,
+        "evolveAfter":432000,
+        "hungryAnimation":{ "flip":[ 0, 1 ], "frame1x":0, "frame1y":968, "frame2x":0, "frame2y":968, "rangeX":[ -1, 1 ], "rangeY":[ -1, 0 ] },
+        "idleAnimation":{ "flip":[ 0, 1 ], "frame1x":0, "frame1y":924, "frame2x":80, "frame2y":924, "rangeX":[ -3, 3 ], "rangeY":[ -1, 1 ] },
+        "likeFood":3,
+        "notifyThreshold":[ 7, 5, 7, 7 ],
+        "speeds":[ 3000, 2769, 3963, 39272 ]
+      },
+      "bigcat":{
+        "boredAnimation":{ "flip":[ 0, 0 ], "frame1x":80, "frame1y":1320, "frame2x":80, "frame2y":1320, "rangeX":[ 0, 0 ], "rangeY":[ -1, 0 ] },
+        "dislikeFood":2,
+        "evolveAfter":432000,
+        "hungryAnimation":{ "flip":[ 0, 1 ], "frame1x":0, "frame1y":1320, "frame2x":0, "frame2y":1320, "rangeX":[ -1, 1 ], "rangeY":[ -1, 0 ] },
+        "idleAnimation":{ "flip":[ 0, 1 ], "frame1x":0, "frame1y":1276, "frame2x":80, "frame2y":1276, "rangeX":[ -3, 3 ], "rangeY":[ -1, 1 ] },
+        "likeFood":3,
+        "notifyThreshold":[ 7, 7, 7, 7 ],
+        "speeds":[ 3963, 3000, 5837, 39272 ]
+      },
+      "doccat":{
+        "boredAnimation":{ "flip":[ 0, 0 ], "frame1x":80, "frame1y":1408, "frame2x":80, "frame2y":1408, "rangeX":[ 0, 0 ], "rangeY":[ -1, 0 ] },
+        "dislikeFood":2,
+        "evolveAfter":432000,
+        "hungryAnimation":{ "flip":[ 0, 1 ], "frame1x":0, "frame1y":1408, "frame2x":0, "frame2y":1408, "rangeX":[ -1, 1 ], "rangeY":[ -1, 0 ] },
+        "idleAnimation":{ "flip":[ 0, 1 ], "frame1x":0, "frame1y":1364, "frame2x":80, "frame2y":1364, "rangeX":[ -3, 3 ], "rangeY":[ -1, 1 ] },
+        "likeFood":3,
+        "notifyThreshold":[ 7, 7, 7, 7 ],
+        "speeds":[ 3963, 3000, 5837, 39272 ]
+      },
+      "emocat":{
+        "boredAnimation":{ "flip":[ 0, 0 ], "frame1x":80, "frame1y":1056, "frame2x":80, "frame2y":1056, "rangeX":[ 0, 0 ], "rangeY":[ -1, 0 ] },
+        "dislikeFood":3,
+        "evolveAfter":432000,
+        "hungryAnimation":{ "flip":[ 0, 1 ], "frame1x":0, "frame1y":1056, "frame2x":0, "frame2y":1056, "rangeX":[ -1, 1 ], "rangeY":[ -1, 0 ] },
+        "idleAnimation":{ "flip":[ 0, 1 ], "frame1x":0, "frame1y":1012, "frame2x":80, "frame2y":1012, "rangeX":[ -3, 3 ], "rangeY":[ -1, 1 ] },
+        "likeFood":0,
+        "notifyThreshold":[ 8, 5, 7, 5 ],
+        "speeds":[ 5204, 5333, 11076, 27000 ]
+      },
+      "fatty":{
+        "boredAnimation":{ "flip":[ 0, 0 ], "frame1x":80, "frame1y":616, "frame2x":80, "frame2y":616, "rangeX":[ 0, 0 ], "rangeY":[ -1, 0 ] },
+        "dislikeFood":2,
+        "evolveAfter":28800,
+        "evolveTo":[ "starcat", "dead", "bigcat", "ballcat" ],
+        "hungryAnimation":{ "flip":[ 0, 1 ], "frame1x":0, "frame1y":616, "frame2x":0, "frame2y":616, "rangeX":[ -1, 1 ], "rangeY":[ -1, 0 ] },
+        "idleAnimation":{ "flip":[ 0, 1 ], "frame1x":0, "frame1y":572, "frame2x":80, "frame2y":572, "rangeX":[ -3, 3 ], "rangeY":[ -1, 1 ] },
+        "likeFood":3,
+        "notifyThreshold":[ 7, 5, 5, 7 ],
+        "speeds":[ 900, 1371, 1371, 1600 ]
+      },
+      "longcat":{
+        "boredAnimation":{ "flip":[ 0, 0 ], "frame1x":80, "frame1y":1232, "frame2x":80, "frame2y":1232, "rangeX":[ 0, 0 ], "rangeY":[ -1, 0 ] },
+        "dislikeFood":2,
+        "evolveAfter":432000,
+        "hungryAnimation":{ "flip":[ 0, 1 ], "frame1x":0, "frame1y":1232, "frame2x":0, "frame2y":1232, "rangeX":[ -1, 1 ], "rangeY":[ -1, 0 ] },
+        "idleAnimation":{ "flip":[ 0, 1 ], "frame1x":0, "frame1y":1188, "frame2x":80, "frame2y":1188, "rangeX":[ -3, 3 ], "rangeY":[ -1, 1 ] },
+        "likeFood":3,
+        "notifyThreshold":[ 7, 7, 7, 7 ],
+        "speeds":[ 3963, 3000, 5837, 39272 ]
+      },
+      "main":{
+        "boredAnimation":{ "flip":[ 0, 0 ], "frame1x":80, "frame1y":440, "frame2x":80, "frame2y":440, "rangeX":[ 0, 0 ], "rangeY":[ -1, 0 ] },
+        "dislikeFood":2,
+        "eggAnimation":{ "flip":[ 0 ], "frame1x":0, "frame1y":220, "frame2x":80, "frame2y":220, "rangeX":[ 0, 0 ], "rangeY":[ 0, 0 ] },
+        "evolveAfter":180,
+        "evolveTo":[ "thinny", "fatty", "sicky", "norman" ],
+        "hatchAnimation":{ "flip":[ 0 ], "frame1x":0, "frame1y":264, "frame2x":0, "frame2y":264, "rangeX":[ 0, 0 ], "rangeY":[ 0, 0 ] },
+        "hungryAnimation":{ "flip":[ 0, 1 ], "frame1x":0, "frame1y":440, "frame2x":0, "frame2y":440, "rangeX":[ -1, 1 ], "rangeY":[ -1, 0 ] },
+        "idleAnimation":{ "flip":[ 0, 1 ], "frame1x":0, "frame1y":396, "frame2x":80, "frame2y":396, "rangeX":[ -3, 3 ], "rangeY":[ -1, 1 ] },
+        "likeFood":1,
+        "notifyThreshold":[ 7, 7, 7, 7 ],
+        "speeds":[ 5, 7, 10, 16 ]
+      },
+      "norman":{
+        "boredAnimation":{ "flip":[ 0, 0 ], "frame1x":80, "frame1y":792, "frame2x":80, "frame2y":792, "rangeX":[ 0, 0 ], "rangeY":[ -1, 0 ] },
+        "dislikeFood":0,
+        "evolveAfter":28800,
+        "evolveTo":[ "longcat", "bigcat", "doccat", "starcat" ],
+        "hungryAnimation":{ "flip":[ 0, 1 ], "frame1x":0, "frame1y":792, "frame2x":0, "frame2y":792, "rangeX":[ -1, 1 ], "rangeY":[ -1, 0 ] },
+        "idleAnimation":{ "flip":[ 0, 1 ], "frame1x":0, "frame1y":748, "frame2x":80, "frame2y":748, "rangeX":[ -3, 3 ], "rangeY":[ -1, 1 ] },
+        "likeFood":1,
+        "notifyThreshold":[ 7, 7, 7, 7 ],
+        "speeds":[ 1152, 1600, 1600, 2618 ]
+      },
+      "sicky":{
+        "boredAnimation":{ "flip":[ 0, 0 ], "frame1x":80, "frame1y":704, "frame2x":80, "frame2y":704, "rangeX":[ 0, 0 ], "rangeY":[ -1, 0 ] },
+        "dislikeFood":3,
+        "evolveAfter":28800,
+        "evolveTo":[ "longcat", "bigcat", "dead", "emocat" ],
+        "hungryAnimation":{ "flip":[ 0, 1 ], "frame1x":0, "frame1y":704, "frame2x":0, "frame2y":704, "rangeX":[ -1, 1 ], "rangeY":[ -1, 0 ] },
+        "idleAnimation":{ "flip":[ 0, 1 ], "frame1x":0, "frame1y":660, "frame2x":80, "frame2y":660, "rangeX":[ -3, 3 ], "rangeY":[ -1, 1 ] },
+        "likeFood":0,
+        "notifyThreshold":[ 8, 8, 8, 5 ],
+        "speeds":[ 1515, 2618, 2618, 1800 ]
+      },
+      "slimcat":{
+        "boredAnimation":{ "flip":[ 0, 0 ], "frame1x":80, "frame1y":880, "frame2x":80, "frame2y":880, "rangeX":[ 0, 0 ], "rangeY":[ -1, 0 ] },
+        "dislikeFood":1,
+        "evolveAfter":432000,
+        "hungryAnimation":{ "flip":[ 0, 1 ], "frame1x":0, "frame1y":880, "frame2x":0, "frame2y":880, "rangeX":[ -1, 1 ], "rangeY":[ -1, 0 ] },
+        "idleAnimation":{ "flip":[ 0, 1 ], "frame1x":0, "frame1y":836, "frame2x":80, "frame2y":836, "rangeX":[ -3, 3 ], "rangeY":[ -1, 1 ] },
+        "likeFood":2,
+        "notifyThreshold":[ 7, 7, 7, 5 ],
+        "speeds":[ 11076, 3000, 11076, 39272 ]
+      },
+      "starcat":{
+        "boredAnimation":{ "flip":[ 0, 0 ], "frame1x":80, "frame1y":1144, "frame2x":80, "frame2y":1144, "rangeX":[ 0, 0 ], "rangeY":[ -1, 0 ] },
+        "dislikeFood":2,
+        "evolveAfter":432000,
+        "hungryAnimation":{ "flip":[ 0, 1 ], "frame1x":0, "frame1y":1144, "frame2x":0, "frame2y":1144, "rangeX":[ -1, 1 ], "rangeY":[ -1, 0 ] },
+        "idleAnimation":{ "flip":[ 0, 1 ], "frame1x":0, "frame1y":1100, "frame2x":80, "frame2y":1100, "rangeX":[ -3, 3 ], "rangeY":[ -1, 1 ] },
+        "likeFood":3,
+        "notifyThreshold":[ 7, 7, 7, 7 ],
+        "speeds":[ 3963, 3000, 5837, 39272 ]
+      },
+      "thinny":{
+        "boredAnimation":{ "flip":[ 0, 0 ], "frame1x":80, "frame1y":528, "frame2x":80, "frame2y":528, "rangeX":[ 0, 0 ], "rangeY":[ -1, 0 ] },
+        "dislikeFood":1,
+        "evolveAfter":28800,
+        "evolveTo":[ "dead", "starcat", "doccat", "slimcat" ],
+        "hungryAnimation":{ "flip":[ 0, 1 ], "frame1x":0, "frame1y":528, "frame2x":0, "frame2y":528, "rangeX":[ -1, 1 ], "rangeY":[ -1, 0 ] },
+        "idleAnimation":{ "flip":[ 0, 1 ], "frame1x":0, "frame1y":484, "frame2x":80, "frame2y":484, "rangeX":[ -3, 3 ], "rangeY":[ -1, 1 ] },
+        "likeFood":2,
+        "notifyThreshold":[ 6, 5, 7, 5 ],
+        "speeds":[ 1694, 1800, 2618, 1800 ]
+      }
+    },
+    "gamatochi":{
+      "type":"displaycenter",
+      "image":"sprites", "width":80, "height":44,
+      "zIndex":10, "x":122, "y":187,
+      "scale":2,
+      "states":[
+        {
+          "code":[
+            {
+              "name":"Execute",
+              "data":{
+                "when":{ "_":[ "scene", "life", "dead" ] },
+                "execute":[ { "as":{ "_":[ "object", "displaycenteroverlay" ] }, "remove":1 }, { "set":{ "state":"dead" } } ],
+                "elseExecute":{
+                  "when":{ "_":[ "scene", "life", "evolve" ] },
+                  "execute":[ { "as":{ "_":[ "object", "displaycenteroverlay" ] }, "remove":1 }, { "set":{ "state":"evolve" } } ],
+                  "elseExecute":[
+                    {
+                      "when":{ "_":[ "scene", "life", "hatch" ] },
+                      "set":{ "_":[ "scene", "phaseData", "eggAnimation" ] },
+                      "elseExecute":{
+                        "when":{ "_":[ "scene", "phaseData", "hatchAnimation", "and", { "_":[ "scene", "life", "yearlife", "isLessThan", 3 ] } ] },
+                        "set":{ "_":[ "scene", "phaseData", "hatchAnimation" ] },
+                        "elseExecute":{
+                          "when":{ "_":[ "scene", "life", "stats", 0, "isGreaterEqualThan", { "_":[ "scene", "phaseData", "notifyThreshold", 0 ] } ] },
+                          "execute":{ "set":{ "_":[ "scene", "phaseData", "hungryAnimation" ] } },
+                          "elseExecute":{
+                            "when":{ "_":[ "scene", "life", "stats", 1, "isGreaterEqualThan", { "_":[ "scene", "phaseData", "notifyThreshold", 1 ] } ] },
+                            "execute":{ "set":{ "_":[ "scene", "phaseData", "boredAnimation" ] } },
+                            "elseExecute":{ "set":{ "_":[ "scene", "phaseData", "idleAnimation" ] } }
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "when":{ "_":[ "scene", "life", "stats", 2, "isEqualTo", 10 ] },
+                      "execute":{
+                        "when":{ "_":[ "objectTyped", "poop2", "not" ] },
+                        "object":{
+                          "type":[ "displaycenter", "poop2", "displaycenteroverlay" ],
+                          "image":"sprites", "tileX":100, "tileY":0, "width":25, "height":25,
+                          "zIndex":10, "x":202, "y":165,
+                          "originX":0, "originY":0, "scale":2,
+                          "animations":{ "idle":{ "frames":2, "loopTo":0 } },
+                          "animation":"idle"
+                        }
+                      },
+                      "elseExecute":{ "as":{ "_":[ "objectTyped", "poop2" ] }, "remove":1 }
+                    },
+                    {
+                      "when":{ "_":[ "scene", "life", "stats", 2, "isGreaterEqualThan", { "_":[ "scene", "phaseData", "notifyThreshold", 2 ] } ] },
+                      "execute":{
+                        "when":{ "_":[ "objectTyped", "poop1", "not" ] },
+                        "object":{
+                          "type":[ "displaycenter", "poop1", "displaycenteroverlay" ],
+                          "image":"sprites", "tileX":100, "tileY":0, "width":25, "height":25,
+                          "zIndex":10, "x":202, "y":205,
+                          "originX":0, "originY":0, "scale":2,
+                          "animations":{ "idle":{ "frames":2, "loopTo":0 } },
+                          "animation":"idle"
+                        }
+                      },
+                      "elseExecute":{ "as":{ "_":[ "objectTyped", "poop1" ] }, "remove":1 }
+                    }
+                  ]
+                }
+              }
+            },
+            {
+              "name":"Sequence",
+              "data":[
+                {
+                  "set":{
+                    "tileX":{ "_":[ "this", "frame1x" ] }, "tileY":{ "_":[ "this", "frame1y" ] },
+                    "x":{ "_":[ 122, "+", { "_":[ "randomNumber", { "_":[ "this", "rangeX" ] }, "*", 2 ] } ] }, "y":{ "_":[ 187, "+", { "_":[ "randomNumber", { "_":[ "this", "rangeY" ] }, "*", 2 ] } ] },
+                    "flipX":{ "_":[ "randomValue", { "_":[ "this", "flip" ] } ] }
+                  }
+                },
+                { "wait":25 },
+                {
+                  "set":{
+                    "tileX":{ "_":[ "this", "frame2x" ] }, "tileY":{ "_":[ "this", "frame2y" ] },
+                    "x":{ "_":[ 122, "+", { "_":[ "randomNumber", { "_":[ "this", "rangeX" ] }, "*", 2 ] } ] }, "y":{ "_":[ 187, "+", { "_":[ "randomNumber", { "_":[ "this", "rangeY" ] }, "*", 2 ] } ] },
+                    "flipX":{ "_":[ "randomValue", { "_":[ "this", "flip" ] } ] }
+                  }
+                },
+                { "wait":25, "loopTo":0 }
+              ]
+            }
+          ]
+        },
+        {
+          "name":"dead",
+          "set":{ "image":"none", "x":122, "y":187, "flipX":0, "bgcolor":"#000" },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "set":{ "visible":{ "_":[ "this", "visible", "not" ] } }, "wait":2, "loop":1, "cycles":10 },
+              { "when":{ "_":[ "scene", "phaseData", "evolveTo" ] }, "set":{ "tileY":308 }, "elseExecute":{ "set":{ "tileY":352 } } },
+              { "set":{ "image":"sprites", "tileX":0, "bgcolor":"" }, "wait":10 },
+              { "set":{ "image":"sprites", "tileX":80, "bgcolor":"" }, "wait":10, "loopTo":-1 }
+            ]
+          }
+        },
+        {
+          "name":"evolve",
+          "set":{ "image":"none", "x":122, "y":187, "flipX":0, "bgcolor":"#000" },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "set":{ "visible":{ "_":[ "this", "visible", "not" ] } }, "wait":2, "loop":1, "cycles":10 },
+              { "as":{ "_":"scene" }, "set":{ "state":"evolve" } }
+            ]
+          }
+        }
+      ]
+    },
+    "saveState":{ "assign":{ "_":[ "scene", "life" ] }, "to":{ "_":[ "storage", "life" ] } }
+  },
+  "execute":{},
+  "scenes":{
+    "intro":{
+      "bgcolor":"#fff",
+      "execute":[
+        { "assign":{ "_":[ "storage", "life" ] }, "to":{ "_":[ "scene", "life" ] } },
+        {
+          "when":{ "_":[ "scene", "life", "not" ] },
+          "set":{ "state":"newlife" },
+          "elseExecute":[
+            { "assign":{ "_":[ "stencil", "dataPhases", { "_":[ "scene", "life", "phase" ] } ] }, "to":{ "_":[ "scene", "phaseData" ] } },
+            { "set":{ "state":"idle" } }
+          ]
+        },
+        { "set":{ "currentOption":0 } },
+        {
+          "object":[
+            { "image":"body", "width":320, "height":394, "x":0, "y":0 },
+            {
+              "image":"sprites", "width":25, "height":25,
+              "zIndex":10, "x":90, "y":257,
+              "states":{ "code":{ "name":"Execute", "data":{ "set":{ "visible":{ "_":[ "scene", "currentOption", "isEqualTo", 1 ] } } } } }
+            },
+            {
+              "image":"sprites", "tileX":25, "width":25, "height":25,
+              "zIndex":10, "x":129, "y":257,
+              "states":{ "code":{ "name":"Execute", "data":{ "set":{ "visible":{ "_":[ "scene", "currentOption", "isEqualTo", 2 ] } } } } }
+            },
+            {
+              "image":"sprites", "tileX":50, "width":25, "height":25,
+              "zIndex":10, "x":168, "y":257,
+              "states":{ "code":{ "name":"Execute", "data":{ "set":{ "visible":{ "_":[ "scene", "currentOption", "isEqualTo", 3 ] } } } } }
+            },
+            {
+              "image":"sprites", "tileX":75, "width":25, "height":25,
+              "zIndex":10, "x":209, "y":257,
+              "states":{ "code":{ "name":"Execute", "data":{ "set":{ "visible":{ "_":[ "scene", "currentOption", "isEqualTo", 4 ] } } } } }
+            }
+          ]
+        },
+        {
+          "when":{"_":["cheat","showStats"]},
+          "execute":{
+            "object":{
+              "type":"hud",
+              "hudType":"label", "label":"DEAD? %number|scene.life.dead% (RESET:%number|scene.reset%)<br>EVOLVE? %number|scene.life.evolve%<br>YEARLIFE: %number|scene.life.yearlife% (HTCH: %number|scene.life.hatch%)<br>HUNGER: %number|scene.life.stats.0% (>%number|scene.life.over.0%) T%number|scene.life.timers.0% - %numer|scene.phaseData.speeds.0%<br>BORED: %number|scene.life.stats.1% (>%number|scene.life.over.1%) T%number|scene.life.timers.1% - %numer|scene.phaseData.speeds.1%<br>POOP: %number|scene.life.stats.2% (>%number|scene.life.over.2%) T%number|scene.life.timers.2% - %numer|scene.phaseData.speeds.2%<br>SICK: %number|scene.life.stats.3% (>%number|scene.life.over.3%) T%number|scene.life.timers.3% - %numer|scene.phaseData.speeds.3%",
+              "box":"label", "width":256, "height":120,
+              "zIndex":1000, "x":5, "y":5,
+              "color":"#f00",
+              "lineHeight":10
+            }
+          }
+        }
+      ],
+      "states":[
+        {
+          "name":"newlife",
+          "execute":[
+            { "set":{ "currentOption":0, "life":{ "_":[ "new", { "hatch":10, "phase":"main" } ] } } },
+            { "_":[ "stencil", "codeSetPhase" ] },
+            { "as":{ "_":[ "object", "displaycenter" ] }, "remove":1 },
+            {
+              "object":{
+                "type":"displaycenter",
+                "image":"sprites", "tileX":0, "tileY":220, "width":80, "height":0,
+                "zIndex":20, "x":82, "y":253,
+                "originX":0, "originY":0, "scale":2,
+                "states":{
+                  "code":{
+                    "name":"Sequence",
+                    "data":[
+                      { "subtract":4, "to":{ "_":[ "this", "y" ] } },
+                      { "sum":2, "to":{ "_":[ "this", "height" ] } },
+                      { "wait":1, "cycles":22, "loopTo":0 },
+                      { "wait":10 },
+                      { "subtract":5, "to":{ "_":[ "scene", "life", "stats", 2 ] } },
+                      { "_":[ "stencil", "codeFixStats" ] },
+                      { "as":{ "_":"scene" }, "set":{ "state":"idle" } }
+                    ]
+                  }
+                }
+              }
+            }
+          ],
+          "code":{ "name":"Sequence", "data":[ { "wait":25 }, { "set":{ "state":"idle" } } ] }
+        },
+        {
+          "name":"idle",
+          "execute":[
+            { "set":{ "currentOption":0, "reset":0 } },
+            { "as":{ "_":[ "object", "displaycenter" ] }, "remove":1 },
+            { "object":{ "_":[ "stencil", "gamatochi" ] } }
+          ],
+          "code":[
+            { "name":"Sequence", "data":[ { "_":[ "stencil", "saveState" ] }, { "_":[ "stencil", "codeUpdateTimers" ] }, { "wait":24, "loopTo":0 } ] },
+            {
+              "name":"Execute",
+              "data":[
+                {
+                  "when":{ "_":[ "keyLeft", "isHit" ] },
+                  "subtract":1,
+                  "to":{ "_":[ "this", "currentOption" ] },
+                  "elseExecute":{ "when":{ "_":[ "keyRight", "isHit" ] }, "sum":1, "to":{ "_":[ "this", "currentOption" ] } }
+                },
+                {
+                  "when":{ "_":[ "keyB", "isDown" ] },
+                  "execute":[ { "sum":1, "to":{ "_":[ "scene", "reset" ] } }, { "when":{ "_":[ "scene", "reset", "isGreaterThan", 125 ] }, "set":{ "state":"newlife" } } ],
+                  "elseExecute":{ "set":{ "reset":0 } }
+                },
+                { "when":{ "_":[ "this", "currentOption", "isLessThan", 0 ] }, "assign":4, "to":{ "_":[ "this", "currentOption" ] } },
+                { "when":{ "_":[ "this", "currentOption", "isGreaterThan", 4 ] }, "assign":0, "to":{ "_":[ "this", "currentOption" ] } },
+                {
+                  "when":{ "_":[ "keyA", "isHit" ] },
+                  "execute":{
+                    "when":{ "_":[ "scene", "life", "dead" ] },
+                    "execute":{ "set":{ "state":"newlife" } },
+                    "elseExecute":{
+                      "when":{ "_":[ "scene", "life", "hatch", "isEqualTo", 0 ] },
+                      "execute":{
+                        "when":{ "_":[ "scene", "life", "stats", 3, "isGreaterEqualThan", { "_":[ "scene", "phaseData", "notifyThreshold", 3 ] } ] },
+                        "execute":{
+                          "when":{ "_":[ "this", "currentOption", "isGreaterThan", 0 ] },
+                          "execute":{ "when":{ "_":[ "this", "currentOption", "isEqualTo", 4 ] }, "set":{ "state":"cure" }, "elseExecute":{ "set":{ "state":"no" } } }
+                        },
+                        "elseExecute":[
+                          { "when":{ "_":[ "this", "currentOption", "isEqualTo", 1 ] }, "set":{ "state":"foodSelector" } },
+                          { "when":{ "_":[ "this", "currentOption", "isEqualTo", 2 ] }, "set":{ "state":"wash" } },
+                          { "when":{ "_":[ "this", "currentOption", "isEqualTo", 3 ] }, "set":{ "state":"minigame" } },
+                          { "when":{ "_":[ "this", "currentOption", "isEqualTo", 4 ] }, "set":{ "state":"cure" } }
+                        ]
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name":"cure",
+          "execute":[
+            { "as":{ "_":[ "object", "displaycenter" ] }, "remove":1 },
+            {
+              "object":{
+                "type":"displaycenter",
+                "image":"sprites", "tileX":80, "tileY":264, "width":80, "height":44,
+                "zIndex":10, "x":82, "y":165,
+                "originX":0, "originY":0, "scale":2,
+                "states":{
+                  "code":{
+                    "name":"Sequence",
+                    "data":[
+                      { "set":{ "tileX":101, "width":38, "x":124 } },
+                      { "wait":2 },
+                      { "set":{ "tileX":80, "width":80, "x":82 } },
+                      { "wait":2, "cycles":10, "loopTo":0 },
+                      { "wait":10 },
+                      { "subtract":5, "to":{ "_":[ "scene", "life", "stats", 3 ] } },
+                      { "_":[ "stencil", "codeFixStats" ] },
+                      { "as":{ "_":"scene" }, "set":{ "state":"happy" } }
+                    ]
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name":"wash",
+          "execute":{
+            "object":{
+              "type":"displaycenter",
+              "image":"sprites", "tileX":80, "tileY":176, "width":80, "height":0,
+              "zIndex":20, "x":82, "y":253,
+              "originX":0, "originY":0, "scale":2,
+              "states":{
+                "code":{
+                  "name":"Sequence",
+                  "data":[
+                    { "subtract":4, "to":{ "_":[ "this", "y" ] } },
+                    { "sum":2, "to":{ "_":[ "this", "height" ] } },
+                    { "wait":1, "cycles":22, "loopTo":0 },
+                    { "wait":10 },
+                    { "subtract":5, "to":{ "_":[ "scene", "life", "stats", 2 ] } },
+                    { "_":[ "stencil", "codeFixStats" ] },
+                    { "as":{ "_":"scene" }, "set":{ "state":"happy" } }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "name":"foodSelector",
+          "execute":[
+            { "as":{ "_":[ "object", "displaycenter" ] }, "remove":1 },
+            { "set":{ "currentFood":0 } },
+            {
+              "object":{
+                "type":"displaycenter",
+                "image":"sprites", "width":80, "height":44,
+                "zIndex":10, "x":82, "y":165,
+                "originX":0, "originY":0, "scale":2,
+                "states":[
+                  {
+                    "code":{
+                      "name":"Execute",
+                      "data":{
+                        "set":{ "tileX":{ "_":[ "scene", "currentFood", "%", 2, "*", 80 ] }, "tileY":{ "_":[ "scene", "currentFood", "/", 2, "floor", "*", 44, "+", 44 ] } }
+                      }
+                    }
+                  },
+                  {
+                    "name":"eat",
+                    "code":{
+                      "name":"Sequence",
+                      "data":[
+                        { "sum":20, "to":{ "_":[ "this", "x" ] } },
+                        { "sum":10, "to":{ "_":[ "this", "tileX" ] } },
+                        { "subtract":10, "to":{ "_":[ "this", "width" ] } },
+                        { "wait":5 },
+                        { "subtract":10, "to":{ "_":[ "this", "width" ] } },
+                        { "wait":5, "cycles":4, "loopTo":0 },
+                        { "remove":1 }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ],
+          "code":{
+            "name":"Execute",
+            "data":[
+              {
+                "when":{ "_":[ "keyLeft", "isHit" ] },
+                "subtract":1,
+                "to":{ "_":[ "this", "currentFood" ] },
+                "elseExecute":{ "when":{ "_":[ "keyRight", "isHit" ] }, "sum":1, "to":{ "_":[ "this", "currentFood" ] } }
+              },
+              { "when":{ "_":[ "this", "currentFood", "isLessThan", 0 ] }, "assign":3, "to":{ "_":[ "this", "currentFood" ] } },
+              { "when":{ "_":[ "this", "currentFood", "isGreaterThan", 3 ] }, "assign":0, "to":{ "_":[ "this", "currentFood" ] } },
+              {
+                "when":{ "_":[ "keyA", "isHit" ] },
+                "execute":{
+                  "when":{ "_":[ "this", "currentFood", "isEqualTo", { "_":[ "scene", "phaseData", "dislikeFood" ] } ] },
+                  "set":{ "state":"no" },
+                  "elseExecute":[
+                    {
+                      "when":{ "_":[ "this", "currentFood", "isEqualTo", { "_":[ "scene", "phaseData", "likeFood" ] } ] },
+                      "subtract":2,
+                      "to":{ "_":[ "scene", "life", "stats", 0 ] },
+                      "elseExecute":{ "subtract":1, "to":{ "_":[ "scene", "life", "stats", 0 ] } }
+                    },
+                    { "_":[ "stencil", "codeFixStats" ] },
+                    { "set":{ "state":"eat" } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name":"eat",
+          "execute":{ "as":{ "_":[ "object", "displaycenter" ] }, "set":{ "state":"eat" } },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "wait":1, "loop":1, "until":{ "_":[ "object", "displaycenter", "not" ] } },
+              {
+                "when":{ "_":[ "this", "currentFood", "isEqualTo", { "_":[ "scene", "phaseData", "likeFood" ] } ] },
+                "set":{ "state":"happy" },
+                "elseExecute":{ "set":{ "state":"idle" } }
+              }
+            ]
+          }
+        },
+        {
+          "name":"minigame",
+          "execute":{ "set":{ "currentSide":0, "otherSide":{ "_":[ "randomNumber", [ 0, 1 ] ] } } },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "as":{ "_":[ "object", "displaycenter" ] }, "remove":1 },
+              {
+                "object":{
+                  "type":"displaycenter",
+                  "image":"sprites", "tileX":{ "_":[ "scene", "phaseData", "idleAnimation", "frame2x" ] }, "tileY":{ "_":[ "scene", "phaseData", "idleAnimation", "frame2y" ] }, "width":80, "height":44,
+                  "zIndex":10, "x":122, "y":187,
+                  "scale":2,
+                  "states":{
+                    "code":{
+                      "name":"Sequence",
+                      "data":[
+                        { "set":{ "flipX":{ "_":[ "this", "flipX", "not" ] } } },
+                        { "subtract":4, "to":{ "_":[ "this", "y" ] } },
+                        { "wait":10 },
+                        { "sum":4, "to":{ "_":[ "this", "y" ] } },
+                        { "wait":10, "loopTo":0 }
+                      ]
+                    }
+                  }
+                }
+              },
+              { "wait":50 },
+              { "as":{ "_":[ "object", "displaycenter" ] }, "remove":1 },
+              {
+                "object":[
+                  {
+                    "type":"arrow",
+                    "image":"sprites", "tileX":0, "tileY":25, "width":7, "height":14,
+                    "zIndex":10, "x":87, "y":192,
+                    "originX":0, "originY":0, "scale":2,
+                    "states":{ "code":{ "name":"Execute", "data":{ "set":{ "visible":{ "_":[ "scene", "currentSide", "isEqualTo", 1 ] } } } } }
+                  },
+                  {
+                    "type":"arrow",
+                    "image":"sprites", "tileX":0, "tileY":25, "width":7, "height":14,
+                    "zIndex":10, "x":236, "y":192,
+                    "originX":0, "originY":0, "flipX":1, "scale":2,
+                    "states":{ "code":{ "name":"Execute", "data":{ "set":{ "visible":{ "_":[ "scene", "currentSide", "isEqualTo", 0 ] } } } } }
+                  },
+                  {
+                    "type":"displaycenter",
+                    "image":"sprites", "width":80, "height":44,
+                    "zIndex":10, "x":122, "y":187,
+                    "scale":2,
+                    "states":{
+                      "code":{
+                        "name":"Sequence",
+                        "data":[
+                          { "set":{ "tileX":0, "tileY":132 } },
+                          { "wait":25 },
+                          { "set":{ "tileX":80, "tileY":132 } },
+                          { "wait":25 },
+                          { "set":{ "tileX":0, "tileY":176 } },
+                          { "wait":25 },
+                          { "remove":1 }
+                        ]
+                      }
+                    }
+                  }
+                ]
+              },
+              { "when":{ "_":[ "keyLeft", "isHit" ] }, "set":{ "currentSide":1 } },
+              { "when":{ "_":[ "keyRight", "isHit" ] }, "set":{ "currentSide":0 } },
+              { "wait":1, "loopTo":-2, "until":{ "_":[ "object", "displaycenter", "not" ] } },
+              {
+                "object":{
+                  "type":"displaycenter",
+                  "image":"sprites", "tileX":{ "_":[ "scene", "phaseData", "idleAnimation", "frame2x" ] }, "tileY":{ "_":[ "scene", "phaseData", "idleAnimation", "frame2y" ] }, "width":80, "height":44,
+                  "zIndex":10, "x":122, "y":187,
+                  "flipX":{ "_":[ "randomNumber", [ 0, 1 ] ] }, "scale":2,
+                  "flipSpeed":1,
+                  "states":{
+                    "code":{
+                      "name":"Sequence",
+                      "data":[
+                        { "as":{ "_":"scene" }, "set":{ "otherSide":{ "_":[ "this", "otherSide", "not" ] } } },
+                        { "set":{ "flipX":{ "_":[ "scene", "otherSide" ] } } },
+                        { "sum":1, "to":{ "_":[ "this", "flipSpeed" ] } },
+                        { "wait":{ "_":[ "this", "flipSpeed" ] }, "cycles":10, "loopTo":0 },
+                        { "wait":25 },
+                        { "as":{ "_":[ "object", "arrow" ] }, "remove":1 },
+                        { "remove":1 }
+                      ]
+                    }
+                  }
+                }
+              },
+              { "wait":1, "loop":1, "until":{ "_":[ "object", "displaycenter", "not" ] } },
+              {
+                "when":{ "_":[ "this", "otherSide", "isEqualTo", { "_":[ "this", "currentSide" ] } ] },
+                "execute":[ { "subtract":2, "to":{ "_":[ "scene", "life", "stats", 1 ] } }, { "_":[ "stencil", "codeFixStats" ] }, { "set":{ "state":"happy" } } ],
+                "elseExecute":[ { "subtract":1, "to":{ "_":[ "scene", "life", "stats", 1 ] } }, { "_":[ "stencil", "codeFixStats" ] }, { "set":{ "state":"no" } } ]
+              }
+            ]
+          }
+        },
+        {
+          "name":"evolve",
+          "execute":[
+            {
+              "when":{ "_":[ "scene", "life", "over", 0, "isGreaterThan", 4 ] },
+              "set":{ "evolveTo":{ "_":[ "scene", "phaseData", "evolveTo", 0 ] } },
+              "elseExecute":{
+                "when":{ "_":[ "scene", "life", "over", 1, "isGreaterThan", 4 ] },
+                "set":{ "evolveTo":{ "_":[ "scene", "phaseData", "evolveTo", 1 ] } },
+                "elseExecute":{
+                  "when":{ "_":[ "scene", "life", "over", 2, "isGreaterThan", 4 ] },
+                  "set":{ "evolveTo":{ "_":[ "scene", "phaseData", "evolveTo", 2 ] } },
+                  "elseExecute":{ "set":{ "evolveTo":{ "_":[ "scene", "phaseData", "evolveTo", 3 ] } } }
+                }
+              }
+            },
+            {
+              "when":{ "_":[ "this", "evolveTo", "isEqualTo", "dead" ] },
+              "execute":{ "assign":1, "to":{ "_":[ "scene", "life", "dead" ] } },
+              "elseExecute":[ { "assign":{ "_":[ "this", "evolveTo" ] }, "to":{ "_":[ "scene", "life", "phase" ] } }, { "_":[ "stencil", "codeSetPhase" ] } ]
+            },
+            { "set":{ "state":"idle" } }
+          ]
+        },
+        {
+          "name":"no",
+          "execute":[
+            { "as":{ "_":[ "object", "displaycenter" ] }, "remove":1 },
+            {
+              "object":{
+                "type":"displaycenter",
+                "image":"sprites", "tileX":{ "_":[ "scene", "phaseData", "idleAnimation", "frame1x" ] }, "tileY":{ "_":[ "scene", "phaseData", "idleAnimation", "frame1y" ] }, "width":80, "height":44,
+                "zIndex":10, "x":122, "y":187,
+                "scale":2,
+                "states":{
+                  "code":{
+                    "name":"Sequence",
+                    "data":[ { "set":{ "flipX":{ "_":[ "this", "flipX", "not" ] } }, "wait":10, "loop":1, "cycles":4 }, { "as":{ "_":"scene" }, "set":{ "state":"idle" } } ]
+                  }
+                }
+              }
+            }
+          ]
+        },
+        {
+          "name":"happy",
+          "execute":[
+            { "as":{ "_":[ "object", "displaycenter" ] }, "remove":1 },
+            {
+              "object":{
+                "type":"displaycenter",
+                "image":"sprites", "tileX":{ "_":[ "scene", "phaseData", "idleAnimation", "frame2x" ] }, "tileY":{ "_":[ "scene", "phaseData", "idleAnimation", "frame2y" ] }, "width":80, "height":44,
+                "zIndex":10, "x":122, "y":187,
+                "scale":2,
+                "states":{
+                  "code":{
+                    "name":"Sequence",
+                    "data":[
+                      { "set":{ "flipX":{ "_":[ "this", "flipX", "not" ] } } },
+                      { "subtract":4, "to":{ "_":[ "this", "y" ] } },
+                      { "wait":10 },
+                      { "sum":4, "to":{ "_":[ "this", "y" ] } },
+                      { "wait":10, "cycles":3, "loopTo":0 },
+                      { "as":{ "_":"scene" }, "set":{ "state":"idle" } }
+                    ]
+                  }
+                }
+              }
+            }
+          ]
+        }
+      ]
+    }
+  }
+}
