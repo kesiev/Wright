@@ -6,8 +6,23 @@
 	<meta name="viewport" id="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 	<script type="text/javascript" src="js/wright.js?a=1"></script>
 </head>
-<body onload="runSingleWright('tieinmachine',{tapesRoot:'tapes/',gameContainer:document.getElementById('wrightContainer'),volume:100,scale:1,renderer:1,filter:'Scanlines'})">
+<body onload="onl()">
 	<div id="wrightContainer" style="margin:auto"></div>
 	<div id="debugdock"></div>
 </body>
+<script>
+function onl() {
+	runSingleWright('barrelroll',{
+		tapesRoot:'tapes/',
+		gameContainer:document.getElementById('wrightContainer'),
+		volume:100,
+		scale:3,
+		renderer:1,
+		filter:'Scanlines',
+		onPublishScore:function(score) {
+			console.warn("Publishing score: "+score);
+		}
+	});
+}
+</script>
 </html>
