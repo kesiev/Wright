@@ -1,0 +1,621 @@
+{
+  "name":"Almost Pool",
+  "author":"KesieV",
+  "year":2017,
+  "genre":"Pool",
+  "description":"<p>Dear new dreamer.</p><p>Your desires are now a perfectly smooth, warm, flat and empty pool table, in the feeble light of your airy life. The rails are your only cushon-covered boundaries and the pockets at every corner and side are just too many opportunities waiting to be taken. Take your time for contemplating the perfectly shaped diamonds around table playing with the light. Dream about your busy gaze while scratching the cue stick tip, like a passionate professional in the middle of a top class tournament.</p><p>You'll soon learn that Destiny loves picking its challengers in the middle of their thoughts and you will be no exception: you'll feel the cue stick sliding around the thumb all of the sudden and your sight will be already reflecting on the white of your ball. When the match started? Who is your opponent? Are you good enough?</p><p>You won't care, I'm telling you. Because you don't have to - I'm sure you'll just try to give your best shot.</p><p>The cue stick will hit the ball so fiercely that it will throw that sphere to the object balls like a thunder - with the very same crackling sound too. Marvel. Coloured balls will scatter around the table like a wild firework, hitting now the side rail and now the foot one, maliciously running around the pocket points. You will watch that caleidoscopic scene sweating with your fakest smile hanged to the joint of the cue stick: is pool just hoping for a ball  going in?</p><p>All the trajectories will cross together like an infinite evansecent tangle. You'll follow all of them, like you could be able to drag them into the pockets with just your sight... and then you'll hear that clatter coming from the unknown.</p><p>You'll hear the first snapping fingers celebrating your result from the borders of the table: you will pocket your first ball so soon! While smiling and slowly walking around the table, your heart will skip a beat. And that moment will be so memorable and bittersweet.</p><p>Balls will become lesser and lesser, making the game so naturally harder and that clatter will became so painfully rare that you'll forgot. Every ball will progressively need all of your strategy, your dexterity, your luck and your guts for reaching its place. You'll use some of them just for getting nearby another one more interesting. You'll blindly hit some of them just hoping for shuffling things a bit.</p><p>And creepy thoughts will start crawling into your dreams: is pool just pocketing some balls? Are professionals people just good at that game? A ball pocketed evaluating a precise geometry is truly better than one pocketed using pure luck?</p><p>Dear old dreamer, I'm begging you. Don't lose your passion when the balls on the table are just a few and the game got tougher.</p><p>Plot!</p><p>Ready to be the next Pool Champion? Get ready for Almost Pool, the most unreliable and unrealistic computer pool simulation! Clear the table within the shoots limit but beware: once you've finished your game, you'll get a huge bonus for pocketing balls in order or in a row! Use UP/DOWN/LEFT/RIGHT for aiming and hold down the A BUTTON for calibrating the shot power. Good luck!</p>",
+  "screenshots":[ "pool-1.png", "pool-2.png" ],
+  "hardware":{
+    "width":256,
+    "height":192,
+    "filter":"retro",
+    "fps":50
+  },
+  "cheats":{},
+  "resources":{
+    "spectrum":"spectrum.font",
+    "sprites":"sprites.png"
+  },
+  "stencils":{
+    "ball":{
+      "type":"ball",
+      "image":"sprites", "width":12, "height":12,
+      "zIndex":10,
+      "states":{
+        "code":[
+          {
+            "name":"Execute",
+            "data":[
+              { "multiply":0.98, "to":{ "_":[ "this", "forceX" ] } },
+              { "multiply":0.98, "to":{ "_":[ "this", "forceY" ] } },
+              { "when":{ "_":[ "this", "forceX", "abs", "isLessThan", 0.1 ] }, "set":{ "forceX":0 } },
+              { "when":{ "_":[ "this", "forceY", "abs", "isLessThan", 0.1 ] }, "set":{ "forceY":0 } },
+              {
+                "when":{ "_":[ "this", "forceX", "or", { "_":[ "this", "forceY" ] } ] },
+                "execute":[
+                  { "set":{ "type":"moving" } },
+                  {
+                    "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "ball" ] }, "all":1 } ] },
+                    "execute":{
+                      "as":{ "_":"that" },
+                      "execute":{
+                        "when":{ "_":[ "this", "distanceTo", { "_":"that" }, "isLessThan", 12 ] },
+                        "execute":[
+                          { "when":{ "_":[ "vectorLength", { "_":"this" }, "isLessThan", 0.5 ] }, "set":{ "forceX":0, "forceY":0 } },
+                          { "set":{ "power":{ "_":[ "vectorLength", { "_":"this" }, "-", { "_":[ "vectorLength", { "_":"that" } ] }, "abs", "*", 0.5 ] } } },
+                          { "sumVector":{ "angle":{ "_":[ "that", "angleTo", { "_":"this" } ] }, "length":{ "_":[ "this", "power" ] } } },
+                          { "as":{ "_":"that" }, "sumVector":{ "angle":{ "_":[ "that", "angleTo", { "_":"this" } ] }, "length":{ "_":[ "that", "power" ] } } }
+                        ]
+                      }
+                    }
+                  }
+                ],
+                "elseExecute":{ "set":{ "removeType":"moving" } }
+              },
+              {
+                "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "pocket" ] } ] },
+                "execute":[
+                  {
+                    "when":{ "_":[ "this", "pocketable" ] },
+                    "execute":[
+                      { "sum":100, "to":{ "_":[ "variable", "score" ] } },
+                      { "sum":1, "to":{ "_":[ "variable", "pocketed" ] } },
+                      { "as":{ "_":[ "this", "frame" ] }, "pushInto":{ "_":[ "variable", "pockets" ] } },
+                      { "as":{ "_":[ "this", "frame" ] }, "pushInto":{ "_":[ "variable", "playSequence" ] } }
+                    ]
+                  },
+                  { "remove":1 }
+                ]
+              }
+            ]
+          },
+          { "name":"Physics", "data":{ "walls":{ "type":"wall", "restitution":0.9 } } }
+        ]
+      }
+    },
+    "cue":{
+      "image":"sprites", "tileY":156, "width":9, "height":35,
+      "zIndex":100,
+      "originX":"5px", "originY":"6px",
+      "animations":{ "setangle":{ "frames":2, "speed":10, "loopTo":0 } },
+      "animation":"setangle",
+      "states":[
+        {
+          "execute":[
+            {
+              "when":{ "_":[ "objectTyped", "playerball", "not" ] },
+              "execute":[
+                { "object":{ "type":"playerball", "set":{ "_":[ "stencil", "ball" ] }, "x":40, "y":114, "frame":10 } },
+                {
+                  "times":36,
+                  "execute":{ "when":{ "_":[ "objectTyped", "playerball", "collidesWith", { "_":[ "object", "pocketable" ] } ] }, "sum":1, "to":{ "_":[ "this", "x" ] } }
+                }
+              ]
+            },
+            { "as":{ "_":"variable" }, "set":{ "pocketed":0, "power":0 } },
+            { "set":{ "visible":true, "counter":9 } },
+            {
+              "times":9,
+              "execute":[
+                {
+                  "when":{ "_":[ "objectTyped", { "_":[ "ball", ".", { "_":[ "this", "counter" ] } ] } ] },
+                  "set":{ "angle":{ "_":[ "objectTyped", "playerball", "angleTo", { "_":[ "objectTyped", { "_":[ "ball", ".", { "_":[ "this", "counter" ] } ] } ] } ] } }
+                },
+                { "subtract":1, "to":{ "_":[ "this", "counter" ] } }
+              ]
+            }
+          ],
+          "code":[
+            {
+              "name":"Execute",
+              "data":[
+                { "set":{ "x":{ "_":[ "objectTyped", "playerball", "x" ] }, "y":{ "_":[ "objectTyped", "playerball", "y" ] }, "moved":0 } },
+                {
+                  "when":{ "_":[ "keyLeft", "isDown", "or", { "_":[ "keyUp", "isDown" ] } ] },
+                  "sum":1,
+                  "to":{ "_":[ "this", "angle" ] },
+                  "set":{ "moved":1 },
+                  "elseExecute":{
+                    "when":{ "_":[ "keyRight", "isDown", "or", { "_":[ "keyDown", "isDown" ] } ] },
+                    "subtract":1,
+                    "to":{ "_":[ "this", "angle" ] },
+                    "set":{ "moved":1 },
+                    "elseExecute":{ "when":{ "_":[ "keyA", "isDown" ] }, "set":{ "state":"force" } }
+                  }
+                },
+                { "when":{ "_":[ "this", "moved" ] }, "as":{ "_":[ "object", "preview" ] }, "remove":1 }
+              ]
+            },
+            {
+              "name":"Sequence",
+              "data":[
+                { "wait":10 },
+                {
+                  "object":{
+                    "set":{ "_":[ "stencil", "preview" ] },
+                    "at":{ "_":[ "objectTyped", "playerball" ] },
+                    "execute":{ "applyVector":{ "angle":{ "_":[ "that", "angle" ] }, "length":3 } }
+                  },
+                  "loopTo":0
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name":"force",
+          "execute":{ "as":{ "_":[ "object", "preview" ] }, "remove":1 },
+          "code":{
+            "name":"Execute",
+            "data":[
+              { "sum":0.5, "to":{ "_":[ "variable", "power" ] } },
+              { "when":{ "_":[ "keyA", "isUp", "or", { "_":[ "variable", "power", "isEqualTo", 30 ] } ] }, "set":{ "state":"shot" } }
+            ]
+          }
+        },
+        {
+          "name":"shot",
+          "execute":[
+            {
+              "as":{ "_":[ "objectTyped", "playerball" ] },
+              "applyVector":{ "angle":{ "_":[ "that", "angle" ] }, "length":{ "_":[ "variable", "power", "/", 4 ] } }
+            },
+            { "set":{ "visible":0 } }
+          ],
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "wait":10 },
+              { "wait":1, "loopTo":1, "until":{ "_":[ "objectTyped", "moving", "not" ] } },
+              { "wait":50 },
+              {
+                "when":{
+                  "_":[
+                    "variable",
+                    "pocketed",
+                    "isEqualTo",
+                    0,
+                    "and",
+                    { "_":[ "variable", "playSequence", { "_":[ "variable", "playSequence", "count", "-", 1 ] }, "isNotEqualTo", "X" ] }
+                  ]
+                },
+                "as":"X",
+                "pushInto":{ "_":[ "variable", "playSequence" ] }
+              },
+              { "when":{ "_":[ "objectTyped", "playerball", "not" ] }, "subtract":1, "to":{ "_":[ "variable", "shots" ] } },
+              { "when":{ "_":[ "variable", "pocketed", "isEqualTo", 0 ] }, "subtract":1, "to":{ "_":[ "variable", "shots" ] } },
+              { "when":{ "_":[ "variable", "shots", "isLessThan", 0 ] }, "as":{ "_":"variable" }, "set":{ "shots":0 } },
+              {
+                "when":{ "_":[ "objectTyped", "pocketable", "not" ] },
+                "as":{ "_":"scene" },
+                "set":{ "state":"completed" },
+                "elseExecute":{
+                  "when":{ "_":[ "variable", "shots" ] },
+                  "execute":{ "set":{ "state":"default" } },
+                  "elseExecute":{ "as":{ "_":"scene" }, "set":{ "state":"gameover" } }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "message":{
+      "type":"message",
+      "width":256, "height":20,
+      "zIndex":1000, "y":110,
+      "font":"spectrum", "fontSize":20, "lineHeight":20, "textAlign":"center",
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[ { "set":{ "bgcolor":"#fff", "color":"#f00" }, "wait":10 }, { "set":{ "bgcolor":"#f00", "color":"#fff" }, "wait":10, "loopTo":0 } ]
+        }
+      }
+    },
+    "pocket":{ "type":[ "pocket", "stoppreview" ], "visible":0 },
+    "pocketIndicator":{
+      "image":"sprites", "width":12, "height":12,
+      "states":{ "code":{ "name":"Execute", "data":{ "set":{ "frame":{ "_":[ "variable", "pockets", { "_":[ "this", "pocketPosition" ] } ] } } } } }
+    },
+    "preview":{
+      "type":"preview",
+      "image":"sprites", "width":12, "height":12,
+      "zIndex":20,
+      "life":{ "_":[ "variable", "previewLength" ] },
+      "states":{
+        "code":[
+          {
+            "name":"Execute",
+            "data":{
+              "when":{ "_":[ "this", "life" ] },
+              "execute":[
+                { "subtract":1, "to":{ "_":[ "this", "life" ] } },
+                {
+                  "when":{ "_":[ "this", "life", "isLessThan", { "_":[ "variable", "previewLength", "-", 5 ] } ] },
+                  "execute":{
+                    "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "stoppreview" ] } ] },
+                    "remove":1,
+                    "elseExecute":{
+                      "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "stoppreviewball" ] }, "all":1 } ] },
+                      "execute":{
+                        "as":{ "_":"that" },
+                        "execute":{ "when":{ "_":[ "this", "distanceTo", { "_":"that" }, "isLessThan", 12 ] }, "as":{ "_":"that" }, "execute":{ "remove":1 } }
+                      }
+                    }
+                  }
+                }
+              ],
+              "elseExecute":{ "remove":1 }
+            }
+          },
+          { "name":"Physics", "data":{ "walls":{ "type":"wall", "restitution":0.9 } } }
+        ]
+      }
+    },
+    "wall":{ "type":"wall", "visible":0 }
+  },
+  "execute":[
+    {
+      "object":{
+        "type":"hud",
+        "hudType":"label", "label":"SCORE: %number|variable.score|0|8%",
+        "box":"label", "width":246, "height":30,
+        "x":4, "y":4,
+        "font":"spectrum", "lineHeight":10, "outline":"#000000"
+      },
+      "into":{ "_":"hud" }
+    },
+    { "when":{ "_":[ "storage", "hiscore", "not" ] }, "as":{ "_":"storage" }, "set":{ "hiscore":0 } },
+    { "as":{ "_":"variable" }, "set":{ "hiscore":{ "_":[ "storage", "hiscore" ] } } }
+  ],
+  "scenes":{
+    "intro":{
+      "object":[
+        { "width":256, "height":192, "x":0, "y":0, "bgcolor":"#00ff00" },
+        {
+          "image":"sprites", "tileX":18, "tileY":156, "width":166, "height":77,
+          "zIndex":20, "x":45,
+          "timer":0,
+          "states":{
+            "code":{
+              "name":"Execute",
+              "data":[ { "sum":0.1, "to":{ "_":[ "this", "timer" ] } }, { "set":{ "y":{ "_":[ "this", "timer", "cos", "*", 5, "+", 40 ] } } } ]
+            }
+          }
+        },
+        {
+          "box":"label", "width":256,
+          "zIndex":20, "x":0, "y":130,
+          "color":"#fff",
+          "font":"spectrum", "fontSize":20, "lineHeight":20, "outline":"#000", "textAlign":"center", "html":"PRESS START",
+          "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "visible":0 }, "wait":20 }, { "set":{ "visible":1 }, "wait":20, "loopTo":0 } ] } }
+        },
+        {
+          "box":"label", "width":256,
+          "zIndex":20, "x":0, "y":172,
+          "bgcolor":"#007f00", "color":"#fff",
+          "font":"spectrum", "fontSize":20, "lineHeight":20, "textAlign":"center", "html":{ "_":[ "HI-SCORE: ", ".", { "_":[ "variable", "hiscore" ] } ] }
+        }
+      ],
+      "execute":{
+        "times":10,
+        "object":{
+          "image":"sprites", "tileX":12, "width":12, "height":12,
+          "zIndex":10, "y":172,
+          "states":{
+            "code":{
+              "name":"Sequence",
+              "data":[
+                { "wait":{ "_":[ "randomNumber", [ 30, 50 ] ] } },
+                {
+                  "set":{
+                    "x":{ "_":[ "randomNumber", [ 0, 244 ] ] }, "y":172, "frame":{ "_":[ "randomNumber", [ 0, 10 ] ] },
+                    "forceX":{ "_":[ "randomNumber", [ -3, 3 ] ] }, "forceY":{ "_":[ "randomNumber", [ -8, -4 ] ] }
+                  }
+                },
+                { "sum":{ "_":[ "this", "forceX" ] }, "to":{ "_":[ "this", "x" ] } },
+                { "sum":{ "_":[ "this", "forceY" ] }, "to":{ "_":[ "this", "y" ] } },
+                { "sum":0.3, "to":{ "_":[ "this", "forceY" ] } },
+                { "wait":1, "loopTo":-3, "until":{ "_":[ "this", "y", "isGreaterThan", 173 ] } },
+                { "loopTo":0 }
+              ]
+            }
+          }
+        }
+      },
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "execute":{ "as":{ "_":"variable" }, "set":{ "score":0, "stage":1 }, "gotoScene":"table" } }
+        }
+      }
+    },
+    "bonus":{
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[
+            { "wait":30 },
+            {
+              "object":{
+                "width":240, "height":20,
+                "x":8, "y":30,
+                "color":"#fff",
+                "font":"spectrum", "fontSize":40, "lineHeight":20, "outline":"#f00", "textAlign":"center", "html":"CLEAR BONUS"
+              }
+            },
+            { "wait":30 },
+            {
+              "object":{
+                "width":240, "height":10,
+                "x":8, "y":65,
+                "bgcolor":"#00f", "color":"#fff",
+                "font":"spectrum", "fontSize":20, "lineHeight":10, "textAlign":"center", "html":"COMBO BONUS"
+              }
+            },
+            { "set":{ "combo":0, "combobonus":0, "counter":0, "posX":24 } },
+            {
+              "object":{
+                "type":"hud",
+                "hudType":"label", "label":"%number|scene.combobonus%pts.",
+                "width":200, "height":12,
+                "x":180, "y":83,
+                "font":"spectrum", "lineHeight":10, "outline":"#000000"
+              }
+            },
+            { "set":{ "current":{ "_":[ "variable", "playSequence", { "_":[ "this", "counter" ] } ] } } },
+            {
+              "when":{ "_":[ "this", "current", "isEqualTo", "X" ] },
+              "execute":[ { "set":{ "combo":-1 } }, { "sum":6, "to":{ "_":[ "this", "posX" ] } } ],
+              "elseExecute":[
+                {
+                  "object":{
+                    "image":"sprites", "width":12, "height":12,
+                    "zIndex":{ "_":[ "that", "counter" ] }, "x":{ "_":[ "that", "posX" ] }, "y":83, "frame":{ "_":[ "that", "current" ] }
+                  }
+                },
+                { "sum":9, "to":{ "_":[ "this", "posX" ] } },
+                { "sum":1, "to":{ "_":[ "this", "combo" ] } },
+                { "sum":{ "_":[ "this", "combo", "*", 100 ] }, "to":{ "_":[ "this", "combobonus" ] } },
+                { "sum":{ "_":[ "this", "combo", "*", 100 ] }, "to":{ "_":[ "variable", "score" ] } },
+                { "subsequence":{ "wait":10 } }
+              ]
+            },
+            { "sum":1, "to":{ "_":[ "this", "counter" ] } },
+            { "cycles":{ "_":[ "variable", "playSequence", "count" ] }, "loopTo":-3 },
+            {
+              "object":{
+                "width":240, "height":10,
+                "x":8, "y":120,
+                "bgcolor":"#00f", "color":"#fff",
+                "font":"spectrum", "fontSize":20, "lineHeight":10, "textAlign":"center", "html":"SEQUENCE BONUS"
+              }
+            },
+            { "set":{ "combo":0, "counter":0, "lastball":-10, "posX":16, "sequencebonus":0 } },
+            {
+              "object":{
+                "type":"hud",
+                "hudType":"label", "label":"%number|scene.sequencebonus%pts.",
+                "width":200, "height":12,
+                "x":180, "y":140,
+                "font":"spectrum", "lineHeight":10, "outline":"#000000"
+              }
+            },
+            { "set":{ "current":{ "_":[ "variable", "playSequence", { "_":[ "this", "counter" ] } ] } } },
+            {
+              "when":{ "_":[ "this", "current", "isNotEqualTo", "X" ] },
+              "execute":[
+                {
+                  "when":{ "_":[ "this", "current", "isEqualTo", { "_":[ "this", "lastball", "+", 1 ] } ] },
+                  "execute":[
+                    { "sum":1, "to":{ "_":[ "this", "combo" ] } },
+                    { "sum":{ "_":[ "this", "combo", "*", 100 ] }, "to":{ "_":[ "this", "sequencebonus" ] } },
+                    { "sum":{ "_":[ "this", "combo", "*", 100 ] }, "to":{ "_":[ "variable", "score" ] } },
+                    { "sum":9, "to":{ "_":[ "this", "posX" ] } }
+                  ],
+                  "elseExecute":[ { "assign":0, "to":{ "_":[ "this", "combo" ] } }, { "sum":14, "to":{ "_":[ "this", "posX" ] } } ]
+                },
+                { "set":{ "lastball":{ "_":[ "this", "current" ] } } },
+                {
+                  "object":{
+                    "image":"sprites", "width":12, "height":12,
+                    "zIndex":{ "_":[ "that", "counter" ] }, "x":{ "_":[ "that", "posX" ] }, "y":140, "frame":{ "_":[ "that", "current" ] }
+                  }
+                },
+                { "subsequence":{ "wait":10 } }
+              ]
+            },
+            { "sum":1, "to":{ "_":[ "this", "counter" ] } },
+            { "cycles":{ "_":[ "variable", "playSequence", "count" ] }, "loopTo":-3 },
+            {
+              "object":{
+                "width":240, "height":10,
+                "x":8, "y":174,
+                "color":"#fff",
+                "font":"spectrum", "fontSize":20, "lineHeight":10, "textAlign":"center", "html":"PRESS BUTTON TO CONTINUE!",
+                "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "bgcolor":"#000" }, "wait":10 }, { "set":{ "bgcolor":"#f00" }, "wait":10, "loopTo":0 } ] } }
+              }
+            },
+            { "sum":1, "to":{ "_":[ "variable", "stage" ] } },
+            { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+            { "gotoScene":"table" }
+          ]
+        }
+      }
+    },
+    "table":{
+      "object":[
+        {
+          "type":"hud",
+          "hudType":"label", "label":"SHOTS: %number|variable.shots|0|2%",
+          "box":"label", "width":246, "height":30,
+          "x":140, "y":4,
+          "font":"spectrum", "lineHeight":10, "outline":"#000000"
+        },
+        { "width":256, "height":20, "x":4, "y":16, "font":"spectrum", "fontSize":20, "lineHeight":20, "outline":"#000", "html":"POCKET:" },
+        { "width":256, "height":20, "x":140, "y":16, "font":"spectrum", "fontSize":20, "lineHeight":20, "outline":"#000", "html":"POWER:" },
+        { "width":92, "height":12, "x":140, "y":32, "border":"#fff" },
+        {
+          "height":10,
+          "x":141, "y":33,
+          "bgcolor":"#f00",
+          "states":{ "code":{ "name":"Execute", "data":{ "set":{ "width":{ "_":[ "variable", "power", "/", 30, "*", 90 ] } } } } }
+        },
+        { "set":{ "_":[ "stencil", "pocketIndicator" ] }, "x":4, "y":32, "pocketPosition":0 },
+        { "set":{ "_":[ "stencil", "pocketIndicator" ] }, "x":16, "y":32, "pocketPosition":1 },
+        { "set":{ "_":[ "stencil", "pocketIndicator" ] }, "x":28, "y":32, "pocketPosition":2 },
+        { "set":{ "_":[ "stencil", "pocketIndicator" ] }, "x":40, "y":32, "pocketPosition":3 },
+        { "set":{ "_":[ "stencil", "pocketIndicator" ] }, "x":52, "y":32, "pocketPosition":4 },
+        { "set":{ "_":[ "stencil", "pocketIndicator" ] }, "x":64, "y":32, "pocketPosition":5 },
+        { "set":{ "_":[ "stencil", "pocketIndicator" ] }, "x":76, "y":32, "pocketPosition":6 },
+        { "set":{ "_":[ "stencil", "pocketIndicator" ] }, "x":88, "y":32, "pocketPosition":7 },
+        { "set":{ "_":[ "stencil", "pocketIndicator" ] }, "x":100, "y":32, "pocketPosition":8 },
+        { "set":{ "_":[ "stencil", "pocket" ] }, "width":20, "height":10, "x":0, "y":48 },
+        { "set":{ "_":[ "stencil", "pocket" ] }, "width":20, "height":10, "x":236, "y":48 },
+        { "set":{ "_":[ "stencil", "pocket" ] }, "width":10, "height":10, "x":0, "y":58 },
+        { "set":{ "_":[ "stencil", "pocket" ] }, "width":10, "height":10, "x":246, "y":58 },
+        { "set":{ "_":[ "stencil", "pocket" ] }, "width":16, "height":8, "x":120, "y":48 },
+        { "set":{ "_":[ "stencil", "pocket" ] }, "width":20, "height":10, "x":0, "y":182 },
+        { "set":{ "_":[ "stencil", "pocket" ] }, "width":20, "height":10, "x":236, "y":182 },
+        { "set":{ "_":[ "stencil", "pocket" ] }, "width":10, "height":10, "x":0, "y":172 },
+        { "set":{ "_":[ "stencil", "pocket" ] }, "width":10, "height":10, "x":246, "y":172 },
+        { "set":{ "_":[ "stencil", "pocket" ] }, "width":16, "height":8, "x":120, "y":184 },
+        { "set":{ "_":[ "stencil", "wall" ] }, "width":84, "height":16, "x":30, "y":48 },
+        { "set":{ "_":[ "stencil", "wall" ] }, "width":84, "height":16, "x":143, "y":48 },
+        { "set":{ "_":[ "stencil", "wall" ] }, "width":84, "height":16, "x":30, "y":176 },
+        { "set":{ "_":[ "stencil", "wall" ] }, "width":84, "height":16, "x":143, "y":176 },
+        { "set":{ "_":[ "stencil", "wall" ] }, "width":16, "height":88, "x":0, "y":76 },
+        { "set":{ "_":[ "stencil", "wall" ] }, "width":16, "height":88, "x":240, "y":76 },
+        { "image":"sprites", "tileY":12, "width":256, "height":144, "x":0, "y":48 },
+        {
+          "type":[ "ball1", "pocketable", "stoppreviewball" ],
+          "set":{ "_":[ "stencil", "ball" ] },
+          "x":172, "y":114, "frame":1,
+          "forceX":0, "forceY":0,
+          "pocketable":1
+        },
+        {
+          "type":[ "ball2", "pocketable", "stoppreviewball" ],
+          "set":{ "_":[ "stencil", "ball" ] },
+          "x":182, "y":108, "frame":2,
+          "forceX":0, "forceY":0,
+          "pocketable":1
+        },
+        {
+          "type":[ "ball3", "pocketable", "stoppreviewball" ],
+          "set":{ "_":[ "stencil", "ball" ] },
+          "x":182, "y":120, "frame":3,
+          "forceX":0, "forceY":0,
+          "pocketable":1
+        },
+        {
+          "type":[ "ball4", "pocketable", "stoppreviewball" ],
+          "set":{ "_":[ "stencil", "ball" ] },
+          "x":192, "y":102, "frame":4,
+          "forceX":0, "forceY":0,
+          "pocketable":1
+        },
+        {
+          "type":[ "ball5", "pocketable", "stoppreviewball" ],
+          "set":{ "_":[ "stencil", "ball" ] },
+          "x":192, "y":114, "frame":5,
+          "forceX":0, "forceY":0,
+          "pocketable":1
+        },
+        {
+          "type":[ "ball6", "pocketable", "stoppreviewball" ],
+          "set":{ "_":[ "stencil", "ball" ] },
+          "x":192, "y":126, "frame":6,
+          "forceX":0, "forceY":0,
+          "pocketable":1
+        }
+      ],
+      "execute":[
+        {
+          "as":{ "_":"variable" },
+          "set":{
+            "playSequence":{ "_":[ "new", [ "X" ] ] },
+            "pockets":{ "_":[ "new", [] ] },
+            "power":0,
+            "previewLength":{ "_":[ 100, "-", { "_":[ "variable", "stage", "*", 10 ] }, "limitValue", [ 10, 100 ] ] },
+            "shots":{ "_":[ 16, "-", { "_":[ "variable", "stage" ] }, "limitValue", [ 8, 15 ] ] }
+          }
+        },
+        {
+          "when":{ "_":[ "variable", "stage", "%", 2, "not" ] },
+          "execute":{
+            "object":[
+              {
+                "type":[ "ball7", "pocketable", "stoppreviewball" ],
+                "set":{ "_":[ "stencil", "ball" ] },
+                "x":202, "y":108, "frame":7,
+                "forceX":0, "forceY":0,
+                "pocketable":1
+              },
+              {
+                "type":[ "ball8", "pocketable", "stoppreviewball" ],
+                "set":{ "_":[ "stencil", "ball" ] },
+                "x":202, "y":120, "frame":8,
+                "forceX":0, "forceY":0,
+                "pocketable":1
+              },
+              {
+                "type":[ "ball9", "pocketable", "stoppreviewball" ],
+                "set":{ "_":[ "stencil", "ball" ] },
+                "x":212, "y":114, "frame":9,
+                "forceX":0, "forceY":0,
+                "pocketable":1
+              }
+            ]
+          }
+        }
+      ],
+      "states":[
+        {
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "object":{ "set":{ "_":[ "stencil", "message" ] }, "html":{ "_":[ "STAGE ", ".", { "_":[ "variable", "stage" ] } ] } } },
+              { "wait":100 },
+              { "as":{ "_":[ "object", "message" ] }, "remove":1 },
+              { "object":{ "set":{ "_":[ "stencil", "cue" ] } } }
+            ]
+          }
+        },
+        {
+          "name":"completed",
+          "execute":{ "as":"X", "pushInto":{ "_":[ "variable", "playSequence" ] } },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "object":{ "set":{ "_":[ "stencil", "message" ] }, "html":"TABLE CLEAR!" } },
+              { "wait":50 },
+              { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+              { "gotoScene":"bonus" }
+            ]
+          }
+        },
+        {
+          "name":"gameover",
+          "execute":[
+            { "publishScore":{ "_":[ "variable", "score" ] } },
+            {
+              "when":{ "_":[ "variable", "score", "isGreaterThan", { "_":[ "variable", "hiscore" ] } ] },
+              "as":[ { "_":"storage" }, { "_":"variable" } ],
+              "set":{ "hiscore":{ "_":[ "variable", "score" ] } }
+            }
+          ],
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "object":{ "set":{ "_":[ "stencil", "message" ] }, "html":"GAME OVER" } },
+              { "wait":50 },
+              { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+              { "gotoScene":"intro" }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}
