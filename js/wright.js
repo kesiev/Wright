@@ -4,6 +4,7 @@
 
 var PREC = 1000000;
 var PAD = 10 / PREC;
+var P360=Math.PI * 2;
 function FIX(value) { return Math.round(value * PREC) / PREC; }
 
 /*
@@ -1775,7 +1776,9 @@ var DOMInator=function(useCanvas,aliasmode,controller){
 				sources[name].ctx=sources[name].node.getContext("2d");
 			}
 			sources[name].node.width=style.width;
-			sources[name].node.height=style.height;			
+			sources[name].node.height=style.height;
+			sources[name].node.hwidth=style.width/2;
+			sources[name].node.hheight=style.height/2;
 			return sources[name];
 		}
 
@@ -1853,8 +1856,41 @@ var DOMInator=function(useCanvas,aliasmode,controller){
 							} else if (filter.blit&&sources[filter.blit]) {
 								source.ctx.globalAlpha=filter.alpha||1;
 								source.ctx.filter=filter.filter||"none";
-								source.ctx.drawImage(sources[filter.blit].node,filter.left||0,filter.top||0);
-							}						
+								switch (filter.effect) {
+									case "bulge":{
+										// Pure canvas bulge filter taken from https://jsfiddle.net/BnPck/7fzxnfan/1/. Thanks!
+										if (!filter.ready) {
+											filter.imageW=sources[filter.blit].node.width*filter.mul;
+											filter.imageH=sources[filter.blit].node.height*filter.mul;
+											filter.imageX=sources[filter.blit].node.hwidth;
+											filter.imageY=sources[filter.blit].node.hheight;
+											filter.easeW = (filter.amountX / filter.imageW) * 4;
+											filter.stepUnit = (0.5 / filter.imageX) * filter.quality;
+											filter.ready=1;
+										}
+										var imageCNV=sources[filter.blit].node;										
+								        var ctx = source.ctx;
+								        ctx.drawImage(sources[filter.blit].node, 0, 0);
+								        for (bi = 0; bi < 0.5; bi += filter.stepUnit) { // all done in normalised size
+								            var br = bi * 2; // normalise i
+								            var bx = br * filter.imageX; // get the clip x destination pos relative to center
+								            var brx = (bx) * filter.easeW; // get the image source pos
+								            var bry = (br * filter.imageY) * filter.easeW;
+								            ctx.save();
+							                ctx.beginPath();
+							                ctx.arc(filter.imageX, filter.imageY, (filter.imageW - (bx * 2)) / 2, 0, P360);
+							                ctx.clip();
+							                ctx.drawImage(imageCNV, brx, bry, filter.imageW - (brx * 2), filter.imageH - (bry * 2), 0, 0, filter.imageW, filter.imageH);
+								            ctx.restore();
+								        }
+										break;
+									}
+									default:{
+										source.ctx.drawImage(sources[filter.blit].node,filter.left||0,filter.top||0);
+										break;
+									}
+								}
+							}				
 						}
 				}
 			}
@@ -2041,6 +2077,22 @@ DOMInator.FILTERS={
 		        {"blit":"crt"},
 		        {"blit":"noise","alpha":0.1},
 		        {"blit":"currentframe","to":"oldframe"}
+		    ]	
+		},
+		{
+			label:"Arcade-ish CRT",
+			filter:[
+		        {"generate":"texture","image":"~/crt.png","alpha":0.05,"to":"crt"},
+		        {"generate":"texture","image":"~/scanlines.png","alpha":0.05,"to":"scanlines"},
+		        {"render":1,"to":"currentframe"},
+		        {"blit":"currentframe","to":"output"},
+		        {"blit":"trailframe","filter":"saturate(5)","alpha":0.4,"to":"output"},
+		        {"blit":"currentframe","to":"trailframe","alpha":0.6},
+		        {"blit":"currentframe","filter":"blur(10px)","alpha":0.5,"to":"output"},
+		        {"blit":"output","effect":"bulge","amountX":10,"quality":5,"mul":1.5},
+		        {"every":0,"of":2,"blit":"scanlines"},
+		        {"every":1,"of":2,"blit":"scanlines","top":1},
+		        {"blit":"crt"}
 		    ]	
 		}
 	]
