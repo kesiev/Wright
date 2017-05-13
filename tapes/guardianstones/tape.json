@@ -1,0 +1,2948 @@
+{
+  "name":"Guardian Stones",
+  "author":"KesieV",
+  "year":2017,
+  "genre":"Action/RPG",
+  "description":"<p>I used to play pen and paper RPGs like <a href='https://en.wikipedia.org/wiki/Dungeons_%26_Dragons'>Dungeons &amp; Dragons</a> with friends long time ago - and I've been lucky enough to have a number of different dungeon masters along these years. The world of <i>analogic</i> RPG players is quite fascinanting: despite all of these games are built around detailed rules, intricate formulas and infinite additions and corollaries, there is a wide space of freedom in terms of creativity and variety of interactions left to both players and masters.</p><p>Some of the masters I've played with loved to detail environments and happenings with different degrees of detail: Lucio, probably, was my end of scale to the higher top. While some of the happenings of the campaign were improvised, in order to give to the player the right amount of freedom, he used to compose by himself and print most of the messages and the scrolls the players could find during the campaign. Some important dialogues had custom made scripts and relevant places were played using printed maps and pieces. He even used to show printed images of creatures and NPCs when met.<p><p>While these efforts on recreating a sense of immersivity and realism with images, barrage of texts and plausible math formulas has been nicely translated to computer games - mostly on western RPGs - there is a colorful feature that won't be ever ported. That's questioning the rules.</p><p>One of the most obvious thing for a computer game player that's nearly impossible for tabletop players is playing following the rules, especially when these rules are too much complex for the players. A classic scenario is a bunch of kids (and sometime adults) playing <a href='https://en.wikipedia.org/wiki/Monopoly_(game)'>Monopoly</a> together. That game is often took for a fancy version of the <a href='https://en.wikipedia.org/wiki/Game_of_the_Goose'>Game of the Goose</a>, but there is a relatively sophisticated and terribly troubled secret hidden within its manual.</p><p>Rules changed along the years and the nations - some of them are even <a href='https://en.wikipedia.org/wiki/House_rule'>house rules</a> that became full-fledged legends passed down by word of mouth across generations of players. The very same happens with tabletop RPGs - but with way more complex rules and aged players, that lost the innocence of the youth and became ruthless (and drunk, sometime) lawyers of their own version of the truth, heating up the saturday nights.<p><p>And that's why, despite the advancing technologies, we will still sit around the table, printing maps, telling stories and fighting about dice rolls. Humans are so special, isn't it?<p><p>Plot!</p><p>Choose your character and begin your own adventure! Use your mouse for moving the pointer around the game screen and clicking around. Click on the floor for moving your character around, an enemy for attacking him with your sword, a pile of gold for picking it up, an equipment part for equipping it and other objects or characters for interacting with them. You can long-click on enemies for attacking with magic bolts without moving or on equipment parts for selling them. Try hovering on objects to see descriptions on the bottom of the screen. And that's all! Good luck!</p><p><i>PS: Red is the fire that burns the leaf. Green is the leaf that absorb the water. Blue is the water that put out the fire.</i></p>",
+  "screenshots":[ "guardianstones-1.png", "guardianstones-2.png" ],
+  "hardware":{
+    "width":256,
+    "height":192,
+    "filter":"retro",
+    "controls":"pointer"
+  },
+  "cheats":{},
+  "resources":{
+    "spectrum":"spectrum.font",
+    "sprites":"sprites.png",
+    "stuff":"stuff.png",
+    "tiles":"tiles.png",
+    "ui":"ui.png"
+  },
+  "stencils":{
+    "codeCopyStats":{
+      "set":{
+        "generated":1,
+        "statCooldown":{ "_":[ "variable", "copyFrom", "statCooldown" ] },
+        "statDamage":{ "_":[ "variable", "copyFrom", "statDamage" ] },
+        "statDefense":{ "_":[ "variable", "copyFrom", "statDefense" ] },
+        "statDistance":{ "_":[ "variable", "copyFrom", "statDistance" ] },
+        "statElement":{ "_":[ "variable", "copyFrom", "statElement" ] },
+        "statFullName":{ "_":[ "variable", "copyFrom", "statFullName" ] },
+        "statLevel":{ "_":[ "variable", "copyFrom", "statLevel" ] },
+        "statLife":{ "_":[ "variable", "copyFrom", "statLife" ] },
+        "statMaxHealth":{ "_":[ "variable", "copyFrom", "statMaxHealth" ] },
+        "statSpeed":{ "_":[ "variable", "copyFrom", "statSpeed" ] },
+        "statType":{ "_":[ "variable", "copyFrom", "statType" ] }
+      }
+    },
+    "codeEndNpc":[
+      { "_":[ "stencil", "codeResetUi" ] },
+      {
+        "object":{
+          "type":"removeonnpc",
+          "set":{ "_":[ "stencil", "pointerModel" ] },
+          "states":{
+            "name":"running",
+            "code":{
+              "name":"Execute",
+              "data":[
+                { "set":{ "x":{ "_":[ "pointer", "x", "-", 8 ] }, "y":{ "_":[ "pointer", "y", "-", 8 ] }, "nothing":1 } },
+                {
+                  "when":{ "_":[ "this", "holdTime" ] },
+                  "execute":{
+                    "when":{ "_":[ "keyPointer", "isDown" ] },
+                    "execute":{
+                      "when":{ "_":[ "this", "holdTime", "isLessThan", 5 ] },
+                      "execute":[
+                        { "sum":1, "to":{ "_":[ "this", "holdTime" ] } },
+                        {
+                          "when":{ "_":[ "this", "holdTime", "isEqualTo", 5 ] },
+                          "execute":[
+                            { "when":{ "_":[ "this", "performAction", "isEqualTo", "melee" ] }, "set":{ "frame":2, "performAction":"ranged" } },
+                            { "when":{ "_":[ "this", "performAction", "isEqualTo", "pick" ] }, "set":{ "frame":5, "performAction":"sell" } }
+                          ]
+                        }
+                      ]
+                    },
+                    "elseExecute":[
+                      { "set":{ "holdTime":0 } },
+                      {
+                        "when":{ "_":[ "this", "performAction", "isEqualTo", "melee", "and", { "_":[ "this", "performTarget", "removed", "not" ] } ] },
+                        "execute":[
+                          {
+                            "as":{ "_":[ "objectTyped", "player" ] },
+                            "set":{ "nearbyDestination":{ "_":[ "that", "performTarget" ] }, "nearbyDistance":{ "_":[ "variable", "player", "myMeleeDistance", "-", 3 ] } },
+                            "execute":{ "_":[ "stencil", "codeGetNearby" ] }
+                          },
+                          { "as":{ "_":[ "object", "walkdestination" ] }, "remove":1 },
+                          { "object":{ "set":{ "_":[ "stencil", "walkdestination" ] }, "at":{ "_":[ "objectTyped", "positionprocessor" ] } } },
+                          {
+                            "as":{ "_":[ "objectTyped", "player" ] },
+                            "set":{
+                              "speed":{ "_":[ "variable", "player", "mySpeed" ] },
+                              "attack":{ "_":[ "that", "performTarget" ] },
+                              "destination":{ "_":[ "objectTyped", "walkdestination" ] },
+                              "interact":0
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "when":{ "_":[ "this", "performAction", "isEqualTo", "ranged", "and", { "_":[ "this", "performTarget", "removed", "not" ] } ] },
+                        "execute":{
+                          "as":{ "_":[ "objectTyped", "player" ] },
+                          "set":{
+                            "speed":{ "_":[ "variable", "player", "mySpeed" ] },
+                            "attack":{ "_":[ "that", "performTarget" ] },
+                            "destination":{ "_":[ "objectTyped", "walkdestination" ] },
+                            "interact":0
+                          }
+                        }
+                      },
+                      {
+                        "when":{ "_":[ "this", "performAction", "isEqualTo", "walkTo" ] },
+                        "execute":[
+                          { "as":{ "_":[ "object", "walkdestination" ] }, "remove":1 },
+                          { "object":{ "set":{ "_":[ "stencil", "walkdestination" ] }, "x":{ "_":[ "that", "performTargetX" ] }, "y":{ "_":[ "that", "performTargetY" ] } } },
+                          {
+                            "as":{ "_":[ "objectTyped", "player" ] },
+                            "set":{ "speed":{ "_":[ "variable", "player", "mySpeed" ] }, "attack":0, "destination":{ "_":[ "objectTyped", "walkdestination" ] }, "interact":0 }
+                          }
+                        ]
+                      },
+                      {
+                        "when":{
+                          "_":[
+                            "this",
+                            "performAction",
+                            "isEqualTo",
+                            "heal",
+                            "and",
+                            { "_":[ "variable", "player", "myHeals" ] },
+                            "and",
+                            { "_":[ "variable", "player", "myHealth", "isLessThan", { "_":[ "variable", "player", "myMaxHealth" ] } ] }
+                          ]
+                        },
+                        "execute":[
+                          { "subtract":1, "to":{ "_":[ "variable", "player", "myHeals" ] } },
+                          { "sum":{ "_":[ "variable", "player", "myHealAmount" ] }, "to":{ "_":[ "variable", "player", "myHealth" ] } },
+                          {
+                            "when":{ "_":[ "variable", "player", "myHealth", "isGreaterThan", { "_":[ "variable", "player", "myMaxHealth" ] } ] },
+                            "as":{ "_":[ "variable", "player" ] },
+                            "set":{ "myHealth":{ "_":[ "variable", "player", "myMaxHealth" ] } }
+                          }
+                        ]
+                      },
+                      {
+                        "when":{ "_":[ "this", "performAction", "isEqualTo", "pick", "and", { "_":[ "this", "performTarget", "removed", "not" ] } ] },
+                        "execute":[
+                          {
+                            "as":{ "_":[ "objectTyped", "player" ] },
+                            "set":{ "nearbyDestination":{ "_":[ "that", "performTarget" ] }, "nearbyDistance":8 },
+                            "execute":{ "_":[ "stencil", "codeGetNearby" ] }
+                          },
+                          { "as":{ "_":[ "object", "walkdestination" ] }, "remove":1 },
+                          { "object":{ "set":{ "_":[ "stencil", "walkdestination" ] }, "at":{ "_":[ "objectTyped", "positionprocessor" ] } } },
+                          {
+                            "as":{ "_":[ "objectTyped", "player" ] },
+                            "set":{
+                              "speed":{ "_":[ "variable", "player", "mySpeed" ] },
+                              "attack":0,
+                              "destination":{ "_":[ "objectTyped", "walkdestination" ] },
+                              "interact":"pick",
+                              "interactWith":{ "_":[ "that", "performTarget" ] }
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "when":{ "_":[ "this", "performAction", "isEqualTo", "sell", "and", { "_":[ "this", "performTarget", "removed", "not" ] } ] },
+                        "execute":[
+                          {
+                            "as":{ "_":[ "objectTyped", "player" ] },
+                            "set":{ "nearbyDestination":{ "_":[ "that", "performTarget" ] }, "nearbyDistance":8 },
+                            "execute":{ "_":[ "stencil", "codeGetNearby" ] }
+                          },
+                          { "as":{ "_":[ "object", "walkdestination" ] }, "remove":1 },
+                          { "object":{ "set":{ "_":[ "stencil", "walkdestination" ] }, "at":{ "_":[ "objectTyped", "positionprocessor" ] } } },
+                          {
+                            "as":{ "_":[ "objectTyped", "player" ] },
+                            "set":{
+                              "speed":{ "_":[ "variable", "player", "mySpeed" ] },
+                              "attack":0,
+                              "destination":{ "_":[ "objectTyped", "walkdestination" ] },
+                              "interact":"sell",
+                              "interactWith":{ "_":[ "that", "performTarget" ] }
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "when":{ "_":[ "this", "performAction", "isEqualTo", "interact", "and", { "_":[ "this", "performTarget", "removed", "not" ] } ] },
+                        "execute":[
+                          {
+                            "as":{ "_":[ "objectTyped", "player" ] },
+                            "set":{ "nearbyDestination":{ "_":[ "that", "performTarget" ] }, "nearbyDistance":8 },
+                            "execute":{ "_":[ "stencil", "codeGetNearby" ] }
+                          },
+                          { "as":{ "_":[ "object", "walkdestination" ] }, "remove":1 },
+                          { "object":{ "set":{ "_":[ "stencil", "walkdestination" ] }, "at":{ "_":[ "objectTyped", "positionprocessor" ] } } },
+                          {
+                            "as":{ "_":[ "objectTyped", "player" ] },
+                            "set":{
+                              "speed":{ "_":[ "variable", "player", "mySpeed" ] },
+                              "attack":0,
+                              "destination":{ "_":[ "objectTyped", "walkdestination" ] },
+                              "interact":"interact",
+                              "interactWith":{ "_":[ "that", "performTarget" ] }
+                            }
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  "elseExecute":[
+                    {
+                      "when":{ "_":[ "objectTyped", "player" ] },
+                      "execute":{
+                        "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "healbutton" ] } ] },
+                        "execute":[
+                          { "set":{ "frame":3, "nothing":0 } },
+                          { "as":{ "_":"that" }, "executeAction":"describe" },
+                          { "when":{ "_":[ "keyPointer", "isHit" ] }, "set":{ "holdTime":1, "performAction":"heal" } }
+                        ],
+                        "elseExecute":{
+                          "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "description" ] } ] },
+                          "execute":[ { "set":{ "frame":0, "nothing":0 } }, { "as":{ "_":"that" }, "executeAction":"describe" } ],
+                          "elseExecute":{
+                            "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "hud" ] }, "not" ] },
+                            "execute":{
+                              "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "enemy" ] } ] },
+                              "execute":[
+                                { "set":{ "frame":1, "nothing":0 } },
+                                { "as":{ "_":"that" }, "executeAction":"describe" },
+                                { "when":{ "_":[ "keyPointer", "isHit" ] }, "set":{ "holdTime":1, "performAction":"melee", "performTarget":{ "_":"that" } } }
+                              ],
+                              "elseExecute":{
+                                "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "equipment" ] } ] },
+                                "execute":[
+                                  { "set":{ "frame":4, "nothing":0 } },
+                                  { "as":{ "_":"that" }, "executeAction":"describe" },
+                                  { "when":{ "_":[ "keyPointer", "isHit" ] }, "set":{ "holdTime":1, "performAction":"pick", "performTarget":{ "_":"that" } } }
+                                ],
+                                "elseExecute":{
+                                  "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "npc" ] } ] },
+                                  "execute":[
+                                    { "set":{ "frame":4, "nothing":0 } },
+                                    { "as":{ "_":"that" }, "executeAction":"describe" },
+                                    { "when":{ "_":[ "keyPointer", "isHit" ] }, "set":{ "holdTime":1, "performAction":"interact", "performTarget":{ "_":"that" } } }
+                                  ],
+                                  "elseExecute":{
+                                    "when":{ "_":[ "keyPointer", "isHit" ] },
+                                    "set":{
+                                      "holdTime":1,
+                                      "performAction":"walkTo",
+                                      "performTargetX":{ "_":[ "this", "x", "-", 12, "-", { "_":[ "scene", "x" ] } ] },
+                                      "performTargetY":{ "_":[ "this", "y", "-", 35, "-", { "_":[ "scene", "y" ] } ] }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    { "when":{ "_":[ "this", "nothing" ] }, "execute":[ { "set":{ "frame":0 } }, { "as":{ "_":[ "object", "hint" ] }, "set":{ "html":"" } } ] }
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        "into":{ "_":"scenehud" }
+      }
+    ],
+    "codeGenerateLoot":{
+      "object":{
+        "set":{ "_":[ "stencil", "equipmentStencils", { "_":[ "that", "lootType" ] } ] },
+        "at":{ "_":"that" },
+        "statElement":{ "_":[ "that", "lootElement" ] },
+        "statLevel":{ "_":[ "that", "lootLevel" ] }
+      }
+    },
+    "codeGetDamage":[
+      {
+        "set":{
+          "realDefense":{ "_":[ "this", "incomeDamage", "*", 0.7, "+", { "_":[ "randomNumber", [ 0, { "_":[ "this", "incomeDamage", "*", 0.3, "ceil" ] } ] ] } ] },
+          "realIncomeDamage":{ "_":[ "this", "incomeDamage", "*", 0.7, "+", { "_":[ "randomNumber", [ 0, { "_":[ "this", "incomeDamage", "*", 0.3, "ceil" ] } ] ] } ] }
+        }
+      },
+      {
+        "when":{ "_":[ "stencil", "dataWeapons", "strength", { "_":[ "this", "incomeElement" ] }, "isEqualTo", { "_":[ "this", "myElement" ] } ] },
+        "set":{ "realIncomeDamage":{ "_":[ "this", "realIncomeDamage", "*", 1.1, "ceil" ] } }
+      },
+      {
+        "when":{ "_":[ "stencil", "dataWeapons", "weakness", { "_":[ "this", "incomeElement" ] }, "isEqualTo", { "_":[ "this", "myElement" ] } ] },
+        "set":{ "realDefense":{ "_":[ "this", "realDefense", "*", 1.1, "ceil" ] } }
+      },
+      { "set":{ "realAllDamage":{ "_":[ "this", "realIncomeDamage", "-", { "_":[ "this", "realDefense" ] }, "ceil" ] } } },
+      {
+        "when":{ "_":[ "this", "realAllDamage", "isLessEqualThan", 0 ] },
+        "execute":{
+          "when":{ "_":[ "stencil", "dataWeapons", "weakness", { "_":[ "this", "incomeElement" ] }, "isNotEqualTo", { "_":[ "this", "myElement" ] } ] },
+          "set":{ "realAllDamage":{ "_":[ "this", "realIncomeDamage", "*", 0.3, "ceil" ] } },
+          "elseExecute":{ "set":{ "realAllDamage":0 } }
+        }
+      },
+      {
+        "when":{ "_":[ "this", "realAllDamage" ] },
+        "execute":[
+          { "sum":1, "to":{ "_":[ "this", "tension" ] } },
+          {
+            "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "color":{ "_":[ "that", "damageLabelColor" ] }, "html":{ "_":[ "that", "realAllDamage" ] } }
+          },
+          { "subtract":{ "_":[ "this", "realAllDamage" ] }, "to":{ "_":[ "this", "myHealth" ] } },
+          { "when":{ "_":[ "this", "myHealth", "isLessThan", 0 ] }, "set":{ "myHealth":0 } },
+          {
+            "when":{ "_":[ "this", "myHealth", "isEqualTo", 0 ] },
+            "executeAction":"dead",
+            "elseExecute":{ "when":{ "_":[ "this", "stunTimer", "not" ] }, "set":{ "stunTimer":{ "_":[ "this", "realAllDamage", "/", 2, "ceil", "*", 2 ] } } }
+          }
+        ]
+      }
+    ],
+    "codeGetNearby":{
+      "as":{ "_":[ "objectTyped", "positionprocessor" ] },
+      "execute":[
+        { "set":{ "at":{ "_":[ "that", "nearbyDestination" ] } } },
+        { "applyVector":{ "angle":{ "_":[ "this", "angleTo", { "_":"that" } ] }, "length":{ "_":[ "that", "nearbyDistance" ] } } },
+        { "sum":{ "_":[ "this", "forceX" ] }, "to":{ "_":[ "this", "x" ] } },
+        { "sum":{ "_":[ "this", "forceY" ] }, "to":{ "_":[ "this", "y" ] } }
+      ]
+    },
+    "codeGotoNextMap":[ { "as":{ "_":"variable" }, "set":{ "flags":{ "_":[ "new", {} ] }, "spawned":0 } }, { "gotoScene":{ "_":[ "variable", "myScene" ] } } ],
+    "codeLoadGame":[
+      {
+        "as":{ "_":"variable" },
+        "set":{
+          "flags":{ "_":[ "storage", "flags" ] },
+          "myX":{ "_":[ "storage", "myX" ] },
+          "myY":{ "_":[ "storage", "myY" ] },
+          "player":{ "_":[ "storage", "player" ] },
+          "spawned":{ "_":[ "storage", "spawned" ] }
+        }
+      },
+      { "gotoScene":{ "_":[ "storage", "myScene" ] } }
+    ],
+    "codeMoveNearby":{
+      "when":{ "_":[ "this", "distanceTo", { "_":[ "this", "nearbyDestination" ] }, "isLessThan", { "_":[ "this", "nearbySpeed" ] } ] },
+      "execute":{ "_":[ "stencil", "codeGetNearby" ] },
+      "elseExecute":{
+        "as":{ "_":[ "objectTyped", "positionprocessor" ] },
+        "execute":[
+          { "set":{ "at":{ "_":"that" } } },
+          { "applyVector":{ "angle":{ "_":[ "this", "angleTo", { "_":[ "that", "nearbyDestination" ] } ] }, "length":{ "_":[ "that", "nearbySpeed" ] } } },
+          { "sum":{ "_":[ "this", "forceX" ] }, "to":{ "_":[ "this", "x" ] } },
+          { "sum":{ "_":[ "this", "forceY" ] }, "to":{ "_":[ "this", "y" ] } }
+        ]
+      }
+    },
+    "codeNewGame":[
+      { "as":{ "_":"variable" }, "set":{ "myX":0, "myY":0, "player":{ "_":[ "new", {} ] } } },
+      {
+        "as":{ "_":[ "variable", "player" ] },
+        "set":{
+          "armor":{ "generated":1, "statDefense":1, "statElement":0, "statFullName":"Rookie Armor", "statLevel":1, "statMaxHealth":1, "statType":"armor" },
+          "base":{
+            "statCooldown":1,
+            "statDamage":1,
+            "statDefense":1,
+            "statFullName":"Warrior",
+            "statHealAmount":1,
+            "statLevel":1,
+            "statMaxHealth":1,
+            "statMeleeDistance":1,
+            "statNextLevelAt":10,
+            "statRangedLife":1,
+            "statSpeed":1
+          },
+          "melee":{
+            "generated":1,
+            "statCooldown":1,
+            "statDamage":1,
+            "statDistance":1,
+            "statElement":0,
+            "statFullName":"Rookie Sword",
+            "statLevel":1,
+            "statType":"melee"
+          },
+          "myGold":0,
+          "myHeals":3,
+          "myHealth":100,
+          "ranged":{
+            "generated":1,
+            "statCooldown":1,
+            "statDamage":1,
+            "statElement":0,
+            "statFullName":"Rookie Spell",
+            "statLevel":1,
+            "statLife":1,
+            "statSpeed":1,
+            "statType":"ranged"
+          }
+        }
+      }
+    ],
+    "codeRemoveBlockNpc":{ "as":{ "_":[ "object", "blocknpc" ] }, "execute":{ "remove":1, "execute":{ "_":[ "stencil", "codeSparkle" ] } } },
+    "codeResetUi":[
+      { "as":{ "_":[ "object", "hint" ] }, "set":{ "html":"" } },
+      { "as":{ "_":[ "object", "npchud" ] }, "remove":1 },
+      { "as":{ "_":[ "object", "pointer" ] }, "remove":1 }
+    ],
+    "codeSaveGame":{
+      "as":{ "_":"storage" },
+      "set":{
+        "campaignName":{ "_":[ "scene", "campaignName" ] },
+        "flags":{ "_":[ "variable", "flags" ] },
+        "myScene":{ "_":[ "variable", "idScene" ] },
+        "myX":{ "_":[ "variable", "myX" ] },
+        "myY":{ "_":[ "variable", "myY", "-", 1 ] },
+        "player":{ "_":[ "variable", "player" ] },
+        "spawned":{ "_":[ "variable", "spawned" ] }
+      }
+    },
+    "codeSetOnstage":{ "when":{ "_":[ "this", "onstage", "not" ] }, "set":{ "onstage":1, "state":"onstage" } },
+    "codeSetUsed":[
+      {
+        "when":{ "_":[ "this", "serial" ] },
+        "execute":[ { "assign":1, "to":{ "_":[ "variable", "flags", { "_":[ "this", "serial" ] } ] } }, { "executeAction":"questUpdated" } ]
+      },
+      {
+        "when":{ "_":[ "this", "setQuestProgress" ] },
+        "execute":[
+          { "when":{ "_":[ "this", "setQuestName", "not" ] }, "set":{ "setQuestName":{ "_":[ "this", "questName" ] } } },
+          {
+            "when":{ "_":[ "variable", "flags", { "_":[ "this", "setQuestName" ] }, "not" ] },
+            "assign":0,
+            "to":{ "_":[ "variable", "flags", { "_":[ "this", "setQuestName" ] } ] }
+          },
+          {
+            "when":{ "_":[ "variable", "flags", { "_":[ "this", "setQuestName" ] }, "isEqualTo", { "_":[ "this", "setQuestProgress", "-", 1 ] } ] },
+            "execute":[
+              { "executeAction":"updateDone" },
+              { "assign":{ "_":[ "this", "setQuestProgress" ] }, "to":{ "_":[ "variable", "flags", { "_":[ "this", "setQuestName" ] } ] } },
+              { "as":{ "_":[ "object", "campaignelement" ] }, "executeAction":"questUpdated" }
+            ],
+            "elseExecute":{ "executeAction":"updateFailed" }
+          }
+        ]
+      }
+    ],
+    "codeShowPassivePopup":[
+      { "as":{ "_":[ "object", "passivepopup" ] }, "remove":1 },
+      {
+        "object":{
+          "type":[ "passivepopup", "npchud", "removeonnpc" ],
+          "object":{ "width":248, "height":30, "x":4, "y":4, "color":"#000", "font":"spectrum", "lineHeight":10, "html":{ "_":[ "variable", "passiveText" ] } },
+          "image":"ui", "tileY":71, "width":256, "height":26,
+          "zIndex":50, "x":0, "y":192,
+          "bgcolor":"#f00",
+          "states":{
+            "code":{
+              "name":"Sequence",
+              "data":[
+                { "subtract":2, "to":{ "_":[ "this", "y" ] }, "wait":1, "loop":1, "cycles":13 },
+                { "wait":125 },
+                { "sum":2, "to":{ "_":[ "this", "y" ] }, "wait":1, "loop":1, "cycles":13 },
+                { "remove":1 }
+              ]
+            }
+          }
+        },
+        "into":{ "_":"scenehud" }
+      }
+    ],
+    "codeSparkle":{
+      "times":10,
+      "object":{
+        "image":"ui", "tileX":24, "tileY":16, "width":8, "height":8,
+        "zIndex":{ "_":[ "that", "y", "+", 1054 ] }, "x":{ "_":[ "randomNumber", [ { "_":[ "that", "x" ] }, { "_":[ "that", "x", "+", 16 ] } ] ] }, "y":{ "_":[ "that", "y", "+", 32 ] }, "frame":{ "_":[ "randomNumber", [ 0, 2 ] ] },
+        "speedY":{ "_":[ "randomValue", [ 0.5, 1, 1.5, 2 ] ] },
+        "states":{
+          "code":{
+            "name":"Sequence",
+            "data":[ { "subtract":{ "_":[ "this", "speedY" ] }, "to":{ "_":[ "this", "y" ] }, "wait":1, "loop":1, "cycles":10 }, { "remove":1 } ]
+          }
+        }
+      }
+    },
+    "codeSpeech":{
+      "when":{ "_":[ "variable", "speechText", "count", "isLessThan", 50 ] },
+      "execute":{ "as":{ "_":"variable" }, "set":{ "passiveText":{ "_":[ "variable", "speechText" ] } }, "execute":{ "_":[ "stencil", "codeShowPassivePopup" ] } },
+      "elseExecute":[
+        { "_":[ "stencil", "codeStartNpc" ] },
+        {
+          "object":[
+            { "type":"npchud", "width":191, "height":142, "x":57, "y":4, "bgcolor":"#000", "border":"#fff" },
+            { "set":{ "_":[ "stencil", "doneButton" ] }, "x":4, "y":4 },
+            {
+              "type":[ "hud", "npchud" ],
+              "width":175, "height":14,
+              "zIndex":10, "x":65, "y":8,
+              "color":"#0ff",
+              "font":"spectrum", "lineHeight":14, "html":{ "_":[ "variable", "speechName" ] }
+            },
+            {
+              "type":[ "hud", "npchud" ],
+              "width":175, "height":119,
+              "zIndex":10, "x":65, "y":22,
+              "color":"#fff",
+              "font":"spectrum", "lineHeight":10, "html":{ "_":[ "variable", "speechText" ] }
+            }
+          ],
+          "into":{ "_":"scenehud" }
+        }
+      ]
+    },
+    "codeStartNpc":[
+      { "as":{ "_":[ "object", "removeonnpc" ] }, "remove":1 },
+      { "_":[ "stencil", "codeResetUi" ] },
+      { "as":{ "_":[ "objectTyped", "player" ] }, "executeAction":"cancel" },
+      {
+        "object":{
+          "set":{ "_":[ "stencil", "pointerModel" ] },
+          "states":{
+            "name":"running",
+            "code":{
+              "name":"Execute",
+              "data":[
+                { "set":{ "x":{ "_":[ "pointer", "x", "-", 8 ] }, "y":{ "_":[ "pointer", "y", "-", 8 ] } } },
+                {
+                  "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "clickable" ] } ] },
+                  "execute":[ { "set":{ "newhovering":{ "_":"that" } } }, { "when":{ "_":[ "keyPointer", "isHit" ] }, "as":{ "_":"that" }, "executeAction":"click" } ],
+                  "elseExecute":{ "set":{ "newhovering":0 } }
+                },
+                {
+                  "when":{ "_":[ "this", "hovering", "isNotEqualTo", { "_":[ "this", "newhovering" ] } ] },
+                  "execute":[
+                    { "when":{ "_":[ "this", "hovering" ] }, "as":{ "_":[ "this", "hovering" ] }, "executeAction":"undescribe" },
+                    { "as":{ "_":[ "object", "hint" ] }, "set":{ "html":"" } },
+                    { "set":{ "hovering":{ "_":[ "this", "newhovering" ] } } },
+                    { "when":{ "_":[ "this", "hovering" ] }, "as":{ "_":[ "this", "hovering" ] }, "executeAction":"describe" }
+                  ]
+                }
+              ]
+            }
+          }
+        },
+        "into":{ "_":"scenehud" }
+      }
+    ],
+    "codeStaticZPerspective":{ "set":{ "zIndex":{ "_":[ "that", "y", "+", 1000, "+", { "_":[ "this", "height" ] } ] } } },
+    "codeUpdateStats":{
+      "as":{ "_":[ "variable", "player" ] },
+      "execute":[
+        {
+          "as":{ "_":[ "variable", "player" ] },
+          "set":{
+            "myArmorElement":{ "_":[ "this", "armor", "statElement" ] },
+            "myDefense":{
+              "_":[
+                "proportionalValue",
+                { "proportion":[ 0, 20, 1, 100 ], "value":{ "_":[ "this", "base", "statDefense", "+", { "_":[ "this", "armor", "statDefense" ] } ] } },
+                "floor"
+              ]
+            },
+            "myHealAmount":{ "_":[ "proportionalValue", { "proportion":[ 0, 10, 1, 100 ], "value":{ "_":[ "this", "base", "statHealAmount" ] } }, "floor" ] },
+            "myMaxHealth":{
+              "_":[
+                "proportionalValue",
+                { "proportion":[ 0, 20, 1, 1000 ], "value":{ "_":[ "this", "base", "statMaxHealth", "+", { "_":[ "this", "armor", "statMaxHealth" ] } ] } },
+                "floor"
+              ]
+            },
+            "myMeleeCooldown":{
+              "_":[
+                "proportionalValue",
+                { "proportion":[ 0, 20, 50, 10 ], "value":{ "_":[ "this", "base", "statCooldown", "+", { "_":[ "this", "melee", "statCooldown" ] } ] } },
+                "floor"
+              ]
+            },
+            "myMeleeDamage":{
+              "_":[
+                "proportionalValue",
+                { "proportion":[ 0, 20, 1, 200 ], "value":{ "_":[ "this", "base", "statDamage", "+", { "_":[ "this", "melee", "statDamage" ] } ] } },
+                "floor"
+              ]
+            },
+            "myMeleeDistance":{
+              "_":[
+                "proportionalValue",
+                { "proportion":[ 0, 20, 5, 20 ], "value":{ "_":[ "this", "base", "statMeleeDistance", "+", { "_":[ "this", "melee", "statDistance" ] } ] } }
+              ]
+            },
+            "myMeleeElement":{ "_":[ "this", "melee", "statElement" ] },
+            "myRangedCooldown":{
+              "_":[
+                "proportionalValue",
+                { "proportion":[ 0, 20, 50, 10 ], "value":{ "_":[ "this", "base", "statCooldown", "+", { "_":[ "this", "ranged", "statCooldown" ] } ] } },
+                "floor"
+              ]
+            },
+            "myRangedDamage":{
+              "_":[
+                "proportionalValue",
+                { "proportion":[ 0, 20, 1, 50 ], "value":{ "_":[ "this", "base", "statDamage", "+", { "_":[ "this", "ranged", "statDamage" ] } ] } },
+                "floor"
+              ]
+            },
+            "myRangedElement":{ "_":[ "this", "ranged", "statElement" ] },
+            "myRangedLife":{
+              "_":[
+                "proportionalValue",
+                { "proportion":[ 0, 20, 30, 100 ], "value":{ "_":[ "this", "base", "statRangedLife", "+", { "_":[ "this", "ranged", "statLife" ] } ] } },
+                "floor"
+              ]
+            },
+            "myRangedSpeed":{ "_":[ "proportionalValue", { "proportion":[ 0, 10, 1, 3 ], "value":{ "_":[ "this", "ranged", "statSpeed" ] } } ] },
+            "mySpeed":{ "_":[ "proportionalValue", { "proportion":[ 0, 10, 1, 3 ], "value":{ "_":[ "this", "base", "statSpeed" ] } } ] }
+          }
+        },
+        { "when":{ "_":[ "this", "myHealth", "isGreaterThan", { "_":[ "this", "myMaxHealth" ] } ] }, "set":{ "myHealth":{ "_":[ "this", "myMaxHealth" ] } } }
+      ]
+    },
+    "removeOnDistanceBehaviour":{
+      "code":{ "name":"Execute", "data":{ "when":{ "_":[ "this", "distanceTo", { "_":[ "objectTyped", "player" ] }, "isGreaterThan", 270 ] }, "remove":1 } }
+    },
+    "modelPopupLabel":{
+      "width":100, "height":10,
+      "zIndex":100000000, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "that", "y", "+", 7 ] },
+      "color":"#fff",
+      "font":"spectrum", "lineHeight":12, "outline":"#000", "textAlign":"center",
+      "speed":0.5,
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[ { "subtract":{ "_":[ "this", "speed" ] }, "to":{ "_":[ "this", "y" ] }, "wait":1, "loop":1, "cycles":15 }, { "remove":1 } ]
+        }
+      }
+    },
+    "stageModel":{
+      "cameraX":0, "cameraY":0, "cameraWidth":256, "cameraHeight":150, "cameraFocusX":64, "cameraFocusY":37, "cameraFocusWidth":128, "cameraFocusHeight":74,
+      "execute":{
+        "object":[
+          { "_":[ "stencil", "positionprocessor" ] },
+          { "type":"hud", "image":"ui", "tileY":56, "width":256, "height":41, "x":0, "y":151, "bgcolor":"#000" },
+          {
+            "type":[ "healbutton", "clickable" ],
+            "image":"ui", "tileX":49, "tileY":97, "width":49, "height":45,
+            "zIndex":10, "x":0, "y":120,
+            "hitbox":{ "width":49, "height":22, "x":0, "y":22 },
+            "states":{ "actions":{ "name":"describe", "execute":{ "_":[ "stencil", "descriptors", "player" ] } } }
+          },
+          {
+            "type":"hud",
+            "hudType":"label", "label":"%number|variable.player.myHeals|0|3%",
+            "box":"label", "width":256, "height":30,
+            "zIndex":20, "x":58, "y":150,
+            "font":"spectrum"
+          },
+          {
+            "type":[ "hintline0", "hint" ],
+            "box":"label", "width":246, "height":20,
+            "zIndex":30, "x":5, "y":170,
+            "color":"#fff",
+            "font":"spectrum", "fontSize":20, "lineHeight":10
+          },
+          {
+            "type":[ "hintline1", "hint" ],
+            "box":"label", "width":246, "height":20,
+            "zIndex":31, "x":5, "y":179,
+            "color":"#fff",
+            "font":"spectrum", "fontSize":20, "lineHeight":10
+          },
+          {
+            "type":"hud",
+            "hudType":"label", "label":"%number|variable.player.myGold|0|5%",
+            "box":"label", "width":256, "height":30,
+            "zIndex":20, "x":100, "y":150,
+            "font":"spectrum"
+          },
+          {
+            "image":"ui", "tileX":0, "tileY":97, "width":49, "height":45,
+            "zIndex":30, "x":0, "y":120,
+            "states":{
+              "code":{
+                "name":"Execute",
+                "data":[
+                  { "set":{ "height":{ "_":[ "variable", "player", "myHealth", "/", { "_":[ "variable", "player", "myMaxHealth" ] }, "*", 45, "floor" ] } } },
+                  { "set":{ "tileY":{ "_":[ 142, "-", { "_":[ "this", "height" ] } ] }, "y":{ "_":[ 165, "-", { "_":[ "this", "height" ] } ] } } }
+                ]
+              }
+            }
+          },
+          {
+            "type":[ "description", "clickable" ],
+            "image":"stuff", "tileX":336, "tileY":27, "width":24, "height":13,
+            "zIndex":30, "x":201, "y":153,
+            "states":{
+              "code":{ "name":"Execute", "data":{ "set":{ "frame":{ "_":[ "variable", "player", "armor", "statElement" ] } } } },
+              "actions":{ "name":"describe", "execute":{ "as":{ "_":[ "variable", "player", "armor" ] }, "execute":{ "_":[ "stencil", "descriptors", "armor" ] } } }
+            }
+          },
+          {
+            "type":[ "description", "clickable" ],
+            "image":"stuff", "tileX":192, "tileY":27, "width":24, "height":13,
+            "zIndex":30, "x":174, "y":153,
+            "states":{
+              "code":{ "name":"Execute", "data":{ "set":{ "frame":{ "_":[ "variable", "player", "melee", "statElement" ] } } } },
+              "actions":{ "name":"describe", "execute":{ "as":{ "_":[ "variable", "player", "melee" ] }, "execute":{ "_":[ "stencil", "descriptors", "melee" ] } } }
+            }
+          },
+          {
+            "type":[ "description", "clickable" ],
+            "image":"stuff", "tileX":264, "tileY":27, "width":24, "height":13,
+            "zIndex":30, "x":228, "y":153,
+            "states":{
+              "code":{ "name":"Execute", "data":{ "set":{ "frame":{ "_":[ "variable", "player", "ranged", "statElement" ] } } } },
+              "actions":{ "name":"describe", "execute":{ "as":{ "_":[ "variable", "player", "ranged" ] }, "execute":{ "_":[ "stencil", "descriptors", "ranged" ] } } }
+            }
+          }
+        ],
+        "into":{ "_":"scenehud" }
+      },
+      "enemySpawnCooldown":[ 25, 25 ],
+      "states":[
+        {
+          "execute":[
+            {
+              "when":{ "_":[ "variable", "spawned" ] },
+              "execute":[
+                { "object":{ "set":{ "_":[ "stencil", "player" ] }, "x":{ "_":[ "variable", "myX" ] }, "y":{ "_":[ "variable", "myY" ] } } },
+                { "_":[ "stencil", "codeEndNpc" ] }
+              ],
+              "elseExecute":[
+                { "_":[ "stencil", "codeStartNpc" ] },
+                { "object":{ "set":{ "_":[ "stencil", "player" ] }, "at":{ "_":[ "objectTyped", "startingpoint" ] } } },
+                {
+                  "object":[
+                    { "type":"npchud", "width":191, "height":142, "x":57, "y":4, "bgcolor":"#000", "border":"#fff" },
+                    { "set":{ "_":[ "stencil", "doneButton" ] }, "x":4, "y":4 },
+                    {
+                      "type":[ "hud", "npchud" ],
+                      "width":175, "height":14,
+                      "zIndex":10, "x":65, "y":8,
+                      "color":"#0ff",
+                      "font":"spectrum", "lineHeight":14, "html":{ "_":[ "scene", "campaignName" ] }
+                    },
+                    {
+                      "type":[ "hud", "npchud" ],
+                      "width":175, "height":1,
+                      "zIndex":10, "x":65, "y":22,
+                      "color":"#fff",
+                      "font":"spectrum", "lineHeight":10, "html":{ "_":[ "scene", "campaignPrologue" ] },
+                      "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "this", "height", "isLessThan", 118 ] }, "sum":1, "to":{ "_":[ "this", "height" ] } } } }
+                    }
+                  ],
+                  "into":{ "_":"scenehud" }
+                }
+              ]
+            },
+            {
+              "when":{ "_":[ "variable", "saveOnMap" ] },
+              "execute":[ { "_":[ "stencil", "codeSaveGame" ] }, { "as":{ "_":"variable" }, "set":{ "saveOnMap":0 } } ]
+            }
+          ]
+        },
+        {
+          "name":"gameover",
+          "execute":[ { "as":{ "_":[ "object", "removeongameover" ] }, "remove":1 }, { "_":[ "stencil", "codeStartNpc" ] } ],
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "wait":25 },
+              {
+                "object":[
+                  { "set":{ "_":[ "stencil", "scrollingMessageModel" ] }, "tileY":213 },
+                  {
+                    "set":{ "_":[ "stencil", "uiButtonModel" ] },
+                    "width":140,
+                    "x":58, "y":90,
+                    "html":"Load game",
+                    "description":"Restart from saved game.",
+                    "states":{ "actions":{ "name":"click", "execute":[ { "as":{ "_":[ "object", "npchud" ] }, "remove":1 }, { "_":[ "stencil", "codeLoadGame" ] } ] } }
+                  },
+                  {
+                    "set":{ "_":[ "stencil", "uiButtonModel" ] },
+                    "width":140,
+                    "x":58, "y":118,
+                    "html":"Title screen",
+                    "description":"Go to the title screen.",
+                    "states":{ "actions":{ "name":"click", "execute":[ { "as":{ "_":[ "object", "npchud" ] }, "remove":1 }, { "gotoScene":"intro" } ] } }
+                  }
+                ],
+                "into":{ "_":"scenehud" }
+              }
+            ]
+          }
+        },
+        {
+          "name":"campaigncompleted",
+          "execute":[
+            { "as":{ "_":[ "object", "removeongameover" ] }, "remove":1 },
+            { "_":[ "stencil", "codeStartNpc" ] },
+            {
+              "object":[
+                { "type":"npchud", "width":191, "height":142, "x":57, "y":4, "bgcolor":"#000", "border":"#fff" },
+                {
+                  "set":{ "_":[ "stencil", "uiButtonModel" ] },
+                  "x":4, "y":4,
+                  "html":"End",
+                  "description":"End current campaign.",
+                  "states":{
+                    "actions":{
+                      "name":"click",
+                      "execute":[
+                        { "_":[ "stencil", "codeStartNpc" ] },
+                        {
+                          "object":[
+                            { "set":{ "_":[ "stencil", "scrollingMessageModel" ] }, "tileY":142, "forceY":12 },
+                            {
+                              "width":258, "height":20,
+                              "zIndex":100, "x":-1, "y":8,
+                              "bgcolor":"#fff", "border":"#000", "color":"#000",
+                              "font":"spectrum", "lineHeight":20, "textAlign":"center", "html":{ "_":[ "scene", "campaignName" ] }
+                            },
+                            {
+                              "set":{ "_":[ "stencil", "uiButtonModel" ] },
+                              "width":140,
+                              "x":58, "y":118,
+                              "html":"Continue",
+                              "description":"Continue your adventure.",
+                              "states":{
+                                "actions":{
+                                  "name":"click",
+                                  "execute":[
+                                    { "as":{ "_":[ "object", "npchud" ] }, "remove":1 },
+                                    { "as":{ "_":"variable" }, "set":{ "myScene":{ "_":[ "scene", "nextCampaign" ] } } },
+                                    { "_":[ "stencil", "codeGotoNextMap" ] }
+                                  ]
+                                }
+                              }
+                            }
+                          ],
+                          "into":{ "_":"scenehud" }
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "type":[ "hud", "npchud" ],
+                  "width":175, "height":14,
+                  "zIndex":10, "x":65, "y":8,
+                  "color":"#0ff",
+                  "font":"spectrum", "lineHeight":14, "html":{ "_":[ "scene", "campaignName" ] }
+                },
+                {
+                  "type":[ "hud", "npchud" ],
+                  "width":175, "height":1,
+                  "zIndex":10, "x":65, "y":22,
+                  "color":"#fff",
+                  "font":"spectrum", "lineHeight":10, "html":{ "_":[ "scene", "campaignEpilogue" ] },
+                  "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "this", "height", "isLessThan", 118 ] }, "sum":1, "to":{ "_":[ "this", "height" ] } } } }
+                }
+              ],
+              "into":{ "_":"scenehud" }
+            }
+          ]
+        }
+      ]
+    },
+    "player":{
+      "type":"player",
+      "follow":1,
+      "set":{ "_":[ "stencil", "humanoid" ] },
+      "baseTileY":0,
+      "damageLabelColor":"#f00",
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":{
+            "when":{ "_":[ "this", "destination", "not", "and", { "_":[ "this", "attackTimer", "not" ] } ] },
+            "execute":[
+              {
+                "when":{ "_":[ "this", "attack" ] },
+                "execute":{
+                  "when":{ "_":[ "this", "attack", "removed" ] },
+                  "set":{ "attack":0 },
+                  "elseExecute":[
+                    { "set":{ "lookAtDestination":{ "_":[ "this", "attack" ] } }, "executeAction":"lookAt" },
+                    {
+                      "when":{ "_":[ "this", "distanceTo", { "_":[ "this", "attack" ] }, "isLessEqualThan", { "_":[ "variable", "player", "myMeleeDistance" ] } ] },
+                      "execute":[
+                        { "set":{ "attackTimer":{ "_":[ "variable", "player", "myMeleeCooldown" ] } } },
+                        {
+                          "as":{ "_":[ "this", "attack" ] },
+                          "execute":{
+                            "set":{ "incomeDamage":{ "_":[ "variable", "player", "myMeleeDamage" ] }, "incomeElement":{ "_":[ "variable", "player", "myMeleeElement" ] } },
+                            "executeAction":"getDamage"
+                          }
+                        }
+                      ],
+                      "elseExecute":[
+                        { "set":{ "attackTimer":{ "_":[ "variable", "player", "myRangedCooldown" ] } } },
+                        {
+                          "object":{
+                            "set":{ "_":[ "stencil", "bullet" ] },
+                            "tileX":144,
+                            "at":{ "_":"that" },
+                            "myDamage":{ "_":[ "variable", "player", "myRangedDamage" ] },
+                            "myElement":{ "_":[ "variable", "player", "myRangedElement" ] },
+                            "myLife":{ "_":[ "variable", "player", "myRangedLife" ] },
+                            "myTargetType":"enemy"
+                          },
+                          "as":{ "_":"that" },
+                          "execute":{ "applyVector":{ "angle":{ "_":[ "this", "angleTo", { "_":[ "that", "attack" ] } ] }, "length":{ "_":[ "variable", "player", "myRangedSpeed" ] } } }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "when":{ "_":[ "this", "interact" ] },
+                "execute":[
+                  {
+                    "when":{ "_":[ "this", "interactWith", "removed", "not" ] },
+                    "execute":[
+                      { "set":{ "lookAtDestination":{ "_":[ "this", "interactWith" ] } }, "executeAction":"lookAt" },
+                      {
+                        "when":{ "_":[ "this", "distanceTo", { "_":[ "this", "interactWith" ] }, "isLessThan", 18 ] },
+                        "as":{ "_":[ "this", "interactWith" ] },
+                        "executeAction":{ "_":[ "that", "interact" ] }
+                      }
+                    ]
+                  },
+                  { "set":{ "interact":0, "interactWith":0 } }
+                ]
+              }
+            ]
+          }
+        },
+        "actions":[
+          {
+            "name":"getDamage",
+            "execute":[
+              {
+                "set":{
+                  "myDefense":{ "_":[ "variable", "player", "myDefense" ] },
+                  "myElement":{ "_":[ "variable", "player", "myArmorElement" ] },
+                  "myHealth":{ "_":[ "variable", "player", "myHealth" ] }
+                }
+              },
+              { "_":[ "stencil", "codeGetDamage" ] },
+              { "as":{ "_":[ "variable", "player" ] }, "set":{ "myHealth":{ "_":[ "that", "myHealth" ] } } }
+            ]
+          },
+          { "name":"dead", "execute":[ { "set":{ "state":"dead" } }, { "as":{ "_":"scene" }, "set":{ "state":"gameover" } } ] },
+          { "name":"cancel", "execute":{ "set":{ "attack":0, "destination":0, "interact":0, "interactWith":0 } } }
+        ]
+      }
+    },
+    "enemyArea":{
+      "set":{ "_":[ "stencil", "areaModel" ] },
+      "states":[
+        {
+          "name":"onstage",
+          "set":{ "visible":0 },
+          "code":{ "name":"Execute", "data":{ "when":{ "_":[ "this", "collidesWith", { "_":[ "objectTyped", "player" ] } ] }, "set":{ "state":"spawn" } } }
+        },
+        { "name":"done", "like":{ "_":[ "stencil", "campaignElementState" ] }, "set":{ "state":"onstage" } }
+      ]
+    },
+    "enemy":{
+      "type":[ "enemy", "blocknpc", "removeonsave" ],
+      "set":{ "_":[ "stencil", "humanoid" ] },
+      "visible":0,
+      "attackCounter":1,
+      "damageLabelColor":"#fff",
+      "stepCounter":1,
+      "tension":0,
+      "states":{
+        "like":{ "_":[ "stencil", "removeOnDistanceBehaviour" ] },
+        "execute":{
+          "when":{ "_":[ "this", "generated", "not" ] },
+          "execute":[
+            {
+              "times":{ "_":[ "this", "statLevel" ] },
+              "decide":[
+                { "when":{ "_":[ "this", "statSpeed", "isLessThan", 10 ] }, "options":{ "sum":1, "to":{ "_":[ "this", "statSpeed" ] } } },
+                { "when":{ "_":[ "this", "statDamage", "isLessThan", 10 ] }, "options":{ "sum":1, "to":{ "_":[ "this", "statDamage" ] } } },
+                { "when":{ "_":[ "this", "statDefense", "isLessThan", 10 ] }, "options":{ "sum":1, "to":{ "_":[ "this", "statDefense" ] } } },
+                { "when":{ "_":[ "this", "statAttackWait", "isLessThan", 10 ] }, "options":{ "sum":1, "to":{ "_":[ "this", "statAttackWait" ] } } }
+              ]
+            },
+            {
+              "times":{ "_":[ "this", "statLevel" ] },
+              "decide":[
+                { "when":{ "_":[ "this", "statStepLength", "isLessThan", 10 ] }, "options":{ "sum":1, "to":{ "_":[ "this", "statStepLength" ] } } },
+                { "when":{ "_":[ "this", "statStepWait", "isLessThan", 10 ] }, "options":{ "sum":1, "to":{ "_":[ "this", "statStepWait" ] } } },
+                { "when":{ "_":[ "this", "statAttackDistance", "isLessThan", 10 ] }, "options":{ "sum":1, "to":{ "_":[ "this", "statAttackDistance" ] } } },
+                { "when":{ "_":[ "this", "statCooldown", "isLessThan", 10 ] }, "options":{ "sum":1, "to":{ "_":[ "this", "statCooldown" ] } } }
+              ]
+            },
+            {
+              "when":{ "_":[ "this", "statAttackType", "isEqualTo", "melee", "not" ] },
+              "elseExecute":{
+                "times":{ "_":[ "this", "statLevel" ] },
+                "decide":[
+                  { "when":{ "_":[ "this", "statRangedSpeed", "isLessThan", 10 ] }, "options":{ "sum":1, "to":{ "_":[ "this", "statRangedSpeed" ] } } },
+                  { "when":{ "_":[ "this", "statRangedLife", "isLessThan", 10 ] }, "options":{ "sum":1, "to":{ "_":[ "this", "statRangedLife" ] } } },
+                  { "when":{ "_":[ "this", "statRangedPrecision", "isLessThan", 10 ] }, "options":{ "sum":1, "to":{ "_":[ "this", "statRangedPrecision" ] } } }
+                ]
+              }
+            },
+            {
+              "set":{
+                "tileX":{ "_":[ "this", "statElement", "*", 120 ] }, "tileY":{ "_":[ "this", "baseTileY" ] },
+                "visible":1,
+                "generated":1,
+                "myAttackWait":{ "_":[ "proportionalValue", { "proportion":[ 0, 10, 30, 10 ], "value":{ "_":[ "this", "statAttackWait" ] } } ] },
+                "myDefense":{ "_":[ "proportionalValue", { "proportion":[ 0, 10, 1, 20 ], "value":{ "_":[ "this", "statDefense" ] } }, "floor" ] },
+                "myElement":{ "_":[ "this", "statElement" ] },
+                "myHealth":{ "_":[ "proportionalValue", { "proportion":[ 0, 10, 1, 200 ], "value":{ "_":[ "this", "statHealth" ] } }, "floor" ] },
+                "mySpeed":{ "_":[ "proportionalValue", { "proportion":[ 0, 10, 1, 3 ], "value":{ "_":[ "this", "statSpeed" ] } } ] },
+                "myStepLength":{ "_":[ "proportionalValue", { "proportion":[ 0, 10, 10, 30 ], "value":{ "_":[ "this", "statStepLength" ] } }, "floor" ] },
+                "myStepWait":{ "_":[ "proportionalValue", { "proportion":[ 0, 10, 10, 30 ], "value":{ "_":[ "this", "statStepWait" ] } }, "floor" ] },
+                "myTensionThreshold":{ "_":[ "proportionalValue", { "proportion":[ 0, 10, 10, 2 ], "value":{ "_":[ "this", "statTension" ] } } ] }
+              }
+            },
+            {
+              "when":{ "_":[ "this", "statAttackType", "isEqualTo", "melee" ] },
+              "execute":{
+                "set":{
+                  "myAttackCooldown":{ "_":[ "proportionalValue", { "proportion":[ 0, 10, 50, 10 ], "value":{ "_":[ "this", "statCooldown" ] } }, "floor" ] },
+                  "myAttackDamage":{ "_":[ "proportionalValue", { "proportion":[ 0, 10, 1, 200 ], "value":{ "_":[ "this", "statDamage" ] } }, "floor" ] },
+                  "myAttackDistance":{ "_":[ "proportionalValue", { "proportion":[ 0, 10, 5, 20 ], "value":{ "_":[ "this", "statAttackDistance" ] } } ] }
+                }
+              },
+              "elseExecute":{
+                "set":{
+                  "bulletTileX":{ "_":[ "this", "statElement", "*", 48 ] },
+                  "myAttackCooldown":{ "_":[ "proportionalValue", { "proportion":[ 0, 10, 50, 10 ], "value":{ "_":[ "this", "statCooldown" ] } }, "floor" ] },
+                  "myAttackDamage":{ "_":[ "proportionalValue", { "proportion":[ 0, 10, 1, 50 ], "value":{ "_":[ "this", "statDamage" ] } }, "floor" ] },
+                  "myAttackDistance":{ "_":[ "proportionalValue", { "proportion":[ 0, 10, 50, 100 ], "value":{ "_":[ "this", "statAttackDistance" ] } } ] },
+                  "myAttackLife":{ "_":[ "proportionalValue", { "proportion":[ 0, 10, 30, 100 ], "value":{ "_":[ "this", "statRangedLife" ] } } ] },
+                  "myAttackPrecision":{ "_":[ "proportionalValue", { "proportion":[ 0, 10, 20, 3 ], "value":{ "_":[ "this", "statRangedPrecision" ] } } ] },
+                  "myAttackSpeed":{ "_":[ "proportionalValue", { "proportion":[ 0, 10, 1, 3 ], "value":{ "_":[ "this", "statRangedSpeed" ] } } ] }
+                }
+              }
+            },
+            { "_":[ "stencil", "codeSparkle" ] }
+          ]
+        },
+        "code":{
+          "name":"Execute",
+          "data":{
+            "when":{
+              "_":[
+                "this",
+                "destination",
+                "not",
+                "and",
+                { "_":[ "this", "attackTimer", "not" ] },
+                "and",
+                { "_":[ "this", "stunTimer", "not" ] },
+                "and",
+                { "_":[ "objectTyped", "player" ] }
+              ]
+            },
+            "execute":{
+              "when":{ "_":[ "this", "attackCounter", "not" ] },
+              "execute":{
+                "when":{ "_":[ "this", "distanceTo", { "_":[ "objectTyped", "player" ] }, "isLessThan", { "_":[ "this", "myAttackDistance" ] } ] },
+                "execute":{
+                  "when":{ "_":[ "this", "tension", "isGreaterThan", { "_":[ "this", "myTensionThreshold" ] } ] },
+                  "execute":[
+                    {
+                      "set":{
+                        "speed":{ "_":[ "this", "mySpeed" ] },
+                        "destination":{ "_":[ "new", {} ] },
+                        "nearbyDestination":{ "_":[ "objectTyped", "player" ] },
+                        "nearbyDistance":{ "_":[ "randomNumber", [ 20, 40 ] ] },
+                        "tension":0
+                      },
+                      "execute":{ "_":[ "stencil", "codeGetNearby" ] }
+                    },
+                    {
+                      "as":{ "_":[ "this", "destination" ] },
+                      "set":{ "width":24, "height":40, "x":{ "_":[ "objectTyped", "positionprocessor", "x" ] }, "y":{ "_":[ "objectTyped", "positionprocessor", "y" ] } }
+                    }
+                  ],
+                  "elseExecute":[
+                    { "set":{ "attackTimer":{ "_":[ "this", "myAttackCooldown" ] }, "lookAtDestination":{ "_":[ "objectTyped", "player" ] } }, "executeAction":"lookAt" },
+                    {
+                      "when":{ "_":[ "this", "myAttackLife" ] },
+                      "execute":{
+                        "object":{
+                          "set":{ "_":[ "stencil", "bullet" ] },
+                          "tileX":{ "_":[ "that", "bulletTileX" ] },
+                          "at":{ "_":"that" },
+                          "myDamage":{ "_":[ "that", "myAttackDamage" ] },
+                          "myElement":{ "_":[ "that", "myElement" ] },
+                          "myLife":{ "_":[ "that", "myAttackLife" ] },
+                          "myTargetType":"player"
+                        },
+                        "as":{ "_":"that" },
+                        "execute":{
+                          "applyVector":{
+                            "angle":{ "_":[ "this", "angleTo", { "_":[ "objectTyped", "player" ] }, "+", { "_":[ "randomNumber", [ { "_":[ "that", "myAttackPrecision", "*", -1 ] }, { "_":[ "that", "myAttackPrecision" ] } ] ] } ] },
+                            "length":{ "_":[ "that", "myAttackSpeed" ] }
+                          }
+                        }
+                      },
+                      "elseExecute":{
+                        "as":{ "_":[ "objectTyped", "player" ] },
+                        "execute":{ "set":{ "incomeDamage":{ "_":[ "that", "myAttackDamage" ] }, "incomeElement":{ "_":[ "that", "myElement" ] } }, "executeAction":"getDamage" }
+                      }
+                    }
+                  ]
+                },
+                "elseExecute":{ "set":{ "attackCounter":{ "_":[ "this", "myAttackWait" ] } } }
+              },
+              "elseExecute":[
+                { "subtract":1, "to":{ "_":[ "this", "attackCounter" ] } },
+                {
+                  "when":{ "_":[ "this", "stepCounter", "not" ] },
+                  "execute":[
+                    {
+                      "set":{
+                        "speed":{ "_":[ "this", "mySpeed" ] },
+                        "destination":{ "_":[ "new", {} ] },
+                        "nearbyDestination":{ "_":[ "objectTyped", "player" ] },
+                        "nearbyDistance":{ "_":[ "this", "myAttackDistance", "-", 2 ] },
+                        "nearbySpeed":{ "_":[ "this", "myStepLength" ] },
+                        "stepCounter":{ "_":[ "this", "myStepWait" ] }
+                      },
+                      "execute":{ "_":[ "stencil", "codeMoveNearby" ] }
+                    },
+                    {
+                      "as":{ "_":[ "this", "destination" ] },
+                      "set":{ "width":24, "height":40, "x":{ "_":[ "objectTyped", "positionprocessor", "x" ] }, "y":{ "_":[ "objectTyped", "positionprocessor", "y" ] } }
+                    }
+                  ],
+                  "elseExecute":{ "subtract":1, "to":{ "_":[ "this", "stepCounter" ] } }
+                }
+              ]
+            }
+          }
+        },
+        "actions":[
+          {
+            "name":"describe",
+            "execute":[
+              {
+                "as":{ "_":[ "objectTyped", "hintline0" ] },
+                "set":{
+                  "color":"#f00",
+                  "html":{ "_":[ "LV.", ".", { "_":[ "that", "statLevel" ] }, ".", " ", ".", { "_":[ "that", "statFullName" ] }, ".", " (HP:", ".", { "_":[ "that", "myHealth" ] }, ".", ")" ] }
+                }
+              },
+              {
+                "as":{ "_":[ "objectTyped", "hintline1" ] },
+                "set":{ "color":{ "_":[ "stencil", "dataWeapons", "colors", { "_":[ "that", "statElement" ] } ] }, "html":"" }
+              }
+            ]
+          },
+          { "name":"getDamage", "execute":{ "_":[ "stencil", "codeGetDamage" ] } },
+          { "name":"dead", "execute":[ { "_":[ "stencil", "codeGenerateLoot" ] }, { "set":{ "state":"dead" } } ] }
+        ]
+      }
+    },
+    "armor":{ "statDefense":1, "statElement":0, "statMaxHealth":1, "statType":"armor" },
+    "bossblock":{
+      "image":"stuff", "tileX":48, "tileY":40, "width":24, "height":40,
+      "hitbox":{ "width":24, "height":8, "x":0, "y":32 },
+      "execute":{ "_":[ "stencil", "codeStaticZPerspective" ] },
+      "states":{ "actions":[ { "name":"raise", "set":{ "type":"wall", "frame":1 } }, { "name":"lower", "set":{ "removeType":"wall", "frame":0 } } ] }
+    },
+    "sidebossblock":{ "set":{ "_":[ "stencil", "bossblock" ] }, "tileX":96, "hitbox":{ "width":8, "height":40, "x":8, "y":0 } },
+    "bullet":{
+      "type":[ "blocknpc", "removeonsave" ],
+      "image":"stuff", "width":24, "height":40,
+      "hitbox":{ "width":8, "height":5, "x":8, "y":32 },
+      "animations":{ "moving":{ "frames":2, "speed":1, "loopTo":0 } },
+      "animation":"moving",
+      "myLife":10,
+      "states":{
+        "code":[
+          {
+            "name":"Execute",
+            "data":[
+              { "subtract":1, "to":{ "_":[ "this", "myLife" ] } },
+              {
+                "when":{ "_":[ "this", "myLife" ] },
+                "execute":{
+                  "when":{ "_":[ "this", "collidesWith", { "_":[ "this", "myTargetType" ] } ] },
+                  "execute":[
+                    {
+                      "as":{ "_":"that" },
+                      "execute":{ "set":{ "incomeDamage":{ "_":[ "that", "myDamage" ] }, "incomeElement":{ "_":[ "that", "myElement" ] } }, "executeAction":"getDamage" }
+                    },
+                    { "remove":1 }
+                  ]
+                },
+                "elseExecute":{ "remove":1 }
+              }
+            ]
+          },
+          { "name":"Physics", "data":{ "walls":[ { "type":"wall", "execute":{ "remove":1 } }, { "area":{ "_":"scene" }, "execute":{ "remove":1 } } ] } },
+          { "name":"ZPerspective" }
+        ]
+      }
+    },
+    "areaModel":{
+      "set":{ "_":[ "stencil", "campaignElementBehaviour" ] },
+      "states":[
+        {
+          "name":"onstage",
+          "execute":[
+            { "when":{ "_":[ "this", "enemyType", "not" ] }, "set":{ "enemyType":{ "_":[ "scene", "enemyType" ] } } },
+            { "when":{ "_":[ "this", "enemyLevel", "not" ] }, "set":{ "enemyLevel":{ "_":[ "scene", "enemyLevel" ] } } },
+            { "when":{ "_":[ "this", "enemyLootLevel", "not" ] }, "set":{ "enemyLootLevel":{ "_":[ "scene", "lootLevel" ] } } },
+            { "when":{ "_":[ "this", "enemyLootLevel", "not" ] }, "set":{ "enemyLootLevel":{ "_":[ "scene", "enemyLevel" ] } } },
+            { "when":{ "_":[ "this", "enemyLootType", "not" ] }, "set":{ "enemyLootType":{ "_":[ "scene", "lootType" ] } } },
+            { "when":{ "_":[ "this", "enemyLootElement", "not" ] }, "set":{ "enemyLootElement":{ "_":[ "scene", "lootElement" ] } } },
+            { "when":{ "_":[ "this", "enemySpawnCooldown", "not" ] }, "set":{ "enemySpawnCooldown":{ "_":[ "scene", "enemySpawnCooldown" ] } } },
+            { "when":{ "_":[ "this", "enemyAmount", "not" ] }, "set":{ "enemyAmount":{ "_":[ "scene", "enemyAmount" ] } } },
+            { "when":{ "_":[ "this", "areaCooldown", "not" ] }, "set":{ "areaCooldown":{ "_":[ "scene", "areaCooldown" ] } } },
+            { "when":{ "_":[ "this", "enemyElement", "not" ] }, "set":{ "enemyElement":{ "_":[ "scene", "enemyElement" ] } } }
+          ]
+        },
+        {
+          "name":"spawn",
+          "like":{ "_":[ "stencil", "campaignElementState" ] },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              {
+                "object":{
+                  "set":{ "_":[ "stencil", { "_":[ "randomValue", { "_":[ "that", "enemyType" ] } ] } ] },
+                  "x":{ "_":[ "randomNumber", [ { "_":[ "that", "x" ] }, { "_":[ "that", "x", "+", { "_":[ "that", "width" ] }, "-", 24 ] } ] ] }, "y":{ "_":[ "randomNumber", [ { "_":[ "that", "y", "-", 31 ] }, { "_":[ "that", "y", "+", { "_":[ "that", "height" ] }, "-", 40 ] } ] ] },
+                  "lootElement":{ "_":[ "randomValue", { "_":[ "that", "enemyLootElement" ] } ] },
+                  "lootLevel":{ "_":[ "randomValue", { "_":[ "that", "enemyLootLevel" ] } ] },
+                  "lootType":{ "_":[ "randomValue", { "_":[ "that", "enemyLootType" ] } ] },
+                  "statElement":{ "_":[ "randomValue", { "_":[ "that", "enemyElement" ] } ] },
+                  "statLevel":{ "_":[ "randomValue", { "_":[ "that", "enemyLevel" ] } ] }
+                }
+              },
+              { "wait":{ "_":[ "randomValue", { "_":[ "this", "enemySpawnCooldown" ] } ] }, "cycles":{ "_":[ "this", "enemyAmount" ] }, "loopTo":0 },
+              { "when":{ "_":[ "this", "serial" ] }, "execute":{ "_":[ "stencil", "codeSetUsed" ] } },
+              { "wait":{ "_":[ "this", "areaCooldown", "*", 25 ] } },
+              { "set":{ "state":"done" } }
+            ]
+          }
+        }
+      ]
+    },
+    "bossArea":{
+      "type":"removeongameover",
+      "set":{ "_":[ "stencil", "areaModel" ] },
+      "states":{
+        "name":"onstage",
+        "set":{ "visible":0 },
+        "code":{
+          "name":"Sequence",
+          "data":[
+            { "wait":1, "loop":1, "until":{ "_":[ "this", "collidesWith", { "_":[ "objectTyped", "player" ] } ] } },
+            { "as":{ "_":[ "object", { "_":[ "this", "bossBlock" ] } ] }, "executeAction":"raise" },
+            { "_":[ "stencil", "codeRemoveBlockNpc" ] },
+            { "wait":25 },
+            {
+              "object":{
+                "type":"boss",
+                "set":{ "_":[ "stencil", { "_":[ "randomValue", { "_":[ "that", "enemyType" ] } ] } ] },
+                "x":{ "_":[ "that", "width", "-", 24, "/", 2, "+", { "_":[ "that", "x" ] }, "ceil" ] }, "y":{ "_":[ "that", "height", "-", 8, "/", 2, "+", { "_":[ "that", "y" ] }, "-", 32, "ceil" ] },
+                "lootElement":{ "_":[ "randomValue", { "_":[ "that", "enemyLootElement" ] } ] },
+                "lootLevel":{ "_":[ "randomValue", { "_":[ "that", "enemyLootLevel" ] } ] },
+                "lootType":{ "_":[ "randomValue", { "_":[ "that", "enemyLootType" ] } ] },
+                "statElement":{ "_":[ "randomValue", { "_":[ "that", "enemyElement" ] } ] },
+                "statLevel":{ "_":[ "randomValue", { "_":[ "that", "enemyLevel" ] } ] }
+              }
+            },
+            { "wait":1, "loop":1, "until":{ "_":[ "objectTyped", "boss", "not" ] } },
+            { "_":[ "stencil", "codeRemoveBlockNpc" ] },
+            { "wait":125 },
+            { "as":{ "_":[ "object", { "_":[ "this", "bossBlock" ] } ] }, "executeAction":"lower" },
+            { "_":[ "stencil", "codeSetUsed" ] }
+          ]
+        },
+        "actions":{
+          "name":"updateDone",
+          "execute":{
+            "as":{ "_":"variable" },
+            "set":{ "speechName":{ "_":[ "that", "npcName" ] }, "speechText":{ "_":[ "that", "onDefeated" ] } },
+            "execute":{ "_":[ "stencil", "codeSpeech" ] }
+          }
+        }
+      }
+    },
+    "talkArea":{
+      "set":{ "_":[ "stencil", "areaModel" ] },
+      "states":{
+        "name":"onstage",
+        "set":{ "visible":0 },
+        "code":{
+          "name":"Execute",
+          "data":{
+            "when":{ "_":[ "this", "collidesWith", { "_":[ "objectTyped", "player" ] } ] },
+            "execute":[ { "_":[ "stencil", "codeRemoveBlockNpc" ] }, { "_":[ "stencil", "codeSetUsed" ] } ]
+          }
+        },
+        "actions":{
+          "name":"updateDone",
+          "execute":{
+            "as":{ "_":"variable" },
+            "set":{ "speechName":{ "_":[ "that", "npcName" ] }, "speechText":{ "_":[ "that", "onTalk" ] } },
+            "execute":{ "_":[ "stencil", "codeSpeech" ] }
+          }
+        }
+      }
+    },
+    "boat":{
+      "set":{ "_":[ "stencil", "campaignElementBehaviour" ] },
+      "npcDescription":"Use it for leaving this place.",
+      "npcName":"Boat",
+      "onCantLeave":"You can't leave now. Your mission isn't over yet!",
+      "onCantUse":"You can't use the boat right now!",
+      "states":{
+        "name":"onstage",
+        "set":{
+          "type":"npc",
+          "image":"stuff", "tileX":144, "tileY":40, "width":24, "height":40,
+          "visible":1,
+          "execute":{ "_":[ "stencil", "codeStaticZPerspective" ] },
+          "animations":{ "idle":{ "frames":2, "loopTo":0 } },
+          "animation":"idle"
+        },
+        "actions":[
+          {
+            "name":"interact",
+            "execute":{
+              "when":{ "_":[ "objectTyped", "blocknpc" ] },
+              "as":{ "_":"variable" },
+              "set":{ "passiveText":{ "_":[ "that", "onCantUse" ] } },
+              "execute":{ "_":[ "stencil", "codeShowPassivePopup" ] },
+              "elseExecute":{
+                "when":{ "_":[ "variable", "flags", { "_":[ "this", "endQuestName" ] }, "isEqualTo", { "_":[ "this", "endQuestProgress" ] } ] },
+                "execute":[
+                  { "_":[ "stencil", "codeStartNpc" ] },
+                  { "as":{ "_":"scene" }, "set":{ "campaignEpilogue":{ "_":[ "that", "campaignEpilogue" ] }, "nextCampaign":{ "_":[ "that", "nextCampaign" ] } } },
+                  {
+                    "object":[
+                      { "type":"npchud", "width":240, "height":72, "x":8, "y":4, "bgcolor":"#000", "border":"#fff" },
+                      { "set":{ "_":[ "stencil", "doneButton" ] }, "x":75, "y":84, "html":"Stay", "description":"Continue current campaign." },
+                      {
+                        "set":{ "_":[ "stencil", "uiButtonModel" ] },
+                        "x":132, "y":84,
+                        "html":"Leave",
+                        "colorOff":"#f00",
+                        "description":"End current campaign.",
+                        "states":{ "actions":{ "name":"click", "execute":[ { "_":[ "stencil", "codeResetUi" ] }, { "as":{ "_":"scene" }, "set":{ "state":"campaigncompleted" } } ] } }
+                      },
+                      {
+                        "type":[ "hud", "npchud" ],
+                        "width":232, "height":50,
+                        "zIndex":10, "x":12, "y":6,
+                        "color":"#0ff",
+                        "font":"spectrum", "lineHeight":14, "textAlign":"center", "html":"Leave this place?"
+                      },
+                      {
+                        "type":[ "hud", "npchud" ],
+                        "width":232, "height":50,
+                        "zIndex":10, "x":12, "y":22,
+                        "color":"#fff",
+                        "font":"spectrum", "lineHeight":10, "textAlign":"center", "html":"This will end the current campain. You won't be able to go back here so make sure you've done everything you need!"
+                      }
+                    ],
+                    "into":{ "_":"scenehud" }
+                  }
+                ],
+                "elseExecute":{ "as":{ "_":"variable" }, "set":{ "passiveText":{ "_":[ "that", "onCantLeave" ] } }, "execute":{ "_":[ "stencil", "codeShowPassivePopup" ] } }
+              }
+            }
+          },
+          { "name":"describe", "execute":{ "_":[ "stencil", "descriptors", "general" ] } }
+        ]
+      }
+    },
+    "chest":{
+      "set":{ "_":[ "stencil", "campaignElementBehaviour" ] },
+      "npcDescription":"Contains equipment or gold.",
+      "npcName":"Tresaure chest",
+      "states":{
+        "name":"onstage",
+        "set":{
+          "type":"npc",
+          "image":"stuff", "tileX":480, "width":24, "height":40,
+          "hitbox":{ "width":16, "height":8, "x":4, "y":32 },
+          "visible":1, "flipX":{ "_":[ "randomValue", [ 0, 1 ] ] },
+          "execute":{ "_":[ "stencil", "codeStaticZPerspective" ] }
+        },
+        "actions":[
+          {
+            "name":"interact",
+            "execute":[
+              { "when":{ "_":[ "this", "chestLootLevel", "not" ] }, "set":{ "chestLootLevel":{ "_":[ "scene", "lootLevel" ] } } },
+              { "when":{ "_":[ "this", "chestLootType", "not" ] }, "set":{ "chestLootType":{ "_":[ "scene", "lootType" ] } } },
+              { "when":{ "_":[ "this", "chestLootElement", "not" ] }, "set":{ "chestLootElement":{ "_":[ "scene", "lootElement" ] } } },
+              {
+                "set":{
+                  "lootElement":{ "_":[ "randomValue", { "_":[ "this", "chestLootElement" ] } ] },
+                  "lootLevel":{ "_":[ "randomValue", { "_":[ "this", "chestLootLevel" ] } ] },
+                  "lootType":{ "_":[ "randomValue", { "_":[ "this", "chestLootType" ] } ] }
+                }
+              },
+              { "_":[ "stencil", "codeGenerateLoot" ] },
+              { "_":[ "stencil", "codeSparkle" ] },
+              { "_":[ "stencil", "codeSetUsed" ] }
+            ]
+          },
+          { "name":"describe", "execute":{ "_":[ "stencil", "descriptors", "general" ] } }
+        ]
+      }
+    },
+    "closedModel":{
+      "set":{ "_":[ "stencil", "campaignElementBehaviour" ] },
+      "hitbox":{ "width":16, "height":8, "x":4, "y":32 },
+      "states":{
+        "name":"onstage",
+        "set":{
+          "type":[ "npc", "wall" ],
+          "image":"stuff", "tileY":40, "width":24, "height":40,
+          "visible":1,
+          "execute":{ "_":[ "stencil", "codeStaticZPerspective" ] }
+        },
+        "actions":[
+          {
+            "name":"interact",
+            "execute":{
+              "when":{ "_":[ "this", "setQuestProgress" ] },
+              "execute":{ "_":[ "stencil", "codeSetUsed" ] },
+              "elseExecute":{ "as":{ "_":"variable" }, "set":{ "passiveText":{ "_":[ "that", "onClosed" ] } }, "execute":{ "_":[ "stencil", "codeShowPassivePopup" ] } }
+            }
+          },
+          { "name":"onLeaveCampaign", "execute":{ "_":[ "stencil", "codeSparkle" ] } },
+          {
+            "name":"updateDone",
+            "execute":[
+              { "_":[ "stencil", "codeSparkle" ] },
+              { "as":{ "_":"variable" }, "set":{ "passiveText":{ "_":[ "that", "onOpened" ] } }, "execute":{ "_":[ "stencil", "codeShowPassivePopup" ] } }
+            ]
+          },
+          {
+            "name":"updateFailed",
+            "execute":{ "as":{ "_":"variable" }, "set":{ "passiveText":{ "_":[ "that", "onClosed" ] } }, "execute":{ "_":[ "stencil", "codeShowPassivePopup" ] } }
+          },
+          { "name":"describe", "execute":{ "_":[ "stencil", "descriptors", "general" ] } }
+        ]
+      }
+    },
+    "door":{
+      "set":{ "_":[ "stencil", "closedModel" ] },
+      "npcDescription":"Closes a room or a passage.",
+      "npcName":"Door",
+      "onClosed":{ "_":[ "randomValue", [ "This passage is closed.", "You can't continue this way.", "It won't budge." ] ] },
+      "onOpened":{ "_":[ "randomValue", [ "The door opened.", "You opened the door." ] ] }
+    },
+    "sidedoor":{
+      "set":{ "_":[ "stencil", "closedModel" ] },
+      "frame":1,
+      "hitbox":{ "width":8, "height":40, "x":8, "y":0 },
+      "npcDescription":"Closes a room or a passage.",
+      "npcName":"Door",
+      "onClosed":{ "_":[ "randomValue", [ "This passage is closed.", "You can't continue this way.", "It won't budge." ] ] },
+      "onOpened":{ "_":[ "randomValue", [ "The door opened.", "You opened the door." ] ] }
+    },
+    "levelup":{
+      "set":{ "_":[ "stencil", "npcModel" ] },
+      "npcDescription":"Use gold for leveling up.",
+      "npcName":"Brother Salivello",
+      "states":{
+        "name":"onstage",
+        "set":{ "tileX":552, "tileY":0, "visible":1, "animation":"moving" },
+        "actions":{
+          "name":"interact",
+          "execute":{
+            "when":{ "_":[ "objectTyped", "blocknpc" ] },
+            "as":{ "_":"variable" },
+            "set":{ "passiveText":{ "_":[ "that", "onCantSpeak" ] } },
+            "execute":{ "_":[ "stencil", "codeShowPassivePopup" ] },
+            "elseExecute":[
+              { "_":[ "stencil", "codeStartNpc" ] },
+              {
+                "object":[
+                  { "type":"npchud", "width":191, "height":142, "x":57, "y":4, "bgcolor":"#000", "border":"#fff" },
+                  { "type":"npchud", "width":49, "height":40, "x":4, "y":4, "bgcolor":"#000", "border":"#fff" },
+                  { "set":{ "_":[ "stencil", "doneButton" ] }, "x":4, "y":48, "description":"Leave the monk." },
+                  {
+                    "type":"npchud",
+                    "width":49, "height":14,
+                    "zIndex":10, "x":4, "y":8,
+                    "color":"#0ff",
+                    "font":"spectrum", "lineHeight":14, "textAlign":"center", "html":"Cost"
+                  },
+                  {
+                    "type":[ "hud", "npchud" ],
+                    "hudType":"label", "label":"%text|variable.player.base.statNextLevelAt|0|2%G",
+                    "width":49, "height":14,
+                    "zIndex":10, "x":4, "y":24,
+                    "color":"#fff",
+                    "font":"spectrum", "lineHeight":14, "textAlign":"center"
+                  },
+                  {
+                    "type":[ "hud", "npchud" ],
+                    "hudType":"label", "label":"Lv. %number|variable.player.base.statLevel% %text|variable.player.base.statFullName%",
+                    "width":175, "height":14,
+                    "zIndex":10, "x":65, "y":8,
+                    "color":"#0ff",
+                    "font":"spectrum", "lineHeight":14
+                  },
+                  {
+                    "type":"hud",
+                    "set":{ "_":[ "stencil", "sheetRow" ] },
+                    "hudType":"label", "label":"STRENGTH: %text|variable.player.base.statDamage|0|2% pts.",
+                    "width":175, "height":14,
+                    "zIndex":10, "x":65, "y":24,
+                    "color":"#fff",
+                    "font":"spectrum", "lineHeight":14,
+                    "statId":"statDamage",
+                    "statName":"Pray God of Strength",
+                    "statSubtitle":"Damage of melee/ranged attack."
+                  },
+                  {
+                    "type":"hud",
+                    "set":{ "_":[ "stencil", "sheetRow" ] },
+                    "hudType":"label", "label":"&nbsp;DEFENSE: %text|variable.player.base.statDefense|0|2% pts.",
+                    "width":175, "height":14,
+                    "zIndex":10, "x":65, "y":38,
+                    "color":"#fff",
+                    "font":"spectrum", "lineHeight":14,
+                    "statId":"statDefense",
+                    "statName":"Pray God of Defense",
+                    "statSubtitle":"Resistance to damages."
+                  },
+                  {
+                    "type":"hud",
+                    "set":{ "_":[ "stencil", "sheetRow" ] },
+                    "hudType":"label", "label":"&nbsp;&nbsp;&nbsp;SPEED: %text|variable.player.base.statSpeed|0|2% pts.",
+                    "width":175, "height":14,
+                    "zIndex":10, "x":65, "y":52,
+                    "color":"#fff",
+                    "font":"spectrum", "lineHeight":14,
+                    "statId":"statSpeed",
+                    "statName":"Pray God of Speed",
+                    "statSubtitle":"How much fast you can move."
+                  },
+                  {
+                    "type":"hud",
+                    "set":{ "_":[ "stencil", "sheetRow" ] },
+                    "hudType":"label", "label":"&nbsp;AGILITY: %text|variable.player.base.statCooldown|0|2% pts.",
+                    "width":175, "height":14,
+                    "zIndex":10, "x":65, "y":66,
+                    "color":"#fff",
+                    "font":"spectrum", "lineHeight":14,
+                    "statId":"statCooldown",
+                    "statName":"Pray God of Agility",
+                    "statSubtitle":"Your speed on attacking."
+                  },
+                  {
+                    "type":"hud",
+                    "set":{ "_":[ "stencil", "sheetRow" ] },
+                    "hudType":"label", "label":"&nbsp;&nbsp;HEALTH: %text|variable.player.base.statMaxHealth|0|2% pts.",
+                    "width":175, "height":14,
+                    "zIndex":10, "x":65, "y":80,
+                    "color":"#fff",
+                    "font":"spectrum", "lineHeight":14,
+                    "statId":"statMaxHealth",
+                    "statName":"Pray God of Health",
+                    "statSubtitle":"How much damages you can take."
+                  },
+                  {
+                    "type":"hud",
+                    "set":{ "_":[ "stencil", "sheetRow" ] },
+                    "hudType":"label", "label":"&nbsp;HEALING: %text|variable.player.base.statHealAmount|0|2% pts.",
+                    "width":175, "height":14,
+                    "zIndex":10, "x":65, "y":94,
+                    "color":"#fff",
+                    "font":"spectrum", "lineHeight":14,
+                    "statId":"statHealAmount",
+                    "statName":"Pray God of Healing",
+                    "statSubtitle":"Effectiveness of cures."
+                  },
+                  {
+                    "type":"hud",
+                    "set":{ "_":[ "stencil", "sheetRow" ] },
+                    "hudType":"label", "label":"&nbsp;&nbsp;&nbsp;MELEE: %text|variable.player.base.statMeleeDistance|0|2% pts.",
+                    "width":175, "height":14,
+                    "zIndex":10, "x":65, "y":108,
+                    "color":"#fff",
+                    "font":"spectrum", "lineHeight":14,
+                    "statId":"statMeleeDistance",
+                    "statName":"Pray God of Melee",
+                    "statSubtitle":"Proficency of melee weapons."
+                  },
+                  {
+                    "type":"hud",
+                    "set":{ "_":[ "stencil", "sheetRow" ] },
+                    "hudType":"label", "label":"&nbsp;&nbsp;RANGED: %text|variable.player.base.statRangedLife|0|2% pts.",
+                    "width":175, "height":14,
+                    "zIndex":10, "x":65, "y":122,
+                    "color":"#fff",
+                    "font":"spectrum", "lineHeight":14,
+                    "statId":"statRangedLife",
+                    "statName":"Pray God of Ranged",
+                    "statSubtitle":"Proficency of ranged weapons."
+                  }
+                ],
+                "into":{ "_":"scenehud" }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "npcModel":{
+      "set":{ "_":[ "stencil", "campaignElementBehaviour" ] },
+      "animations":{ "moving":{ "frames":2, "speed":10, "loopTo":0 } },
+      "onCantSpeak":"Can't do it right now!",
+      "states":{
+        "name":"onstage",
+        "set":{
+          "type":"npc",
+          "image":"stuff", "tileY":80, "width":24, "height":40,
+          "hitbox":{ "width":16, "height":8, "x":4, "y":32 },
+          "visible":1,
+          "execute":{ "_":[ "stencil", "codeStaticZPerspective" ] }
+        },
+        "actions":[
+          { "name":"describe", "execute":{ "_":[ "stencil", "descriptors", "general" ] } },
+          { "name":"onLeaveCampaign", "execute":{ "_":[ "stencil", "codeSparkle" ] } }
+        ]
+      }
+    },
+    "merchant":{
+      "set":{ "_":[ "stencil", "npcModel" ] },
+      "npcDescription":"Use gold for buying goods.",
+      "npcName":"Wendy",
+      "states":{
+        "name":"onstage",
+        "set":{ "tileX":600, "tileY":0, "visible":1, "animation":"moving" },
+        "actions":{
+          "name":"interact",
+          "execute":{
+            "when":{ "_":[ "objectTyped", "blocknpc" ] },
+            "as":{ "_":"variable" },
+            "set":{ "passiveText":{ "_":[ "that", "onCantSpeak" ] } },
+            "execute":{ "_":[ "stencil", "codeShowPassivePopup" ] },
+            "elseExecute":[
+              { "_":[ "stencil", "codeStartNpc" ] },
+              { "when":{ "_":[ "this", "shopProducts", "not" ] }, "set":{ "shopProducts":{ "_":[ "scene", "shopProducts" ] } } },
+              { "when":{ "_":[ "this", "shopLevel", "not" ] }, "set":{ "shopLevel":{ "_":[ "scene", "shopLevel" ] } } },
+              { "when":{ "_":[ "this", "shopLevel", "not" ] }, "set":{ "shopLevel":{ "_":[ "scene", "lootLevel" ] } } },
+              { "when":{ "_":[ "this", "shopElement", "not" ] }, "set":{ "shopElement":{ "_":[ "scene", "shopElement" ] } } },
+              { "when":{ "_":[ "this", "shopElement", "not" ] }, "set":{ "shopElement":{ "_":[ "scene", "lootElement" ] } } },
+              { "when":{ "_":[ "this", "shopRatio", "not" ] }, "set":{ "shopRatio":{ "_":[ "scene", "shopRatio" ] } } },
+              {
+                "object":[
+                  { "type":"npchud", "width":191, "height":142, "x":57, "y":4, "bgcolor":"#000", "border":"#fff" },
+                  { "set":{ "_":[ "stencil", "doneButton" ] }, "x":4, "y":4, "description":"Leave the shop." },
+                  {
+                    "type":[ "hud", "npchud" ],
+                    "width":175, "height":14,
+                    "zIndex":10, "x":65, "y":8,
+                    "color":"#0ff",
+                    "font":"spectrum", "lineHeight":14, "html":"What are you buying?"
+                  }
+                ],
+                "into":{ "_":"scenehud" }
+              },
+              { "set":{ "backupSeed":{ "_":[ "variable", "randomSeed" ] }, "counter":0 } },
+              { "as":{ "_":"variable" }, "set":{ "randomSeed":{ "_":[ "date", "allMilliseconds", "/", 300000, "ceil" ] } } },
+              {
+                "times":{ "_":[ "this", "shopProducts", "count" ] },
+                "execute":[
+                  { "set":{ "product":{ "_":[ "new", {} ] }, "productId":{ "_":[ "this", "shopProducts", { "_":[ "this", "counter" ] } ] } } },
+                  {
+                    "when":{ "_":[ "this", "productId", "isEqualTo", "potion" ] },
+                    "as":{ "_":[ "this", "product" ] },
+                    "set":{
+                      "price":{ "_":[ "variable", "player", "base", "statLevel", "+", 1, "*", 10, "*", { "_":[ "that", "shopRatio" ] }, "ceil" ] },
+                      "statFullName":"Heal Potion",
+                      "statType":"healingpotion"
+                    }
+                  },
+                  {
+                    "when":{ "_":[ "this", "productId", "isEqualTo", "melee" ] },
+                    "execute":[
+                      { "set":{ "level":{ "_":[ "randomValue", { "_":[ "this", "shopLevel" ] } ] } } },
+                      {
+                        "as":{ "_":[ "this", "product" ] },
+                        "set":{
+                          "price":{ "_":[ "that", "level", "*", 10, "*", { "_":[ "that", "shopRatio" ] }, "ceil" ] },
+                          "statCooldown":1,
+                          "statDamage":1,
+                          "statDistance":1,
+                          "statElement":{ "_":[ "randomValue", { "_":[ "that", "shopElement" ] } ] },
+                          "statLevel":{ "_":[ "that", "level" ] },
+                          "statType":"melee"
+                        },
+                        "execute":{ "_":[ "stencil", "generators", "melee" ] }
+                      }
+                    ]
+                  },
+                  {
+                    "when":{ "_":[ "this", "productId", "isEqualTo", "armor" ] },
+                    "execute":[
+                      { "set":{ "level":{ "_":[ "randomValue", { "_":[ "this", "shopLevel" ] } ] } } },
+                      {
+                        "as":{ "_":[ "this", "product" ] },
+                        "set":{
+                          "price":{ "_":[ "that", "level", "*", 10, "*", { "_":[ "that", "shopRatio" ] }, "ceil" ] },
+                          "statDefense":1,
+                          "statElement":{ "_":[ "randomValue", { "_":[ "that", "shopElement" ] } ] },
+                          "statLevel":{ "_":[ "that", "level" ] },
+                          "statMaxHealth":1,
+                          "statType":"armor"
+                        },
+                        "execute":{ "_":[ "stencil", "generators", "armor" ] }
+                      }
+                    ]
+                  },
+                  {
+                    "when":{ "_":[ "this", "productId", "isEqualTo", "ranged" ] },
+                    "execute":[
+                      { "set":{ "level":{ "_":[ "randomValue", { "_":[ "this", "shopLevel" ] } ] } } },
+                      {
+                        "as":{ "_":[ "this", "product" ] },
+                        "set":{
+                          "price":{ "_":[ "that", "level", "*", 10, "*", { "_":[ "that", "shopRatio" ] }, "ceil" ] },
+                          "statCooldown":1,
+                          "statDamage":1,
+                          "statElement":{ "_":[ "randomValue", { "_":[ "that", "shopElement" ] } ] },
+                          "statLevel":{ "_":[ "that", "level" ] },
+                          "statLife":1,
+                          "statSpeed":1,
+                          "statType":"ranged"
+                        },
+                        "execute":{ "_":[ "stencil", "generators", "ranged" ] }
+                      }
+                    ]
+                  },
+                  {
+                    "object":{
+                      "type":"npchud",
+                      "set":{ "_":[ "stencil", "shopRow" ] },
+                      "width":175, "height":14,
+                      "zIndex":10, "x":65, "y":{ "_":[ "that", "counter", "*", 14, "+", 24 ] },
+                      "color":"#fff",
+                      "font":"spectrum", "lineHeight":14, "html":{ "_":[ "that", "product", "price", ".", "G: ", ".", { "_":[ "that", "product", "statFullName" ] } ] },
+                      "product":{ "_":[ "that", "product" ] }
+                    },
+                    "into":{ "_":"scenehud" }
+                  },
+                  { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+                ]
+              },
+              { "as":{ "_":"variable" }, "set":{ "randomSeed":{ "_":[ "that", "backupSeed" ] } } }
+            ]
+          }
+        }
+      }
+    },
+    "book":{
+      "set":{ "_":[ "stencil", "talkingNpcModel" ] },
+      "frame":8,
+      "npcDescription":"You can read it.",
+      "npcName":"Book",
+      "onTalk":"There isn't anything interesting.",
+      "onTalked":"I've already read it."
+    },
+    "castellan":{
+      "set":{ "_":[ "stencil", "talkingNpcModel" ] },
+      "frame":7,
+      "npcDescription":"You can have a word with him.",
+      "npcName":"Castellan",
+      "onTalk":{ "_":[ "randomValue", [ "Good morning.", "(Bows down)" ] ] },
+      "onTalked":"It's a pleasure."
+    },
+    "dwarf":{
+      "set":{ "_":[ "stencil", "talkingNpcModel" ] },
+      "frame":3,
+      "npcDescription":"You can have a word with him.",
+      "npcName":"Dwarf",
+      "onTalk":{ "_":[ "randomValue", [ "Ugh.", "What do you want?" ] ] },
+      "onTalked":{ "_":[ "randomValue", [ "Tsk.", "Hello." ] ] }
+    },
+    "talkingNpcModel":{
+      "set":{ "_":[ "stencil", "npcModel" ] },
+      "states":{
+        "name":"onstage",
+        "actions":[
+          {
+            "name":"interact",
+            "execute":{
+              "when":{ "_":[ "objectTyped", "blocknpc" ] },
+              "as":{ "_":"variable" },
+              "set":{ "passiveText":{ "_":[ "that", "onCantSpeak" ] } },
+              "execute":{ "_":[ "stencil", "codeShowPassivePopup" ] },
+              "elseExecute":{
+                "when":{ "_":[ "this", "setQuestProgress" ] },
+                "execute":{ "_":[ "stencil", "codeSetUsed" ] },
+                "elseExecute":{
+                  "as":{ "_":"variable" },
+                  "set":{ "speechName":{ "_":[ "that", "npcName" ] }, "speechText":{ "_":[ "that", "onTalk" ] } },
+                  "execute":{ "_":[ "stencil", "codeSpeech" ] }
+                }
+              }
+            }
+          },
+          {
+            "name":"updateDone",
+            "execute":{
+              "as":{ "_":"variable" },
+              "set":{ "speechName":{ "_":[ "that", "npcName" ] }, "speechText":{ "_":[ "that", "onTalk" ] } },
+              "execute":{ "_":[ "stencil", "codeSpeech" ] }
+            }
+          },
+          {
+            "name":"updateFailed",
+            "execute":{
+              "as":{ "_":"variable" },
+              "set":{ "speechName":{ "_":[ "that", "npcName" ] }, "speechText":{ "_":[ "that", "onTalked" ] } },
+              "execute":{ "_":[ "stencil", "codeSpeech" ] }
+            }
+          }
+        ]
+      }
+    },
+    "elven":{
+      "set":{ "_":[ "stencil", "talkingNpcModel" ] },
+      "frame":6,
+      "npcDescription":"You can have a word with him.",
+      "npcName":"Elven",
+      "onTalk":"Welcome, traveller.",
+      "onTalked":{ "_":[ "randomValue", [ "Take care.", "Good luck." ] ] }
+    },
+    "monk":{
+      "set":{ "_":[ "stencil", "talkingNpcModel" ] },
+      "frame":4,
+      "npcDescription":"You can have a word with him.",
+      "npcName":"Monk",
+      "onTalk":{ "_":[ "randomValue", [ "The Gods may bless your path.", "Good morning, traveller." ] ] },
+      "onTalked":{ "_":[ "randomValue", [ "May the Gods be with you.", "Hello, traveller." ] ] }
+    },
+    "npc":{
+      "set":{ "_":[ "stencil", "talkingNpcModel" ] },
+      "npcDescription":"You can have a word with him.",
+      "npcName":"Someone",
+      "onTalk":{ "_":[ "randomValue", [ "Sorry, I'm busy now.", "I can't talk right now, sorry." ] ] },
+      "onTalked":{ "_":[ "randomValue", [ "Sorry, I'm busy now.", "I can't talk right now, sorry." ] ] }
+    },
+    "sick":{
+      "set":{ "_":[ "stencil", "talkingNpcModel" ] },
+      "frame":2,
+      "npcDescription":"He is lying down.",
+      "npcName":"Someone",
+      "onTalk":"...",
+      "onTalked":"..."
+    },
+    "sign":{ "set":{ "_":[ "stencil", "talkingNpcModel" ] }, "frame":1, "npcDescription":"You can read it.", "npcName":"Sign" },
+    "traveller":{
+      "set":{ "_":[ "stencil", "talkingNpcModel" ] },
+      "frame":5,
+      "npcDescription":"You can have a word with him.",
+      "npcName":"Traveller",
+      "onTalk":{ "_":[ "randomValue", [ "Hello there!", "Nice day, Isn't it?" ] ] },
+      "onTalked":{ "_":[ "randomValue", [ "Do you need something?", "I'm so tired!" ] ] }
+    },
+    "campaignElementBehaviour":{
+      "type":"campaignelement",
+      "visible":0,
+      "onstage":0,
+      "states":[
+        { "like":{ "_":[ "stencil", "campaignElementState" ] }, "execute":{ "executeAction":"questUpdated" } },
+        { "name":"onstage", "like":{ "_":[ "stencil", "campaignElementState" ] } }
+      ]
+    },
+    "savepoint":{
+      "set":{ "_":[ "stencil", "campaignElementBehaviour" ] },
+      "npcDescription":"Save your game.",
+      "npcName":"Save point",
+      "onCantSave":"The circle is sensing a menace nearby.",
+      "states":{
+        "name":"onstage",
+        "set":{
+          "type":"npc",
+          "image":"stuff", "tileX":504, "width":24, "height":40,
+          "hitbox":{ "width":16, "height":8, "x":4, "y":32 },
+          "visible":1,
+          "execute":{ "_":[ "stencil", "codeStaticZPerspective" ] },
+          "animations":{ "idle":{ "frames":2, "speed":2, "loopTo":0 } },
+          "animation":"idle"
+        },
+        "actions":[
+          {
+            "name":"interact",
+            "execute":{
+              "when":{ "_":[ "objectTyped", "enemy" ] },
+              "as":{ "_":"variable" },
+              "set":{ "passiveText":{ "_":[ "that", "onCantSave" ] } },
+              "execute":{ "_":[ "stencil", "codeShowPassivePopup" ] },
+              "elseExecute":[
+                { "as":{ "_":[ "object", "removeonsave" ] }, "remove":1 },
+                { "as":{ "_":[ "variable", "player" ] }, "set":{ "myHealth":{ "_":[ "variable", "player", "myMaxHealth" ] } } },
+                {
+                  "as":{ "_":"variable" },
+                  "set":{ "myX":{ "_":[ "that", "x" ] }, "myY":{ "_":[ "that", "y" ] }, "spawned":1 },
+                  "execute":{ "_":[ "stencil", "codeSaveGame" ] }
+                },
+                { "as":{ "_":"variable" }, "set":{ "passiveText":"Game saved." }, "execute":{ "_":[ "stencil", "codeShowPassivePopup" ] } },
+                { "_":[ "stencil", "codeSparkle" ] }
+              ]
+            }
+          },
+          { "name":"describe", "execute":{ "_":[ "stencil", "descriptors", "general" ] } }
+        ]
+      }
+    },
+    "switch":{
+      "set":{ "_":[ "stencil", "campaignElementBehaviour" ] },
+      "npcDescription":"The skull can be moved.",
+      "npcName":"Switch",
+      "onSwitchLocked":{ "_":[ "randomValue", [ "It doesn't move.", "Looks like this switch is stuck.", "Nothing happens." ] ] },
+      "onSwitchPressed":{ "_":[ "randomValue", [ "You hear a click.", "The skull eyes are now glowing.", "The skull moves like a lever." ] ] },
+      "states":{
+        "name":"onstage",
+        "set":{
+          "type":"npc",
+          "image":"stuff", "tileX":648, "width":24, "height":40,
+          "hitbox":{ "width":16, "height":8, "x":4, "y":32 },
+          "visible":1,
+          "execute":{ "_":[ "stencil", "codeStaticZPerspective" ] }
+        },
+        "actions":[
+          { "name":"interact", "execute":{ "_":[ "stencil", "codeSetUsed" ] } },
+          { "name":"describe", "execute":{ "_":[ "stencil", "descriptors", "general" ] } },
+          { "name":"onLeaveCampaign", "execute":{ "_":[ "stencil", "codeSparkle" ] } },
+          {
+            "name":"updateDone",
+            "execute":[
+              { "_":[ "stencil", "codeSparkle" ] },
+              {
+                "as":{ "_":"variable" },
+                "set":{ "speechName":{ "_":[ "that", "npcName" ] }, "speechText":{ "_":[ "that", "onSwitchPressed" ] } },
+                "execute":{ "_":[ "stencil", "codeSpeech" ] }
+              }
+            ]
+          },
+          {
+            "name":"updateFailed",
+            "execute":{
+              "as":{ "_":"variable" },
+              "set":{ "speechName":{ "_":[ "that", "npcName" ] }, "speechText":{ "_":[ "that", "onSwitchLocked" ] } },
+              "execute":{ "_":[ "stencil", "codeSpeech" ] }
+            }
+          }
+        ]
+      }
+    },
+    "campaignElementState":{
+      "actions":{
+        "name":"questUpdated",
+        "execute":[
+          {
+            "when":{ "_":[ "this", "serial" ] },
+            "execute":{ "when":{ "_":[ "variable", "flags", { "_":[ "this", "serial" ] } ] }, "remove":1, "executeAction":"onLeaveCampaign", "questName":0 }
+          },
+          {
+            "when":{ "_":[ "this", "questName" ] },
+            "execute":[
+              {
+                "when":{ "_":[ "variable", "flags", { "_":[ "this", "questName" ] }, "not" ] },
+                "assign":0,
+                "to":{ "_":[ "variable", "flags", { "_":[ "this", "questName" ] } ] }
+              },
+              {
+                "when":{ "_":[ "this", "onstage" ] },
+                "execute":{
+                  "when":{ "_":[ "variable", "flags", { "_":[ "this", "questName" ] }, "isGreaterThan", { "_":[ "this", "questProgress", 1 ] } ] },
+                  "remove":1,
+                  "executeAction":"onLeaveCampaign"
+                },
+                "elseExecute":{
+                  "when":{ "_":[ "variable", "flags", { "_":[ "this", "questName" ] }, "isGreaterThan", { "_":[ "this", "questProgress", 1 ] } ] },
+                  "set":{ "remove":1 },
+                  "elseExecute":{
+                    "when":{ "_":[ "variable", "flags", { "_":[ "this", "questName" ] }, "isGreaterEqualThan", { "_":[ "this", "questProgress", 0 ] } ] },
+                    "execute":{ "_":[ "stencil", "codeSetOnstage" ] }
+                  }
+                }
+              }
+            ],
+            "elseExecute":{ "when":{ "_":[ "this", "removed", "not" ] }, "execute":{ "_":[ "stencil", "codeSetOnstage" ] } }
+          }
+        ]
+      }
+    },
+    "dataClasses":[
+      {
+        "statDescription":"Raised as a farmer, you always dreamed to travel the world with your steel sword only. This pitch black night you finally decided to leave the family farm and start living your own way...",
+        "statFullName":"Warrior"
+      },
+      {
+        "statDescription":"The last step of a Mage initiate is to embark a long journey around the world and learn how to use magic in real life. You've left the academy doorway behind, for the first time...",
+        "statFullName":"Mage",
+        "statRangedLife":3
+      },
+      {
+        "statDescription":"Once your customer has been killed there is no future for a body guard. All you've now are sword techniques, a bounty on the head. You decided to live a new life, far from your failures...",
+        "statFullName":"Swordsman",
+        "statMeleeDistance":3
+      },
+      {
+        "statDescription":"During your meditations you've seen a ship sailing in the blue sea. The wind was whispering your name, so you decided to stand, pick few of apples and leave the temple without a word...",
+        "statFullName":"Monk",
+        "statHealAmount":3
+      }
+    ],
+    "dataWeapons":{
+      "armor":[
+        [ "", "Aka", "Bleu", "Cade", "Doxo", "Eae", "Flami", "Ghio", "Hondo", "Iwi", "Jawa" ],
+        [ "", "ha", "be", "ce", "de", "-ei", "flo", "glo", "heji", "ima", "jodo" ]
+      ],
+      "colors":[ "#f00", "#0f0", "#00f" ],
+      "comparison":[ "-", "=", "+" ],
+      "melee":[
+        [ "", "Al", "Bla", "Che", "Da", "Erg", "Fin", "Ger", "Hal", "Iji", "Jam" ],
+        [ "", "ade", "bea", "cei", "dae", "efe", "fae", "gne", "hei", "ida", "jee" ],
+        [ "", "-Al", "bae", "cad", "-Dan", "-Eno", "fo", "ghan", "-Han", " I", "jan" ]
+      ],
+      "ranged":[
+        [ "", "Azh", "Bham", "Chal", "Dham", "Efel", "Fagh", "Ghoe", "Ham", "Izal", "Jel" ],
+        [ "", "az", "bl", "ece", "ade", "ele", "fji", "ogo", "aha", "inha", "jame" ],
+        [ "", "-Aza", "-Bela", "-Cada", "-Dena", "-Elho", "-Fugu", "-Genji", "-His", "-Igho", "-Jum" ],
+        [ "", " Az", " Ba", " Ce", " Dha", " El", " Fo", " Gha", "Ha", " Ini", " Jo" ]
+      ],
+      "strength":[ 1, 2, 0 ],
+      "weakness":[ 2, 0, 1 ]
+    },
+    "descriptors":{
+      "armor":[
+        {
+          "as":{ "_":[ "objectTyped", "hintline0" ] },
+          "set":{ "color":"#0ff", "html":{ "_":[ "LV.", ".", { "_":[ "that", "statLevel" ] }, ".", " Armor: ", ".", { "_":[ "that", "statFullName" ] } ] } }
+        },
+        {
+          "as":{ "_":"variable" },
+          "set":{
+            "cmpDefense":{ "_":[ "that", "statDefense", "-", { "_":[ "variable", "player", "armor", "statDefense" ] }, "limitValue", [ -1, 1 ], "+", 1 ] },
+            "cmpMaxHealth":{ "_":[ "that", "statMaxHealth", "-", { "_":[ "variable", "player", "armor", "statMaxHealth" ] }, "limitValue", [ -1, 1 ], "+", 1 ] }
+          }
+        },
+        {
+          "as":{ "_":[ "objectTyped", "hintline1" ] },
+          "set":{
+            "color":{ "_":[ "stencil", "dataWeapons", "colors", { "_":[ "that", "statElement" ] } ] },
+            "html":{ "_":[ "", ".", { "_":[ "stencil", "dataWeapons", "comparison", { "_":[ "variable", "cmpDefense" ] } ] }, ".", "DEF:", ".", { "_":[ "that", "statDefense" ] }, ".", " ", ".", { "_":[ "stencil", "dataWeapons", "comparison", { "_":[ "variable", "cmpMaxHealth" ] } ] }, ".", "HEA:", ".", { "_":[ "that", "statMaxHealth" ] } ] }
+          }
+        }
+      ],
+      "general":[
+        { "as":{ "_":[ "objectTyped", "hintline0" ] }, "set":{ "color":"#0ff", "html":{ "_":[ "that", "npcName" ] } } },
+        { "as":{ "_":[ "objectTyped", "hintline1" ] }, "set":{ "color":"#fff", "html":{ "_":[ "that", "npcDescription" ] } } }
+      ],
+      "gold":[
+        { "as":{ "_":[ "objectTyped", "hintline0" ] }, "set":{ "color":"#0ff", "html":{ "_":[ "that", "statAmount", ".", " Gold" ] } } },
+        { "as":{ "_":[ "objectTyped", "hintline1" ] }, "set":{ "color":"#fff", "html":"Use for buying and level up." } }
+      ],
+      "healingpotion":[
+        { "as":{ "_":[ "objectTyped", "hintline0" ] }, "set":{ "color":"#0ff", "html":"Healing potion" } },
+        { "as":{ "_":[ "objectTyped", "hintline1" ] }, "set":{ "color":"#fff", "html":"Recover part of your health." } }
+      ],
+      "melee":[
+        {
+          "as":{ "_":[ "objectTyped", "hintline0" ] },
+          "set":{ "color":"#0ff", "html":{ "_":[ "LV.", ".", { "_":[ "that", "statLevel" ] }, ".", " Melee: ", ".", { "_":[ "that", "statFullName" ] } ] } }
+        },
+        {
+          "as":{ "_":"variable" },
+          "set":{
+            "cmpCooldown":{ "_":[ "that", "statCooldown", "-", { "_":[ "variable", "player", "melee", "statCooldown" ] }, "limitValue", [ -1, 1 ], "+", 1 ] },
+            "cmpDamage":{ "_":[ "that", "statDamage", "-", { "_":[ "variable", "player", "melee", "statDamage" ] }, "limitValue", [ -1, 1 ], "+", 1 ] },
+            "cmpDistance":{ "_":[ "that", "statDistance", "-", { "_":[ "variable", "player", "melee", "statDistance" ] }, "limitValue", [ -1, 1 ], "+", 1 ] }
+          }
+        },
+        {
+          "as":{ "_":[ "objectTyped", "hintline1" ] },
+          "set":{
+            "color":{ "_":[ "stencil", "dataWeapons", "colors", { "_":[ "that", "statElement" ] } ] },
+            "html":{ "_":[ "", ".", { "_":[ "stencil", "dataWeapons", "comparison", { "_":[ "variable", "cmpDamage" ] } ] }, ".", "ATK:", ".", { "_":[ "that", "statDamage" ] }, ".", " ", ".", { "_":[ "stencil", "dataWeapons", "comparison", { "_":[ "variable", "cmpCooldown" ] } ] }, ".", "AGI:", ".", { "_":[ "that", "statCooldown" ] }, ".", " ", ".", { "_":[ "stencil", "dataWeapons", "comparison", { "_":[ "variable", "cmpDistance" ] } ] }, ".", "DIS:", ".", { "_":[ "that", "statDistance" ] } ] }
+          }
+        }
+      ],
+      "player":[
+        {
+          "as":{ "_":[ "objectTyped", "hintline0" ] },
+          "set":{
+            "color":"#0ff",
+            "html":{ "_":[ "LV.", ".", { "_":[ "variable", "player", "base", "statLevel" ] }, ".", " ", ".", { "_":[ "variable", "player", "base", "statFullName" ] }, ".", " (HP:", ".", { "_":[ "variable", "player", "myHealth" ] }, ".", "/", ".", { "_":[ "variable", "player", "myMaxHealth" ] }, ".", ")" ] }
+          }
+        },
+        {
+          "as":{ "_":[ "objectTyped", "hintline1" ] },
+          "set":{
+            "color":"#0ff",
+            "html":{ "_":[ "ATK:", ".", { "_":[ "variable", "player", "base", "statDamage" ] }, ".", " ", ".", "DEF:", ".", { "_":[ "variable", "player", "base", "statDefense" ] }, ".", " ", ".", "SPD:", ".", { "_":[ "variable", "player", "base", "statSpeed" ] }, ".", " ", ".", "HEA:", ".", { "_":[ "variable", "player", "base", "statMaxHealth" ] }, ".", "(", ".", { "_":[ "variable", "player", "base", "statHealAmount" ] }, ".", ")" ] }
+          }
+        }
+      ],
+      "ranged":[
+        {
+          "as":{ "_":[ "objectTyped", "hintline0" ] },
+          "set":{ "color":"#0ff", "html":{ "_":[ "LV.", ".", { "_":[ "that", "statLevel" ] }, ".", " Ranged: ", ".", { "_":[ "that", "statFullName" ] } ] } }
+        },
+        {
+          "as":{ "_":"variable" },
+          "set":{
+            "cmpCooldown":{ "_":[ "that", "statCooldown", "-", { "_":[ "variable", "player", "ranged", "statCooldown" ] }, "limitValue", [ -1, 1 ], "+", 1 ] },
+            "cmpDamage":{ "_":[ "that", "statDamage", "-", { "_":[ "variable", "player", "ranged", "statDamage" ] }, "limitValue", [ -1, 1 ], "+", 1 ] },
+            "cmpLife":{ "_":[ "that", "statLife", "-", { "_":[ "variable", "player", "ranged", "statLife" ] }, "limitValue", [ -1, 1 ], "+", 1 ] },
+            "cmpSpeed":{ "_":[ "that", "statSpeed", "-", { "_":[ "variable", "player", "ranged", "statSpeed" ] }, "limitValue", [ -1, 1 ], "+", 1 ] }
+          }
+        },
+        {
+          "as":{ "_":[ "objectTyped", "hintline1" ] },
+          "set":{
+            "color":{ "_":[ "stencil", "dataWeapons", "colors", { "_":[ "that", "statElement" ] } ] },
+            "html":{ "_":[ "", ".", { "_":[ "stencil", "dataWeapons", "comparison", { "_":[ "variable", "cmpDamage" ] } ] }, ".", "ATK:", ".", { "_":[ "that", "statDamage" ] }, ".", " ", ".", { "_":[ "stencil", "dataWeapons", "comparison", { "_":[ "variable", "cmpSpeed" ] } ] }, ".", "SPD:", ".", { "_":[ "that", "statSpeed" ] }, ".", " ", ".", { "_":[ "stencil", "dataWeapons", "comparison", { "_":[ "variable", "cmpLife" ] } ] }, ".", "LIF:", ".", { "_":[ "that", "statLife" ] }, ".", " ", ".", { "_":[ "stencil", "dataWeapons", "comparison", { "_":[ "variable", "cmpCooldown" ] } ] }, ".", "AGI:", ".", { "_":[ "that", "statCooldown" ] } ] }
+          }
+        }
+      ]
+    },
+    "equipment":{
+      "type":"equipment",
+      "image":"stuff", "width":24, "height":40,
+      "hitbox":{ "width":16, "height":8, "x":4, "y":32 },
+      "visible":0,
+      "forceX":{ "_":[ "randomNumber", [ -1, 1 ] ] }, "forceY":{ "_":[ "randomNumber", [ -1, 1 ] ] }, "forceZ":-3,
+      "expiration":1500,
+      "generated":0,
+      "states":{
+        "like":[ { "_":[ "stencil", "expirationBehaviour" ] }, { "_":[ "stencil", "removeOnDistanceBehaviour" ] } ],
+        "code":[
+          {
+            "name":"Physics",
+            "data":{
+              "walls":{
+                "z":0,
+                "restitution":0.5,
+                "execute":[
+                  { "when":{ "_":[ "this", "forceX", "isLessThan", 0.1 ] }, "set":{ "forceX":0 }, "elseExecute":{ "multiply":0.5, "to":{ "_":[ "this", "forceX" ] } } },
+                  { "when":{ "_":[ "this", "forceY", "isLessThan", 0.1 ] }, "set":{ "forceY":0 }, "elseExecute":{ "multiply":0.5, "to":{ "_":[ "this", "forceY" ] } } }
+                ]
+              },
+              "gravityZ":1
+            }
+          },
+          { "name":"ZPerspective" }
+        ],
+        "actions":[
+          {
+            "name":"pick",
+            "execute":[
+              { "as":{ "_":"variable" }, "set":{ "copyFrom":{ "_":[ "variable", "player", { "_":[ "that", "statType" ] } ] } } },
+              {
+                "object":{ "set":{ "_":[ "stencil", "equipmentStencils", { "_":[ "that", "statType" ] } ] }, "at":{ "_":[ "objectTyped", "player" ] } },
+                "as":{ "_":"that" },
+                "execute":{ "_":[ "stencil", "codeCopyStats" ] }
+              },
+              { "as":{ "_":"variable" }, "set":{ "copyFrom":{ "_":"that" } } },
+              { "as":{ "_":[ "variable", "player", { "_":[ "this", "statType" ] } ] }, "execute":{ "_":[ "stencil", "codeCopyStats" ] } },
+              { "execute":{ "_":[ "stencil", "codeUpdateStats" ] } },
+              { "remove":1 }
+            ]
+          },
+          {
+            "name":"sell",
+            "execute":[
+              { "set":{ "statAmount":{ "_":[ "this", "statLevel", "*", { "_":[ "randomValue", { "_":[ "scene", "goldRatio" ] } ] }, "*", 0.8, "ceil" ] } } },
+              { "sum":{ "_":[ "this", "statAmount" ] }, "to":{ "_":[ "variable", "player", "myGold" ] } },
+              { "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "color":"#ff0", "html":{ "_":[ "that", "statAmount", ".", "G" ] } } },
+              { "_":[ "stencil", "codeSparkle" ] },
+              { "remove":1 }
+            ]
+          }
+        ]
+      }
+    },
+    "equipmentStencils":{
+      "armor":{
+        "set":{ "_":[ "stencil", "equipment" ] },
+        "statDefense":1,
+        "statElement":0,
+        "statMaxHealth":1,
+        "statType":"armor",
+        "states":{
+          "execute":[
+            { "when":{ "_":[ "this", "generated", "not" ] }, "execute":{ "_":[ "stencil", "generators", "armor" ] } },
+            { "set":{ "tileX":{ "_":[ 336, "+", { "_":[ "this", "statElement", "*", 24 ] } ] }, "visible":1 } }
+          ],
+          "actions":{ "name":"describe", "execute":{ "_":[ "stencil", "descriptors", "armor" ] } }
+        }
+      },
+      "gold":{
+        "type":"npc",
+        "image":"stuff", "tileX":408, "width":24, "height":40,
+        "hitbox":{ "width":16, "height":8, "x":4, "y":32 },
+        "forceX":{ "_":[ "randomNumber", [ -1, 1 ] ] }, "forceY":{ "_":[ "randomNumber", [ -1, 1 ] ] }, "forceZ":-3,
+        "expiration":1500,
+        "states":{
+          "like":[ { "_":[ "stencil", "expirationBehaviour" ] }, { "_":[ "stencil", "removeOnDistanceBehaviour" ] } ],
+          "execute":[
+            { "set":{ "statAmount":{ "_":[ "this", "statLevel", "*", { "_":[ "randomValue", { "_":[ "scene", "goldRatio" ] } ] }, "ceil" ] } } },
+            { "set":{ "frame":{ "_":[ "this", "statAmount", "/", 20, "floor", "limitValue", [ 0, 2 ] ] } } }
+          ],
+          "code":[
+            {
+              "name":"Physics",
+              "data":{
+                "walls":{
+                  "z":0,
+                  "restitution":0.5,
+                  "execute":[
+                    { "when":{ "_":[ "this", "forceX", "isLessThan", 0.1 ] }, "set":{ "forceX":0 }, "elseExecute":{ "multiply":0.5, "to":{ "_":[ "this", "forceX" ] } } },
+                    { "when":{ "_":[ "this", "forceY", "isLessThan", 0.1 ] }, "set":{ "forceY":0 }, "elseExecute":{ "multiply":0.5, "to":{ "_":[ "this", "forceY" ] } } }
+                  ]
+                },
+                "gravityZ":1
+              }
+            },
+            { "name":"ZPerspective" }
+          ],
+          "actions":[
+            {
+              "name":"interact",
+              "execute":[
+                { "sum":{ "_":[ "this", "statAmount" ] }, "to":{ "_":[ "variable", "player", "myGold" ] } },
+                { "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "color":"#ff0", "html":{ "_":[ "that", "statAmount", ".", "G" ] } } },
+                { "remove":1 }
+              ]
+            },
+            { "name":"describe", "execute":{ "_":[ "stencil", "descriptors", "gold" ] } }
+          ]
+        }
+      },
+      "melee":{
+        "set":{ "_":[ "stencil", "equipment" ] },
+        "statCooldown":1,
+        "statDamage":1,
+        "statDistance":1,
+        "statElement":0,
+        "statType":"melee",
+        "states":{
+          "execute":[
+            { "when":{ "_":[ "this", "generated", "not" ] }, "execute":{ "_":[ "stencil", "generators", "melee" ] } },
+            { "set":{ "tileX":{ "_":[ 192, "+", { "_":[ "this", "statElement", "*", 24 ] } ] }, "visible":1 } }
+          ],
+          "actions":{ "name":"describe", "execute":{ "_":[ "stencil", "descriptors", "melee" ] } }
+        }
+      },
+      "ranged":{
+        "set":{ "_":[ "stencil", "equipment" ] },
+        "statCooldown":1,
+        "statDamage":1,
+        "statElement":0,
+        "statLife":1,
+        "statSpeed":1,
+        "statType":"ranged",
+        "states":{
+          "execute":[
+            { "when":{ "_":[ "this", "generated", "not" ] }, "execute":{ "_":[ "stencil", "generators", "ranged" ] } },
+            { "set":{ "tileX":{ "_":[ 264, "+", { "_":[ "this", "statElement", "*", 24 ] } ] }, "visible":1 } }
+          ],
+          "actions":{ "name":"describe", "execute":{ "_":[ "stencil", "descriptors", "ranged" ] } }
+        }
+      }
+    },
+    "expirationBehaviour":{
+      "code":{
+        "name":"Execute",
+        "data":[
+          { "subtract":1, "to":{ "_":[ "this", "expiration" ] } },
+          {
+            "when":{ "_":[ "this", "expiration" ] },
+            "execute":{ "when":{ "_":[ "this", "expiration", "isLessThan", 75 ] }, "set":{ "visible":{ "_":[ "this", "expiration", "%", 2 ] } } },
+            "elseExecute":{ "remove":1 }
+          }
+        ]
+      }
+    },
+    "generators":{
+      "armor":[
+        {
+          "times":{ "_":[ "this", "statLevel" ] },
+          "decide":[
+            { "when":{ "_":[ "this", "statDefense", "isLessThan", 10 ] }, "options":{ "sum":1, "to":{ "_":[ "this", "statDefense" ] } } },
+            { "when":{ "_":[ "this", "statMaxHealth", "isLessThan", 10 ] }, "options":{ "sum":1, "to":{ "_":[ "this", "statMaxHealth" ] } } }
+          ]
+        },
+        {
+          "set":{
+            "generated":1,
+            "statFullName":{
+              "_":[
+                { "_":[ "stencil", "dataWeapons", "armor", 0, { "_":[ "this", "statDefense" ] } ] },
+                ".",
+                { "_":[ "stencil", "dataWeapons", "armor", 1, { "_":[ "this", "statMaxHealth" ] } ] }
+              ]
+            }
+          }
+        }
+      ],
+      "melee":[
+        {
+          "times":{ "_":[ "this", "statLevel" ] },
+          "decide":[
+            { "when":{ "_":[ "this", "statDamage", "isLessThan", 10 ] }, "options":{ "sum":1, "to":{ "_":[ "this", "statDamage" ] } } },
+            { "when":{ "_":[ "this", "statDistance", "isLessThan", 10 ] }, "options":{ "sum":1, "to":{ "_":[ "this", "statDistance" ] } } },
+            { "when":{ "_":[ "this", "statCooldown", "isLessThan", 10 ] }, "options":{ "sum":1, "to":{ "_":[ "this", "statCooldown" ] } } }
+          ]
+        },
+        {
+          "set":{
+            "generated":1,
+            "statFullName":{
+              "_":[
+                { "_":[ "stencil", "dataWeapons", "melee", 0, { "_":[ "this", "statDamage" ] } ] },
+                ".",
+                { "_":[ "stencil", "dataWeapons", "melee", 1, { "_":[ "this", "statDistance" ] } ] },
+                ".",
+                { "_":[ "stencil", "dataWeapons", "melee", 2, { "_":[ "this", "statCooldown" ] } ] }
+              ]
+            }
+          }
+        }
+      ],
+      "ranged":[
+        {
+          "times":{ "_":[ "this", "statLevel" ] },
+          "decide":[
+            { "when":{ "_":[ "this", "statCooldown", "isLessThan", 10 ] }, "options":{ "sum":1, "to":{ "_":[ "this", "statCooldown" ] } } },
+            { "when":{ "_":[ "this", "statDamage", "isLessThan", 10 ] }, "options":{ "sum":1, "to":{ "_":[ "this", "statDamage" ] } } },
+            { "when":{ "_":[ "this", "statSpeed", "isLessThan", 10 ] }, "options":{ "sum":1, "to":{ "_":[ "this", "statSpeed" ] } } },
+            { "when":{ "_":[ "this", "statLife", "isLessThan", 10 ] }, "options":{ "sum":1, "to":{ "_":[ "this", "statLife" ] } } }
+          ]
+        },
+        {
+          "set":{
+            "generated":1,
+            "statFullName":{
+              "_":[
+                { "_":[ "stencil", "dataWeapons", "ranged", 0, { "_":[ "this", "statDamage" ] } ] },
+                ".",
+                { "_":[ "stencil", "dataWeapons", "ranged", 1, { "_":[ "this", "statSpeed" ] } ] },
+                ".",
+                { "_":[ "stencil", "dataWeapons", "ranged", 2, { "_":[ "this", "statLife" ] } ] },
+                ".",
+                { "_":[ "stencil", "dataWeapons", "ranged", 3, { "_":[ "this", "statCooldown" ] } ] }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "golem":{
+      "set":{ "_":[ "stencil", "enemy" ] },
+      "baseTileY":400,
+      "statAttackDistance":1,
+      "statAttackType":"melee",
+      "statAttackWait":1,
+      "statCooldown":1,
+      "statDamage":2,
+      "statDefense":1,
+      "statFullName":"Golem",
+      "statHealth":5,
+      "statRangedLife":1,
+      "statRangedPrecision":1,
+      "statRangedSpeed":1,
+      "statSpeed":1,
+      "statStepLength":1,
+      "statStepWait":1,
+      "statTension":1
+    },
+    "golem2":{
+      "set":{ "_":[ "stencil", "enemy" ] },
+      "baseTileY":400,
+      "statAttackDistance":1,
+      "statAttackType":"melee",
+      "statAttackWait":3,
+      "statCooldown":1,
+      "statDamage":4,
+      "statDefense":4,
+      "statFullName":"Golem",
+      "statHealth":8,
+      "statRangedLife":1,
+      "statRangedPrecision":1,
+      "statRangedSpeed":1,
+      "statSpeed":3,
+      "statStepLength":1,
+      "statStepWait":1,
+      "statTension":5
+    },
+    "golem3":{
+      "set":{ "_":[ "stencil", "enemy" ] },
+      "baseTileY":400,
+      "statAttackDistance":1,
+      "statAttackType":"melee",
+      "statAttackWait":3,
+      "statCooldown":1,
+      "statDamage":8,
+      "statDefense":6,
+      "statFullName":"Golem",
+      "statHealth":9,
+      "statRangedLife":1,
+      "statRangedPrecision":1,
+      "statRangedSpeed":1,
+      "statSpeed":5,
+      "statStepLength":1,
+      "statStepWait":1,
+      "statTension":7
+    },
+    "humanoid":{
+      "image":"sprites", "width":24, "height":40,
+      "hitbox":{ "width":16, "height":8, "x":4, "y":32 },
+      "animations":{ "still":{ "frame":0 }, "walk":{ "frames":[ 0, 1, 0, 2 ], "speed":3, "loopTo":0 } },
+      "attackTimer":0,
+      "baseTileY":0,
+      "health":0,
+      "looking":0,
+      "stunTimer":0,
+      "states":[
+        {
+          "name":"dead",
+          "set":{ "frame":3, "visible":1, "animation":"none" },
+          "code":{ "name":"Sequence", "data":[ { "set":{ "visible":{ "_":[ "this", "visible", "not" ] } }, "wait":1, "loop":1, "cycles":10 }, { "remove":1 } ] }
+        },
+        {
+          "code":[
+            {
+              "name":"Execute",
+              "data":{
+                "when":{ "_":[ "this", "stunTimer" ] },
+                "execute":[
+                  {
+                    "when":{ "_":[ "this", "stunTimer", "%", 2 ] },
+                    "sum":1,
+                    "to":{ "_":[ "this", "x" ] },
+                    "elseExecute":{ "subtract":1, "to":{ "_":[ "this", "x" ] } }
+                  },
+                  { "subtract":1, "to":{ "_":[ "this", "stunTimer" ] } }
+                ],
+                "elseExecute":{
+                  "when":{ "_":[ "this", "attackTimer" ] },
+                  "execute":[
+                    {
+                      "when":{ "_":[ "this", "attackTimer", "isLessThan", 5 ] },
+                      "set":{ "frame":0, "animation":"none" },
+                      "elseExecute":{ "set":{ "frame":4, "animation":"none" } }
+                    },
+                    { "subtract":1, "to":{ "_":[ "this", "attackTimer" ] } }
+                  ],
+                  "elseExecute":{
+                    "when":{ "_":[ "this", "destination" ] },
+                    "execute":{
+                      "when":{ "_":[ "this", "distanceTo", { "_":[ "this", "destination" ] }, "isLessEqualThan", { "_":[ "this", "speed" ] } ] },
+                      "executeAction":"stop",
+                      "elseExecute":[
+                        {
+                          "set":{
+                            "animation":"walk",
+                            "lookAtDestination":{ "_":[ "this", "destination" ] },
+                            "movingAngle":{ "_":[ "this", "angleTo", { "_":[ "this", "destination" ] } ] }
+                          },
+                          "executeAction":"lookAt"
+                        },
+                        { "applyVector":{ "angle":{ "_":[ "this", "movingAngle" ] }, "length":{ "_":[ "this", "speed" ] } } }
+                      ]
+                    },
+                    "elseExecute":{ "executeAction":"stop" }
+                  }
+                }
+              }
+            },
+            {
+              "name":"Physics",
+              "data":{ "walls":[ { "type":"wall", "execute":{ "executeAction":"stop" } }, { "area":{ "_":"scene" }, "execute":{ "executeAction":"stop" } } ] }
+            },
+            { "name":"ZPerspective" }
+          ],
+          "actions":[
+            { "name":"stop", "execute":{ "set":{ "forceX":0, "forceY":0, "animation":"still", "destination":0 } } },
+            {
+              "name":"lookAt",
+              "execute":[
+                { "set":{ "lookingAngle":{ "_":[ "this", "angleTo", { "_":[ "this", "lookAtDestination" ] }, "+", 22, "/", 45, "floor" ] } } },
+                {
+                  "when":{ "_":[ "this", "lookingAngle", "isGreaterThan", 4 ] },
+                  "execute":{ "set":{ "flipX":1, "renderAngle":{ "_":[ 8, "-", { "_":[ "this", "lookingAngle" ] } ] } } },
+                  "elseExecute":{ "set":{ "flipX":0, "renderAngle":{ "_":[ "this", "lookingAngle" ] } } }
+                },
+                { "set":{ "tileY":{ "_":[ "this", "renderAngle", "*", 40, "+", { "_":[ "this", "baseTileY" ] } ] } } }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "mage":{
+      "set":{ "_":[ "stencil", "enemy" ] },
+      "baseTileY":200,
+      "statAttackDistance":1,
+      "statAttackType":"ranged",
+      "statAttackWait":1,
+      "statCooldown":1,
+      "statDamage":1,
+      "statDefense":1,
+      "statFullName":"Mage Skeleton",
+      "statHealth":1,
+      "statRangedLife":1,
+      "statRangedPrecision":1,
+      "statRangedSpeed":1,
+      "statSpeed":1,
+      "statStepLength":1,
+      "statStepWait":1,
+      "statTension":1
+    },
+    "skeleton":{
+      "set":{ "_":[ "stencil", "enemy" ] },
+      "baseTileY":200,
+      "statAttackDistance":1,
+      "statAttackType":"melee",
+      "statAttackWait":1,
+      "statCooldown":1,
+      "statDamage":1,
+      "statDefense":1,
+      "statFullName":"Skeleton",
+      "statHealth":1,
+      "statRangedLife":1,
+      "statRangedPrecision":1,
+      "statRangedSpeed":1,
+      "statSpeed":1,
+      "statStepLength":1,
+      "statStepWait":1,
+      "statTension":1
+    },
+    "melee":{ "statCooldown":1, "statDamage":1, "statDistance":1, "statElement":1, "statType":"melee" },
+    "pointerModel":{
+      "type":"pointer",
+      "image":"ui", "width":16, "height":16,
+      "zIndex":100000000,
+      "hitbox":{ "width":3, "height":3, "x":0, "y":0 },
+      "holdTime":0,
+      "hovering":0,
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":[
+            { "set":{ "x":{ "_":[ "pointer", "x", "-", 8 ] }, "y":{ "_":[ "pointer", "y", "-", 8 ] } } },
+            { "when":{ "_":[ "keyPointer", "not" ] }, "set":{ "state":"running" } }
+          ]
+        }
+      }
+    },
+    "positionprocessor":{ "type":"positionprocessor", "width":24, "height":40, "visible":0 },
+    "ranged":{ "statCooldown":1, "statDamage":1, "statElement":2, "statLife":1, "statSpeed":1, "statType":"ranged" },
+    "scrollingMessageModel":{
+      "image":"ui", "width":256, "height":71,
+      "y":-71,
+      "forceY":9,
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":[
+            { "when":{ "_":[ "this", "forceY", "isLessThan", 0.1 ] }, "set":{ "forceY":0 }, "elseExecute":{ "multiply":0.9, "to":{ "_":[ "this", "forceY" ] } } },
+            { "sum":{ "_":[ "this", "forceY" ] }, "to":{ "_":[ "this", "y" ] } }
+          ]
+        }
+      }
+    },
+    "sheetRow":{
+      "type":[ "clickable", "npchud" ],
+      "states":{
+        "actions":[
+          {
+            "name":"describe",
+            "execute":[
+              { "set":{ "bgcolor":"#f00", "color":"#000" } },
+              { "as":{ "_":[ "objectTyped", "hintline0" ] }, "set":{ "color":"#0ff", "html":{ "_":[ "that", "statName" ] } } },
+              { "as":{ "_":[ "objectTyped", "hintline1" ] }, "set":{ "color":"#fff", "html":{ "_":[ "that", "statSubtitle" ] } } }
+            ]
+          },
+          { "name":"undescribe", "execute":{ "set":{ "bgcolor":"", "color":"#fff" } } },
+          {
+            "name":"click",
+            "execute":{
+              "when":{ "_":[ "variable", "player", "myGold", "isLessThan", { "_":[ "variable", "player", "base", "statNextLevelAt" ] } ] },
+              "execute":{
+                "as":{ "_":"variable" },
+                "set":{ "passiveText":"Sorry, you don't have gold for praying with Salivello." },
+                "execute":{ "_":[ "stencil", "codeShowPassivePopup" ] }
+              },
+              "elseExecute":{
+                "when":{ "_":[ "variable", "player", "base", { "_":[ "this", "statId" ] }, "isLessThan", 10 ] },
+                "execute":[
+                  { "sum":1, "to":{ "_":[ "variable", "player", "base", { "_":[ "this", "statId" ] } ] } },
+                  { "sum":1, "to":{ "_":[ "variable", "player", "base", "statLevel" ] } },
+                  { "subtract":{ "_":[ "variable", "player", "base", "statNextLevelAt" ] }, "to":{ "_":[ "variable", "player", "myGold" ] } },
+                  { "sum":{ "_":[ "variable", "player", "base", "statLevel", "*", 10 ] }, "to":{ "_":[ "variable", "player", "base", "statNextLevelAt" ] } },
+                  { "_":[ "stencil", "codeUpdateStats" ] },
+                  {
+                    "as":{ "_":"variable" },
+                    "set":{ "passiveText":"Your prayers has been heard. Received the bless of Gods." },
+                    "execute":{ "_":[ "stencil", "codeShowPassivePopup" ] }
+                  }
+                ],
+                "elseExecute":{
+                  "as":{ "_":"variable" },
+                  "set":{ "passiveText":"You're already a faithful follower of this God." },
+                  "execute":{ "_":[ "stencil", "codeShowPassivePopup" ] }
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    "shopRow":{
+      "type":[ "clickable", "npchud" ],
+      "states":{
+        "actions":[
+          {
+            "name":"describe",
+            "execute":[
+              { "set":{ "bgcolor":"#f00", "color":"#000" } },
+              { "as":{ "_":[ "this", "product" ] }, "execute":{ "_":[ "stencil", "descriptors", { "_":[ "this", "statType" ] } ] } }
+            ]
+          },
+          { "name":"undescribe", "execute":{ "set":{ "bgcolor":"", "color":"#fff" } } },
+          {
+            "name":"click",
+            "execute":{
+              "when":{ "_":[ "this", "product", "price", "isGreaterThan", { "_":[ "variable", "player", "myGold" ] } ] },
+              "execute":{ "as":{ "_":"variable" }, "set":{ "passiveText":"Sorry, you don't have enough gold." }, "execute":{ "_":[ "stencil", "codeShowPassivePopup" ] } },
+              "elseExecute":[
+                { "subtract":{ "_":[ "this", "product", "price" ] }, "to":{ "_":[ "variable", "player", "myGold" ] } },
+                {
+                  "when":{ "_":[ "this", "product", "statType", "isEqualTo", "healingpotion" ] },
+                  "sum":1,
+                  "to":{ "_":[ "variable", "player", "myHeals" ] },
+                  "elseExecute":{ "assign":{ "_":[ "this", "product" ] }, "to":{ "_":[ "variable", "player", { "_":[ "this", "product", "statType" ] } ] } }
+                },
+                { "_":[ "stencil", "codeUpdateStats" ] },
+                { "as":{ "_":"variable" }, "set":{ "passiveText":"Thank you!" }, "execute":{ "_":[ "stencil", "codeShowPassivePopup" ] } }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "tileCover":{ "zIndex":100000000 },
+    "tileFloor":{ "bgcolor":{ "_":[ "scene", "colorTileFloor" ] } },
+    "tileFloor2":{ "bgcolor":{ "_":[ "scene", "colorTileFloor2" ] } },
+    "tileSide":{ "bgcolor":{ "_":[ "scene", "colorTileSide" ] } },
+    "tileTop":{ "bgcolor":{ "_":[ "scene", "colorTileTop" ] } },
+    "uiButtonModel":{
+      "type":[ "clickable", "npchud" ],
+      "width":49, "height":20,
+      "border":"#fff",
+      "font":"spectrum", "lineHeight":20, "textAlign":"center",
+      "bgcolorOff":"#000",
+      "bgcolorOn":"#f00",
+      "colorOff":"#fff",
+      "colorOn":"#000",
+      "states":{
+        "execute":{ "executeAction":"undescribe" },
+        "actions":[
+          {
+            "name":"describe",
+            "execute":[
+              { "set":{ "bgcolor":{ "_":[ "this", "bgcolorOn" ] }, "color":{ "_":[ "this", "colorOn" ] } } },
+              { "as":{ "_":[ "objectTyped", "hintline0" ] }, "set":{ "color":"#0ff", "html":{ "_":[ "that", "html" ] } } },
+              { "as":{ "_":[ "objectTyped", "hintline1" ] }, "set":{ "color":"#fff", "html":{ "_":[ "that", "description" ] } } }
+            ]
+          },
+          { "name":"undescribe", "execute":{ "set":{ "bgcolor":{ "_":[ "this", "bgcolorOff" ] }, "color":{ "_":[ "this", "colorOff" ] } } } }
+        ]
+      }
+    },
+    "doneButton":{
+      "set":{ "_":[ "stencil", "uiButtonModel" ] },
+      "html":"Done",
+      "description":"End this action.",
+      "states":{ "actions":{ "name":"click", "execute":{ "_":[ "stencil", "codeEndNpc" ] } } }
+    },
+    "walkdestination":{
+      "type":"walkdestination",
+      "image":"ui", "tileY":16, "width":24, "height":40,
+      "execute":{ "_":[ "stencil", "codeStaticZPerspective" ] },
+      "states":{ "code":{ "name":"Sequence", "data":{ "set":{ "visible":{ "_":[ "this", "visible", "not" ] } }, "wait":1, "loop":1, "cycles":11 } } }
+    },
+    "=":{ "type":"wall", "image":"tiles", "tileX":16, "tileY":64, "width":16, "height":16 },
+    "B":{ "set":[ { "_":[ "stencil", "tileTop" ] }, { "_":[ "stencil", "tileCover" ] } ], "image":"tiles", "tileX":16, "tileY":0, "width":16, "height":16 },
+    "b":{ "set":[ { "_":[ "stencil", "tileSide" ] }, { "_":[ "stencil", "tileCover" ] } ], "image":"tiles", "tileX":16, "tileY":16, "width":16, "height":16 },
+    "i":{
+      "set":[ { "_":[ "stencil", "tileFloor2" ] }, { "_":[ "stencil", "tileCover" ] } ],
+      "image":"tiles", "tileX":80, "tileY":16, "width":16, "height":16
+    },
+    "X":{ "set":{ "_":[ "stencil", "tileFloor" ] }, "image":"tiles", "tileX":16, "tileY":32, "width":16, "height":16 },
+    "h":{ "set":{ "_":[ "stencil", "tileFloor" ] }, "image":"tiles", "tileX":64, "tileY":32, "width":16, "height":16 },
+    "j":{ "set":{ "_":[ "stencil", "tileFloor" ] }, "image":"tiles", "tileX":96, "tileY":0, "width":16, "height":16 },
+    "k":{ "set":{ "_":[ "stencil", "tileFloor" ] }, "image":"tiles", "tileX":112, "tileY":0, "width":16, "height":16 },
+    "l":{ "set":{ "_":[ "stencil", "tileFloor" ] }, "image":"tiles", "tileX":96, "tileY":16, "width":16, "height":16 },
+    "m":{ "set":{ "_":[ "stencil", "tileFloor" ] }, "image":"tiles", "tileX":112, "tileY":16, "width":16, "height":16 },
+    "s":{ "set":{ "_":[ "stencil", "tileFloor" ] }, "image":"tiles", "tileX":48, "tileY":32, "width":16, "height":16 },
+    "w":{ "set":{ "_":[ "stencil", "tileFloor" ] }, "image":"tiles", "tileX":32, "tileY":32, "width":16, "height":16 },
+    "x":{ "set":{ "_":[ "stencil", "tileFloor" ] }, "image":"tiles", "tileX":0, "tileY":32, "width":16, "height":16 },
+    ".":{ "set":{ "_":[ "stencil", "tileFloor2" ] }, "image":"tiles", "tileX":0, "tileY":48, "width":16, "height":16 },
+    ":":{ "set":{ "_":[ "stencil", "tileFloor2" ] }, "image":"tiles", "tileX":16, "tileY":48, "width":16, "height":16 },
+    "I":{ "type":"wall", "set":{ "_":[ "stencil", "tileFloor2" ] }, "image":"tiles", "tileX":64, "tileY":16, "width":16, "height":16 },
+    "U":{ "type":"wall", "set":{ "_":[ "stencil", "tileFloor2" ] }, "image":"tiles", "tileX":64, "tileY":0, "width":16, "height":16 },
+    "L":{ "type":"wall", "set":{ "_":[ "stencil", "tileSide" ] }, "image":"tiles", "tileX":32, "tileY":48, "width":16, "height":16 },
+    "a":{ "type":"wall", "set":{ "_":[ "stencil", "tileSide" ] }, "image":"tiles", "tileX":0, "tileY":16, "width":16, "height":16 },
+    "o":{ "type":"wall", "set":{ "_":[ "stencil", "tileSide" ] }, "image":"tiles", "tileX":48, "tileY":16, "width":16, "height":16 },
+    "+":{ "type":"wall", "set":{ "_":[ "stencil", "tileTop" ] }, "image":"tiles", "tileX":32, "tileY":0, "width":16, "height":16 },
+    "A":{ "type":"wall", "set":{ "_":[ "stencil", "tileTop" ] }, "image":"tiles", "tileX":0, "tileY":0, "width":16, "height":16 },
+    "O":{ "type":"wall", "set":{ "_":[ "stencil", "tileTop" ] }, "image":"tiles", "tileX":32, "tileY":16, "width":16, "height":16 },
+    "T":{ "type":"wall", "set":{ "_":[ "stencil", "tileTop" ] }, "image":"tiles", "tileX":48, "tileY":0, "width":16, "height":16 },
+    "u":{ "set":[ { "_":[ "stencil", "tileFloor2" ] }, { "_":[ "stencil", "tileCover" ] } ], "image":"tiles", "tileX":80, "tileY":0, "width":16, "height":16 },
+    "~":{ "type":"wall", "image":"tiles", "tileX":0, "tileY":64, "width":16, "height":16 }
+  },
+  "execute":{},
+  "scenes":{
+    "intro":{
+      "object":[
+        { "width":256, "height":192, "x":0, "y":0, "bgcolor":"#f00" },
+        {
+          "image":"ui", "tileY":526, "width":256, "height":95,
+          "zIndex":2, "x":0, "y":-98,
+          "forceY":12,
+          "states":{
+            "code":{
+              "name":"Execute",
+              "data":{
+                "when":{ "_":[ "this", "forceY", "isGreaterThan", 1 ] },
+                "execute":[ { "sum":{ "_":[ "this", "forceY" ] }, "to":{ "_":[ "this", "y" ] } }, { "multiply":0.9, "to":{ "_":[ "this", "forceY" ] } } ],
+                "elseExecute":[
+                  {
+                    "object":{
+                      "width":256, "height":1,
+                      "zIndex":1, "x":0, "y":70,
+                      "bgcolor":"#fff",
+                      "states":{
+                        "code":{
+                          "name":"Execute",
+                          "data":{
+                            "when":{ "_":[ "this", "height", "isLessThan", 256 ] },
+                            "execute":[ { "sum":6, "to":{ "_":[ "this", "height" ] } }, { "subtract":3, "to":{ "_":[ "this", "y" ] } } ],
+                            "elseExecute":{ "set":{ "state":"none" } }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  { "set":{ "state":"none" } }
+                ]
+              }
+            }
+          }
+        }
+      ],
+      "execute":[
+        { "_":[ "stencil", "codeStartNpc" ] },
+        {
+          "object":{
+            "set":{ "_":[ "stencil", "uiButtonModel" ] },
+            "width":192,
+            "zIndex":20, "x":32, "y":164,
+            "html":"New Game",
+            "states":{ "actions":{ "name":"click", "execute":{ "gotoScene":"character" } } }
+          }
+        },
+        {
+          "when":{ "_":[ "storage", "player" ] },
+          "execute":{
+            "object":[
+              {
+                "set":{ "_":[ "stencil", "uiButtonModel" ] },
+                "width":192, "height":40,
+                "zIndex":20, "x":32, "y":120,
+                "html":"Load Game",
+                "states":{ "actions":{ "name":"click", "execute":{ "_":[ "stencil", "codeLoadGame" ] } } }
+              },
+              {
+                "width":184, "height":100,
+                "zIndex":30, "x":36, "y":138,
+                "color":"#fff",
+                "font":"spectrum", "lineHeight":10, "textAlign":"center", "html":{ "_":[ "LV.", ".", { "_":[ "storage", "player", "base", "statLevel" ] }, ".", " ", ".", { "_":[ "storage", "player", "base", "statFullName" ] }, ".", "<br>", ".", { "_":[ "storage", "campaignName" ] } ] }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "ending":{
+      "object":[
+        {
+          "image":"ui", "tileY":417, "width":256, "height":77,
+          "zIndex":10, "x":0, "y":192,
+          "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "this", "y", "isGreaterThan", 115 ] }, "subtract":0.1, "to":{ "_":[ "this", "y" ] } } } }
+        },
+        {
+          "width":256, "height":1000,
+          "x":0, "y":192,
+          "font":"spectrum", "textAlign":"center", "html":"GUARDIAN STONES<br>(c) 2016<br>A tribute to mouse-based<br>western RPGs.<br><br><br>Graphics by:<br>KesieV Norimaki<br><br><br>Story by:<br>KesieV Norimaki<br>Bianca Brenna<br><br><br>Code by:<br>KesieV Norimaki<br><br><br>Big thanks to:<br>The JTTA Staff<br>Il Marsicano<br>Bianca<br>Stefano \"Il Kusagari\" Fioretto<br>Romolo Camplani<br>Giuseppe Marchese<br>Roberto Garrito<br>All Akihabara age friends<br><br><br><br><br>Your only weapon against the fate is being yourself.",
+          "forceY":-0.5,
+          "states":{ "code":{ "name":"Physics" } }
+        }
+      ],
+      "execute":{ "_":[ "stencil", "codeStartNpc" ] },
+      "states":{ "code":{ "name":"Sequence", "data":[ { "wait":1680 }, { "gotoScene":"intro" } ] } }
+    },
+    "character":{
+      "object":[
+        { "width":256, "height":192, "x":0, "y":0, "bgcolor":"#00f" },
+        { "image":"ui", "tileY":494, "width":256, "height":32, "zIndex":1, "x":0, "y":8 },
+        { "width":232, "height":72, "zIndex":1, "x":12, "y":46, "bgcolor":"#000", "border":"#fff" },
+        { "type":"story", "width":232, "height":72, "zIndex":1, "x":12, "y":122, "color":"#fff", "font":"spectrum", "lineHeight":10, "outline":"#000" }
+      ],
+      "execute":[
+        { "_":[ "stencil", "codeStartNpc" ] },
+        { "set":{ "counter":0 } },
+        {
+          "times":{ "_":[ "stencil", "dataClasses", "count" ] },
+          "execute":[
+            {
+              "object":{
+                "type":[ "clickable", "npchud" ],
+                "width":224, "height":14,
+                "zIndex":10, "x":16, "y":{ "_":[ 17, "*", { "_":[ "that", "counter" ] }, "+", 50 ] },
+                "bgcolor":"#000", "color":"#fff",
+                "font":"spectrum", "lineHeight":14, "textAlign":"center", "html":{ "_":[ "stencil", "dataClasses", { "_":[ "that", "counter" ] }, "statFullName" ] },
+                "statClass":{ "_":[ "stencil", "dataClasses", { "_":[ "that", "counter" ] } ] },
+                "states":{
+                  "actions":[
+                    {
+                      "name":"describe",
+                      "execute":[
+                        { "set":{ "bgcolor":"#f00", "color":"#000" } },
+                        { "as":{ "_":[ "objectTyped", "story" ] }, "set":{ "html":{ "_":[ "that", "statClass", "statDescription" ] } } }
+                      ]
+                    },
+                    {
+                      "name":"undescribe",
+                      "execute":[ { "as":{ "_":[ "objectTyped", "story" ] }, "set":{ "html":"" } }, { "set":{ "bgcolor":"#000", "color":"#fff" } } ]
+                    },
+                    {
+                      "name":"click",
+                      "execute":[
+                        { "_":[ "stencil", "codeNewGame" ] },
+                        { "as":{ "_":[ "variable", "player", "base" ] }, "set":{ "_":[ "that", "statClass" ] } },
+                        { "_":[ "stencil", "codeUpdateStats" ] },
+                        { "gotoScene":"prologue" }
+                      ]
+                    }
+                  ]
+                }
+              }
+            },
+            { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+          ]
+        }
+      ]
+    },
+    "prologue":{
+      "object":[
+        {
+          "image":"ui", "tileY":284, "width":256, "height":133,
+          "zIndex":1, "x":0, "y":192,
+          "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "this", "y", "isGreaterThan", 59 ] }, "subtract":0.2, "to":{ "_":[ "this", "y" ] } } } }
+        },
+        {
+          "width":256, "height":192,
+          "x":0, "y":0,
+          "states":{
+            "code":{
+              "name":"Sequence",
+              "data":[
+                { "set":{ "alpha":1, "bgcolor":"#000" }, "wait":{ "_":[ "randomNumber", [ 100, 200 ] ] } },
+                { "set":{ "bgcolor":"#fff" } },
+                { "wait":10 },
+                { "subtract":0.1, "to":{ "_":[ "this", "alpha" ] }, "wait":1, "loop":1, "cycles":10 },
+                { "loopTo":0 }
+              ]
+            }
+          }
+        },
+        {
+          "width":240, "height":0,
+          "zIndex":10, "x":8, "y":8,
+          "color":"#fff",
+          "font":"spectrum", "lineHeight":10, "outline":"#000", "textAlign":"center", "html":"Becoming a traveller means leaving your life in the hand of the Fate. And Fate is the most capricious of the Gods. For you, He reserved the worst of the futures: a terrible tempest stricken the merchant ship you sneaked into, gifting you with the eternal rest under the sea...",
+          "states":{
+            "code":{
+              "name":"Sequence",
+              "data":[
+                { "sum":0.5, "to":{ "_":[ "this", "height" ] }, "wait":1, "loop":1, "cycles":250 },
+                { "wait":75 },
+                {
+                  "object":{
+                    "set":{ "_":[ "stencil", "uiButtonModel" ] },
+                    "width":100,
+                    "zIndex":100, "x":148, "y":164,
+                    "html":"Continue",
+                    "states":{
+                      "actions":{ "name":"click", "execute":[ { "as":{ "_":"variable" }, "set":{ "myScene":"dwarf", "saveOnMap":1 } }, { "_":[ "stencil", "codeGotoNextMap" ] } ] }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ],
+      "execute":[
+        {
+          "times":20,
+          "object":{
+            "width":1,
+            "zIndex":2,
+            "bgcolor":"#000",
+            "states":{
+              "code":{
+                "name":"Execute",
+                "data":{
+                  "set":{ "height":{ "_":[ "randomNumber", [ 30, 90 ] ] }, "x":{ "_":[ "randomNumber", [ 0, 255 ] ] }, "y":{ "_":[ "randomNumber", [ -50, 150 ] ] } }
+                }
+              }
+            }
+          }
+        },
+        { "_":[ "stencil", "codeStartNpc" ] }
+      ]
+    }
+  }
+}
