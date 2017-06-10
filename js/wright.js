@@ -2561,11 +2561,11 @@ function Box(parent, type, sub, statemanager, useCanvas, aliasmode, controller) 
 							obj.cleanprops.tileX = obj.cleanprops.tileY = obj.cleanprops.frame = 1;
 						}
 						if (!obj.cleanprops.width || !obj.cleanprops.border) {
-							node.setStyle("width",w);
+							node.setStyle("width",Math.floor(w));
 							obj.cleanprops.width = 1;
 						}
 						if (!obj.cleanprops.height || !obj.cleanprops.border) {
-							node.setStyle("height",h);
+							node.setStyle("height",Math.floor(h));
 							obj.cleanprops.height = 1;
 						}
 						if (!obj.cleanprops.color) {
