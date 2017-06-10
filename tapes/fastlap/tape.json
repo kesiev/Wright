@@ -1,0 +1,1053 @@
+{
+  "name":"Fastlap",
+  "author":"KesieV",
+  "year":2014,
+  "genre":"Racing",
+  "description":"<p><a href='https://en.wikipedia.org/wiki/Excitebike'>Excitebike</a> (1984) by Nintendo is one of the finest <i>mixed genre game</i> of the past. It displays a pixelated motocross motorbike on its cover, it features racing motorbikes on dirt tracks but... It's not <i>just</i> a racing game. At least, it's enough far from racing games canons that can fit in other genres as well.</p><p>There aren't turns to care about, no drifting to be mastered, gears to switch at the right time and no veichles to be selected in Excitebike. Instead there are well calibrated jumps to be done, obstacles to be avoided and opponents to be taken down. These are mostly the features of a platformer game and isn't surprising that Hello Games <a href='https://en.wikipedia.org/wiki/Joe_Danger'>Joe Danger</a> (2010), that took this <i>platformer side</i> of Excitebike to higher levels, was defined by IGN something that <i>\"felt like a Nintendo game\"</i>.</p><p>Some mixes between genres became pretty obvious along the time. Quite all of today's <i>platformers</i> have <i>puzzle</i> elements in it: pure skill-based platformers were a hit during the arcade era but gamers had a lot more time to spend at their homes, for living a more compelling and various experience.</p><p>The way these genres are mixed can give you very different results: non-conventional ways can produce very original and interesting experiences, like in EA <a href='https://en.wikipedia.org/wiki/Henry_Hatsworth_in_the_Puzzling_Adventure'>Henry Hatsworth in the Puzzling Adventure</a> (2009), in which our usual puzzle/plaformer blend... is played as two distinct and linked games to be controlled simultaneously!</p><p>Sometime the mix feels so both fresh and obvious, like in Valve FPS/Puzzle <a href='https://en.wikipedia.org/wiki/Portal_(video_game)'>Portal</a> (2007), that can be considered the root of a brand new genre. The success of <a href='https://en.wikipedia.org/wiki/The_Witness_(2016_video_game)'>The Witness</a> (2016) is well deserved, since it expanded the Portal narratives and mechanics in a more <i>videogame flavoured</i> blend.</p><p>There are even game genres that are clearly blends, like the <i>metroidvania genre</i>, which mixes exploration, platforming and RPG elements from Nintendo <a href='https://en.wikipedia.org/wiki/Metroid'>Metroid</a> (1986) and Konami <a href='https://en.wikipedia.org/wiki/Castlevania'>Castlevania</a> (1986) - but mostly from <a href='https://en.wikipedia.org/wiki/Castlevania:_Symphony_of_the_Night'>Castlevania: Symphony of the Night</a> (1997)</p><p>People reacts to <i>genre blends</i> in very different ways: I've met people praising Atlus masteripece <a href='https://en.wikipedia.org/wiki/Shin_Megami_Tensei:_Persona_4'>Persona 4</a> (2008) for its balanced mix between JRPG and <i>dating sim</i> elements and someone else heavily criticizing it for being <i>a watered down experience of both of the genres</i>.</p><p>So are these mixes a good thing or not? As usual, it depends... but it's all about being open minded and appreciating differences and opportunities as they are. This can make you a better gamer... and, probably, a better human too.</p><p>Plot!</p><p>Time to face the daily Motocross Roguelike Challenge, rider! Jump on your motorbike, go full throttle and stunt along the track for the best score! Wheelies, perfect landings and turbo pad can boost your speed but... be careful! Bad landings and wet sand can slow down you down... and rocks or reckless driving can even break your motorbike!</p><p>Use the A BUTTON for accelerating, UP/DOWN for changing track and LEFT/RIGHT for changing pitch. Good luck!</p>",
+  "screenshots":[ "fastlap-1.png", "fastlap-2.png" ],
+  "hardware":{
+    "width":256,
+    "height":192,
+    "filter":"retro"
+  },
+  "cheats":{},
+  "resources":{
+    "logo":"logo.png",
+    "spectrum":"spectrum.font",
+    "track":"track.png"
+  },
+  "stencils":{
+    "codeLimitSpeed":{
+      "as":{ "_":"variable" },
+      "set":{
+        "speed":{ "_":[ "variable", "speed", "limitValue", [ 0, 8 ] ] },
+        "maxspeed":{ "_":[ "variable", "maxspeed", "limitValue", [ 0, 8 ] ] },
+        "minspeed":{ "_":[ "variable", "minspeed", "limitValue", [ 0, 8 ] ] }
+      }
+    },
+    "codeSaveHiscores":{ "as":{ "_":"storage" }, "set":{ "hiscore-prev":{ "_":[ "variable", "hiscore-prev" ] }, "hiscore-today":{ "_":[ "variable", "hiscore-today" ] } } },
+    "codeScroll":[
+      { "set":{ "x":{ "_":[ 256, "+", { "_":[ "this", "distance" ] }, "-", { "_":[ "variable", "distance" ] } ] } } },
+      { "when":{ "_":[ "this", "x", "+", { "_":[ "this", "width" ] }, "isLessThan", 0 ] }, "remove":1 }
+    ],
+    "codeUpdateTrack":{
+      "when":{ "_":[ "variable", "track", { "_":[ "variable", "step" ] }, "at", "isLessThan", { "_":[ "variable", "distance" ] } ] },
+      "execute":[
+        {
+          "object":{
+            "distance":{ "_":[ "variable", "track", { "_":[ "variable", "step" ] }, "at" ] },
+            "set":{ "_":[ "stencil", { "_":[ "variable", "track", { "_":[ "variable", "step" ] }, "make" ] } ] },
+            "x":256,
+            "track":{ "_":[ "variable", "track", { "_":[ "variable", "step" ] }, "track" ] }
+          }
+        },
+        { "sum":{ "_":[ "variable", "trackLen" ] }, "to":{ "_":[ "variable", "track", { "_":[ "variable", "step" ] }, "at" ] } },
+        { "sum":1, "to":{ "_":[ "variable", "step" ] } },
+        { "when":{ "_":[ "variable", "step", "isGreaterEqualThan", { "_":[ "variable", "track", "count" ] } ] }, "as":{ "_":"variable" }, "set":{ "step":0 } }
+      ]
+    },
+    "removeWithCloud":[
+      {
+        "times":20,
+        "object":{ "_":[ "stencil", "smoke" ] },
+        "execute":[
+          { "sum":{ "_":[ "randomNumber", [ { "_":[ "this", "width", "/", -2 ] }, { "_":[ "this", "width", "/", 2 ] } ] ] }, "to":{ "_":[ "that", "x" ] } },
+          { "sum":{ "_":[ "randomNumber", [ { "_":[ "this", "height", "/", -2 ] }, { "_":[ "this", "height", "/", 2 ] } ] ] }, "to":{ "_":[ "that", "y" ] } }
+        ]
+      },
+      { "remove":1 }
+    ],
+    "removeWithSmoke":[ { "object":{ "set":{ "_":[ "stencil", "smoke" ] }, "forceY":-1 } }, { "remove":1 } ],
+    "modelPopupLabel":{
+      "width":100, "height":10,
+      "zIndex":10000, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "that", "y", "-", 15 ] },
+      "color":"#fff",
+      "font":"spectrum", "lineHeight":12, "outline":"#000", "textAlign":"center",
+      "speed":0.5,
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[ { "subtract":{ "_":[ "this", "speed" ] }, "to":{ "_":[ "this", "y" ] }, "wait":1, "loop":1, "cycles":15 }, { "remove":1 } ]
+        }
+      }
+    },
+    "player":{
+      "type":"player",
+      "set":{ "_":[ "stencil", "motorbikeModel" ] },
+      "y":100,
+      "execute":{ "as":{ "_":"variable" }, "set":{ "speed":0, "maxspeed":3, "minspeed":3 } },
+      "animations":{ "victory":{ "frames":[ 0, 3 ], "speed":10, "loopTo":0 } },
+      "states":[
+        {
+          "name":"start",
+          "code":{
+            "name":"Sequence",
+            "data":[ { "wait":2 }, { "sum":1, "to":{ "_":[ "this", "y" ] } }, { "wait":2 }, { "subtract":1, "to":{ "_":[ "this", "y" ] } }, { "loopTo":0 } ]
+          }
+        },
+        {
+          "code":{
+            "name":"Execute",
+            "data":[
+              {
+                "when":{ "_":[ "variable", "maxspeed", "isGreaterThan", { "_":[ "variable", "minspeed" ] } ] },
+                "subtract":0.05,
+                "to":{ "_":[ "variable", "maxspeed" ] },
+                "elseExecute":{ "as":{ "_":"variable" }, "set":{ "maxspeed":{ "_":[ "variable", "minspeed" ] } } }
+              },
+              {
+                "when":{ "_":[ "variable", "racing" ] },
+                "execute":[
+                  {
+                    "when":{ "_":[ "this", "gotoTrack", "not" ] },
+                    "execute":{
+                      "when":{ "_":[ "keyUp", "isDown", "and", { "_":[ "this", "track", "isGreaterThan", 1 ] } ] },
+                      "set":{ "gotoTrack":{ "_":[ "this", "track", "-", 1 ] } },
+                      "elseExecute":{
+                        "when":{ "_":[ "keyDown", "isDown", "and", { "_":[ "this", "track", "isLessThan", 4 ] } ] },
+                        "set":{ "gotoTrack":{ "_":[ "this", "track", "+", 1 ] } }
+                      }
+                    }
+                  },
+                  {
+                    "when":{ "_":[ "variable", "speed" ] },
+                    "execute":{
+                      "when":{ "_":[ "keyLeft", "isDown" ] },
+                      "subtract":5,
+                      "to":{ "_":[ "this", "spin" ] },
+                      "elseExecute":{ "when":{ "_":[ "keyRight", "isDown" ] }, "sum":5, "to":{ "_":[ "this", "spin" ] } }
+                    }
+                  },
+                  {
+                    "when":{ "_":[ "keyA", "isDown" ] },
+                    "execute":{ "sum":0.1, "to":{ "_":[ "variable", "speed" ] } },
+                    "elseExecute":{ "when":{ "_":[ "variable", "speed", "isGreaterThan", 0 ] }, "subtract":0.1, "to":{ "_":[ "variable", "speed" ] } }
+                  }
+                ],
+                "elseExecute":{ "when":{ "_":[ "variable", "speed", "isGreaterThan", 0 ] }, "subtract":0.1, "to":{ "_":[ "variable", "speed" ] } }
+              },
+              {
+                "when":{ "_":[ "variable", "speed", "isGreaterThan", { "_":[ "variable", "maxspeed" ] } ] },
+                "as":{ "_":"variable" },
+                "set":{ "speed":{ "_":[ "variable", "maxspeed" ] } }
+              },
+              { "sum":{ "_":[ "variable", "speed" ] }, "to":{ "_":[ "variable", "distance" ] } },
+              { "as":{ "_":[ "object", "scrolling" ] }, "executeAction":"scroll" }
+            ]
+          },
+          "actions":{ "name":"break", "execute":[ { "object":{ "_":[ "stencil", "fallenPlayer" ] } }, { "_":[ "stencil", "removeWithCloud" ] } ] }
+        }
+      ]
+    },
+    "fallenPlayer":{
+      "image":"track", "tileY":244, "width":16, "height":16,
+      "zIndex":5, "at":{ "_":"that" },
+      "forceY":-13,
+      "states":[
+        {
+          "code":{
+            "name":"Execute",
+            "data":[
+              { "sum":90, "to":{ "_":[ "this", "angle" ] } },
+              { "sum":{ "_":[ "this", "forceY" ] }, "to":{ "_":[ "this", "y" ] } },
+              { "sum":1, "to":{ "_":[ "this", "forceY" ] } },
+              { "when":{ "_":[ "this", "forceY", "isGreaterThan", 1, "and", { "_":[ "this", "y", "isGreaterThan", 70 ] } ] }, "set":{ "state":"prepare" } }
+            ]
+          }
+        },
+        {
+          "name":"prepare",
+          "set":{ "y":70, "angle":0 },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "set":{ "visible":{ "_":[ "this", "visible", "not" ] } }, "wait":1, "loop":1, "cycles":25 },
+              { "when":{ "_":[ "variable", "timer" ] }, "object":{ "set":{ "_":[ "stencil", "player" ] } } },
+              { "remove":1 }
+            ]
+          }
+        }
+      ]
+    },
+    "motorbikeModel":{
+      "image":"track", "tileY":228, "width":24, "height":16,
+      "zIndex":5, "x":24,
+      "hitbox":{ "width":8, "height":4, "x":8, "y":12 },
+      "originX":5, "originY":12,
+      "forceZ":0,
+      "engine":0,
+      "flyLength":0,
+      "gotoTrack":0,
+      "ground":0,
+      "onFloor":1,
+      "rumble":0,
+      "spin":0,
+      "track":1,
+      "zPos":0,
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":[
+            {
+              "when":{ "_":[ "this", "gotoTrack" ] },
+              "execute":{
+                "when":{ "_":[ "this", "track", "isLessThan", { "_":[ "this", "gotoTrack" ] } ] },
+                "sum":0.1,
+                "to":{ "_":[ "this", "track" ] },
+                "set":{ "frame":1 },
+                "elseExecute":{
+                  "when":{ "_":[ "this", "track", "isGreaterThan", { "_":[ "this", "gotoTrack" ] } ] },
+                  "subtract":0.1,
+                  "to":{ "_":[ "this", "track" ] },
+                  "set":{ "frame":2 },
+                  "elseExecute":{ "set":{ "frame":0, "gotoTrack":0 } }
+                }
+              }
+            },
+            { "set":{ "oldGroundAngle":{ "_":[ "this", "groundAngle" ] }, "oldOnFloor":{ "_":[ "this", "onFloor" ] }, "oldSpin":{ "_":[ "this", "spin" ] } } },
+            { "set":{ "onFloor":0 } },
+            {
+              "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "slope" ] }, "hitbox":{ "width":8, "height":384, "x":8, "y":0 } } ] },
+              "as":{ "_":"that" },
+              "executeAction":"getSlope",
+              "elseExecute":{ "set":{ "ground":0, "groundAngle":0 } }
+            },
+            {
+              "when":{ "_":[ "this", "zPos", "isLessEqualThan", { "_":[ "this", "ground" ] } ] },
+              "execute":[
+                { "sum":{ "_":[ "variable", "speed" ] }, "to":{ "_":[ "this", "engine" ] } },
+                {
+                  "when":{ "_":[ "this", "engine", "isGreaterThan", 5 ] },
+                  "execute":[
+                    { "set":{ "engine":0, "rumble":{ "_":[ "this", "rumble", "+", 1, "%", 2 ] } } },
+                    {
+                      "when":{ "_":[ "variable", "speed", "isGreaterThan", 3.8 ] },
+                      "object":{ "set":{ "_":[ "stencil", "smoke" ] }, "y":{ "_":[ "that", "y", "+", 7 ] }, "forceX":{ "_":[ "variable", "speed", "*", -1 ] } }
+                    }
+                  ]
+                },
+                {
+                  "when":{ "_":[ "this", "spin", "isGreaterEqualThan", { "_":[ "this", "groundAngle" ] } ] },
+                  "set":{ "spin":{ "_":[ "this", "groundAngle" ] } },
+                  "elseExecute":{ "sum":4, "to":{ "_":[ "this", "spin" ] } }
+                },
+                { "set":{ "forceZ":0, "onFloor":1, "zPos":{ "_":[ "this", "ground" ] } } }
+              ],
+              "elseExecute":{ "set":{ "forceZ":{ "_":[ "this", "forceZ", "+", 1 ] }, "rumble":0 } }
+            },
+            {
+              "when":{ "_":[ "this", "onFloor" ] },
+              "execute":[
+                {
+                  "when":{ "_":[ "this", "groundAngle", "isGreaterEqualThan", 0, "and", { "_":[ "this", "oldGroundAngle", "isLessThan", 0 ] } ] },
+                  "set":{ "forceZ":{ "_":[ "this", "groundAngle", "-", { "_":[ "this", "oldGroundAngle" ] }, "abs", "*", -0.08, "*", { "_":[ "variable", "speed" ] } ] } }
+                },
+                {
+                  "when":{ "_":[ "this", "oldOnFloor", "not" ] },
+                  "execute":[
+                    { "set":{ "delta":{ "_":[ "this", "oldSpin", "-", { "_":[ "this", "spin" ] }, "abs" ] } } },
+                    {
+                      "when":{ "_":[ "this", "flyLength", "isGreaterThan", 10 ] },
+                      "execute":{
+                        "when":{ "_":[ "this", "delta", "isLessThan", 6 ] },
+                        "execute":[
+                          {
+                            "sum":{ "_":[ "proportionalValue", { "proportion":[ 0, 5, 3, 1 ], "value":{ "_":[ "this", "delta" ] } } ] },
+                            "to":{ "_":[ "variable", "maxspeed" ] }
+                          },
+                          {
+                            "set":{
+                              "bonus":{
+                                "_":[
+                                  "proportionalValue",
+                                  { "proportion":[ 0, 5, 200, 10 ], "value":{ "_":[ "this", "delta" ] } },
+                                  "ceil",
+                                  "*",
+                                  { "_":[ "this", "flyLength" ] },
+                                  "/",
+                                  10,
+                                  "ceil"
+                                ]
+                              }
+                            }
+                          },
+                          { "when":{ "_":[ "variable", "racing" ] }, "sum":{ "_":[ "this", "bonus" ] }, "to":{ "_":[ "variable", "score" ] } },
+                          { "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "html":{ "_":[ "", ".", "+", ".", { "_":[ "that", "bonus" ] }, ".", "pts" ] } } }
+                        ],
+                        "elseExecute":{
+                          "when":{ "_":[ "this", "delta", "isGreaterThan", 30 ] },
+                          "executeAction":"break",
+                          "elseExecute":{ "when":{ "_":[ "this", "delta", "isGreaterThan", 10 ] }, "set":{ "as":{ "_":"variable" }, "maxspeed":3 } }
+                        }
+                      }
+                    }
+                  ],
+                  "elseExecute":[
+                    { "set":{ "delta":{ "_":[ "this", "groundAngle", "-", { "_":[ "this", "spin" ] } ] } } },
+                    {
+                      "when":{ "_":[ "this", "delta", "isGreaterThan", 50 ] },
+                      "executeAction":"break",
+                      "elseExecute":[
+                        {
+                          "as":{ "_":"variable" },
+                          "set":{ "minspeed":{ "_":[ "proportionalValue", { "proportion":[ 0, 50, 3, 4 ], "value":{ "_":[ "that", "delta" ] } } ] } }
+                        },
+                        {
+                          "when":{ "_":[ "variable", "racing" ] },
+                          "sum":{ "_":[ "proportionalValue", { "proportion":[ 0, 50, 0, 3 ], "value":{ "_":[ "that", "delta" ] } }, "floor" ] },
+                          "to":{ "_":[ "variable", "score" ] }
+                        }
+                      ]
+                    }
+                  ]
+                },
+                { "set":{ "flyLength":0 } }
+              ],
+              "elseExecute":{ "sum":1, "to":{ "_":[ "this", "flyLength" ] } }
+            },
+            { "_":[ "stencil", "codeLimitSpeed" ] },
+            { "subtract":{ "_":[ "this", "forceZ" ] }, "to":{ "_":[ "this", "zPos" ] } },
+            {
+              "set":{
+                "zIndex":{ "_":[ "this", "track", "*", 100 ] }, "y":{ "_":[ 92, "+", { "_":[ "this", "track", "*", 8 ] }, "-", { "_":[ "this", "zPos" ] }, "-", { "_":[ "this", "rumble" ] } ] },
+                "angle":{ "_":[ "this", "spin" ] }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "pieceStart":{
+      "type":"scrolling",
+      "image":"track", "tileY":160, "width":15, "height":68,
+      "zIndex":1, "y":92,
+      "far":1,
+      "states":{
+        "actions":{
+          "name":"scroll",
+          "execute":[
+            {
+              "when":{ "_":[ "this", "far", "and", { "_":[ "this", "x", "isLessThan", 38 ] } ] },
+              "execute":[
+                { "set":{ "far":0 } },
+                {
+                  "when":{ "_":[ "variable", "lap" ] },
+                  "execute":[
+                    { "when":{ "_":[ "variable", "racing" ] }, "sum":{ "_":[ "variable", "timer" ] }, "to":{ "_":[ "variable", "score" ] } },
+                    { "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "html":{ "_":[ "", ".", "+", ".", { "_":[ "variable", "timer" ] }, ".", "pts" ] } } }
+                  ]
+                },
+                { "sum":1, "to":{ "_":[ "variable", "lap" ] } },
+                { "when":{ "_":[ "variable", "lap", "isGreaterThan", { "_":[ "variable", "laps" ] } ] }, "as":{ "_":"scene" }, "set":{ "state":"goal" } }
+              ]
+            },
+            { "_":[ "stencil", "codeScroll" ] }
+          ]
+        }
+      }
+    },
+    "smoke":{
+      "image":"track", "tileX":16, "tileY":244, "width":16, "height":16,
+      "zIndex":{ "_":[ "that", "zIndex", "+", 1 ] }, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "animations":{ "spark":{ "frames":[ 3, 2, 1, 0, 1, 2, 3 ], "speed":1 } },
+      "animation":"spark",
+      "states":{ "code":[ { "name":"Physics" }, { "name":"Sequence", "data":[ { "wait":16 }, { "remove":1 } ] } ] }
+    },
+    "pieceLapCounter":{
+      "set":{ "_":[ "stencil", "trackObstacleModel" ] },
+      "box":"label", "tileX":440, "tileY":228, "width":72, "height":17,
+      "y":42,
+      "color":"#000",
+      "font":"spectrum", "lineHeight":18, "textAlign":"center",
+      "execute":{
+        "when":{ "_":[ "variable", "lap", "not" ] },
+        "set":{ "html":"START" },
+        "elseExecute":{
+          "when":{ "_":[ "variable", "lap", "isEqualTo", { "_":[ "variable", "laps", "-", 1 ] } ] },
+          "set":{ "html":"FINAL" },
+          "elseExecute":{
+            "when":{ "_":[ "variable", "lap", "isEqualTo", { "_":[ "variable", "laps" ] } ] },
+            "set":{ "html":"GOAL" },
+            "elseExecute":{ "set":{ "html":{ "_":[ "LAP ", ".", { "_":[ "variable", "lap", "+", 1 ] }, ".", "/", ".", { "_":[ "variable", "laps" ] } ] } } }
+          }
+        }
+      }
+    },
+    "pieceLongRampDown":{ "set":{ "_":[ "stencil", "trackRampModel" ] }, "tileX":117, "width":30, "rampAngle":18, "rampHigh":0, "rampLow":20 },
+    "pieceLongRampUp":{ "set":{ "_":[ "stencil", "trackRampModel" ] }, "tileX":87, "width":30, "rampAngle":-18, "rampHigh":20, "rampLow":0 },
+    "pieceRampDown":{ "set":{ "_":[ "stencil", "trackRampModel" ] }, "tileX":45, "width":15, "rampAngle":30, "rampHigh":0, "rampLow":20 },
+    "pieceRampTop":{ "set":{ "_":[ "stencil", "trackRampModel" ] }, "tileX":30, "width":15, "rampHigh":20, "rampLow":20 },
+    "pieceRampUp":{ "set":{ "_":[ "stencil", "trackRampModel" ] }, "tileX":15, "width":15, "rampAngle":-30, "rampHigh":20, "rampLow":0 },
+    "trackObstacleModel":{
+      "type":"scrolling",
+      "image":"track",
+      "zIndex":2,
+      "available":1,
+      "states":{ "actions":{ "name":"scroll", "execute":{ "_":[ "stencil", "codeScroll" ] } } }
+    },
+    "trackRampModel":{
+      "type":"slope",
+      "set":{ "_":[ "stencil", "trackObstacleModel" ] },
+      "tileY":160, "height":68,
+      "y":92,
+      "rampAngle":0,
+      "rampLow":0,
+      "rampTop":0,
+      "states":{
+        "actions":{
+          "name":"getSlope",
+          "execute":[
+            { "set":{ "xpos":{ "_":[ "that", "x", "+", 12, "-", { "_":[ "this", "x" ] }, "/", { "_":[ "this", "width" ] }, "limitValue", [ 0, 1 ] ] } } },
+            {
+              "as":{ "_":"that" },
+              "set":{
+                "ground":{
+                  "_":[ "proportionalValue", { "proportion":[ 0, 1, { "_":[ "that", "rampLow" ] }, { "_":[ "that", "rampHigh" ] } ], "value":{ "_":[ "that", "xpos" ] } } ]
+                },
+                "groundAngle":{ "_":[ "that", "rampAngle" ] }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "pieceShortLowRampDown":{ "set":{ "_":[ "stencil", "trackRampModel" ] }, "tileX":165, "width":18, "rampAngle":18, "rampHigh":0, "rampLow":12 },
+    "pieceShortLowRampUp":{ "set":{ "_":[ "stencil", "trackRampModel" ] }, "tileX":147, "width":18, "rampAngle":-18, "rampHigh":12, "rampLow":0 },
+    "pieceShortRampDown":{ "set":{ "_":[ "stencil", "trackRampModel" ] }, "tileX":78, "width":9, "rampAngle":30, "rampHigh":0, "rampLow":12 },
+    "pieceShortRampTop":{ "set":{ "_":[ "stencil", "trackRampModel" ] }, "tileX":69, "width":9, "rampHigh":12, "rampLow":12 },
+    "pieceShortRampUp":{ "set":{ "_":[ "stencil", "trackRampModel" ] }, "tileX":60, "width":9, "rampAngle":-30, "rampHigh":12, "rampLow":0 },
+    "trackRoadObstacleModel":{
+      "set":{ "_":[ "stencil", "trackObstacleModel" ] },
+      "width":19, "height":8,
+      "hitbox":{ "width":19, "height":1, "x":0, "y":0 },
+      "states":{
+        "set":{ "y":{ "_":[ "this", "track", "*", 8, "+", 104 ] } },
+        "code":{
+          "name":"Execute",
+          "data":{
+            "when":{ "_":[ "this", "available" ] },
+            "execute":{ "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "player" ] } ] }, "execute":[ { "executeAction":"hit" }, { "set":{ "available":0 } } ] }
+          }
+        }
+      }
+    },
+    "pieceRock":{
+      "set":{ "_":[ "stencil", "trackRoadObstacleModel" ] },
+      "tileX":192, "tileY":244,
+      "states":{ "actions":{ "name":"hit", "execute":[ { "as":{ "_":[ "object", "player" ] }, "executeAction":"break" }, { "remove":1 } ] } }
+    },
+    "pieceSand":{
+      "set":{ "_":[ "stencil", "trackRoadObstacleModel" ] },
+      "tileX":192, "tileY":236,
+      "states":{ "actions":{ "name":"hit", "execute":[ { "as":{ "_":"variable" }, "set":{ "speed":0.3 } }, { "_":[ "stencil", "codeLimitSpeed" ] } ] } }
+    },
+    "pieceTurbo":{
+      "set":{ "_":[ "stencil", "trackRoadObstacleModel" ] },
+      "tileX":192, "tileY":228,
+      "states":{
+        "actions":{
+          "name":"hit",
+          "execute":[
+            { "sum":2, "to":{ "_":[ "variable", "speed" ] } },
+            {
+              "when":{ "_":[ "variable", "maxspeed", "isLessThan", { "_":[ "variable", "speed" ] } ] },
+              "as":{ "_":"variable" },
+              "set":{ "maxspeed":{ "_":[ "variable", "speed" ] } }
+            },
+            { "_":[ "stencil", "codeLimitSpeed" ] }
+          ]
+        }
+      }
+    }
+  },
+  "execute":[
+    {
+      "when":{ "_":[ "storage", "hiscore-today", "not" ] },
+      "as":{ "_":"storage" },
+      "set":{ "hiscore-today":{ "_":[ "new", { "at":0, "day":0, "month":0, "scores":[ 0, 0, 0 ] } ] } }
+    },
+    {
+      "when":{ "_":[ "storage", "hiscore-prev", "not" ] },
+      "as":{ "_":"storage" },
+      "set":{ "hiscore-prev":{ "_":[ "new", { "at":0, "day":0, "month":0, "scores":[ 0, 0, 0 ] } ] } }
+    },
+    {
+      "as":{ "_":"variable" },
+      "set":{ "hiscore-prev":{ "_":[ "storage", "hiscore-prev" ] }, "hiscore-today":{ "_":[ "storage", "hiscore-today" ] }, "race":1 }
+    },
+    {
+      "when":{ "_":[ "variable", "hiscore-today", "at", "not" ] },
+      "as":{ "_":[ "variable", "hiscore-today" ] },
+      "set":{ "at":{ "_":[ "date", "allDays" ] }, "day":{ "_":[ "date", "day" ] }, "month":{ "_":[ "date", "month", "+" ,1 ] } }
+    },
+    {
+      "when":{ "_":[ "variable", "hiscore-today", "at", "isNotEqualTo", { "_":[ "date", "allDays" ] } ] },
+      "execute":[
+        { "as":{ "_":"variable" }, "set":{ "hiscore-prev":{ "_":[ "variable", "hiscore-today" ] } } },
+        { "as":{ "_":"variable" }, "set":{ "hiscore-today":{ "_":[ "new", {} ] } } },
+        {
+          "as":{ "_":[ "variable", "hiscore-today" ] },
+          "set":{ "at":{ "_":[ "date", "allDays" ] }, "day":{ "_":[ "date", "day" ] }, "month":{ "_":[ "date", "month", "+" ,1 ] }, "scores":{ "_":[ "new", [ 0, 0, 0 ] ] } }
+        }
+      ]
+    },
+    { "_":[ "stencil", "codeSaveHiscores" ] }
+  ],
+  "scenes":{
+    "intro":{
+      "object":[
+        { "width":256, "height":192, "x":0, "y":0, "bgcolor":"#00007f" },
+        {
+          "box":"label", "width":256,
+          "zIndex":10000, "x":0, "y":150,
+          "color":"#fff",
+          "font":"spectrum", "fontSize":20, "lineHeight":20, "outline":"#000", "textAlign":"center", "html":"PRESS START",
+          "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "visible":0 }, "wait":10 }, { "set":{ "visible":1 }, "wait":10, "loopTo":0 } ] } }
+        }
+      ],
+      "execute":[
+        { "set":{ "counter":0, "timer":0 } },
+        {
+          "times":76,
+          "execute":[
+            {
+              "object":{
+                "image":"logo", "tileX":{ "_":[ "that", "counter", "*", 2 ] }, "width":2, "height":88,
+                "zIndex":5, "x":{ "_":[ 52, "+", { "_":[ "that", "counter", "*", 2 ] } ] }, "y":30,
+                "originX":6, "originY":16,
+                "position":{ "_":[ "that", "counter", "*", 0.1 ] },
+                "states":{ "code":{ "name":"Execute", "data":{ "set":{ "y":{ "_":[ "scene", "timer", "+", { "_":[ "this", "position" ] }, "sin", "*", 3, "+", 20 ] } } } } }
+              }
+            },
+            { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+          ]
+        }
+      ],
+      "states":{
+        "code":[
+          {
+            "name":"Execute",
+            "data":[ { "sum":0.1, "to":{ "_":[ "this", "timer" ] } }, { "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"menu", "withTransition":3 } ]
+          },
+          {
+            "name":"Sequence",
+            "data":{
+              "object":{
+                "image":"track", "tileY":228, "width":24, "height":16,
+                "zIndex":1, "x":-24, "y":{ "_":[ "randomNumber", [ 130, 160 ] ] },
+                "angle":{ "_":[ "randomNumber", [ -30, 0 ] ] },
+                "forceX":{ "_":[ "randomNumber", [ 3, 6 ] ] },
+                "states":{
+                  "code":{
+                    "name":"Execute",
+                    "data":[
+                      { "set":{ "zIndex":{ "_":[ "this", "y" ] } } },
+                      { "sum":{ "_":[ "this", "forceX" ] }, "to":{ "_":[ "this", "x" ] } },
+                      { "when":{ "_":[ "this", "x", "isGreaterThan", 280 ] }, "remove":1 }
+                    ]
+                  }
+                }
+              },
+              "wait":{ "_":[ "randomNumber", [ 10, 25 ] ] }, "loop":1
+            }
+          }
+        ]
+      }
+    },
+    "menu":{
+      "object":[
+        { "width":256, "height":192, "x":0, "y":0, "bgcolor":"#00007f" },
+        {
+          "width":256, "height":60,
+          "zIndex":1000, "x":0, "y":0,
+          "color":"#fff",
+          "font":"spectrum", "fontSize":34, "lineHeight":35, "outline":"#000", "textAlign":"center", "html":"CHOOSE YOUR LEAGUE"
+        },
+        { "width":81, "height":158, "zIndex":1, "x":3, "y":32, "bgcolor":"#000", "border":"#7f0000" },
+        { "width":81, "height":158, "zIndex":1, "x":87, "y":32, "bgcolor":"#000", "border":"#7f7f7f" },
+        { "width":81, "height":158, "zIndex":1, "x":171, "y":32, "bgcolor":"#000", "border":"#7f7f00" },
+        {
+          "width":81, "height":30,
+          "zIndex":2, "x":3, "y":40,
+          "bgcolor":"#7f0000",
+          "font":"spectrum", "lineHeight":14, "textAlign":"center", "html":"EASY LEAGUE"
+        },
+        {
+          "width":81, "height":30,
+          "zIndex":2, "x":87, "y":40,
+          "bgcolor":"#7f7f7f",
+          "font":"spectrum", "lineHeight":14, "textAlign":"center", "html":"MEDIUM LEAGUE"
+        },
+        {
+          "width":81, "height":30,
+          "zIndex":2, "x":171, "y":40,
+          "bgcolor":"#7f7f00",
+          "font":"spectrum", "lineHeight":14, "textAlign":"center", "html":"HARD LEAGUE"
+        },
+        { "image":"track", "tileX":96, "tileY":228, "width":32, "height":32, "zIndex":2, "x":27, "y":85 },
+        { "image":"track", "tileX":128, "tileY":228, "width":32, "height":32, "zIndex":2, "x":111, "y":85 },
+        { "image":"track", "tileX":160, "tileY":228, "width":32, "height":32, "zIndex":2, "x":195, "y":85 },
+        { "width":81, "height":20, "zIndex":2, "x":3, "y":130, "font":"spectrum", "lineHeight":14, "textAlign":"center", "html":"TODAY HI" },
+        {
+          "type":"hud",
+          "hudType":"label", "label":"%number|variable.hiscore-today.scores.0|0|8%",
+          "width":81, "height":20,
+          "zIndex":2, "x":3, "y":140,
+          "font":"spectrum", "lineHeight":14, "textAlign":"center"
+        },
+        {
+          "type":"hud",
+          "hudType":"label", "label":"%number|variable.hiscore-prev.day|0|2%/%number|variable.hiscore-prev.month|0|2% HI",
+          "width":81, "height":20,
+          "zIndex":2, "x":3, "y":160,
+          "color":"#7f7f7f",
+          "font":"spectrum", "lineHeight":14, "textAlign":"center"
+        },
+        {
+          "type":"hud",
+          "hudType":"label", "label":"%number|variable.hiscore-prev.scores.0|0|8%",
+          "width":81, "height":20,
+          "zIndex":2, "x":3, "y":170,
+          "color":"#7f7f7f",
+          "font":"spectrum", "lineHeight":14, "textAlign":"center"
+        },
+        { "width":81, "height":20, "zIndex":2, "x":87, "y":130, "font":"spectrum", "lineHeight":14, "textAlign":"center", "html":"TODAY HI" },
+        {
+          "type":"hud",
+          "hudType":"label", "label":"%number|variable.hiscore-today.scores.1|0|8%",
+          "width":81, "height":20,
+          "zIndex":2, "x":87, "y":140,
+          "font":"spectrum", "lineHeight":14, "textAlign":"center"
+        },
+        {
+          "type":"hud",
+          "hudType":"label", "label":"%number|variable.hiscore-prev.day|0|2%/%number|variable.hiscore-prev.month|0|2% HI",
+          "width":81, "height":20,
+          "zIndex":2, "x":87, "y":160,
+          "color":"#7f7f7f",
+          "font":"spectrum", "lineHeight":14, "textAlign":"center"
+        },
+        {
+          "type":"hud",
+          "hudType":"label", "label":"%number|variable.hiscore-prev.scores.1|0|8%",
+          "width":81, "height":20,
+          "zIndex":2, "x":87, "y":170,
+          "color":"#7f7f7f",
+          "font":"spectrum", "lineHeight":14, "textAlign":"center"
+        },
+        { "width":81, "height":20, "zIndex":2, "x":171, "y":130, "font":"spectrum", "lineHeight":14, "textAlign":"center", "html":"TODAY HI" },
+        {
+          "type":"hud",
+          "hudType":"label", "label":"%number|variable.hiscore-today.scores.2|0|8%",
+          "width":81, "height":20,
+          "zIndex":2, "x":171, "y":140,
+          "font":"spectrum", "lineHeight":14, "textAlign":"center"
+        },
+        {
+          "type":"hud",
+          "hudType":"label", "label":"%number|variable.hiscore-prev.day|0|2%/%number|variable.hiscore-prev.month|0|2% HI",
+          "width":81, "height":20,
+          "zIndex":2, "x":171, "y":160,
+          "color":"#7f7f7f",
+          "font":"spectrum", "lineHeight":14, "textAlign":"center"
+        },
+        {
+          "type":"hud",
+          "hudType":"label", "label":"%number|variable.hiscore-prev.scores.2|0|8%",
+          "width":81, "height":20,
+          "zIndex":2, "x":171, "y":170,
+          "color":"#7f7f7f",
+          "font":"spectrum", "lineHeight":14, "textAlign":"center"
+        },
+        {
+          "width":81, "height":158,
+          "zIndex":10, "y":32,
+          "states":{
+            "code":{
+              "name":"Execute",
+              "data":[
+                { "set":{ "x":{ "_":[ "variable", "race", "*", 84, "+", 3 ] } } },
+                { "when":{ "_":[ "this", "border", "isEqualTo", "#fff" ] }, "set":{ "border":"#f00" }, "elseExecute":{ "set":{ "border":"#fff" } } },
+                { "when":{ "_":[ "keyRight", "isHit", "and", { "_":[ "variable", "race", "isLessThan", 2 ] } ] }, "sum":1, "to":{ "_":[ "variable", "race" ] } },
+                {
+                  "when":{ "_":[ "keyLeft", "isHit", "and", { "_":[ "variable", "race", "isGreaterThan", 0 ] } ] },
+                  "subtract":1,
+                  "to":{ "_":[ "variable", "race" ] }
+                },
+                { "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"race", "withTransition":3 }
+              ]
+            }
+          }
+        }
+      ]
+    },
+    "race":{
+      "object":[
+        { "box":"label", "width":256, "height":20, "x":8, "y":160, "color":"#fff", "font":"spectrum", "html":"SPEED" },
+        { "box":"label", "width":256, "height":20, "x":8, "y":173, "color":"#fff", "font":"spectrum", "html":"SCORE" },
+        { "box":"label", "width":180, "height":20, "zIndex":10, "x":8, "y":160, "color":"#fff", "font":"spectrum", "textAlign":"right", "html":"TIME" },
+        {
+          "height":4,
+          "x":60, "y":170,
+          "bgcolor":"#f00",
+          "states":{ "code":{ "name":"Execute", "data":{ "set":{ "width":{ "_":[ "variable", "speed", "*", 7.5 ] } } } } }
+        },
+        {
+          "width":60, "height":4,
+          "x":60, "y":166,
+          "bgcolor":"#7f7f7f",
+          "states":{ "code":{ "name":"Execute", "data":{ "set":{ "width":{ "_":[ "variable", "maxspeed", "*", 7.5 ] } } } } }
+        },
+        {
+          "type":"hud",
+          "hudType":"label", "label":"%number|variable.score|0|8%",
+          "box":"label", "width":256, "height":20,
+          "x":60, "y":173,
+          "font":"spectrum"
+        },
+        {
+          "type":"hud",
+          "hudType":"label", "label":"%number|variable.timer./.25.floor|0|2%",
+          "box":"label", "width":70, "height":40,
+          "x":180, "y":165,
+          "font":"spectrum", "fontSize":74, "textAlign":"right",
+          "states":{
+            "code":{
+              "name":"Sequence",
+              "data":[
+                { "wait":1, "loop":1, "until":{ "_":[ "variable", "timer", "isLessThan", 500 ] } },
+                { "when":{ "_":[ "this", "color", "isEqualTo", "#fff" ] }, "set":{ "color":"#ff0" }, "elseExecute":{ "set":{ "color":"#fff" } } },
+                { "wait":1, "loopTo":-1, "until":{ "_":[ "variable", "timer", "isLessThan", 250 ] } },
+                { "when":{ "_":[ "this", "color", "isEqualTo", "#fff" ] }, "set":{ "color":"#f00" }, "elseExecute":{ "set":{ "color":"#fff" } } },
+                { "wait":1, "loopTo":-1 }
+              ]
+            }
+          }
+        },
+        {
+          "type":"scrolling",
+          "image":"track", "width":512, "height":160,
+          "states":{
+            "actions":{ "name":"scroll", "execute":[ { "set":{ "x":{ "_":[ "variable", "distance", "%", 256, "*", -1 ] } } }, { "_":[ "stencil", "codeUpdateTrack" ] } ] }
+          }
+        },
+        { "set":{ "_":[ "stencil", "player" ] }, "state":"start" },
+        {
+          "width":256, "height":60,
+          "zIndex":1000, "x":0, "y":57,
+          "color":"#f00",
+          "font":"spectrum", "fontSize":74, "lineHeight":40, "outline":"#fff", "textAlign":"center",
+          "states":{
+            "code":{
+              "name":"Sequence",
+              "data":[
+                { "wait":1 },
+                { "as":{ "_":[ "object", "scrolling" ] }, "executeAction":"scroll" },
+                { "wait":25 },
+                { "set":{ "html":"3" } },
+                { "wait":25 },
+                { "set":{ "html":"2" } },
+                { "wait":25 },
+                { "set":{ "html":"1" } },
+                { "wait":25 },
+                { "as":{ "_":"scene" }, "set":{ "state":"race" } },
+                { "set":{ "html":"GO" } },
+                { "wait":25 },
+                { "remove":1 }
+              ]
+            }
+          }
+        }
+      ],
+      "execute":[
+        {
+          "as":{ "_":"variable" },
+          "set":{
+            "distance":340,
+            "lap":0,
+            "laps":{ "_":[ "variable", "race", "+", 3 ] },
+            "obstacles":[ "pieceRock", "pieceTurbo", "pieceSand" ],
+            "racing":1,
+            "randomSeed":{ "_":[ "variable", "hiscore-today", "at", "+", { "_":[ "variable", "race", "*", 100 ] } ] },
+            "score":0,
+            "step":0,
+            "timer":{ "_":[ "variable", "race", "*", 450, "+", 1500 ] },
+            "track":{ "_":[ "new", [] ] },
+            "trackLen":300,
+            "tracks":{ "_":[ "new", [ 1, 2, 3, 4 ] ] }
+          }
+        },
+        { "as":{ "_":[ "new", { "at":105, "make":"pieceLapCounter" } ] }, "pushInto":{ "_":[ "variable", "track" ] } },
+        { "as":{ "_":[ "new", { "at":133, "make":"pieceStart" } ] }, "pushInto":{ "_":[ "variable", "track" ] } },
+        {
+          "times":{ "_":[ "variable", "race", "*", 5, "+", 12 ] },
+          "execute":[
+            { "shuffle":{ "_":[ "variable", "tracks" ] } },
+            {
+              "decide":{
+                "options":[
+                  { "sum":15, "to":{ "_":[ "variable", "trackLen" ] } },
+                  {
+                    "execute":[
+                      {
+                        "as":{ "_":[ "new", {} ] },
+                        "pushInto":{ "_":[ "variable", "track" ] },
+                        "set":{
+                          "at":{ "_":[ "variable", "trackLen" ] },
+                          "make":{ "_":[ "randomValue", { "_":[ "variable", "obstacles" ] } ] },
+                          "track":{ "_":[ "variable", "tracks", 0 ] }
+                        }
+                      },
+                      { "sum":35, "to":{ "_":[ "variable", "trackLen" ] } }
+                    ]
+                  },
+                  {
+                    "execute":[
+                      { "set":{ "counter":0 } },
+                      {
+                        "times":{ "_":[ "randomNumber", [ 2, 3 ] ] },
+                        "execute":[
+                          {
+                            "as":{ "_":[ "new", {} ] },
+                            "pushInto":{ "_":[ "variable", "track" ] },
+                            "set":{
+                              "at":{ "_":[ "variable", "trackLen" ] },
+                              "make":{ "_":[ "randomValue", { "_":[ "variable", "obstacles" ] } ] },
+                              "track":{ "_":[ "variable", "tracks", { "_":[ "that", "counter" ] } ] }
+                            }
+                          },
+                          { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+                        ]
+                      },
+                      { "sum":35, "to":{ "_":[ "variable", "trackLen" ] } }
+                    ]
+                  },
+                  {
+                    "execute":[
+                      {
+                        "decide":{
+                          "options":[
+                            {
+                              "execute":[
+                                { "as":{ "_":[ "new", {} ] }, "pushInto":{ "_":[ "variable", "track" ] }, "set":{ "at":{ "_":[ "variable", "trackLen" ] }, "make":"pieceRampUp" } },
+                                { "sum":15, "to":{ "_":[ "variable", "trackLen" ] } }
+                              ]
+                            },
+                            {
+                              "execute":[
+                                {
+                                  "as":{ "_":[ "new", {} ] },
+                                  "pushInto":{ "_":[ "variable", "track" ] },
+                                  "set":{ "at":{ "_":[ "variable", "trackLen" ] }, "make":"pieceLongRampUp" }
+                                },
+                                { "sum":30, "to":{ "_":[ "variable", "trackLen" ] } }
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "times":{ "_":[ "randomNumber", [ 1, 4 ] ] },
+                        "execute":[
+                          { "as":{ "_":[ "new", {} ] }, "pushInto":{ "_":[ "variable", "track" ] }, "set":{ "at":{ "_":[ "variable", "trackLen" ] }, "make":"pieceRampTop" } },
+                          { "sum":15, "to":{ "_":[ "variable", "trackLen" ] } }
+                        ]
+                      },
+                      {
+                        "decide":{
+                          "options":[
+                            {
+                              "execute":[
+                                { "as":{ "_":[ "new", {} ] }, "pushInto":{ "_":[ "variable", "track" ] }, "set":{ "at":{ "_":[ "variable", "trackLen" ] }, "make":"pieceRampDown" } },
+                                { "sum":{ "_":[ 15, "+", { "_":[ "randomNumber", [ 15, 50 ] ] } ] }, "to":{ "_":[ "variable", "trackLen" ] } }
+                              ]
+                            },
+                            {
+                              "execute":[
+                                {
+                                  "as":{ "_":[ "new", {} ] },
+                                  "pushInto":{ "_":[ "variable", "track" ] },
+                                  "set":{ "at":{ "_":[ "variable", "trackLen" ] }, "make":"pieceLongRampDown" }
+                                },
+                                { "sum":30, "to":{ "_":[ "variable", "trackLen" ] } }
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      { "sum":{ "_":[ "randomNumber", [ 15, 50 ] ] }, "to":{ "_":[ "variable", "trackLen" ] } }
+                    ]
+                  },
+                  {
+                    "execute":[
+                      {
+                        "decide":{
+                          "options":[
+                            {
+                              "execute":[
+                                {
+                                  "as":{ "_":[ "new", {} ] },
+                                  "pushInto":{ "_":[ "variable", "track" ] },
+                                  "set":{ "at":{ "_":[ "variable", "trackLen" ] }, "make":"pieceShortRampUp" }
+                                },
+                                { "sum":9, "to":{ "_":[ "variable", "trackLen" ] } }
+                              ]
+                            },
+                            {
+                              "execute":[
+                                {
+                                  "as":{ "_":[ "new", {} ] },
+                                  "pushInto":{ "_":[ "variable", "track" ] },
+                                  "set":{ "at":{ "_":[ "variable", "trackLen" ] }, "make":"pieceShortLowRampUp" }
+                                },
+                                { "sum":18, "to":{ "_":[ "variable", "trackLen" ] } }
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      {
+                        "times":{ "_":[ "randomNumber", [ 1, 4 ] ] },
+                        "execute":[
+                          {
+                            "as":{ "_":[ "new", {} ] },
+                            "pushInto":{ "_":[ "variable", "track" ] },
+                            "set":{ "at":{ "_":[ "variable", "trackLen" ] }, "make":"pieceShortRampTop" }
+                          },
+                          { "sum":9, "to":{ "_":[ "variable", "trackLen" ] } }
+                        ]
+                      },
+                      {
+                        "decide":{
+                          "options":[
+                            {
+                              "execute":[
+                                {
+                                  "as":{ "_":[ "new", {} ] },
+                                  "pushInto":{ "_":[ "variable", "track" ] },
+                                  "set":{ "at":{ "_":[ "variable", "trackLen" ] }, "make":"pieceShortRampDown" }
+                                },
+                                { "sum":{ "_":[ 9, "+", { "_":[ "randomNumber", [ 15, 50 ] ] } ] }, "to":{ "_":[ "variable", "trackLen" ] } }
+                              ]
+                            },
+                            {
+                              "execute":[
+                                {
+                                  "as":{ "_":[ "new", {} ] },
+                                  "pushInto":{ "_":[ "variable", "track" ] },
+                                  "set":{ "at":{ "_":[ "variable", "trackLen" ] }, "make":"pieceShortLowRampDown" }
+                                },
+                                { "sum":18, "to":{ "_":[ "variable", "trackLen" ] } }
+                              ]
+                            }
+                          ]
+                        }
+                      },
+                      { "sum":{ "_":[ "randomNumber", [ 15, 50 ] ] }, "to":{ "_":[ "variable", "trackLen" ] } }
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        { "times":10, "execute":{ "_":[ "stencil", "codeUpdateTrack" ] } }
+      ],
+      "states":[
+        {
+          "name":"race",
+          "execute":{ "as":{ "_":[ "object", "player" ] }, "set":{ "state":"default" } },
+          "code":{
+            "name":"Execute",
+            "data":[ { "subtract":1, "to":{ "_":[ "variable", "timer" ] } }, { "when":{ "_":[ "variable", "timer", "isEqualTo", 0 ] }, "set":{ "state":"timeover" } } ]
+          }
+        },
+        {
+          "name":"goal",
+          "execute":[
+            { "publishScore":{ "_":[ "variable", "score" ] } },
+            {
+              "when":{ "_":[ "variable", "score", "isGreaterThan", { "_":[ "variable", "hiscore-today", "scores", { "_":[ "variable", "race" ] } ] } ] },
+              "execute":[
+                { "assign":{ "_":[ "variable", "score" ] }, "to":{ "_":[ "variable", "hiscore-today", "scores", { "_":[ "variable", "race" ] } ] } },
+                { "_":[ "stencil", "codeSaveHiscores" ] },
+                { "as":{ "_":[ "object", "player" ] }, "set":{ "animation":"victory" } },
+                {
+                  "object":{
+                    "width":256, "height":60,
+                    "zIndex":1000, "x":0, "y":57,
+                    "color":"#fff",
+                    "font":"spectrum", "fontSize":54, "lineHeight":40, "outline":"#fff", "textAlign":"center", "html":"NEW RECORD",
+                    "timer":0,
+                    "states":{
+                      "code":[
+                        {
+                          "name":"Execute",
+                          "data":[
+                            { "sum":0.2, "to":{ "_":[ "this", "timer" ] } },
+                            { "set":{ "y":{ "_":[ "this", "timer", "sin", "*", 4, "+", 57 ] } } },
+                            { "when":{ "_":[ "this", "outline", "isEqualTo", "#000" ] }, "set":{ "outline":"#fff" }, "elseExecute":{ "set":{ "outline":"#000" } } }
+                          ]
+                        },
+                        {
+                          "name":"Sequence",
+                          "data":[
+                            { "object":{ "set":{ "_":[ "stencil", "smoke" ] }, "x":{ "_":[ "randomNumber", [ 0, 240 ] ] }, "y":{ "_":[ "randomNumber", [ 0, 77 ] ] } } },
+                            { "wait":{ "_":[ "randomNumber", [ 3, 10 ] ] }, "loopTo":0 }
+                          ]
+                        }
+                      ]
+                    }
+                  }
+                }
+              ],
+              "elseExecute":{
+                "object":{
+                  "width":256, "height":60,
+                  "zIndex":1000, "x":0, "y":57,
+                  "color":"#00f",
+                  "font":"spectrum", "fontSize":54, "lineHeight":40, "outline":"#fff", "textAlign":"center", "html":"GOAL",
+                  "timer":0,
+                  "states":{
+                    "code":{
+                      "name":"Execute",
+                      "data":[ { "sum":0.2, "to":{ "_":[ "this", "timer" ] } }, { "set":{ "y":{ "_":[ "this", "timer", "sin", "*", 4, "+", 57 ] } } } ]
+                    }
+                  }
+                }
+              }
+            },
+            { "when":{ "_":[ "variable", "speed", "isGreaterThan", 3 ] }, "as":{ "_":"variable" }, "set":{ "speed":3 } },
+            { "as":{ "_":"variable" }, "set":{ "racing":0 } }
+          ],
+          "code":{
+            "name":"Sequence",
+            "data":[ { "wait":25 }, { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } }, { "gotoScene":"intro", "withTransition":3 } ]
+          }
+        },
+        {
+          "name":"timeover",
+          "execute":[
+            { "as":{ "_":[ "object", "player" ] }, "set":{ "state":"freeze" } },
+            {
+              "object":{
+                "width":256, "height":60,
+                "zIndex":1000, "x":0, "y":57,
+                "color":"#00f",
+                "font":"spectrum", "fontSize":54, "lineHeight":40, "outline":"#fff", "textAlign":"center", "html":"TIME OVER",
+                "timer":0,
+                "states":{
+                  "code":{ "name":"Execute", "data":[ { "sum":0.2, "to":{ "_":[ "this", "timer" ] } }, { "set":{ "x":{ "_":[ "this", "timer", "sin", "*", 10 ] } } } ] }
+                }
+              }
+            }
+          ],
+          "code":{
+            "name":"Sequence",
+            "data":[ { "wait":25 }, { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } }, { "gotoScene":"intro", "withTransition":3 } ]
+          }
+        }
+      ]
+    }
+  }
+}
