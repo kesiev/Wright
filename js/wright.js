@@ -4610,7 +4610,7 @@ function Wright(gameId,mods) {
 					if (line.applyVector||line.sumVector) {
 						var angle, fx, fy, vector=line.applyVector||line.sumVector;
 						if (vector.toward === undefined) angle = get(item, curtox, vector.angle);
-						else angle = Box.angleTo(item,get(item, curtox, vector.toward));
+						else angle = Box.angleTo(item,get(item, curtox, vector.toward)) || 0;
 						angle *=  Math.PI /180;
 						var length = get(item, curtox, vector.length);
 						fx = FIX(angle == 180 ? 0 : length * Math.sin(angle));
