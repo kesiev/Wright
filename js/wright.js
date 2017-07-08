@@ -462,7 +462,7 @@ Controllers.methods.Chromecast={
 var DOMInator=function(useCanvas,aliasmode,controller){
 	var useDom=!useCanvas,pixelated=aliasmode=="pixelated",degtorad=3.14/180,octx,canvas,bregexp=/<br>/gi,extracss={},txtarea = document.createElement("textarea");
 	var transformProp=Supports.css("transform"),transformOriginProp=Supports.css("transformOrigin");
-	var from,to,source,sources={},filters=[],filter,running=1,MODE_offscreenrender=1,MODE_benchmark=0;	
+	var from,to,source,sources={},filters=[],filter,running=1,MODE_offscreenrender=0,MODE_benchmark=0;	
 	var guide=document.createElement("div");
 	guide.style.position="absolute";
 	guide.style.left=guide.style.top="0px";
