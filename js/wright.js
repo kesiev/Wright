@@ -462,7 +462,7 @@ Controllers.methods.Chromecast={
 var DOMInator=function(useCanvas,aliasmode,controller){
 	var useDom=!useCanvas,pixelated=aliasmode=="pixelated",degtorad=3.14/180,octx,canvas,bregexp=/<br>/gi,extracss={},txtarea = document.createElement("textarea");
 	var transformProp=Supports.css("transform"),transformOriginProp=Supports.css("transformOrigin");
-	var from,to,source,sources={},filters=[],filter,running=1;	
+	var from,to,source,sources={},filters=[],filter,running=1,MODE_offscreenrender=1,MODE_benchmark=0;	
 	var guide=document.createElement("div");
 	guide.style.position="absolute";
 	guide.style.left=guide.style.top="0px";
@@ -747,7 +747,7 @@ var DOMInator=function(useCanvas,aliasmode,controller){
 
 	/* Game cycle and frameskip throttle */
 	var skipFrames=0,timeout=0,fps=0,mspf=0,frameTimestamp=0,gamecycle=0,renderer=0,self=this;
-	var benchTimeout,nextCycleAt=0,frameskipped=0,frameskip=0,frameskipScore=0,frameskipThresholdMin=-3,frameskipThresholdMax=3,maxFrameskip=5;
+	var frameDone=1,benchTimeout,nextCycleAt=0,frameskipped=0,frameskip=0,frameskipScore=0,frameskipThresholdMin=-100,frameskipThresholdMax=3,maxFrameskip=5;
 
 	function scheduleNextFrame(ts) {
 		clearTimeout(timeout);
@@ -755,6 +755,19 @@ var DOMInator=function(useCanvas,aliasmode,controller){
 		if (wait<=0) wait=1;
 		timeout = setTimeout(scheduleFrame, wait);			
 	};
+
+	function frameRequest(){ self.frame(); frameDone=1; }
+
+	window.requestAnimFrame = 
+	  window.requestAnimationFrame       ||
+      window.webkitRequestAnimationFrame ||
+      window.mozRequestAnimationFrame    ||
+     0;
+
+    if (!window.requestAnimFrame) {
+ 		window.requestAnimFrame = function( callback ){ callback() };
+ 		MODE_benchmark=1;
+    }
 
 	function scheduleFrame() {
 		if (running) {
@@ -773,21 +786,26 @@ var DOMInator=function(useCanvas,aliasmode,controller){
 				if (frameskipped>=frameskip) {
 					if (!skipFrames) {
 						renderer();
-						self.frame();
+						if (frameDone) {
+							frameDone=0;
+							window.requestAnimFrame(frameRequest);
+						}
 					}
 					frameskipped=0;
-					clearTimeout(benchTimeout);
-					benchTimeout=setTimeout(function(){
-						var ts=Supports.getTimestamp();
-						if (ts>=nextCycleAt) frameskipScore--; else frameskipScore++;
-						if (frameskipScore>frameskipThresholdMax) {
-							frameskipScore=0;
-							if (frameskip>0) frameskip--;
-						} else if (frameskipScore<frameskipThresholdMin) {
-							frameskipScore=0;
-							if (frameskip<maxFrameskip) frameskip++;
-						}
-					},1);
+					if (MODE_benchmark) {
+						clearTimeout(benchTimeout);
+						benchTimeout=setTimeout(function(){
+							var ts=Supports.getTimestamp();
+							if (ts>=nextCycleAt) frameskipScore--; else frameskipScore++;
+							if (frameskipScore>frameskipThresholdMax) {
+								frameskipScore=0;
+								if (frameskip>0) frameskip--;
+							} else if (frameskipScore<frameskipThresholdMin) {
+								frameskipScore=0;
+								if (frameskip<maxFrameskip) frameskip++;
+							}
+						},1);
+					}
 				} else frameskipped++;
 			}
 			scheduleNextFrame();
@@ -1212,7 +1230,7 @@ var DOMInator=function(useCanvas,aliasmode,controller){
 		if (useDom) {
 			model.redraw=function(){}
 		} else {
-			model.redraw=function(ctx,alpha) {			
+			model.redraw=function(ctx,alpha) {	
 				ctx.save();
 				resetContext(ctx);
 
@@ -1611,11 +1629,11 @@ var DOMInator=function(useCanvas,aliasmode,controller){
 					});
 					gameScreen.addEventListener("mousedown",function(e){
 						keyDown(-1);
-						e.preventDefault();
+						if (document.activeElement==gameScreen._node) e.preventDefault();
 					});
 					gameScreen.addEventListener("mouseup",function(e){
 						keyUp(-1);
-						e.preventDefault();
+						if (document.activeElement==gameScreen._node) e.preventDefault();
 					});
 					break;
 				}
@@ -1765,7 +1783,7 @@ var DOMInator=function(useCanvas,aliasmode,controller){
 
 		var run;
 		octx=this._node.getContext("2d", {alpha: false});
-		sources.out={node:this._node,ctx:octx};
+		if (!MODE_offscreenrender) sources.out={node:this._node,ctx:octx};
 
 		function addCanvasSource(name,style) {
 			if (!sources[name]) {
@@ -1800,11 +1818,11 @@ var DOMInator=function(useCanvas,aliasmode,controller){
 		}
 
 		this.rawFrame=function() {
-			if (this.style.width&&this.style.height) this.redraw(sources.out.ctx,1);
+			if (this.style.width&&this.style.height) this.redraw(octx,1);
 		}
-		
 		this.frame=function() {
 			if (this.style.width&&this.style.height) {
+				if (!sources.out) sources.out=addCanvasSource("out",this.style);
 				for (var i=0;i<filters.length;i++) {
 					filter=filters[i];
 					if (filter.of) {
@@ -1893,6 +1911,7 @@ var DOMInator=function(useCanvas,aliasmode,controller){
 							}				
 						}
 				}
+				if (MODE_offscreenrender) octx.drawImage(sources.out.node,0,0,this.style.width,this.style.height);
 			}
 		}
 	}
@@ -1910,6 +1929,25 @@ DOMInator.CONTROLS={
 					{id:"touch",label:"Touch screen (tap for Trigger)",isDisabled:!Supports.isTouch}
 				],
 				default:Supports.pointerMode()
+			}
+		}
+	},
+	keymouse:{
+		keyboard:{
+			keyUp: {label:"Up",default:87},
+			keyDown: {label:"Down",default:83},
+			keyLeft: {label:"Left",default:65},
+			keyRight: {label:"Right",default:68},
+			keyA: {label:"A/Start",default:32},
+			keyB: {label:"B/Option",default:69},
+			keyFullScreen: {label:"Fullscreen",subLabel:"Touch with two fingers the game area to enable fullscreen and touch controls.",subLabelDisabled:!Supports.isTouch,default:70}
+		},
+		pointer:{
+			id:{
+				options:[
+					{id:"mouse",label:"Mouse (click for Trigger)"}
+				],
+				default:"mouse"
 			}
 		}
 	},
@@ -2534,7 +2572,7 @@ function Box(parent, type, sub, statemanager, useCanvas, aliasmode, controller) 
 		box.isOnScreen=function(obj){
 			if (obj.type.unoptimize) return true;
 			var rect=obj.getRects().screen;
-			return !((rect.x+this.gridcoords.x>=this.width)||((rect.x+this.gridcoords.x+rect.width)<1)||(rect.y+this.gridcoords.y>=this.height)||((rect.y+this.gridcoords.y+rect.height)<1));
+			return !((rect.x+this.gridcoords.x>this.width)||((rect.x+this.gridcoords.x+rect.width)<1)||(rect.y+this.gridcoords.y>this.height)||((rect.y+this.gridcoords.y+rect.height)<1));
 		};
 		box.applyChange=function(obj) {
 			var displayed, pad, w, h,onscreen;
@@ -4503,6 +4541,33 @@ function Wright(gameId,mods) {
 
 	// EXECUTE CODE
 
+	function vectorAction(item,curtox,a,vector) {
+		var angle, fx, fy;
+		if (vector.toward === undefined) angle = get(item, curtox, vector.angle);
+		else angle = Box.angleTo(item,get(item, curtox, vector.toward)) || 0;
+		angle *=  Math.PI /180;
+		var length = get(item, curtox, vector.length);
+		fx = FIX(angle == 180 ? 0 : length * Math.sin(angle));
+		fy = FIX(angle == 270 ? 0 : -length * Math.cos(angle));
+		switch (a) {
+			case 0:{
+				if (fx) item.setX(item.x+fx);
+				if (fy) item.setY(item.y+fy);
+				break;			
+			}
+			case 1:{
+				item.forceX=fx;
+				item.forceY=fy;
+				break;			
+			}
+			case 2:{		
+				item.forceX+=fx;
+				item.forceY+=fy;
+				break;
+			}
+		}
+	}
+
 	function executeLine(from, tox, line, sequence) {
 		var ret,perform=1, update, curtox=tox, curfrom=from;
 
@@ -4607,22 +4672,11 @@ function Wright(gameId,mods) {
 							}
 						}
 					}
-					if (line.applyVector||line.sumVector) {
-						var angle, fx, fy, vector=line.applyVector||line.sumVector;
-						if (vector.toward === undefined) angle = get(item, curtox, vector.angle);
-						else angle = Box.angleTo(item,get(item, curtox, vector.toward)) || 0;
-						angle *=  Math.PI /180;
-						var length = get(item, curtox, vector.length);
-						fx = FIX(angle == 180 ? 0 : length * Math.sin(angle));
-						fy = FIX(angle == 270 ? 0 : -length * Math.cos(angle));
-						if (line.applyVector) {
-							item.forceX=fx;
-							item.forceY=fy;
-						} else {
-							item.forceX+=fx;
-							item.forceY+=fy;
-						}
-					}
+					
+					if (line.translateBy !== undefined) vectorAction(item,curtox,0,line.translateBy);
+					if (line.applyVector !== undefined) vectorAction(item,curtox,1,line.applyVector);
+					if (line.sumVector !== undefined) vectorAction(item,curtox,2,line.sumVector);
+
 					if (line.stopChannel) {
 						var channel=game.getAudioChannel(get(item, curtox, line.stopChannel));
 						if (channel) channel.stop();
