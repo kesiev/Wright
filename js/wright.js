@@ -884,6 +884,8 @@ var DOMInator=function(useCanvas,aliasmode,controller){
 					var cache = document.createElement("img");
 					cache.style.visibility = "hidden";
 					cache.style.position = "absolute";
+					cache.style.left="-200px";
+					cache.style.top="-99999px";
 					cache.src = file;
 					cache.onload = function() {
 						document.body.removeChild(cache);
@@ -4358,7 +4360,7 @@ function Wright(gameId,mods) {
 					case "round":{ ret = FIX(Math.round(ret)); break; }
 					case "pointAt":{
 						p=get(from, tox, struct[++id]);
-						ret= {x:ret.x+(p&&p.x?p.x:0),y:ret.y+(p&&p.y?p.y:0),width:1,height:1};
+						ret= {x:ret.x+get(from, tox, p&&p.x?p.x:0),y:ret.y+get(from, tox, p&&p.y?p.y:0),width:1,height:1};
 						break;
 					}
 					case ".":{ ret = ret + get(from, tox, struct[++id]); break; }
