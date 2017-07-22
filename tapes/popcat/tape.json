@@ -1,0 +1,2602 @@
+{
+  "name":"Popcat",
+  "author":"KesieV",
+  "year":2017,
+  "genre":"Puzzle",
+  "description":"<p>At my workplace many colleagues of mine are younger than me and it's not so rare hearing them humming the so famous <a href='https://en.wikipedia.org/wiki/Puzzle_Bobble'>Puzzle Bobble</a> (1994) ingame theme. Sometime I still hear the song used as ringtone around Milan.<br>As a passionate gamer I use the <i>let's talk about the game which song you're singing</i> as topic for breaking the ice, especially with new colleagues - and the dialogue that comes up is usually pretty pleasant.</p><p>It's mostly about hot summers, seasides, coins wasted in an arcade machine, playing with friends and girlfriends, getting angry, growing some sort of addiction for the music, the gameplay, the challenge, the hi-score race.<br>From time to time the <i>everybody used to discriminate me as a weird nerd, as videogame player</i> clich&egrave; still pops out, despite it's becoming less and less belivable - thanks, Gods!<br>The magic of building emphaty with a total stranger starts building, until...</p><p><i>He: 'Well. Bubble Bobble was a true classic, isn't it?'</i></p><p><i>You: 'Oh, you were talking about that game? Yeah, that was an hard platformer too, Isn't it?'</i></p><p><i>He: '...a platformer? '</i></p><p>Welcome to the new millennium, mr. gamer of the 80s-90s, where your <a href='https://en.wikipedia.org/wiki/Bubble_Bobble'>Bubble Bobble</a> (1986) t-shirt has a typo in it, the infectious theme you are humming is wrong and even the game genre you're thinking is not right.</p><p>Taito surely ported the most recognizable features of its platformer to the puzzle game spinoff. And they managed to do that in a such great and natural way that two people can talk about the two different games for some time without noticing!</p><p>Plot!</p><p>Starcat, it's the time for you for popping some <a href='starcatbolle'>more bubbles</a>! Use your Bubble Thrower and build groups of 3 or more bubbles of the same color to make them diseappear! Clear the stage to go to the next one! But... wait! Why there are sprites from other Wright! Magazine games inside the bubbles? Who cares!</p><p>Use LEFT/RIGHT for aiming with the Bubble Thrower and the A BUTTON for firing. Well... I've to explain the game for real? It's... just the classic game... That one in which you've to clear the stage popping the bubbles with enemies in it...</p>",
+  "screenshots":[ "popcat-1.png", "popcat-2.png" ],
+  "hardware":{
+    "width":256,
+    "height":192,
+    "filter":"retro",
+    "fps":50
+  },
+  "audioChannels":{
+    "sfx":{ "volume":1, "samples":[ "fire", "explode", "whoop", "beep" ] },
+    "music":{ "volume":0.8, "looping":1, "samples":[ "bgm" ] }
+  },
+  "cheats":{
+    "unlimitedcredits":"Unlimited credits (no hi-score, sorry!)"
+  },
+  "resources":{
+    "bgm":"samba.ogg",
+    "logo":"logo.png",
+    "spectrum":"spectrum.font",
+    "sprites":"sprites.png",
+    "stages":"stages.png",
+    "beep":"../default/zxsounds/beep.ogg",
+    "explode":"../default/zxsounds/explode2.ogg",
+    "fire":"../default/zxsounds/fire.ogg",
+    "whoop":"../default/zxsounds/bigfire.ogg"
+  },
+  "stencils":{
+    "codeCheckGame":{
+      "when":{ "_":[ "objectTyped", "toclear", "not" ] },
+      "as":{ "_":"scene" },
+      "set":{ "state":"win" },
+      "elseExecute":{ "when":{ "_":[ "objectTyped", "limit", "collidesWith", { "_":[ "object", "ball" ] } ] }, "as":{ "_":"scene" }, "set":{ "state":"lose" } }
+    },
+    "codeUpdateNextBall":{
+      "as":{ "_":"scene" },
+      "execute":[
+        {
+          "when":{ "_":[ "this", "ballIndex", "isLessThan", { "_":[ "this", "ballSequence", "count" ] } ] },
+          "execute":[ { "set":{ "nextBall":{ "_":[ "this", "ballSequence", { "_":[ "this", "ballIndex" ] } ] } } }, { "sum":1, "to":{ "_":[ "this", "ballIndex" ] } } ],
+          "elseExecute":{ "set":{ "nextBall":{ "_":[ "randomObject", { "_":[ "object", "ball" ] }, "ballId" ] } } }
+        },
+        { "as":{ "_":[ "objectTyped", "nextBall" ] }, "set":{ "_":[ "stencil", "dataBalls", { "_":[ "scene", "nextBall" ] } ] } }
+      ]
+    },
+    "spark":{
+      "image":"sprites", "tileX":32, "tileY":48, "width":16, "height":16,
+      "zIndex":200, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "animations":{ "spark":{ "frames":4, "speed":1 } },
+      "animation":"spark",
+      "states":{ "code":{ "name":"Sequence", "data":[ { "wait":8 }, { "remove":1 } ] } }
+    },
+    "modelPopupLabel":{
+      "width":100, "height":30,
+      "zIndex":10000, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "that", "y", "-", 5 ] },
+      "color":"#fff",
+      "font":"spectrum", "fontSize":40, "lineHeight":30, "outline":"#000", "textAlign":"center",
+      "speed":0.5,
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[ { "subtract":{ "_":[ "this", "speed" ] }, "to":{ "_":[ "this", "y" ] }, "wait":1, "loop":1, "cycles":25 }, { "remove":1 } ]
+        }
+      }
+    },
+    "stageModel":{
+      "execute":{ "when":{ "_":[ "variable", "playmusic" ] }, "execute":{ "as":{ "_":"variable" }, "set":{ "playmusic":0 }, "playAudio":"bgm" } },
+      "states":[
+        {
+          "execute":[
+            { "set":{ "width":256, "height":192, "ballIndex":0, "counter":24, "deltaY":-8, "shake":0, "time":0 } },
+            { "_":[ "stencil", "codeUpdateNextBall" ] },
+            {
+              "object":[
+                { "image":"stages", "tileY":{ "_":[ "variable", "stage", "/", 20, "floor", "*", 192 ] }, "width":320, "height":8, "zIndex":20, "x":0, "y":0 },
+                { "image":"stages", "tileY":{ "_":[ "variable", "stage", "/", 20, "floor", "*", 192, "+", 8 ] }, "width":320, "height":192, "x":0, "y":8 },
+                { "type":"bouncer", "width":16, "height":300, "x":48, "y":-100 },
+                { "type":"bouncer", "width":16, "height":300, "x":192, "y":-100 },
+                { "type":"nextBall", "image":"sprites", "width":16, "height":16, "zIndex":10, "x":80, "y":165 },
+                {
+                  "type":"nextBall",
+                  "width":56, "height":16,
+                  "zIndex":51, "x":60, "y":148,
+                  "color":"#fff",
+                  "font":"spectrum", "outline":"#000", "textAlign":"center", "html":"NEXT"
+                },
+                { "type":[ "sticky", "top", "pushed" ], "image":"sprites", "tileY":96, "width":128, "height":16, "zIndex":10, "x":64, "y":-8, "bgcolor":"#fff" },
+                { "type":"checker" },
+                { "type":"limit", "image":"sprites", "tileY":112, "width":128, "height":3, "zIndex":50, "x":64, "y":151, "bgcolor":"#00f" },
+                { "_":[ "stencil", "aimer" ] },
+                { "_":[ "stencil", "starcat" ] }
+              ]
+            },
+            { "as":{ "_":[ "object", "ball" ] }, "set":{ "state":"standby" } },
+            {
+              "times":5,
+              "execute":[
+                { "as":{ "_":[ "objectTyped", "checker" ] }, "set":{ "width":256, "height":2, "x":0, "y":{ "_":[ "that", "counter" ] } } },
+                {
+                  "as":{ "_":[ "objectTyped", "checker", "complexCollidesWith", { "subject":{ "_":[ "object", "ball" ] }, "all":1 } ] },
+                  "sum":8,
+                  "to":{ "_":[ "this", "x" ] }
+                },
+                { "sum":28, "to":{ "_":[ "this", "counter" ] } }
+              ]
+            }
+          ],
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "_":[ "stencil", "codeUpdateNextBall" ] },
+              {
+                "object":{
+                  "type":"message",
+                  "width":256, "height":30,
+                  "zIndex":10000, "x":0, "y":85,
+                  "color":"#fff",
+                  "font":"spectrum", "fontSize":40, "lineHeight":30, "outline":"#000", "textAlign":"center", "html":"READY",
+                  "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "outline":"#000" }, "wait":5 }, { "set":{ "outline":"#f00" }, "wait":5, "loopTo":0 } ] } }
+                },
+                "playAudio":"fire"
+              },
+              { "wait":50 },
+              { "as":{ "_":[ "object", "message" ] }, "remove":1 },
+              {
+                "object":{
+                  "type":"message",
+                  "width":256, "height":30,
+                  "zIndex":10000, "x":0, "y":85,
+                  "color":"#fff",
+                  "font":"spectrum", "fontSize":40, "lineHeight":30, "outline":"#000", "textAlign":"center", "html":"GO",
+                  "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "outline":"#000" }, "wait":2 }, { "set":{ "outline":"#0f0" }, "wait":2, "loopTo":0 } ] } }
+                },
+                "playAudio":"explode"
+              },
+              { "as":{ "_":[ "object", "aimer" ] }, "executeAction":"next" },
+              { "wait":25 },
+              { "as":{ "_":[ "object", "message" ] }, "remove":1 },
+              { "sum":1, "to":{ "_":[ "this", "time" ] }, "wait":50, "loop":1 }
+            ]
+          }
+        },
+        {
+          "name":"lose",
+          "execute":[
+            { "as":{ "_":"variable" }, "set":{ "playmusic":1 }, "stopChannel":"music" },
+            { "as":{ "_":[ "objectTyped", "aimer" ] }, "set":{ "state":"freeze" } },
+            { "as":{ "_":[ "objectTyped", "starcat" ] }, "set":{ "state":"lose" } }
+          ],
+          "code":{
+            "name":"Sequence",
+            "data":[
+              {
+                "when":{ "_":[ "cheat", "unlimitedcredits", "not" ] },
+                "execute":{
+                  "when":{ "_":[ "variable", "score", "isGreaterThan", { "_":[ "variable", "hiscore" ] } ] },
+                  "execute":[
+                    { "publishScore":{ "_":[ "variable", "score" ] } },
+                    { "as":{ "_":"variable" }, "set":{ "hiscore":{ "_":[ "variable", "score" ] } } },
+                    { "as":{ "_":"storage" }, "set":{ "hiscore":{ "_":[ "variable", "score" ] } } }
+                  ]
+                }
+              },
+              { "as":{ "_":[ "objectTyped", "checker" ] }, "set":{ "width":128, "height":2, "x":64, "y":183 } },
+              { "as":{ "_":[ "objectTyped", "checker", "complexCollidesWith", { "subject":{ "_":[ "object", "ball" ] }, "all":1 } ] }, "set":{ "state":"black" } },
+              { "subtract":14, "to":{ "_":[ "objectTyped", "checker", "y" ] } },
+              { "playAudio":"fire" },
+              { "wait":2 },
+              { "cycles":13, "loopTo":-4 },
+              { "as":{ "_":[ "object", "message" ] }, "remove":1 },
+              {
+                "object":{
+                  "type":"message",
+                  "width":256, "height":30,
+                  "zIndex":10000, "x":0, "y":85,
+                  "color":"#fff",
+                  "font":"spectrum", "fontSize":40, "lineHeight":30, "outline":"#000", "textAlign":"center", "html":"YOU LOSE",
+                  "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "outline":"#000" }, "wait":5 }, { "set":{ "outline":"#f00" }, "wait":5, "loopTo":0 } ] } }
+                }
+              },
+              { "wait":50 },
+              { "as":{ "_":[ "object", "message" ] }, "remove":1 },
+              {
+                "object":[
+                  {
+                    "width":256, "height":30,
+                    "zIndex":10000, "x":0, "y":70,
+                    "color":"#fff",
+                    "font":"spectrum", "fontSize":40, "lineHeight":30, "outline":"#000", "textAlign":"center", "html":"CONTINUE"
+                  },
+                  {
+                    "width":256, "height":30,
+                    "zIndex":10000, "x":0, "y":100,
+                    "color":"#fff",
+                    "font":"spectrum", "fontSize":40, "lineHeight":30, "outline":"#000", "textAlign":"center", "html":{ "_":[ "that", "bonusMessage" ] },
+                    "time":10,
+                    "timer":0,
+                    "states":{
+                      "code":[
+                        {
+                          "name":"Execute",
+                          "data":{
+                            "when":{ "_":[ "this", "timer" ] },
+                            "execute":[
+                              { "subtract":1, "to":{ "_":[ "this", "timer" ] } },
+                              {
+                                "when":{ "_":[ "variable", "credits", "and", { "_":[ "keyA", "isHit" ] } ] },
+                                "execute":[
+                                  { "when":{ "_":[ "cheat", "unlimitedcredits", "not" ] }, "subtract":1, "to":{ "_":[ "variable", "credits" ] } },
+                                  { "as":{ "_":"variable" }, "set":{ "score":0 } },
+                                  { "gotoScene":{ "_":[ "variable", "idScene" ] }, "withTransition":3 }
+                                ]
+                              },
+                              { "when":{ "_":[ "this", "time", "and", { "_":[ "keyB", "isHit" ] } ] }, "set":{ "timer":0 } }
+                            ],
+                            "elseExecute":[
+                              { "set":{ "timer":50 } },
+                              { "subtract":1, "to":{ "_":[ "this", "time" ] } },
+                              { "playAudio":"whoop" },
+                              { "set":{ "html":{ "_":[ "this", "time" ] } } },
+                              { "when":{ "_":[ "this", "time", "not" ] }, "gotoScene":"gameover", "withTransition":3 }
+                            ]
+                          }
+                        },
+                        { "name":"Sequence", "data":[ { "set":{ "outline":"#000" }, "wait":5 }, { "set":{ "outline":"#f00" }, "wait":5, "loopTo":0 } ] }
+                      ]
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name":"win",
+          "execute":[ { "as":{ "_":[ "objectTyped", "aimer" ] }, "set":{ "state":"freeze" } }, { "as":{ "_":[ "objectTyped", "starcat" ] }, "set":{ "state":"win" } } ],
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "wait":25 },
+              { "as":{ "_":[ "object", "message" ] }, "remove":1 },
+              {
+                "object":{
+                  "type":"message",
+                  "width":256, "height":30,
+                  "zIndex":10000, "x":0, "y":85,
+                  "color":"#fff",
+                  "font":"spectrum", "fontSize":40, "lineHeight":30, "outline":"#000", "textAlign":"center", "html":"STAGE CLEAR",
+                  "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "outline":"#000" }, "wait":5 }, { "set":{ "outline":"#f00" }, "wait":5, "loopTo":0 } ] } }
+                },
+                "playAudio":"beep"
+              },
+              { "wait":50 },
+              { "as":{ "_":[ "object", "message" ] }, "remove":1 },
+              {
+                "when":{ "_":[ "this", "time", "isLessThan", 5 ] },
+                "set":{ "bonus":50000, "bonusMessage":"50.000 pts" },
+                "elseExecute":[
+                  { "set":{ "bonus":{ "_":[ 50000, "-", { "_":[ "this", "time", "-", 5, "*", 840 ] } ] } } },
+                  {
+                    "when":{ "_":[ "this", "bonus", "isLessEqualThan", 0 ] },
+                    "set":{ "bonusMessage":"NO BONUS" },
+                    "elseExecute":[ { "sum":{ "_":[ "this", "bonus" ] }, "to":{ "_":[ "variable", "time" ] } }, { "set":{ "bonusMessage":{ "_":[ "this", "bonus", ".", " pts." ] } } } ]
+                  }
+                ]
+              },
+              {
+                "object":[
+                  {
+                    "width":256, "height":30,
+                    "zIndex":10000, "x":0, "y":70,
+                    "color":"#fff",
+                    "font":"spectrum", "fontSize":40, "lineHeight":30, "outline":"#000", "textAlign":"center", "html":{ "_":[ "that", "time", ".", " sec" ] }
+                  },
+                  {
+                    "width":256, "height":30,
+                    "zIndex":10000, "x":0, "y":100,
+                    "color":"#fff",
+                    "font":"spectrum", "fontSize":40, "lineHeight":30, "outline":"#000", "textAlign":"center", "html":{ "_":[ "that", "bonusMessage" ] }
+                  }
+                ],
+                "playAudio":"beep"
+              },
+              { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+              { "as":{ "_":"variable" }, "set":{ "stage":{ "_":[ "variable", "stage", "+", 1, "%", 100 ] } } },
+              { "gotoScene":{ "_":[ "stage", ".", { "_":[ "variable", "stage" ] } ] }, "withTransition":3 }
+            ]
+          }
+        }
+      ]
+    },
+    "enemy":{
+      "image":"sprites", "tileY":32, "width":16, "height":16,
+      "zIndex":70, "x":{ "_":[ "that", "x" ] }, "y":{ "_":[ "that", "y" ] },
+      "forceX":{ "_":[ "randomValue", [ -5, 5 ] ] }, "forceY":{ "_":[ "randomValue", [ -3, -5 ] ] },
+      "states":{
+        "code":[
+          {
+            "name":"Sequence",
+            "data":[
+              { "wait":5 },
+              { "when":{ "_":[ "this", "forceX" ] }, "sum":90, "to":{ "_":[ "this", "angle" ] }, "elseExecute":{ "as":{ "_":[ "this", "angle" ] }, "subtract":90 } },
+              { "loopTo":0 }
+            ]
+          },
+          { "name":"Physics", "data":{ "walls":{ "type":"bouncer", "restitution":1 }, "gravityY":0.3 } },
+          { "name":"Execute", "data":{ "when":{ "_":[ "this", "y", "isGreaterThan", 200 ] }, "remove":1 } }
+        ]
+      }
+    },
+    "aim":{ "width":16, "height":16, "border":"#fff" },
+    "aimer":{
+      "type":"aimer",
+      "image":"sprites", "tileY":48, "width":29, "height":41,
+      "zIndex":60, "x":114, "y":142,
+      "fallTimer":10,
+      "levelFallTimer":9,
+      "shakeTimer":0,
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":[
+            { "when":{ "_":[ "keyRight", "isDown" ] }, "sum":2, "to":{ "_":[ "this", "angle" ] } },
+            { "when":{ "_":[ "keyLeft", "isDown" ] }, "subtract":2, "to":{ "_":[ "this", "angle" ] } },
+            {
+              "when":{ "_":[ "keyUp", "isDown" ] },
+              "execute":{
+                "when":{ "_":[ "this", "angle", "abs", "isLessThan", 2 ] },
+                "set":{ "angle":0 },
+                "elseExecute":{
+                  "when":{ "_":[ "this", "angle", "isGreaterThan", 0 ] },
+                  "subtract":2,
+                  "to":{ "_":[ "this", "angle" ] },
+                  "elseExecute":{ "sum":2, "to":{ "_":[ "this", "angle" ] } }
+                }
+              }
+            },
+            { "set":{ "angle":{ "_":[ "this", "angle", "limitValue", [ -70, 70 ] ] } } },
+            {
+              "when":{ "_":[ "objectTyped", "next" ] },
+              "execute":[
+                {
+                  "when":{ "_":[ "this", "autofireTimer" ] },
+                  "execute":[
+                    { "subtract":1, "to":{ "_":[ "this", "autofireTimer" ] } },
+                    {
+                      "when":{ "_":[ "this", "autofireTimer", "isLessEqualThan", 250 ] },
+                      "execute":{
+                        "when":{ "_":[ "this", "autofireTimer", "%", 50, "isEqualTo", 0 ] },
+                        "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "html":{ "_":[ "that", "autofireTimer", "/", 50 ] } },
+                        "playAudio":"beep"
+                      }
+                    },
+                    { "when":{ "_":[ "keyA", "isHit" ] }, "executeAction":"throw" }
+                  ],
+                  "elseExecute":{ "executeAction":"throw" }
+                },
+                {
+                  "when":{ "_":[ "this", "fallTimer", "isLessThan", 3 ] },
+                  "execute":{
+                    "when":{ "_":[ "this", "shakeTimer" ] },
+                    "subtract":1,
+                    "to":{ "_":[ "this", "shakeTimer" ] },
+                    "elseExecute":[
+                      { "as":{ "_":"scene" }, "set":{ "shake":{ "_":[ "scene", "shake", "+", 1, "%", 2 ] } } },
+                      { "set":{ "shakeTimer":{ "_":[ 3, "*", { "_":[ "this", "fallTimer" ] } ] } } }
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        "actions":[
+          {
+            "name":"next",
+            "execute":[
+              { "subtract":1, "to":{ "_":[ "this", "fallTimer" ] } },
+              { "set":{ "autofireTimer":500 } },
+              {
+                "when":{ "_":[ "this", "fallTimer", "not" ] },
+                "execute":[
+                  { "playAudio":"whoop" },
+                  { "when":{ "_":[ "this", "levelFallTimer", "isGreaterThan", 5 ] }, "subtract":1, "to":{ "_":[ "this", "levelFallTimer" ] } },
+                  { "set":{ "fallTimer":{ "_":[ "this", "levelFallTimer" ] } } },
+                  { "as":{ "_":[ "object", "pushed" ] }, "sum":14, "to":{ "_":[ "this", "y" ] } },
+                  { "sum":14, "to":{ "_":[ "scene", "deltaY" ] } },
+                  { "_":[ "stencil", "codeCheckGame" ] }
+                ]
+              },
+              { "object":{ "type":"next", "set":{ "_":[ "stencil", { "_":[ "scene", "nextBall" ] } ] }, "x":120, "y":155 } },
+              { "_":[ "stencil", "codeUpdateNextBall" ] }
+            ]
+          },
+          {
+            "name":"throw",
+            "execute":[
+              { "playAudio":"fire" },
+              { "as":{ "_":"scene" }, "set":{ "shake":0 } },
+              { "set":{ "shakeTimer":5 } },
+              {
+                "as":{ "_":[ "objectTyped", "next" ] },
+                "set":{ "removeType":"next", "state":"throw" },
+                "applyVector":{ "angle":{ "_":[ "that", "angle" ] }, "length":6 }
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "ballModel":{
+      "type":"ball",
+      "image":"sprites", "width":16, "height":16,
+      "zIndex":10,
+      "hitbox":{ "width":14, "height":14, "x":1, "y":1 },
+      "states":[
+        {
+          "name":"throw",
+          "code":{
+            "name":"Physics",
+            "data":{
+              "walls":[ { "type":"bouncer", "restitutionX":1, "restitutionY":0 }, { "type":"sticky", "restitution":0, "execute":{ "set":{ "state":"fixed" } } } ]
+            }
+          }
+        },
+        {
+          "name":"fixed",
+          "execute":[
+            { "set":{ "y":{ "_":[ "this", "y", "-", 1, "/", 14, "floor", "*", 14, "+", 8 ] }, "forceX":0, "forceY":0 } },
+            {
+              "when":{ "_":[ "this", "y", "+", { "_":[ "scene", "deltaY" ] }, "/", 14, "%", 2 ] },
+              "set":{ "x":{ "_":[ "this", "x", "/", 16, "floor", "limitValue", [ 4, 10 ], "*", 16, "+", 8 ] } },
+              "elseExecute":{ "set":{ "x":{ "_":[ "this", "x", "+", 8, "/", 16, "floor", "limitValue", [ 4, 11 ], "*", 16 ] } } }
+            },
+            { "set":{ "matching":1, "state":"standby" } }
+          ]
+        },
+        {
+          "name":"standby",
+          "set":{ "type":[ "pushed", "toclear" ] },
+          "execute":[
+            { "set":{ "type":"sticky", "originX":{ "_":[ "this", "x" ] } } },
+            {
+              "when":{ "_":[ "this", "matching" ] },
+              "execute":[
+                { "as":{ "_":[ "object", "ball" ] }, "set":{ "removeType":[ "matching", "falling" ], "matching":0 } },
+                { "as":{ "_":"scene" }, "set":{ "matches":0 } },
+                { "executeAction":"check" },
+                {
+                  "when":{ "_":[ "scene", "matches", "isGreaterThan", 2 ] },
+                  "execute":[
+                    { "sum":{ "_":[ "scene", "matches", "*", 10 ] }, "to":{ "_":[ "variable", "score" ] } },
+                    { "as":{ "_":[ "object", "matching" ] }, "executeAction":"pop" },
+                    { "playAudio":"explode" },
+                    { "as":{ "_":[ "object", "ball" ] }, "set":{ "type":"falling", "matching":0 } },
+                    {
+                      "as":{
+                        "_":[
+                          "objectTyped",
+                          "top",
+                          "complexCollidesWith",
+                          { "subject":{ "_":[ "object", "ball" ] }, "all":1, "hitbox":{ "width":128, "height":20, "x":0, "y":0 } }
+                        ]
+                      },
+                      "executeAction":"fix"
+                    },
+                    {
+                      "when":{ "_":[ "object", "falling", "count" ] },
+                      "execute":[
+                        { "set":{ "bonus":{ "_":[ "object", "falling", "count", "limitValue", [ 0, 17 ] ] } } },
+                        { "set":{ "bonus":{ "_":[ 20, "^", { "_":[ "this", "bonus" ] }, "/", { "_":[ 10, "^", { "_":[ "this", "bonus", "-", 1 ] } ] } ] } } },
+                        { "sum":{ "_":[ "this", "bonus" ] }, "to":{ "_":[ "variable", "score" ] } },
+                        { "as":{ "_":[ "object", "falling" ] }, "set":{ "removeType":[ "toclear", "ball", "sticky" ], "state":"falling" } }
+                      ]
+                    }
+                  ]
+                },
+                { "_":[ "stencil", "codeCheckGame" ] },
+                { "as":{ "_":[ "objectTyped", "aimer" ] }, "executeAction":"next" }
+              ]
+            }
+          ],
+          "code":[
+            {
+              "name":"Sequence",
+              "data":[
+                { "wait":{ "_":[ "randomNumber", [ 300, 600 ] ] } },
+                { "sum":16, "to":{ "_":[ "this", "tileY" ] }, "wait":5 },
+                { "subtract":16, "to":{ "_":[ "this", "tileY" ] }, "wait":5 },
+                { "cycles":{ "_":[ "randomNumber", [ 2, 3 ] ] }, "loopTo":-2 },
+                { "loopTo":0 }
+              ]
+            },
+            { "name":"Execute", "data":{ "set":{ "x":{ "_":[ "this", "originX", "+", { "_":[ "scene", "shake" ] } ] } } } }
+          ],
+          "actions":[
+            {
+              "name":"check",
+              "execute":[
+                { "sum":1, "to":{ "_":[ "scene", "matches" ] } },
+                { "set":{ "type":"matching", "matching":1 } },
+                {
+                  "as":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "this", "ballType" ] }, "all":1, "hitbox":{ "width":20, "height":20, "x":-2, "y":-2 } } ] },
+                  "execute":{ "when":{ "_":[ "this", "matching", "not" ] }, "executeAction":"check" }
+                }
+              ]
+            },
+            {
+              "name":"pop",
+              "execute":[
+                { "object":{ "_":[ "stencil", "spark" ] } },
+                { "object":{ "set":{ "_":[ "stencil", "enemy" ] }, "frame":{ "_":[ "that", "frame" ] } } },
+                { "set":{ "removeType":"toclear" }, "remove":1 }
+              ]
+            },
+            {
+              "name":"fix",
+              "execute":[
+                { "set":{ "removeType":"falling", "matching":1 } },
+                {
+                  "as":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "ball" ] }, "all":1, "hitbox":{ "width":20, "height":20, "x":-2, "y":-2 } } ] },
+                  "execute":{ "when":{ "_":[ "this", "matching", "not" ] }, "executeAction":"fix" }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name":"falling",
+          "code":[ { "name":"Physics", "data":{ "gravityY":0.3 } }, { "name":"Execute", "data":{ "when":{ "_":[ "this", "y", "isGreaterThan", 200 ] }, "remove":1 } } ]
+        },
+        { "name":"black", "set":{ "frame":8 } }
+      ]
+    },
+    "dataBalls":{
+      "0":{ "type":"ball-0", "frame":0, "ballId":"0", "ballType":"ball-0" },
+      "1":{ "type":"ball-1", "frame":1, "ballId":"1", "ballType":"ball-1" },
+      "2":{ "type":"ball-2", "frame":2, "ballId":"2", "ballType":"ball-2" },
+      "3":{ "type":"ball-3", "frame":3, "ballId":"3", "ballType":"ball-3" },
+      "4":{ "type":"ball-4", "frame":4, "ballId":"4", "ballType":"ball-4" },
+      "5":{ "type":"ball-5", "frame":5, "ballId":"5", "ballType":"ball-5" },
+      "6":{ "type":"ball-6", "frame":6, "ballId":"6", "ballType":"ball-6" },
+      "7":{ "type":"ball-7", "frame":7, "ballId":"7", "ballType":"ball-7" }
+    },
+    "starcat":{
+      "type":"starcat",
+      "image":"sprites", "tileX":32, "tileY":64, "width":16, "height":16,
+      "zIndex":60, "x":150, "y":169,
+      "forceX":0.3,
+      "animations":{ "panic":{ "frames":[ 2, 3 ], "speed":5, "loopTo":0 }, "walk":{ "frames":2, "speed":10, "loopTo":0 } },
+      "states":[
+        {
+          "code":[
+            {
+              "name":"Execute",
+              "data":[
+                { "set":{ "flipX":{ "_":[ "this", "forceX", "isLessThan", 0 ] } } },
+                {
+                  "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "sticky" ] }, "hitbox":{ "width":320, "height":100, "x":-100, "y":-62 } } ] },
+                  "set":{ "animation":"panic" },
+                  "elseExecute":{ "set":{ "animation":"walk" } }
+                }
+              ]
+            },
+            { "name":"Physics", "data":{ "walls":{ "area":{ "width":40, "height":20, "x":150, "y":168 }, "restitution":1 } } }
+          ]
+        },
+        {
+          "name":"win",
+          "set":{ "frame":4, "forceX":0, "animation":"none" },
+          "code":{ "name":"Physics", "data":{ "walls":{ "area":{ "width":40, "height":78, "x":150, "y":108 }, "execute":{ "set":{ "forceY":-5 } } }, "gravityY":0.3 } }
+        },
+        {
+          "name":"lose",
+          "set":{ "animation":"panic" },
+          "code":{ "name":"Sequence", "data":{ "sum":5, "to":{ "_":[ "this", "angle" ] }, "wait":1, "loop":1, "cycles":18 } }
+        }
+      ]
+    },
+    "0":{ "set":[ { "_":[ "stencil", "ballModel" ] }, { "_":[ "stencil", "dataBalls", "0" ] } ] },
+    "1":{ "set":[ { "_":[ "stencil", "ballModel" ] }, { "_":[ "stencil", "dataBalls", "1" ] } ] },
+    "2":{ "set":[ { "_":[ "stencil", "ballModel" ] }, { "_":[ "stencil", "dataBalls", "2" ] } ] },
+    "3":{ "set":[ { "_":[ "stencil", "ballModel" ] }, { "_":[ "stencil", "dataBalls", "3" ] } ] },
+    "4":{ "set":[ { "_":[ "stencil", "ballModel" ] }, { "_":[ "stencil", "dataBalls", "4" ] } ] },
+    "5":{ "set":[ { "_":[ "stencil", "ballModel" ] }, { "_":[ "stencil", "dataBalls", "5" ] } ] },
+    "6":{ "set":[ { "_":[ "stencil", "ballModel" ] }, { "_":[ "stencil", "dataBalls", "6" ] } ] },
+    "7":{ "set":[ { "_":[ "stencil", "ballModel" ] }, { "_":[ "stencil", "dataBalls", "7" ] } ] }
+  },
+  "execute":[
+    { "when":{ "_":[ "storage", "hiscore", "not" ] }, "as":{ "_":"storage" }, "set":{ "hiscore":0 } },
+    { "as":{ "_":"variable" }, "set":{ "hiscore":{ "_":[ "storage", "hiscore" ] } } },
+    {
+      "object":[
+        {
+          "type":"hud",
+          "hudType":"label", "label":"1UP<br>%number|variable.score|0|7%",
+          "box":"label", "width":150, "height":30,
+          "x":2, "y":8,
+          "font":"spectrum", "lineHeight":13, "outline":"#000000"
+        },
+        {
+          "type":"hud",
+          "hudType":"label", "label":"HIGH<br>%number|variable.hiscore|0|7%",
+          "box":"label", "width":150, "height":30,
+          "x":194, "y":8,
+          "font":"spectrum", "lineHeight":13, "outline":"#000000"
+        },
+        {
+          "type":"hud",
+          "hudType":"label", "label":"CREDIT<br>%number|variable.credits%",
+          "box":"label", "width":70, "height":30,
+          "x":194, "y":162,
+          "font":"spectrum", "lineHeight":13, "outline":"#000000", "textAlign":"center"
+        }
+      ],
+      "into":{ "_":"hud" }
+    }
+  ],
+  "scenes":{
+    "intro":{
+      "object":[
+        { "image":"logo", "width":176, "height":43, "zIndex":100, "x":35, "y":74 },
+        {
+          "box":"label", "width":256,
+          "zIndex":30, "x":0, "y":143,
+          "color":"#fff",
+          "font":"spectrum", "fontSize":20, "lineHeight":20, "outline":"#000", "textAlign":"center", "html":"PRESS START",
+          "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "visible":0 }, "wait":10 }, { "set":{ "visible":1 }, "wait":10, "loopTo":0 } ] } }
+        }
+      ],
+      "execute":[
+        { "set":{ "counter":0 } },
+        {
+          "times":8,
+          "execute":[
+            {
+              "object":{
+                "image":"sprites", "width":16, "height":16,
+                "zIndex":{ "_":[ "that", "counter", "+", 5 ] }, "frame":{ "_":[ "that", "counter" ] },
+                "pos":{ "_":[ "that", "counter", "*", 0.78 ] },
+                "radius":0,
+                "states":{
+                  "code":{
+                    "name":"Execute",
+                    "data":[
+                      {
+                        "set":{
+                          "x":{ "_":[ "this", "pos", "sin", "*", { "_":[ "this", "radius", "sin", "*", 30, "+", 30 ] }, "+", 120 ] }, "y":{ "_":[ "this", "pos", "cos", "*", { "_":[ "this", "radius", "sin", "*", 30, "+", 30 ] }, "+", 88 ] }
+                        }
+                      },
+                      { "sum":0.1, "to":{ "_":[ "this", "pos" ] } },
+                      { "sum":0.1, "to":{ "_":[ "this", "radius" ] } }
+                    ]
+                  }
+                }
+              }
+            },
+            { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+          ]
+        },
+        {
+          "times":100,
+          "object":{
+            "width":1, "height":1,
+            "x":{ "_":[ "randomNumber", [ 0, 255 ] ] }, "y":{ "_":[ "randomNumber", [ 0, 191 ] ] },
+            "bgcolor":"#f00",
+            "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "bgcolor":"#fff" }, "wait":1 }, { "set":{ "bgcolor":"#7f7f7f" }, "wait":1, "loopTo":0 } ] } }
+          }
+        }
+      ],
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":{
+            "when":{ "_":[ "keyA", "isHit" ] },
+            "execute":[
+              { "as":{ "_":"variable" }, "set":{ "credits":2, "playmusic":1, "score":0, "stage":0 }, "playAudio":"whoop" },
+              { "gotoScene":{ "_":[ "stage", ".", { "_":[ "variable", "stage" ] } ] }, "withTransition":3 }
+            ]
+          }
+        }
+      }
+    },
+    "gameover":{
+      "execute":[
+        {
+          "object":{
+            "box":"label", "width":256, "height":192,
+            "zIndex":10, "x":0, "y":0,
+            "font":"spectrum", "fontSize":40, "lineHeight":192, "textAlign":"center", "html":"GAME OVER"
+          }
+        },
+        { "playAudio":"explode" }
+      ],
+      "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"intro", "withTransition":3 } } }
+    },
+    "stage0":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "66442233",
+          "6644223",
+          "22336644",
+          "2336644",
+          "        ",
+          "       ",
+          "        ",
+          "       ",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage1":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          " 777777 ",
+          " 11111 ",
+          "  2222  ",
+          "   2   ",
+          "   22   ",
+          "   5   ",
+          "   55   ",
+          "       ",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage10":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          " 77  55 ",
+          "1     4",
+          "21    43",
+          "2     3",
+          "12    34",
+          "1     4",
+          "71    45",
+          "77   55",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage11":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "77    55",
+          "15   74",
+          "21    43",
+          "2     3",
+          "15    74",
+          "1     4",
+          "71    45",
+          "75   75",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage12":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "   00   ",
+          "  501  ",
+          "  3516  ",
+          " 43262 ",
+          " 747224 ",
+          "6773343",
+          "16111335",
+          "11    5",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage13":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "  0  0  ",
+          " 33 33 ",
+          " 020020 ",
+          " 33 33 ",
+          "  0  0  ",
+          "       ",
+          "        ",
+          "       ",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage14":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "   11   ",
+          "  222  ",
+          "  3333  ",
+          " 44444 ",
+          " 555555 ",
+          "   6   ",
+          "   77   ",
+          "   0   ",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage15":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "   25   ",
+          " 43    ",
+          "67 52   ",
+          "    34 ",
+          "   25 76",
+          " 43    ",
+          "67 52   ",
+          "    34 ",
+          "      76",
+          "       "
+        ]
+      }
+    },
+    "stage16":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "   55   ",
+          "   3   ",
+          "   1    ",
+          "   7   ",
+          "   2    ",
+          "   4   ",
+          "   5    ",
+          "   3   ",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage17":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "   01   ",
+          "  0277 ",
+          "   017  ",
+          " 0000  ",
+          " 00011  ",
+          "000111 ",
+          " 00111  ",
+          " 00077 ",
+          "  77    ",
+          "       "
+        ]
+      }
+    },
+    "stage18":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          " 1      ",
+          "1      ",
+          " 234765 ",
+          "      1",
+          "      1 ",
+          " 23476 ",
+          " 1      ",
+          "1      ",
+          " 234765 ",
+          "       "
+        ]
+      }
+    },
+    "stage19":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          " 6      ",
+          "5      ",
+          "23476523",
+          "      4",
+          "      7 ",
+          " 43256 ",
+          " 7      ",
+          "6      ",
+          "5234765 ",
+          "       "
+        ]
+      }
+    },
+    "stage2":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "  7  7  ",
+          "  717  ",
+          "   12   ",
+          "  121  ",
+          "   25   ",
+          "  353  ",
+          "   53   ",
+          "   3   ",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage20":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "32100123",
+          "3210123",
+          "43211234",
+          "4321234",
+          "54322345",
+          "5432345",
+          "65433456",
+          "6543456",
+          "76544567",
+          "       "
+        ]
+      }
+    },
+    "stage21":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "   55   ",
+          "   3   ",
+          "   24   ",
+          "   6   ",
+          "   24   ",
+          " 2 5 4 ",
+          "10101010",
+          "3 3 2 6",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage22":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "    1   ",
+          "7435   ",
+          "6  1    ",
+          "   5347",
+          "6   1  6",
+          "7435   ",
+          "   1   6",
+          "   5347",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage23":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "    736 ",
+          "  37363",
+          "  57363 ",
+          " 67367 ",
+          " 77361  ",
+          "37363  ",
+          "56271   ",
+          "       ",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage24":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "5      5",
+          "5 666 5",
+          " 54  45 ",
+          " 3   3 ",
+          " 60  06 ",
+          " 3   3 ",
+          "  4  4  ",
+          "  666  ",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage25":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          " 70  07 ",
+          "7 0 0 7",
+          "71 00 17",
+          "7120217",
+          "76322367",
+          "7 323 7",
+          " 773377 ",
+          "   3   ",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage26":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          " 3 1 7 6",
+          "5 7 7 6",
+          "6 0 5 3 ",
+          " 2 1 5 ",
+          " 4 3 4  ",
+          "2 3 2  ",
+          "  4 6   ",
+          "   5   ",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage27":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "    1   ",
+          "    3  ",
+          "61312141",
+          "    6  ",
+          "   41   ",
+          "  1 3  ",
+          "   21   ",
+          "    4  ",
+          "   61   ",
+          "   6   "
+        ]
+      }
+    },
+    "stage28":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "   54   ",
+          "  410  ",
+          "   23   ",
+          " 14 22 ",
+          " 312514 ",
+          " 42 04 ",
+          "        ",
+          "       ",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage29":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "    1   ",
+          "   1   ",
+          " 2  1 5 ",
+          "5  1  0",
+          " 6  1 4 ",
+          " 0 1 5 ",
+          "  5501  ",
+          "       ",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage3":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "   00   ",
+          "  501  ",
+          "  3516  ",
+          " 43 67 ",
+          " 74  74 ",
+          "67   43",
+          "16    35",
+          "1     5",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage30":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "   63   ",
+          "  326  ",
+          "  2632  ",
+          " 63263 ",
+          " 326326 ",
+          "2632632",
+          "63263263",
+          "       ",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage31":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "66666666",
+          "4      ",
+          " 3257643",
+          " 5     ",
+          "  764325",
+          "  4    ",
+          "   32576",
+          "       ",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage32":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "1 7  6 2",
+          "6 1 613",
+          " 4 72 7 ",
+          "27   4 ",
+          "6 3502 7",
+          "1     1",
+          " 145751 ",
+          "       ",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage33":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "666  666",
+          "  6 6  ",
+          "  2332  ",
+          " 3 5 3 ",
+          "  5335  ",
+          "  616  ",
+          " 42  24 ",
+          "       ",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage34":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "   55   ",
+          "  5    ",
+          " 3466  5",
+          "33465 5",
+          "3236655 ",
+          "33465 5",
+          " 3466  5",
+          "  5    ",
+          "   55   ",
+          "       "
+        ]
+      }
+    },
+    "stage35":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "1      1",
+          "1 222 1",
+          " 123321 ",
+          "623 326",
+          "623  326",
+          "623 326",
+          "33377333",
+          "0502050",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage36":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "  777   ",
+          " 7227  ",
+          " 75557  ",
+          "777777 ",
+          "  6 6   ",
+          " 6  6  ",
+          " 644 644",
+          "       ",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage37":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          " 33 333 ",
+          "3754653",
+          "1333 331",
+          "2121212",
+          "133 3331",
+          "3564573",
+          "2333 332",
+          "1122211",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage38":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          " 65     ",
+          "313    ",
+          " 56     ",
+          "  53   ",
+          "  616   ",
+          "  35   ",
+          "    36  ",
+          "   565 ",
+          "    63  ",
+          "       "
+        ]
+      }
+    },
+    "stage39":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "63745163",
+          "5163745",
+          "63745163",
+          "       ",
+          "        ",
+          "       ",
+          "        ",
+          "       ",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage4":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "  0000  ",
+          " 01110 ",
+          " 010010 ",
+          " 01110 ",
+          "  0000  ",
+          "  7 7  ",
+          "  7777  ",
+          "       ",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage40":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "      44",
+          "  77744",
+          "      44",
+          " 1   7 ",
+          " 11  7  ",
+          "333 7  ",
+          "3 2333 3",
+          " 2 3 33",
+          " 2      ",
+          "       "
+        ]
+      }
+    },
+    "stage41":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "  4     ",
+          " 74    ",
+          "  74    ",
+          " 474   ",
+          "1111111 ",
+          "121211 ",
+          "22222222",
+          "       ",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage42":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "0      6",
+          "6143750",
+          "0      6",
+          "6143750",
+          "0      6",
+          "6143750",
+          "        ",
+          "       ",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage43":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "33466433",
+          "0346431",
+          "51344301",
+          "0134310",
+          "21633001",
+          "0343615",
+          "61264002",
+          "       ",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage44":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "66    44",
+          "40   36",
+          "06    42",
+          "7     7",
+          "44    56",
+          "6477564",
+          " 764647 ",
+          " 0 7 7 ",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage45":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          " 5    4 ",
+          " 5   4 ",
+          "  5664  ",
+          "  2 2  ",
+          "006  611",
+          "  2 2  ",
+          "  7663  ",
+          " 7   3 ",
+          " 7    3 ",
+          "       "
+        ]
+      }
+    },
+    "stage46":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          " 6    2 ",
+          "1711131",
+          "  4114  ",
+          " 13171 ",
+          "   26   ",
+          "  151  ",
+          "        ",
+          "       ",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage47":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "77777777",
+          "7     7",
+          "7  20522",
+          "7   036",
+          "7     40",
+          "55     ",
+          "4362    ",
+          "0204   ",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage48":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "  1  1  ",
+          " 4  5  ",
+          " 7  111 ",
+          "6    7 ",
+          "1111 4  ",
+          "  5    ",
+          "  0     ",
+          " 3     ",
+          " 1      ",
+          "       "
+        ]
+      }
+    },
+    "stage49":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          " 77  77 ",
+          "6 4 4 6",
+          "5  33  5",
+          "6     6",
+          " 7    7 ",
+          " 4   4 ",
+          "  3  3  ",
+          "  2 2  ",
+          "   55   ",
+          "       "
+        ]
+      }
+    },
+    "stage5":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          " 444666 ",
+          "4     6",
+          " 4    6 ",
+          "4231236",
+          " 312312 ",
+          "       ",
+          "        ",
+          "       ",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage50":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          " 00  00 ",
+          "7466643",
+          "56662663",
+          "7466643",
+          " 00  00 ",
+          "       ",
+          "        ",
+          "       ",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage51":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "     777",
+          "    277",
+          " 0777 77",
+          "6777   ",
+          "6   7777",
+          "6      ",
+          "42224 3 ",
+          "4444333",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage52":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "4  7 6 7",
+          "767  74",
+          "  7  7  ",
+          " 000003",
+          "  022064",
+          "  00013",
+          "   00 34",
+          "   6 56",
+          "      10",
+          "       "
+        ]
+      }
+    },
+    "stage53":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          " 5    5 ",
+          "0  0  0",
+          "00022000",
+          "0  0  0",
+          " 7 3  7 ",
+          "  36   ",
+          "   6    ",
+          " 36    ",
+          " 3      ",
+          "       "
+        ]
+      }
+    },
+    "stage54":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "   65   ",
+          "  263  ",
+          "  5471  ",
+          " 62234 ",
+          "  3736  ",
+          "  132  ",
+          "   45   ",
+          "   4   ",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage55":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "77 22 66",
+          "6  6  3",
+          "2  1  2 ",
+          "5  3  2",
+          "1  2  1 ",
+          "5  2  2",
+          "6  1  7 ",
+          "5  5  4",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage56":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "   66   ",
+          " 04440 ",
+          "   66   ",
+          "  272  ",
+          "   66   ",
+          " 05550 ",
+          "   33   ",
+          "       ",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage57":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "  413   ",
+          " 1  1  ",
+          "  41341 ",
+          " 134  4",
+          " 3  341 ",
+          " 13413 ",
+          "  41    ",
+          "       ",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage58":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          " 64 325 ",
+          "0     1",
+          " 235 46 ",
+          "0     1",
+          " 46 253 ",
+          "0     1",
+          " 523 46 ",
+          "       ",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage59":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "   66   ",
+          "  764  ",
+          " 217413 ",
+          "2111113",
+          " 222333 ",
+          "   5   ",
+          "   23   ",
+          "   5   ",
+          "  2233  ",
+          "       "
+        ]
+      }
+    },
+    "stage6":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          " 444666 ",
+          "4     6",
+          " 4    6 ",
+          "4231236",
+          " 312312 ",
+          " 23123 ",
+          "        ",
+          "       ",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage60":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "4 5  3 6",
+          "2 3 2 4",
+          "4  10  6",
+          "6 235 4",
+          "4  01  6",
+          "2 5 3 4",
+          "4 3  2 6",
+          "6     4",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage61":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "26055134",
+          "1  2  0",
+          "4  36  2",
+          "   0   ",
+          "   14   ",
+          "   2   ",
+          "   63   ",
+          "   5   ",
+          "   41   ",
+          "       "
+        ]
+      }
+    },
+    "stage62":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "    5113",
+          "0510533",
+          "51051051",
+          "0510516",
+          "    1651",
+          "    516",
+          "    1051",
+          "    510",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage63":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          " 073  22",
+          " 073  2",
+          " 073  22",
+          " 073 31",
+          " 073 645",
+          " 073 70",
+          " 073 234",
+          " 073 56",
+          "     701",
+          "       "
+        ]
+      }
+    },
+    "stage64":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "   7777 ",
+          "345   7",
+          "2      3",
+          "7     4",
+          "7   3456",
+          "7  2012",
+          "6   3456",
+          "01     ",
+          "234     ",
+          "560    "
+        ]
+      }
+    },
+    "stage65":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          " 7    2 ",
+          "11   33",
+          " 2    4 ",
+          "33   55",
+          " 4    6 ",
+          "55   11",
+          " 6    7 ",
+          "       ",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage66":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          " 4    4 ",
+          "2  1  2",
+          "5  00  5",
+          "5  1  6",
+          " 427754 ",
+          "   6   ",
+          "   33   ",
+          "   7   ",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage67":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          " 1  234 ",
+          "2  304 ",
+          "4  231  ",
+          "3 430  ",
+          "4  251  ",
+          "3 4504 ",
+          "        ",
+          "       ",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage68":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "2  11  2",
+          "2 333 2",
+          " 2 44 2 ",
+          " 77077 ",
+          "   44   ",
+          "  575  ",
+          "63264236",
+          "5     1",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage69":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "42357136",
+          "1  1  1",
+          "30132435",
+          "4  4  4",
+          " 5  5  5",
+          "0320450",
+          " 6  6  6",
+          "7  7  7",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage7":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          " 00  22 ",
+          " 5   3 ",
+          " 0   6  ",
+          " 3   0 ",
+          " 4   5  ",
+          " 2   3 ",
+          " 2   1  ",
+          " 3   4 ",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage70":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          " 54 11  ",
+          "5 41 1 ",
+          "0     0 ",
+          "064  42",
+          " 4352636",
+          " 26  54",
+          "        ",
+          "       ",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage71":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "   66   ",
+          "  554  ",
+          "  1664  ",
+          " 17253 ",
+          " 272153 ",
+          "2131427",
+          " 313427 ",
+          " 35566 ",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage72":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "  73    ",
+          " 176   ",
+          " 37515  ",
+          "7702404",
+          "71465657",
+          "1771771",
+          "        ",
+          "       ",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage73":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "  1  1  ",
+          " 56156 ",
+          " 112211 ",
+          "4710174",
+          " 375753 ",
+          " 11111 ",
+          "        ",
+          "       ",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage74":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "4   5  4",
+          "6676 45",
+          "42752264",
+          "  41 52",
+          " 5277 74",
+          "4654 42",
+          "   4 41 ",
+          "0005   ",
+          "    0000",
+          "       "
+        ]
+      }
+    },
+    "stage75":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "1   00  ",
+          "2  010 ",
+          "3  0220 ",
+          "4 01110",
+          "5  0440 ",
+          "6  444 ",
+          "7   44  ",
+          "   010 ",
+          "   0110 ",
+          "       "
+        ]
+      }
+    },
+    "stage76":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "  3  17 ",
+          " 74  43",
+          "1  020  ",
+          "54 3   ",
+          "4 36116 ",
+          " 1  4 1",
+          " 75   3 ",
+          "  3    ",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage77":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "1   1   ",
+          "2   2  ",
+          " 3  33  ",
+          " 4 4 4 ",
+          " 5  55  ",
+          "6  717 ",
+          "7   66  ",
+          "       ",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage78":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "2  6 251",
+          "5 4 4 4",
+          "6  3   3",
+          "420   5",
+          "   6 36 ",
+          "  5 5  ",
+          "   3 425",
+          "       ",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage79":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "6   4  3",
+          "03  6 0",
+          "  7 1 3 ",
+          "7 47 2 ",
+          "523216 3",
+          "  04354",
+          " 76  0  ",
+          "43   42",
+          "0     6 ",
+          "       "
+        ]
+      }
+    },
+    "stage8":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "3      3",
+          "6324632",
+          "4      4",
+          "2463246",
+          "   6    ",
+          "   3   ",
+          "        ",
+          "       ",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage80":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "61251630",
+          "      4",
+          "0527162 ",
+          "3      ",
+          "67640526",
+          "      1",
+          "6140623 ",
+          "0      ",
+          " 0453760",
+          "       "
+        ]
+      }
+    },
+    "stage81":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "   01   ",
+          "  070  ",
+          "  1220  ",
+          " 07070 ",
+          " 6 77 6 ",
+          "4166641",
+          " 5 77 5 ",
+          "       ",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage82":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "   56   ",
+          "  333  ",
+          "  7537  ",
+          " 3 6 3 ",
+          "2  37  1",
+          "22 3 11",
+          " 025610 ",
+          "   3   ",
+          "   37   ",
+          "       "
+        ]
+      }
+    },
+    "stage83":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          " 6    2 ",
+          " 26060 ",
+          " 0      ",
+          "6      ",
+          " 3320600",
+          " 6    0",
+          "   6026 ",
+          " 20    ",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage84":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "07      ",
+          "15     ",
+          "725     ",
+          "634    ",
+          "5544    ",
+          "3353   ",
+          "12253   ",
+          "10076  ",
+          "335576  ",
+          "       "
+        ]
+      }
+    },
+    "stage85":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "  2662  ",
+          " 21102 ",
+          " 232202 ",
+          "2325272",
+          "24252720",
+          "2426620",
+          " 2522272",
+          " 256672",
+          "  22222 ",
+          "       "
+        ]
+      }
+    },
+    "stage86":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "  0  0  ",
+          "1001001",
+          "17755771",
+          "32 2 23",
+          "37 66 73",
+          "7  6  7",
+          "445  544",
+          "       ",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage87":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          " 63  36 ",
+          "6 2 2 6",
+          "2 0110 2",
+          "50 7 05",
+          " 5 66 5 ",
+          "714 417",
+          "7 4  4 7",
+          "20   02",
+          " 2    2 ",
+          "       "
+        ]
+      }
+    },
+    "stage88":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "61    40",
+          "2755573",
+          "61    40",
+          "2577753",
+          "61    40",
+          "2066603",
+          "61    40",
+          "       ",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage89":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "5  11  5",
+          "5 4 4 5",
+          " 24  42 ",
+          "72   27",
+          "0 0440 0",
+          "72   27",
+          " 23  32 ",
+          "5 3 3 5",
+          "5  66  5",
+          "       "
+        ]
+      }
+    },
+    "stage9":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          " 2 1 1 2",
+          "12 21 1",
+          "1 1 2 2 ",
+          "21 12 2",
+          " 2 2 2 2",
+          "12 21 1",
+          "1 1 2 1 ",
+          "22 11 2",
+          " 2 1 1 1",
+          "       "
+        ]
+      }
+    },
+    "stage90":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "22    55",
+          "5     2",
+          "5      2",
+          "1 151 3",
+          "52531252",
+          "205 205",
+          " 37  37 ",
+          "  205  ",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage91":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "06523417",
+          "    1  ",
+          "   11   ",
+          "  1    ",
+          "71432560",
+          "    1  ",
+          "   11   ",
+          "  1    ",
+          "06523417",
+          "       "
+        ]
+      }
+    },
+    "stage92":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "  1  1  ",
+          " 24 24 ",
+          " 236532 ",
+          " 65 65 ",
+          "   77   ",
+          "   7   ",
+          "1  77  3",
+          "2  7  2",
+          " 345641 ",
+          "       "
+        ]
+      }
+    },
+    "stage93":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "1  22  2",
+          "1373742",
+          " 16  62 ",
+          "6 737 6",
+          " 42  13 ",
+          "  261  ",
+          " 433443 ",
+          "       ",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage94":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "   56   ",
+          "   3   ",
+          "   12   ",
+          "   4   ",
+          "   57   ",
+          "   2   ",
+          "65432175",
+          "       ",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage95":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          " 0 1 2  ",
+          " 4 5 6 ",
+          " 7 0 2  ",
+          " 6 3 6 ",
+          " 1 1 2  ",
+          " 3 5 0 ",
+          " 2 4 6  ",
+          " 3 6 7 ",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage96":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "11223344",
+          "5567655",
+          "64332216",
+          "4657631",
+          "        ",
+          "       ",
+          "        ",
+          "       ",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage97":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "74 12 47",
+          "55 2 44",
+          " 5 77 4 ",
+          "1067602",
+          " 2 53 1 ",
+          "11   22",
+          "614  426",
+          "53   35",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage98":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "15100151",
+          "125 521",
+          "36122163",
+          "434 434",
+          "34655643",
+          "023 320",
+          "23155132",
+          "       ",
+          "        ",
+          "       "
+        ]
+      }
+    },
+    "stage99":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "x":64, "y":8,
+        "tileHeight":14,
+        "map":[
+          "30275765",
+          "6 1 2 1",
+          " 640345 ",
+          " 5 1 4 ",
+          " 735653 ",
+          "1 2 4 2",
+          "64466551",
+          "       ",
+          "        ",
+          "       "
+        ]
+      }
+    }
+  }
+}
