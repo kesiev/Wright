@@ -258,13 +258,13 @@
               { "as":{ "_":[ "object", "message" ] }, "remove":1 },
               {
                 "when":{ "_":[ "this", "time", "isLessThan", 5 ] },
-                "set":{ "bonus":50000, "bonusMessage":"50.000 pts" },
+                "execute":[ { "sum":50000, "to":{ "_":[ "variable", "score" ] }, "log":111 }, { "set":{ "bonusMessage":"50.000 pts" } } ],
                 "elseExecute":[
                   { "set":{ "bonus":{ "_":[ 50000, "-", { "_":[ "this", "time", "-", 5, "*", 840 ] } ] } } },
                   {
                     "when":{ "_":[ "this", "bonus", "isLessEqualThan", 0 ] },
                     "set":{ "bonusMessage":"NO BONUS" },
-                    "elseExecute":[ { "sum":{ "_":[ "this", "bonus" ] }, "to":{ "_":[ "variable", "time" ] } }, { "set":{ "bonusMessage":{ "_":[ "this", "bonus", ".", " pts." ] } } } ]
+                    "elseExecute":[ { "sum":{ "_":[ "this", "bonus" ] }, "to":{ "_":[ "variable", "score" ] } }, { "set":{ "bonusMessage":{ "_":[ "this", "bonus", ".", " pts." ] } } } ]
                   }
                 ]
               },
