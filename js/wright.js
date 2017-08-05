@@ -1970,6 +1970,24 @@ DOMInator.CONTROLS={
 			}
 		}
 	},
+	arcade:{
+		keyboard:{
+			keyUp: {label:"Up",default:38},
+			keyDown: {label:"Down",default:40},
+			keyLeft: {label:"Left",default:37},
+			keyRight: {label:"Right",default:39},
+			keyA: {label:"A/Start",default:90},
+			keyB: {label:"B/Option",default:88},
+			keyC: {label:"C/Special",default:67},
+			keyFullScreen: {label:"Fullscreen",subLabel:"Touch with two fingers the game area to enable fullscreen and touch controls.",subLabelDisabled:!Supports.isTouch,default:70}
+		},
+		touchcontroller:{
+			layout:{
+				allowed:["arcadepad"],
+				default:"arcadepad"
+			}
+		}
+	},
 	paddles:{
 		keyboard:{
 			keyUp1: {label:"Player 1 up",default:87},
@@ -2001,6 +2019,15 @@ DOMInator.CONTROLS={
 };
 
 DOMInator.TOUCHLAYOUTS={
+	arcadepad:{
+		label:"Horizontally: stick, B then A button. C button on top right.",
+		buttons:[
+			{x1:0,y1:0,x2:0.33,y2:1,type:1,deadzone:10,bgcolor:"#f00",color:"#000",label:"Stick"},
+			{x1:0.33,y1:0,x2:1,y2:0.5,button:"keyC",bgcolor:"#0f0",color:"#000",label:"C"},
+			{x1:0.33,y1:0.5,x2:0.66,y2:1,button:"keyB",bgcolor:"#0f0",color:"#000",label:"B"},
+			{x1:0.66,y1:0.5,x2:1,y2:1,button:"keyA",bgcolor:"#00f",color:"#000",label:"A"}
+		]
+	},
 	platformerpad:{
 		label:"Horizontally: stick, B then A button. Another up button on top right.",
 		buttons:[
@@ -4507,6 +4534,23 @@ function Wright(gameId,mods) {
 						break;
 					}
 					case "count":{ ret = ret ? ret.length : 0; break; }
+					case "subString":{
+						p = get(from, tox, struct[++id]);
+						if (p instanceof Array) {
+							var v1 = get(from, tox, p[0]),
+								v2 = get(from, tox, p[1]);
+							ret = ret.substr(v1,v2);
+						}
+						break;
+					}
+					case "splitString":{
+						p = get(from, tox, struct[++id]);
+						ret=ret.split(p);
+						break;
+					}
+					case "trimString":{ ret=ret.replace(/^\s+|\s+$/g, ''); break; }
+					case "lowerString":{ ret=ret.toLowerCase(); break; }
+					case "upperString":{ ret=ret.toUpperCase(); break; }
 					default:{
 						if (ret !== undefined) {
 							if (ret instanceof Array) ret=ret[tkn*1];
