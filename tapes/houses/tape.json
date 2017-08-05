@@ -1,0 +1,2792 @@
+{
+  "name":"Houses",
+  "author":"KesieV",
+  "year":2017,
+  "genre":"Survival horror",
+  "description":"<p>The horror genre comes from folklore and religious traditions, in which demons, evil, embodiedment of bad things, obviously, death takes place. Europeans has a long story of horror, but the best stuff that lives today mostly as it was, comes from Roman Christianity of 313 A.D. And - I mean - <i>everything</i> that came from that: from the religion itself to its opposites, like satanism, paganism, non-believers and heretics, and their massacre by Roman Catholics.</p><p>The humanity <i>lived the horror genre</i> literally religiously and spreaded them around the world and the ages to make others aware of the greatness of the gods. Our mutual (and sadly <i>colorful</i>) skepticism we like so much toned down these believes, downgrading them to evocative stories... and eventually converting the almighty gods of religions, like the Greek deity and titan Prometheus, to the monsters of a brand new literature genre, like Mary Shelley's Frankenstein.</p><p>Going fast forward, the first movie considered as horror genre is <a href='https://en.wikipedia.org/wiki/The_Haunted_Castle_(1896_film)'>Le Manoir du Diable</a> by Georges Méliès, made in 1896. Counting that the first kinetoscope film shown in public exhibition was in 1893, just few years before, it's easy to understand that cinema was inspired by many aspects of horror literature from the very beginning, since giving life to the fears once for all, depiting death, supernatural, gore, mutilations and murderings in more and more accurate ways, was an opportunity to hard to miss.</p><p>But, if movies were hungry of special effects, videogames were looking for everything else in horror <i>by design</i>: bloody villains to beat, deadly monsters to beat and ghosts to run from. The first survival horror game was Nostromo by Akira Takiguchi and published in 1981 by ASCII, in which the player had to escape from a spaceship with limited resources and running from an invisible and deadly alien. In the same year, the western Atari published <a href='https://en.wikipedia.org/wiki/Haunted_House_(video_game)'>Haunted House</a> (1981), a more action oriented game in which the player, that can bring with himself just one item at time, had to escape from a haunted house (this time) with an urn.</p><p>From there, the game genre evolved in any direction around the world, with scary realistic graphics, new stressing game mechanics and clever psychological tricks, mixing together and exchanging ideas with the other medias.</p><p>And come to think of it, fear is probably the best example of something the ties the whole humanity together across the space, time and expressions.</p><p>Plot!</p><p>You are a psychologist that can lift people from its phobias from the inside. But at what price?</p><p>Use UP/DOWN/LEFT/RIGHT for moving around and the POINTER for moving the reticle, looking around and aiming. Use the POINTER BUTTON for firing with your current weapon. This time the game is thought for the mouse/keyboard combo, so I suggest you to play it with them instead of using a touch screen. Finally, try to set the <i>DOM renderer</i> in the game settings for a better <i>famous indie game that inspired this game</i> look.</p>",
+  "screenshots":[ "houses-1.png", "houses-2.png" ],
+  "hardware":{
+    "width":256,
+    "height":192,
+    "gridSize":{ "width":16, "height":16 },
+    "filter":"retro",
+    "controls":"keymouse"
+  },
+  "audioChannels":{
+    "sfx":{ "volume":1, "samples":[ "tic", "blam", "scream", "bigfire", "explode2" ] },
+    "music":{ "volume":0.8, "looping":1, "samples":[ "bgm-normal", "bgm-hard", "bgm-final" ] }
+  },
+  "cheats":{
+    "dimlight":"Dimmed lights instead of darkness (Please, don't do this!)",
+    "skiplevel":"Use A/START for skipping stage phases (Please, don't do this!)"
+  },
+  "resources":{
+    "bgm-final":"stellarone.ogg",
+    "bgm-hard":"4adv13.ogg",
+    "bgm-normal":"suggedy.ogg",
+    "fears":"fears.png",
+    "hud":"hud.png",
+    "light":"light.png",
+    "office":"office.png",
+    "portraits":"portraits.png",
+    "spectrum":"spectrum.font",
+    "sprites":"sprites.png",
+    "tilemap":"tilemap.png",
+    "title":"title.png",
+    "bigfire":"../default/zxsounds/bigfire.ogg",
+    "blam":"../default/zxsounds/blam.ogg",
+    "explode2":"../default/zxsounds/explode2.ogg",
+    "scream":"../default/zxsounds/scream.ogg",
+    "tic":"../default/zxsounds/fire.ogg"
+  },
+  "stencils":{
+    "codeCheckCounters":[
+      {
+        "as":{ "_":"variable" },
+        "set":{ "stress":{ "_":[ "variable", "stress", "limitValue", [ 0, 100 ] ] }, "trauma":{ "_":[ "variable", "trauma", "limitValue", [ 0, 100 ] ] } }
+      },
+      { "when":{ "_":[ "variable", "stress", "isEqualTo", 100 ] }, "as":{ "_":[ "objectTyped", "player" ] }, "executeAction":"die" }
+    ],
+    "codeGiveStress":[ { "as":{ "_":[ "objectTyped", "player" ] }, "set":{ "stressRelief":0 } }, { "_":[ "stencil", "codeCheckCounters" ] } ],
+    "codeHitStress":[
+      {
+        "as":{ "_":[ "objectTyped", "player" ] },
+        "execute":[
+          {
+            "object":{ "_":[ "stencil", "spark" ] },
+            "set":{ "bleedTimer":0 },
+            "applyVector":{ "angle":{ "_":[ "that", "angleTo", { "_":"this" } ] }, "length":5 }
+          },
+          { "set":{ "splatMaterial":1, "splatRadius":8, "splatRatio":30 }, "execute":{ "_":[ "stencil", "codeSplat" ] } }
+        ]
+      },
+      { "_":[ "stencil", "codeGiveStress" ] }
+    ],
+    "codeRemovePhobias":{ "set":{ "phobiaArea":0, "phobiaBlood":0, "phobiaDark":0, "phobiaSpiders":0 } },
+    "codeRemoveTrauma":[ { "subtract":{ "_":[ "scene", "traumaRemoval" ] }, "to":{ "_":[ "variable", "trauma" ] } }, { "_":[ "stencil", "codeCheckCounters" ] } ],
+    "codeSplat":[
+      {
+        "as":{ "_":[ "objectTyped", "checker" ] },
+        "set":{
+          "width":{ "_":[ "that", "width", "+", { "_":[ "that", "splatRadius", "*", 2 ] } ] }, "height":{ "_":[ "that", "height", "+", { "_":[ "that", "splatRadius", "*", 2 ] } ] },
+          "x":{ "_":[ "that", "x", "-", { "_":[ "that", "splatRadius" ] } ] }, "y":{ "_":[ "that", "y", "-", { "_":[ "that", "splatRadius" ] } ] }
+        }
+      },
+      {
+        "as":{ "_":[ "objectTyped", "checker", "complexCollidesWith", { "subject":{ "_":[ "object", "splattable" ] }, "all":1 } ] },
+        "execute":{
+          "when":{ "_":[ "randomNumber", [ 0, 100 ], "isLessThan", { "_":[ "that", "splatRatio" ] } ] },
+          "set":{
+            "type":{ "_":[ "splat-", ".", { "_":[ "that", "splatMaterial" ] } ] },
+            "tileX":{ "_":[ "that", "splatMaterial", "*", 24, "+", { "_":[ "this", "tileX", "%", 24 ] } ] }, "tileY":{ "_":[ 40, "+", { "_":[ "this", "tileY", "%", 40 ] } ] }
+          }
+        }
+      }
+    ],
+    "codeWinBehaviour":{
+      "set":{ "frame":0, "visible":1, "animation":"none" },
+      "execute":[
+        { "as":{ "_":[ "objectTyped", "weapon" ] }, "remove":1 },
+        { "as":{ "_":[ "objectTyped", "body" ] }, "set":{ "animation":"stand" } },
+        { "as":{ "_":[ "object", "camera" ] }, "remove":1 },
+        { "set":{ "follow":1 } }
+      ],
+      "code":{
+        "name":"Sequence",
+        "data":[
+          { "wait":75 },
+          { "playAudio":"explode2" },
+          {
+            "object":[
+              { "_":[ "stencil", "patientCuredModel" ] },
+              { "set":{ "_":[ "stencil", "patientCuredModel" ] }, "tileY":152, "zIndex":1, "sinDir":-0.1, "sinY":88 }
+            ],
+            "into":{ "_":"scenehud" }
+          },
+          { "wait":10 },
+          { "wait":1, "loop":1, "until":{ "_":[ "keyPointer", "isHit" ] } },
+          { "gotoScene":{ "_":[ "scene", "nextScene" ] }, "withChannel":"music" }
+        ]
+      }
+    },
+    "spark":{
+      "image":"sprites", "tileX":{ "_":[ "that", "splatMaterial", "*", 64 ] }, "tileY":96, "width":16, "height":16,
+      "zIndex":100, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" }, "+", { "_":[ "randomNumber", [ -4, 4 ] ] } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" }, "+", { "_":[ "randomNumber", [ -4, 4 ] ] } ] },
+      "animations":{ "spark":{ "frames":4, "speed":0 } },
+      "animation":"spark",
+      "states":{ "code":{ "name":"Sequence", "data":[ { "wait":4 }, { "remove":1 } ] } }
+    },
+    "modelPopupLabel":{
+      "width":100, "height":10,
+      "zIndex":10000, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "that", "y", "-", 5 ] },
+      "color":"#fff",
+      "font":"spectrum", "lineHeight":12, "outline":"#000", "textAlign":"center",
+      "speed":0.5,
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[ { "subtract":{ "_":[ "this", "speed" ] }, "to":{ "_":[ "this", "y" ] }, "wait":1, "loop":1, "cycles":15 }, { "remove":1 } ]
+        }
+      }
+    },
+    "stageModel":{
+      "object":{ "type":"checker" },
+      "patientPortraitX":0,
+      "phobiaAreaAmount":0.4,
+      "playerPortraitX":0,
+      "traumaRemoval":0.1,
+      "states":[
+        {
+          "execute":[
+            { "as":{ "_":"variable" }, "set":{ "ammo":0, "stress":0, "trauma":100, "weaponData":0, "weaponName":"NONE" } },
+            {
+              "object":[
+                {
+                  "image":"hud", "tileX":{ "_":[ "scene", "playerPortraitX", "+", 16 ] }, "width":18, "height":18,
+                  "x":8, "y":8,
+                  "border":"#000",
+                  "execute":{
+                    "object":{
+                      "image":"hud", "tileX":{ "_":[ "scene", "playerPortraitX" ] }, "height":16,
+                      "zIndex":2,
+                      "states":{ "code":{ "name":"Execute", "data":{ "set":{ "width":{ "_":[ "variable", "stress", "*", 0.16 ] } } } } }
+                    },
+                    "into":{ "_":"this" }
+                  },
+                  "states":{
+                    "code":{
+                      "name":"Execute",
+                      "data":{
+                        "when":{ "_":[ "variable", "stress", "isGreaterThan", 50 ] },
+                        "execute":{
+                          "when":{ "_":[ "this", "border", "isEqualTo", "#000" ] },
+                          "set":{ "x":{ "_":[ "randomNumber", [ 7, 9 ] ] }, "y":{ "_":[ "randomNumber", [ 7, 9 ] ] }, "border":"#f00" },
+                          "elseExecute":{ "set":{ "x":8, "y":8, "border":"#000" } }
+                        }
+                      }
+                    }
+                  }
+                },
+                { "image":"hud", "tileX":{ "_":[ "scene", "patientPortraitX", "+", 16 ] }, "tileY":16, "width":18, "height":18, "x":28, "y":8, "border":"#000" },
+                {
+                  "image":"hud", "tileX":{ "_":[ "scene", "patientPortraitX" ] }, "tileY":16, "height":16,
+                  "zIndex":2, "x":29, "y":9,
+                  "states":{ "code":{ "name":"Execute", "data":{ "set":{ "width":{ "_":[ "variable", "trauma", "*", 0.16 ] } } } } }
+                },
+                {
+                  "type":"hud",
+                  "hudType":"label", "label":"%text|variable.weaponName%: %number|variable.ammo|0%",
+                  "box":"label", "width":240, "height":15,
+                  "zIndex":1, "x":8, "y":24,
+                  "font":"spectrum", "lineHeight":18, "outline":"#000"
+                }
+              ],
+              "into":{ "_":"scenehud" }
+            }
+          ],
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "wait":1, "loop":1, "until":{ "_":[ "variable", "trauma", "not" ] } },
+              { "_":[ "stencil", "codeRemovePhobias" ] },
+              { "as":{ "_":[ "object", "nest" ] }, "set":{ "state":"frozen" } },
+              { "as":{ "_":[ "object", "trigger" ] }, "remove":1 },
+              { "as":{ "_":[ "object", "door" ] }, "executeAction":"open" },
+              { "as":{ "_":[ "object", "message" ] }, "remove":1 },
+              { "as":{ "_":[ "object", "stopOnFight" ] }, "executeAction":"stop" },
+              { "playAudio":"bigfire" },
+              {
+                "object":[ { "_":[ "stencil", "fightFearModel" ] }, { "set":{ "_":[ "stencil", "fightFearModel" ] }, "tileY":104, "zIndex":1 } ],
+                "into":{ "_":"scenehud" }
+              },
+              { "wait":50 },
+              { "as":{ "_":[ "object", "message" ] }, "remove":1 },
+              {
+                "when":{ "_":[ "objectTyped", "weaponDrop", "not" ] },
+                "execute":{
+                  "when":{ "_":[ "this", "weaponDrop" ] },
+                  "subtract":1,
+                  "to":{ "_":[ "this", "weaponDrop" ] },
+                  "elseExecute":[
+                    {
+                      "as":{ "_":[ "randomObject", { "_":[ "object", "weaponRespawn" ] } ] },
+                      "execute":{
+                        "object":{ "type":"weaponDrop", "set":{ "_":[ "stencil", "weapon" ] }, "at":{ "_":"that" }, "frame":{ "_":[ "randomValue", { "_":[ "that", "weapons" ] } ] } }
+                      }
+                    },
+                    { "set":{ "weaponDrop":250 } }
+                  ]
+                }
+              },
+              { "wait":1, "loopTo":-1, "until":{ "_":[ "objectTyped", "fear", "not" ] } },
+              { "as":{ "_":[ "objectTyped", "player" ] }, "executeAction":"win" }
+            ]
+          }
+        },
+        {
+          "name":"dead",
+          "execute":[
+            { "playAudio":"scream" },
+            { "_":[ "stencil", "codeRemovePhobias" ] },
+            { "as":{ "_":[ "object", "message" ] }, "remove":1 },
+            {
+              "object":[ { "_":[ "stencil", "youDeadModel" ] }, { "set":{ "_":[ "stencil", "youDeadModel" ] }, "tileY":56, "zIndex":1 } ],
+              "into":{ "_":"scenehud" }
+            }
+          ],
+          "code":{
+            "name":"Sequence",
+            "data":[ { "wait":25 }, { "wait":1, "loop":1, "until":{ "_":[ "keyPointer", "isHit" ] } }, { "gotoScene":{ "_":[ "variable", "idScene" ] } } ]
+          }
+        }
+      ]
+    },
+    "player":{
+      "type":"player",
+      "set":{ "_":[ "stencil", "deadableModel" ] },
+      "image":"sprites", "tileY":16, "width":16, "height":16,
+      "zIndex":10, "x":24, "y":24,
+      "execute":[
+        {
+          "object":[
+            {
+              "type":"light",
+              "image":"light", "width":768, "height":768,
+              "zIndex":200,
+              "visible":{ "_":[ "scene", "isDark" ] },
+              "execute":{ "when":{ "_":[ "cheat", "dimlight" ] }, "set":{ "alpha":0.4 } }
+            },
+            {
+              "type":[ "body", "playerpart" ],
+              "image":"sprites", "tileY":32, "width":16, "height":16,
+              "zIndex":5,
+              "animations":{ "stand":{ "frame":0 }, "walk":{ "frames":[ 0, 1, 2, 1, 0, 3, 4, 3 ], "loopTo":0 } },
+              "animation":"stand"
+            },
+            { "type":[ "aim", "playerpart" ], "width":1, "height":1 },
+            { "type":[ "weapon", "playerpart" ], "image":"sprites", "tileY":112, "width":32, "height":32, "zIndex":101 },
+            {
+              "type":[ "camera", "playerpart" ],
+              "follow":1,
+              "image":"sprites", "tileX":16, "width":4, "height":4,
+              "zIndex":1000,
+              "animations":{ "blink":{ "frames":2, "speed":1, "loopTo":0 } },
+              "animation":"blink"
+            }
+          ]
+        },
+        {
+          "object":{
+            "type":"reticle",
+            "image":"sprites", "width":8, "height":8,
+            "zIndex":10000,
+            "animations":{ "blink":{ "frames":2, "speed":1, "loopTo":0 } },
+            "animation":"blink",
+            "states":{
+              "code":{
+                "name":"Execute",
+                "data":[
+                  { "set":{ "x":{ "_":[ "pointer", "x", "-", 4 ] }, "y":{ "_":[ "pointer", "y", "-", 4 ] } } },
+                  {
+                    "as":{ "_":[ "objectTyped", "aim" ] },
+                    "set":{ "x":{ "_":[ "pointer", "x", "-", { "_":[ "scene", "x" ] } ] }, "y":{ "_":[ "pointer", "y", "-", { "_":[ "scene", "y" ] } ] } }
+                  },
+                  {
+                    "as":{ "_":[ "objectTyped", "camera" ] },
+                    "execute":[
+                      {
+                        "set":{
+                          "x":{ "_":[ "this", "xCenteredWith", { "_":[ "objectTyped", "player" ] } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":[ "objectTyped", "player" ] } ] }
+                        }
+                      },
+                      {
+                        "translateBy":{
+                          "angle":{ "_":[ "this", "angleTo", { "_":[ "objectTyped", "aim" ] } ] },
+                          "length":{ "_":[ "this", "distanceTo", { "_":[ "objectTyped", "aim" ] }, "/", 2, "limitValue", [ 0, 100 ] ] }
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          },
+          "into":{ "_":"scenehud" }
+        }
+      ],
+      "animations":{
+        "stand":{ "frame":0 },
+        "walk":{ "frames":[ 0, 1, 2, 1, 0, 3, 4, 3 ], "speed":2, "loopTo":0 },
+        "win":{
+          "frames":[
+            5,
+            5,
+            6,
+            6,
+            7,
+            7,
+            8,
+            8,
+            8,
+            8,
+            9,
+            8,
+            9,
+            8,
+            9,
+            8,
+            9,
+            8,
+            8,
+            8,
+            8,
+            8,
+            7,
+            7,
+            10,
+            10,
+            10,
+            10,
+            10,
+            10,
+            10,
+            10,
+            10,
+            10,
+            10,
+            10,
+            10,
+            10,
+            10,
+            10,
+            10,
+            10,
+            10,
+            10,
+            10,
+            10,
+            10,
+            10
+          ],
+          "speed":2,
+          "loopTo":8
+        }
+      },
+      "animation":"stand",
+      "bleedTimer":0,
+      "bodyAngle":0,
+      "corpseModel":1,
+      "firing":0,
+      "hailTimer":0,
+      "minWalkSpeed":0,
+      "splatMaterial":1,
+      "stressRelief":0,
+      "walkSpeed":0,
+      "states":[
+        {
+          "code":[
+            { "name":"Player", "data":{ "horizontal":{ "control":1, "gotoZero":1 }, "vertical":{ "control":1, "gotoZero":1 } } },
+            {
+              "name":"Physics",
+              "data":{
+                "walls":[ { "type":"wall", "restitution":0 }, { "area":{ "width":768, "height":576, "x":0, "y":0 }, "restitution":0 } ],
+                "limitX":[ { "_":[ "this", "minWalkSpeed" ] }, { "_":[ "this", "walkSpeed" ] } ],
+                "limitY":[ { "_":[ "this", "minWalkSpeed" ] }, { "_":[ "this", "walkSpeed" ] } ]
+              }
+            },
+            {
+              "name":"Execute",
+              "data":[
+                { "set":{ "walkSpeed":{ "_":[ 3, "-", { "_":[ "variable", "stress", "*", 0.03 ] } ] } } },
+                { "set":{ "minWalkSpeed":{ "_":[ "this", "walkSpeed", "*", -1 ] } } },
+                {
+                  "when":{ "_":[ "this", "forceX" ] },
+                  "execute":[
+                    {
+                      "when":{ "_":[ "this", "forceX", "isGreaterThan", 0 ] },
+                      "set":{ "bodyAngle":90, "bodySide":45 },
+                      "elseExecute":{ "set":{ "bodyAngle":-90, "bodySide":-45 } }
+                    },
+                    {
+                      "when":{ "_":[ "this", "forceY" ] },
+                      "execute":{
+                        "when":{ "_":[ "this", "forceY", "isGreaterThan", 0 ] },
+                        "sum":{ "_":[ "this", "bodySide" ] },
+                        "to":{ "_":[ "this", "bodyAngle" ] },
+                        "elseExecute":{ "subtract":{ "_":[ "this", "bodySide" ] }, "to":{ "_":[ "this", "bodyAngle" ] } }
+                      }
+                    }
+                  ],
+                  "elseExecute":{
+                    "when":{ "_":[ "this", "forceY" ] },
+                    "execute":{ "when":{ "_":[ "this", "forceY", "isGreaterThan", 0 ] }, "set":{ "bodyAngle":180 }, "elseExecute":{ "set":{ "bodyAngle":0 } } }
+                  }
+                },
+                { "set":{ "angle":{ "_":[ "this", "angleTo", { "_":[ "objectTyped", "aim" ] } ] } } },
+                {
+                  "when":{ "_":[ "cheat", "skiplevel" ] },
+                  "execute":{
+                    "when":{ "_":[ "keyA", "isHit" ] },
+                    "execute":{
+                      "when":{ "_":[ "variable", "trauma" ] },
+                      "as":{ "_":"variable" },
+                      "set":{ "trauma":0 },
+                      "elseExecute":{ "as":{ "_":[ "object", "fear" ] }, "remove":1 }
+                    }
+                  }
+                },
+                {
+                  "when":{ "_":[ "keyPointer", "isHit" ] },
+                  "execute":{
+                    "when":{ "_":[ "this", "firing" ] },
+                    "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "color":"#ff0", "html":"LOADING" },
+                    "elseExecute":{
+                      "when":{ "_":[ "variable", "ammo" ] },
+                      "execute":[
+                        { "set":{ "firing":1, "hailCount":0, "hailTimer":0, "reloadTimer":-1 } },
+                        { "subtract":1, "to":{ "_":[ "variable", "ammo" ] } },
+                        { "when":{ "_":[ "variable", "ammo", "not" ] }, "as":{ "_":"variable" }, "set":{ "weaponName":"NONE" } }
+                      ],
+                      "elseExecute":{ "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "color":"#ff0", "html":"EMPTY" } }
+                    }
+                  }
+                },
+                {
+                  "when":{ "_":[ "variable", "ammo" ] },
+                  "as":{ "_":[ "objectTyped", "weapon" ] },
+                  "set":{ "x":{ "_":[ "that", "x", "-", 8 ] }, "y":{ "_":[ "that", "y", "-", 8 ] }, "visible":1, "angle":{ "_":[ "that", "angle" ] } },
+                  "elseExecute":{ "as":{ "_":[ "objectTyped", "weapon" ] }, "set":{ "visible":0 } }
+                },
+                {
+                  "when":{ "_":[ "this", "firing" ] },
+                  "execute":{
+                    "when":{ "_":[ "this", "reloadTimer", "isEqualTo", -1 ] },
+                    "execute":{
+                      "when":{ "_":[ "this", "hailTimer" ] },
+                      "subtract":1,
+                      "to":{ "_":[ "this", "hailTimer" ] },
+                      "elseExecute":[
+                        { "set":{ "precision":{ "_":[ "variable", "stress", "/", 10, "floor" ] } } },
+                        {
+                          "times":{ "_":[ "variable", "weaponData", "times" ] },
+                          "object":{
+                            "set":{ "_":[ "stencil", "bullet" ] },
+                            "life":{ "_":[ "variable", "weaponData", "life" ] },
+                            "toAngle":{
+                              "_":[
+                                "that",
+                                "angle",
+                                "+",
+                                {
+                                  "_":[
+                                    "randomNumber",
+                                   [ { "_":[ "that", "precision", "+",{ "_":[ "variable", "weaponData", "precision" ] }, "*", -1 ] }, { "_":[ "that", "precision", "+",{ "_":[ "variable", "weaponData", "precision" ] }] } ]
+                                  ]
+                                }
+                              ]
+                            },
+                            "toSpeed":{ "_":[ "variable", "weaponData", "speed" ] }
+                          },
+                          "playAudio":"tic"
+                        },
+                        { "sum":1, "to":{ "_":[ "this", "hailCount" ] } },
+                        {
+                          "when":{ "_":[ "this", "hailCount", "isEqualTo", { "_":[ "variable", "weaponData", "hailCount" ] } ] },
+                          "execute":{
+                            "when":{ "_":[ "variable", "ammo" ] },
+                            "execute":[
+                              { "set":{ "reloadTimer":{ "_":[ "variable", "weaponData", "reloadTimer", "+", { "_":[ "variable", "stress" ] }, "ceil" ] } } },
+                              { "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "color":"#ff0", "html":"RELOADING" } }
+                            ],
+                            "elseExecute":[ { "set":{ "firing":0, "reloadTimer":0 } }, { "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "color":"#ff0", "html":"EMPTY" } } ]
+                          },
+                          "elseExecute":{ "set":{ "hailTimer":{ "_":[ "variable", "weaponData", "hailTimer" ] } } }
+                        }
+                      ]
+                    },
+                    "elseExecute":{
+                      "when":{ "_":[ "this", "reloadTimer" ] },
+                      "subtract":1,
+                      "to":{ "_":[ "this", "reloadTimer" ] },
+                      "elseExecute":[ { "set":{ "firing":0 } }, { "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "color":"#ff0", "html":"READY" } } ]
+                    }
+                  }
+                },
+                {
+                  "when":{ "_":[ "this", "forceX", "or", { "_":[ "this", "forceY" ] } ] },
+                  "set":{ "animation":"walk" },
+                  "elseExecute":{ "set":{ "animation":"stand" } }
+                },
+                {
+                  "as":{ "_":[ "objectTyped", "body" ] },
+                  "set":{ "at":{ "_":"that" }, "angle":{ "_":[ "that", "bodyAngle" ] }, "animation":{ "_":[ "that", "animation" ] } }
+                },
+                {
+                  "as":{ "_":[ "objectTyped", "light" ] },
+                  "set":{ "x":{ "_":[ "that", "x", "-", 376 ] }, "y":{ "_":[ "that", "y", "-", 376 ] }, "angle":{ "_":[ "that", "angle" ] } }
+                },
+                {
+                  "when":{ "_":[ "this", "bleedTimer" ] },
+                  "subtract":1,
+                  "to":{ "_":[ "this", "bleedTimer" ] },
+                  "elseExecute":[
+                    {
+                      "when":{ "_":[ "variable", "stress", "isGreaterThan", 60 ] },
+                      "execute":{ "set":{ "splatMaterial":1, "splatRadius":8, "splatRatio":{ "_":[ "variable", "stress", "/", 2 ] } }, "execute":{ "_":[ "stencil", "codeSplat" ] } }
+                    },
+                    { "set":{ "bleedTimer":{ "_":[ "randomNumber", [ 25, 75 ] ] } } }
+                  ]
+                },
+                {
+                  "when":{ "_":[ "variable", "stress" ] },
+                  "execute":{
+                    "when":{ "_":[ "this", "stressRelief", "isLessThan", 125 ] },
+                    "sum":1,
+                    "to":{ "_":[ "this", "stressRelief" ] },
+                    "elseExecute":[ { "subtract":1, "to":{ "_":[ "variable", "stress" ] } }, { "_":[ "stencil", "codeCheckCounters" ] }, { "set":{ "stressRelief":124 } } ]
+                  }
+                },
+                {
+                  "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "weaponPickup" ] } ] },
+                  "as":{ "_":"that" },
+                  "execute":[
+                    { "playAudio":"tic" },
+                    {
+                      "as":{ "_":"variable" },
+                      "set":{
+                        "ammo":{ "_":[ "stencil", "dataWeapons", { "_":[ "that", "frame" ] }, "ammo" ] },
+                        "weaponData":{ "_":[ "stencil", "dataWeapons", { "_":[ "that", "frame" ] } ] },
+                        "weaponName":{ "_":[ "stencil", "dataWeapons", { "_":[ "that", "frame" ] }, "label" ] }
+                      }
+                    },
+                    { "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "color":"#ff0", "html":"READY" } },
+                    { "remove":1 }
+                  ]
+                },
+                {
+                  "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "trigger" ] } ] },
+                  "as":{ "_":"that" },
+                  "execute":[
+                    { "playAudio":"tic" },
+                    {
+                      "when":{ "_":[ "this", "triggers" ] },
+                      "as":{ "_":[ "object", { "_":[ "this", "triggers" ] } ] },
+                      "executeAction":{ "_":[ "that", "triggerAction" ] }
+                    },
+                    { "when":{ "_":[ "this", "phobiaArea", "isEqualTo", "on" ] }, "as":{ "_":"scene" }, "set":{ "phobiaAreaState":1 } },
+                    { "when":{ "_":[ "this", "phobiaArea", "isEqualTo", "off" ] }, "as":{ "_":"scene" }, "set":{ "phobiaAreaState":0 } },
+                    { "remove":1 }
+                  ]
+                },
+                {
+                  "when":{ "_":[ "scene", "phobiaSpiders" ] },
+                  "execute":{
+                    "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "spider" ] }, "hitbox":{ "width":44, "height":44, "x":-14, "y":-14 } } ] },
+                    "execute":[ { "sum":1, "to":{ "_":[ "variable", "stress" ] } }, { "_":[ "stencil", "codeGiveStress" ] }, { "_":[ "stencil", "codeRemoveTrauma" ] } ]
+                  }
+                },
+                {
+                  "when":{ "_":[ "scene", "phobiaArea" ] },
+                  "execute":{
+                    "when":{ "_":[ "scene", "phobiaAreaState" ] },
+                    "execute":[
+                      { "sum":{ "_":[ "scene", "phobiaAreaAmount" ] }, "to":{ "_":[ "variable", "stress" ] } },
+                      { "_":[ "stencil", "codeGiveStress" ] },
+                      { "_":[ "stencil", "codeRemoveTrauma" ] }
+                    ]
+                  }
+                },
+                {
+                  "when":{ "_":[ "scene", "phobiaBlood" ] },
+                  "execute":{
+                    "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "splat-1" ] }, "hitbox":{ "width":44, "height":44, "x":-14, "y":-14 } } ] },
+                    "execute":[ { "sum":1, "to":{ "_":[ "variable", "stress" ] } }, { "_":[ "stencil", "codeGiveStress" ] }, { "_":[ "stencil", "codeRemoveTrauma" ] } ]
+                  }
+                }
+              ]
+            }
+          ],
+          "actions":[
+            { "name":"die", "set":{ "state":"dead" } },
+            { "name":"win", "execute":{ "when":{ "_":[ "scene", "endsWithDeath" ] }, "set":{ "state":"windeath" }, "elseExecute":{ "set":{ "state":"win" } } } }
+          ]
+        },
+        {
+          "name":"dead",
+          "set":{ "removeType":"player", "zIndex":4 },
+          "execute":[ { "as":{ "_":[ "object", "playerpart" ] }, "remove":1 }, { "set":{ "follow":1 } }, { "as":{ "_":"scene" }, "set":{ "state":"dead" } } ]
+        },
+        {
+          "name":"win",
+          "like":{ "_":[ "stencil", "codeWinBehaviour" ] },
+          "set":{ "animation":"win" },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "wait":40 },
+              {
+                "object":{ "set":{ "_":[ "stencil", "smoke" ] } },
+                "as":{ "_":"that" },
+                "execute":{
+                  "applyVector":{ "angle":{ "_":[ "that", "angle", "+", 90, "+", { "_":[ "randomNumber", [ -4, 4 ] ] } ] }, "length":2 },
+                  "translateBy":{ "angle":{ "_":[ "that", "angle" ] }, "length":8 }
+                }
+              },
+              { "wait":{ "_":[ "randomNumber", [ 2, 5 ] ] }, "cycles":{ "_":[ "randomNumber", [ 3, 8 ] ] }, "loopTo":-1 },
+              { "wait":{ "_":[ "randomNumber", [ 125, 150 ] ] }, "loopTo":-2 }
+            ]
+          }
+        },
+        {
+          "name":"windeath",
+          "like":{ "_":[ "stencil", "codeWinBehaviour" ] },
+          "execute":[ { "as":{ "_":[ "object", "playerpart" ] }, "remove":1 }, { "stopChannel":"music" } ],
+          "code":[
+            {
+              "name":"Sequence",
+              "data":[
+                { "applyVector":{ "angle":{ "_":[ "randomNumber", [ 0, 360 ] ] }, "length":0.3 } },
+                { "object":{ "_":[ "stencil", "spark" ] }, "playAudio":"tic" },
+                { "sum":1, "to":{ "_":[ "this", "x" ] }, "wait":1 },
+                { "subtract":1, "to":{ "_":[ "this", "x" ] }, "wait":1, "cycles":5, "loopTo":-1 },
+                { "execute":{ "set":{ "execute":{ "_":[ "stencil", "codeSplat" ] }, "splatMaterial":1, "splatRadius":8, "splatRatio":50 } } },
+                { "wait":10, "cycles":3, "loopTo":0 },
+                { "playAudio":"scream" },
+                {
+                  "set":{
+                    "tileX":0, "tileY":64, "width":32, "height":32,
+                    "x":{ "_":[ "this", "x", "-", 8 ] }, "y":{ "_":[ "this", "y", "-", 8 ] }, "frame":{ "_":[ "this", "corpseModel" ] },
+                    "forceX":0, "forceY":0
+                  }
+                }
+              ]
+            },
+            {
+              "name":"Physics",
+              "data":{ "walls":[ { "type":"wall", "restitution":1 }, { "area":{ "width":768, "height":576, "x":0, "y":0 }, "restitution":1 } ] }
+            }
+          ]
+        }
+      ]
+    },
+    "enemyBlob":{
+      "type":[ "blob", "fear" ],
+      "set":{ "_":[ "stencil", "enemyModel" ] },
+      "image":"sprites", "tileX":96, "tileY":48, "width":16, "height":16,
+      "execute":{ "applyVector":{ "angle":{ "_":[ "randomNumber", [ 0, 360 ] ] }, "length":10 } },
+      "animations":{ "moving":{ "frames":2, "speed":3, "loopTo":0 } },
+      "animation":"moving",
+      "corpseModel":3,
+      "splatMaterial":0,
+      "states":{
+        "execute":{ "executeAction":"bounce" },
+        "code":{
+          "name":"Physics",
+          "data":{
+            "walls":[
+              { "type":[ "wall", "enemywall" ], "restitution":1, "execute":{ "executeAction":"bounce" } },
+              { "area":{ "width":768, "height":576, "x":0, "y":0 }, "restitution":1, "execute":{ "executeAction":"bounce" } }
+            ]
+          }
+        },
+        "actions":{
+          "name":"bounce",
+          "execute":[
+            {
+              "set":{
+                "angle":{ "_":[ "this", "angleTo", { "_":[ "this", "pointAt", { "x":{ "_":[ "this", "forceX", "*", 100 ] }, "y":{ "_":[ "this", "forceY", "*", 100 ] } } ] }, "+", { "_":[ "randomNumber", [ -10, 10 ] ] } ] }
+              }
+            },
+            { "applyVector":{ "angle":{ "_":[ "this", "angle" ] }, "length":1 } }
+          ]
+        }
+      }
+    },
+    "enemyModel":{
+      "type":"enemy",
+      "set":{ "_":[ "stencil", "deadableModel" ] },
+      "zIndex":5,
+      "health":1,
+      "splatMaterial":0,
+      "splatRadius":16,
+      "splatRatioOnDamage":10,
+      "splatRatioOnDead":50,
+      "stressAmount":1,
+      "states":[
+        {
+          "code":{
+            "name":"Execute",
+            "data":[
+              {
+                "when":{ "_":[ "this", "collidesWith", { "_":[ "objectTyped", "player" ] } ] },
+                "execute":[ { "playAudio":"tic" }, { "sum":{ "_":[ "this", "stressAmount" ] }, "to":{ "_":[ "variable", "stress" ] } }, { "_":[ "stencil", "codeHitStress" ] } ]
+              },
+              {
+                "when":{ "_":[ "scene", "phobiaDark" ] },
+                "execute":{
+                  "when":{ "_":[ "this", "distanceTo", { "_":[ "objectTyped", "player" ] }, "isLessThan", 70 ] },
+                  "execute":{
+                    "when":{
+                      "_":[
+                        { "_":[ "objectTyped", "player", "angle" ] },
+                        "shortestAngleTo",
+                        { "_":[ "objectTyped", "player", "angleTo", { "_":"this" } ] },
+                        "abs",
+                        "isGreaterThan",
+                        30
+                      ]
+                    },
+                    "execute":[ { "sum":0.5, "to":{ "_":[ "variable", "stress" ] } }, { "_":[ "stencil", "codeGiveStress" ] }, { "_":[ "stencil", "codeRemoveTrauma" ] } ]
+                  }
+                }
+              }
+            ]
+          },
+          "actions":{
+            "name":"hit",
+            "execute":[
+              { "playAudio":"tic" },
+              { "object":{ "_":[ "stencil", "spark" ] } },
+              { "applyVector":{ "angle":{ "_":[ "that", "angleTo", { "_":"this" } ] }, "length":5 } },
+              { "subtract":{ "_":[ "that", "damage" ] }, "to":{ "_":[ "this", "health" ] } },
+              {
+                "when":{ "_":[ "this", "health", "isLessEqualThan", 0 ] },
+                "execute":{ "set":{ "playAudio":"blam", "splatRatio":{ "_":[ "this", "splatRatioOnDead" ] }, "state":"dead" } },
+                "elseExecute":{ "set":{ "splatRatio":{ "_":[ "this", "splatRatioOnDamage" ] } } }
+              },
+              { "_":[ "stencil", "codeSplat" ] }
+            ]
+          }
+        },
+        {
+          "name":"corpse",
+          "set":{ "removeType":"enemy" },
+          "code":{
+            "name":"Sequence",
+            "data":[ { "wait":125 }, { "set":{ "visible":{ "_":[ "this", "visible", "not" ] } }, "wait":1, "loop":1, "cycles":25 }, { "remove":1 } ]
+          }
+        }
+      ]
+    },
+    "enemySpider":{
+      "type":[ "spider", "fear" ],
+      "set":{ "_":[ "stencil", "enemyModel" ] },
+      "image":"sprites", "tileX":16, "tileY":48, "width":16, "height":16,
+      "speed":1,
+      "animations":{ "idle":{ "frame":0 }, "moving":{ "frames":2, "speed":2, "loopTo":0 } },
+      "aggroDistance":100,
+      "health":1,
+      "steerSpeed":5,
+      "superAggroTimer":0,
+      "states":{
+        "execute":{ "set":{ "angle":{ "_":[ "this", "angleTo", { "_":[ "objectTyped", "player" ] } ] } } },
+        "code":[
+          {
+            "name":"Execute",
+            "data":[
+              {
+                "when":{ "_":[ "this", "superAggroTimer" ] },
+                "execute":[ { "set":{ "aggro":1 } }, { "subtract":1, "to":{ "_":[ "this", "superAggroTimer" ] } } ],
+                "elseExecute":{
+                  "when":{ "_":[ "objectTyped", "player", "distanceTo", { "_":"this" }, "isLessEqualThan", { "_":[ "this", "aggroDistance" ] } ] },
+                  "set":{ "aggro":1 },
+                  "elseExecute":{ "set":{ "aggro":0 } }
+                }
+              },
+              {
+                "when":{ "_":[ "this", "aggro" ] },
+                "execute":[
+                  {
+                    "set":{
+                      "animation":"moving",
+                      "destinationangle":{ "_":[ "this", "angleTo", { "_":[ "objectTyped", "player" ] }, "+", { "_":[ "randomNumber", [ -10, 10 ] ] } ] }
+                    }
+                  },
+                  { "set":{ "shortangle":{ "_":[ "this", "angle", "shortestAngleTo", { "_":[ "this", "destinationangle" ] } ] } } },
+                  {
+                    "when":{ "_":[ "this", "shortestAngleTo", "isLessThan", { "_":[ "this", "steerSpeed" ] }, "abs" ] },
+                    "set":{ "angle":{ "_":[ "this", "destinationangle" ] } },
+                    "elseExecute":{
+                      "when":{ "_":[ "this", "shortangle", "isGreaterThan", 0 ] },
+                      "sum":{ "_":[ "this", "steerSpeed" ] },
+                      "to":{ "_":[ "this", "angle" ] },
+                      "elseExecute":{ "subtract":{ "_":[ "this", "steerSpeed" ] }, "to":{ "_":[ "this", "angle" ] } }
+                    }
+                  },
+                  { "applyVector":{ "angle":{ "_":[ "this", "angle" ] }, "length":{ "_":[ "this", "speed" ] } } }
+                ],
+                "elseExecute":{ "set":{ "angle":{ "_":[ "this", "angleTo", { "_":[ "objectTyped", "player" ] } ] }, "forceX":0, "forceY":0, "animation":"idle" } }
+              }
+            ]
+          },
+          {
+            "name":"Physics",
+            "data":{ "walls":[ { "type":"wall", "restitution":0 }, { "area":{ "width":768, "height":576, "x":0, "y":0 }, "restitution":0 } ] }
+          }
+        ]
+      }
+    },
+    "enemyWatcher":{
+      "type":[ "person", "fear" ],
+      "set":{ "_":[ "stencil", "enemyModel" ] },
+      "image":"sprites", "tileX":48, "tileY":48, "width":16, "height":16,
+      "speed":1,
+      "animations":{ "idle":{ "frame":0 }, "moving":{ "frames":[ 0, 1, 0, 2 ], "loopTo":0 } },
+      "aggroDistance":40,
+      "corpseModel":2,
+      "home":{ "_":[ "new", { "width":16, "height":16 } ] },
+      "splatMaterial":1,
+      "steerSpeed":5,
+      "superAggroTimer":0,
+      "walkSpeed":0.5,
+      "states":{
+        "execute":{ "as":{ "_":[ "this", "home" ] }, "set":{ "x":{ "_":[ "that", "x" ] }, "y":{ "_":[ "that", "y" ] } } },
+        "code":[
+          {
+            "name":"Execute",
+            "data":[
+              {
+                "when":{ "_":[ "this", "superAggroTimer" ] },
+                "execute":[ { "set":{ "target":{ "_":[ "objectTyped", "player" ] } } }, { "subtract":1, "to":{ "_":[ "this", "superAggroTimer" ] } } ],
+                "elseExecute":{
+                  "when":{ "_":[ "objectTyped", "player", "distanceTo", { "_":"this" }, "isLessEqualThan", { "_":[ "this", "aggroDistance" ] } ] },
+                  "set":{ "target":{ "_":[ "objectTyped", "player" ] } },
+                  "elseExecute":{ "set":{ "target":{ "_":[ "this", "home" ] } } }
+                }
+              },
+              {
+                "when":{ "_":[ "this", "distanceTo", { "_":[ "this", "target" ] }, "isGreaterThan", { "_":[ "this", "speed" ] } ] },
+                "execute":[
+                  {
+                    "set":{ "animation":"moving", "destinationangle":{ "_":[ "this", "angleTo", { "_":[ "this", "target" ] }, "+", { "_":[ "randomNumber", [ -10, 10 ] ] } ] } }
+                  },
+                  { "set":{ "shortangle":{ "_":[ "this", "angle", "shortestAngleTo", { "_":[ "this", "destinationangle" ] } ] } } },
+                  {
+                    "when":{ "_":[ "this", "shortestAngleTo", "isLessThan", { "_":[ "this", "steerSpeed" ] }, "abs" ] },
+                    "set":{ "angle":{ "_":[ "this", "destinationangle" ] } },
+                    "elseExecute":{
+                      "when":{ "_":[ "this", "shortangle", "isGreaterThan", 0 ] },
+                      "sum":{ "_":[ "this", "steerSpeed" ] },
+                      "to":{ "_":[ "this", "angle" ] },
+                      "elseExecute":{ "subtract":{ "_":[ "this", "steerSpeed" ] }, "to":{ "_":[ "this", "angle" ] } }
+                    }
+                  },
+                  { "applyVector":{ "angle":{ "_":[ "this", "angle" ] }, "length":{ "_":[ "this", "speed" ] } } }
+                ],
+                "elseExecute":[
+                  { "set":{ "forceX":0, "forceY":0, "animation":"idle" } },
+                  {
+                    "when":{ "_":[ "this", "distanceTo", { "_":[ "this", "target" ] }, "isLessThan", 100 ] },
+                    "set":{ "angle":{ "_":[ "this", "angleTo", { "_":[ "objectTyped", "player" ] } ] } }
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name":"Physics",
+            "data":{ "walls":[ { "type":"wall", "restitution":0 }, { "area":{ "width":768, "height":576, "x":0, "y":0 }, "restitution":0 } ] }
+          }
+        ]
+      }
+    },
+    "bulletModel":{
+      "type":"bullet",
+      "damage":1,
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":{
+            "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "enemy" ] } ] },
+            "execute":[ { "as":{ "_":"that" }, "executeAction":"hit" }, { "remove":1 } ]
+          }
+        }
+      }
+    },
+    "bullet":{
+      "set":{ "_":[ "stencil", "bulletModel" ] },
+      "image":"sprites", "tileY":8, "width":8, "height":8,
+      "zIndex":9, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "states":{
+        "execute":[
+          { "set":{ "angle":{ "_":[ "this", "toAngle" ] } } },
+          { "applyVector":{ "angle":{ "_":[ "this", "toAngle" ] }, "length":{ "_":[ "this", "toSpeed" ] } } }
+        ],
+        "code":[
+          { "name":"Execute", "data":{ "when":{ "_":[ "this", "life" ] }, "subtract":1, "to":{ "_":[ "this", "life" ] }, "elseExecute":{ "remove":1 } } },
+          {
+            "name":"Physics",
+            "data":{ "walls":[ { "type":"wall", "execute":{ "remove":1 } }, { "area":{ "width":768, "height":576, "x":0, "y":0 }, "execute":{ "remove":1 } } ] }
+          }
+        ]
+      }
+    },
+    "car":{ "type":"wall", "image":"sprites", "tileY":160, "width":70, "height":32, "zIndex":5 },
+    "chairModel":{
+      "image":"office", "tileY":128, "width":20, "height":20,
+      "zIndex":1,
+      "oscillate":3,
+      "timer":0,
+      "states":[
+        {
+          "code":{
+            "name":"Execute",
+            "data":[
+              { "sum":{ "_":[ "randomNumber", [ 0, 10 ], "/", 60 ] }, "to":{ "_":[ "this", "timer" ] } },
+              {
+                "set":{
+                  "x":{ "_":[ "this", "destinationX" ] }, "y":{ "_":[ "this", "destinationY" ] },
+                  "angle":{ "_":[ "this", "destinationAngle", "+", { "_":[ "this", "timer", "sin", "*", { "_":[ "this", "oscillate" ] } ] } ] }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name":"gotoAngle",
+          "code":{
+            "name":"Execute",
+            "data":{
+              "when":{ "_":[ "this", "angle", "shortestAngleTo", { "_":[ "this", "destinationAngle" ] }, "abs", "isLessThan", 1 ] },
+              "set":{ "angle":{ "_":[ "this", "destinationAngle" ] }, "state":"default" },
+              "elseExecute":{ "sum":{ "_":[ "this", "angle", "shortestAngleTo", { "_":[ "this", "destinationAngle" ] }, "/", 10 ] }, "to":{ "_":[ "this", "angle" ] } }
+            }
+          }
+        },
+        {
+          "name":"rumble",
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "sum":1, "to":{ "_":[ "this", "x" ] }, "wait":1 },
+              { "subtract":1, "to":{ "_":[ "this", "x" ] }, "wait":1, "cycles":10, "loopTo":-1 },
+              { "set":{ "state":"default" } }
+            ]
+          }
+        }
+      ]
+    },
+    "darkness":{
+      "zIndex":150,
+      "bgcolor":"#000",
+      "states":{ "code":{ "name":"Execute", "data":{ "set":{ "visible":{ "_":[ "this", "collidesWith", { "_":[ "objectTyped", "player" ] }, "not" ] } } } } }
+    },
+    "dataWeapons":[
+      { "times":1, "label":"GUN", "frame":0, "speed":8, "ammo":3, "hailCount":1, "hailTimer":1, "life":100, "precision":0, "reloadTimer":50 },
+      { "times":5, "label":"SHOTGUN", "frame":0, "speed":8, "ammo":3, "hailCount":1, "hailTimer":1, "life":20, "precision":5, "reloadTimer":100 },
+      { "times":1, "label":"MACHINEGUN", "frame":0, "speed":8, "ammo":3, "hailCount":10, "hailTimer":1, "life":20, "precision":0, "reloadTimer":50 }
+    ],
+    "deadableModel":{
+      "corpseModel":0,
+      "states":{
+        "name":"dead",
+        "set":{
+          "tileX":0, "tileY":64, "width":32, "height":32,
+          "frame":{ "_":[ "this", "corpseModel" ] },
+          "hitbox":{ "width":16, "height":16, "x":8, "y":8 },
+          "visible":1, "angle":{ "_":[ "randomNumber", [ 0, 360 ] ] },
+          "forceX":{ "_":[ "randomNumber", [ -5, 5 ] ] }, "forceY":{ "_":[ "randomNumber", [ -5, 5 ] ] },
+          "animation":"none",
+          "rotation":{ "_":[ "randomNumber", [ -5, 5 ] ] }
+        },
+        "execute":[ { "subtract":8, "to":{ "_":[ "this", "x" ] } }, { "subtract":8, "to":{ "_":[ "this", "y" ] } } ],
+        "code":[
+          {
+            "name":"Execute",
+            "data":[
+              { "sum":{ "_":[ "this", "rotation" ] }, "to":{ "_":[ "this", "angle" ] } },
+              { "multiply":0.8, "to":{ "_":[ "this", "forceX" ] } },
+              { "multiply":0.8, "to":{ "_":[ "this", "forceY" ] } },
+              {
+                "when":{ "_":[ "this", "forceX", "abs", "isLessThan", 0.5, "and", { "_":[ "this", "forceY", "abs", "isLessThan", 0.5 ] } ] },
+                "set":{ "state":"corpse" }
+              }
+            ]
+          },
+          {
+            "name":"Physics",
+            "data":{ "walls":[ { "type":"wall", "restitution":1 }, { "area":{ "width":768, "height":576, "x":0, "y":0 }, "restitution":1 } ] }
+          }
+        ]
+      }
+    },
+    "dialogueModel":{
+      "object":[
+        { "type":"portrait", "image":"portraits", "width":64, "height":64, "x":0, "y":128, "visible":0 },
+        { "type":"text", "width":176, "height":100, "x":72, "y":136, "visible":0, "font":"spectrum", "lineHeight":10 },
+        { "image":"office", "width":256, "height":128, "x":0, "y":0 },
+        { "type":"doctor", "set":{ "_":[ "stencil", "chairModel" ] }, "destinationAngle":0, "destinationX":118, "destinationY":8 },
+        {
+          "type":"patient",
+          "set":{ "_":[ "stencil", "chairModel" ] },
+          "tileX":20,
+          "destinationAngle":0,
+          "destinationX":118,
+          "destinationY":78,
+          "oscillate":0
+        },
+        { "_":[ "stencil", "menuPointer" ] }
+      ],
+      "states":{
+        "execute":{ "as":{ "_":"storage" }, "set":{ "currentLabel":{ "_":[ "scene", "saveLabel" ] }, "currentScene":{ "_":[ "variable", "idScene" ] } } },
+        "code":{
+          "name":"Sequence",
+          "data":[
+            { "wait":25 },
+            { "subsequence":{ "_":[ "this", "dialogue" ] } },
+            { "as":{ "_":[ "objectTyped", "portrait" ] }, "set":{ "visible":0 } },
+            { "as":{ "_":[ "objectTyped", "text" ] }, "set":{ "visible":0 } },
+            { "wait":25 },
+            { "gotoScene":{ "_":[ "this", "nextScene" ] } }
+          ]
+        }
+      }
+    },
+    "dialogueText":[
+      { "when":{ "_":[ "that", "portrait", "isEqualTo", 1 ] }, "elseExecute":{ "playAudio":"blam" }, "playAudio":"tic" },
+      { "as":{ "_":[ "objectTyped", "portrait" ] }, "set":{ "frame":{ "_":[ "that", "portrait" ] }, "visible":1 } },
+      { "as":{ "_":[ "objectTyped", "text" ] }, "set":{ "visible":1, "html":{ "_":[ "that", "text" ] } } },
+      { "wait":5 },
+      { "wait":1, "loop":1, "until":{ "_":[ "keyPointer", "isHit" ] } }
+    ],
+    "doorModel":{
+      "type":[ "wall", "door" ],
+      "image":"tilemap",
+      "zIndex":1,
+      "states":{ "actions":[ { "name":"open", "set":{ "removeType":"wall", "visible":0 } }, { "name":"close", "set":{ "type":"wall", "visible":1 } } ] }
+    },
+    "horizontalDoor":{ "set":{ "_":[ "stencil", "doorModel" ] }, "tileY":88, "width":32, "height":8 },
+    "verticalDoor":{ "set":{ "_":[ "stencil", "doorModel" ] }, "tileY":96, "width":8, "height":32 },
+    "fightFearModel":{
+      "type":"message",
+      "image":"hud", "tileY":80, "width":153, "height":24,
+      "zIndex":5, "x":51, "y":84,
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":{ "set":{ "x":{ "_":[ "randomNumber", [ 53, 55 ] ] }, "y":{ "_":[ "randomNumber", [ 83, 85 ] ] }, "angle":{ "_":[ "randomNumber", [ -2, 2 ] ] } } }
+        }
+      }
+    },
+    "menuPointer":{
+      "type":"pointer",
+      "image":"sprites", "width":8, "height":8,
+      "zIndex":10000,
+      "hitbox":{ "width":1, "height":1, "x":4, "y":4 },
+      "animations":{ "blink":{ "frames":2, "speed":1, "loopTo":0 } },
+      "animation":"blink",
+      "states":{ "code":{ "name":"Execute", "data":{ "set":{ "x":{ "_":[ "pointer", "x", "-", 4 ] }, "y":{ "_":[ "pointer", "y", "-", 4 ] } } } } }
+    },
+    "nest":{
+      "type":"nest",
+      "image":"sprites", "tileY":48, "width":16, "height":16,
+      "zIndex":1,
+      "coolDown":25,
+      "enemyCooldown":25,
+      "playerDistance":30,
+      "spawn":"enemySpider",
+      "spawnCount":1,
+      "state":"byDistance",
+      "states":[
+        {
+          "name":"byDistance",
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "wait":{ "_":[ "this", "coolDown" ] } },
+              {
+                "wait":1, "loop":1,
+                "until":{ "_":[ "this", "distanceTo", { "_":[ "objectTyped", "player" ] }, "isLessThan", { "_":[ "this", "playerDistance" ] } ] }
+              },
+              {
+                "when":{ "_":[ "object", { "_":[ "this", "serial" ] }, "count", "isLessThan", { "_":[ "this", "spawnCount" ] } ] },
+                "object":{ "type":{ "_":[ "that", "serial" ] }, "set":{ "_":[ "stencil", { "_":[ "that", "spawn" ] } ] }, "at":{ "_":"that" }, "superAggroTimer":75 },
+                "playAudio":"blam"
+              },
+              { "wait":{ "_":[ "this", "enemyCooldown" ] } },
+              { "loopTo":-2, "until":{ "_":[ "object", { "_":[ "this", "serial" ] }, "count", "isGreaterEqualThan", { "_":[ "this", "spawnCount" ] } ] } },
+              { "loopTo":0 }
+            ]
+          },
+          "actions":{ "name":"stop", "execute":{ "set":{ "state":"frozen" } } }
+        },
+        { "name":"byTrigger", "actions":{ "name":"spawn", "set":{ "state":"triggered" } } },
+        {
+          "name":"triggered",
+          "code":{
+            "name":"Sequence",
+            "data":[
+              {
+                "when":{ "_":[ "object", { "_":[ "this", "serial" ] }, "count", "isLessThan", { "_":[ "this", "spawnCount" ] } ] },
+                "object":{ "type":{ "_":[ "that", "serial" ] }, "set":{ "_":[ "stencil", { "_":[ "that", "spawn" ] } ] }, "at":{ "_":"that" }, "superAggroTimer":75 },
+                "playAudio":"blam"
+              },
+              { "wait":{ "_":[ "this", "enemyCooldown" ] } },
+              { "loopTo":-2, "until":{ "_":[ "object", { "_":[ "this", "serial" ] }, "count", "isGreaterEqualThan", { "_":[ "this", "spawnCount" ] } ] } }
+            ]
+          }
+        }
+      ]
+    },
+    "patientCuredModel":{
+      "type":"message",
+      "image":"hud", "tileY":128, "width":153, "height":24,
+      "zIndex":5, "x":51, "y":84,
+      "sinDir":0.1,
+      "sinY":84,
+      "timer":0,
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":[
+            { "sum":{ "_":[ "this", "sinDir" ] }, "to":{ "_":[ "this", "timer" ] } },
+            { "set":{ "y":{ "_":[ "this", "timer", "sin", "*", 3, "+", { "_":[ "this", "sinY" ] } ] } } }
+          ]
+        }
+      }
+    },
+    "smoke":{
+      "image":"sprites", "tileX":24, "width":8, "height":8,
+      "zIndex":30, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "scale":0.5,
+      "states":{
+        "code":[
+          {
+            "name":"Sequence",
+            "data":[
+              { "sum":0.1, "to":{ "_":[ "this", "scale" ] }, "wait":1, "loop":1, "cycles":5 },
+              { "wait":{ "_":[ "randomNumber", [ 25, 50 ] ] } },
+              { "subtract":0.1, "to":{ "_":[ "this", "scale" ] }, "wait":1, "loop":1, "cycles":10 },
+              { "remove":1 }
+            ]
+          },
+          { "name":"Physics" }
+        ]
+      }
+    },
+    "titleModel":{
+      "object":{ "_":[ "stencil", "menuPointer" ] },
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[
+            { "wait":25 },
+            {
+              "object":{
+                "width":256, "height":20,
+                "x":0, "y":60,
+                "alpha":0,
+                "font":"spectrum", "lineHeight":20, "textAlign":"center", "html":{ "_":[ "that", "subtitle" ] },
+                "states":{ "code":{ "name":"Sequence", "data":{ "sum":0.1, "to":{ "_":[ "this", "alpha" ] }, "wait":1, "loop":1, "cycles":10 } } }
+              }
+            },
+            { "wait":35 },
+            { "playAudio":{ "_":[ "this", "music" ] } },
+            {
+              "object":[
+                {
+                  "image":"fears", "tileY":{ "_":[ "that", "titleId", "*", 48 ] }, "width":148, "height":24,
+                  "x":54, "y":84,
+                  "timer":0,
+                  "states":{
+                    "code":{
+                      "name":"Execute",
+                      "data":[
+                        { "sum":{ "_":[ "randomNumber", [ 0, 10 ], "/", 30 ] }, "to":{ "_":[ "this", "timer" ] } },
+                        {
+                          "set":{
+                            "x":{ "_":[ "this", "timer", "sin", "*", 2, "+", 54 ] }, "y":{ "_":[ "this", "timer", "cos", "*", 2, "+", 84 ] },
+                            "angle":{ "_":[ "this", "timer", "sin", "*", 5 ] }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "image":"fears", "tileY":{ "_":[ "that", "titleId", "*", 48, "+", 24 ] }, "width":148, "height":24,
+                  "zIndex":10, "x":54, "y":84,
+                  "timer":0,
+                  "states":{
+                    "code":{
+                      "name":"Execute",
+                      "data":[
+                        { "sum":{ "_":[ "randomNumber", [ 0, 10 ], "/", 30 ] }, "to":{ "_":[ "this", "timer" ] } },
+                        {
+                          "set":{
+                            "x":{ "_":[ "this", "timer", "cos", "*", 2, "+", 54 ] }, "y":{ "_":[ "this", "timer", "sin", "*", 2, "+", 84 ] },
+                            "angle":{ "_":[ "this", "timer", "cos", "*", 5 ] }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                }
+              ]
+            },
+            { "wait":125 },
+            { "gotoScene":{ "_":[ "this", "nextScene" ] } }
+          ]
+        }
+      }
+    },
+    "titleNameModel":{
+      "image":"title", "width":198, "height":57,
+      "x":28, "y":40,
+      "glitchRatio":0,
+      "glitchTimer":0,
+      "timer":0,
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":[
+            { "sum":{ "_":[ "randomNumber", [ 0, 10 ], "/", 60 ] }, "to":{ "_":[ "this", "glitchTimer" ] } },
+            { "sum":{ "_":[ "randomNumber", [ 0, 10 ], "/", 120 ] }, "to":{ "_":[ "this", "timer" ] } },
+            {
+              "set":{ "scale":{ "_":[ 1, "+", { "_":[ "randomNumber", [ 0, { "_":[ "this", "glitchTimer", "sin", "*", { "_":[ "this", "glitchRatio" ] } ] } ] ] } ] } }
+            },
+            { "set":{ "angle":{ "_":[ "this", "timer", "sin", "*", 10 ] } } }
+          ]
+        }
+      }
+    },
+    "uiButtonModel":{
+      "width":192, "height":20,
+      "border":"#fff",
+      "font":"spectrum", "lineHeight":20, "textAlign":"center",
+      "bgcolorOff":"#000",
+      "bgcolorOn":"#f00",
+      "colorOff":"#fff",
+      "colorOn":"#000",
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":{
+            "when":{ "_":[ "this", "collidesWith", { "_":[ "objectTyped", "pointer" ] } ] },
+            "execute":[
+              { "set":{ "bgcolor":{ "_":[ "this", "bgcolorOn" ] }, "color":{ "_":[ "this", "colorOn" ] } } },
+              { "when":{ "_":[ "keyPointer", "isHit" ] }, "executeAction":"click", "playAudio":"blam" }
+            ],
+            "elseExecute":{ "set":{ "bgcolor":{ "_":[ "this", "bgcolorOff" ] }, "color":{ "_":[ "this", "colorOff" ] } } }
+          }
+        }
+      }
+    },
+    "weapon":{
+      "type":"weaponPickup",
+      "image":"sprites", "tileY":144, "width":16, "height":16,
+      "zIndex":5,
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[
+            { "subtract":1, "to":{ "_":[ "this", "y" ] }, "wait":1, "loop":1, "cycles":3 },
+            { "wait":25 },
+            { "sum":1, "to":{ "_":[ "this", "y" ] }, "wait":1, "loop":1, "cycles":3 },
+            { "wait":25 },
+            { "loopTo":0 }
+          ]
+        }
+      }
+    },
+    "weaponRespawn":{ "type":"weaponRespawn", "width":16, "height":16, "weapons":[ 0, 1 ] },
+    "youDeadModel":{
+      "type":"message",
+      "image":"hud", "tileY":32, "width":153, "height":24,
+      "zIndex":5, "x":51, "y":84,
+      "timer":0,
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":[
+            { "sum":{ "_":[ "randomValue", [ 0, 10 ], "/", 100 ] }, "to":{ "_":[ "this", "timer" ] } },
+            { "set":{ "angle":{ "_":[ "this", "timer", "sin", "*", 10 ] } } }
+          ]
+        }
+      }
+    },
+    "-":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":8, "tileY":0 },
+    "1":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":24, "tileY":0 },
+    "#":{ "type":[ "splattable", "wall" ], "image":"tilemap", "tileX":8, "tileY":8, "width":8, "height":8 },
+    "2":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":32, "tileY":0 },
+    "3":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":40, "tileY":0 },
+    "4":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":24, "tileY":8 },
+    "5":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":32, "tileY":8 },
+    "6":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":40, "tileY":8 },
+    "7":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":24, "tileY":16 },
+    "8":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":32, "tileY":16 },
+    "9":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":40, "tileY":16 },
+    "H":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":16, "tileY":8 },
+    "I":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":0, "tileY":8 },
+    "J":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":16, "tileY":16 },
+    "L":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":0, "tileY":16 },
+    "T":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":0, "tileY":0 },
+    "Y":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":16, "tileY":0 },
+    "_":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":8, "tileY":16 },
+    "r":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":24, "tileY":104 },
+    "s":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":16, "tileY":104 },
+    "t":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":8, "tileY":104 },
+    "u":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":24, "tileY":96 },
+    "v":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":16, "tileY":96 },
+    "w":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":8, "tileY":96 },
+    ",":{ "set":{ "_":[ "stencil", "." ] }, "tileX":8, "tileY":32 },
+    ":":{ "set":{ "_":[ "stencil", "." ] }, "tileX":8, "tileY":24 },
+    ";":{ "set":{ "_":[ "stencil", "." ] }, "tileX":0, "tileY":32 },
+    "=":{ "set":{ "_":[ "stencil", "." ] }, "tileX":16, "tileY":24 },
+    "[":{ "set":{ "_":[ "stencil", "." ] }, "tileX":16, "tileY":32 },
+    "]":{ "set":{ "_":[ "stencil", "." ] }, "tileX":40, "tileY":32 },
+    "a":{ "set":{ "_":[ "stencil", "." ] }, "tileX":24, "tileY":24 },
+    ".":{ "type":"splattable", "image":"tilemap", "tileX":0, "tileY":24, "width":8, "height":8 },
+    "b":{ "set":{ "_":[ "stencil", "." ] }, "tileX":32, "tileY":24 },
+    "c":{ "set":{ "_":[ "stencil", "." ] }, "tileX":24, "tileY":32 },
+    "d":{ "set":{ "_":[ "stencil", "." ] }, "tileX":32, "tileY":32 },
+    "e":{ "set":{ "_":[ "stencil", "." ] }, "tileX":40, "tileY":24 },
+    "x":{ "image":"tilemap", "tileX":16, "tileY":80, "width":8, "height":8 },
+    "y":{ "image":"tilemap", "tileX":8, "tileY":80, "width":8, "height":8 },
+    "z":{ "image":"tilemap", "tileX":0, "tileY":80, "width":8, "height":8 }
+  },
+  "execute":{
+    "when":{ "_":[ "storage", "currentScene", "not" ] },
+    "as":{ "_":"storage" },
+    "set":{ "currentLabel":0, "currentScene":0 }
+  },
+  "scenes":{
+    "intro":{
+      "execute":[
+        {
+          "object":[
+            {
+              "set":{ "_":[ "stencil", "uiButtonModel" ] },
+              "zIndex":20, "x":32, "y":164,
+              "html":"New Game",
+              "states":{ "actions":{ "name":"click", "execute":{ "gotoScene":"cutscene1" } } }
+            },
+            { "_":[ "stencil", "menuPointer" ] },
+            { "set":{ "_":[ "stencil", "titleNameModel" ] }, "zIndex":10 },
+            { "set":{ "_":[ "stencil", "titleNameModel" ] }, "tileY":57, "zIndex":9, "glitchRatio":1 },
+            { "set":{ "_":[ "stencil", "titleNameModel" ] }, "tileY":114, "zIndex":8, "glitchRatio":2 },
+            { "set":{ "_":[ "stencil", "titleNameModel" ] }, "tileY":171, "zIndex":7, "glitchRatio":4 }
+          ]
+        },
+        {
+          "when":{ "_":[ "storage", "currentScene" ] },
+          "execute":{
+            "object":[
+              {
+                "set":{ "_":[ "stencil", "uiButtonModel" ] },
+                "width":192, "height":34,
+                "zIndex":20, "x":32, "y":125,
+                "html":"Load Game",
+                "states":{ "actions":{ "name":"click", "execute":{ "gotoScene":{ "_":[ "storage", "currentScene" ] } } } }
+              },
+              {
+                "width":184, "height":100,
+                "zIndex":30, "x":36, "y":143,
+                "color":"#fff",
+                "font":"spectrum", "lineHeight":10, "textAlign":"center", "html":{ "_":[ "storage", "currentLabel" ] }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "cutscene1":{
+      "set":{ "_":[ "stencil", "dialogueModel" ] },
+      "dialogue":[
+        { "as":{ "_":[ "objectTyped", "doctor" ] }, "set":{ "destinationAngle":90, "state":"gotoAngle" } },
+        { "set":{ "portrait":1, "text":"..." }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } },
+        { "set":{ "portrait":2, "text":"Please doctor... you have to help me!" }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } },
+        {
+          "set":{ "portrait":1, "text":"As I said, I'm going to help you. For free. Just sign that document." },
+          "subsequence":{ "_":[ "stencil", "dialogueText" ] }
+        },
+        {
+          "set":{ "portrait":2, "text":"I just want you to help me with my phobia of spiders... I don't want to kill anybody..." },
+          "subsequence":{ "_":[ "stencil", "dialogueText" ] }
+        },
+        {
+          "set":{ "portrait":1, "text":"Oh, well. If that's your problem, just go to your usual psychologist." },
+          "subsequence":{ "_":[ "stencil", "dialogueText" ] }
+        },
+        { "as":{ "_":[ "objectTyped", "doctor" ] }, "set":{ "destinationAngle":100, "state":"gotoAngle" } },
+        { "set":{ "portrait":1, "text":"Please, stop wasting my time and leave." }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } },
+        { "as":{ "_":[ "objectTyped", "patient" ] }, "set":{ "state":"rumble" } },
+        {
+          "set":{ "portrait":2, "text":"Don't be so harsh... I know that you can cure my phobia in just one sit..." },
+          "subsequence":{ "_":[ "stencil", "dialogueText" ] }
+        },
+        {
+          "set":{ "portrait":2, "text":"But why I've to be accused of murder if you'll die in the process?" },
+          "subsequence":{ "_":[ "stencil", "dialogueText" ] }
+        },
+        { "as":{ "_":[ "objectTyped", "doctor" ] }, "set":{ "destinationAngle":0, "state":"gotoAngle" } },
+        {
+          "set":{ "portrait":1, "text":"Listen. I'm going to face your fear in the conscious area of my brain in order to remove it..." },
+          "subsequence":{ "_":[ "stencil", "dialogueText" ] }
+        },
+        {
+          "set":{ "portrait":1, "text":"Your inconscious is going to literally kill me. Moreover this cure will be free of charge, so..." },
+          "subsequence":{ "_":[ "stencil", "dialogueText" ] }
+        },
+        { "as":{ "_":[ "objectTyped", "doctor" ] }, "set":{ "state":"rumble" } },
+        {
+          "set":{ "portrait":1, "text":"Why the fuck you are questioning for a sign for ensuring a bit of legal protection?" },
+          "subsequence":{ "_":[ "stencil", "dialogueText" ] }
+        },
+        { "as":{ "_":[ "objectTyped", "patient" ] }, "set":{ "destinationAngle":45, "state":"gotoAngle" } },
+        { "set":{ "portrait":2, "text":"Ugh... but how that... that machine works?" }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } },
+        {
+          "set":{ "portrait":1, "text":"Listen. I'm not here for a science lecture. Go back to your spider friends and leave. Now." },
+          "subsequence":{ "_":[ "stencil", "dialogueText" ] }
+        },
+        { "set":{ "portrait":2, "text":"Agh. Shit. Okay. Okay. I'll sign! I'll sign." }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } },
+        { "as":{ "_":[ "objectTyped", "doctor" ] }, "set":{ "destinationAngle":-45, "state":"gotoAngle" } },
+        { "set":{ "portrait":1, "text":"Heh. Very well." }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } },
+        {
+          "set":{ "portrait":1, "text":"Sign the paper and lie down on that table. We are going to start the treatment right now." },
+          "subsequence":{ "_":[ "stencil", "dialogueText" ] }
+        },
+        { "as":{ "_":[ "objectTyped", "patient" ] }, "set":{ "destinationAngle":0, "state":"gotoAngle" } },
+        { "set":{ "portrait":2, "text":"Shit. Shit. Shit..." }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } }
+      ],
+      "nextScene":"title1",
+      "saveLabel":"1. Arachnophobia"
+    },
+    "cutscene2":{
+      "set":{ "_":[ "stencil", "dialogueModel" ] },
+      "dialogue":[
+        { "as":{ "_":[ "objectTyped", "patient" ] }, "set":{ "destinationAngle":45, "state":"gotoAngle" } },
+        { "set":{ "portrait":1, "text":"The paper. Sign it and we're good to go." }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } },
+        { "set":{ "portrait":3, "text":"..." }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } },
+        { "set":{ "portrait":3, "text":"Is... that... the machine you use? How it works?" }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } },
+        { "as":{ "_":[ "objectTyped", "doctor" ] }, "set":{ "state":"rumble" } },
+        { "set":{ "portrait":1, "text":"..." }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } },
+        { "as":{ "_":[ "objectTyped", "doctor" ] }, "set":{ "destinationAngle":-45, "state":"gotoAngle" } },
+        {
+          "set":{ "portrait":1, "text":"It connects your brain with mine. I'll explore a projection of your fears." },
+          "subsequence":{ "_":[ "stencil", "dialogueText" ] }
+        },
+        {
+          "set":{ "portrait":1, "text":"In the house your inconscious generates I will face your own fears in order to make you stronger." },
+          "subsequence":{ "_":[ "stencil", "dialogueText" ] }
+        },
+        { "as":{ "_":[ "objectTyped", "doctor" ] }, "set":{ "destinationAngle":0, "state":"gotoAngle" } },
+        {
+          "set":{ "portrait":1, "text":"Once we've surpassed your trauma, I'll remove the source of your fear from your inconscious." },
+          "subsequence":{ "_":[ "stencil", "dialogueText" ] }
+        },
+        { "set":{ "portrait":3, "text":"Remove it... from the projected house." }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } },
+        { "as":{ "_":[ "objectTyped", "doctor" ] }, "set":{ "destinationAngle":45, "state":"gotoAngle" } },
+        { "set":{ "portrait":1, "text":"Ugh..." }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } },
+        { "as":{ "_":[ "objectTyped", "patient" ] }, "set":{ "destinationAngle":0, "state":"gotoAngle" } },
+        {
+          "set":{ "portrait":3, "text":"Doctor. I've the fear of large open spaces. Are you sure you can actually remove it?" },
+          "subsequence":{ "_":[ "stencil", "dialogueText" ] }
+        },
+        { "set":{ "portrait":1, "text":"..." }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } },
+        { "set":{ "portrait":1, "text":"I'm a doctor." }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } },
+        { "as":{ "_":[ "objectTyped", "doctor" ] }, "set":{ "destinationAngle":0, "state":"gotoAngle" } },
+        { "set":{ "portrait":1, "text":"I don't cure my patients if I'm not sure about what to do." }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } },
+        { "set":{ "portrait":3, "text":"..." }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } },
+        { "set":{ "portrait":3, "text":"I. I'm actually relieved, doctor. I... I don't think..." }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } },
+        {
+          "set":{ "portrait":3, "text":"...I can stand the look the others gives to me in that moments." },
+          "subsequence":{ "_":[ "stencil", "dialogueText" ] }
+        },
+        {
+          "set":{ "portrait":1, "text":"Don't worry. I'll remove your fears. Just sign and lie down on the table." },
+          "subsequence":{ "_":[ "stencil", "dialogueText" ] }
+        },
+        { "set":{ "portrait":3, "text":"Okay." }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } },
+        { "as":{ "_":[ "objectTyped", "doctor" ] }, "set":{ "destinationAngle":-45, "state":"gotoAngle" } },
+        { "set":{ "portrait":1, "text":"It... will be a very interesting operation." }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } }
+      ],
+      "nextScene":"title2",
+      "saveLabel":"2. Agoraphobia"
+    },
+    "cutscene3":{
+      "set":{ "_":[ "stencil", "dialogueModel" ] },
+      "execute":{ "as":{ "_":[ "objectTyped", "doctor" ] }, "set":{ "destinationAngle":180 } },
+      "dialogue":[
+        { "set":{ "portrait":1, "text":"Shit... Shit... How many people..." }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } },
+        { "set":{ "portrait":4, "text":"D... doctor?" }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } },
+        { "as":{ "_":[ "objectTyped", "doctor" ] }, "set":{ "destinationAngle":45, "state":"gotoAngle" } },
+        { "set":{ "portrait":1, "text":"..." }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } },
+        {
+          "set":{ "portrait":1, "text":"Sorry. I'm just a little distracted. Have you signed the paper?" },
+          "subsequence":{ "_":[ "stencil", "dialogueText" ] }
+        },
+        {
+          "set":{ "portrait":4, "text":"Oh, yes. Yes. I've signed it. I can't wait for the operation." },
+          "subsequence":{ "_":[ "stencil", "dialogueText" ] }
+        },
+        { "as":{ "_":[ "objectTyped", "doctor" ] }, "set":{ "destinationAngle":0, "state":"gotoAngle" } },
+        { "set":{ "portrait":1, "text":"Do you have the fear of the dark, right?" }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } },
+        {
+          "set":{ "portrait":4, "text":"Y-yes. I've read on the internet that you can remove my fear... exploring the house in my head." },
+          "subsequence":{ "_":[ "stencil", "dialogueText" ] }
+        },
+        { "as":{ "_":[ "objectTyped", "doctor" ] }, "set":{ "destinationAngle":45, "state":"gotoAngle" } },
+        { "set":{ "portrait":1, "text":"For sure. Does anyone else know about your fear?" }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } },
+        { "as":{ "_":[ "objectTyped", "patient" ] }, "set":{ "destinationAngle":45, "state":"gotoAngle" } },
+        { "set":{ "portrait":4, "text":"No. I've kept that secret for long time. Is that a problem?" }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } },
+        { "set":{ "portrait":1, "text":"Not at all. On the table then." }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } },
+        { "set":{ "portrait":4, "text":"Allright." }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } },
+        { "set":{ "portrait":1, "text":"It will be fine." }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } }
+      ],
+      "nextScene":"title3",
+      "saveLabel":"3. Nyctophobia"
+    },
+    "cutscene4":{
+      "set":{ "_":[ "stencil", "dialogueModel" ] },
+      "dialogue":[
+        { "set":{ "portrait":1, "text":"I'm sorry. I can't help you." }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } },
+        { "as":{ "_":[ "objectTyped", "patient" ] }, "set":{ "state":"rumble" } },
+        { "set":{ "portrait":5, "text":"Hey! What was that?" }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } },
+        { "as":{ "_":[ "objectTyped", "patient" ] }, "set":{ "state":"rumble" } },
+        { "set":{ "portrait":5, "text":"Why? Why you helped a lot of people and NOT ME!" }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } },
+        { "as":{ "_":[ "objectTyped", "patient" ] }, "set":{ "state":"rumble" } },
+        {
+          "set":{ "portrait":5, "text":"It's for the MONEY? Huh? Very well! I will give you ALL I HAVE!" },
+          "subsequence":{ "_":[ "stencil", "dialogueText" ] }
+        },
+        { "as":{ "_":[ "objectTyped", "doctor" ] }, "set":{ "destinationAngle":45, "state":"gotoAngle" } },
+        {
+          "set":{ "portrait":1, "text":"Calm down. It's not for the money. As I said, the cure is free of charge." },
+          "subsequence":{ "_":[ "stencil", "dialogueText" ] }
+        },
+        { "as":{ "_":[ "objectTyped", "patient" ] }, "set":{ "destinationAngle":45, "state":"gotoAngle" } },
+        { "set":{ "portrait":5, "text":"Damn... you... have to cure me..." }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } },
+        {
+          "set":{ "portrait":5, "text":"I can't go to work anymore... I can't even get into the lift..." },
+          "subsequence":{ "_":[ "stencil", "dialogueText" ] }
+        },
+        { "set":{ "portrait":5, "text":"...the liftcage... it's so... tight..." }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } },
+        { "as":{ "_":[ "objectTyped", "doctor" ] }, "set":{ "destinationAngle":135, "state":"gotoAngle" } },
+        { "set":{ "portrait":1, "text":"I'm sorry." }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } },
+        { "set":{ "portrait":5, "text":"Ah. Ah ah ah." }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } },
+        { "set":{ "portrait":1, "text":"..." }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } },
+        {
+          "set":{ "portrait":5, "text":"I'm going to kill myself, doctor. That's the best cure I can think." },
+          "subsequence":{ "_":[ "stencil", "dialogueText" ] }
+        },
+        { "as":{ "_":[ "objectTyped", "doctor" ] }, "set":{ "destinationAngle":45, "state":"gotoAngle" } },
+        { "set":{ "portrait":1, "text":"..." }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } },
+        { "set":{ "portrait":5, "text":"I prefer to end my life instead of living with this fear." }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } },
+        { "as":{ "_":[ "objectTyped", "patient" ] }, "set":{ "destinationAngle":0, "state":"gotoAngle" } },
+        {
+          "set":{ "portrait":5, "text":"What do you think, doctor? Aren't you supposed to cure your patients?" },
+          "subsequence":{ "_":[ "stencil", "dialogueText" ] }
+        },
+        { "as":{ "_":[ "objectTyped", "doctor" ] }, "set":{ "destinationAngle":0, "state":"gotoAngle" } },
+        { "set":{ "portrait":1, "text":"Are you threating me?" }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } },
+        {
+          "set":{ "portrait":5, "text":"I... I think that reputation is quite important for a doctor..." },
+          "subsequence":{ "_":[ "stencil", "dialogueText" ] }
+        },
+        { "as":{ "_":[ "objectTyped", "patient" ] }, "set":{ "destinationAngle":10, "state":"gotoAngle" } },
+        {
+          "set":{ "portrait":5, "text":"D... don't you think that the death of a patient of yours could..." },
+          "subsequence":{ "_":[ "stencil", "dialogueText" ] }
+        },
+        { "set":{ "portrait":1, "text":"Very well. Sign the paper and lie on the table." }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } },
+        { "set":{ "portrait":5, "text":"T... thank you, doctor..." }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } },
+        { "as":{ "_":[ "objectTyped", "doctor" ] }, "set":{ "destinationAngle":-45, "state":"gotoAngle" } },
+        { "set":{ "portrait":1, "text":"So... I'm going to do that massacre again..." }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } }
+      ],
+      "nextScene":"title4",
+      "saveLabel":"4. Claustrophobia"
+    },
+    "cutscene5":{
+      "set":{ "_":[ "stencil", "dialogueModel" ] },
+      "execute":[
+        { "as":{ "_":[ "objectTyped", "doctor" ] }, "set":{ "destinationAngle":-45 } },
+        { "as":{ "_":[ "objectTyped", "patient" ] }, "set":{ "destinationAngle":45 } }
+      ],
+      "dialogue":[
+        {
+          "set":{ "portrait":1, "text":"... so I will explore a house into your inconscious and remove your fears." },
+          "subsequence":{ "_":[ "stencil", "dialogueText" ] }
+        },
+        {
+          "set":{ "portrait":6, "text":"I'm wondering... Is this removal consisting in killing someone?" },
+          "subsequence":{ "_":[ "stencil", "dialogueText" ] }
+        },
+        { "set":{ "portrait":1, "text":"..." }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } },
+        { "as":{ "_":[ "objectTyped", "doctor" ] }, "set":{ "destinationAngle":0, "state":"gotoAngle" } },
+        { "set":{ "portrait":1, "text":"You don't have to worry. You won't remember anything." }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } },
+        { "set":{ "portrait":6, "text":"It's all right, doctor. I won't tell this to anybody..." }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } },
+        { "as":{ "_":[ "objectTyped", "patient" ] }, "set":{ "destinationAngle":0, "state":"gotoAngle" } },
+        { "set":{ "portrait":6, "text":"Killing in inconscious should not count as homicide..." }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } },
+        {
+          "set":{ "portrait":6, "text":"...Well. We all kill a lot of people in our minds, isn't that true?" },
+          "subsequence":{ "_":[ "stencil", "dialogueText" ] }
+        },
+        { "set":{ "portrait":1, "text":"You've a point." }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } },
+        {
+          "set":{ "portrait":6, "text":"Anyway being labelled as a serial killer of the inconscious isn't probably good for business..." },
+          "subsequence":{ "_":[ "stencil", "dialogueText" ] }
+        },
+        { "set":{ "portrait":1, "text":"..." }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } },
+        { "as":{ "_":[ "objectTyped", "patient" ] }, "set":{ "destinationAngle":45, "state":"gotoAngle" } },
+        {
+          "set":{ "portrait":6, "text":"I'm ready. The papers are OK, so I've just to lie down on that table and wait, right?" },
+          "subsequence":{ "_":[ "stencil", "dialogueText" ] }
+        },
+        { "as":{ "_":[ "objectTyped", "doctor" ] }, "set":{ "destinationAngle":-45, "state":"gotoAngle" } },
+        { "set":{ "portrait":1, "text":"Right." }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } },
+        {
+          "set":{ "portrait":6, "text":"Heh. Curing my fear of the blood will be quite an exciting challenge. Isn't it?" },
+          "subsequence":{ "_":[ "stencil", "dialogueText" ] }
+        },
+        { "set":{ "portrait":1, "text":"Heh." }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } },
+        { "set":{ "portrait":6, "text":"Just go. We will talk a little more later, doctor." }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } }
+      ],
+      "nextScene":"title5",
+      "saveLabel":"5. Hemophobia"
+    },
+    "cutscene6":{
+      "set":{ "_":[ "stencil", "dialogueModel" ] },
+      "execute":{
+        "object":{
+          "type":"cameraman",
+          "set":{ "_":[ "stencil", "chairModel" ] },
+          "tileX":40,
+          "destinationAngle":45,
+          "destinationX":166,
+          "destinationY":86,
+          "oscillate":4
+        }
+      },
+      "dialogue":[
+        { "set":{ "portrait":1, "text":"I'm ready." }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } },
+        { "as":{ "_":[ "objectTyped", "patient" ] }, "set":{ "destinationAngle":90, "state":"gotoAngle" } },
+        { "as":{ "_":[ "objectTyped", "cameraman" ] }, "set":{ "destinationAngle":-70, "state":"gotoAngle" } },
+        { "set":{ "portrait":7, "text":"Very well. Jake. Three. Two. One." }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } },
+        {
+          "set":{ "portrait":7, "text":"Good morning. This is Maria from Channel 3 Medicine Today. We're here for a very special interview." },
+          "subsequence":{ "_":[ "stencil", "dialogueText" ] }
+        },
+        {
+          "set":{ "portrait":7, "text":"The famous and mysterious psychiatrist Ben Simon decided to retire today." },
+          "subsequence":{ "_":[ "stencil", "dialogueText" ] }
+        },
+        {
+          "set":{ "portrait":7, "text":"Before disappearing from the scene, he surprisingly decided to leave us his first interview." },
+          "subsequence":{ "_":[ "stencil", "dialogueText" ] }
+        },
+        {
+          "set":{ "portrait":7, "text":"A lot of people has been cured by their fears just after a single sit..." },
+          "subsequence":{ "_":[ "stencil", "dialogueText" ] }
+        },
+        {
+          "set":{ "portrait":7, "text":"...but all we know is that his method actually works and nothing more." },
+          "subsequence":{ "_":[ "stencil", "dialogueText" ] }
+        },
+        { "as":{ "_":[ "objectTyped", "cameraman" ] }, "set":{ "destinationAngle":-45, "state":"gotoAngle" } },
+        { "as":{ "_":[ "objectTyped", "patient" ] }, "set":{ "destinationAngle":0, "state":"gotoAngle" } },
+        {
+          "set":{ "portrait":7, "text":"The scientific community is surely curious to know how your cure works but..." },
+          "subsequence":{ "_":[ "stencil", "dialogueText" ] }
+        },
+        {
+          "set":{ "portrait":7, "text":"...we know even less about your life, Ben. How did you become a psychiatrist?" },
+          "subsequence":{ "_":[ "stencil", "dialogueText" ] }
+        },
+        {
+          "set":{ "portrait":1, "text":"I always admired my grandmother. She was a very strong woman and a sweet and sensible one..." },
+          "subsequence":{ "_":[ "stencil", "dialogueText" ] }
+        },
+        {
+          "set":{ "portrait":1, "text":"When I was a kid, she told me that she became so emphatic and strong working as psychiatrist." },
+          "subsequence":{ "_":[ "stencil", "dialogueText" ] }
+        },
+        {
+          "set":{ "portrait":7, "text":"So you decided to follow her footsteps instead of your father's." },
+          "subsequence":{ "_":[ "stencil", "dialogueText" ] }
+        },
+        { "set":{ "portrait":1, "text":"..." }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } },
+        { "as":{ "_":[ "objectTyped", "doctor" ] }, "set":{ "destinationAngle":-30, "state":"gotoAngle" } },
+        { "set":{ "portrait":1, "text":"Yes." }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } },
+        { "as":{ "_":[ "objectTyped", "cameraman" ] }, "set":{ "destinationAngle":-70, "state":"gotoAngle" } },
+        {
+          "set":{ "portrait":7, "text":"Peter Simon worked as an electrician in Manhattan, before leaving home without a word." },
+          "subsequence":{ "_":[ "stencil", "dialogueText" ] }
+        },
+        { "set":{ "portrait":7, "text":"Did he contact you again after you becoming famous?" }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } },
+        { "set":{ "portrait":1, "text":"No. And I'm sure I'll never see him again." }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } },
+        { "set":{ "portrait":7, "text":"Why?" }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } },
+        { "as":{ "_":[ "objectTyped", "cameraman" ] }, "set":{ "destinationAngle":-45, "state":"gotoAngle" } },
+        { "as":{ "_":[ "objectTyped", "doctor" ] }, "set":{ "destinationAngle":0, "state":"gotoAngle" } },
+        { "set":{ "portrait":1, "text":"When I was a child I was affected by a rare form of phobia." }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } },
+        {
+          "set":{ "portrait":1, "text":"With this disease, I couldn't never be a psychiatrist like my grandmother." },
+          "subsequence":{ "_":[ "stencil", "dialogueText" ] }
+        },
+        { "as":{ "_":[ "objectTyped", "doctor" ] }, "set":{ "destinationAngle":45, "state":"gotoAngle" } },
+        { "set":{ "portrait":1, "text":"..." }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } },
+        {
+          "set":{ "portrait":1, "text":"My father worked as electrician just for earning something for his family..." },
+          "subsequence":{ "_":[ "stencil", "dialogueText" ] }
+        },
+        {
+          "set":{ "portrait":1, "text":"...but in reality he was a true brilliant and self-taught bioengineer." },
+          "subsequence":{ "_":[ "stencil", "dialogueText" ] }
+        },
+        { "as":{ "_":[ "objectTyped", "cameraman" ] }, "set":{ "destinationAngle":45, "state":"gotoAngle" } },
+        {
+          "set":{ "portrait":1, "text":"He decided to make a machine for curing my fears and give my dreams back." },
+          "subsequence":{ "_":[ "stencil", "dialogueText" ] }
+        },
+        { "set":{ "portrait":1, "text":"...and that's the machine I've used till now." }, "subsequence":{ "_":[ "stencil", "dialogueText" ] } }
+      ],
+      "nextScene":"title6",
+      "saveLabel":"6. Phobophobia"
+    },
+    "end":{
+      "object":[
+        {
+          "width":256, "height":1000,
+          "x":0, "y":192,
+          "font":"spectrum", "textAlign":"center", "html":"HOUSES<br>(c) 2017<br>A short survival horror.<br><br><br>Graphics by:<br>KesieV Norimaki<br><br><br>Story by:<br>KesieV Norimaki<br><br><br>Code by:<br>KesieV Norimaki<br><br><br>Music:<br><br>4 Adventurer/13<br>By Fatal Snipe (2001)<br><br>SuGgedy vol.1<br>By Fatal Snipe (2001)<br><br>Stellar I<br>By CjSplin7er + MmcM (2001)<br><br><br>Big thanks to:<br>Bianca<br>Il Marsicano<br>The JTTA Team<br>Stefano \"Il Kusagari\" Fioretto<br>Romolo Camplani<br>All Akihabara age friends<br><br><br><br><br>Fear is the mind killer.",
+          "forceY":-0.5,
+          "states":{ "code":{ "name":"Physics" } }
+        },
+        { "_":[ "stencil", "menuPointer" ] }
+      ],
+      "execute":{ "playAudio":"bgm-hard" },
+      "states":{
+        "code":[
+          { "name":"Sequence", "data":[ { "wait":1935 }, { "gotoScene":"intro", "withChannel":"music" } ] },
+          { "name":"Execute", "data":{ "when":{ "_":[ "keyPointer", "isHit" ] }, "gotoScene":"intro", "withChannel":"music" } }
+        ]
+      }
+    },
+    "stage1":{
+      "object":[
+        { "set":{ "_":[ "stencil", "player" ] }, "x":376, "y":552 },
+        { "type":"trapSmallCorridor", "set":{ "_":[ "stencil", "nest" ] }, "x":496, "y":376, "serial":"nest-0", "spawnCount":3, "state":"byTrigger" },
+        { "type":"trigger", "width":32, "height":32, "x":560, "y":312, "triggerAction":"spawn", "triggers":"trapSmallCorridor" },
+        { "set":{ "_":[ "stencil", "weapon" ] }, "x":568, "y":320, "frame":0 },
+        { "set":{ "_":[ "stencil", "nest" ] }, "x":464, "y":416, "serial":"nest-1", "spawnCount":3 },
+        { "set":{ "_":[ "stencil", "nest" ] }, "x":464, "y":312, "serial":"nest-2", "spawnCount":3 },
+        { "type":"trapGallery", "set":{ "_":[ "stencil", "nest" ] }, "x":576, "y":272, "serial":"nest-3", "spawnCount":5, "state":"byTrigger" },
+        { "type":"trigger", "width":32, "height":248, "x":640, "y":176, "triggerAction":"spawn", "triggers":"trapGallery" },
+        { "set":{ "_":[ "stencil", "weapon" ] }, "x":248, "y":320, "frame":0 },
+        { "set":{ "_":[ "stencil", "weapon" ] }, "x":688, "y":400, "frame":0 },
+        { "set":{ "_":[ "stencil", "enemySpider" ] }, "x":296, "y":408 },
+        { "set":{ "_":[ "stencil", "enemySpider" ] }, "x":224, "y":376 },
+        { "set":{ "_":[ "stencil", "enemySpider" ] }, "x":392, "y":288 },
+        { "set":{ "_":[ "stencil", "enemySpider" ] }, "x":288, "y":288 },
+        { "set":{ "_":[ "stencil", "weapon" ] }, "x":200, "y":320, "frame":0 },
+        { "set":{ "_":[ "stencil", "enemySpider" ] }, "x":120, "y":232 },
+        { "set":{ "_":[ "stencil", "enemySpider" ] }, "x":72, "y":232 },
+        { "set":{ "_":[ "stencil", "weapon" ] }, "x":472, "y":176, "frame":0 },
+        { "type":"trapLivingRoom", "set":{ "_":[ "stencil", "nest" ] }, "x":384, "y":136, "serial":"nest-4", "spawnCount":2, "state":"byTrigger" },
+        { "type":"trapLivingRoom", "set":{ "_":[ "stencil", "nest" ] }, "x":384, "y":216, "serial":"nest-5", "spawnCount":2, "state":"byTrigger" },
+        { "type":"trapLivingRoom", "set":{ "_":[ "stencil", "nest" ] }, "x":560, "y":216, "serial":"nest-6", "spawnCount":2, "state":"byTrigger" },
+        { "type":"trapLivingRoom", "set":{ "_":[ "stencil", "nest" ] }, "x":560, "y":144, "serial":"nest-7", "spawnCount":2, "state":"byTrigger" },
+        { "set":{ "_":[ "stencil", "nest" ] }, "x":176, "y":128, "serial":"nest-8", "spawnCount":3 },
+        { "type":"trigger", "width":32, "height":32, "x":464, "y":168, "triggerAction":"spawn", "triggers":"trapLivingRoom" },
+        { "set":{ "_":[ "stencil", "weapon" ] }, "x":560, "y":176, "frame":0 },
+        { "set":{ "_":[ "stencil", "weaponRespawn" ] }, "x":384, "y":352 },
+        { "set":{ "_":[ "stencil", "weaponRespawn" ] }, "x":96, "y":296 }
+      ],
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "isDark":1,
+      "nextScene":"cutscene2",
+      "phobiaSpiders":1,
+      "tilemap":{
+        "tileWidth":8,
+        "tileHeight":8,
+        "map":[
+          "                                                                                                ",
+          "                                                                                                ",
+          "                                                                                                ",
+          "                                                                                                ",
+          "                                                                                                ",
+          "                                                                                                ",
+          "                                                                                                ",
+          "                                                                                                ",
+          "                                                                                                ",
+          "                                                                                                ",
+          "                                                                                                ",
+          "                                                                                                ",
+          "                                                                                                ",
+          "                   T_______________________________________________________Y                    ",
+          "                   HT-----------------------Y122222222222222222222222222223I                    ",
+          "                   HI.:;,:.,,:.,.;,,;,,,,,;:#5:;,:;.;;,:..,..:.,,.,.:,:.,,6I                    ",
+          "                   HI;;.;.,:,,;.,,:;.:;.,;,.;.:;,,;,.,.,:,..;,,;;,;:;.;:.,6I                    ",
+          "                   HI;;.:..,.;.:.;;,.;:.,;;,;:.::;::;;:,:.:..,:,;:,..,;.,,6I                    ",
+          "                   HI,.:,,..79.,.,79;,.;,;,:;:;::;...;.:.:;:.;...,::;,.;;:6I                    ",
+          "                   HI:::;::,55.:;.55.:.:.,.:T5;,:,:::....,;,;,:.:,:;:;;:;;6I                    ",
+          "    T______________YI;;:;,,...,,;.;,.,;;;.;.H4;::.;;;.;;;;:,,:,;.,:..,.,:;6L______________Y     ",
+          "    HT-------------YI,:,,,:55555555555.:.,,:H4.xxxxxxxxxxxxxxxxxxxxxxxxxx:6T-------------YI     ",
+          "    HI,:,;.;..;.,,.HI:;.,,.55555555555;;:,:;H4:yyyyyyyyyyyyyyyyyyyyyyyyyy:6I:,,.;..:,.;:;HI     ",
+          "    HI:.:;;:.;:,,.,HI.:.;,,55555555555:.,;.:H4:yyyyyyyyyyyyyyyyyyyyyyyyyy;6I;,,:,.:;.,;;:HI     ",
+          "    55;,;;,,..:;,:.HI.;,;;,55555555555.:;,.;H4;yyyyyyyyyyyyyyyyyyyyyyyyyy;6I.,::;:.;;;.::HI     ",
+          "    44..,;,;:,,,:,.HI,;.:;.:;.;;:;..,.;;.:,,H4.xxxxxxxxxxxxxxxxxxxxxxxxxx,6I,,.:,.:::;:.,HI     ",
+          "    44.;,.;,,:,.:;.LJ:.:.;,.55.:;:55;:,,:;..#5..;;,;.,.:;,..:;,.;:,;,..:,;65::,:,,.,:,...55     ",
+          "    44,:;,;..:;;.::;.:;,;...13,:;;13..;..,.:,,:;.,,..;:..:.,,,:,,.::,;,;;,66,;,:;,:.;.::,44     ",
+          "    55,:.:....:::,..,,;.::,:;.,.:,,::,;:::,,;.;;;:.;...,.,;;,:,,..:;,,.::.66,.;..:..,,,;,44     ",
+          "    HI,:,.::;:.:;,;:,;,,,;.;;,,;.,;,,,,,.;;,;:.::;;.;..,.:,;,,.;;,;;.::;;.66.:.,.:..,;;;.44     ",
+          "    HI,,;::.,,.,,,;TY;.,,:.,.,;,:,:.:;:.:,;;#5:.,.,,:..;;..,.:;.,,,:,,;.;.65,;,,::;.;;,,:55     ",
+          "    HI;,..:.,.;:.,:HL_______________________J788888888888888888888888888889I;:::,;;:,.:.,HI     ",
+          "    HI,.;,:;.:.:;,;HT-------YT-----------YT--------------------------------J,,,;.;:,:.;;:1I     ",
+          "    HI123,:.,.:...,HI55;,;;.HI.,,;;;:,.;.HI:.,.;,..;..:;.,.,;:,.,;:,.,;,,.,:;,:,;.,:.,;,,7I     ",
+          "    HI455;.;.,.;,;;HI55,.;.;LJ,;,:,;.;,,;LJ.:zyyyyyz::;.,,;,;;:;.;,::;,;,:..:;:;.;,.:;,:;HI     ",
+          "    HI455.::;;;..:.HI..,:;:;,;.:,.;::;,:,:;,.zyyyyyz.::,.;:.;,.:;.:;,,:,;:.,.:;,,.::.:;:;HI     ",
+          "    HI459,;:;;..:::HI::.;,.,:::,..,;,:::,.,,.zyyyyyz:,,,,:;,,;,:.;::.,;;,,,...:;.:;;.,,.:1I     ",
+          "    HI453,::;;;:.,;HI...::::.,,,,.;,,.,.,::;:zyyyyyz.;:T___________________Y:,:..::::;;:;7I     ",
+          "    HI455,::;::;:,.HI,:;.,:,TY::...,;:,::TY..zyyyyyz.:,HT-------YT--------YI,,;,.::..;:;,HI     ",
+          "    HI455,.,,,;:..;HI;..:...HI:,;;;;;:,,.HI,;zyyyyyz:::HI;..,,;.HI;:;.;;;;HI,;..:..;,;.,;HI     ",
+          "    HI789:,:,.::,:,HI::,,;,.HI;..,.,:;.,.H3;,zyyyyyz,;,1I:.:;;:.HI;.,.;,::HI,,,,:,:::,,.,1I     ",
+          "    HI,:;:,:;:::.;,HI55,;,..HI;;...;;;::.H9..zyyyyyz::,7I:;,.,,.HI;..;;.;:HI:.,::,:..;,::7I     ",
+          "    HI55,,::;:.;,,.HI55;.;;;HI...,:,,:;:.HI.,zyyyyyz,,,HI;;:.,,:HI;::;,,::HI,,,;,;.:,:;.;HI     ",
+          "    HI55:::..,,...:HL_______JL___________JI,,zyyyyyz,;.HI,:;,;:;HI;,,,:::;HI.,,,,::;,:;:;HI     ",
+          "    HI:::;;;,,;:,,:HT--------------------YI..zyyyyyz,,.HL__Y,;;TJI::,::,:.55,:,.,;,;:;:..55     ",
+          "    HI:.,;,,,::::,.HI.,::....;;:;;:.;,;,,HI,.zyyyyyz;:;L---J;;.L-J,..,;;:.46;,,.,..;::;;.44     ",
+          "    55.;...:,;,..;;HI::;;.,;;.,:.:;;.:.,.HI;;zyyyyyz;::,;:,,.,:..;.;:,;:::46.;;;;,.;,,..;44     ",
+          "    44:,,.;.,.;,;.,LJ,::..,.:.,.::.;,..;,HI::zyyyyyz.::.;;.::;:::;;,:,;:;,46:;..,.:,,;,:;44     ",
+          "    44;:..,;;.:,;,,;::..,.,:.,;:,;;.,:;;;HI;:zyyyyyz,;:;..;,:.:;:,..:,..,.55:;.,;,:.:.:..55     ",
+          "    44,;.:.;,;:,,.,.,..,,:;.;;,,,:.;:,;.:LJ;:zyyyyyz:.,T___Y:.:T_Y::;.,..:HI:.;:.:.;.;.:.HI     ",
+          "    55:.:,:.,::,:,..:,,;:;::,:,.;:.:.;;.,,,::zyyyyyz,:.HT--J.;,LYI:;,:;;,,HI,;:;..,..,;;:HI     ",
+          "    HI,.;;.,...:;:;TY,:;:,;::.;,,,;,.,;:;:.;.zyyyyyz,.:1I...:;.:HI,..,,;:,HI,:,;;..,.:,:,HI     ",
+          "    HI;..,..:.:;:,:HI.;...,;:;::;:,;;.,:::.;,zyyyyyz:,;7I:,:.;,.HI,,.;;;,;HI.,..:,,,..:,;HI     ",
+          "    HL_____________JI.,,,;:,,:;;;:,,....;TY.,zyyyyyz,;;HI,..;,;:HI..,:,;:.HL_____________JI     ",
+          "    L--------------YI;:;;;;;,.:,;.,:,,;.:HI,,zyyyyyz::,HI;.,;:::HI:;,.,,;,HT--------------J     ",
+          "                   HL____________________JL__Y=====T___JL_______JL________JI                    ",
+          "                   L------------------------YI=====HT----------------------J                    ",
+          "                                5baddcbdacadLJ=====LJbbdadcbadb5                                ",
+          "                                5acccababdad:;.;:.:;,addaacccab5                                ",
+          "                                5ccadbdc##aa,:;.;..,;ab##dcdbac5                                ",
+          "                                5abbbdaa##aa.:;,;:,;;bd##cadabb5                                ",
+          "                                5bddbddcbcd5::.;:;;.:5ccbbbddcb5                                ",
+          "                                5dbabbbabda5;;..;,,.:5cacccbaab5                                ",
+          "                                5bdabbdbcdb5;..;;.,,.5dddcbbbba5                                ",
+          "                                5cacdcca##dc,:::.:.:;cb##aabdac5                                ",
+          "                                5abccdbd##ad;,:.:,,..cd##acaaba5                                ",
+          "                                5daddcbcdbb5;:.:;:.,.5acccdbcda5                                ",
+          "                                5bcabaadabb5:;;,.;;:,5dcbcacdad5                                ",
+          "                                5caccdbdadc5::.;.;;,.5bdbcdaacb5                                ",
+          "                                5dcadbda##ba:;,.;:.,;bc##bddacc5                                ",
+          "                                5cdadcaa##ba..;,,;.:;bd##adacba5                                ",
+          "                                5acbbdadbbdb::.,;,;;:ddccccbcca5                                "
+        ]
+      }
+    },
+    "stage2":{
+      "object":[
+        { "type":"entranceOut", "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":704, "y":384 },
+        { "type":"corridorIn", "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":48, "y":384 },
+        { "type":"trigger", "width":8, "height":64, "x":696, "y":392, "triggerAction":"close", "triggers":"entranceOut" },
+        { "set":{ "_":[ "stencil", "player" ] }, "x":712, "y":312 },
+        { "type":"bathroomIn", "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":496, "y":384 },
+        { "type":"bathroomOut", "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":368, "y":384 },
+        { "type":"trigger", "width":8, "height":64, "x":472, "y":392, "triggerAction":"open", "triggers":"bathroomIn" },
+        { "type":"trigger", "width":8, "height":64, "x":400, "y":392, "triggerAction":"close", "triggers":"bathroomOut" },
+        { "type":"trigger", "width":8, "height":64, "x":360, "y":392, "triggerAction":"close", "triggers":"bathroomOut" },
+        { "type":"trigger", "width":8, "height":64, "x":80, "y":392, "triggerAction":"open", "triggers":"corridorIn" },
+        { "type":"trigger", "width":48, "height":8, "x":40, "y":360, "phobiaArea":"off", "triggerAction":"close", "triggers":"corridorIn" },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":480, "y":312 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":392, "y":312 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":680, "y":368 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":432, "y":360 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":352, "y":336 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":256, "y":400 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":40, "y":424 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":24, "y":416 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":56, "y":432 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":160, "y":400 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":104, "y":144 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":104, "y":120 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":104, "y":96 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":104, "y":72 },
+        { "type":"serviceIn", "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":200, "y":184 },
+        { "type":"serviceOutSouth", "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":200, "y":256 },
+        { "type":"trigger", "width":32, "height":16, "x":200, "y":168, "triggerAction":"open", "triggers":"serviceIn" },
+        { "type":"trigger", "width":56, "height":8, "x":496, "y":360, "phobiaArea":"off", "triggerAction":"close", "triggers":"bathroomIn" },
+        { "type":"trigger", "width":32, "height":8, "x":704, "y":376, "phobiaArea":"on", "triggerAction":"open", "triggers":"entranceOut" },
+        { "type":"trigger", "width":32, "height":8, "x":368, "y":376, "phobiaArea":"on", "triggerAction":"open", "triggers":"bathroomOut" },
+        { "type":"corridorOut", "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":48, "y":184 },
+        { "type":"trigger", "width":32, "height":8, "x":48, "y":192, "phobiaArea":"on", "triggerAction":"open", "triggers":"corridorOut" },
+        { "type":"trigger", "width":88, "height":8, "x":8, "y":160, "triggerAction":"close", "triggers":"corridorOut" },
+        { "type":"trigger", "width":112, "height":8, "x":192, "y":208, "phobiaArea":"off", "triggerAction":"close", "triggers":"serviceIn" },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":56, "y":240 },
+        { "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":200, "y":384 },
+        { "type":"trigger", "width":8, "height":24, "x":488, "y":360, "phobiaArea":"off", "triggerAction":"close", "triggers":"bathroomIn" },
+        { "set":{ "_":[ "stencil", "weapon" ] }, "x":208, "y":320, "frame":0 },
+        { "type":"serviceOutEast", "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":304, "y":216 },
+        { "type":"trigger", "width":8, "height":32, "x":296, "y":216, "triggerAction":"open", "triggers":"serviceOutEast" },
+        { "type":"trigger", "width":32, "height":8, "x":272, "y":344, "triggerAction":"open", "triggers":"serviceOutSouth" },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":400, "y":224 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":328, "y":264 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":280, "y":328 },
+        { "type":"serviceIn2", "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":264, "y":184 },
+        { "type":"trigger", "width":32, "height":16, "x":200, "y":320, "triggerAction":"open", "triggers":"serviceIn2" },
+        { "type":"trigger", "width":32, "height":8, "x":264, "y":176, "phobiaArea":"on" },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":328, "y":112 },
+        { "type":"exitEast", "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":488, "y":144 },
+        { "type":"trigger", "width":8, "height":32, "x":480, "y":144, "triggerAction":"open", "triggers":"exitEast" },
+        { "type":"trigger", "width":8, "height":32, "x":512, "y":144, "phobiaArea":"off", "triggerAction":"close", "triggers":"exitEast" },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":464, "y":160 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":400, "y":136 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":400, "y":64 },
+        { "type":"exitEast2", "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":488, "y":16 },
+        { "type":"trigger", "width":8, "height":32, "x":496, "y":16, "phobiaArea":"on", "triggerAction":"open", "triggers":"exitEast2" },
+        { "set":{ "_":[ "stencil", "weaponRespawn" ] }, "x":240, "y":88 },
+        { "set":{ "_":[ "stencil", "weaponRespawn" ] }, "x":240, "y":216 }
+      ],
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "nextScene":"cutscene3",
+      "patientPortraitX":32,
+      "phobiaArea":1,
+      "tilemap":{
+        "tileWidth":8,
+        "tileHeight":8,
+        "map":[
+          "I4a6L-------------------------YT-----------------------------Y                                  ",
+          "I4a6,:.:;;.:z.;z;,,.;:,,;:,;:.HI::,.;;,.,.,;,;..;z,;z;.,,:,.zL-----------Y                      ",
+          "I4a6,;:;:.:,z;;z:;;##..;..;:,.HI;...,;;.:##;:,;,;z:,z:,,,:,,z.[[[[[[,;:13H                      ",
+          "I789,::,;:,,z;.z,:;##;;:;..:,;HI.;,.;.,:;##,;:,,;z;,z:;:,.;,z.[[[[[[:.,79H                      ",
+          "I123,.;.,,:;z.;z:,.;..,;.:;.:.HI,,.:,..;,:.,;;;,:z;;z;;,;,,:z.[[[[[[;:,,;H                      ",
+          "I4a6:;,,..:;z.,z.;,##:;.;;:,,.LJ.:.,;:..;##::;:;.z.:z;,,:;..z.[[[[[[,::,;H                      ",
+          "I4a6,;...;:;z;;z:,:##,::,:.,,:..:.::,::,.##.::,.;z::z.::.;,;zT_____Y:,;;,H                      ",
+          "I4a6;;;..,,,z:.z;,;:.,;::::.:.::.:...,,.,;;,;.,,.z:,z:.,;...zH     I.:;:.H                      ",
+          "I4a6:.;:,,;;z.:z,:.##..:,.:13:;,.13:;,:,,##..:.,,z;;z:,..,;;zH     I;;:;;H                      ",
+          "I789:,:,,;;.z::z;,,##;,;..,79aaaa79.;:,,:##;,,;;,z;,z,;;;;;:zH     I,:,13H                      ",
+          "I123;..::.:;z::z.,.:;:;:;,;:aaaaaa,,:,.;:,,,..:..z:,z..;:.:;zH     I:,:13H                      ",
+          "I4a6;.;:,..:z,:z:;:##.,;.:,,aaaaaa,...,,.##.,::.;z:;z,:,::,,zH     I,::79H                      ",
+          "I4a6;;.,;;;:z:;z,.,##:.,::.,aaaaaa.,:;,..##;;::.,z:;z:;..,:;zH     I,:;:.H                      ",
+          "I4a6,,:,.;;;z,:z;.,..;;::,.:aaaaaa,:,;.,...,::;;:z..z..::..;zH     I:.;;.H                      ",
+          "I4a6;,;:,.;;z;:z:..,;;.:::;13aaaa13:.;;.,:.,;,;,.z;:z,;.:,..zH     I:,::;H                      ",
+          "I789.;.,:.;.z,;z:;:;,,..;,:79.,::79,.,;:::,.;.,,,z.,z,...;;.zH     I,:,.:H                      ",
+          "I123;;;;,:,;z,,z::,.:::;;::;;..;.:.,:.,::.;..;,..z;;z;:.:;:,zH     I13:::H                      ",
+          "I4a6..:,:;:;zxxz;.;##.,,:::;;::.::.:...,:##,;.;..zxxz..;:,.,zL-----J79:.,H                      ",
+          "I4a6,..,;:;:z:;z:,,##.;:::,.::TY,,:,:..;,##,:;:.:z:,z.;;;.,,z.[[[[[[.,:.,H                      ",
+          "I4a6;..:...;z;;z;:.:,,;;:..:::HI::.,;.,,.;;;::;.,z..z.,:,.,;z.[[[[[[:;;;,H                      ",
+          "I4a6:,:.,.:.zxxz;,.##:,;;.;;,;HI.::;;.,:;##:,.;.,zxxz:,..;.,z.[[[[[[;::::H                      ",
+          "I789.,;;:,.,1223:;;##;.:.,.,.,HI,.:....;,##.,,,.:1223,:,;:::z.[[[[[[:;.:;H                      ",
+          "I,;::.;.;.:,7889:;:;::,:;..:.;HI;::.,,;,:;,,::,:.7889.:.;.,,zT___________J                      ",
+          "L___Y#;,::#T___________Y#:.;;#LJ#:,.:#T______________________J                                  ",
+          "    I;;:;;;H           IxxxxxxxxxxxxxzH                                                         ",
+          "    I,;;;,:H           I:;:::;,,;...:zH                                                         ",
+          "    I:;..::H           I.:;.:;,,,,:;,zL----------------------------Y                            ",
+          "    I:;;:;:H           I:.,;:.:.:..,;z...[[[[[[[[[[[[[[[[[[[[[[....H                            ",
+          "    I:,:;,.H           I13,.,,:;,.;,.z...[[[[[[[[[[[[[[[[[[[[[[....H                            ",
+          "    I.;,:.,H           I79;.,,.;.;,,.z...[[[[[[[[[[[[[[[[[[[[[[....H                            ",
+          "    I:,:;,.H           I,,.,:;;.,,:,.z...[[[[[[[[[[[[[[[[[[[[[[....H                            ",
+          "    I;:.,;;H           I,;..:..;:,,.,zT-----------------------#....H                            ",
+          "    I;;,;,.H           LY;;;:T_#______J,:[[[[[[[[[[[[[[[[[[[[[[....H                            ",
+          "    I...;:,H            I;;:,H I,..,:;,:.[[[[[[[[[[[[[[[[[[[[[[....H                            ",
+          "    I;:,;,.H            I::.;H I:.;.,,,.:[[[[[[[[[[[[[[[[[[[[[[....H                            ",
+          "    I;:,.:,H            I:;.,H I:..;;:.;,[[[[[[[[[[[[[[[[[[[[[[....H                            ",
+          "    I;;,,::H            I::;;H I.:;.::::T__________________________J                            ",
+          "    I:;.:.;H            I:;,;H I:.::;..:H                                                       ",
+          "    I;,,.,:H            I;;;;H I,.,;,,.,H T--------------------------Y              T----------Y",
+          "    I.::.;.H            I;:,,H I:;,::;.;H I..:.::,,;;.:;....:..:..;:;H              I,;;.,.:.,.H",
+          "    I:,;;.;H            I,::.H I..;,;;;,H I;;;.,;::,.,.::,;,:,.,,,;,,H              I:.;;:,.;:;H",
+          "    I,..,.:H            I:,;.H I,,,:;:.:H I,,,.:...,,,.:;.,.:;:.;;,,;H              I;;..:;.;:;H",
+          "    I.:,.,;H            I:.,,H I,;;.,...H I,;;;..,:::;;:,;;:,;::;,,;,H              I.,;,::;,,.H",
+          "    I;.,;..H            I.:.,H Iwv,,;;wvH I,,:,.,:.;;;;:.,.;::;;,.,.,H              I;,:,.:,,:;H",
+          "    I.....:H            I,::;H IrruuuurrH I;.;:.,:;.;.;,,;:,;,:;::;::H              I,,;,:.:::.H",
+          "    I;;,,.:H            I.,;;H ItrrrrrrsH I.:,,:.:,;;,,;,..,.:,,,,,,;H              I.,,:,:....H",
+          "    I;,;.;,H            I,,..H L________J I:;..:,::,::,.,::,.,.:;:,;,H              I,:,,,:,..;H",
+          "    I;:.:.,H            I..:,H            I;;;;:;.,.,::..,,;;.,.:;,..H              I.,::;:.:,;H",
+          "T---J#;,:,#L------------J;:,,L____________#---,:,,#----------#;,,;#--#--------------J###,...###H",
+          "IxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxH",
+          "I;##:;:...,,...,;##.:,,##:..:##,.:.##,,.;##.,,;;,;.;,.,:,.;..;;;:,,;:##,:.,##.;,,##;.;.,,;;.:;.H",
+          "I,##;;:;,;.,::::.##.;;:##::;,##,;..##;...##;;;,;.;:;:.:;,.;,:,;...,,.##;.,;##...;##,;;.,:,.:;;.H",
+          "I..:.,;;:..,,;;:,;.;.,;.:;;.,;,,..:,,:.,,...:.,;..;:.:;.;;.;;.;:,::.;,;..:;:,:.;..;:,;:;,::.;,:H",
+          "I.::.;.:::;.,:::,:;:;.;,.:.;.::;;:.,,.;.;:,:.:;;,,.,.;:.;;,.,;::,,;:.;;:;:,.;:..;;,;,,.:;;,.;,;H",
+          "I,,,.:.:,;:.::;,::.:;:.,,:;...,;..:;:,:,,,.:..,..:;;,,,;,;.,;,;,,:,.:;;;;;:,;.;::.;:;.;,.;:,,:;H",
+          "I.:.;::;,::.:.,;;:,.,.,;:,:,,.,,.,.;.,,,,;.::;,;:,:,.,:..::.;;:,;;.::.::;;:;:;;,::,.:,:.:,:,.::H",
+          "JxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxL",
+          "5wuuuuuuuuuuuuuuuuuuvwuuuuuuuuuuuuuuuuuuvwuuuuuuuuuuuuuuuuuuvwuuuuuuuuuuuuuuuuuuv555555555555555",
+          "2rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr222222222222222",
+          "5rrTYrrrrTYrTYrrrrTYrrrTYrrrrTYrTYrrrrTYrrrTYrrrrTYrTYrrrrTYrrrTYrrrrTYrTYrrrrTYr555555555555555",
+          "5rrLJrrrrLJrLJrrrrLJrrrLJrrrrLJrLJrrrrLJrrrLJrrrrLJrLJrrrrLJrrrLJrrrrLJrLJrrrrLJr555555555555555",
+          "2rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr222222222222222",
+          "5trrrrrrrrrrrrrrrrrrstrrrrrrrrrrrrrrrrrrstrrrrrrrrrrrrrrrrrrstrrrrrrrrrrrrrrrrrrs555555555555555",
+          "555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555",
+          "5555555555555555555555555wuuuuuuuuuuuuuuuuuuvwuuuuuuuuuuuuuuuuuuvwuuuuuuuuuuuuuuuuuuvwuuuuuuuuuu",
+          "2222222222222222222222222rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr",
+          "5555555555555555555555555rrTYrrrrTYrTYrrrrTYrrrTYrrrrTYrTYrrrrTYrrrTYrrrrTYrTYrrrrTYrrrTYrrrrTYr",
+          "5555555555555555555555555rrLJrrrrLJrLJrrrrLJrrrLJrrrrLJrLJrrrrLJrrrLJrrrrLJrLJrrrrLJrrrLJrrrrLJr",
+          "2222222222222222222222222rrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrrr",
+          "5555555555555555555555555trrrrrrrrrrrrrrrrrrstrrrrrrrrrrrrrrrrrrstrrrrrrrrrrrrrrrrrrstrrrrrrrrrr",
+          "YxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxT",
+          "I,,::..,,:;;,:.:;::..:;;.,,;:;:;..;,.;.;;.;;;;,:,.:,,;;.,;:.,;,;,;:;,,;;:.:,;;,,:,,.;..;.:,:..;H"
+        ]
+      }
+    },
+    "stage3":{
+      "object":[
+        {
+          "type":"garageIn",
+          "set":{ "_":[ "stencil", "nest" ] },
+          "x":296, "y":144,
+          "playerDistance":90,
+          "serial":"nest-0",
+          "spawn":"enemyBlob",
+          "spawnCount":5
+        },
+        {
+          "type":"garageIn",
+          "set":{ "_":[ "stencil", "nest" ] },
+          "x":464, "y":144,
+          "playerDistance":90,
+          "serial":"nest-1",
+          "spawn":"enemyBlob",
+          "spawnCount":5
+        },
+        { "type":"garageIn", "set":{ "_":[ "stencil", "player" ] }, "x":80, "y":168 },
+        { "type":"garageIn", "set":{ "_":[ "stencil", "weapon" ] }, "x":368, "y":144, "frame":0 },
+        { "type":[ "garageIn", "garageIn" ], "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":200, "y":104 },
+        { "type":[ "garageIn", "garageIn" ], "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":200, "y":136 },
+        { "type":[ "garageIn", "garageIn" ], "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":200, "y":168 },
+        { "type":[ "trigger", "garageIn" ], "width":16, "height":96, "x":184, "y":104, "triggerAction":"open", "triggers":"garageIn" },
+        { "type":[ "trigger", "garageIn" ], "width":16, "height":168, "x":224, "y":64, "triggerAction":"close", "triggers":"garageIn" },
+        { "type":[ "enemywall", "garageIn" ], "width":32, "height":16, "x":248, "y":232 },
+        { "type":"garageIn", "set":{ "_":[ "stencil", "enemySpider" ] }, "x":560, "y":120 },
+        { "type":"garageIn", "set":{ "_":[ "stencil", "enemySpider" ] }, "x":560, "y":168 },
+        { "type":"garageIn", "set":{ "_":[ "stencil", "weapon" ] }, "x":560, "y":144, "frame":1 },
+        { "type":[ "garageOut", "garageIn" ], "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":248, "y":240 },
+        { "type":[ "trigger", "garageIn" ], "width":48, "height":32, "x":544, "y":136, "triggerAction":"open", "triggers":"garageOut" },
+        { "type":"garageIn", "set":{ "_":[ "stencil", "weapon" ] }, "x":360, "y":440, "frame":1 },
+        {
+          "type":"garageIn",
+          "set":{ "_":[ "stencil", "nest" ] },
+          "x":320, "y":288,
+          "playerDistance":90,
+          "serial":"nest-2",
+          "spawn":"enemyBlob",
+          "spawnCount":5
+        },
+        { "type":"garageIn", "set":{ "_":[ "stencil", "weapon" ] }, "x":256, "y":280, "frame":0 },
+        { "type":"garageIn", "set":{ "_":[ "stencil", "enemySpider" ] }, "x":360, "y":408 },
+        { "type":"garageIn", "set":{ "_":[ "stencil", "enemySpider" ] }, "x":328, "y":440 },
+        { "type":"garageIn", "set":{ "_":[ "stencil", "weapon" ] }, "x":496, "y":416, "frame":1 },
+        { "type":"garageIn", "set":{ "_":[ "stencil", "enemySpider" ] }, "x":520, "y":256 },
+        { "type":"garageIn", "set":{ "_":[ "stencil", "enemySpider" ] }, "x":520, "y":296 },
+        { "type":"garageIn", "set":{ "_":[ "stencil", "weaponRespawn" ] }, "x":384, "y":144 },
+        { "type":"garageIn", "set":{ "_":[ "stencil", "weaponRespawn" ] }, "x":472, "y":392 },
+        { "type":"garageIn", "set":{ "_":[ "stencil", "weaponRespawn" ] }, "x":280, "y":392 },
+        { "type":[ "enemywall", "garageIn" ], "width":32, "height":16, "x":248, "y":320 },
+        { "type":"garageIn", "set":{ "_":[ "stencil", "enemyBlob" ] }, "x":248, "y":440 },
+        { "type":"garageIn", "set":{ "_":[ "stencil", "enemyBlob" ] }, "x":264, "y":408 },
+        { "type":"garageIn", "set":{ "_":[ "stencil", "enemyBlob" ] }, "x":304, "y":384 },
+        { "type":"garageIn", "set":{ "_":[ "stencil", "enemyBlob" ] }, "x":344, "y":360 },
+        { "type":"garageIn", "set":{ "_":[ "stencil", "enemyBlob" ] }, "x":496, "y":352 },
+        { "type":"garageIn", "set":{ "_":[ "stencil", "enemyBlob" ] }, "x":456, "y":360 },
+        { "type":"garageIn", "set":{ "_":[ "stencil", "enemyBlob" ] }, "x":448, "y":408 },
+        { "type":"garageIn", "set":{ "_":[ "stencil", "enemyBlob" ] }, "x":504, "y":440 },
+        { "type":"garageIn", "set":{ "_":[ "stencil", "enemyBlob" ] }, "x":536, "y":416 },
+        { "type":"garageIn", "set":{ "_":[ "stencil", "enemyBlob" ] }, "x":544, "y":376 },
+        { "type":"garageIn", "set":{ "_":[ "stencil", "enemyBlob" ] }, "x":456, "y":256 },
+        { "type":"garageIn", "set":{ "_":[ "stencil", "enemyBlob" ] }, "x":424, "y":296 },
+        { "type":[ "enemywall", "garageIn" ], "width":32, "height":16, "x":416, "y":320 },
+        { "type":[ "enemywall", "garageIn" ], "width":16, "height":96, "x":200, "y":104 },
+        { "type":"garageIn", "set":{ "_":[ "stencil", "car" ] }, "x":56, "y":128 }
+      ],
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "isDark":1,
+      "nextScene":"cutscene4",
+      "patientPortraitX":64,
+      "phobiaDark":1,
+      "tilemap":{
+        "tileWidth":8,
+        "tileHeight":8,
+        "map":[
+          "                                                                                                ",
+          "                                                                                                ",
+          "                                                                                                ",
+          "                                                                                                ",
+          "                                                                                                ",
+          "                                                                                                ",
+          "                         T_________________________________________________Y                    ",
+          "                         HT---------------------------------------YT------YI                    ",
+          "                         HIxxxxx123xxxxxx123xxxxxxxxxxxxxxxxxxxxxxHI.;:;;.LJ                    ",
+          "                         HI;:;;;789:,,;:;789.;.,.:.,,,,,:,,..:.;:,LJ;.,...13                    ",
+          "                         HI;...;;.,,;::,,.,:::.::,;::;;,:.:::;,,:,;..:..;:46                    ",
+          "  T-13-13-13-13-13-13-13#HI;,;::;.,:::::.:,:,:;,,.,;;:.,;.,..:;,,,;,.:,.,;46                    ",
+          "  Hc79a79c79c79b79c79a79cLJ,:;;,,,;:::.;:...,:,:;;;.,.;:,:;.:,.:;:.:,::;.;46                    ",
+          "  Hdaaccbbcbadbbbcbadddbb,,::,;.,,:,:..:;:;;.,,,,;.:,.::;;,:.;..,.,:.:.;::79                    ",
+          "  Hbcababcacadcdbabddcacb..;,,,;,:,.,:.:;,.:;;,:;;..,.:,;:;:,;,,13TY,;:.:.TY                    ",
+          "  Habdabdaaadbcaabbbdbaaa;,;;,.;:.,.::.:;:,,.,:::,:;.:;,;:.;.;;.46HI:;,,:;HI                    ",
+          "  Haabcdbaadbccacdaddacbd:,.;,:..:,:;,,;:,:..,..:...:,:;,.::..;,46HI;;,::;HI                    ",
+          "  Hcdadbbbbccacdadddaabcc,.,;;,,...,;:,.,:,,,.,:;.:.:.;.;.:,.;:,46HI,,,;;,HI                    ",
+          "  Hdadbbdbbadbbabcbdaacac.;.:.;:;,.;.:::,:..;;:.;;;;;;:.:::;:..;46HI,;,;,.HI                    ",
+          "  Hcbcbaaabadadbaaabddadb,::;.:;;:;,;.:,.:...;.;:,,;,;,:,:.;.,..46HI;:;,.:HI                    ",
+          "  Hcdaccdbcbcadbddaabadbc,;.,;,,:;,,;,...,:,:.,.:,,;,..::.:;,;;;46HI.;:;:.HI                    ",
+          "  Hbddcbabacdddddaccbbaad.;:,,..;.:;..:.;;.;...,;.,;::;.:.::,;::46HI:.,,,,LJ                    ",
+          "  Habadbcaacaaacbbdbddbac,,:,:::.:....:.,.,,.;.::::,,:,.;::,:.:.79LJ,:;,:.13                    ",
+          "  Hbaddbbbcddbdcdbcaabaab...;.,:;,,,;..;..;,;,;,,,:.:...:,:,,,.;.;:..,:.,.46                    ",
+          "  Hcdabbcdacbbabdddaadaab,:,,;:.;.,,,:.,::,.,.:.;::;;:.,,.:;...::,.,:.:,;.46                    ",
+          "  Hd13d13b13d13c13b13c13cTY:..:,.,;;:;;,.:::;,;;.;:.,::;.;...,,:;..:.;;:,,46                    ",
+          "  L_79_79_79_79_79_79_79#HI:;;.::::.;::;:;;:,,,.;.,::,;;.,::;,;;:.;.;,:.,:79                    ",
+          "                         HI;.,,;;:::..;,:,;;,.:,..:::.;,1223:.,,:.TY;,::.,TY                    ",
+          "                         HIxxxx,::,xxxxxxxxxxxxxxxxxxxxx7889xxxxxxHI,.:.,,HI                    ",
+          "                         HL___Y;,,.T______________________________JL______JI                    ",
+          "                         HT---J..;:L----YT--------------------------------YI                    ",
+          "                         HI:,;;::,::.;;:HIxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxHI                    ",
+          "                         LJ.;;::,;;;;,.:HI..;;:,,,;.;,;:;;;.;:,:.:.,;:,,;,LJ                    ",
+          "                         13.:,.::;:::;:;HI.:,;.;,.,;:.:.:..;,:;;,:..;:.:;;13                    ",
+          "                         46;.:.:;.;.,,:;LJ;,.:,,;,.:,,,,,,;;,,:.,,,.:....,46                    ",
+          "                         46:,:,;;.,,,:,.;..:;;::.,;.,.;.:;;::;;;.,;,.:,::;46                    ",
+          "                         46,;.::.:,;.,::;;:::.;;.:::::...;,,,;..,,,::::;:,46                    ",
+          "                         79;;.:;:..,,;.::..:....:,..:.;::;.:,,..,.;,,,;..;79                    ",
+          "                         TY,;;:.;:.,:;,:,:,,;;:.;.;,:..;;,:;,,,,;,,,,..,,.TY                    ",
+          "                         HI,;.,:;;.;:,,.TYxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxHI                    ",
+          "                         HL___Y;,,:T____JL_________Y....T_________________JI                    ",
+          "                         HT---J,;.,L------------YT-J....L-----------------YI                    ",
+          "                         LJ,:,:,;,.;.,,.;,:,.,;;HI........................LJ                    ",
+          "                         13::,.,:::,::,,...::;..HI........................13                    ",
+          "                         46:,;.;,;.;...:.;;:,.;.HI........................46                    ",
+          "                         46.;;,;:,:::::::.,::,::HI........................46                    ",
+          "                         46;.,.::,:,,,,:.,....:,HI........................46                    ",
+          "                         79;:;;:;;,:.,;..;,;.,,.HI........................79                    ",
+          "                         TY,:;.,::;;:.:,;:...;;;HI........................TY                    ",
+          "                         HI.;.,.,:;;:;.;,.:;:;::HI........................HI                    ",
+          "                         HI,.:,,;;:,;;.;..,,,,,;HI........................HI                    ",
+          "                         LJ:,;::::,;;::,..;;.;,;HI........................LJ                    ",
+          "                         13;,,;:.,,:::;;,;:;..:,HI........................13                    ",
+          "                         46,;.;,;,.:;,,,;;:.,;,;HI........................46                    ",
+          "                         46,;;.:,;:,,.,,.:..:,.,HI........................46                    ",
+          "                         46.,;;...:.,;:,;.,.;;..HI........................46                    ",
+          "                         79,.;;:,:,.:,:;:.;,;..,HI........................79                    ",
+          "                         TY:;:.;::;;,;,,,..;..;,HI........................TY                    ",
+          "                         HL_____________________JL________________________JI                    ",
+          "                         L-------------------------------------------------J                    ",
+          "                                                                                                ",
+          "                                                                                                ",
+          "                                                                                                ",
+          "                                                                                                ",
+          "                                                                                                ",
+          "                                                                                                ",
+          "                                                                                                ",
+          "                                                                                                ",
+          "                                                                                                ",
+          "                                                                                                ",
+          "                                                                                                ",
+          "                                                                                                "
+        ]
+      }
+    },
+    "stage4":{
+      "object":[
+        { "type":"doorKnorth", "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":88, "y":88 },
+        { "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":88, "y":408 },
+        { "type":"door8south", "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":88, "y":328 },
+        { "type":"doorEsouth", "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":88, "y":248 },
+        { "type":"doorKsouth", "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":88, "y":168 },
+        { "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":200, "y":176 },
+        { "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":200, "y":248 },
+        { "type":"door3north", "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":200, "y":336 },
+        { "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":200, "y":408 },
+        { "type":"door1north", "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":312, "y":416 },
+        { "type":"doorAsouth", "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":312, "y":328 },
+        { "type":"doorGsouth", "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":312, "y":248 },
+        { "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":312, "y":176 },
+        { "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":424, "y":176 },
+        { "type":"doorHsouth", "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":424, "y":248 },
+        { "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":424, "y":328 },
+        { "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":424, "y":408 },
+        { "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":536, "y":408 },
+        { "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":648, "y":408 },
+        { "type":"doorDsouth", "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":648, "y":328 },
+        { "type":"doorDnorth", "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":648, "y":256 },
+        { "type":"doorJnorth", "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":648, "y":176 },
+        { "type":"doorLnorth", "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":648, "y":88 },
+        { "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":48, "y":120 },
+        { "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":48, "y":200 },
+        { "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":48, "y":280 },
+        { "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":48, "y":360 },
+        { "type":"door2east", "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":152, "y":360 },
+        { "type":"door9west", "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":152, "y":280 },
+        { "type":"doorEeast", "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":152, "y":200 },
+        { "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":152, "y":120 },
+        { "type":"doorFeast", "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":264, "y":200 },
+        { "type":"door9east", "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":264, "y":280 },
+        { "type":"door4west", "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":264, "y":360 },
+        { "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":272, "y":440 },
+        { "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":376, "y":440 },
+        { "type":"door4east", "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":384, "y":360 },
+        { "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":488, "y":360 },
+        { "type":"door7west", "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":608, "y":360 },
+        { "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":712, "y":280 },
+        { "type":"doorCeast", "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":600, "y":280 },
+        { "type":"doorBeast", "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":488, "y":280 },
+        { "type":"doorAeast", "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":376, "y":280 },
+        { "type":"doorGeast", "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":376, "y":200 },
+        { "type":"doorIwest", "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":496, "y":200 },
+        { "type":"doorJwest", "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":608, "y":200 },
+        { "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":712, "y":200 },
+        { "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":712, "y":120 },
+        { "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":608, "y":120 },
+        { "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":536, "y":176 },
+        { "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":536, "y":248 },
+        { "type":"door6north", "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":536, "y":336 },
+        { "type":"trigger", "width":32, "height":8, "x":312, "y":504, "triggerAction":"open", "triggers":"door1south" },
+        { "type":"trigger", "width":32, "height":8, "x":312, "y":424, "triggerAction":"open", "triggers":"door1north" },
+        { "type":"door1south", "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":312, "y":496 },
+        { "type":"trigger", "width":8, "height":32, "x":280, "y":360, "triggerAction":"open", "triggers":"door4west" },
+        { "type":"trigger", "width":32, "height":8, "x":200, "y":344, "triggerAction":"open", "triggers":"door3north" },
+        { "type":"trigger", "width":8, "height":32, "x":256, "y":280, "triggerAction":"open", "triggers":"door9east" },
+        { "type":"trigger", "width":8, "height":32, "x":368, "y":360, "triggerAction":"open", "triggers":"door4east" },
+        { "type":"trigger", "width":8, "height":32, "x":368, "y":280, "triggerAction":"open", "triggers":"doorAeast" },
+        { "type":"trigger", "width":8, "height":32, "x":480, "y":280, "triggerAction":"open", "triggers":"doorBeast" },
+        { "type":"trigger", "width":8, "height":32, "x":592, "y":280, "triggerAction":"open", "triggers":"doorCeast" },
+        { "type":"trigger", "width":32, "height":8, "x":648, "y":320, "triggerAction":"open", "triggers":"doorDsouth" },
+        { "type":"trigger", "width":8, "height":32, "x":616, "y":360, "triggerAction":"open", "triggers":"door7west" },
+        { "type":"trigger", "width":32, "height":8, "x":536, "y":344, "triggerAction":"open", "triggers":"door6north" },
+        { "type":"trigger", "width":32, "height":8, "x":648, "y":264, "triggerAction":"open", "triggers":"doorDnorth" },
+        { "type":"trigger", "width":8, "height":32, "x":616, "y":200, "triggerAction":"open", "triggers":"doorJwest" },
+        { "type":"trigger", "width":8, "height":32, "x":504, "y":200, "triggerAction":"open", "triggers":"doorIwest" },
+        { "type":"trigger", "width":32, "height":8, "x":648, "y":184, "triggerAction":"open", "triggers":"doorJnorth" },
+        { "type":"trigger", "width":32, "height":8, "x":648, "y":104, "triggerAction":"open", "triggers":"doorLnorth" },
+        { "type":"trigger", "width":32, "height":8, "x":648, "y":64, "phobiaArea":"off", "triggerAction":"close", "triggers":"doorLnorth" },
+        { "type":"trigger", "width":8, "height":24, "x":640, "y":64, "phobiaArea":"off", "triggerAction":"close", "triggers":"doorLnorth" },
+        { "type":"trigger", "width":8, "height":24, "x":680, "y":64, "phobiaArea":"off", "triggerAction":"close", "triggers":"doorLnorth" },
+        { "type":"trigger", "width":32, "height":8, "x":88, "y":80, "phobiaArea":"on", "triggerAction":"open", "triggers":"doorKnorth" },
+        { "type":"trigger", "width":32, "height":8, "x":88, "y":160, "triggerAction":"open", "triggers":"doorKsouth" },
+        { "type":"trigger", "width":8, "height":32, "x":144, "y":200, "triggerAction":"open", "triggers":"doorEeast" },
+        { "type":"trigger", "width":8, "height":32, "x":256, "y":200, "triggerAction":"open", "triggers":"doorFeast" },
+        { "type":"trigger", "width":8, "height":32, "x":368, "y":200, "triggerAction":"open", "triggers":"doorGeast" },
+        { "type":"trigger", "width":16, "height":48, "x":424, "y":40, "triggerAction":"close", "triggers":"doorIwest" },
+        { "type":"trigger", "width":32, "height":8, "x":312, "y":240, "triggerAction":"open", "triggers":"doorGsouth" },
+        { "type":"trigger", "width":96, "height":8, "x":280, "y":464, "phobiaArea":"on", "triggerAction":"close", "triggers":"door1south" },
+        { "type":"trigger", "width":32, "height":8, "x":424, "y":240, "triggerAction":"open", "triggers":"doorHsouth" },
+        { "type":"trigger", "width":32, "height":8, "x":312, "y":320, "triggerAction":"open", "triggers":"doorAsouth" },
+        { "type":"trigger", "width":8, "height":32, "x":280, "y":280, "triggerAction":"open", "triggers":"door9east" },
+        { "type":"trigger", "width":32, "height":8, "x":88, "y":320, "triggerAction":"open", "triggers":"door8south" },
+        { "type":"trigger", "width":8, "height":40, "x":144, "y":352, "triggerAction":"open", "triggers":"door2east" },
+        { "type":"trigger", "width":8, "height":32, "x":256, "y":360, "triggerAction":"open", "triggers":"door4west" },
+        { "type":"trigger", "width":8, "height":64, "x":136, "y":344, "triggerAction":"open", "triggers":"door1south" },
+        { "set":{ "_":[ "stencil", "player" ] }, "x":608, "y":528 },
+        { "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":712, "y":360 },
+        { "type":"trigger", "width":32, "height":8, "x":88, "y":240, "triggerAction":"open", "triggers":"doorEsouth" },
+        { "type":"trigger", "width":96, "height":8, "x":56, "y":120, "triggerAction":"close", "triggers":"doorKnorth" },
+        { "type":"door1south", "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":312, "y":488 },
+        { "type":"door1north", "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":312, "y":408 },
+        { "type":"door4west", "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":272, "y":360 },
+        { "type":"door4east", "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":376, "y":360 },
+        { "type":"door8south", "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":88, "y":336 },
+        { "type":"door2east", "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":160, "y":360 },
+        { "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":496, "y":360 },
+        { "type":"door7west", "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":600, "y":360 },
+        { "type":"doorDsouth", "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":648, "y":336 },
+        { "type":"door6north", "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":536, "y":328 },
+        { "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":424, "y":336 },
+        { "type":"doorAsouth", "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":312, "y":336 },
+        { "type":"door3north", "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":200, "y":328 },
+        { "type":"door9west", "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":160, "y":280 },
+        { "type":"doorEsouth", "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":88, "y":256 },
+        { "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":200, "y":256 },
+        { "type":"door9east", "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":272, "y":280 },
+        { "type":"doorAeast", "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":384, "y":280 },
+        { "type":"doorBeast", "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":496, "y":280 },
+        { "type":"doorCeast", "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":608, "y":280 },
+        { "type":"doorDnorth", "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":648, "y":248 },
+        { "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":536, "y":256 },
+        { "type":"doorHsouth", "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":424, "y":256 },
+        { "type":"doorGsouth", "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":312, "y":256 },
+        { "type":"doorEeast", "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":160, "y":200 },
+        { "type":"doorFeast", "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":272, "y":200 },
+        { "type":"doorGeast", "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":384, "y":200 },
+        { "type":"doorIwest", "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":488, "y":200 },
+        { "type":"doorJwest", "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":600, "y":200 },
+        { "type":"doorJnorth", "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":648, "y":168 },
+        { "type":"doorLnorth", "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":648, "y":96 },
+        { "type":"doorKsouth", "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":88, "y":176 },
+        { "type":"doorKnorth", "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":88, "y":96 },
+        { "set":{ "_":[ "stencil", "darkness" ] }, "width":112, "height":80, "x":272, "y":416 },
+        { "set":{ "_":[ "stencil", "darkness" ] }, "width":112, "height":80, "x":272, "y":336 },
+        { "set":{ "_":[ "stencil", "darkness" ] }, "width":112, "height":80, "x":160, "y":336 },
+        { "set":{ "_":[ "stencil", "darkness" ] }, "width":112, "height":80, "x":48, "y":336 },
+        { "set":{ "_":[ "stencil", "darkness" ] }, "width":112, "height":80, "x":384, "y":336 },
+        { "set":{ "_":[ "stencil", "darkness" ] }, "width":112, "height":80, "x":496, "y":336 },
+        { "set":{ "_":[ "stencil", "darkness" ] }, "width":112, "height":80, "x":608, "y":336 },
+        { "set":{ "_":[ "stencil", "darkness" ] }, "width":112, "height":80, "x":160, "y":256 },
+        { "set":{ "_":[ "stencil", "darkness" ] }, "width":112, "height":80, "x":608, "y":256 },
+        { "set":{ "_":[ "stencil", "darkness" ] }, "width":112, "height":80, "x":48, "y":256 },
+        { "set":{ "_":[ "stencil", "darkness" ] }, "width":112, "height":80, "x":496, "y":256 },
+        { "set":{ "_":[ "stencil", "darkness" ] }, "width":112, "height":80, "x":272, "y":256 },
+        { "set":{ "_":[ "stencil", "darkness" ] }, "width":112, "height":80, "x":384, "y":256 },
+        { "set":{ "_":[ "stencil", "darkness" ] }, "width":112, "height":80, "x":160, "y":176 },
+        { "set":{ "_":[ "stencil", "darkness" ] }, "width":112, "height":80, "x":608, "y":176 },
+        { "set":{ "_":[ "stencil", "darkness" ] }, "width":112, "height":80, "x":48, "y":176 },
+        { "set":{ "_":[ "stencil", "darkness" ] }, "width":112, "height":80, "x":496, "y":176 },
+        { "set":{ "_":[ "stencil", "darkness" ] }, "width":112, "height":80, "x":272, "y":176 },
+        { "set":{ "_":[ "stencil", "darkness" ] }, "width":112, "height":80, "x":384, "y":176 },
+        { "set":{ "_":[ "stencil", "darkness" ] }, "width":112, "height":80, "x":48, "y":96 },
+        { "set":{ "_":[ "stencil", "darkness" ] }, "width":112, "height":80, "x":608, "y":96 },
+        { "set":{ "_":[ "stencil", "darkness" ] }, "width":688, "height":64, "x":40, "y":32 },
+        { "set":{ "_":[ "stencil", "darkness" ] }, "width":688, "height":64, "x":40, "y":496 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":352, "y":504, "aggroDistance":0 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":376, "y":504, "aggroDistance":0 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":400, "y":504, "aggroDistance":0 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":424, "y":504, "aggroDistance":0 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":448, "y":504, "aggroDistance":0 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":472, "y":504, "aggroDistance":0 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":120, "y":72, "aggroDistance":0 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":144, "y":72, "aggroDistance":0 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":168, "y":72, "aggroDistance":0 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":216, "y":72, "aggroDistance":0 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":192, "y":72, "aggroDistance":0 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":240, "y":72, "aggroDistance":0 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":264, "y":72, "aggroDistance":0 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":432, "y":288, "aggroDistance":0 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":96, "y":280, "aggroDistance":0 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":72, "y":304, "aggroDistance":0 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":656, "y":128, "aggroDistance":0 },
+        { "set":{ "_":[ "stencil", "weaponRespawn" ] }, "x":96, "y":48, "weapons":[ 1 ] },
+        { "set":{ "_":[ "stencil", "weaponRespawn" ] }, "x":320, "y":528, "weapons":[ 1 ] },
+        { "set":{ "_":[ "stencil", "darkness" ] }, "width":8, "height":80, "x":160, "y":96 },
+        { "set":{ "_":[ "stencil", "darkness" ] }, "width":8, "height":80, "x":600, "y":96 },
+        { "set":{ "_":[ "stencil", "darkness" ] }, "width":8, "height":304, "x":40, "y":112 },
+        { "set":{ "_":[ "stencil", "darkness" ] }, "width":8, "height":320, "x":720, "y":96 },
+        { "set":{ "_":[ "stencil", "darkness" ] }, "width":432, "height":8, "x":168, "y":168 },
+        { "set":{ "_":[ "stencil", "darkness" ] }, "width":224, "height":8, "x":48, "y":416 },
+        { "set":{ "_":[ "stencil", "darkness" ] }, "width":336, "height":8, "x":384, "y":416 },
+        { "set":{ "_":[ "stencil", "darkness" ] }, "width":8, "height":72, "x":264, "y":424 },
+        { "set":{ "_":[ "stencil", "darkness" ] }, "width":8, "height":72, "x":384, "y":424 }
+      ],
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "nextScene":"cutscene5",
+      "patientPortraitX":96,
+      "phobiaArea":1,
+      "phobiaAreaAmount":0.17,
+      "tilemap":{
+        "tileWidth":8,
+        "tileHeight":8,
+        "map":[
+          "                                                                                                ",
+          "                                                                                                ",
+          "                                                                                                ",
+          "                                                                                                ",
+          "     T------------------------------------------------------------------------------------Y     ",
+          "     I,.,....;:::;:,,;:.;.,:.;:::.,:,;;;:;::.;,.,;,,:...;:,;.,,,.,:::,;,,:;...,,,:.::,;;;,H     ",
+          "     IxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxH     ",
+          "     IyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyH     ",
+          "     IyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyH     ",
+          "     Ixx13xxxxxxxxxxxxxxxxxxxxxxxxxx13x13x13xxxxxxxxxxxxxxxxxxxxxxxxxxx13x13x13xxxxxxxx13xH     ",
+          "     I;.79,:;,:,::,,,;;,.:,,;:;;.;,:79:79:79;;,..::.,:,:;..:::;;:,;:,,:79:79,79:.,,;;;;79.H     ",
+          "     L____#...;#________________________________________________________________#,.,;#____J     ",
+          "      T---#.,:.#---Y                                                        T---#.,:.#---Y      ",
+          "      I:::,;;,,:,..H                                                        I:::,;;,,:,..H      ",
+          "      #.:;,.;..:;..#                                                        #.:;,.;..:;..#      ",
+          "     #,;.:;:;,:::,;:#                                                      #,;.:;:;,:::,;:#     ",
+          "     #,,::,;.,;:;,;:#                                                      #,,::,;.,;:;,;:#     ",
+          "     #;..,,::,:,,,.:#                                                      #;..,,::,:,,,.:#     ",
+          "     #,;;::;.,;,::;.#                                                      #,;;::;.,;,::;.#     ",
+          "      #..,;,::;:::,#                                                        #..,;,::;:::,#      ",
+          "      I..::;,;;.,.;H                                                        I..::;,;;.,.;H      ",
+          "      L___#..;,#___J     ####          ####          ####          ####     L___#..;,#___J      ",
+          "      T---#.,:.#---YT---#.,:.#---YT---#.,:.#---YT---#.,:.#---YT---#.,:.#---YT---#.,:.#---Y      ",
+          "      I:::,;;,,:,..HI:::,;;,,:,..HI:::,;;,,:,..HI:::,;;,,:,..HI:::,;;,,:,..HI:::,;;,,:,..H      ",
+          "      #.:;,.;..:;..##.:;,.;..:;..##.:;,.;..:;..##.:;,.;..:;..##.:;,.;..:;..##.:;,.;..:;..#      ",
+          "      ,;.:;:;,:::,;:,;.:;:;,:::,;:,;.:;:;,:::,;:,;.:;:;,:::,;:,;.:;:;,:::,;:,;.:;:;,:::,;:#     ",
+          "     #,,::,;.,;:;,;:,,::,;.,;:;,;:,,::,;.,;:;,;:,,::,;.,;:;,;:,,::,;.,;:;,;:,,::,;.,;:;,;:#     ",
+          "     #;..,,::,:,,,.:;..,,::,:,,,.:;..,,::,:,,,.:;..,,::,:,,,.:;..,,::,:,,,.:;..,,::,:,,,.:#     ",
+          "     #,;;::;.,;,::;.,;;::;.,;,::;.,;;::;.,;,::;.,;;::;.,;,::;.,;;::;.,;,::;.,;;::;.,;,::;.#     ",
+          "      #..,;,::;:::,##..,;,::;:::,##..,;,::;:::,##..,;,::;:::,##..,;,::;:::,##..,;,::;:::,#      ",
+          "      I..::;,;;.,.;HI..::;,;;.,.;HI..::;,;;.,.;HI..::;,;;.,.;HI..::;,;;.,.;HI..::;,;;.,.;H      ",
+          "      L___#..;,#___JL___#..;,#___JL___#..;,#___JL___#..;,#___JL___#..;,#___JL___#..;,#___J      ",
+          "      T---#.,:.#---YT---#.,:.#---YT---#.,:.#---YT---#.,:.#---YT---#.,:.#---YT---#.,:.#---Y      ",
+          "      I:::,;;,,:,..HI:::,;;,,:,..HI:::,;;,,:,..HI:::,;;,,:,..HI:::,;;,,:,..HI:::,;;,,:,..H      ",
+          "      #.:;,.;..:;..##.:;,.;..:;..##.:;,.;..:;..##.:;,.;..:;..##.:;,.;..:;..##.:;,.;..:;..#      ",
+          "     #,;.:;:;,:::,;:,;.:;:;,:::,;:,;.:;:;,:::,;:,;.:;:;,:::,;:,;.:;:;,:::,;:,;.:;:;,:::,;:#     ",
+          "     #,,::,;.,;:;,;:,,::,;.,;:;,;:,,::,;.,;:;,;:,,::,;.,;:;,;:,,::,;.,;:;,;:,,::,;.,;:;,;:#     ",
+          "     #;..,,::,:,,,.:;..,,::,:,,,.:;..,,::,:,,,.:;..,,::,:,,,.:;..,,::,:,,,.:;..,,::,:,,,.:#     ",
+          "     #,;;::;.,;,::;.,;;::;.,;,::;.,;;::;.,;,::;.,;;::;.,;,::;.,;;::;.,;,::;.,;;::;.,;,::;.#     ",
+          "      #..,;,::;:::,##..,;,::;:::,##..,;,::;:::,##..,;,::;:::,##..,;,::;:::,##..,;,::;:::,#      ",
+          "      I..::;,;;.,.;HI..::;,;;.,.;HI..::;,;;.,.;HI..::;,;;.,.;HI..::;,;;.,.;HI..::;,;;.,.;H      ",
+          "      L___#..;,#___JL___#..;,#___JL___#..;,#___JL___#..;,#___JL___#..;,#___JL___#..;,#___J      ",
+          "      T---#.,:.#---YT---#.,:.#---YT---#.,:.#---YT---#.,:.#---YT---#.,:.#---YT---#.,:.#---Y      ",
+          "      I:::,;;,,:,..HI:::,;;,,:,..HI:::,;;,,:,..HI:::,;;,,:,..HI:::,;;,,:,..HI:::,;;,,:,..H      ",
+          "      #.:;,.;..:;..##.:;,.;..:;..##.:;,.;..:;..##.:;,.;..:;..##.:;,.;..:;..##.:;,.;..:;..#      ",
+          "     #,;.:;:;,:::,;:,;.:;:;,:::,;:,;.:;:;,:::,;:,;.:;:;,:::,;:,;.:;:;,:::,;:,;.:;:;,:::,;:#     ",
+          "     #,,::,;.,;:;,;:,,::,;.,;:;,;:,,::,;.,;:;,;:,,::,;.,;:;,;:,,::,;.,;:;,;:,,::,;.,;:;,;:#     ",
+          "     #;..,,::,:,,,.:;..,,::,:,,,.:;..,,::,:,,,.:;..,,::,:,,,.:;..,,::,:,,,.:;..,,::,:,,,.:#     ",
+          "     #,;;::;.,;,::;.,;;::;.,;,::;.,;;::;.,;,::;.,;;::;.,;,::;.,;;::;.,;,::;.,;;::;.,;,::;.#     ",
+          "      #..,;,::;:::,##..,;,::;:::,##..,;,::;:::,##..,;,::;:::,##..,;,::;:::,##..,;,::;:::,#      ",
+          "      I..::;,;;.,.;HI..::;,;;.,.;HI..::;,;;.,.;HI..::;,;;.,.;HI..::;,;;.,.;HI..::;,;;.,.;H      ",
+          "      L___#..;,#___JL___#..;,#___JL___#..;,#___JL___#..;,#___JL___#..;,#___JL___#..;,#___J      ",
+          "           ####          ####     T---#.,:.#---Y     ####          ####          ####           ",
+          "                                  I:::,;;,,:,..H                                                ",
+          "                                  #.:;,.;..:;..#                                                ",
+          "                                 #,;.:;:;,:::,;:#                                               ",
+          "                                 #,,::,;.,;:;,;:#                                               ",
+          "                                 #;..,,::,:,,,.:#                                               ",
+          "                                 #,;;::;.,;,::;.#                                               ",
+          "                                  #..,;,::;:::,#                                                ",
+          "                                  I..::;,;;.,.;H                                                ",
+          "                                  L___#..;,#___J                                                ",
+          "     T--------------------------------#.,::#----------------------------------------------Y     ",
+          "     I,;;.;,:;,.,.,.;;:..,,::.13,13,13,:.;,..,,:::,:;,,,;,;,:.,13:13,13,,:.;:.;:.,.,,,:.,:H     ",
+          "     Ixxxxxxxxxxxxxxxxxxxxxxxx79x79x79xxxxxxxxxxxxxxxxxxxxxxxxx79x79x79xxxxxxxxxxxxxxxxxxxH     ",
+          "     IyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyH     ",
+          "     IyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyyH     ",
+          "     IxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxH     ",
+          "     I,;,,:,..:,.,,:.;,.:.,;.;:::;;.;.;:.:,,;::::.:.;,.:;;,:.;::;:;;;;.,,;;,,:;;;,:,;::::,H     ",
+          "     L____________________________________________________________________________________J     ",
+          "                                                                                                ",
+          "                                                                                                "
+        ]
+      }
+    },
+    "stage5":{
+      "object":[
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":328, "y":312, "aggroDistance":100 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":328, "y":216, "aggroDistance":100 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":384, "y":344, "aggroDistance":100 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":384, "y":184, "aggroDistance":100 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":480, "y":184, "aggroDistance":100 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":488, "y":352, "aggroDistance":100 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":304, "y":440, "aggroDistance":100 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":416, "y":440, "aggroDistance":100 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":240, "y":432, "aggroDistance":100 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":208, "y":456, "aggroDistance":100 },
+        { "set":{ "_":[ "stencil", "weaponRespawn" ] }, "x":344, "y":272 },
+        { "set":{ "_":[ "stencil", "player" ] }, "x":88, "y":264 },
+        { "set":{ "_":[ "stencil", "weapon" ] }, "x":144, "y":184, "frame":0 },
+        { "set":{ "_":[ "stencil", "weapon" ] }, "x":360, "y":440, "frame":0 },
+        { "type":"discoIn", "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":272, "y":256 },
+        { "type":"discoOut", "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":160, "y":256 },
+        { "type":"trigger", "width":8, "height":32, "x":152, "y":256, "triggerAction":"open", "triggers":"discoOut" },
+        { "type":"trigger", "width":8, "height":72, "x":208, "y":232, "triggerAction":"close", "triggers":"discoOut" },
+        { "type":"trigger", "width":8, "height":32, "x":264, "y":256, "triggerAction":"open", "triggers":"discoIn" },
+        { "type":"trigger", "width":8, "height":32, "x":296, "y":256, "triggerAction":"close", "triggers":"discoIn" },
+        { "type":"trigger", "width":24, "height":8, "x":280, "y":248, "triggerAction":"close", "triggers":"discoIn" },
+        { "type":"trigger", "width":24, "height":8, "x":280, "y":288, "triggerAction":"close", "triggers":"discoIn" },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":208, "y":184, "aggroDistance":100 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":168, "y":160, "aggroDistance":100 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":168, "y":200, "aggroDistance":100 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":360, "y":408, "aggroDistance":100 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":360, "y":464, "aggroDistance":100 },
+        { "set":{ "_":[ "stencil", "weapon" ] }, "x":208, "y":432, "frame":0 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":176, "y":432, "aggroDistance":100 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":208, "y":408, "aggroDistance":100 }
+      ],
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "nextScene":"cutscene6",
+      "patientPortraitX":128,
+      "phobiaBlood":1,
+      "tilemap":{
+        "tileWidth":8,
+        "tileHeight":8,
+        "map":[
+          "                                                                                                ",
+          "                                                                                                ",
+          "                                                                                                ",
+          "                                                                                                ",
+          "                                                                                                ",
+          "                                                                                                ",
+          "                                                                                                ",
+          "                                                                                                ",
+          "                                                                                                ",
+          "                                                                                                ",
+          "                                                                                                ",
+          "                                                                                                ",
+          "                                                                                                ",
+          "                                                                                                ",
+          "                                                                                                ",
+          "                                                                                                ",
+          "                                                                                                ",
+          "                                                                                                ",
+          "               T___________________________________________________________Y                    ",
+          "               HT----------------YT---------------------------------------YI                    ",
+          "               HI,,,:,:;;,:;::.:;HIab:.ab:.ab:.ab:.ab:.ab:.ab:.ab:.ab12223HI                    ",
+          "               HI;,.,.;;:.,,,::.:LJcd,,cd,,cd,,cd,,cd,,cd,,cd,,cd,,cd45556HI                    ",
+          "               HI...,,..;.:..,;.:;z:,ab:,ab:,ab:,ab:,ab:,ab:,ab:,ab1345556HI                    ",
+          "               HI;.;,,;;...;::,,.;z;.cd;.cd;.cd;.cd;.cd;.cd;.cd;.cd4645556HI                    ",
+          "               HI:;.;,:;::;:,:;,.:zab:.ab:.ab:.ab:.ab:.ab:.ab:.ab:.7945556HI                    ",
+          "               HI;:;.,:,;;.;:,,,,:zcd,,cd,,cd,,cd,,cd,,cd,,cd,,cd,,dd45556HI                    ",
+          "               HI,:;;;;;.;:::.:;;TY:,ab:,ab:,ab:,ab:,ab:,ab:,ab:,ab.;45556HI                    ",
+          "       5 5 5 5 HI;::::,;,,.;,,,.,HI;.cd;.cd;.cd;.cd;.cd;.cd;.cd;.cd:;45556HI                    ",
+          "       4;..,;,;HL___Y555555555555HIab,,ab,,ab,,ab,,ab,,ab,,ab,,ab,,ab45556HI                    ",
+          "       4:;,;,..L---YI:,;::;,:;.,:HIcd.;cd.;cd.;cd.;cd.;cd.;cd.;cd.;cd45556HI                    ",
+          "       4.,,.;.:;,,:HI:,:.;.,,:;;;HI:,ab;,ab,:ab;;d122222222222222222295556HI                    ",
+          "       4.;:..,.,###L#.;:::::.,;.:LJ..cd.:cd;,cd,.d45555#5#5#5#5#5#5#5#5#56HI                    ",
+          "       4.,,:,;:.[[[;,:,..:,.,:,,,;zab:.ab:.ab:.ab,4513#5#5#5#5#5#5#5#5#5#6HI                    ",
+          "       4..;,:,.,[[[;,;.;.;.,:,;..;zcd,,cd,,cd,,cd;45465#5#5#5#5#5#5#5#5#56HI                    ",
+          "       4,.:::,..[[[:,.,;,,;.,,.,,:z:,ab:,ab:,ab:.d4546#5#5#5#5#5#5#5#5#5#6HI                    ",
+          "       4,:.,.::,[[[:,;,.:,:,,.;;:;z;.cd;.cd;.cd;.d45465#5#5#5#5#5#5#5#5#56HI                    ",
+          "       4:;;.;:;:###TY:::;::.;.,;;TYab:.ab:.ab:.dd;4579#5#5#5#5#5#5#5#5#5#6HI                    ",
+          "       4,.:::,..;;.HI,,:,:.:.,:;;HIcd,,cd,,cd,,dd.45555#5#5#5#5#5#5#5#5#56HI                    ",
+          "       4,:.,.::;;;.HL____________JI:,ab:,ab:,ab,,d788888888888888888835556HI                    ",
+          "       4:;.,,.:.;.,HT------------YI;.cd;.cd;.cd;.dd:;dd;.dd;;dd,,dd:,45556HI                    ",
+          "       5 5 5 5 5 5 HI:.,;.,..::,;HIab:.ab:.ab:.ab:.ab:.ab:.ab:.ab:.dd45556HI                    ",
+          "                   HI.;;.;:.;.:,.LJcd,,cd,,cd,,cd,,cd,,cd,,cd,,cd,,dd45556HI                    ",
+          "                   HI,;.;,.:,,;.;.z:,ab:,ab:,ab:,ab:,ab:,ab:,ab:,ab,.45556HI                    ",
+          "                   HI:,;,,;.,::..;z;.cd;.cd;.cd;.cd;.cd;.cd;.cd;.cd1345556HI                    ",
+          "                   HI:.;,.,...:::.zab,,ab,,ab,,ab,,ab,,ab,,ab,,ab,,4645556HI                    ",
+          "                   HI..,:,.:;::,.:zcd.;cd.;cd.;cd.;cd.;cd.;cd.;cd.;7945556HI                    ",
+          "                   HI:,,;::;.;.;,TY:,ab;,ab,:ab:,ab;,ab:,ab;,ab,:ab,;45556HI                    ",
+          "                   HI;.:.;,;:;;,;HI..cd.:cd;,cd..cd.:cd..cd.:cd;,cd;:78889HI                    ",
+          "                   HI.;:,:.;..,,:HL_______________YxxxxT__________________JI                    ",
+          "                   HI,;:.:,;,;..:HT---------------J;;,:L-YT----------------J                    ",
+          "                   HI.,::.;,;;.;;HI:.;,;,;,,..,:,,;:,:;,.HI                                     ",
+          "                   HI:.,.,:,;..;.HI:;,;,.:.,;::..;:.;:.::HI                                     ",
+          "                   HI;,.;.,:,,::,HI;.,;;;,,,.:.:::;:,;:;,HI                                     ",
+          "                   HI;;:;,:;:,,,;HI,,::;,.,.,:.,:,,.,...:HI                                     ",
+          "                   HI,;...;;;:.,;HI,.:;,..;..,,,.;,:;,;:.HI                                     ",
+          "                   HI.::.:.::..,.HI..;.,;:;;.;::.,.;;;.::HI                                     ",
+          "                   HI;;.:;:;:;.:.HI;,:.::,.,.:,;.,;,;,,,;HI                                     ",
+          "                   HI,..;;,:,.;;,HI.;;;;:,...;;:,::::,,;;HI                                     ",
+          "                   HI.:;:::..:.;,HI,,:,,;.,,:;..,:.:...;;HI                                     ",
+          "                   HI.;,.:,.;;;.:HI:.;,;,::.,:;:..,:,.,,:HI                                     ",
+          "                   HI,..,..;...:.HI.,,;:;:,,::;,;,:;:;;:,HI                                     ",
+          "                   HL____________JL______________________JI                                     ",
+          "                   L--------------------------------------J                                     ",
+          "                                                                                                ",
+          "                                                                                                ",
+          "                                                                                                ",
+          "                                                                                                ",
+          "                                                                                                ",
+          "                                                                                                ",
+          "                                                                                                ",
+          "                                                                                                ",
+          "                                                                                                "
+        ]
+      }
+    },
+    "stage6":{
+      "object":[
+        { "type":"doorStart", "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":128, "y":384 },
+        { "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":128, "y":320 },
+        { "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":128, "y":448 },
+        { "type":"door2west", "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":184, "y":320 },
+        { "type":"door2west", "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":192, "y":320 },
+        { "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":184, "y":384 },
+        { "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":192, "y":384 },
+        { "type":"door7east", "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":184, "y":448 },
+        { "type":"door7east", "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":192, "y":448 },
+        { "type":"door2east", "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":248, "y":320 },
+        { "type":"door2east", "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":256, "y":320 },
+        { "type":"door6west", "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":248, "y":384 },
+        { "type":"door6west", "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":256, "y":384 },
+        { "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":248, "y":448 },
+        { "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":256, "y":448 },
+        { "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":312, "y":320 },
+        { "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":312, "y":384 },
+        { "type":"door9east", "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":312, "y":448 },
+        { "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":144, "y":304 },
+        { "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":208, "y":304 },
+        { "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":272, "y":304 },
+        { "type":"door4north", "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":144, "y":360 },
+        { "type":"door4north", "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":144, "y":368 },
+        { "type":"door4south", "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":144, "y":424 },
+        { "type":"door4south", "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":144, "y":432 },
+        { "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":144, "y":488 },
+        { "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":208, "y":488 },
+        { "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":272, "y":488 },
+        { "type":"door6south", "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":272, "y":424 },
+        { "type":"door6south", "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":272, "y":432 },
+        { "type":"door8north", "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":208, "y":424 },
+        { "type":"door8north", "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":208, "y":432 },
+        { "type":"door5north", "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":208, "y":360 },
+        { "type":"door5north", "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":208, "y":368 },
+        { "type":"door4south", "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":272, "y":360 },
+        { "type":"door4south", "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":272, "y":368 },
+        { "type":"trigger", "width":32, "height":8, "x":144, "y":416, "triggerAction":"open", "triggers":"door4south" },
+        { "type":"trigger", "width":8, "height":32, "x":176, "y":448, "triggerAction":"open", "triggers":"door7east" },
+        { "type":"trigger", "width":32, "height":8, "x":208, "y":440, "triggerAction":"open", "triggers":"door8north" },
+        { "type":"trigger", "width":32, "height":8, "x":208, "y":376, "triggerAction":"open", "triggers":"door5north" },
+        { "type":"trigger", "width":8, "height":32, "x":240, "y":320, "triggerAction":"open", "triggers":"door2east" },
+        { "type":"trigger", "width":32, "height":8, "x":272, "y":352, "triggerAction":"open", "triggers":"door3south" },
+        { "type":"trigger", "width":32, "height":8, "x":272, "y":416, "triggerAction":"open", "triggers":"door6south" },
+        { "type":"trigger", "width":8, "height":32, "x":304, "y":448, "triggerAction":"open", "triggers":"door9east" },
+        { "type":"door9east", "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":320, "y":448 },
+        { "type":"trigger", "width":8, "height":32, "x":200, "y":320, "triggerAction":"open", "triggers":"door2west" },
+        { "type":"trigger", "width":32, "height":8, "x":144, "y":376, "triggerAction":"open", "triggers":"door4north" },
+        { "type":"trigger", "width":8, "height":32, "x":264, "y":384, "triggerAction":"open", "triggers":"door6west" },
+        { "type":"trigger", "width":8, "height":32, "x":112, "y":384, "phobiaArea":"on", "triggerAction":"open", "triggers":"doorStart" },
+        { "type":"doorStart", "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":120, "y":384 },
+        { "type":"trigger", "width":8, "height":48, "x":344, "y":440, "phobiaArea":"off", "triggerAction":"close", "triggers":"door9east" },
+        { "type":"doorAgora", "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":488, "y":448 },
+        { "type":"doorAgora", "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":496, "y":448 },
+        { "type":"trigger", "width":8, "height":48, "x":480, "y":440, "phobiaArea":"on", "triggerAction":"open", "triggers":"doorAgora" },
+        { "type":"trigger", "width":8, "height":32, "x":520, "y":448, "triggerAction":"close", "triggers":"doorAgora" },
+        { "type":"trigger", "width":24, "height":8, "x":504, "y":440, "triggerAction":"close", "triggers":"doorAgora" },
+        { "type":"trigger", "width":24, "height":8, "x":504, "y":480, "triggerAction":"close", "triggers":"doorAgora" },
+        { "type":"doorAgoraOut", "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":664, "y":288 },
+        { "type":"doorAgoraOut", "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":664, "y":280 },
+        { "type":"trigger", "width":32, "height":8, "x":664, "y":296, "triggerAction":"open", "triggers":"doorAgoraOut" },
+        { "type":"trigger", "width":32, "height":8, "x":664, "y":256, "phobiaArea":"off", "triggerAction":"close", "triggers":"doorAgoraOut" },
+        { "type":"doorArachno", "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":608, "y":128 },
+        { "type":"doorArachno", "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":600, "y":128 },
+        { "type":"trigger", "width":8, "height":32, "x":624, "y":128, "triggerAction":"open", "triggers":"doorArachno" },
+        { "type":"trigger", "width":24, "height":8, "x":576, "y":120, "triggerAction":"close", "triggers":"doorArachno" },
+        { "type":"trigger", "width":8, "height":32, "x":576, "y":128, "triggerAction":"close", "triggers":"doorArachno" },
+        { "type":"trigger", "width":24, "height":8, "x":576, "y":160, "triggerAction":"close", "triggers":"doorArachno" },
+        { "type":"trigger", "width":8, "height":32, "x":592, "y":128, "triggerAction":"open", "triggers":"doorArachnoOut" },
+        { "type":"doorArachnoOut", "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":416, "y":152 },
+        { "type":"doorArachnoOut", "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":408, "y":152 },
+        { "type":"trigger", "width":8, "height":32, "x":424, "y":152, "triggerAction":"close", "triggers":"doorArachnoOut" },
+        { "type":"doorBoiler", "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":552, "y":80 },
+        { "type":"doorBoiler", "set":{ "_":[ "stencil", "horizontalDoor" ] }, "x":552, "y":88 },
+        { "type":"trigger", "width":8, "height":32, "x":424, "y":152, "triggerAction":"open", "triggers":"doorBoiler" },
+        { "type":"trigger", "width":8, "height":32, "x":512, "y":40, "triggerAction":"open", "triggers":"doorArachnoOut" },
+        { "type":"doorHemo", "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":280, "y":152 },
+        { "type":"doorHemo", "set":{ "_":[ "stencil", "verticalDoor" ] }, "x":272, "y":152 },
+        { "type":"trigger", "width":8, "height":32, "x":288, "y":152, "triggerAction":"open", "triggers":"doorHemo" },
+        { "type":"trigger", "width":24, "height":8, "x":248, "y":144, "triggerAction":"close", "triggers":"doorHemo" },
+        { "type":"trigger", "width":24, "height":8, "x":248, "y":184, "triggerAction":"close", "triggers":"doorHemo" },
+        { "type":"trigger", "width":8, "height":32, "x":248, "y":152, "triggerAction":"close", "triggers":"doorHemo" },
+        { "set":{ "_":[ "stencil", "player" ] }, "x":32, "y":392 },
+        { "set":{ "_":[ "stencil", "darkness" ] }, "width":120, "height":80, "x":8, "y":360 },
+        { "set":{ "_":[ "stencil", "darkness" ] }, "width":64, "height":64, "x":128, "y":304 },
+        { "set":{ "_":[ "stencil", "darkness" ] }, "width":64, "height":64, "x":128, "y":368 },
+        { "set":{ "_":[ "stencil", "darkness" ] }, "width":64, "height":64, "x":128, "y":432 },
+        { "set":{ "_":[ "stencil", "darkness" ] }, "width":64, "height":64, "x":192, "y":304 },
+        { "set":{ "_":[ "stencil", "darkness" ] }, "width":64, "height":64, "x":192, "y":368 },
+        { "set":{ "_":[ "stencil", "darkness" ] }, "width":64, "height":64, "x":256, "y":432 },
+        { "set":{ "_":[ "stencil", "darkness" ] }, "width":64, "height":64, "x":256, "y":304 },
+        { "set":{ "_":[ "stencil", "darkness" ] }, "width":64, "height":64, "x":256, "y":368 },
+        { "set":{ "_":[ "stencil", "darkness" ] }, "width":64, "height":64, "x":192, "y":432 },
+        { "set":{ "_":[ "stencil", "darkness" ] }, "width":176, "height":64, "x":320, "y":432 },
+        { "set":{ "_":[ "stencil", "darkness" ] }, "width":216, "height":280, "x":496, "y":288 },
+        { "set":{ "_":[ "stencil", "darkness" ] }, "width":96, "height":168, "x":608, "y":120 },
+        { "set":{ "_":[ "stencil", "darkness" ] }, "width":192, "height":176, "x":416, "y":88 },
+        { "set":{ "_":[ "stencil", "darkness" ] }, "width":120, "height":64, "x":488, "y":24 },
+        { "set":{ "_":[ "stencil", "darkness" ] }, "width":136, "height":48, "x":280, "y":144 },
+        { "set":{ "_":[ "stencil", "darkness" ] }, "width":264, "height":248, "x":16, "y":8 },
+        { "set":{ "_":[ "stencil", "darkness" ] }, "width":208, "height":8, "x":120, "y":296 },
+        { "set":{ "_":[ "stencil", "darkness" ] }, "width":8, "height":128, "x":320, "y":304 },
+        { "set":{ "_":[ "stencil", "darkness" ] }, "width":192, "height":8, "x":120, "y":496 },
+        { "set":{ "_":[ "stencil", "darkness" ] }, "width":8, "height":56, "x":120, "y":440 },
+        { "set":{ "_":[ "stencil", "darkness" ] }, "width":8, "height":56, "x":120, "y":304 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":544, "y":520 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":600, "y":480 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":656, "y":368 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":584, "y":360 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":656, "y":448 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":568, "y":424 },
+        { "set":{ "_":[ "stencil", "nest" ] }, "x":456, "y":112, "playerDistance":50, "serial":"nest-0", "spawnCount":3 },
+        { "set":{ "_":[ "stencil", "nest" ] }, "x":472, "y":224, "playerDistance":50, "serial":"nest-1", "spawnCount":3 },
+        { "set":{ "_":[ "stencil", "nest" ] }, "x":560, "y":184, "playerDistance":50, "serial":"nest-2", "spawnCount":3 },
+        { "set":{ "_":[ "stencil", "weapon" ] }, "x":224, "y":160, "frame":0 },
+        { "set":{ "_":[ "stencil", "weapon" ] }, "x":32, "y":24, "frame":0 },
+        { "set":{ "_":[ "stencil", "weapon" ] }, "x":248, "y":224, "frame":0 },
+        { "set":{ "_":[ "stencil", "weapon" ] }, "x":248, "y":24, "frame":1 },
+        { "set":{ "_":[ "stencil", "weapon" ] }, "x":32, "y":224, "frame":1 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":192, "y":128, "aggroDistance":70 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":192, "y":184, "aggroDistance":70 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":104, "y":88, "aggroDistance":70 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":112, "y":216, "aggroDistance":70 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":64, "y":136, "aggroDistance":70 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":64, "y":176, "aggroDistance":70 },
+        { "set":{ "_":[ "stencil", "weapon" ] }, "x":496, "y":168, "frame":0 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":192, "y":64, "aggroDistance":70 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":88, "y":24, "aggroDistance":70 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":40, "y":80, "aggroDistance":70 },
+        { "set":{ "_":[ "stencil", "enemyWatcher" ] }, "x":120, "y":144, "aggroDistance":70 },
+        { "set":{ "_":[ "stencil", "weapon" ] }, "x":616, "y":416, "frame":1 },
+        { "set":{ "_":[ "stencil", "weapon" ] }, "x":616, "y":520, "frame":1 },
+        { "set":{ "_":[ "stencil", "weapon" ] }, "x":688, "y":528, "frame":0 },
+        { "set":{ "_":[ "stencil", "weapon" ] }, "x":672, "y":544, "frame":0 },
+        { "set":{ "_":[ "stencil", "weapon" ] }, "x":136, "y":120, "frame":0 },
+        { "set":{ "_":[ "stencil", "weapon" ] }, "x":544, "y":344, "frame":0 },
+        { "set":{ "_":[ "stencil", "weaponRespawn" ] }, "x":344, "y":160 },
+        { "type":"trigger", "width":8, "height":32, "x":384, "y":152, "triggerAction":"close", "triggers":"doorArachnoOut" }
+      ],
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "endsWithDeath":1,
+      "isDark":1,
+      "nextScene":"end",
+      "patientPortraitX":160,
+      "phobiaArea":1,
+      "phobiaAreaAmount":0.28,
+      "phobiaBlood":1,
+      "phobiaDark":1,
+      "phobiaSpiders":1,
+      "playerPortraitX":32,
+      "tilemap":{
+        "tileWidth":8,
+        "tileHeight":8,
+        "map":[
+          "                                                                                                ",
+          "  T-------------------------------Y                                                             ",
+          "  IxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxH                                                             ",
+          "  Iz;,;,;,;,;,;,;,;,;,;,;,;,;,;,;zH                          T-------------Y                    ",
+          "  Iz.:.:.:.:.:.:.:.:.:.:.:.:.:.:.zH                          Iwuv:.:.:.:.:.H                    ",
+          "  Iz;,;,;,;,;,;,;,;,;,;,;,;,;,;,;zH                          Irr;,;,;,;,;,;H                    ",
+          "  Iz.:.:.:.:.:.:.:.:.:.:.:.:.:.:.zH                          Irr.:.:.:.:.:.H                    ",
+          "  Iz;,;,;,;,;,;,;,;,;,;,;,;,;,;,;zH                          Irr;,;,;,;,;,;H                    ",
+          "  Iz.:.:.:.:.:.:.:.:.:.:.:.:.:.:.zH                          Irr.:.:.:.:.:.H                    ",
+          "  Iz;,;,;,;,;,;,;,;,;,;,;,;,;,;,;zH                          Itrs,;,;,;,;,;H                    ",
+          "  Iz.:.:.:.:.:.:.:.:.:.:.:.:.:.:.zH                          L______#:.:.#_J                    ",
+          "  Iz;,;,;,;,;,;,;,;,;,;,;,;,;,;,;zH                 T---------------#,;,;#-Y                    ",
+          "  Iz.:.:.:.:.:.:.:.:.:.:.:.:.:.:.zH                 Idcaabdbdccdaadb5====5bH                    ",
+          "  Iz;,;,;,;,;,;,;,;,;,;,;,;,;,;,;zH                 Idadadacccacadcb5====5dH                    ",
+          "  Iz.:.:.:.:.:.:.:.:.:.:.:.:.:.:.zH                 IaadadcdbcaccddccaccbbcH                    ",
+          "  Iz;,;,;,;,;,;,;,;,;,;,;,;,;,;,;zH                 Iacbcaabacaadabbdcccbba##----------Y        ",
+          "  Iz.:.:.:.:.:.:.:.:.:.:.:.:.:.:.zH                 Idcdddcbacaaaadabdaccdb:.[[[[[.:.:.H        ",
+          "  Iz;,;,;,;,;,;,;,;,;,;,;,;,;,;,;zH                 Ibdddaddbcbcaadddbaddbb,;[[[[[;,;,;H        ",
+          "  Iz.:.:.:.:.:.:.:.:.:.:.:.:.:.:.z##---------------##dcbbcdccccdbddcccbcdcd:.[[[[[.:.:.H        ",
+          "  Iz;,;,;,;,;,;,;,;,;,;,;,;,;,;,;z;,[[[[[[[[[[[[[[[,;ccdbdbacadcbcbabbcaccc,;[[[[[;,;,;H        ",
+          "  Iz.:.:.:.:.:.:.:.:.:.:.:.:.:.:.z.:.[[[[[[[[[[[[[[:.babdbacccdadccccdbabda##_____Y====H        ",
+          "  Iz;,;,;,;,;,;,;,;,;,;,;,;,;,;,;z;,;[[[[[[[[[[[[[[,;bdcdabdadcaacbdcbdaaccH      I====H        ",
+          "  Iz.:.:.:.:.:.:.:.:.:.:.:.:.:.:.z.:.[[[[[[[[[[[[[[:.bcdbdcbbcbadccbdcadcddH      I====H        ",
+          "  Iz;,;,;,;,;,;,;,;,;,;,;,;,;,;,;z##_______________##adbadcdbbbcacbbaccaddcH      I====H        ",
+          "  Iz.:.:.:.:.:.:.:.:.:.:.:.:.:.:.zH                 IaadbbcbaccbbcccdabcdcbH      I====H        ",
+          "  Iz;,;,;,;,;,;,;,;,;,;,;,;,;,;,;zH                 IbddcdcbbdcdcdadbbbcacdH      I====H        ",
+          "  Iz.:.:.:.:.:.:.:.:.:.:.:.:.:.:.zH                 IabccdaadccaaddddaccdadH      I====H        ",
+          "  Iz;,;,;,;,;,;,;,;,;,;,;,;,;,;,;zH                 IdacabacdbbccbcbcbbcdccH      I====H        ",
+          "  Iz.:.:.:.:.:.:.:.:.:.:.:.:.:.:.zH                 IccbcaaabccbabdcbacccccH      I====H        ",
+          "  Iz;,;,;,;,;,;,;,;,;,;,;,;,;,;,;zH                 IaaddddbbadccdccbdcbbcdH      I====H        ",
+          "  IxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxH                 IbacdaadaabbcbbaccbcadbH      I====H        ",
+          "  L_______________________________J                 IddabbcacbbdcacdaaacbbdH      I====H        ",
+          "                                                    L______________________J      I====H        ",
+          "                                                                                  I====H        ",
+          "                                                                                  I====H        ",
+          "                                                                                  #,;,;#        ",
+          "                                                              T-------------------#:.:.#Y       ",
+          "                  ####    ####    ####                        I,;,;,;,;,;,;,;,;,;,;,;,;,H       ",
+          "                T#.:.:#YT#.:.:#YT#.:.:#Y                      I:.:.:.:.:.:.:.:.:.:.:.:.:H       ",
+          "                #,;,;,;##,;,;,;##,;,;,;#                      I,;13,;,;,;,;,;,;,;,;,;,;,H       ",
+          "               #.:.:.:.:.:.:.:.:.:.:.:.:#                     I:.79:.:.:.:.:.:.:.:.:.:.:H       ",
+          "               #;,;,;,;,;,;,;,;,;,;,;,;,#                     I,;,;,;,;,;,;,;,;,;,;,;,;,H       ",
+          "               #.:.:.:.:.:.:.:.:.:.:.:.:#                     I:.:.:.:.:.:.:.:.:.:.:.:.:H       ",
+          "               #;,;,;,;,;,;,;,;,;,;,;,;,#                     I,;,;,;xxxxxxxxxxxxxx,;,;,H       ",
+          "                #:.:.:.##:.:.:.##:.:.:.#                      I:.:.:.zyyyyyyyyyyyyz:.:.:H       ",
+          " T-------------YL#;,;,#JL#;,;,#JL#;,;,#J                      I,;,;,;zyyyyyyyyyyyyz,;,;,H       ",
+          " I.:.:.:.:13.:.HT#.:.:#Y##.:.:##T#.:.:#Y                      I:.:.:.zyyyyyyyyyyyyz:.:.:H       ",
+          " I;,;,;,;,79;,;##,;,;,;##,;,;,;##,;,;,;#                      I,;,;,;zyyyyyyyyyyyyz,;,;,H       ",
+          " I.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:#                     I:.:.:.zyyyyyyyyyyyyz:.:.:H       ",
+          " I;,;,;,;,;,;,;,;,;,;,;,;,;,;,;,;,;,;,;,#                     I,;,;,;zyyyyyyyyyyyyz,;,;,H       ",
+          " I.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:#                     I:.:.:.zyyyyyyyyyyyyz:.:.:H       ",
+          " I.:.:.:.:.:.:.:;,;,;,;,;,;,;,;,;,;,;,;,#                     I,;,;,;zyyyyyyyyyyyyz,;,;,H       ",
+          " I;,;,;,;,13;,;##:.:.:.##:.:.:.##:.:.:.#                      I:.:.:.zyyyyyyyyyyyyz:.:.:H       ",
+          " I.:.:.:.:79.:.HL#;,;,#J##;,;,##L#;,;,#J                      I,;,;,;zyyyyyyyyyyyyz,;,;,H       ",
+          " L_____________JT#.:.:#YT#.:.:#YT#.:.:#YT--------------------YI:.:.:.zyyyyyyyyyyyyz:.:.:H       ",
+          "                #,;,;,;##,;,;,;##,;,;,;##xxxxxxxxxxxxxxxxxxxx##,;,;,;zyyyyyyyyyyyyz,;,;,H       ",
+          "               #.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.zyyyyyyyyyyyyz:.:.:H       ",
+          "               #;,;,;,;,;,;,;,;,;,;,;,;,;,;,;,;,;,;,;,;,;,;,;,;,;,;,;zyyyyyyyyyyyyz,;,;,H       ",
+          "               #.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.zyyyyyyyyyyyyz:.:.:H       ",
+          "               #;,;,;,;,;,;,;,;,;,;,;,;,;,;,;,;,;,;,;,;,;,;,;,;,;,;,;zyyyyyyyyyyyyz,;,;,H       ",
+          "                #:.:.:.##:.:.:.##:.:.:.##xxxxxxxxxxxxxxxxxxxx##:.:.:.zyyyyyyyyyyyyz:.:.:H       ",
+          "                L#;,;,#JL#;,;,#JL#;,;,#JL____________________JI,;,;,;zyyyyyyyyyyyyz,;,;,H       ",
+          "                  ####    ####    ####                        I:.:.:.zyyyyyyyyyyyyz:.:.:H       ",
+          "                                                              I,;,;,:xxxxxxxxxxxxxx,;,;,H       ",
+          "                                                              I:.:.:.:.:.:.:.:.:.:.:.:.:H       ",
+          "                                                              I,;,;,;,;,;,;,;,;,;,;,;,;,H       ",
+          "                                                              I:.13:.:.:.:.:.:.:.:.:13.:H       ",
+          "                                                              I,;79,;,;,;,;,;,;,;,;,79;,H       ",
+          "                                                              I:.:.:.:.:.:.:.:.:.:.:.:.:H       ",
+          "                                                              I,;,;,;,;,;,;,;,;,;,;,;,;,H       ",
+          "                                                              L_________________________J       ",
+          "                                                                                                "
+        ]
+      }
+    },
+    "title1":{ "set":{ "_":[ "stencil", "titleModel" ] }, "music":"bgm-normal", "nextScene":"stage1", "subtitle":"PATIENT TWENTY-TWO", "titleId":0 },
+    "title2":{ "set":{ "_":[ "stencil", "titleModel" ] }, "music":"bgm-hard", "nextScene":"stage2", "subtitle":"PATIENT TWENTY-THREE", "titleId":1 },
+    "title3":{ "set":{ "_":[ "stencil", "titleModel" ] }, "music":"bgm-normal", "nextScene":"stage3", "subtitle":"PATIENT TWENTY-FOUR", "titleId":2 },
+    "title4":{ "set":{ "_":[ "stencil", "titleModel" ] }, "music":"bgm-hard", "nextScene":"stage4", "subtitle":"PATIENT TWENTY-FIVE", "titleId":3 },
+    "title5":{ "set":{ "_":[ "stencil", "titleModel" ] }, "music":"bgm-normal", "nextScene":"stage5", "subtitle":"PATIENT TWENTY-SIX", "titleId":4 },
+    "title6":{ "set":{ "_":[ "stencil", "titleModel" ] }, "music":"bgm-final", "nextScene":"stage6", "subtitle":"PATIENT ZERO", "titleId":5 }
+  }
+}
