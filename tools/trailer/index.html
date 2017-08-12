@@ -1,0 +1,271 @@
+<html>
+<head>
+	<style>
+	CANVAS,IMG {
+	  image-rendering: auto;
+	  image-rendering: crisp-edges;
+	  image-rendering: pixelated;
+	}
+	</style>
+	<link rel="stylesheet" href="../../fonts/stylesheet.css" type="text/css" charset="utf-8" />
+	<script type="text/javascript" src="LZWEncoder.js"></script>
+	<script type="text/javascript" src="NeuQuant.js"></script>
+	<script type="text/javascript" src="GIFEncoder.js"></script>
+	<script type="text/javascript" src="b64.js"></script>
+	</head>
+	<body onload="onl()">
+		<div id="msg" style="font-family:commodore">Gathering stuff... (this font too)</div>
+		<hr>
+	</body>
+<script>
+
+
+function ajax(data){
+
+  var senddata="";
+  var processing;
+  var http=(window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP") ? new ActiveXObject("Msxml2.XMLHTTP") : null;
+
+  if (http) {
+    if (data.data) for(var a in data.data)
+      senddata += a + "=" + (data.data[a] === undefined ? "" : encodeURIComponent(data.data[a]) ) + "&";
+      senddata=senddata.substr(0,senddata.length-1);
+      http.open(data.method=="POST"?"POST":"GET", data.url+(senddata&&(data.method!="POST")?(data.url.indexOf("?")>=0?"&":"?")+senddata:""), true);
+      if(data.method == "POST") http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+      http.onreadystatechange = function() {
+        if(http.readyState == 4)
+          if (((http.status == 200) && http.getAllResponseHeaders().length) || (http.status == 0))
+            data.callback(data.isJson?JSON.parse(this.responseText):this.responseText,http.status);
+            else data.callback(false,http.status);
+      }
+        try {
+          http.send(senddata&&(data.method=="POST")?senddata:null);
+        } catch(err) {
+          data.callback(false,-1);
+        }
+ } else data.callback(false,-1);
+};
+
+function pixelatedContext(ctx) {
+	return;
+		ctx.webkitImageSmoothingEnabled = ctx.imageSmoothingEnabled = ctx.mozImageSmoothingEnabled = ctx.oImageSmoothingEnabled = ctx.msImageSmoothingEnabled= false;
+	}
+
+function onl() {
+	var encoder = new GIFEncoder();
+	encoder.setDelay(90);
+	encoder.setRepeat(0);
+	encoder.start();
+	var w=256,h=192;
+
+	var canv=document.createElement("canvas");
+	canv.width=w;
+	canv.height=h;
+	canv.style.border="1px solid #f00";
+	ctx=canv.getContext("2d");
+	document.body.appendChild(canv);
+
+	ajax({url:"../../publishers/database.json",isJson:1,callback:function(data){
+		var cnt=data.length;
+		var imgs=[];
+		var bg=document.createElement("img");
+		bg.src="bg.png";
+		document.body.appendChild(bg);
+
+		var ending=document.createElement("img");
+		ending.src="ending.png";
+		document.body.appendChild(ending);
+
+		var logo=document.createElement("img");
+		logo.src="logo.png";
+		document.body.appendChild(logo);
+
+
+		for (var i=3;i<cnt;i++) {
+			var img=document.createElement("img");
+			img.src="../../tapes/"+data[i].id+"/screenshots/"+data[i].id+"-2.png";
+			document.body.appendChild(img);
+			imgs.push(img);
+			/*
+			var d=document.createElement("div");
+			d.innerHTML="id:"+imgs.length;
+			document.body.appendChild(d);
+			*/
+		}
+		setTimeout(function(){
+			var scale;
+			var id=0;		
+			var chunk=0;
+
+			
+			bg.style.display="none";
+			logo.style.display="none";
+			ending.style.display="none";
+			canv.style.display="none";
+
+			for (var i=imgs.length-1;i>=0;i--) {
+				imgs[i].style.display="none";
+			}
+
+			document.getElementById("msg").innerHTML="Mounting...";
+
+			setTimeout(function() {
+
+			for (var i=imgs.length-1;i>=0;i--) {
+				console.log(i);
+				id++;
+
+
+				if (chunk==0) {
+					var y=0;
+					chunk=0;
+					chunkid=id;
+					shake=3;
+					for (var j=0;j<25;j++) {
+						var tdy=Math.sin(j)*2;
+						canv.width=w;
+						canv.height=h;
+							pixelatedContext(ctx);
+						ctx.drawImage(bg,0,0);
+						ctx.font = "100px commodore";
+						ctx.textAlign="center";
+						ctx.fillStyle="#fff";
+						ctx.textBaseline="middle";
+						ctx.fillText(chunkid,(w/2),(h/2)+tdy);
+						if ((j+1)%5==0) {
+							shake=3;
+							chunkid++;
+						}
+						
+						encoder.addFrame(ctx);	
+					}
+					chunk=10;
+				} else chunk--;
+
+
+				//if (i==12) {
+
+
+
+
+					
+
+					for (var e=0;e<5;e++) {
+						canv.width=w;
+						canv.height=h;
+						pixelatedContext(ctx);
+						scale=1+(Math.sin(e/1.1)*0.08);
+
+						ow=imgs[i].width*scale;
+						oh=imgs[i].height*scale;
+						ox=((ow-w)/2);
+						oy=((oh-h)/2);
+						ctx.drawImage(imgs[i],-ox,-oy,ow,oh);
+
+
+
+
+
+						encoder.addFrame(ctx);			
+						scale*=0.95;
+					}
+
+
+				/*
+
+					if (imgs[i].width>imgs[i].height) {
+						cdestw=w;
+						cdesth=(w/imgs[i].width)*imgs[i].height;
+					} else {
+						cdesth=h;
+						cdestw=(h/imgs[i].height)*imgs[i].width;
+					}
+
+					cox=Math.floor((cdestw-w)/2);
+					cdy=(h-cdesth)/2;
+					coy=-cdesth;
+					csy=(cdy+coy);
+					col=0;
+
+					if (imgs[i+1]) {
+
+						if (imgs[i+1].width>imgs[i+1].height) {
+							pdestw=w;
+							pdesth=(w/imgs[i+1].width)*imgs[i+1].height;
+						} else {
+							pdesth=h;
+							pdestw=(h/imgs[i+1].height)*imgs[i+1].width;
+						}
+						pdy=(h-pdesth)/2;
+						pox=Math.floor((pdestw-w)/2);						
+					}
+
+					for (var e=0;e<8;e++) {
+						canv.width=w;
+						canv.height=h;
+						pixelatedContext(ctx);
+						if (imgs[i+1]) {
+							ctx.drawImage(imgs[i+1],-pox,pdy,pdestw,pdesth);
+							ctx.fillStyle="rgba(0,0,0,"+col+")";
+							ctx.fillRect(0,0,w,h);
+							col+=0.1;
+							pdy++;
+						}
+						
+						ctx.drawImage(imgs[i],-cox,cdy+csy,cdestw,cdesth);
+						encoder.addFrame(ctx);			
+						csy=csy/2;
+					}
+*/
+					
+				//}
+				
+			}
+			
+
+			
+			var col=255;
+			for (var i=0;i<20;i++) {
+				canv.width=w;
+				canv.height=h;
+				col=Math.floor(col/1.2);
+				ctx.fillStyle="rgb("+col+","+col+","+col+")";
+				ctx.fillRect(0,0,w,h);
+				console.log(ctx.fillStyle);
+				encoder.addFrame(ctx);	
+			}
+
+			col=1;
+			for (var j=0;j<112;j++) {
+				var tdy=Math.sin(j/2)*5;
+				canv.width=w;
+				canv.height=h;
+					pixelatedContext(ctx);
+				ctx.drawImage(ending,0,0);
+				ctx.drawImage(logo,Math.floor((w-logo.width)/2),30+tdy);
+				col-=0.1;
+				if (col>1) col=1;
+				ctx.fillStyle="rgba(0,0,0,"+col+")";
+				ctx.fillRect(0,0,w,h);
+				
+				encoder.addFrame(ctx);	
+			}
+			
+
+
+
+			encoder.finish();
+			var binary_gif = encoder.stream().getData() //notice this is different from the as3gif package!
+  			var data_url = 'data:image/gif;base64,'+encode64(binary_gif);		
+  			var img=document.createElement("img");
+  			img.src=data_url;
+  			document.body.appendChild(img);
+  						document.getElementById("msg").innerHTML="Done!";
+
+			},1);
+			
+		},3000)
+	}});
+}
+</script>
+</html>
