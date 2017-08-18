@@ -1152,6 +1152,11 @@ function WrightTools() {
 
             mergeProperties(a,obj,MERGE_ALL,MERGE_DEFAULT,[tile?tile.properties:{},cur.properties,l.properties]);
 
+            var deltaxy=getProperty(a,[],MERGE_OBJECT,"#deltay",[tile?tile.properties:{},cur.properties,l.properties]);
+           	if (deltaxy.length) obj.y+=deltaxy[deltaxy.length-1];
+            var deltaxy=getProperty(a,[],MERGE_OBJECT,"#deltax",[tile?tile.properties:{},cur.properties,l.properties]);
+           	if (deltaxy.length) obj.x+=deltaxy[deltaxy.length-1];
+
             if (cur.properties&&cur.properties["#nosize"]) {
              delete obj.width;
              delete obj.height;
