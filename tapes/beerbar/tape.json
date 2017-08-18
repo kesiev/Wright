@@ -1,0 +1,969 @@
+{
+  "name":"BeerBar",
+  "author":"KesieV",
+  "year":2017,
+  "genre":"Arcade",
+  "description":"<p><a href='https://en.wikipedia.org/wiki/Advertising_in_video_games'>Advergames</a> are videogames which in some way contains an advertisement for a product, service, or company. It has a long story in gaming, that surprising starts from its early ages of the 1980s.</p><p>Many of these games were <i>skinned</i> clones of arcade hits: <a href='https://en.wikipedia.org/wiki/Tooth_Protectors'>Tooth Protectors</a> (1982) for Atari 2600 by DSD/Camelot, commissioned by Johnson &amp; Johnson for sponsoring its Crest Toothpaste, was similar to Atari's <a href='https://en.wikipedia.org/wiki/Kaboom!_(video_game)'>Kaboom!</a> (1981) and the infamous <a href='https://en.wikipedia.org/wiki/Pepsi_Invaders'>Pepsi Invaders</a> (1983) was even a Coca Cola commissioned ROM modification of Atari 2600 port of <a href='https://en.wikipedia.org/wiki/Space_Invaders'>Space Invaders</a> (1980) with few rules changes and the \"PEPSI\" letters instead of the aliens.</p><p>Since they weren't purchasable on stores, these game are pretty rare and valuable: Tooth Protectors could be aquired only mailing proof of purchase stamps to the company and Pepsi Invaders was only playable at Coca Cola 1983 sales convention, so very few copies were made.</p><p><a href='https://en.wikipedia.org/wiki/Chase_the_Chuck_Wagon'>Chase the Chuck Wagon</a> (1983) - a fairly simple maze game available only via mail order by sending in proofs of purchase of a brand of dog food - is so rare that game collectors started using the term <i>\"chasing the chuckwagon\"</i> when referencing to their search for rare games.</p><p>One of the most famous advergame in history is Bally-Midway's <a href='https://en.wikipedia.org/wiki/Tapper'>Tapper</a> (1983). But, ironically, it isn't an usual one... and probably it isn't an <i>advergame</i> story at all. Let's start from the beginning.</p><p>Tapper concept was to have a bartender serving drinks to an impatient and colorful roster of customers, collecting empty glasses and tips. Bally-Midway <i>then</i> proposed the concept to Budweiser, for adding advertising here and there in order to get the game in bars serving Budweiser and hoping for betters sales of the machine.</p><p>This <i>inverse approach</i> makes the Tapper story so fascinating and crucial. Chronologically, Tapper was a game with a funny concept first, finely designed and fun to play and <i>then</i> it was decided to use advertising for exploring a new market. And the final result of this tactic was that the game was so wanted that some of the arcade machines made their way to videogame arcades instead of the targeted bars, serving to Bally-Midway an unexpected and pretty dangerous <i>happy problem</i>.</p><p>With their Tapper leaving adults-only bars for kids-filled videogame arcades, Bally-Midway was accidentally promoting drinking to underaged this way - something quite illegal in the US. So the company, in 1984, decided make an arcade version of the game, stripping all the Budweiser references and changing the name of the game to a more generic (and non-alcoholic) <i>Root Beer Tappper</i>.</p><p>Gamers were already conscious and passionate <i>consumers</i> and good videogames were desired <i>products</i> by themselves, differentiating them from channels like TV and printed magazines. Is there a better way for discovering that than with making a legendary gaming masterpiece?</p><p>Plot!</p><p>Rush hour is starting right now, dear bartender! Run up and down, serve fresh glasses of beer to your the impatient customers, collect empty glasses before they broke and run for the tips for starting a nice dancing show, that will distract them for a little while!</p><p>Use UP/DOWN for moving, LEFT/RIGHT for running along the counters and hit the A BUTTON for serving a drink. Good luck!</p>",
+  "screenshots":[ "beerbar-1.png", "beerbar-2.png" ],
+  "hardware":{
+    "width":256,
+    "height":192,
+    "filter":"retro"
+  },
+  "audioChannels":{
+    "sfx":{ "volume":1, "samples":[ "tic", "blam", "bigfire", "scream", "beep", "notify" ] }
+  },
+  "cheats":{
+    "unlimitedlives":"Unlimited lives (no hi-score, sorry!)"
+  },
+  "resources":{
+    "backgrounds":"backgrounds.png",
+    "pixeldingbats":"pixeldingbats.font",
+    "spectrum":"spectrum.font",
+    "sprites":"sprites.png",
+    "title":"title.png",
+    "beep":"../default/zxsounds/beep.ogg",
+    "bigfire":"../default/zxsounds/bigfire.ogg",
+    "blam":"../default/zxsounds/blam.ogg",
+    "notify":"../default/zxsounds/notify.ogg",
+    "scream":"../default/zxsounds/scream.ogg",
+    "tic":"../default/zxsounds/fire.ogg"
+  },
+  "stencils":{
+    "codeCustomerDone":{
+      "when":{ "_":[ "variable", "customersToMoney" ] },
+      "execute":[
+        { "subtract":1, "to":{ "_":[ "variable", "customersToMoney" ] } },
+        {
+          "when":{ "_":[ "variable", "customersToMoney", "not" ] },
+          "object":{ "set":{ "_":[ "stencil", "money" ] }, "at":{ "_":[ "randomObject", { "_":[ "object", "moneyslot" ] } ] } }
+        }
+      ]
+    },
+    "codeGotoNextStage":[
+      {
+        "as":{ "_":"variable" },
+        "set":{
+          "comingcustomers":{ "_":[ "variable", "allstages", "/", 5, "floor", "*", 2 ] },
+          "customerScore":{ "_":[ 50, "+", { "_":[ "variable", "allstages", "/", 3, "floor", "*", 10 ] }, "limitValue", [ 50, 1000 ] ] },
+          "customersToMoney":8,
+          "customerspeed":{ "_":[ 1, "+", { "_":[ "variable", "allstages", "/", 15, "*", 0.1 ] }, "limitValue", [ 1, 3 ] ] },
+          "hitPower":{ "_":[ 50, "-", { "_":[ "variable", "allstages", "/", 10, "*", 5 ] }, "floor", "limitValue", [ 25, 50 ] ] }
+        }
+      },
+      { "sum":1, "to":{ "_":[ "variable", "allstages" ] } },
+      { "sum":1, "to":{ "_":[ "variable", "stage" ] } },
+      { "when":{ "_":[ "variable", "stage", "isEqualTo", 12 ] }, "set":{ "stage":1 } },
+      { "gotoScene":{ "_":[ "stage", ".", { "_":[ "variable", "stage" ] } ] }, "withTransition":3 }
+    ],
+    "codeLifeOver":[ { "as":{ "_":[ "object", "stoponlifeover" ] }, "set":{ "state":"frozen" } }, { "as":{ "_":[ "object", "removeonlifeover" ] }, "remove":1 } ],
+    "codeMakeTable":[
+      { "set":{ "counter":0, "tslot":{ "_":[ "slot-", ".", { "_":[ "this", "trow" ] } ] } } },
+      {
+        "when":{ "_":[ "this", "tside", "isEqualTo", 1 ] },
+        "execute":[
+          {
+            "object":[
+              { "set":{ "_":[ "stencil", "door" ] }, "x":{ "_":[ "that", "tx" ] }, "y":{ "_":[ "that", "ty" ] } },
+              { "set":{ "_":[ "stencil", "moneySlot" ] }, "x":{ "_":[ "that", "tx", "+", 32 ] }, "y":{ "_":[ "that", "ty", "+", 16 ] } },
+              {
+                "width":{ "_":[ "that", "tlength" ] }, "height":8,
+                "zIndex":6, "x":{ "_":[ "that", "tx", "+", 8 ] }, "y":{ "_":[ "that", "ty", "+", 16 ] },
+                "bgcolor":{ "_":[ "that", "tcolor0" ] }, "border":"#000"
+              },
+              {
+                "width":{ "_":[ "that", "tlength" ] }, "height":9,
+                "zIndex":6, "x":{ "_":[ "that", "tx", "+", 8 ] }, "y":{ "_":[ "that", "ty", "+", 23 ] },
+                "bgcolor":{ "_":[ "that", "tcolor1" ] }, "border":"#000"
+              },
+              {
+                "type":"breakglass",
+                "width":8, "height":16,
+                "x":{ "_":[ "that", "tx", "+", 12, "+", { "_":[ "that", "tlength" ] } ] }, "y":{ "_":[ "that", "ty", "+", 16 ] },
+                "visible":0
+              },
+              {
+                "type":{ "_":[ "that", "tslot" ] },
+                "set":{ "_":[ "stencil", "bartenderSlot" ] },
+                "x":{ "_":[ "that", "tx", "+", 8, "+", { "_":[ "that", "tlength" ] } ] }, "y":{ "_":[ "that", "ty" ] },
+                "projectileX":-8,
+                "tside":{ "_":[ "that", "tside" ] }
+              },
+              {
+                "type":"stopbartender",
+                "width":8, "height":32,
+                "x":{ "_":[ "that", "tx", "+", 24, "+", { "_":[ "that", "tlength" ] } ] }, "y":{ "_":[ "that", "ty" ] }
+              },
+              { "set":{ "_":[ "stencil", "tap" ] }, "x":{ "_":[ "that", "tx", "+", 16, "+", { "_":[ "that", "tlength" ] } ] }, "y":{ "_":[ "that", "ty" ] } }
+            ]
+          },
+          {
+            "times":{ "_":[ "that", "tcustomers", "count" ] },
+            "execute":[
+              {
+                "object":{
+                  "set":{ "_":[ "stencil", "customer" ] },
+                  "tileX":{ "_":[ "that", "tcustomers", { "_":[ "that", "counter" ] }, "*", 64 ] }, "tileY":{ "_":[ "that", "customerTileY" ] },
+                  "x":{ "_":[ "that", "tx", "+", 8, "+", { "_":[ "that", "counter", "*", 16 ] } ] }, "y":{ "_":[ "that", "ty" ] }
+                }
+              },
+              { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+            ]
+          }
+        ],
+        "elseExecute":[
+          {
+            "object":[
+              { "set":{ "_":[ "stencil", "door" ] }, "x":{ "_":[ "that", "tx" ] }, "y":{ "_":[ "that", "ty" ] }, "flipX":1 },
+              { "set":{ "_":[ "stencil", "moneySlot" ] }, "x":{ "_":[ "that", "tx", "-", 32 ] }, "y":{ "_":[ "that", "ty", "+", 16 ] } },
+              {
+                "width":{ "_":[ "that", "tlength" ] }, "height":8,
+                "zIndex":6, "x":{ "_":[ "that", "tx", "+", 8, "-", { "_":[ "that", "tlength" ] } ] }, "y":{ "_":[ "that", "ty", "+", 16 ] },
+                "bgcolor":{ "_":[ "that", "tcolor0" ] }, "border":"#000"
+              },
+              {
+                "width":{ "_":[ "that", "tlength" ] }, "height":9,
+                "zIndex":6, "x":{ "_":[ "that", "tx", "+", 8, "-", { "_":[ "that", "tlength" ] } ] }, "y":{ "_":[ "that", "ty", "+", 23 ] },
+                "bgcolor":{ "_":[ "that", "tcolor1" ] }, "border":"#000"
+              },
+              {
+                "type":"breakglass",
+                "width":8, "height":16,
+                "x":{ "_":[ "that", "tx", "-", 4, "-", { "_":[ "that", "tlength" ] } ] }, "y":{ "_":[ "that", "ty", "+", 16 ] },
+                "visible":0
+              },
+              {
+                "type":{ "_":[ "that", "tslot" ] },
+                "set":{ "_":[ "stencil", "bartenderSlot" ] },
+                "x":{ "_":[ "that", "tx", "-", 8, "-", { "_":[ "that", "tlength" ] } ] }, "y":{ "_":[ "that", "ty" ] },
+                "projectileX":16,
+                "tside":{ "_":[ "that", "tside" ] }
+              },
+              {
+                "type":"stopbartender",
+                "width":8, "height":32,
+                "x":{ "_":[ "that", "tx", "-", 16, "-", { "_":[ "that", "tlength" ] } ] }, "y":{ "_":[ "that", "ty" ] }
+              },
+              {
+                "set":{ "_":[ "stencil", "tap" ] },
+                "x":{ "_":[ "that", "tx", "-", 16, "-", { "_":[ "that", "tlength" ] } ] }, "y":{ "_":[ "that", "ty" ] },
+                "flipX":1
+              }
+            ]
+          },
+          {
+            "times":{ "_":[ "that", "tcustomers", "count" ] },
+            "execute":[
+              {
+                "object":{
+                  "set":{ "_":[ "stencil", "customer" ] },
+                  "tileX":{ "_":[ "that", "tcustomers", { "_":[ "that", "counter" ] }, "*", 64 ] }, "tileY":{ "_":[ "that", "customerTileY" ] },
+                  "x":{ "_":[ "that", "tx", "-", 8, "-", { "_":[ "that", "counter", "*", 16 ] } ] }, "y":{ "_":[ "that", "ty" ] }
+                }
+              },
+              { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+            ]
+          }
+        ]
+      }
+    ],
+    "sparkModel":{ "states":{ "name":"spark", "code":{ "name":"Execute", "data":{ "set":{ "flipX":{ "_":[ "this", "flipX", "not" ] } } } } } },
+    "modelPopupLabel":{
+      "width":100, "height":10,
+      "zIndex":10000, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "that", "y", "-", 5 ] },
+      "color":"#fff",
+      "font":"spectrum", "lineHeight":12, "outline":"#000", "textAlign":"center",
+      "speed":0.5,
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[ { "subtract":{ "_":[ "this", "speed" ] }, "to":{ "_":[ "this", "y" ] }, "wait":1, "loop":1, "cycles":15 }, { "remove":1 } ]
+        }
+      }
+    },
+    "stageModel":{
+      "customerTileY":32,
+      "states":[
+        {
+          "execute":{
+            "object":[
+              { "image":"backgrounds", "width":256, "height":192, "x":0, "y":0 },
+              { "set":{ "_":[ "stencil", "dancer" ] }, "x":104, "y":0 },
+              { "set":{ "_":[ "stencil", "dancer" ] }, "tileX":240, "x":128, "y":0 },
+              { "_":[ "stencil", "player" ] },
+              {
+                "type":"hud",
+                "hudType":"label", "label":"%number|variable.score|0|6%",
+                "box":"label", "width":100,
+                "zIndex":1000, "x":4, "y":2,
+                "font":"spectrum", "outline":"#000000"
+              },
+              {
+                "type":"hud",
+                "hudType":"label", "label":"%repeat|variable.lives|[%",
+                "box":"label", "width":50,
+                "zIndex":1000, "x":210, "y":2,
+                "color":"#f00",
+                "font":"pixeldingbats", "fontSize":8, "outline":"#000000"
+              }
+            ]
+          },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "playAudio":"notify" },
+              {
+                "object":{
+                  "type":"message",
+                  "width":100, "height":15,
+                  "zIndex":1000, "x":78, "y":136,
+                  "bgcolor":"#000",
+                  "font":"spectrum", "lineHeight":15, "textAlign":"center", "html":"GET READY"
+                }
+              },
+              { "wait":25 },
+              { "as":{ "_":[ "object", "message" ] }, "remove":1 },
+              { "as":{ "_":[ "object", "gameelement" ] }, "set":{ "state":"play" } },
+              { "wait":25 },
+              { "when":{ "_":[ "variable", "comingcustomers" ] }, "as":{ "_":[ "randomObject", { "_":[ "object", "door" ] } ] }, "executeAction":"exit" },
+              { "cycles":{ "_":[ "variable", "comingcustomers" ] }, "loopTo":-2 },
+              { "wait":1, "loop":1, "until":{ "_":[ "objectTyped", "customer", "not" ] } },
+              { "as":{ "_":[ "objectTyped", "player" ] }, "executeAction":"win" },
+              { "sum":1000, "to":{ "_":[ "variable", "score" ] }, "playAudio":"beep" },
+              { "as":{ "_":[ "objectTyped", "player" ] }, "execute":{ "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "html":"1000" } } },
+              { "wait":50 },
+              { "_":[ "stencil", "codeGotoNextStage" ] }
+            ]
+          }
+        },
+        {
+          "name":"gameover",
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "playAudio":"notify" },
+              {
+                "object":{
+                  "width":100, "height":15,
+                  "zIndex":1000, "x":78, "y":136,
+                  "bgcolor":"#000",
+                  "font":"spectrum", "lineHeight":15, "textAlign":"center", "html":"GAME OVER"
+                }
+              },
+              {
+                "when":{ "_":[ "cheat", "unlimitedlives", "not" ] },
+                "execute":[
+                  { "publishScore":{ "_":[ "variable", "score" ] } },
+                  {
+                    "when":{ "_":[ "variable", "score", "isGreaterThan", { "_":[ "variable", "hiscore" ] } ] },
+                    "execute":[
+                      {
+                        "object":{
+                          "width":130, "height":15,
+                          "zIndex":1000, "x":63, "y":151,
+                          "bgcolor":"#000", "color":"#f00",
+                          "font":"spectrum", "lineHeight":15, "textAlign":"center", "html":"NEW HI-SCORE!"
+                        }
+                      },
+                      { "as":{ "_":"variable" }, "set":{ "hiscore":{ "_":[ "variable", "score" ] } } },
+                      { "as":{ "_":"storage" }, "set":{ "hiscore":{ "_":[ "variable", "score" ] } } }
+                    ]
+                  }
+                ]
+              },
+              { "wait":25 },
+              { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+              { "gotoScene":"intro", "withTransition":3 }
+            ]
+          }
+        }
+      ]
+    },
+    "player":{
+      "type":[ "gameelement", "player" ],
+      "image":"sprites", "tileX":32, "width":16, "height":32,
+      "zIndex":10,
+      "animations":{ "despair":{ "frame":4 }, "prepare":{ "frame":1 }, "run":{ "frames":[ 2, 3 ], "loopTo":0 }, "stand":{ "frame":0 }, "win":{ "frame":5 } },
+      "isWalking":0,
+      "prepareTimer":0,
+      "slot":0,
+      "stepNoise":0,
+      "states":[
+        { "like":{ "_":[ "stencil", "bartenderBehaviour" ] }, "execute":{ "executeAction":"setSlot" } },
+        {
+          "name":"throw",
+          "execute":{
+            "set":{
+              "tileX":128, "tileY":0, "width":32, "height":16,
+              "x":{ "_":[ "this", "newSlot", "x", "-", 8 ] }, "y":{ "_":[ "this", "newSlot", "y", "+", 4 ] }, "frame":0,
+              "flipX":{ "_":[ "this", "newSlot", "tside", "isEqualTo", -1 ] },
+              "forceX":{ "_":[ "this", "newSlot", "tside", "*", -3 ] },
+              "animation":"none",
+              "playAudio":"bigfire"
+            }
+          },
+          "code":{ "name":"Physics", "data":{ "walls":{ "type":"hitbartender", "execute":{ "set":{ "playAudio":"blam", "state":"rumble" } } } } }
+        },
+        { "name":"win", "execute":{ "set":{ "animation":"win" } } },
+        {
+          "name":"rumble",
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "when":{ "_":[ "cheat", "unlimitedlives", "not" ] }, "subtract":1, "to":{ "_":[ "variable", "lives" ] } },
+              { "sum":1, "to":{ "_":[ "this", "x" ] }, "wait":1 },
+              { "subtract":1, "to":{ "_":[ "this", "x" ] }, "wait":1, "cycles":10, "loopTo":-1 },
+              { "wait":25 },
+              {
+                "when":{ "_":[ "variable", "lives" ] },
+                "gotoScene":{ "_":[ "variable", "idScene" ] },
+                "withTransition":3,
+                "elseExecute":{ "as":{ "_":"scene" }, "set":{ "state":"gameover" } }
+              }
+            ]
+          }
+        },
+        {
+          "name":"play",
+          "like":{ "_":[ "stencil", "bartenderBehaviour" ] },
+          "code":[
+            {
+              "name":"Execute",
+              "data":[
+                {
+                  "when":{ "_":[ "this", "prepareTimer" ] },
+                  "execute":[
+                    { "subtract":1, "to":{ "_":[ "this", "prepareTimer" ] } },
+                    {
+                      "when":{ "_":[ "this", "prepareTimer", "not" ] },
+                      "object":{
+                        "set":{ "_":[ "stencil", "glassProjectile" ] },
+                        "x":{ "_":[ "that", "x", "+", { "_":[ "that", "projectileX" ] } ] }, "y":{ "_":[ "that", "y", "+", 12 ] },
+                        "flipX":{ "_":[ "that", "tside", "isEqualTo", 1 ] },
+                        "forceX":{ "_":[ "that", "tside", "*", -4 ] },
+                        "playAudio":"blam"
+                      },
+                      "set":{ "animation":"stand" }
+                    }
+                  ],
+                  "elseExecute":[
+                    {
+                      "when":{ "_":[ "keyDown", "isHit" ] },
+                      "execute":[
+                        { "when":{ "_":[ "this", "slot", "isEqualTo", 3 ] }, "set":{ "slot":0 }, "elseExecute":{ "sum":1, "to":{ "_":[ "this", "slot" ] } } },
+                        { "executeAction":"setSlot" }
+                      ]
+                    },
+                    {
+                      "when":{ "_":[ "keyUp", "isHit" ] },
+                      "execute":[
+                        { "when":{ "_":[ "this", "slot", "isEqualTo", 0 ] }, "set":{ "slot":3 }, "elseExecute":{ "subtract":1, "to":{ "_":[ "this", "slot" ] } } },
+                        { "executeAction":"setSlot" }
+                      ]
+                    },
+                    {
+                      "when":{ "_":[ "keyRight", "isDown" ] },
+                      "set":{ "flipX":1, "forceX":2, "animation":"run", "isWalking":1 },
+                      "elseExecute":{
+                        "when":{ "_":[ "keyLeft", "isDown" ] },
+                        "set":{ "flipX":0, "forceX":-2, "animation":"run", "isWalking":1 },
+                        "elseExecute":{ "set":{ "forceX":0, "animation":"stand", "isWalking":0 } }
+                      }
+                    },
+                    {
+                      "when":{ "_":[ "this", "isWalking" ] },
+                      "execute":[ { "set":{ "stepNoise":{ "_":[ "this", "stepNoise", "+", 1, "%", 5 ] } } }, { "when":{ "_":[ "this", "stepNoise", "not" ] }, "playAudio":"tic" } ]
+                    },
+                    {
+                      "when":{ "_":[ "keyA", "isHit" ] },
+                      "set":{
+                        "at":{ "_":[ "this", "newSlot" ] },
+                        "flipX":{ "_":[ "this", "tside", "isEqualTo", -1 ] },
+                        "forceX":0,
+                        "animation":"prepare",
+                        "playAudio":"tic",
+                        "prepareTimer":5
+                      }
+                    }
+                  ]
+                },
+                { "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "pickable" ] } ] }, "as":{ "_":"that" }, "executeAction":"pick" }
+              ]
+            },
+            { "name":"Physics", "data":{ "walls":{ "type":"stopbartender", "restitution":0 } } }
+          ],
+          "actions":[
+            {
+              "name":"throw",
+              "execute":[
+                { "_":[ "stencil", "codeLifeOver" ] },
+                { "as":{ "_":"scene" }, "set":{ "state":"lifeover" } },
+                { "set":{ "newSlot":{ "_":[ "objectTyped", { "_":[ "that", "tslot" ] } ] }, "state":"throw" } }
+              ]
+            },
+            {
+              "name":"despair",
+              "execute":[
+                { "_":[ "stencil", "codeLifeOver" ] },
+                { "as":{ "_":"scene" }, "set":{ "state":"lifeover" } },
+                { "set":{ "animation":"despair", "state":"rumble" } }
+              ]
+            },
+            { "name":"win", "execute":[ { "_":[ "stencil", "codeLifeOver" ] }, { "set":{ "state":"win" } } ] }
+          ]
+        }
+      ]
+    },
+    "bartenderBehaviour":{
+      "actions":{
+        "name":"setSlot",
+        "execute":[
+          { "set":{ "newSlot":{ "_":[ "objectTyped", { "_":[ "slot-", ".", { "_":[ "this", "slot" ] } ] } ] } } },
+          {
+            "set":{
+              "at":{ "_":[ "this", "newSlot" ] },
+              "flipX":{ "_":[ "this", "newSlot", "tside", "isEqualTo", -1 ] },
+              "forceX":0,
+              "animation":"stand",
+              "projectileX":{ "_":[ "this", "newSlot", "projectileX" ] },
+              "tside":{ "_":[ "this", "newSlot", "tside" ] },
+              "walking":0
+            }
+          }
+        ]
+      }
+    },
+    "bartenderSlot":{ "type":"stopcustomer", "width":16, "height":32, "zIndex":1, "visible":0 },
+    "customer":{
+      "type":[ "gameelement", "stoponlifeover", "customer" ],
+      "image":"sprites", "tileY":32, "width":16, "height":16,
+      "zIndex":3,
+      "flipX":{ "_":[ "that", "tside", "isEqualTo", -1 ] },
+      "animations":{ "angry":{ "frame":1 }, "drink":{ "frame":2 }, "idle":{ "frame":0 }, "watching":{ "frame":3 } },
+      "customerspeed":{ "_":[ "variable", "customerspeed" ] },
+      "hitBack":0,
+      "hitPower":0,
+      "tside":{ "_":[ "that", "tside" ] },
+      "tslot":{ "_":[ "that", "tslot" ] },
+      "states":[
+        {
+          "name":"play",
+          "execute":{
+            "set":{
+              "type":"canwatch",
+              "removeType":"watcher",
+              "forceX":{ "_":[ "this", "tside", "*", { "_":[ "this", "customerspeed" ] } ] },
+              "animation":"idle",
+              "orgY":{ "_":[ "this", "y" ] }
+            }
+          },
+          "code":[
+            {
+              "name":"Execute",
+              "data":{
+                "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "filledglass" ] } ] },
+                "execute":[ { "set":{ "state":"drink" } }, { "as":{ "_":"that" }, "remove":1 } ]
+              }
+            },
+            {
+              "name":"Sequence",
+              "data":[ { "sum":1, "to":{ "_":[ "this", "y" ] }, "wait":10 }, { "subtract":1, "to":{ "_":[ "this", "y" ] }, "wait":10, "loopTo":0 } ]
+            },
+            { "name":"Physics", "data":{ "walls":{ "type":"stopcustomer", "restitution":0, "execute":{ "executeAction":"getAngry" } } } }
+          ],
+          "actions":{ "name":"getAngry", "execute":[ { "as":{ "_":[ "objectTyped", "player" ] }, "executeAction":"throw" }, { "set":{ "state":"angry" } } ] }
+        },
+        {
+          "name":"angry",
+          "set":{ "zIndex":4, "y":{ "_":[ "this", "orgY" ] }, "flipX":{ "_":[ "this", "tside", "isEqualTo", 1 ] }, "animation":"angry" },
+          "code":[
+            { "name":"Sequence", "data":{ "subtract":{ "_":[ "this", "tside" ] }, "to":{ "_":[ "this", "x" ] }, "wait":1, "loop":1, "cycles":20 } },
+            {
+              "name":"Sequence",
+              "data":[ { "sum":1, "to":{ "_":[ "this", "y" ] }, "wait":5 }, { "subtract":1, "to":{ "_":[ "this", "y" ] }, "wait":5, "loopTo":0 } ]
+            }
+          ]
+        },
+        {
+          "name":"watching",
+          "execute":{ "set":{ "type":"watcher", "removeType":"canwatch", "animation":"watching" } },
+          "code":{
+            "name":"Sequence",
+            "data":[ { "set":{ "y":{ "_":[ "this", "orgY" ] } }, "wait":5 }, { "set":{ "y":{ "_":[ "this", "orgY", "+", 1 ] } }, "wait":5 }, { "loopTo":0 } ]
+          }
+        },
+        {
+          "name":"drink",
+          "execute":[
+            {
+              "set":{ "removeType":"canwatch", "y":{ "_":[ "this", "orgY" ] }, "animation":"drink", "drinkTimer":25, "hitPower":{ "_":[ "variable", "hitPower" ] } }
+            },
+            {
+              "object":{ "image":"sprites", "tileX":128, "tileY":24, "width":8, "height":8, "x":8, "y":3 },
+              "as":{ "_":"that" },
+              "into":{ "_":"this" },
+              "execute":{ "as":{ "_":"that" }, "set":{ "glass":{ "_":"that" } } }
+            }
+          ],
+          "code":{
+            "name":"Execute",
+            "data":{
+              "when":{ "_":[ "this", "hitPower" ] },
+              "execute":[
+                { "subtract":1, "to":{ "_":[ "this", "hitPower" ] } },
+                { "subtract":{ "_":[ "this", "tside", "*", 2 ] }, "to":{ "_":[ "this", "x" ] } },
+                {
+                  "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "exitcustomer" ] } ] },
+                  "execute":[
+                    { "_":[ "stencil", "codeCustomerDone" ] },
+                    { "sum":{ "_":[ "variable", "customerScore" ] }, "to":{ "_":[ "variable", "score" ] }, "playAudio":"beep" },
+                    { "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "html":{ "_":[ "variable", "customerScore" ] } } },
+                    { "remove":1 }
+                  ]
+                }
+              ],
+              "elseExecute":{
+                "when":{ "_":[ "this", "drinkTimer" ] },
+                "execute":[
+                  { "subtract":1, "to":{ "_":[ "this", "drinkTimer" ] } },
+                  {
+                    "as":{ "_":[ "this", "glass" ] },
+                    "execute":{
+                      "when":{ "_":[ "that", "drinkTimer", "%", 2 ] },
+                      "set":{ "frame":{ "_":[ "that", "drinkTimer", "/", 6, "floor", "+", 1 ] } },
+                      "elseExecute":{ "set":{ "frame":0 } }
+                    }
+                  }
+                ],
+                "elseExecute":[
+                  { "as":{ "_":[ "this", "glass" ] }, "remove":1 },
+                  {
+                    "object":{
+                      "set":{ "_":[ "stencil", "emptyGlassProjectile" ] },
+                      "x":{ "_":[ "that", "x", "+", 4 ] }, "y":{ "_":[ "that", "y", "+", 12 ] },
+                      "flipX":{ "_":[ "that", "tside", "isEqualTo", -1 ] },
+                      "forceX":{ "_":[ "that", "tside", "*", 1.5 ] }
+                    }
+                  },
+                  { "sum":1, "to":{ "_":[ "this", "hitBack" ] } },
+                  { "when":{ "_":[ "this", "hitBack", "isGreaterThan", 3 ] }, "sum":0.1, "to":{ "_":[ "this", "customerspeed" ] } },
+                  { "set":{ "state":"play" } }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    "dancer":{
+      "type":[ "dancer", "removeonlifeover" ],
+      "image":"sprites", "tileX":192, "width":24, "height":32,
+      "zIndex":1,
+      "visible":0,
+      "states":[
+        {
+          "name":"dance",
+          "execute":{ "set":{ "visible":1 } },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "set":{ "frame":0 }, "wait":5 },
+              { "set":{ "frame":1 }, "wait":5 },
+              { "cycles":5, "loopTo":0 },
+              { "set":{ "flipX":{ "_":[ "this", "flipX", "not" ] } } },
+              { "cycles":5, "loopTo":0 },
+              { "as":{ "_":[ "object", "watcher" ] }, "set":{ "state":"play" } },
+              { "set":{ "state":"default" }, "playAudio":"bigfire" }
+            ]
+          }
+        },
+        { "execute":{ "set":{ "visible":0 } } }
+      ]
+    },
+    "door":{
+      "type":[ "hitbartender", "stopbartender", "breakglass", "exitcustomer", "door" ],
+      "image":"sprites", "width":16, "height":32,
+      "zIndex":1,
+      "tside":{ "_":[ "that", "tside" ] },
+      "tslot":{ "_":[ "that", "tslot" ] },
+      "states":{
+        "actions":{
+          "name":"exit",
+          "execute":{
+            "object":{
+              "set":{ "_":[ "stencil", "customer" ] },
+              "tileX":{ "_":[ "randomNumber", [ 0, 3 ], "*", 64 ] },
+              "x":{ "_":[ "that", "x", "+", { "_":[ "that", "tside", "*", 8 ] } ] }, "y":{ "_":[ "that", "y" ] },
+              "state":"play"
+            }
+          }
+        }
+      }
+    },
+    "money":{
+      "type":"pickable",
+      "image":"sprites", "tileX":152, "tileY":16, "width":16, "height":8,
+      "zIndex":8,
+      "states":{
+        "code":{ "name":"Sequence", "data":[ { "wait":150 }, { "remove":1 } ] },
+        "actions":{
+          "name":"pick",
+          "execute":[
+            { "sum":1500, "to":{ "_":[ "variable", "score" ] }, "playAudio":"bigfire" },
+            { "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "html":"1500" } },
+            { "as":{ "_":[ "object", "canwatch" ] }, "set":{ "state":"watching" } },
+            { "as":{ "_":[ "object", "dancer" ] }, "set":{ "state":"dance" } },
+            { "remove":1 }
+          ]
+        }
+      }
+    },
+    "moneySlot":{ "type":"moneyslot", "width":16, "height":8, "visible":0, "bgcolor":"#f0f" },
+    "emptyGlassProjectile":{
+      "type":[ "removeonlifeover", "pickable" ],
+      "set":{ "_":[ "stencil", "sparkModel" ] },
+      "image":"sprites", "tileX":136, "tileY":16, "width":8, "height":8,
+      "zIndex":8,
+      "states":{
+        "code":[
+          {
+            "name":"Execute",
+            "data":{
+              "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "breakglass" ] } ] },
+              "execute":[
+                { "playAudio":"scream" },
+                { "sum":12, "to":{ "_":[ "this", "y" ] } },
+                { "set":{ "removeType":"removeonlifeover", "frame":1, "forceX":0, "state":"spark" } },
+                { "as":{ "_":[ "objectTyped", "player" ] }, "executeAction":"despair" }
+              ]
+            }
+          },
+          { "name":"Physics" }
+        ],
+        "actions":{
+          "name":"pick",
+          "execute":[
+            { "sum":100, "to":{ "_":[ "variable", "score" ] }, "playAudio":"beep" },
+            { "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "html":"100" } },
+            { "remove":1 }
+          ]
+        }
+      }
+    },
+    "glassProjectile":{
+      "type":[ "removeonlifeover", "filledglass" ],
+      "set":{ "_":[ "stencil", "sparkModel" ] },
+      "image":"sprites", "tileX":128, "tileY":16, "width":8, "height":8,
+      "zIndex":8,
+      "states":{
+        "code":[
+          {
+            "name":"Execute",
+            "data":{
+              "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "breakglass" ] } ] },
+              "execute":[
+                { "playAudio":"scream" },
+                { "set":{ "removeType":"removeonlifeover", "frame":2, "forceX":0, "state":"spark" } },
+                { "as":{ "_":[ "objectTyped", "player" ] }, "executeAction":"despair" }
+              ]
+            }
+          },
+          { "name":"Physics" }
+        ]
+      }
+    },
+    "tap":{ "image":"sprites", "tileX":176, "width":16, "height":32, "zIndex":1 }
+  },
+  "execute":[
+    { "when":{ "_":[ "storage", "hiscore", "not" ] }, "as":{ "_":"storage" }, "set":{ "hiscore":0 } },
+    { "as":{ "_":"variable" }, "set":{ "hiscore":{ "_":[ "storage", "hiscore" ] } } }
+  ],
+  "scenes":{
+    "intro":{
+      "object":[
+        {
+          "box":"label", "width":256,
+          "zIndex":30, "x":0, "y":143,
+          "color":"#000",
+          "font":"spectrum", "fontSize":20, "lineHeight":20, "textAlign":"center", "html":"PRESS START",
+          "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "visible":0 }, "wait":10 }, { "set":{ "visible":1 }, "wait":10, "loopTo":0 } ] } }
+        },
+        {
+          "box":"label", "width":256,
+          "zIndex":5, "x":0, "y":172,
+          "color":"#000",
+          "font":"spectrum", "fontSize":20, "lineHeight":20,  "textAlign":"center", "html":{ "_":[ "HI-SCORE: ", ".", { "_":[ "variable", "hiscore" ] } ] }
+        },
+        {
+          "image":"title", "width":225, "height":103,
+          "x":15, "y":20, "zIndex":5,
+          "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "tileY":103 }, "wait":25 }, { "set":{ "tileY":0 }, "wait":25, "loopTo":0 } ] } }
+        },
+        {
+          "x":0,"width":256,
+          "type":"bubbles",
+          "zIndex":1,
+          "bgcolor":"#fff","height":8
+        },
+        {
+          "x":0,"width":256,"timer":0,"bgcolor":"#ff0","timer2":0,
+          "states":{
+            "code":{
+              "name":"Execute",
+              "data":[
+                {"sum":0.1,"to":{"_":["this","timer"]}},
+                {"sum":0.2,"to":{"_":["this","timer2"]}},
+                {"set":{"y":{"_":["this","timer","sin","*",10,"+",70,"floor"]}}},
+                {"set":{"height":{"_":[192,"-",{"_":["this","y"]}]}}},
+                {"as":{"_":["objectTyped","bubbles"]},"set":{"angle":{"_":["that","timer2","sin","*",2]},"y":{"_":["that","y","-",4]}}}
+              ]
+            }
+          }
+        }
+      ],
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":{
+            "when":{ "_":[ "keyA", "isHit" ] },
+            "execute":[
+              { "as":{ "_":"variable" }, "set":{ "allstages":0, "lives":3, "score":0, "stage":0 }, "playAudio":"bigfire" },
+              { "_":[ "stencil", "codeGotoNextStage" ] }
+            ]
+          }
+        }
+      }
+    },
+    "stage1":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "execute":[
+        {
+          "set":{ "tcolor0":"#f00", "tcolor1":"#7f0000", "tcustomers":[ 0 ], "tlength":140, "trow":0, "tside":1, "tx":40, "ty":56 },
+          "execute":{ "_":[ "stencil", "codeMakeTable" ] }
+        },
+        {
+          "set":{ "tcolor0":"#f00", "tcolor1":"#7f0000", "tcustomers":[ 0 ], "tlength":172, "trow":1, "tside":1, "tx":24, "ty":88 },
+          "execute":{ "_":[ "stencil", "codeMakeTable" ] }
+        },
+        {
+          "set":{ "tcolor0":"#f00", "tcolor1":"#7f0000", "tcustomers":[ 0 ], "tlength":204, "trow":2, "tside":1, "tx":8, "ty":120 },
+          "execute":{ "_":[ "stencil", "codeMakeTable" ] }
+        },
+        {
+          "set":{ "tcolor0":"#f00", "tcolor1":"#7f0000", "tcustomers":[ 0 ], "tlength":236, "trow":3, "tside":1, "tx":-8, "ty":152 },
+          "execute":{ "_":[ "stencil", "codeMakeTable" ] }
+        }
+      ]
+    },
+    "stage10":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "execute":[
+        {
+          "set":{ "tcolor0":"#f00", "tcolor1":"#7f0000", "tcustomers":[ 0, 1, 0, 1 ], "tlength":140, "trow":0, "tside":-1, "tx":200, "ty":56 },
+          "execute":{ "_":[ "stencil", "codeMakeTable" ] }
+        },
+        {
+          "set":{ "tcolor0":"#f00", "tcolor1":"#7f0000", "tcustomers":[ 1, 2, 1, 2 ], "tlength":172, "trow":1, "tside":1, "tx":24, "ty":88 },
+          "execute":{ "_":[ "stencil", "codeMakeTable" ] }
+        },
+        {
+          "set":{ "tcolor0":"#f00", "tcolor1":"#7f0000", "tcustomers":[ 2, 3, 2, 3 ], "tlength":204, "trow":2, "tside":-1, "tx":232, "ty":120 },
+          "execute":{ "_":[ "stencil", "codeMakeTable" ] }
+        },
+        {
+          "set":{ "tcolor0":"#f00", "tcolor1":"#7f0000", "tcustomers":[ 3, 0, 3, 0 ], "tlength":236, "trow":3, "tside":1, "tx":-8, "ty":152 },
+          "execute":{ "_":[ "stencil", "codeMakeTable" ] }
+        }
+      ]
+    },
+    "stage11":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "execute":[
+        {
+          "set":{ "tcolor0":"#f00", "tcolor1":"#7f0000", "tcustomers":[ 0, 0, 0, 0 ], "tlength":140, "trow":0, "tside":1, "tx":40, "ty":56 },
+          "execute":{ "_":[ "stencil", "codeMakeTable" ] }
+        },
+        {
+          "set":{ "tcolor0":"#f00", "tcolor1":"#7f0000", "tcustomers":[ 0, 1, 0, 1 ], "tlength":172, "trow":1, "tside":-1, "tx":216, "ty":88 },
+          "execute":{ "_":[ "stencil", "codeMakeTable" ] }
+        },
+        {
+          "set":{ "tcolor0":"#f00", "tcolor1":"#7f0000", "tcustomers":[ 2, 3, 2, 3 ], "tlength":204, "trow":2, "tside":1, "tx":8, "ty":120 },
+          "execute":{ "_":[ "stencil", "codeMakeTable" ] }
+        },
+        {
+          "set":{ "tcolor0":"#f00", "tcolor1":"#7f0000", "tcustomers":[ 0, 0, 0, 0 ], "tlength":236, "trow":3, "tside":-1, "tx":248, "ty":152 },
+          "execute":{ "_":[ "stencil", "codeMakeTable" ] }
+        }
+      ]
+    },
+    "stage2":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "execute":[
+        {
+          "set":{ "tcolor0":"#f00", "tcolor1":"#7f0000", "tcustomers":[ 0, 1 ], "tlength":140, "trow":0, "tside":1, "tx":40, "ty":56 },
+          "execute":{ "_":[ "stencil", "codeMakeTable" ] }
+        },
+        {
+          "set":{ "tcolor0":"#f00", "tcolor1":"#7f0000", "tcustomers":[ 1, 2 ], "tlength":172, "trow":1, "tside":1, "tx":24, "ty":88 },
+          "execute":{ "_":[ "stencil", "codeMakeTable" ] }
+        },
+        {
+          "set":{ "tcolor0":"#f00", "tcolor1":"#7f0000", "tcustomers":[ 2, 3 ], "tlength":204, "trow":2, "tside":1, "tx":8, "ty":120 },
+          "execute":{ "_":[ "stencil", "codeMakeTable" ] }
+        },
+        {
+          "set":{ "tcolor0":"#f00", "tcolor1":"#7f0000", "tcustomers":[ 3, 0 ], "tlength":236, "trow":3, "tside":1, "tx":-8, "ty":152 },
+          "execute":{ "_":[ "stencil", "codeMakeTable" ] }
+        }
+      ]
+    },
+    "stage3":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "execute":[
+        {
+          "set":{ "tcolor0":"#f00", "tcolor1":"#7f0000", "tcustomers":[ 0, 1 ], "tlength":140, "trow":0, "tside":-1, "tx":200, "ty":56 },
+          "execute":{ "_":[ "stencil", "codeMakeTable" ] }
+        },
+        {
+          "set":{ "tcolor0":"#f00", "tcolor1":"#7f0000", "tcustomers":[ 1, 2, 3 ], "tlength":172, "trow":1, "tside":-1, "tx":216, "ty":88 },
+          "execute":{ "_":[ "stencil", "codeMakeTable" ] }
+        },
+        {
+          "set":{ "tcolor0":"#f00", "tcolor1":"#7f0000", "tcustomers":[ 2, 3, 0 ], "tlength":204, "trow":2, "tside":-1, "tx":232, "ty":120 },
+          "execute":{ "_":[ "stencil", "codeMakeTable" ] }
+        },
+        {
+          "set":{ "tcolor0":"#f00", "tcolor1":"#7f0000", "tcustomers":[ 1, 2, 3 ], "tlength":236, "trow":3, "tside":-1, "tx":248, "ty":152 },
+          "execute":{ "_":[ "stencil", "codeMakeTable" ] }
+        }
+      ]
+    },
+    "stage4":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "execute":[
+        {
+          "set":{ "tcolor0":"#f00", "tcolor1":"#7f0000", "tcustomers":[ 1, 2 ], "tlength":140, "trow":0, "tside":-1, "tx":200, "ty":56 },
+          "execute":{ "_":[ "stencil", "codeMakeTable" ] }
+        },
+        {
+          "set":{ "tcolor0":"#f00", "tcolor1":"#7f0000", "tcustomers":[ 3, 0, 1 ], "tlength":172, "trow":1, "tside":-1, "tx":216, "ty":88 },
+          "execute":{ "_":[ "stencil", "codeMakeTable" ] }
+        },
+        {
+          "set":{ "tcolor0":"#f00", "tcolor1":"#7f0000", "tcustomers":[ 2, 3, 0 ], "tlength":204, "trow":2, "tside":-1, "tx":232, "ty":120 },
+          "execute":{ "_":[ "stencil", "codeMakeTable" ] }
+        },
+        {
+          "set":{ "tcolor0":"#f00", "tcolor1":"#7f0000", "tcustomers":[ 1, 2, 3, 0 ], "tlength":236, "trow":3, "tside":-1, "tx":248, "ty":152 },
+          "execute":{ "_":[ "stencil", "codeMakeTable" ] }
+        }
+      ]
+    },
+    "stage5":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "execute":[
+        {
+          "set":{ "tcolor0":"#f00", "tcolor1":"#7f0000", "tcustomers":[ 2, 3, 0 ], "tlength":140, "trow":0, "tside":-1, "tx":200, "ty":56 },
+          "execute":{ "_":[ "stencil", "codeMakeTable" ] }
+        },
+        {
+          "set":{ "tcolor0":"#f00", "tcolor1":"#7f0000", "tcustomers":[ 1, 2, 3 ], "tlength":172, "trow":1, "tside":-1, "tx":216, "ty":88 },
+          "execute":{ "_":[ "stencil", "codeMakeTable" ] }
+        },
+        {
+          "set":{ "tcolor0":"#f00", "tcolor1":"#7f0000", "tcustomers":[ 0, 1, 2, 3 ], "tlength":204, "trow":2, "tside":-1, "tx":232, "ty":120 },
+          "execute":{ "_":[ "stencil", "codeMakeTable" ] }
+        },
+        {
+          "set":{ "tcolor0":"#f00", "tcolor1":"#7f0000", "tcustomers":[ 3, 2, 1, 0 ], "tlength":236, "trow":3, "tside":-1, "tx":248, "ty":152 },
+          "execute":{ "_":[ "stencil", "codeMakeTable" ] }
+        }
+      ]
+    },
+    "stage6":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "execute":[
+        {
+          "set":{ "tcolor0":"#f00", "tcolor1":"#7f0000", "tcustomers":[ 0, 1 ], "tlength":140, "trow":0, "tside":-1, "tx":200, "ty":56 },
+          "execute":{ "_":[ "stencil", "codeMakeTable" ] }
+        },
+        {
+          "set":{ "tcolor0":"#f00", "tcolor1":"#7f0000", "tcustomers":[ 1, 2, 3 ], "tlength":172, "trow":1, "tside":-1, "tx":216, "ty":88 },
+          "execute":{ "_":[ "stencil", "codeMakeTable" ] }
+        },
+        {
+          "set":{ "tcolor0":"#f00", "tcolor1":"#7f0000", "tcustomers":[ 3, 0, 1 ], "tlength":204, "trow":2, "tside":1, "tx":8, "ty":120 },
+          "execute":{ "_":[ "stencil", "codeMakeTable" ] }
+        },
+        {
+          "set":{ "tcolor0":"#f00", "tcolor1":"#7f0000", "tcustomers":[ 2, 3, 0, 1 ], "tlength":236, "trow":3, "tside":1, "tx":-8, "ty":152 },
+          "execute":{ "_":[ "stencil", "codeMakeTable" ] }
+        }
+      ]
+    },
+    "stage7":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "execute":[
+        {
+          "set":{ "tcolor0":"#f00", "tcolor1":"#7f0000", "tcustomers":[ 3, 2, 1 ], "tlength":140, "trow":0, "tside":1, "tx":40, "ty":56 },
+          "execute":{ "_":[ "stencil", "codeMakeTable" ] }
+        },
+        {
+          "set":{ "tcolor0":"#f00", "tcolor1":"#7f0000", "tcustomers":[ 1, 2, 3 ], "tlength":172, "trow":1, "tside":1, "tx":24, "ty":88 },
+          "execute":{ "_":[ "stencil", "codeMakeTable" ] }
+        },
+        {
+          "set":{ "tcolor0":"#f00", "tcolor1":"#7f0000", "tcustomers":[ 0, 1, 2, 3 ], "tlength":204, "trow":2, "tside":-1, "tx":232, "ty":120 },
+          "execute":{ "_":[ "stencil", "codeMakeTable" ] }
+        },
+        {
+          "set":{ "tcolor0":"#f00", "tcolor1":"#7f0000", "tcustomers":[ 3, 2, 1, 0 ], "tlength":236, "trow":3, "tside":-1, "tx":248, "ty":152 },
+          "execute":{ "_":[ "stencil", "codeMakeTable" ] }
+        }
+      ]
+    },
+    "stage8":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "execute":[
+        {
+          "set":{ "tcolor0":"#f00", "tcolor1":"#7f0000", "tcustomers":[ 1, 2, 3, 0 ], "tlength":140, "trow":0, "tside":-1, "tx":200, "ty":56 },
+          "execute":{ "_":[ "stencil", "codeMakeTable" ] }
+        },
+        {
+          "set":{ "tcolor0":"#f00", "tcolor1":"#7f0000", "tcustomers":[ 0, 1, 2, 3 ], "tlength":172, "trow":1, "tside":1, "tx":24, "ty":88 },
+          "execute":{ "_":[ "stencil", "codeMakeTable" ] }
+        },
+        {
+          "set":{ "tcolor0":"#f00", "tcolor1":"#7f0000", "tcustomers":[ 3, 3, 2, 2 ], "tlength":204, "trow":2, "tside":1, "tx":8, "ty":120 },
+          "execute":{ "_":[ "stencil", "codeMakeTable" ] }
+        },
+        {
+          "set":{ "tcolor0":"#f00", "tcolor1":"#7f0000", "tcustomers":[ 1, 1, 0, 0 ], "tlength":236, "trow":3, "tside":-1, "tx":248, "ty":152 },
+          "execute":{ "_":[ "stencil", "codeMakeTable" ] }
+        }
+      ]
+    },
+    "stage9":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "execute":[
+        {
+          "set":{ "tcolor0":"#f00", "tcolor1":"#7f0000", "tcustomers":[ 0, 0, 0, 0 ], "tlength":140, "trow":0, "tside":1, "tx":40, "ty":56 },
+          "execute":{ "_":[ "stencil", "codeMakeTable" ] }
+        },
+        {
+          "set":{ "tcolor0":"#f00", "tcolor1":"#7f0000", "tcustomers":[ 1, 1, 1, 1 ], "tlength":172, "trow":1, "tside":-1, "tx":216, "ty":88 },
+          "execute":{ "_":[ "stencil", "codeMakeTable" ] }
+        },
+        {
+          "set":{ "tcolor0":"#f00", "tcolor1":"#7f0000", "tcustomers":[ 2, 2, 2, 2 ], "tlength":204, "trow":2, "tside":-1, "tx":232, "ty":120 },
+          "execute":{ "_":[ "stencil", "codeMakeTable" ] }
+        },
+        {
+          "set":{ "tcolor0":"#f00", "tcolor1":"#7f0000", "tcustomers":[ 3, 3, 3, 3 ], "tlength":236, "trow":3, "tside":1, "tx":-8, "ty":152 },
+          "execute":{ "_":[ "stencil", "codeMakeTable" ] }
+        }
+      ]
+    }
+  }
+}
