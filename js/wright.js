@@ -3362,7 +3362,7 @@ function Wright(gameId,mods) {
 	var LABELEXP = /\%([^\%]*)\%/g;
 
 	var game, system, camera, gametypes;
-	var tv=0, scenehud=0, hardware=0, gamedata=0, filecache=0, hud=0, scene=0, variables=0, gamerunning=0, curtape=0, database = 0, cheats=0;
+	var tv=0, scenehud=0, hardware=0, gamedata=0, filecache=0, hud=0, scene=0, variables=0, constants=0, gamerunning=0, curtape=0, database = 0, cheats=0;
 
 	function printLog(from,tox,text) {
 		if (typeof text == "string") console.log(fillPlaceholders(from,tox,text));
@@ -3690,7 +3690,7 @@ function Wright(gameId,mods) {
 		Datasette: function(data, local) {
 			if (gamerunning && (!data.when || get(this, this, data.when)) && (local.running === undefined)) {
 				var self=this;
-				var tapedata="",prompttext="",reader=new RegExp("\\["+curtape.name+":([^\\]]*)\\]");
+				var tapedata="",prompttext="",reader=new RegExp("^\\["+curtape.name+":(.*)\\]$");
 				local.running=1;
 				if (data.firstExecute) execute(this, this, data.firstExecute);				
 				if (data.data!==undefined) tapedata=get(this, this, data.data);
@@ -4214,6 +4214,7 @@ function Wright(gameId,mods) {
 					}
 					case "object":{ ret = game.getType(get(from, tox, struct[++id]))||0; break; }
 					case "variable":{ ret = variables; break; }
+					case "constant":{ ret = constants; break; }
 					case "camera":{ ret = camera.cameras; break; }
 					case "currentCamera":{ ret = camera.currentCamera; break; }
 					case "hud":{ ret = hud; break; }
@@ -4551,6 +4552,15 @@ function Wright(gameId,mods) {
 					case "trimString":{ ret=ret.replace(/^\s+|\s+$/g, ''); break; }
 					case "lowerString":{ ret=ret.toLowerCase(); break; }
 					case "upperString":{ ret=ret.toUpperCase(); break; }
+					case "jsonEncode":{ ret=JSON.stringify(ret); break; }
+					case "jsonDecode":{
+						try {
+							ret=JSON.parse(ret); 
+						} catch (e) {
+							ret=0;
+						}
+						break;
+					}
 					default:{
 						if (ret !== undefined) {
 							if (ret instanceof Array) ret=ret[tkn*1];
@@ -4881,12 +4891,14 @@ function Wright(gameId,mods) {
 						if (template.addCamera) iterateComposedList(from, tox, get(from, tox, template.addCamera),function(area) { addCamera(from,tox,area) });
 						break;
 					}
-					case "hitbox":{
-						var hb = [];
-						iterateComposedList(from, tox, get(from, tox, template.hitbox), function(item) {
-							hb.push(Supports.clone(item));
-						});
-						from.setHitbox(hb);
+					case "hitbox":{						
+						if (template.hitbox) {
+							var hb = [];
+							iterateComposedList(from, tox, get(from, tox, template.hitbox), function(item) {
+								if (item) hb.push({x:get(from, tox, item.x||0),y:get(from, tox, item.y||0),width:get(from, tox, item.width||0),height:get(from, tox, item.height||0)});
+							});						
+							from.setHitbox(hb);
+						} else from.setHitbox(0);
 						break;
 					}
 					case "playAudio":{
@@ -4918,12 +4930,23 @@ function Wright(gameId,mods) {
 		return from;
 	}
 
+	// TAPE COMPILER (for now, just solves constants)
+
+	function compile(tape) {
+		for (var a in tape)
+			if ((typeof tape[a] == "object")&&(tape[a]._ instanceof Array)&&(tape[a]._[0]=="constant")&&(tape[a]._.length==2))
+				tape[a]=constants[tape[a]._[1]];
+			else if ((typeof tape[a] == "object")||(tape[a]._ instanceof Array)) tape[a]=compile(tape[a]);
+		return tape;
+	}
+
 	// SCENE MANAGER
 
 	function runScene(idscene, data, transition) {
 		var elm, firstrun;
 		if (!variables) {
 			variables = {};
+			constants = {};
 			firstrun = 1;
 		}
 		gamerunning = 1;
@@ -4956,7 +4979,12 @@ function Wright(gameId,mods) {
 		game.addSkipFrames(1);
 		if (firstrun) {
 			hud = game.add("layer").size(game).setZIndex(20);
-			if (curtape.execute) execute(scene, scene, curtape.execute);
+			if (curtape.execute) {
+				execute(scene, scene, curtape.execute);
+				curtape.scenes=compile(curtape.scenes);
+				curtape.stencils=compile(curtape.stencils);
+				constants=0;
+			}
 		}
 		applyStencil(scene, scene, data);
 		updateHud();
