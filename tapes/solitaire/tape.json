@@ -1,0 +1,451 @@
+{
+  "name":"Solitaire",
+  "author":"KesieV",
+  "year":2017,
+  "genre":"Puzzle",
+  "description":"<p>In a solitaire games you usually have to use strategy and a little of luck to fight against a strict and simple ruleset and, obviously, the fate.<br>In addition of being a pleasant way of wasting time, playing solitaire games gives the opportunity to prove themselves in a quick, pride-safe and autonomous way, progressively improving your strategies from your errors.</p><p>Competitive games are often supposed to be a more compelling experience: rules are more complex and less strict, giving to the opponents the chance for building the best strategy possible to put in the field.<br>Failing against the rules, this time, isn't the main challenge. Improvement mostly comes from <i>losing against a better strategy</i>, that will be reverse engineered by the loser and merged with his own.</p><p>This new way of <i>winning and losing</i> makes the experience so interesting that it's even entertaining to watch by non-players.</p><p>But let's try to put this games comparison into perspective.</p><p>While different rules can be applied during different segments of a game, the ruleset itself doesn't <i>change</i> from match to match. We can say that rules are <i>the identity of a game</i>: people playing as they please but following the same rules are playing the same game.<br>In solitaires the main <i>opponent</i> - the one thing that can actually change the outcome of a match and that's not you - is the fate. Randomness is not an interesting challenger: it doesn't know the rules, it can't learn them and, sadly, it doesn't care of winning. So more strict game rules are needed in order to make the game still interesting and fair.</p><p>In competitive games, instead, the other opponent <i>knows the rules and wants to use them for winning</i>. And, if you want to win your opponent, you <i>have to do the same</i>.</p><p>It's tiring, huh?</p><p>I mean, understanding what the others are doing, why they are doing that... Then comparing the outcome with your own reasons and targets, understanding what you can improve and the others can improve... and then <i>doing it all over again with the same opponent</i>?</p><p>That's why some people given up on talking and understanding each other. They prefer to interact with a <i>still avatar of the other one</i> after a bunch of minutes, that follows a simple ruleset and then pretending that unexpected results are due to <i>randomness</i>, like when playing a Freecell game. So you've just to learn few rules and failure is always due to the <i>fate</i>. </p><p>And your pride is safe. Phew!</p><p>Plot!</p><p>The <a href='https://en.wikipedia.org/wiki/Mahjong'>Mahjong</a> is a quite ancient and complex Chinese board game that is played with 144 tiles. But, fear not! Brodie Lockard in 1981 invented a computer game on the <a href='https://en.wikipedia.org/wiki/PLATO_(computer_system)'>PLATO system</a>, named <a href='https://en.wikipedia.org/wiki/Mahjong_solitaire'>Mah-Jongg</a> that uses the very same tiles to play alone! Select a pair of tile from the turtle-shaped stack for removing them but make sure that any other piece is overlapping them and can they be moved on the left or on the right! Clear the table to win!</p><p>Touch or click a tile for selecting it. Select the same piece again to cancel your previous selection. Good luck!</p>",
+  "screenshots":[ "solitaire-1.png", "solitaire-2.png" ],
+  "hardware":{
+    "width":256,
+    "height":192,
+    "filter":"retro",
+    "controls":"pointer"
+  },
+  "cheats":{},
+  "resources":{
+    "dimmer":"dimmer.png",
+    "logo":"logo.png",
+    "spectrum":"spectrum.font",
+    "sprites":"sprites.png",
+    "wallpapers":"wallpapers.png"
+  },
+  "stencils":{
+    "codeCheckWin":{ "when":{ "_":[ "objectTyped", "tile", "not" ] }, "as":{ "_":"scene" }, "set":{ "state":"win" } },
+    "stageModel":{
+      "minutes":0,
+      "seconds":0,
+      "states":[
+        {
+          "execute":[
+            { "set":{ "counter":1 } },
+            {
+              "times":27,
+              "execute":[ { "times":4, "as":{ "_":[ "this", "counter" ] }, "pushInto":{ "_":[ "that", "tileset" ] } }, { "sum":1, "to":{ "_":[ "this", "counter" ] } } ]
+            },
+            {
+              "times":4,
+              "execute":[ { "times":4, "as":{ "_":[ "this", "counter" ] }, "pushInto":{ "_":[ "that", "tileset" ] } }, { "sum":1, "to":{ "_":[ "this", "counter" ] } } ]
+            },
+            {
+              "times":3,
+              "execute":[ { "times":4, "as":{ "_":[ "this", "counter" ] }, "pushInto":{ "_":[ "that", "tileset" ] } }, { "sum":1, "to":{ "_":[ "this", "counter" ] } } ]
+            },
+            { "times":4, "as":{ "_":[ "this", "counter" ] }, "pushInto":{ "_":[ "that", "tileset" ] } },
+            { "sum":1, "to":{ "_":[ "this", "counter" ] } },
+            { "times":4, "as":{ "_":[ "this", "counter" ] }, "pushInto":{ "_":[ "that", "tileset" ] } },
+            { "sum":1, "to":{ "_":[ "this", "counter" ] } },
+            { "shuffle":{ "_":[ "this", "tileset" ] }, "set":{ "counter":0 } },
+            {
+              "as":{ "_":[ "object", "tile" ] },
+              "execute":[
+                {
+                  "set":{
+                    "type":{ "_":[ "this", "level", ".", "-level" ] },
+                    "value":{ "_":[ "scene", "tileset", { "_":[ "scene", "counter" ] } ] },
+                    "zIndex":{ "_":[ "this", "level", "*", 300, "+", { "_":[ "this", "y" ] } ] }, "frame":{ "_":[ "scene", "tileset", { "_":[ "scene", "counter" ] } ] },
+                    "bgcolor":{ "_":[ "stencil", "dataColors", { "_":[ "this", "level" ] } ] }, "color":"#000",
+                    "currentLevel":{ "_":[ "this", "level", ".", "-level" ] },
+                    "higherLevel":{ "_":[ "this", "level", "+", 1, ".", "-level" ] }
+                  }
+                },
+                { "sum":1, "to":{ "_":[ "scene", "counter" ] } }
+              ]
+            },
+            {
+              "object":[
+                { "_":[ "stencil", "pointer" ] },
+                { "image":"wallpapers", "tileY":{ "_":[ "variable", "wallpaper", "*", 192 ] }, "width":256, "height":192, "x":0, "y":0 },
+                {
+                  "type":"dimmer",
+                  "image":"dimmer", "width":256, "height":192,
+                  "zIndex":1, "x":0, "y":0,
+                  "states":{
+                    "name":"undim",
+                    "code":{
+                      "name":"Sequence",
+                      "data":[
+                        { "subtract":2, "to":{ "_":[ "this", "height" ] } },
+                        { "sum":1, "to":{ "_":[ "this", "y" ] } },
+                        { "sum":1, "to":{ "_":[ "this", "tileY" ] } },
+                        { "wait":1, "cycles":96, "loopTo":0 },
+                        { "remove":1 }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "type":[ "hud", "clickable", "tablegui" ], "color":"#7f7f7f",
+                  "hudType":"label", "label":"%number|scene.minutes|0|2%:%number|scene.seconds|0|2%",
+                  "image":"sprites", "tileY":28, "width":72, "height":32,
+                  "zIndex":2, "x":{ "_":[ "scene", "timerX" ] }, "y":{ "_":[ "scene", "timerY" ] },
+                  "font":"spectrum", "lineHeight":32, "textAlign":"center",
+                  "states":{ "actions":{ "name":"click", "execute":{ "as":{ "_":"scene" }, "set":{ "state":"pause" } } } }
+                }
+              ]
+            },
+            { "set":{ "state":"play" } }
+          ]
+        },
+        {
+          "name":"play",
+          "set":{ "selectTile":1 },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "wait":25 },
+              { "sum":1, "to":{ "_":[ "this", "seconds" ] } },
+              {
+                "when":{ "_":[ "this", "seconds", "isGreaterThan", 59 ] },
+                "execute":[ { "sum":1, "to":{ "_":[ "this", "minutes" ] } }, { "set":{ "seconds":0 } } ]
+              },
+              { "loopTo":0 }
+            ]
+          }
+        },
+        {
+          "name":"win",
+          "set":{ "selectTile":0 },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "set":{ "score":{ "_":[ 3600, "-", { "_":[ "this", "minutes", "*", 60 ] }, "-", { "_":[ "this", "seconds" ] }, "limitValue", [ 0, 3600 ] ] } } },
+              { "publishScore":{ "_":[ "variable", "score" ] } },
+              { "as":{ "_":[ "object", "tablegui" ] }, "remove":1 },
+              { "as":{ "_":[ "objectTyped", "dimmer" ] }, "set":{ "state":"undim" } },
+              { "wait":171 },
+              {
+                "object":{
+                  "type":"label",
+                  "box":"label", "width":256, "height":40,
+                  "zIndex":10, "x":0,
+                  "color":"#fff",
+                  "font":"spectrum", "fontSize":40, "lineHeight":40, "outline":"#000", "textAlign":"center", "html":"TABLE CLEAR!",
+                  "timer":0,
+                  "states":{
+                    "code":{
+                      "name":"Execute",
+                      "data":[ { "sum":0.1, "to":{ "_":[ "this", "timer" ] } }, { "set":{ "y":{ "_":[ "this", "timer", "sin", "*", 5, "+", 10 ] } } } ]
+                    }
+                  }
+                }
+              },
+              { "wait":25 },
+              {
+                "object":{
+                  "type":"hud",
+                  "hudType":"label", "label":"TIME<br>%number|scene.minutes|0% min. %number|scene.seconds|0% sec.<br><br>SCORE<br>%number|scene.score|0% pts.",
+                  "width":256, "height":100,
+                  "zIndex":10, "x":0, "y":60,
+                  "font":"spectrum", "lineHeight":12, "outline":"#000", "textAlign":"center"
+                }
+              },
+              { "wait":25 },
+              {
+                "when":{ "_":[ "this", "score", "isGreaterThan", { "_":[ "variable", "hiscore" ] } ] },
+                "subsequence":[
+                  { "as":{ "_":"variable" }, "set":{ "hiscore":{ "_":[ "scene", "score" ] } } },
+                  { "as":{ "_":"storage" }, "set":{ "hiscore":{ "_":[ "scene", "score" ] } } },
+                  {
+                    "object":{
+                      "width":150, "height":20,
+                      "zIndex":10, "x":53, "y":133,
+                      "bgcolor":"#ff0", "border":"#000", "color":"#000",
+                      "font":"spectrum", "lineHeight":18, "textAlign":"center", "html":"NEW HIGH SCORE!",
+                      "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "visible":0 }, "wait":1 }, { "set":{ "visible":1 }, "wait":3 }, { "cycles":5, "loopTo":0 } ] } }
+                    }
+                  },
+                  { "wait":25 }
+                ]
+              },
+              {
+                "object":{
+                  "width":258, "height":20,
+                  "zIndex":10, "x":-1, "y":167,
+                  "bgcolor":"#f00", "border":"#000", "color":"#fff",
+                  "font":"spectrum", "lineHeight":18, "textAlign":"center", "html":{ "_":[ "stencil", "dataWallpapers", { "_":[ "variable", "wallpaper" ] } ] }
+                }
+              },
+              { "wait":1, "loop":1, "until":{ "_":[ "keyPointer", "isHit" ] } },
+              { "as":{ "_":"variable" }, "set":{ "wallpaper":{ "_":[ "variable", "wallpaper", "+", 1, "%", { "_":[ "stencil", "dataWallpapers", "count" ] } ] } } },
+              { "as":{ "_":"storage" }, "set":{ "wallpaper":{ "_":[ "variable", "wallpaper" ] } } },
+              { "gotoScene":"intro", "withTransition":3 }
+            ]
+          }
+        },
+        {
+          "name":"pause",
+          "set":{ "selectTile":0 },
+          "execute":{
+            "object":[
+              { "type":"pausemenu", "width":256, "height":192, "zIndex":100000, "x":0, "y":0, "bgcolor":"#000" },
+              {
+                "type":"pausemenu",
+                "width":256, "height":30,
+                "zIndex":100001, "x":0, "y":60,
+                "font":"spectrum", "lineHeight":12, "textAlign":"center", "html":"GIVE UP?"
+              },
+              {
+                "type":[ "pausemenu", "clickable" ],
+                "image":"sprites", "tileY":28, "width":72, "height":32,
+                "zIndex":100001, "x":48, "y":90,
+                "font":"spectrum", "lineHeight":32, "textAlign":"center", "html":"YES",
+                "states":{ "actions":{ "name":"click", "execute":{ "gotoScene":"intro", "withTransition":3 } } }
+              },
+              {
+                "type":[ "pausemenu", "clickable" ],
+                "image":"sprites", "tileY":28, "width":72, "height":32,
+                "zIndex":100001, "x":136, "y":90,
+                "font":"spectrum", "lineHeight":32, "textAlign":"center", "html":"NO",
+                "states":{
+                  "actions":{ "name":"click", "execute":[ { "as":{ "_":[ "object", "pausemenu" ] }, "remove":1 }, { "as":{ "_":"scene" }, "set":{ "state":"play" } } ] }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "dataColors":[ 0, "#ffffff", "#7f007f", "#00ffff", "#7f7f7f", "#00ff00" ],
+    "dataWallpapers":[ "Sellar Contour by Pheel", "oldsCool by Pheel", "Alpha Base by diver", "Capri Rendezvous by Dimidrol", "Cat by dman" ],
+    "pointer":{
+      "type":"pointer",
+      "image":"sprites", "tileX":72, "tileY":28, "width":16, "height":16,
+      "animations":{"idle":{"frames":2,"loopTo":0,"speed":25}},"animation":"idle",
+      "zIndex":100001,
+      "hitbox":{ "width":1, "height":1, "x":0, "y":0 },
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":[
+            { "set":{ "x":{ "_":[ "pointer", "x" ] }, "y":{ "_":[ "pointer", "y" ] } } },
+            {
+              "when":{ "_":[ "keyPointer", "isHit" ] },
+              "execute":{ "as":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "clickable" ] }, "sortBy":"zIndex" } ] }, "executeAction":"click" }
+            }
+          ]
+        }
+      }
+    },
+    "tile":{
+      "type":[ "tile", "clickable" ],
+      "image":"sprites", "width":16, "height":28,
+      "hitbox":{ "width":16, "height":24, "x":0, "y":0 },
+      "states":{
+        "actions":{
+          "name":"click",
+          "execute":{
+            "when":{ "_":[ "scene", "selectTile" ] },
+            "execute":{
+              "when":{
+                "_":[
+                  "this",
+                  "complexCollidesWith",
+                  { "subject":{ "_":[ "object", { "_":[ "this", "higherLevel" ] } ] }, "hitbox":{ "width":16, "height":20, "x":0, "y":0 } },
+                  "not",
+                  "and",
+                  {
+                    "_":[
+                      "this",
+                      "complexCollidesWith",
+                      { "subject":{ "_":[ "object", { "_":[ "this", "currentLevel" ] } ] }, "hitbox":{ "width":2, "height":24, "x":-2, "y":0 } },
+                      "not",
+                      "or",
+                      {
+                        "_":[
+                          "this",
+                          "complexCollidesWith",
+                          { "subject":{ "_":[ "object", { "_":[ "this", "currentLevel" ] } ] }, "hitbox":{ "width":2, "height":24, "x":16, "y":0 } },
+                          "not"
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              "execute":{
+                "when":{ "_":[ "scene", "selectedTile", "not" ] },
+                "execute":[ { "as":{ "_":"scene" }, "set":{ "selectedTile":{ "_":"that" } } }, { "object":{ "_":[ "stencil", "tileSelector" ] } } ],
+                "elseExecute":{
+                  "when":{ "_":[ "scene", "selectedTile", "isEqualTo", { "_":"this" } ] },
+                  "execute":[ { "as":{ "_":[ "object", "tileSelector" ] }, "remove":1 }, { "as":{ "_":"scene" }, "set":{ "selectedTile":0 } } ],
+                  "elseExecute":{
+                    "when":{ "_":[ "this", "value", "isEqualTo", { "_":[ "scene", "selectedTile", "value" ] } ] },
+                    "execute":[
+                      { "remove":1 },
+                      { "as":{ "_":[ "scene", "selectedTile" ] }, "remove":1 },
+                      { "as":{ "_":[ "object", "tileSelector" ] }, "remove":1 },
+                      { "as":{ "_":"scene" }, "set":{ "selectedTile":0 } },
+                      { "_":[ "stencil", "codeCheckWin" ] }
+                    ],
+                    "elseExecute":{ "object":{ "_":[ "stencil", "wrongMove" ] } }
+                  }
+                }
+              },
+              "elseExecute":{ "object":{ "_":[ "stencil", "wrongMove" ] } }
+            }
+          }
+        }
+      }
+    },
+    "tileSelector":{
+      "type":"tileSelector",
+      "width":16, "height":24,
+      "zIndex":{ "_":[ "that", "zIndex", "+", 1 ] }, "at":{ "_":"that" },
+      "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "border":"#f0f" }, "wait":5 }, { "set":{ "border":"#fff" }, "wait":5, "loopTo":-1 } ] } }
+    },
+    "wrongMove":{
+      "width":16, "height":24,
+      "zIndex":{ "_":[ "that", "zIndex", "+", 1 ] }, "at":{ "_":"that" },
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[ { "set":{ "border":"#f00" }, "wait":1 }, { "set":{ "border":"#000" }, "wait":1, "cycles":6, "loopTo":-1 }, { "remove":1 } ]
+        }
+      }
+    }
+  },
+  "execute":[
+    { "when":{ "_":[ "storage", "hiscore", "not" ] }, "as":{ "_":"storage" }, "set":{ "hiscore":0 } },
+    { "when":{ "_":[ "storage", "wallpaper", "not" ] }, "as":{ "_":"storage" }, "set":{ "wallpaper":0 } },
+    { "as":{ "_":"variable" }, "set":{ "hiscore":{ "_":[ "storage", "hiscore" ] }, "wallpaper":{ "_":[ "storage", "wallpaper" ] } } }
+  ],
+  "scenes":{
+    "intro":{
+      "object":[
+        { "_":[ "stencil", "pointer" ] },
+        { "image":"logo", "width":200, "height":45, "zIndex":20, "x":28, "y":48 },
+        { "width":256, "height":192, "x":0, "y":0, "bgcolor":"#007f00" },
+        {
+          "box":"label", "width":256,
+          "zIndex":20, "x":0, "y":130,
+          "color":"#fff",
+          "font":"spectrum", "fontSize":20, "lineHeight":20, "outline":"#000", "textAlign":"center", "html":"SELECT ANYWHERE",
+          "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "visible":0 }, "wait":10 }, { "set":{ "visible":1 }, "wait":21, "loopTo":0 } ] } }
+        },
+        {
+          "box":"label", "width":256,
+          "zIndex":20, "x":0, "y":172,
+          "color":"#fff",
+          "font":"spectrum", "fontSize":20, "lineHeight":20, "outline":"#000", "textAlign":"center", "html":{ "_":[ "HI-SCORE: ", ".", { "_":[ "variable", "hiscore" ] } ] }
+        }
+      ],
+      "execute":[
+        { "set":{ "counter":0 } },
+        {
+          "times":11,
+          "execute":[
+            {
+              "object":{
+                "image":"sprites", "width":16, "height":28,
+                "zIndex":10, "x":{ "_":[ "that", "counter" ] }, "frame":{ "_":[ "randomNumber", [ 1, 36 ] ] },
+                "bgcolor":"#fff",
+                "states":{
+                  "code":{
+                    "name":"Execute",
+                    "data":[
+                      { "when":{ "_":[ "this", "x", "isGreaterThan", 256 ] }, "set":{ "x":-16 } },
+                      { "sum":1, "to":{ "_":[ "this", "x" ] } },
+                      { "set":{ "y":{ "_":[ "this", "x", "/", 5, "sin", "abs", "*", 10, "+", 50 ] } } }
+                    ]
+                  }
+                }
+              }
+            },
+            { "sum":25, "to":{ "_":[ "this", "counter" ] } }
+          ]
+        }
+      ],
+      "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyPointer", "isHit" ] }, "gotoScene":"layoutTurtle", "withTransition":3 } } }
+    },
+    "layoutTurtle":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "execute":[
+        {
+          "object":[
+            { "set":{ "_":[ "stencil", "tile" ] }, "x":0, "y":80, "level":1 },
+            { "set":{ "_":[ "stencil", "tile" ] }, "x":208, "y":80, "level":1 },
+            { "set":{ "_":[ "stencil", "tile" ] }, "x":224, "y":80, "level":1 },
+            { "set":{ "_":[ "stencil", "tile" ] }, "x":104, "y":68, "level":5 }
+          ]
+        },
+        { "set":{ "counter":0, "tileset":{ "_":[ "new", [] ] } } },
+        {
+          "times":12,
+          "execute":[
+            {
+              "object":[
+                { "set":{ "_":[ "stencil", "tile" ] }, "x":{ "_":[ "that", "counter", "*", 16, "+", 16 ] }, "y":0, "level":1 },
+                { "set":{ "_":[ "stencil", "tile" ] }, "x":{ "_":[ "that", "counter", "*", 16, "+", 16 ] }, "y":168, "level":1 },
+                { "set":{ "_":[ "stencil", "tile" ] }, "x":{ "_":[ "that", "counter", "*", 16, "+", 16 ] }, "y":72, "level":1 },
+                { "set":{ "_":[ "stencil", "tile" ] }, "x":{ "_":[ "that", "counter", "*", 16, "+", 16 ] }, "y":96, "level":1 }
+              ]
+            },
+            {
+              "when":{ "_":[ "this", "counter", "isLessEqualThan", 9 ] },
+              "object":[
+                { "set":{ "_":[ "stencil", "tile" ] }, "x":{ "_":[ "that", "counter", "*", 16, "+", 32 ] }, "y":48, "level":1 },
+                { "set":{ "_":[ "stencil", "tile" ] }, "x":{ "_":[ "that", "counter", "*", 16, "+", 32 ] }, "y":120, "level":1 }
+              ]
+            },
+            {
+              "when":{ "_":[ "this", "counter", "isLessEqualThan", 7 ] },
+              "execute":{
+                "object":[
+                  { "set":{ "_":[ "stencil", "tile" ] }, "x":{ "_":[ "that", "counter", "*", 16, "+", 48 ] }, "y":24, "level":1 },
+                  { "set":{ "_":[ "stencil", "tile" ] }, "x":{ "_":[ "that", "counter", "*", 16, "+", 48 ] }, "y":144, "level":1 }
+                ]
+              }
+            },
+            { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+          ]
+        },
+        { "set":{ "counter":0 } },
+        {
+          "times":36,
+          "execute":[
+            {
+              "object":{
+                "set":{ "_":[ "stencil", "tile" ] },
+                "x":{ "_":[ "that", "counter", "/", 6, "floor", "*", 16, "+", 64 ] }, "y":{ "_":[ "that", "counter", "%", 6, "*", 24, "+", 20 ] },
+                "level":2
+              }
+            },
+            {
+              "when":{ "_":[ "this", "counter", "isLessThan", 16 ] },
+              "execute":{
+                "object":{
+                  "set":{ "_":[ "stencil", "tile" ] },
+                  "x":{ "_":[ "that", "counter", "/", 4, "floor", "*", 16, "+", 80 ] }, "y":{ "_":[ "that", "counter", "%", 4, "*", 24, "+", 40 ] },
+                  "level":3
+                }
+              }
+            },
+            {
+              "when":{ "_":[ "this", "counter", "isLessThan", 4 ] },
+              "execute":{
+                "object":{
+                  "set":{ "_":[ "stencil", "tile" ] },
+                  "x":{ "_":[ "that", "counter", "/", 2, "floor", "*", 16, "+", 96 ] }, "y":{ "_":[ "that", "counter", "%", 2, "*", 24, "+", 60 ] },
+                  "level":4
+                }
+              }
+            },
+            { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+          ]
+        }
+      ],
+      "timerX":183,
+      "timerY":139
+    }
+  }
+}
