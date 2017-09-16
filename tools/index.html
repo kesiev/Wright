@@ -1178,6 +1178,14 @@ function WrightTools() {
 
              if (l.properties&&l.properties["#deltaX"]) obj.x+=l.properties["#deltaX"]*1;
              if (l.properties&&l.properties["#deltaY"]) obj.y+=l.properties["#deltaY"]*1;
+             if (l.properties&&l.properties["#scaleX"]) {
+             	obj.x*=l.properties["#scaleX"]*1;
+             	if (obj.width) obj.width*=l.properties["#scaleX"]*1;
+             }
+             if (l.properties&&l.properties["#scaleY"]) {
+             	obj.y*=l.properties["#scaleY"]*1;
+             	if (obj.width) obj.height*=l.properties["#scaleY"]*1;
+             }
 
 
             if (cur.properties&&cur.properties["#dialogue"]) {             
