@@ -2880,7 +2880,7 @@ function Box(parent, type, sub, statemanager, useCanvas, aliasmode, controller) 
 		},
 
 		// SCREEN - Collisions
-		box.iterateCollisions=function(a,b,getcollision,dx,dy,ignorehitbox,extra,cb) {
+		box.iterateCollisions=function(alias,a,b,getcollision,dx,dy,ignorehitbox,extra,cb) {
 			if (!a||a.removed) return;
 			if (typeof b == "string") b=this.types[b];
 			if (!b) return;
@@ -2888,7 +2888,7 @@ function Box(parent, type, sub, statemanager, useCanvas, aliasmode, controller) 
 			// Collision with type
 			if (b instanceof Array) {
 				for (var x=0;x<b.length;x++)
-					if (!b[x].removed&&(a!==b[x])&&(col=Box.isColliding(a,b[x],getcollision,dx,dy,ignorehitbox)))
+					if (!b[x].removed&&(alias!==b[x])&&(col=Box.isColliding(a,b[x],getcollision,dx,dy,ignorehitbox)))
 						if (ret=cb(col,a,b[x],extra)) return ret;
 			} else if (b.typeId) {
 				this.updateGrid();
@@ -2897,7 +2897,7 @@ function Box(parent, type, sub, statemanager, useCanvas, aliasmode, controller) 
 					if (cur = this.grid[cells[c]])
 						for (var o in cur.items) {
 							itm=cur.items[o];
-							if (!itm.removed && (a !== itm) && (!done[itm.uid])) {
+							if (!itm.removed && (alias !== itm) && (!done[itm.uid])) {
 								done[itm.uid] = 1;
 								col=Box.isColliding(a,itm,getcollision,dx,dy,ignorehitbox);
 								if (col&&(ret=cb(col,a,itm,extra)))
@@ -3429,7 +3429,7 @@ function Wright(gameId,mods) {
 			var s, p, hit, set, col, apply;
 			if (wall.type)
 				iterateComposedList(self, self, get(self, self,wall.type), function(type){
-					game.iterateCollisions(self, get(self, self, type),1,0,0,0,wall,_Code.wallsXcollision);
+					game.iterateCollisions(self,self, get(self, self, type),1,0,0,0,wall,_Code.wallsXcollision);
 				});
 			else if (wall.area)
 				iterateComposedList(self, self, get(self, self,wall.area), function(area){
@@ -3493,7 +3493,7 @@ function Wright(gameId,mods) {
 			var s, p, hit, set, col, apply, type;
 			if (wall.type)
 				iterateComposedList(self, self, get(self, self,wall.type), function(type){
-					game.iterateCollisions(self,get(self, self, type),1,0,0,0,wall,_Code.wallsYcollision);
+					game.iterateCollisions(self,self,get(self, self, type),1,0,0,0,wall,_Code.wallsYcollision);
 				});
 			else if (wall.area)
 				iterateComposedList(self, self, wall.area, function(area){
@@ -4455,7 +4455,7 @@ function Wright(gameId,mods) {
 										list = list.sort(_Code.sort[args.sortby]); // @TODO: This touches a private list of Box. Could be better.
 									}
 								}
-								sub=game.iterateCollisions(rect,list,0,0,0,0,args,_Code.collision);
+								sub=game.iterateCollisions(p.notMe&&from,rect,list,0,0,0,0,args,_Code.collision);
 								if (args&&args.all) sub=args.all.length?args.all:0;
 							}
 						}
