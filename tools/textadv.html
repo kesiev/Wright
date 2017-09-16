@@ -1,0 +1,396 @@
+<!doctype html> 
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<title>Text Adventure Tool</title>		
+		<style>
+		.error {
+			padding:10px;
+			background-color: #f00;
+			color:#fff;
+		}
+		</style>
+	</head>
+	<body onload="onl()">
+		<b>Errors</b><br>
+		<div id="errors" style="color:#f00"></div>
+		<hr><hr>
+		Rooms<br>
+		<textarea cols=80 rows=25 id="rooms"></textarea>
+		<hr>
+		Items<br>
+		<textarea cols=80 rows=25 id="items"></textarea>
+		<hr>
+		Verbs<br>
+		<textarea cols=80 rows=25 id="verbs"></textarea>
+		<hr>
+		<hr>
+		<hr>
+		<b>REPORT-ROOMS<br>
+		<textarea cols=80 rows=25 id="reportrooms"></textarea>
+		<hr>
+		<b>REPORT-ITEMS<br>
+		<textarea cols=80 rows=25 id="reportitems"></textarea>
+		<hr>
+		<b>REPORT-FLAGS<br>
+		<textarea cols=80 rows=25 id="reportflags"></textarea>
+		<hr>
+	</body>
+<script>
+// TODO controlla univocita' dei nomi in oggetti stanza + inventario
+
+	function ajax(data){
+
+	  var senddata="";
+	  var processing;
+	  var http=(window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP") ? new ActiveXObject("Msxml2.XMLHTTP") : null;
+
+	  if (http) {
+	    if (data.data) for(var a in data.data)
+	      senddata += a + "=" + (data.data[a] === undefined ? "" : encodeURIComponent(data.data[a]) ) + "&";
+	      senddata=senddata.substr(0,senddata.length-1);
+	      http.open(data.method=="POST"?"POST":"GET", data.url+(senddata&&(data.method!="POST")?(data.url.indexOf("?")>=0?"&":"?")+senddata:""), true);
+	      if(data.method == "POST") http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	      http.onreadystatechange = function() {
+	        if(http.readyState == 4)
+	          if (((http.status == 200) && http.getAllResponseHeaders().length) || (http.status == 0))
+	            data.callback(data.isJson?JSON.parse(this.responseText):this.responseText,http.status);
+	            else data.callback(false,http.status);
+	      }
+	        try {
+	          http.send(senddata&&(data.method=="POST")?senddata:null);
+	        } catch(err) {
+	          data.callback(false,-1);
+	        }
+	 } else data.callback(false,-1);
+	};
+
+	var mostlong=[],mostlongindex={};
+	function validateString(string,type,room) {
+		if (string.length>1500) errors.push(["","\""+string+"\" too long?"]);
+		var last=string.substr(string.length-1,1);
+		if ((type!="label")&&((last!=".")&&(last!="?")&&(last!="!")&&(last!="\"")&&(last!=")"))) errors.push(["","\""+string+"\" do not end correctly."]);
+		if (string.match(/dr /i)) errors.push(["","["+type+":"+room+"] \""+string+"\" has a dr wrong"]);
+		var ml=type+": "+string;
+		if (!mostlongindex[ml]){
+			mostlongindex[ml]=1;
+			mostlong.push(type+"["+room+"]: "+string);
+		}
+		return !string.match(/[^\*\(\)a-zA-Z0-9'.,?! ":-]/gi);
+	}
+
+	
+	function addRoomDirection(room,how) {
+		if (!roomsindex[room]) roomsindex[room]=[];
+		roomsindex[room].push(how);
+	}
+
+	function addItemUsage(item,how) {
+		if (!itemsusage[item]) itemsusage[item]=[];
+		itemsusage[item].push(how);
+	}
+
+	function addFlagUsage(flag,how) {
+		if (!flagsusage[flag]) flagsusage[flag]=[];
+		flagsusage[flag].push(how);
+	}
+
+	function addRoomDestination(room,direction,tox) {
+		if (!directions[room]) directions[room]={};
+		if (!directions[tox]) directions[tox]={};
+		if (directions[room][direction]&&(directions[room][direction]!=tox))
+			errors.push([directions[room],"DIRECTION: "+room+" --"+direction+"--&gt; "+tox+" but already goes to "+directions[room][direction]]);
+		else
+			directions[room][direction]=tox;
+	}
+
+	function getFromCsv(row) {
+		if (!row) row="";
+		row=row.trim();
+		if (row.substr(0,1)=="\"") {
+			row=row.substr(1,row.length-2);
+		}
+		row=row.replace(/""/g,"\"");
+		row=row.replace("�","...");
+		row=row.replace("�","...");
+		return row;
+	}
+
+	function addInventoryLabel(item,label) {
+		if (inventorylabels[label]&&(inventorylabels[label]!=label))
+			errors.push([inventorylabels[label],"ITEM "+inventorylabels[label]+": is pickable and has label "+label+", but also "+item+" is pickable and has the same label"]);
+		else
+			inventorylabels[label]=item;
+	}
+
+	errors=[];
+	roomsindex={};
+	itemsusage={};
+	flagsusage={};
+	directions={};
+	gameoverrooms={};
+	inventorylabels=[];
+	thengotoroom={};
+
+	function onl() {
+		ajax({
+			url:"textadv-data/rooms.txt",
+			callback:function(data){
+
+
+				var verbs={"use":1,"look":1,"pick":1,"open":1,"talk":1};
+
+
+				var allitems={};
+				var alldestinations={};
+				var reacheditems={};
+				var pickeditems={};
+				var founditems={};
+
+				var rooms={};
+
+				data=data.split("\n");
+				var legend=data[0].toLowerCase().trim().split("\t");
+				for (var i=1;i<data.length;i++) {
+					var line=i+1;
+					var row=data[i].trim();
+					if (row) {
+						row=row.split("\t");
+						var cur={};
+						for (var j=0;j<legend.length;j++) {
+							cur[legend[j]]=getFromCsv(row[j]);
+						}
+						if (!rooms[cur["room id"]]) {
+							rooms[cur["room id"]]={"items":[],versions:[]};
+							var items=cur["items"].split(",");
+							for (var q=0;q<items.length;q++) {
+								var item=items[q].trim();
+								if (item) {
+									rooms[cur["room id"]].items.push(item);
+									reacheditems[item]=1;
+									if (founditems[item]&&(founditems[item]!=cur["room id"]))
+										errors.push([founditems[item],"ITEM: item "+item+" is in "+founditems[item]+" and in "+cur["room id"]]);
+									else
+										founditems[item]=cur["room id"];
+									allitems[item]=1;
+								}
+							}
+							for (var x=0;x<rooms[cur["room id"]].items.length;x++) {
+								addItemUsage(rooms[cur["room id"]].items[x],"ROOMS["+line+"] Found in room "+cur["room id"]+".");
+							}
+						}
+						var room={
+							ifFlag:(cur["flag"]&&(cur["flag"]!="-"))?cur["flag"]:"none",
+							label:cur["label"].trim(),
+							description:(cur["description"]||"").trim()
+						};
+
+						if (cur["n"]) room.toNorth=cur["n"];
+						if (cur["s"]) room.toSouth=cur["s"];
+						if (cur["e"]) room.toEast=cur["e"];
+						if (cur["o"]) room.toWest=cur["o"];
+						if (cur["goto room"]) room.thenGotoRoom=cur["goto room"];
+						if (cur["reset"]) room.reset=1;
+						if (cur["set flag"]&&(cur["set flag"]!=0)) room.setFlag=cur["set flag"];
+
+						
+
+						if ((room.thenGotoRoom=="gameover")||(room.thenGotoRoom=="youwin")) gameoverrooms[cur["room id"]]=1;
+						else if (room.thenGotoRoom) thengotoroom[cur["room id"]]=room.thenGotoRoom;
+
+
+						if (room.ifFlag!="none") addFlagUsage(room.ifFlag,"ROOMS["+line+"] changes "+cur["room id"]);
+						if (room.toNorth) { 
+							addRoomDestination(cur["room id"],"north",room.toNorth);
+							alldestinations[room.toNorth]=1; addRoomDirection(room.toNorth,"ROOMS["+line+"] ("+room.ifFlag+") North of "+cur["room id"]); }
+						if (room.toSouth) { addRoomDestination(cur["room id"],"south",room.toSouth);alldestinations[room.toSouth]=1; addRoomDirection(room.toSouth,"ROOMS["+line+"] ("+room.ifFlag+") South of "+cur["room id"]); }
+						if (room.toEast) { addRoomDestination(cur["room id"],"east",room.toEast);alldestinations[room.toEast]=1; addRoomDirection(room.toEast,"ROOMS["+line+"] ("+room.ifFlag+") East of "+cur["room id"]); }
+						if (room.toWest) { addRoomDestination(cur["room id"],"west",room.toWest);alldestinations[room.toWest]=1; addRoomDirection(room.toWest,"ROOMS["+line+"] ("+room.ifFlag+") West of "+cur["room id"]); }
+						if (room.thenGotoRoom) { addRoomDirection(room.thenGotoRoom,"ROOMS["+line+"] ("+room.ifFlag+") At end of cutscene "+cur["room id"]); alldestinations[room.thenGotoRoom]=1; }
+						if (room.setFlag) { addFlagUsage(room.setFlag,"ROOMS["+line+"] ("+room.ifFlag+") Set when entering "+cur["room id"])}
+						if (!validateString(room.label,"label",cur["room id"])) errors.push([room,"ROOM["+cur["room id"]+"]: ["+room.label+"] has wrong characters."]);
+						if (!validateString(room.description,"roomdescription",cur["room id"])) errors.push([room,"ROOM["+cur["room id"]+"]: ["+room.description+"] has wrong characters."]);
+						
+
+						rooms[cur["room id"]].versions.push(room);
+					}
+				}
+
+				ajax({
+					url:"textadv-data/items.txt",
+					callback:function(data){
+
+						var items={};
+						var actions=[];
+						var verbs={};
+
+						data=data.split("\n");
+						var legend=data[0].toLowerCase().trim().split("\t");
+						for (var i=1;i<data.length;i++) {
+							var line=i+1;
+							var row=data[i].trim();
+							if (row) {
+								row=row.split("\t");
+								var cur={};
+								for (var j=0;j<legend.length;j++)
+									cur[legend[j].toLowerCase()]=getFromCsv(row[j]?row[j].trim():"");
+								
+								verbs[cur["verb"]]=1;
+								
+
+								if (!items[row[0]]) {
+									if (cur["label"].split(" ").length>1) errors.push([row,"ITEM "+row[0]+": has wrong label \""+cur["label"]+"\""]);
+									items[row[0]]={label:cur["label"],ifFlag:"none",actions:[]};
+									if (!items[row[0]].label) errors.push([room,"ITEMS["+row[0]+"]: is missing label."]);
+
+								}
+								action={
+									verb:cur["verb"],
+									text:cur["text"].trim()
+								};
+
+								if (!((cur["if flag verb"]=="-")||(cur["if flag verb"]==""))) action.ifFlagVerb=cur["if flag verb"];
+								else action.ifFlagVerb="none";
+
+								if (cur["destination"]) action.withItem=cur["destination"];
+								else action.withItem=0;
+
+								if (cur["add flag"]) action.doSetFlag=cur["add flag"];
+								if (cur["remove flag"]) action.doRemoveFlag=cur["remove flag"];
+								if (cur["remove item"]) action.doRemoveItem=1;
+								if (cur["remove destination"]) action.doRemoveDestination=1;
+								if (cur["add item inventory"]) action.doAddItem=cur["add item inventory"].toLowerCase();
+								if (cur["goto room"]) action.doGotoRoom=cur["goto room"];
+
+								if (!validateString(action.text,"actiondescription",row[0])) errors.push([room,"ITEMS["+row[0]+"]: ["+action.text+"] has wrong characters."]);
+								if (!verbs[action.verb]) errors.push([room,"ITEMS["+row[0]+"]: ["+action.verb+"] is not a valid verb."]);
+
+								if (action.withItem) {
+									addItemUsage(row[0],"ITEMS["+line+"] ("+action.ifFlagVerb+") to "+action.verb+" with "+action.withItem);
+									addItemUsage(action.withItem,"ITEMS["+line+"] ("+action.ifFlagVerb+") to be "+action.verb+" with with "+row[0]);
+								}
+								if (action.doAddItem) {
+									addItemUsage(action.doAddItem,"ITEMS["+line+"] ("+action.ifFlagVerb+") added when "+action.verb+(action.withItem?" with "+action.withItem:""));
+									reacheditems[action.doAddItem]=1;
+									pickeditems[action.doAddItem]=1;
+								}
+
+								if (action.doRemoveItem) {
+									if (action.doAddItem==row[0])
+										addItemUsage(row[0],"ITEMS["+line+"] ("+action.ifFlagVerb+") picked when "+action.verb+(action.withItem?" with "+action.withItem:""));
+									else
+										addItemUsage(row[0],"ITEMS["+line+"] ("+action.ifFlagVerb+") removed when "+action.verb+(action.withItem?" with "+action.withItem:""));
+								}
+
+								if (action.doRemoveDestination) {
+									if (!action.withItem) errors.push([action,"ITEM "+row[0]+": remove destination but is not defined in action!"]);
+									addItemUsage(action.withItem,"ITEMS["+line+"] ("+action.ifFlagVerb+") removed when "+action.verb+"-d with "+row[0]);
+								}
+
+								if (action.doGotoRoom) {
+									alldestinations[action.doGotoRoom]=1;
+									addRoomDirection(action.doGotoRoom,"ITEMS["+line+"] ("+action.ifFlagVerb+") reached when "+action.verb+" "+row[0]+" "+(action.withItem?" with "+action.withItem:""));
+								}
+								if (action.doSetFlag) addFlagUsage(action.doSetFlag,"ITEMS["+line+"] ("+action.ifFlagVerb+") set by "+action.verb+" "+row[0]+" "+(action.withItem?" with "+action.withItem:""));
+
+								if (action.doRemoveFlag) addFlagUsage(action.doRemoveFlag,"ITEMS["+line+"] ("+action.ifFlagVerb+") removed by "+action.verb+" "+row[0]+" "+(action.withItem?" with "+action.withItem:""));
+
+								if (action.ifFlagVerb!="none") addFlagUsage(action.ifFlagVerb,"ITEMS["+line+"] enables "+action.verb+" "+row[0]+" "+(action.withItem?" with "+action.withItem:""));
+
+								items[row[0]].actions.push(action);
+								if (cur["if flag"]!="-"){
+									items[row[0]].ifFlag=cur["if flag"];
+									addFlagUsage(cur["if flag"],"ITEMS["+line+"] make "+row[0]+" visible");
+								}
+
+							}
+						}
+
+						console.log(gameoverrooms);
+
+						for (var a in directions)
+							for (var b in directions[a]) {
+								if (b=="north") c="south";
+								if (b=="south") c="north";
+								if (b=="east") c="west";
+								if (b=="west") c="east";
+								if (!directions[directions[a][b]])
+									errors.push([directions[a],"ROOM "+a+": on "+b+" goes to "+directions[a][b]+" but it's missing!"]);
+								else if ((directions[directions[a][b]][c]!=a)&&(!gameoverrooms[directions[a][b]]))
+									errors.push([directions[a],"ROOM "+a+": on "+b+" goes to "+directions[a][b]+" but "+directions[a][b]+" on "+c+" goes back to "+directions[directions[a][b]][c]]);
+							}
+
+						for (var a in rooms)
+							if (!alldestinations[a])
+								if (a!="intro") errors.push([rooms[a],"ROOM "+a+": can't be reached"]);
+
+						for (var a in alldestinations)
+							if (!rooms[a])
+								if ((a!="youwin")&&(a!="gameover")) errors.push([alldestinations[a],"ROOM "+a+": is missing"]);
+
+						if (!alldestinations["youwin"])
+							errors.push([0,"GAME: The game is unwinnable"]);
+
+						for (var a in items)
+							if (!reacheditems[a]) errors.push([rooms[a],"ITEM "+a+": can't be reached"]);
+
+						for (var a in pickeditems)
+							if (items[a]) addInventoryLabel(a,items[a].label);
+							else errors.push([rooms[a],"ITEM "+a+": is not defined?"]);
+
+
+						for (var a in thengotoroom)
+							if (!rooms[thengotoroom[a]])
+								errors.push([0,"ROOM "+a+": goes to missing room "+thengotoroom[a]]);
+
+
+
+
+
+
+
+
+
+						var errorhtml="";
+						for (var i=0;i<errors.length;i++) {
+							//console.log(errors[i][0],errors[i][1]);
+							errorhtml+=errors[i][1]+"<br>";
+						}
+
+						mostlong.sort(function(a, b){
+  // ASC  -> a.length - b.length
+  // DESC -> b.length - a.length
+  return b.length - a.length;
+});
+						errorhtml+="<br><br><br>Longest sentence:<br>";
+
+						for (var i=0;i<10;i++) errorhtml+=mostlong[i]+"<br><br><br>";
+						document.getElementById("reportrooms").value=JSON.stringify(roomsindex);
+						document.getElementById("reportitems").value=JSON.stringify(itemsusage);
+						document.getElementById("reportflags").value=JSON.stringify(flagsusage);
+
+						console.log(inventorylabels);
+						console.log(roomsindex);
+						console.log(itemsusage);
+						console.log(flagsusage);
+						console.log(directions);
+
+						document.getElementById("errors").innerHTML=errorhtml;
+						document.getElementById("rooms").value=JSON.stringify(rooms);
+						document.getElementById("items").value=JSON.stringify(items);
+						document.getElementById("verbs").value=JSON.stringify(verbs);
+
+						// ---
+						// ---
+						// ---
+
+						
+					}
+				});
+
+			}
+		})
+	}
+</script>
+</html>

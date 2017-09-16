@@ -1,0 +1,845 @@
+{
+  "name":"Dr. Loop",
+  "author":"KesieV",
+  "year":2017,
+  "genre":"Interactive fiction",
+  "description":"<p><a href='https://en.wikipedia.org/wiki/Zork'>Zork</a> (1977) by Infocom is one of the earliest and most famous interactive fiction computer games: the player had to explore the ruins of an ancient empire lying underground using text commands only and reading the outcome of his actions. No graphics, no sounds: immersivity was given just by its <i>good storytelling</i>, its <i>original dialogue design</i> and its <i>fairly good text command parser</i>.</p><p>Despite many hardcore gamers says that <i>videogames are meant for gameplay</i>, limiting the media to its name, storytelling had been one of the pillar of videogames from the very beginning. They <i>escaped the laboratories</i> in which they were living since the 50s just after <a href='https://en.wikipedia.org/wiki/Steve_Russell_(computer_scientist)'>Steve Russel</a> and Wayne Wiitanen stick a simple story to them, with <a href='https://en.wikipedia.org/wiki/Spacewar!'>Spacewar!</a> (1962).<p>We had to wait several graphic quality bumps in order to have that <a href='https://en.wikipedia.org/wiki/Donkey_Kong'>Donkey Kong</a> (1981) that started <i>visual narration</i> in videogames but, meanwhile, a rush of <i>text narration</i> games flooded the market, starting from <a href='https://en.wikipedia.org/wiki/Colossal_Cave_Adventure'>Colossal Cave Adventure</a> of the 1977.<p><p>These games <i>are</i> graphically limited but, actually, they were <i>way ahead of its time in terms of videogame narrative</i>: they were exploring the <i>true potential of freely interactive narrative</i> of videogames that nowadays we just <i>smell</i> in the modern open-world genre and in some virtual reality experiences.<p><p>And all that armed just with paragraphs of text smartly arranged and a humble text parser.</p><p>So there are the alternatives for who is deciding <i>if</i> and <i>how</i> to ride the <i>chatbot wave</i> today: are you going to wait the next <i>technology bump</i> to see what happens and hoping to be the next <i>Donkey Kong</i>, or are you are going to arm yourself with a <i>a good storytelling, original dialogue design and a fairly good text command parser</i> and explore the boundaries of new narratives?</p><p>Take your time. Think about how much you <i>can</i> and <i>want</i> to wait. Think about <i>what means waiting and trying hard on something impossible</i> in this historical age of the market.<br>Just remember that there is only <i>one Donkey Kong</i> that is part of the videogame media history and, despite its appearance on the world, designers are <i>still using</i> any trick in order to create new experiences. Yes. Still <i>a good storytelling, original dialogue design and a fairly good text command parser</i>.</p><p>Can you see the <i>time loop</i> now?</p><p>Plot!</p><p>You are Dr. Loob and... well. Uncover the game plot by yourself! Hit anywhere on the screen for toggling the onscreen keyboard and then select the letters for typing in the commands as you do on a regular keyboard. Follow the text on screen and remember that you can type the HELP command anytime to see what you can do. Good luck!</p>",
+  "screenshots":["drloop-1.png","drloop-2.png"],
+  "hardware":{
+     "width":320,
+    "height":200,
+    "controls":"pointer",
+    "filter":"retro"
+  },
+  "cheats":{},
+  "audioChannels":{
+    "sfx":{ "volume":1, "samples":[ "key1","key2","key3","spacebar","noise1","noise2","noise3" ] }
+  },
+  "resources":{
+    "cga":"cga.font",
+    "rooms":"rooms.json",
+    "items":"items.json",
+    "extra":"extra.json",
+    "disabled-solution":"solution.json",
+    "sprites":"sprites.png",
+    "title":"title.png",
+    "key1":"../default/realsounds/key-1.ogg",
+    "key2":"../default/realsounds/key-2.ogg",
+    "key3":"../default/realsounds/key-3.ogg",
+    "spacebar":"../default/realsounds/spacebar.ogg",
+    "noise1":"../default/pcsounds/noise-1.ogg",
+    "noise2":"../default/pcsounds/noise-2.ogg",
+    "noise3":"../default/pcsounds/noise-3.ogg"
+  },
+  "stencils":{
+    "key":{
+      "width":30,"height":30,"sounds":["key1","key2","key3"],
+      "border":"#fff","bgcolor":"#000",
+      "lineHeight":30,"digits":0,
+      "textAlign":"center","font":"cga","fontSize":8,"color":"#fff",
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":
+            {"when":{"_":["this","collidesWith",{"_":["objectTyped","pointer"]}]},
+            "execute":[
+              {"set":{"bgcolor":"#ff55ff"}},
+              {
+              "when":{"_":["keyPointer","isHit"]},
+              "execute":
+                {"as":{"_":["objectTyped","keyboard"]},"executeAction":"keypress"}
+              
+            }
+            ],"elseExecute":{"set":{"bgcolor":"#000"}}}
+            
+          
+        }
+      }
+    },
+    "dataKeyboardLayout":[
+      "QWERTYUIOP",
+      "ASDFGHJKL",
+      "ZXCVBNM"
+    ],
+    "pointer":{
+      "image":"sprites","width":15,"height":19,"zIndex":1000,
+      "type":"pointer","hitbox":{"x":0,"y":0,"width":1,"height":1},
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":{
+            "set":{"x":{"_":["pointer","x"]},"y":{"_":["pointer","y"]}}
+          }
+        }
+      }
+    },
+    "keyboard":{
+      "type":"keyboard",
+      "zIndex":100,"y":210,
+        "width":320,"height":150,"bgcolor":"#000","inputed":"","openStatus":0,
+        "execute":[
+            {
+              "object":[
+                {
+                  "x":2,"y":2,"width":316,"height":10,"lineHeight":10,
+                  "fontSize":8,"font":"cga","blink":0,
+                  "states":{
+                    "code":{
+                      "name":"Execute",
+                      "data":[
+                        {"set":{"blink":{"_":["this","blink","+",1,"%",20]}}},
+                        {
+                          "when":{"_":["this","blink","isLessThan",10]},
+                          "set":{"html":{"_":["objectTyped","keyboard","inputed"]}},
+                          "elseExecute":{"set":{"html":{"_":["objectTyped","keyboard","inputed",".","&#9724;"]}}}
+                        }
+                      ]
+                    }
+                  }
+                },
+                  {"set":{"_":["stencil","key"]},"html":"&lt;","digits":1,"x":252,"y":80},
+                  {"set":{"_":["stencil","key"]},"html":"SPACE","digits":" ","x":66,"y":112,"width":185,"sounds":["spacebar"]},
+                  {"set":{"_":["stencil","key"]},"html":"ENTER","digits":2,"x":252,"y":112,"width":60},
+                  {"set":{"_":["stencil","key"]},"html":"HIDE","digits":-1,"x":5,"y":112,"width":60}
+              ],
+              "into":{"_":"this"}
+            },
+            {"set":{"counter":0}},
+            {
+              "execute":[
+                {
+                  "object":
+              {"set":{"_":["stencil","key"]},"html":{"_":["stencil","dataKeyboardLayout",0,{"_":["that","counter"]}]},"x":{"_":["that","counter","*",31,"+",5]},"y":16}
+            ,"into":{"_":"this"}},
+                {"sum":1,"to":{"_":["this","counter"]}}
+                
+              ],
+              "times":{"_":["stencil","dataKeyboardLayout",0,"count"]}
+            },
+            {"set":{"counter":0}},
+            {
+              "execute":[
+                {
+                  "object":
+              {"set":{"_":["stencil","key"]},"html":{"_":["stencil","dataKeyboardLayout",1,{"_":["that","counter"]}]},"x":{"_":["that","counter","*",31,"+",20]},"y":48}
+            ,"into":{"_":"this"}},
+                {"sum":1,"to":{"_":["this","counter"]}}
+                
+              ],
+              "times":{"_":["stencil","dataKeyboardLayout",1,"count"]}
+            },
+            {"set":{"counter":0}},
+            {
+              "execute":[
+                {
+                  "object":
+              {"set":{"_":["stencil","key"]},"html":{"_":["stencil","dataKeyboardLayout",2,{"_":["that","counter"]}]},"x":{"_":["that","counter","*",31,"+",35]},"y":80}
+            ,"into":{"_":"this"}},
+                {"sum":1,"to":{"_":["this","counter"]}}
+                
+              ],
+              "times":{"_":["stencil","dataKeyboardLayout",2,"count"]}
+            }
+        ],
+        "states":[
+          {
+             "code":{
+              "name":"Execute",
+              "data":{
+                "when":{"_":["this","y","isLessThan",209]},
+                "subtract":{"_":["this","y","-",210,"/",2]},"to":{"_":["this","y"]},
+                "elseExecute":{"set":{"y":210,"openStatus":0}}
+              }
+            },
+            "actions":{
+              "name":"open",
+              "execute":
+                {
+                "when":{"_":["this","openStatus","not"]},"set":{"state":"open"}
+              }
+            
+            }
+          },
+          {
+            "name":"open",
+            "code":{
+              "name":"Execute",
+              "data":{
+                "when":{"_":["this","y","isGreaterThan",50]},
+                "subtract":{"_":["this","y","-",50,"/",2]},"to":{"_":["this","y"]},
+                "elseExecute":{"set":{"y":50,"openStatus":1}}
+              }
+            },"actions":
+              {
+                "name":"keypress",
+                "execute":{
+                  "when":{"_":["this","openStatus","isEqualTo",1]},
+                  "execute":[
+                   {"playAudio":{"_":["randomValue",{"_":["that","sounds"]}]}},               
+                  {"when":{"_":["that","digits","isEqualTo",-1]},"set":{"state":"default","openStatus":2},
+                  "elseExecute":{
+                    "when":{"_":["that","digits","isEqualTo",1]},
+                    "execute":{
+                      "when":{"_":["this","inputed","count","isGreaterThan",0]},
+                      "execute":{"set":{"inputed":{"_":["this","inputed","subString",[0,{"_":["this","inputed","count","-",1]}]]}}}
+                    },
+                    "elseExecute":{
+                      "when":{"_":["that","digits","isEqualTo",2]},
+                      "execute":[
+                        {"set":{"inputed":{"_":["that","inputed"]},"state":"process"},"as":{"_":"scene"}},
+                        {"set":{"inputed":""}},
+                        {"set":{"state":"default"}}
+                      ],
+                      "elseExecute":{
+                      "when":{"_":["that","digits"]},
+                      "set":{"inputed":{"_":["this","inputed",".",{"_":["that","digits"]}]}},
+                      "elseExecute":{
+                        "set":{"inputed":{"_":["this","inputed",".",{"_":["that","html"]}]}}
+                      }
+                  }}
+                    
+                  }},
+                                  {"set":{"inputed":{"_":["this","inputed","subString",[0,35]]}}}
+                
+                  ]
+                }
+              }
+                   
+          }
+        ]
+    },
+    "codePrint":[
+      {"when":{"_":["variable","solution"]},"log":{"_":["scene","title",".","\n\n",".",{"_":["this","writes"]}]}},
+      {
+      "object":{
+        "type":["screentext","typing","print"],
+        "x":{"_":["that","atX"]},
+        "y":{"_":["that","atY"]},
+        "width":320,"height":200,
+        "font":"cga","fontSize":8,"lineHeight":10,"color":"#fff",
+        "html":"","writes":{"_":["that","writes"]},"counter":0,"wrote":"","speed":1,
+        "states":
+            {
+            "code":{
+              "name":"Sequence",
+              "data":[
+                {"wait":1},
+                {
+                  "execute":{
+                    "when":{"_":["this","counter","isLessThan",{"_":["this","writes","count"]}]},
+                      "execute":[
+                         {"set":{"character":{"_":["this","writes",{"_":["this","counter"]}]}}},
+                          {
+                            "when":{"_":["this","character","isEqualTo","*"]},
+                            "set":{"character":"<br>"}
+                          },
+                          {
+                            "when":{"_":["this","character","isEqualTo","~"]},
+                            "set":{"character":"&#16;"}
+                          },
+                          {
+                            "when":{"_":["this","character","isEqualTo","_"]},
+                            "set":{"character":"&#1;"}
+                          },
+                          {
+                            "when":{"_":["this","character","isEqualTo","°"]},
+                            "set":{"character":"&#2;"}
+                          },
+                          {"set":{"wrote":{"_":["this","wrote",".",{"_":["this","character"]}]}}},
+                          {"sum":1,"to":{"_":["this","counter"]}}
+                         
+                      ]
+                  },
+                  "times":{"_":["this","speed"]}
+                },
+                {"set":{"html":{"_":["this","wrote",".","&#8;"]}}},
+                {"loopTo":0,"until":{"_":["this","counter","isEqualTo",{"_":["this","writes","count"]}]}},
+                {"set":{"html":{"_":["this","wrote"]},"removeType":"typing","state":"freeze"}}
+              ]
+            }
+          }
+        
+      }
+    }],
+    "codeFindItem":[
+      {"set":{"counter":0,"itemFound":0}},
+      {
+        "execute":[
+          {
+            "when":{"_":[
+              {"_":["scene","itemsIndex",{"_":["this","counter"]},"label","isEqualTo",{"_":["this","itemLabel"]}]},
+              "and",
+              {"_":[
+                {"_":["this","skipInventory","not"]},
+                "or",
+                {"_":["scene","itemsIndex",{"_":["this","counter"]},"inInventory","not"]}
+              ]}
+            ]},
+            "set":{"itemFound":{"_":["scene","itemsIndex",{"_":["this","counter"]}]}}
+          },
+          {"sum":1,"to":{"_":["this","counter"]}}
+          
+        ],
+        "times":{"_":["scene","itemsIndex","count"]}
+      }
+    ],
+    "codeRemoveItem":[
+        {"assign":1,"to":{"_":["variable","player","stash",{"_":["this","removeItem"]}]}},
+        {"set":{"counter":0,"newinv":{"_":["new",[]]}}},
+        {
+          "execute":[
+            {"when":{"_":["variable","player","inventory",{"_":["this","counter"]},"isNotEqualTo",{"_":["this","removeItem"]}]}
+              ,"execute":{"as":{"_":["variable","player","inventory",{"_":["this","counter"]}]},
+              "pushInto":{"_":["that","newinv"]}}
+            },
+            {"sum":1,"to":{"_":["this","counter"]}}
+          ],
+          "times":{"_":["variable","player","inventory","count"]}
+        },
+        {"set":{"inventory":{"_":["that","newinv"]}},"as":{"_":["variable","player"]}}
+    ],
+    "codeLoadGame":
+
+                  {"when":{"_":["storage","player"]},
+                "execute":[
+                  {"set":{"player":{"_":["storage","player"]}},"as":{"_":"variable"}},
+                  {"set":{"message":"Game loaded."}}
+                ],"elseExecute":{"set":{"message":"No saved game found!"}}}
+                  
+                ,
+    "codeReset":{
+      "set":{
+              "inventory":{"_":["new",[]]},
+              "stash":{"_":["new",{}]},
+              "flags":{"_":["new",{"none":1}]}
+              },"as":{"_":["variable","player"]}
+    },
+    "codePrepareInventoryList":[
+      {"set":{"inventoryList":"","counter":0}},
+      {"when":{"_":["variable","player","inventory","count"]},
+      "execute":[{
+        "execute":[
+          {"set":{"inventoryList":{"_":["this","inventoryList",".",{"_":["resource","items",{"_":["variable","player","inventory",{"_":["this","counter"]}]},"label"]},".",", "]}}},
+          {"sum":1,"to":{"_":["this","counter"]}}
+        ],
+        "times":{"_":["variable","player","inventory","count"]}
+      },
+    {"set":{"inventoryList":{"_":["this","inventoryList","subString",[0,{"_":["this","inventoryList","count","-",2]}],".","."]}}}
+                    ],"elseExecute":{"set":{"inventoryList":"Nothing."}}}
+    ]
+  },
+  "execute":[
+      { "when":{ "_":[ "storage", "hiscore", "not" ] }, "as":{ "_":"storage" }, "set":{ "hiscore":0 } },
+      { "as":{ "_":"variable" }, "set":{ "hiscore":{ "_":[ "storage", "hiscore" ] } } },
+      {"when":{"_":["resource","solution"]},"set":{"solution":{"_":["resource","solution"]}},"as":{"_":"variable"}}
+  ],
+  "scenes":{
+    "intro":{
+      "states":{
+        "execute":[{
+          "object":[
+             {"_":["stencil","pointer"]},{
+            "x":0,"y":0,"width":320,"height":200,
+            "image":"title"
+          }
+        ]
+        },
+        {"set":{"counter":0},"playAudio":"noise1"},
+        {
+          "execute":[
+            {
+              "object":{"x":{"_":["that","counter","%",40,"*",8]},"y":{"_":["that","counter","/",40,"floor","*",8]},
+              "width":8,"height":8,"bgcolor":"#000","zIndex":10,"type":"square"}
+            },
+            {"sum":1,"to":{"_":["this","counter"]}}
+          ],          
+          "times":1000
+        }]
+        ,
+          "code":[
+            {
+              "name":"Execute",
+              "data":{
+                "when":{"_":["objectTyped","square"]},
+                "execute":{
+                  "as":{"_":["randomObject",{"_":["object","square"]}]},
+                "remove":1,
+                "times":20
+                }
+              }
+            },{
+            "name":"Execute",
+            "data":{"when":{"_":["keyPointer","isHit"]},"gotoScene":"hub","withTransition":3,"playAudio":"spacebar"}
+          }
+        ]
+        
+      }
+    },
+    "hub":{
+      "execute":[
+        {"object":[{"_":["stencil","pointer"]},{"_":["stencil","keyboard"]}]},
+        {"set":{"player":0},"as":{"_":"variable"}}
+      ],
+      "states":[{
+        "code":{
+          "name":"Sequence",
+          "data":[
+            {"playAudio":"noise3"},
+            {"as":{"_":["object","screentext"]},"remove":1},
+                
+            {
+                "object":{
+                  "type":"screentext",
+                  "lineHeight":10,
+                  "width":320,"height":10,
+                  "x":0,"y":0,"bgcolor":"#ff55ff","color":"#000","font":"cga","fontSize":8,"html":{"_":["resource","extra","adventureName","."," (hi-score: ",".",{"_":["variable","hiscore"]},".",")"]}
+                }
+              },
+              {"set":{
+                "atX":0,"atY":10,"writes":{"_":["Welcome to ",".",{"_":["resource","extra","adventureName"]},".","!**Please type a command:**~ LOAD: load a previous game*~ NEW: Starts a new game*~ HELP: Read the game command list*~ TITLE: Show title art again**(Hit anywhere for the keyboard)**_ ° _ ° _ ° _ ° CREDITS ° _ ° _ ° _ ° _**",".",{"_":["resource","extra","credits"]}]}
+              },"execute":{"_":["stencil","codePrint"]}},
+              {"when":{"_":["variable","solution"]},"execute":[
+                  {"set":{"inputed":"NEW"}},
+                  {"log":{"_":["--- ",".",{"_":["this","inputed"]}]}},
+                  {"set":{"state":"process"},"as":{"_":"scene"}}
+              ]},
+
+              {"wait":5},
+              {"when":{"_":["keyPointer","isHit"]},"set":{"speed":30},"as":{"_":["object","typing"]}},
+              {"wait":1,"loopTo":-1,"until":{"_":["objectTyped","typing","not"]}},
+              {"wait":5},
+              {"when":{"_":["keyPointer","isHit"]},"execute":{
+                "when":{"_":["this","thenGotoRoom"]},
+                "execute":[
+                  {"set":{"room":{"_":["that","thenGotoRoom"]}},"as":{"_":["variable","player"]}},
+                  {"gotoScene":"hub","withTransition":3}
+                ],"elseExecute":{"executeAction":"open","as":{"_":["objectTyped","keyboard"]}}
+              }},
+              {"wait":1,"loopTo":-1}
+          ]
+        }
+      },{
+
+          "name":"process",
+          "code":{
+            "name":"Sequence",
+            "data":[
+              {"playAudio":"noise1"},
+              {"as":{"_":["object","print"]},"remove":1},
+              {"set":{"verb":0,"thenGotoScene":0,"message":"Sorry, invalid command!","counter":0,"tokens":{"_":["this","inputed","splitString"," "]}}},
+               {
+                "execute":[
+                  {"when":{"_":["resource","extra","verbs",{"_":["this","counter"]},"tokens","search",{"_":["this","tokens",0]}]},
+                  "set":{
+                    "verb":{"_":["resource","extra","verbs",{"_":["this","counter"]},"verb"]}
+                  }},
+                  {"sum":1,"to":{"_":["this","counter"]}}
+                ],
+                "times":{"_":["resource","extra","verbs","count"]}
+              },
+              {
+                "when":{"_":["this","verb","isEqualTo","load"]},
+                "execute":{"_":["stencil","codeLoadGame"]}
+              },
+              {
+                "when":{"_":["this","verb","isEqualTo","help"]},
+                "set":{"message":{"_":["resource","extra","help"]}}
+              },
+              {
+                "when":{"_":["this","verb","isEqualTo","new"]},
+                "execute":[
+                  {"set":{
+                    "player":{"_":["new",{
+                      "moves":0,
+                      "room":"intro"
+                    }]}
+                  },"as":{"_":"variable"}},
+                  {"_":["stencil","codeReset"]},
+                  {"set":{"message":"Starting a new game... Good luck!"}}
+                ]
+              },
+              {
+                "when":{"_":["this","verb","isEqualTo","title"]},
+                "set":{"thenGotoScene":"intro","message":"Glad to show you that again! :)"}
+              },
+              {"set":{
+                "atX":0,"atY":10,"writes":{"_":["~ ",".",{"_":["this","inputed"]},".","**",".",{"_":["this","message"]}]}
+              },"execute":{"_":["stencil","codePrint"]}},
+                {"when":{"_":["variable","solution"]},"gotoScene":"run","withTransition":2},
+
+               {"when":{"_":["keyPointer","isHit"]},"set":{"speed":30},"as":{"_":["object","typing"]}},
+              {"wait":1,"loopTo":-1,"until":{"_":["objectTyped","typing","not"]}},
+              {"wait":5},
+              {"wait":1,"loop":1,"until":{"_":["keyPointer","isHit"]}},
+              {"playAudio":"spacebar"},
+              {
+                "when":{"_":["this","thenGotoScene"]},
+                "gotoScene":{"_":["this","thenGotoScene"]},"withTransition":3,
+                "elseExecute":{
+                  "when":{"_":["variable","player"]},
+                  "gotoScene":"run","withTransition":2,
+                  "elseExecute":{"set":{"state":"default"}}
+                }
+              }
+            ]
+          }
+        
+        }]
+    },
+    "run":{
+      "execute":
+        {"object":[
+          {"_":["stencil","keyboard"]},
+          {"_":["stencil","pointer"]}
+        ]}
+      ,
+      "states":[
+          {
+          "code":{
+            "name":"Sequence",
+            "data":[
+               
+                {"as":{"_":["object","screentext"]},"remove":1},
+                {"set":{"exits":0,"items":0,"counter":0,"room":0,"roomVersion":0,"thenGotoRoom":0,"thenGotoHub":0,"message":"","title":"","titleBgColor":"#ff55ff","itemsIndex":{"_":["new",[]]}}},
+                {
+                  "when":{"_":["variable","player","room","isEqualTo","gameover"]},
+                  "execute":[
+                   {"playAudio":"noise2"},
+                    {"set":{"thenGotoHub":1,"titleBgColor":"#55ffff","title":"Game Over","message":{"_":["Your adventure ends here... and that wasn't the good ending indeed. You lost the game after ",".",{"_":["variable","player","moves"]},"."," moves. Better luck next time!"]}}}
+                  ]
+                },
+                {
+                  "when":{"_":["variable","player","room","isEqualTo","youwin"]},
+                  "execute":[
+                       {"playAudio":"noise3"},
+                      {"set":{"score":{"_":["resource","extra","scoreBase","-",{"_":["variable","player","moves"]}]},"extraMessage":""}},
+                      {"when":{"_":["this","score","isGreaterThan",0]},"publishScore":{"_":["this","score"]}},
+                      {
+                        "when":{ "_":[ "this", "score", "isGreaterThan", { "_":[ "variable", "hiscore" ] } ] },
+                        "execute":[
+                          {"set":{"extraMessage":{"_":["**Hey! You've beaten the previous high score of ",".",{"_":["variable","hiscore"]},".","! Nice job!"]}}},
+                          {"as":[ { "_":"storage" }, { "_":"variable" } ],
+                          "set":{ "hiscore":{ "_":[ "that", "score" ] } }}
+                        ]
+                      },
+                      {"set":{"thenGotoHub":1,"titleBgColor":"#55ffff","title":"You win!","message":{"_":["Congratulations! You completed your quest successfully! You won the game after ",".",{"_":["variable","player","moves"]},"."," moves with a score of ",".",{"_":["this","score"]},"."," points. Well done!",".",{"_":["this","extraMessage"]}]}}}
+                    ]
+                },
+                {
+                  "when":{"_":["this","message","not"]},
+                  "execute":[
+                    {"playAudio":"noise3"},
+{
+                  "execute":[
+                    {
+                      "as":{"_":["new",{}]},
+                      "set":{
+                        "label":{"_":["resource","items",{"_":["variable","player","inventory",{"_":["scene","counter"]}]},"label","upperString"]},
+                        "id":{"_":["variable","player","inventory",{"_":["scene","counter"]}]},
+                        "inInventory":1
+                      },
+                      "pushInto":{"_":["scene","itemsIndex"]}
+                    },
+                    {"sum":1,"to":{"_":["this","counter"]}}
+                  ],
+                  "times":{"_":["variable","player","inventory","count"]}
+                },
+
+                {"set":{"counter":0,"room":{"_":["resource","rooms",{"_":["variable","player","room"]}]}}},
+                {
+                  "when":{"_":["this","room"]},
+                  "execute":{
+                    "execute":[
+                      {"set":{"rom":{"_":{"_":["this","room","versions",{"_":["this","counter"]}]}}}},
+                      {
+                        "when":{"_":["variable","player","flags",{"_":["this","rom","ifFlag"]}]},
+                        "set":{"roomVersion":{"_":["this","rom"]}}
+                      },
+                      {"sum":1,"to":{"_":["this","counter"]}}
+                      
+                    ],
+                    "times":{"_":["this","room","versions","count"]}
+                  }
+                },
+                
+                
+                {
+                  "when":{"_":["this","roomVersion"]},
+                  "execute":[
+                    {"when":{"_":["this","roomVersion","reset"]},"execute":{"_":["stencil","codeReset"]}},
+                    {"when":{"_":["this","roomVersion","setFlag"]},"assign":1,"to":{"_":["variable","player","flags",{"_":["this","roomVersion","setFlag"]}]}},
+                    {
+                      "when":{"_":["this","roomVersion","thenGotoRoom"]},
+                      "set":{
+                        "title":{"_":["this","roomVersion","label"]},
+                        "message":{"_":["this","roomVersion","description"]},
+                        "thenGotoRoom":{"_":["this","roomVersion","thenGotoRoom"]}},
+                      "elseExecute":[
+                    {"set":{"title":{"_":["this","roomVersion","label"]},"counter":0,"message":{"_":["this","roomVersion","description",".","**Exits are: "]}}},
+                    {"when":{"_":["this","roomVersion","toNorth"]},"set":{"exits":1,"message":{"_":["this","message",".","North, "]}}},
+                    {"when":{"_":["this","roomVersion","toSouth"]},"set":{"exits":1,"message":{"_":["this","message",".","South, "]}}},
+                    {"when":{"_":["this","roomVersion","toEast"]},"set":{"exits":1,"message":{"_":["this","message",".","East, "]}}},
+                    {"when":{"_":["this","roomVersion","toWest"]},"set":{"exits":1,"message":{"_":["this","message",".","West, "]}}},
+                    {"when":{"_":["this","exits","not"]},"set":{"message":{"_":["this","message",".","Nowhere, "]}}},
+
+                    {"set":{"message":{"_":["this","message","subString",[0,{"_":["this","message","count","-",2]}],".",".*In the room there are:*"]}}},
+                    {
+                      "execute":[
+                        {"set":{"itm":{"_":["this","room","items",{"_":["this","counter"]}]}}},
+                        {
+                          "when":{"_":[
+                            {"_":["variable","player","flags",{"_":["resource","items",{"_":["this","itm"]},"ifFlag"]}]},
+                            "and",
+                            {"_":["variable","player","stash",{"_":["this","itm"]},"not"]}
+                          ]},
+                          "execute":[
+                             {
+                              "as":{"_":["new",{}]},
+                              "set":{
+                                "label":{"_":["resource","items",{"_":["scene","itm"]},"label","upperString"]},
+                                "id":{"_":["scene","itm"]},
+                                "inInventory":0
+                              },
+                              "pushInto":{"_":["scene","itemsIndex"]}
+                            },
+                            {"set":{"items":1,"message":{"_":["this","message",".",{"_":["resource","items",{"_":["this","itm"]},"label"]},".",", "]}}}       
+                          ]
+                        },
+                        {"sum":1,"to":{"_":["this","counter"]}}
+                      ],
+                      "times":{"_":["this","room","items","count"]}
+                    },
+                       {"when":{"_":["this","items","not"]},"set":{"message":{"_":["this","message",".","Nothing, "]}}},
+                    {"set":{"message":{"_":["this","message","subString",[0,{"_":["this","message","count","-",2]}],".","."]}}}                    
+                   
+                      ]
+                    }
+
+                    
+                  ],"elseExecute":
+                    {"set":{"thenGotoHub":1,"titleBgColor":"#55ffff","title":"Error","message":{"_":["ERROR: room ",".",{"_":["variable","player","room"]},"."," is missing!"]}}}
+                }
+
+
+                  ]
+                },
+                              {"when":{"_":["this","thenGotoRoom","or",{"_":["this","thenGotoHub"]}]},"set":{"message":{"_":["this","message",".","*~ Hit to continue."]}}},
+
+              {
+                "object":{
+                  "type":"screentext",
+                  "lineHeight":10,
+                  "width":320,"height":10,
+                  "x":0,"y":0,"bgcolor":{"_":["that","titleBgColor"]},"color":"#000","font":"cga","fontSize":8,"html":{"_":["that","title"]}
+                }
+              },
+              {"set":{
+                "atX":0,"atY":10,"writes":{"_":["this","message"]}
+              },"execute":{"_":["stencil","codePrint"]}},
+              {"when":{"_":["variable","solution"]},"execute":{
+                "when":{"_":["this","thenGotoHub"]},
+                "gotoScene":"hub","withTransition":2,"playAudio":"spacebar","log":"Going back to hub...",
+                "elseExecute":{
+                  "when":{"_":["this","thenGotoRoom"]},
+                    "execute":[
+                      {"set":{"room":{"_":["that","thenGotoRoom"]}},"as":{"_":["variable","player"]}},
+                      {"gotoScene":"run","withTransition":2,"playAudio":"spacebar"}
+                    ],"elseExecute":[
+                      {"when":{"_":["variable","solutionPosition","not"]},"assign":0,"to":{"_":["variable","solutionPosition"]}},
+                      {"when":{"_":["variable","solution","solution",{"_":["variable","solutionPosition"]}]},
+                    "execute":[
+                      {"set":{"inputed":{"_":["variable","solution","solution",{"_":["variable","solutionPosition"]}]}}},
+                      {"sum":1,"to":{"_":["variable","solutionPosition"]}},
+                      {"log":{"_":["--- ",".",{"_":["this","inputed"]}]}},
+                      {"set":{"state":"process"},"as":{"_":"scene"}}
+                    ]}
+                    ]
+                }
+
+
+
+              }},
+              {"wait":5},
+              {"when":{"_":["keyPointer","isHit"]},"set":{"speed":30},"as":{"_":["object","typing"]}},
+              {"wait":1,"loopTo":-1,"until":{"_":["objectTyped","typing","not"]}},
+              {"wait":5},
+              {"when":{"_":["keyPointer","isHit"]},"execute":{
+                "when":{"_":["this","thenGotoHub"]},
+                "gotoScene":"hub","withTransition":2,"playAudio":"spacebar",
+                "elseExecute":{
+                  "when":{"_":["this","thenGotoRoom"]},
+                    "execute":[
+                      {"set":{"room":{"_":["that","thenGotoRoom"]}},"as":{"_":["variable","player"]}},
+                      {"gotoScene":"run","withTransition":2,"playAudio":"spacebar"}
+                    ],"elseExecute":{"executeAction":"open","as":{"_":["objectTyped","keyboard"]}}
+                }
+              }},
+              {"wait":1,"loopTo":-1}
+            ]
+          }
+        },{
+          "name":"process",
+          "code":{
+            "name":"Sequence",
+            "data":[
+              {"playAudio":"noise1"},
+              {"as":{"_":["object","print"]},"remove":1},
+              {"set":{"showInventory":0,"action":0,"message":"","verb":0,"hasItem":0,"hasWith":0,"item":0,"itemId":0,"itemInInventory":0,"withItemInInventory":0,"withItem":0,"withItemId":0,"counter":0,"tokens":{"_":["this","inputed","splitString"," "]}}},
+              {
+                "execute":[
+                  {"when":{"_":["resource","extra","verbs",{"_":["this","counter"]},"tokens","search",{"_":["this","tokens",0]}]},
+                  "set":{
+                    "verb":{"_":["resource","extra","verbs",{"_":["this","counter"]},"verb"]},
+                    "hasItem":{"_":["resource","extra","verbs",{"_":["this","counter"]},"hasItem"]},
+                    "hasWith":{"_":["resource","extra","verbs",{"_":["this","counter"]},"hasWith"]},
+                    "skipInventory":{"_":["resource","extra","verbs",{"_":["this","counter"]},"skipInventory"]}
+                  }},
+                  {"sum":1,"to":{"_":["this","counter"]}}
+                ],
+                "times":{"_":["resource","extra","verbs","count"]}
+              },
+              {
+                "when":{"_":["this","verb","isEqualTo","inventory"]},
+                "execute":[
+                  {"_":["stencil","codePrepareInventoryList"]},
+                  {"set":{"message":{"_":["You have:*",".",{"_":["this","inventoryList"]},".","**Moves done so far:*",".",{"_":["variable","player","moves"]}]}}}
+                ]
+              },
+              {
+                "when":{"_":["this","verb","isEqualTo","help"]},
+                "set":{"message":{"_":["resource","extra","help"]}}
+              },
+              {
+                "when":{"_":["this","verb","isEqualTo","save"]},
+                "execute":[
+                  {"set":{"player":{"_":["variable","player"]}},"as":{"_":"storage"}},
+                  {"set":{"message":"Game saved."}}
+                ]
+              },
+              {
+                "when":{"_":["this","verb","isEqualTo","load"]},
+                "execute":{"_":["stencil","codeLoadGame"]}
+              },
+              {
+                "when":{"_":["this","message","not"]},
+                "execute":[
+                  {"sum":1,"to":{"_":["variable","player","moves"]}},
+                  {
+                    "when":{"_":["this","hasItem"]},
+                    "execute":[
+                      {"set":{"itemLabel":{"_":["this","tokens",1]},"skipInventory":{"_":["this","skipInventory"]}},"execute":{"_":["stencil","codeFindItem"]}},
+                      {
+                        "when":{"_":["resource","items",{"_":["this","itemFound","id"]}]},
+                        "set":{"itemId":{"_":["this","itemFound","id"]},"itemInInventory":{"_":["this","itemFound","inInventory"]},"item":{"_":["resource","items",{"_":["this","itemFound","id"]}]}},
+                        "elseExecute":{"set":{"message":"Can't find the specified item!"}}
+                      }
+                    ]
+                  },              
+                  {
+                    "when":{"_":["this","hasWith","and",{"_":["this","tokens","count","isGreaterThan",3]}]},
+                    "execute":[
+                      {"set":{"itemLabel":{"_":["this","tokens",3]},"skipInventory":0},"execute":{"_":["stencil","codeFindItem"]}},
+                      {
+                        "when":{"_":["resource","items",{"_":["this","itemFound","id"]}]},
+                        "set":{"withItem":{"_":["resource","items",{"_":["this","itemFound","id"]}]},"withItemInInventory":{"_":["this","itemFound","inInventory"]},"withItemId":{"_":["this","itemFound","id"]}},
+                        "elseExecute":{"set":{"message":"Can't find the destination item!"}}
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "when":{"_":["this","message","not"]},
+                "execute":[
+                  {
+                  "when":{"_":["this","item"]},
+                  "execute":[
+                    {
+                      "set":{"counter":0}
+                    },
+                    {
+                      "execute":[
+                        {
+                          "set":{"act":{"_":["this","item","actions",{"_":["this","counter"]}]}}
+                        },
+                        {
+                          "when":{"_":[
+                            {"_":["this","act","verb","isEqualTo",{"_":["this","verb"]}]},
+                            "and",
+                            {"_":["this","act","withItem","isEqualTo",{"_":["this","withItemId"]}]},
+                            "and",
+                            {"_":["variable","player","flags",{"_":["this","act","ifFlagVerb"]}]}
+                          ]},
+                          "set":{"action":{"_":["this","act"]}}
+                        },
+                        {"sum":1,"to":{"_":["this","counter"]}}
+                      ],
+                      "times":{"_":["this","item","actions","count"]}
+                    }
+                  ],
+                  "elseExecute":
+                      {
+                      "when":{"_":["this","roomVersion",{"_":["this","verb"]}]},
+                      "execute":[
+                        {"set":{"action":{"_":["new",{}]}}},
+                        {"set":{"doGotoRoom":{"_":["scene","roomVersion",{"_":["scene","verb"]}]}},"as":{"_":["this","action"]}}
+                      ]
+                    }
+                  
+                },
+                {
+                  "when":{"_":["this","action"]},
+                  "execute":[
+                    {"when":{"_":["this","action","doSetFlag"]},"assign":1,"to":{"_":["variable","player","flags",{"_":["this","action","doSetFlag"]}]}},
+                    {"when":{"_":["this","action","doRemoveFlag"]},"assign":0,"to":{"_":["variable","player","flags",{"_":["this","action","doRemoveFlag"]}]}},
+
+                    {"when":{"_":["this","action","doRemoveItem"]},
+                      "execute":[
+                        {"when":{"_":["this","itemInInventory"]},"set":{"showInventory":1}},
+                        {"set":{"removeItem":{"_":["this","itemId"]}},"execute":{"_":["stencil","codeRemoveItem"]}}
+                      ]},
+                    {"when":{"_":["this","action","doRemoveDestination"]},
+                    "execute":[
+                      {"when":{"_":["this","withItemInInventory"]},"set":{"showInventory":1}},
+                      {"set":{"removeItem":{"_":["this","withItemId"]}},"execute":{"_":["stencil","codeRemoveItem"]}}
+                    ]},
+
+                    {"when":{"_":["this","action","doAddItem"]},"execute":[
+                      {"set":{"showInventory":1}},
+                      {"assign":1,"to":{"_":["variable","player","stash",{"_":["this","action","doAddItem"]}]}},
+                      {"when":{"_":["variable","player","inventory","search",{"_":["this","action","doAddItem"]},"not"]},
+                        "as":{"_":["this","action","doAddItem"]},"pushInto":{"_":["variable","player","inventory"]}}
+                    ]},
+  
+                    {"when":{"_":["this","action","doGotoRoom"]},"set":{"room":{"_":["scene","action","doGotoRoom"]}},"as":{"_":["variable","player"]}},
+                    {"when":{"_":["this","action","text"]},"set":{"message":{"_":["this","action","text"]}}}
+                    
+                  ],
+                  "elseExecute":{"set":{"message":"Probably you can't do that right now..."}}
+                }
+              ]
+              },
+              {"when":{"_":["this","showInventory"]},"execute":[
+                {"_":["stencil","codePrepareInventoryList"]},
+                {"set":{"message":{"_":["this","message",".","**Now you have:*",".",{"_":["this","inventoryList"]}]}}}
+              ]},
+              {"when":{"_":["this","message","not"]},"set":{"state":"default"}},
+              {"wait":1},
+              {"set":{
+                "atX":0,"atY":10,"writes":{"_":["~ ",".",{"_":["this","inputed"]},".","**",".",{"_":["this","message"]}]}
+              },"execute":{"_":["stencil","codePrint"]}},
+                  {"when":{"_":["variable","solution"]},"set":{"state":"default"}},
+
+              {"wait":5},
+               {"when":{"_":["keyPointer","isHit"]},"set":{"speed":30},"as":{"_":["object","typing"]}},
+              {"wait":1,"loopTo":-1,"until":{"_":["objectTyped","typing","not"]}},
+              {"wait":5},
+              {"wait":1,"loop":1,"until":{"_":["keyPointer","isHit"]}},
+              {"set":{"state":"default"}}
+            ]
+          }
+        }
+      ]
+    }
+  }
+}
