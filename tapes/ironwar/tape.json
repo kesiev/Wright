@@ -1,0 +1,3558 @@
+{
+  "name":"Ironwar",
+  "author":"KesieV",
+  "year":2017,
+  "genre":"Jump and Gun",
+  "description":"<p>1978. Imagine this ex-pugilist quietly sitting at the bar of his own coffee shop somewhere in Osaka, planning his next move as entrepreneur. The Shin Nihon Kikaku, an electrical systems company he aquired few years before, was the best fit for working together his construction company. But Eikichi Kawasaki, in his early 30s at that time, had another plan for it. And a very bold one.</p><p>The Japan in the 70s was invaded by first videogames and companies like Sega, Taito, Namco and Nintendo at the time were just producers of electro-mechanical arcade games testing a new market. Eikichi wanted to join the bandwagon of these pioneers and, in order to do that, he decided to turn its electric company to the 'Shin Nihon Kikaku Corporation' and started producing videogames.</p><p>And undoubtly it payed: after publishing a number of games, culminating with a masterpiece shooter called <a href='https://en.wikipedia.org/wiki/Vanguard_(video_game)'>Vanguard</a> (1981), now considered the grandfather of modern shoot em'ups, Eikichi decided to take just the first letters of the company name, opening a new branch in California and spread its games in the USA and the world: our beloved 'SNK CORP.', the unshakable paladin of arcade videogames, was born.</p><p>SNK Corporation strategy was producing quality arcade games and earning from licensing them for arcade use and - later - for home consoles ports. One of the finest examples of this strategy was the top-down shooter <a href='https://en.wikipedia.org/wiki/Ikari_Warriors'>Ikari Warriors</a> (1986): the success of the arcade version helped the ports to the many home computers and consoles to rack even more success.</p><p>During the North American video game crash of 1983 SNK opted for a short change of plans, opening the 'SNK Home Entertainment' and starting distributing products for the only home console that wasn't affected by the crisis: Nintendo. But just after the release of the Super NES, SNK came back to its original 'arcade-first' strategy, leaving to selected third parties the home console licenses and portings.</p><p>SNK tried to even evolve the arcade market with innovative hardware: in 1990 produced the Neo-Geo MVS, a modular arcade cabinet capable of playing multiple interchangeable games, and it was a huge hit. At the same time - and quite surprisingly - it launched the Neo-Geo AES too, a similiar system capable to run a game at the time using cartriges thought for the home market.</p><p>SNK was coming true the dream of every 80s kid: having a true arcade game at home with zero porting compromises: compared to other consoles at the time, the Neo-Geo AES had much better graphics and sound... but at a very high price.</p><p>This is the <i>break point</i> of SNK success.</p><p>While the company move toward the home market is very understandable, probably driven by the menacing growing quality of home console games and ports, it hasn't been enough: the high price tag of these <i>home arcades</i> ($399 for the console only and $200 for each game) made them quite unappealing and gave to home consoles enough time to expand and eat the arcade market, slowly leading SNK to its bankruptcy of 2000.</p><p>It's during this very last grasp of our <i>Arcade Hero</i> company that <a href='https://en.wikipedia.org/wiki/Metal_Slug'>Metal Slug</a> (1996) was born: an iconic, colorful and chaotic platform-shooter that today, ironically, is the true mascotte of an entire age of arcade videogames for many gamers.</p><p>And to this very game I dedicate my 70th article and game of Wright Magazine, with this humble ZX Spectrum fictional conversion. Thank you SNK.</p><p>Plot!</p><p>Jump, fire and win the war! I'm sure you know what to do, soldier!</p><p>Use LEFT/RIGHT for walking, DOWN for couching and the B BUTTON for jumping. Use UP/DOWN/LEFT/RIGHT for aiming at any direction and the A BUTTON for firing with your main weapon. Use the (newly introduced) C BUTTON for throwing a grenade. Jump over a vehicle for driving it and hit DOWN+B for leaving it. Good luck!</p>",
+  "screenshots":[ "ironwar-1.png", "ironwar-2.png" ],
+  "hardware":{
+    "width":256,
+    "height":192,
+    "filter":"retro",
+    "controls":"arcade",
+    "fps":50
+  },
+  "audioChannels":{
+    "sfx":{ "volume":1, "samples":[ "scream", "scream2", "explode", "explode2", "notify", "fire", "blam", "bigfire", "beep", "beep2" ] },
+    "music":{ "volume":0.8, "looping":1, "samples":[ "bgm", "march" ] }
+  },
+  "cheats":{
+    "unlimitedCredits":"Unlimited credits (no hi-score, sorry!)"
+  },
+  "resources":{
+    "bgm":"bgm.ogg",
+    "big":"big.png",
+    "dimmer":"dimmer.png",
+    "fader":"fader.png",
+    "hud":"hud.png",
+    "march":"march.ogg",
+    "soldiers":"soldiers.png",
+    "spectrum":"spectrum.font",
+    "sprites":"sprites.png",
+    "tiles":"tiles.png",
+    "title":"title.png",
+    "vehicle":"vehicle.png",
+    "beep":"../default/zxsounds/beep.ogg",
+    "beep2":"../default/zxsounds/beep2.ogg",
+    "bigfire":"../default/zxsounds/bigfire.ogg",
+    "blam":"../default/zxsounds/blam.ogg",
+    "explode":"../default/zxsounds/explode.ogg",
+    "explode2":"../default/zxsounds/explode2.ogg",
+    "fire":"../default/zxsounds/fire.ogg",
+    "notify":"../default/zxsounds/notify.ogg",
+    "scream":"../default/zxsounds/scream.ogg",
+    "scream2":"../default/zxsounds/scream2.ogg"
+  },
+  "stencils":{
+    "codeBigExplosion":[
+      { "playAudio":"explode" },
+      {
+        "times":5,
+        "execute":{
+          "object":{
+            "set":{ "_":[ "stencil", "explosion" ] },
+            "x":{ "_":[ "that", "x", "+", { "_":[ "randomNumber", [ -10, 10 ] ] } ] }, "y":{ "_":[ "that", "y", "+", { "_":[ "randomNumber", [ -10, 10 ] ] } ] },
+            "basicScore":{ "_":[ "that", "basicScore" ] },
+            "damage":{ "_":[ "that", "damage" ] },
+            "enemy":{ "_":[ "that", "enemy" ] },
+            "isBurning":1
+          }
+        }
+      }
+    ],
+    "codeCheckHiscore":{
+      "when":{ "_":[ "cheat", "unlimitedCredits", "not" ] },
+      "execute":[
+        { "publishScore":{ "_":[ "variable", "score" ] } },
+        {
+          "when":{ "_":[ "variable", "score", "isGreaterThan", { "_":[ "variable", "hiscore" ] } ] },
+          "execute":[
+            { "as":{ "_":"variable" }, "set":{ "hiscore":{ "_":[ "variable", "score" ] } } },
+            { "as":{ "_":"storage" }, "set":{ "hiscore":{ "_":[ "variable", "score" ] } } }
+          ]
+        }
+      ]
+    },
+    "codeMissionComplete":[
+      { "as":{ "_":[ "object", "enemy" ] }, "executeAction":"kill" },
+      { "as":{ "_":[ "object", "removeonmissioncomplete" ] }, "remove":1 },
+      { "as":{ "_":[ "objectTyped", "player" ] }, "executeAction":"missionComplete" },
+      { "execute":{ "as":{ "_":"scene" }, "set":{ "state":"missionComplete" } } }
+    ],
+    "codeSetAmbushCamera":{
+      "as":{ "_":[ "objectTyped", "runningarena" ] },
+      "set":{
+        "cameraSmoothness":0.05, "cameraX":0, "cameraY":40, "cameraWidth":256, "cameraHeight":144, "cameraFocusX":0, "cameraFocusY":0, "cameraFocusWidth":256, "cameraFocusHeight":144,
+        "hitbox":0
+      }
+    },
+    "codeSetPlayerCamera":{
+      "when":{ "_":[ "objectTyped", "runningarena" ] },
+      "execute":{ "_":[ "stencil", "codeSetAmbushCamera" ] },
+      "elseExecute":{
+        "as":{ "_":[ "objectTyped", "player" ] },
+        "set":{
+          "follow":1,
+          "cameraSmoothness":0.5, "cameraX":0, "cameraY":40, "cameraWidth":256, "cameraHeight":144, "cameraFocusX":55, "cameraFocusY":56, "cameraFocusWidth":128, "cameraFocusHeight":32
+        }
+      }
+    },
+    "codeSetVehicleCamera":{
+      "when":{ "_":[ "objectTyped", "runningarena" ] },
+      "execute":{ "_":[ "stencil", "codeSetAmbushCamera" ] },
+      "elseExecute":{
+        "as":{ "_":[ "objectTyped", "player" ] },
+        "set":{
+          "follow":1,
+          "cameraSmoothness":1, "cameraX":0, "cameraY":40, "cameraWidth":256, "cameraHeight":144, "cameraFocusX":55, "cameraFocusY":48, "cameraFocusWidth":128, "cameraFocusHeight":48
+        }
+      }
+    },
+    "codeThenDo":[
+      {
+        "when":{ "_":[ "this", "thenDo", "isEqualTo", "goRight" ] },
+        "execute":[
+          { "as":{ "_":[ "object", "gopopup" ] }, "remove":1 },
+          { "object":{ "set":{ "_":[ "stencil", "goPopupModel" ] }, "tileX":0, "x":216, "y":48 }, "into":{ "_":"scenehud" } }
+        ]
+      },
+      {
+        "when":{ "_":[ "this", "thenDo", "isEqualTo", "goUp" ] },
+        "execute":[
+          { "as":{ "_":[ "object", "gopopup" ] }, "remove":1 },
+          { "object":{ "set":{ "_":[ "stencil", "goPopupModel" ] }, "tileX":192, "x":216, "y":48 }, "into":{ "_":"scenehud" } }
+        ]
+      },
+      {
+        "when":{ "_":[ "this", "thenDo", "isEqualTo", "goDown" ] },
+        "execute":[
+          { "as":{ "_":[ "object", "gopopup" ] }, "remove":1 },
+          { "object":{ "set":{ "_":[ "stencil", "goPopupModel" ] }, "tileX":288, "x":216, "y":142 }, "into":{ "_":"scenehud" } }
+        ]
+      },
+      {
+        "when":{ "_":[ "this", "thenDo", "isEqualTo", "goLeft" ] },
+        "execute":[
+          { "as":{ "_":[ "object", "gopopup" ] }, "remove":1 },
+          { "object":{ "set":{ "_":[ "stencil", "goPopupModel" ] }, "tileX":96, "x":8, "y":48 }, "into":{ "_":"scenehud" } }
+        ]
+      },
+      { "when":{ "_":[ "this", "thenDo", "isEqualTo", "missionComplete" ] }, "execute":{ "_":[ "stencil", "codeMissionComplete" ] } }
+    ],
+    "spark":{
+      "image":"sprites", "tileX":192, "tileY":24, "width":16, "height":16,
+      "zIndex":60, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "angle":{ "_":[ "randomValue", [ 0, 90, 180, 270 ] ] },
+      "animations":{ "idle":{ "frames":3, "speed":2 } },
+      "animation":"idle",
+      "states":{ "code":{ "name":"Sequence", "data":[ { "wait":9 }, { "remove":1 } ] } }
+    },
+    "modelPopupLabel":{
+      "width":100, "height":20,
+      "zIndex":10000, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "that", "y", "-", 10 ] },
+      "color":"#0ff",
+      "font":"spectrum", "lineHeight":12, "outline":"#000", "textAlign":"center",
+      "speed":0.4,
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[ { "subtract":{ "_":[ "this", "speed" ] }, "to":{ "_":[ "this", "y" ] }, "wait":1, "loop":1, "cycles":30 }, { "remove":1 } ]
+        }
+      }
+    },
+    "stageModel":{
+      "execute":[
+        { "as":{ "_":"variable" }, "set":{ "nextSerial":1 } },
+        { "_":[ "stencil", "codeSetPlayerCamera" ] },
+        {
+          "object":[
+            {
+              "type":"hud",
+              "hudType":"label", "label":"%number|variable.score%",
+              "width":70, "height":20,
+              "zIndex":101, "x":8, "y":-2,
+              "font":"spectrum", "lineHeight":20, "textAlign":"right"
+            },
+            {
+              "type":"hud",
+              "hudType":"label", "label":"ARMS",
+              "width":50, "height":20,
+              "zIndex":101, "x":90, "y":5,
+              "font":"spectrum", "lineHeight":20, "textAlign":"center"
+            },
+            {
+              "type":"hud",
+              "hudType":"label", "label":"BOMB",
+              "width":50, "height":20,
+              "zIndex":101, "x":140, "y":5,
+              "font":"spectrum", "lineHeight":20, "textAlign":"center"
+            },
+            {
+              "width":50, "height":20,
+              "zIndex":101, "x":90, "y":15,
+              "font":"spectrum", "lineHeight":20, "textAlign":"center",
+              "states":{
+                "code":{
+                  "name":"Execute",
+                  "data":{
+                    "when":{ "_":[ "objectTyped", "player", "arms", "isLessThan", 0 ] },
+                    "set":{ "html":"--" },
+                    "elseExecute":{ "set":{ "html":{ "_":[ "objectTyped", "player", "arms" ] } } }
+                  }
+                }
+              }
+            },
+            {
+              "type":"hud",
+              "hudType":"label", "label":"%number|variable.bomb%",
+              "width":50, "height":20,
+              "zIndex":101, "x":140, "y":15,
+              "font":"spectrum", "lineHeight":20, "textAlign":"center"
+            },
+            {
+              "type":"hud",
+              "hudType":"label", "label":"%number|variable.time|0|2%",
+              "width":60, "height":40,
+              "zIndex":101, "x":195, "y":0,
+              "font":"spectrum", "fontSize":54, "lineHeight":40, "textAlign":"center"
+            },
+            { "image":"sprites", "tileY":40, "width":56, "height":12, "zIndex":101, "x":16, "y":15 },
+            {
+              "height":8,
+              "zIndex":102, "x":18, "y":17,
+              "bgcolor":"#f00",
+              "states":{
+                "code":{
+                  "name":"Execute",
+                  "data":{ "set":{ "width":{ "_":[ "objectTyped", "player", "health", "/", { "_":[ "objectTyped", "player", "maxHealth" ] }, "*", 52 ] } } }
+                }
+              }
+            },
+            {
+              "type":"hud",
+              "hudType":"label", "label":"1UP = %number|variable.lives%",
+              "box":"label", "width":70,
+              "zIndex":101, "x":8, "y":23,
+              "font":"spectrum", "textAlign":"center"
+            },
+            { "width":256, "height":40, "zIndex":100, "x":0, "y":0, "bgcolor":"#000" },
+            {
+              "type":"hud",
+              "hudType":"label", "label":"CREDITS %number|variable.credits%",
+              "box":"label", "width":256, "height":10,
+              "zIndex":100, "x":0, "y":182,
+              "bgcolor":"#000",
+              "font":"spectrum", "lineHeight":10, "textAlign":"center"
+            }
+          ],
+          "into":{ "_":"scenehud" }
+        }
+      ],
+      "endedWithTank":0,
+      "fadeInEffect":"right",
+      "states":[
+        {
+          "execute":{
+            "when":{ "_":[ "this", "initialized", "not" ] },
+            "execute":[
+              { "set":{ "initialized":1, "sceneArea":{ "_":[ "new", { "x":0, "y":0 } ] } } },
+              { "when":{ "_":[ "this", "music" ] }, "playAudio":{ "_":[ "this", "music" ] }, "stopChannel":"music" },
+              { "as":{ "_":[ "this", "sceneArea" ] }, "set":{ "width":{ "_":[ "scene", "width" ] }, "height":{ "_":[ "scene", "height" ] } } },
+              { "object":{ "width":{ "_":[ "scene", "width" ] }, "height":{ "_":[ "scene", "height" ] }, "x":0, "y":0, "bgcolor":"#0ff" } },
+              { "as":{ "_":[ "objectTyped", "player" ] }, "execute":{ "_":[ "stencil", "codeThenDo" ] } },
+              {
+                "object":{
+                  "image":"fader", "width":352, "height":240,
+                  "zIndex":1, "x":-48, "y":-8,
+                  "fadeInEffect":{ "_":[ "that", "fadeInEffect" ] },
+                  "states":{
+                    "code":{
+                      "name":"Sequence",
+                      "data":[
+                        { "when":{ "_":[ "this", "fadeInEffect", "isEqualTo", "left" ] }, "subtract":10, "to":{ "_":[ "this", "x" ] } },
+                        { "when":{ "_":[ "this", "fadeInEffect", "isEqualTo", "right" ] }, "sum":10, "to":{ "_":[ "this", "x" ] } },
+                        { "when":{ "_":[ "this", "fadeInEffect", "isEqualTo", "up" ] }, "subtract":10, "to":{ "_":[ "this", "y" ] } },
+                        { "when":{ "_":[ "this", "fadeInEffect", "isEqualTo", "down" ] }, "sum":10, "to":{ "_":[ "this", "y" ] } },
+                        { "wait":1, "cycles":31, "loopTo":0 },
+                        { "remove":1 }
+                      ]
+                    }
+                  }
+                },
+                "into":{ "_":"scenehud" }
+              },
+              {
+                "when":{ "_":[ "this", "missionStart" ] },
+                "execute":{
+                  "object":[
+                    {
+                      "width":256, "height":40,
+                      "x":0,
+                      "color":"#0ff",
+                      "font":"spectrum", "fontSize":60, "lineHeight":40, "outline":"#000", "textAlign":"center", "html":"MISSION",
+                      "gap":10,
+                      "states":{
+                        "code":{
+                          "name":"Sequence",
+                          "data":[
+                            { "sum":{ "_":[ "this", "gap" ] }, "to":{ "_":[ "this", "y" ] } },
+                            { "set":{ "gap":{ "_":[ "this", "gap", "*", 0.8 ] } } },
+                            { "wait":1, "cycles":20, "loopTo":0 },
+                            { "set":{ "color":"#000" }, "wait":1 },
+                            { "set":{ "color":"#0ff" }, "wait":1, "cycles":10, "loopTo":-1 },
+                            { "wait":50 },
+                            { "set":{ "gap":1 } },
+                            { "sum":{ "_":[ "this", "gap" ] }, "to":{ "_":[ "this", "x" ] } },
+                            { "set":{ "gap":{ "_":[ "this", "gap", "*", 2 ] } } },
+                            { "wait":1, "cycles":10, "loopTo":-2 },
+                            { "remove":1 }
+                          ]
+                        }
+                      }
+                    },
+                    {
+                      "width":256, "height":40,
+                      "x":0, "y":192,
+                      "color":"#0ff",
+                      "font":"spectrum", "fontSize":60, "lineHeight":40, "outline":"#000", "textAlign":"center", "html":"BEGIN",
+                      "gap":24,
+                      "states":{
+                        "code":{
+                          "name":"Sequence",
+                          "data":[
+                            { "subtract":{ "_":[ "this", "gap" ] }, "to":{ "_":[ "this", "y" ] } },
+                            { "set":{ "gap":{ "_":[ "this", "gap", "*", 0.8 ] } } },
+                            { "wait":1, "cycles":20, "loopTo":0 },
+                            { "set":{ "color":"#000" }, "wait":1 },
+                            { "set":{ "color":"#0ff" }, "wait":1, "cycles":10, "loopTo":-1 },
+                            { "wait":50 },
+                            { "set":{ "gap":1 } },
+                            { "subtract":{ "_":[ "this", "gap" ] }, "to":{ "_":[ "this", "x" ] } },
+                            { "set":{ "gap":{ "_":[ "this", "gap", "*", 2 ] } } },
+                            { "wait":1, "cycles":10, "loopTo":-2 },
+                            { "remove":1 }
+                          ]
+                        }
+                      }
+                    }
+                  ],
+                  "into":{ "_":"scenehud" }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name":"play",
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "wait":50 },
+              { "subtract":1, "to":{ "_":[ "variable", "time" ] } },
+              { "when":{ "_":[ "variable", "time", "not" ] }, "as":{ "_":[ "objectTyped", "player" ] }, "executeAction":"kill" },
+              { "loopTo":-3, "until":{ "_":[ "variable", "time", "not" ] } }
+            ]
+          }
+        },
+        {
+          "name":"missionComplete",
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "playAudio":"march", "stopChannel":"music" },
+              {
+                "object":[
+                  {
+                    "width":256, "height":40,
+                    "x":0,
+                    "color":"#0ff",
+                    "font":"spectrum", "fontSize":60, "lineHeight":40, "outline":"#000", "textAlign":"center", "html":"MISSION",
+                    "gap":10,
+                    "states":{
+                      "code":{
+                        "name":"Sequence",
+                        "data":[
+                          { "sum":{ "_":[ "this", "gap" ] }, "to":{ "_":[ "this", "y" ] } },
+                          { "set":{ "gap":{ "_":[ "this", "gap", "*", 0.8 ] } } },
+                          { "wait":1, "cycles":20, "loopTo":0 },
+                          { "set":{ "color":"#000" }, "wait":1 },
+                          { "set":{ "color":"#0ff" }, "wait":1, "cycles":10, "loopTo":-1 },
+                          { "wait":50 },
+                          { "set":{ "gap":1 } },
+                          { "sum":{ "_":[ "this", "gap" ] }, "to":{ "_":[ "this", "x" ] } },
+                          { "set":{ "gap":{ "_":[ "this", "gap", "*", 2 ] } } },
+                          { "wait":1, "cycles":10, "loopTo":-2 },
+                          { "remove":1 }
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "width":256, "height":40,
+                    "x":0, "y":192,
+                    "color":"#0ff",
+                    "font":"spectrum", "fontSize":60, "lineHeight":40, "outline":"#000", "textAlign":"center", "html":"CLEAR",
+                    "gap":24,
+                    "states":{
+                      "code":{
+                        "name":"Sequence",
+                        "data":[
+                          { "subtract":{ "_":[ "this", "gap" ] }, "to":{ "_":[ "this", "y" ] } },
+                          { "set":{ "gap":{ "_":[ "this", "gap", "*", 0.8 ] } } },
+                          { "wait":1, "cycles":20, "loopTo":0 },
+                          { "set":{ "color":"#000" }, "wait":1 },
+                          { "set":{ "color":"#0ff" }, "wait":1, "cycles":10, "loopTo":-1 },
+                          { "wait":50 },
+                          { "set":{ "gap":1 } },
+                          { "subtract":{ "_":[ "this", "gap" ] }, "to":{ "_":[ "this", "x" ] } },
+                          { "set":{ "gap":{ "_":[ "this", "gap", "*", 2 ] } } },
+                          { "wait":1, "cycles":10, "loopTo":-2 },
+                          { "remove":1 }
+                        ]
+                      }
+                    }
+                  }
+                ],
+                "into":{ "_":"scenehud" },
+                "playAudio":"notify"
+              },
+              { "wait":120 },
+              {
+                "object":{
+                  "width":256, "height":20,
+                  "x":0, "y":60,
+                  "bgcolor":"#000", "color":"#0ff",
+                  "font":"spectrum", "lineHeight":20, "textAlign":"center", "html":"MISSION CLEAR BONUS"
+                },
+                "into":{ "_":"scenehud" },
+                "playAudio":"beep"
+              },
+              { "wait":25 },
+              { "set":{ "bonus":3000 } },
+              { "sum":{ "_":[ "this", "bonus" ] }, "to":{ "_":[ "variable", "score" ] } },
+              {
+                "object":{
+                  "width":256, "height":20,
+                  "x":0, "y":75,
+                  "bgcolor":"#000", "color":"#0ff",
+                  "font":"spectrum", "lineHeight":20, "textAlign":"center", "html":{ "_":[ "scene", "bonus", ".", " pts." ] }
+                },
+                "into":{ "_":"scenehud" },
+                "playAudio":"beep"
+              },
+              { "wait":25 },
+              {
+                "object":{
+                  "width":256, "height":20,
+                  "x":0, "y":90,
+                  "bgcolor":"#000", "color":"#0ff",
+                  "font":"spectrum", "lineHeight":20, "textAlign":"center", "html":"HOSTAGES BONUS"
+                },
+                "into":{ "_":"scenehud" },
+                "playAudio":"beep"
+              },
+              { "wait":25 },
+              { "set":{ "bonus":{ "_":[ "variable", "saved", "*", 500 ] } } },
+              { "sum":{ "_":[ "this", "bonus" ] }, "to":{ "_":[ "variable", "score" ] } },
+              {
+                "object":{
+                  "width":256, "height":20,
+                  "x":0, "y":105,
+                  "bgcolor":"#000", "color":"#0ff",
+                  "font":"spectrum", "lineHeight":20, "textAlign":"center", "html":{ "_":[ "variable", "saved", ".", " X 500 = ", ".", { "_":[ "scene", "bonus" ] }, ".", " pts." ] }
+                },
+                "into":{ "_":"scenehud" },
+                "playAudio":"beep"
+              },
+              { "wait":25 },
+              {
+                "object":{
+                  "width":256, "height":20,
+                  "x":0, "y":120,
+                  "bgcolor":"#000", "color":"#0ff",
+                  "font":"spectrum", "lineHeight":20, "textAlign":"center", "html":"VEHICLE BONUS"
+                },
+                "into":{ "_":"scenehud" },
+                "playAudio":"beep"
+              },
+              { "wait":25 },
+              { "set":{ "bonus":{ "_":[ "scene", "endedWithTank", "*", 1000 ] } } },
+              { "sum":{ "_":[ "this", "bonus" ] }, "to":{ "_":[ "variable", "score" ] } },
+              {
+                "object":{
+                  "width":256, "height":20,
+                  "x":0, "y":135,
+                  "bgcolor":"#000", "color":"#0ff",
+                  "font":"spectrum", "lineHeight":20, "textAlign":"center", "html":{ "_":[ "scene", "bonus", ".", " pts." ] }
+                },
+                "into":{ "_":"scenehud" },
+                "playAudio":"beep"
+              },
+              { "_":[ "stencil", "codeCheckHiscore" ] },
+              { "wait":25 },
+              { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+              { "gotoScene":"ending", "withTransition":3, "stopChannel":"music" }
+            ]
+          }
+        },
+        {
+          "name":"gameover",
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "wait":50 },
+              { "_":[ "stencil", "codeCheckHiscore" ] },
+              {
+                "object":[
+                  { "type":"continuehud", "image":"dimmer", "width":256, "height":192, "zIndex":50, "x":0, "y":0 },
+                  {
+                    "type":"continuehud",
+                    "width":256, "height":60,
+                    "zIndex":51, "x":0, "y":50,
+                    "color":"#0ff",
+                    "font":"spectrum", "fontSize":54, "lineHeight":60, "outline":"#000", "textAlign":"center", "html":"CONTINUE?"
+                  },
+                  {
+                    "type":"continuehud",
+                    "image":"hud", "width":32, "height":32,
+                    "zIndex":51, "x":112, "y":110, "frame":9,
+                    "states":{
+                      "code":[
+                        {
+                          "name":"Sequence",
+                          "data":[
+                            { "set":{ "counter":30 } },
+                            { "subtract":1, "to":{ "_":[ "this", "counter" ] } },
+                            { "when":{ "_":[ "keyC", "isDown" ] }, "set":{ "counter":0 } },
+                            { "wait":1, "loopTo":-2, "until":{ "_":[ "this", "counter", "not" ] } },
+                            { "subtract":0.1, "to":{ "_":[ "this", "scale" ] }, "wait":1, "loop":1, "cycles":10 },
+                            { "subtract":1, "to":{ "_":[ "this", "frame" ] }, "playAudio":"bigfire" },
+                            { "sum":0.1, "to":{ "_":[ "this", "scale" ] }, "wait":1, "loop":1, "cycles":10 },
+                            { "loopTo":0, "until":{ "_":[ "this", "frame", "not" ] } },
+                            { "wait":30 },
+                            { "gotoScene":"gameover", "withTransition":3, "stopChannel":"music" }
+                          ]
+                        },
+                        {
+                          "name":"Execute",
+                          "data":{
+                            "when":{ "_":[ "keyA", "isHit" ] },
+                            "execute":{
+                              "when":{ "_":[ "variable", "credits" ] },
+                              "execute":[
+                                { "as":{ "_":"variable" }, "set":{ "lives":3, "score":0 } },
+                                {
+                                  "object":{
+                                    "set":{ "_":[ "stencil", "bonusWeaponMachinegun" ] },
+                                    "x":{ "_":[ "objectTyped", "player", "x", "+", 20 ] }, "y":{ "_":[ "objectTyped", "player", "y" ] }
+                                  }
+                                },
+                                { "as":{ "_":[ "objectTyped", "player" ] }, "executeAction":"respawn" },
+                                { "when":{ "_":[ "cheat", "unlimitedCredits", "not" ] }, "subtract":1, "to":{ "_":[ "variable", "credits" ] } },
+                                { "as":{ "_":[ "object", "continuehud" ] }, "remove":1 }
+                              ]
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                ],
+                "into":{ "_":"scenehud" }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "player":{
+      "type":[ "humanPlayer", "player", "enemyHitable" ],
+      "set":{ "_":[ "stencil", "humanModel" ] },
+      "animations":{ "fall":{ "frame":9 }, "win":{ "frames":[ 10, 11, 12, 11 ], "speed":4, "loopTo":0 } },
+      "armType":"playerArm",
+      "bomb":{ "_":[ "stencil", "dataWeapons", "grenade" ] },
+      "bulletAnimation":"idle",
+      "cagedInArena":"runningarena",
+      "directionControlled":1,
+      "enemy":"playerHitable",
+      "initialized":0,
+      "useBomb":1,
+      "wallTopType":"wallonlytop",
+      "wallType":"wall",
+      "state":"run",
+      "states":[
+        {
+          "name":"run",
+          "execute":{ "when":{ "_":[ "this", "initialized", "not" ] }, "executeAction":"respawn" },
+          "code":{
+            "name":"Execute",
+            "data":{
+              "when":{ "_":[ "this", "dead", "not" ] },
+              "execute":{
+                "when":{ "_":[ "this", "dead", "not" ] },
+                "execute":[
+                  {
+                    "set":{
+                      "moveBomb":0,
+                      "moveDown":{ "_":[ "keyDown", "isDown" ] },
+                      "moveFire":{ "_":[ "keyA", "isHit" ] },
+                      "moveJump":{ "_":[ "keyB", "isHit" ] },
+                      "moveLeft":{ "_":[ "keyLeft", "isDown" ] },
+                      "moveRight":{ "_":[ "keyRight", "isDown" ] },
+                      "moveUp":{ "_":[ "keyUp", "isDown" ] }
+                    }
+                  },
+                  { "when":{ "_":[ "keyC", "isHit", "and", { "_":[ "variable", "bomb" ] } ] }, "set":{ "moveBomb":1 } },
+                  { "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "hitPlayer" ] } ] }, "executeAction":"hit" },
+                  { "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "triggerarea" ] } ] }, "as":{ "_":"that" }, "executeAction":"trigger" }
+                ]
+              }
+            }
+          },
+          "actions":[
+            {
+              "name":"hit",
+              "execute":{
+                "when":{ "_":[ "this", "invulnerability", "not" ] },
+                "execute":[
+                  { "object":{ "_":[ "stencil", "bloodsplat" ] } },
+                  { "subtract":{ "_":[ "that", "damage" ] }, "to":{ "_":[ "this", "health" ] } },
+                  { "when":{ "_":[ "this", "health", "isLessThan", 1 ] }, "executeAction":"kill" }
+                ]
+              }
+            },
+            {
+              "name":"dead",
+              "execute":[
+                { "subtract":1, "to":{ "_":[ "variable", "lives" ] } },
+                {
+                  "when":{ "_":[ "variable", "lives", "isGreaterThan", 0 ] },
+                  "executeAction":"respawn",
+                  "elseExecute":{ "as":{ "_":"scene" }, "set":{ "state":"gameover" } }
+                }
+              ]
+            },
+            {
+              "name":"kill",
+              "execute":[
+                { "playAudio":"scream2" },
+                {
+                  "when":{ "_":[ "this", "dead", "not" ] },
+                  "set":{ "removeType":"enemyHitable", "dead":1, "health":0, "isBurning":{ "_":[ "that", "isBurning" ] } },
+                  "execute":{ "as":{ "_":"scene" }, "set":{ "state":"pause" } }
+                }
+              ]
+            },
+            {
+              "name":"respawn",
+              "set":{
+                "type":"enemyHitable",
+                "arms":-1,
+                "dead":0,
+                "health":1,
+                "initialized":1,
+                "invulnerability":150,
+                "maxHealth":1,
+                "weapon":{ "_":[ "stencil", "dataWeapons", "handgun" ] }
+              },
+              "execute":[
+                { "as":{ "_":"variable" }, "set":{ "bomb":5, "saved":0, "time":60 } },
+                { "as":{ "_":"scene" }, "set":{ "state":"play" } },
+                { "object":{ "type":"playerpopup", "set":{ "_":[ "stencil", "upPopup" ] }, "state":"timed" } },
+                { "_":[ "stencil", "codeSetPlayerCamera" ] }
+              ]
+            },
+            {
+              "name":"update",
+              "execute":{ "as":{ "_":[ "objectTyped", "playerpopup" ] }, "set":{ "x":{ "_":[ "that", "x" ] }, "y":{ "_":[ "that", "y", "-", 16 ] } } }
+            },
+            { "name":"outofammo", "execute":{ "set":{ "arms":-1, "weapon":{ "_":[ "stencil", "dataWeapons", "handgun" ] } } } },
+            {
+              "name":"onvehicle",
+              "execute":[
+                { "set":{ "type":"playerOnVehicle", "removeType":[ "player", "enemyHitable" ], "visible":0, "firing":0, "invulnerability":0, "state":"onvehicle" } },
+                { "as":{ "_":[ "objectTyped", "playerArm" ] }, "set":{ "visible":0 } },
+                { "as":{ "_":[ "object", "playerpopup" ] }, "remove":1 }
+              ]
+            },
+            { "name":"missionComplete", "execute":{ "set":{ "state":"missionComplete" } } }
+          ]
+        },
+        {
+          "name":"onvehicle",
+          "actions":[
+            {
+              "name":"getout",
+              "execute":[
+                {
+                  "set":{
+                    "type":[ "player", "enemyHitable" ],
+                    "removeType":"playerOnVehicle",
+                    "visible":1,
+                    "forceX":0, "forceY":-4.6,
+                    "firing":0,
+                    "invulnerability":50,
+                    "state":"run"
+                  }
+                },
+                { "as":{ "_":[ "objectTyped", "playerArm" ] }, "set":{ "visible":1 } },
+                { "object":{ "type":"playerpopup", "set":{ "_":[ "stencil", "upPopup" ] }, "state":"timed" } },
+                { "_":[ "stencil", "codeSetPlayerCamera" ] }
+              ]
+            },
+            {
+              "name":"dead",
+              "execute":[
+                { "set":{ "type":"player", "removeType":"playerOnVehicle", "visible":1, "forceX":0, "forceY":0, "dead":1, "firing":0, "health":0, "state":"run" } },
+                { "as":{ "_":[ "objectTyped", "playerArm" ] }, "set":{ "visible":1 } },
+                { "execute":{ "as":{ "_":"scene" }, "set":{ "state":"pause" } } },
+                { "_":[ "stencil", "codeSetPlayerCamera" ] }
+              ]
+            },
+            {
+              "name":"missionComplete",
+              "execute":[
+                {
+                  "set":{
+                    "type":[ "player", "enemyHitable" ],
+                    "removeType":"playerOnVehicle",
+                    "visible":1,
+                    "forceX":0, "forceY":-4.6,
+                    "firing":0,
+                    "invulnerability":0,
+                    "state":"missionComplete"
+                  }
+                },
+                { "as":{ "_":[ "objectTyped", "playerArm" ] }, "set":{ "visible":1 } },
+                { "_":[ "stencil", "codeSetPlayerCamera" ] }
+              ]
+            }
+          ]
+        },
+        {
+          "name":"missionComplete",
+          "set":{ "visible":1 },
+          "execute":{ "as":{ "_":[ "objectTyped", { "_":[ "this", "armType" ] } ] }, "set":{ "visible":0 } },
+          "code":[
+            {
+              "name":"Physics",
+              "data":{
+                "walls":[
+                  { "type":"wall", "restitution":0 },
+                  { "type":"wallonlytop", "restitution":0, "only":{ "top":1 } },
+                  { "area":{ "_":[ "scene", "sceneArea" ] }, "restitution":0 }
+                ],
+                "gravityY":0.3,
+                "limitX":[ -1.5, 1.5 ],
+                "limitY":[ -5, 5 ]
+              }
+            },
+            {
+              "name":"Execute",
+              "data":{
+                "when":{ "_":[ "this", "touchDown" ] },
+                "execute":{ "set":{ "forceX":0, "forceY":0, "animation":"win" } },
+                "elseExecute":{ "set":{ "animation":"fall" } }
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "enemyAlien":{
+      "set":{ "_":[ "stencil", "enemySoldierModel" ] },
+      "tileY":72,
+      "canBomb":0,
+      "canJump":1,
+      "content":[ "bonusWeaponMachinegun", "bonusWeaponRocket", "bonusWeaponFlame", "bonusAmmo", "bonusBombs" ],
+      "deadAudio":[ "beep2" ],
+      "health":1,
+      "weapon":{ "_":[ "stencil", "dataWeapons", "enemy-rockets" ] }
+    },
+    "enemySoldierModel":{
+      "type":[ "enemy", "playerHitable" ],
+      "set":[ { "_":[ "stencil", "gameElementModel" ] }, { "_":[ "stencil", "humanModel" ] } ],
+      "tileY":24,
+      "zIndex":40,
+      "execute":[ { "set":{ "serial":{ "_":[ "variable", "nextSerial" ] } } }, { "sum":1, "to":{ "_":[ "variable", "nextSerial" ] } } ],
+      "aggroLength":60,
+      "aggroTime":30,
+      "aggroTimer":0,
+      "arms":-1,
+      "bomb":{ "_":[ "stencil", "dataWeapons", "enemy-grenade" ] },
+      "bombTime":[ 200, 250 ],
+      "bombTimer":0,
+      "bulletAnimation":"enemy",
+      "canBomb":0,
+      "canCouch":0,
+      "canJump":0,
+      "couchTime":[ 100, 150 ],
+      "couchTimer":0,
+      "deadAudio":0,
+      "enemy":"enemyHitable",
+      "fireTime":[ 100, 150 ],
+      "fireTimer":0,
+      "health":1,
+      "invulnerabilityTime":50,
+      "jumpTime":[ 100, 150 ],
+      "jumpTimer":0,
+      "maxHealth":1,
+      "score":0,
+      "wallTopType":"wallonlytop",
+      "wallType":"enemyWall",
+      "weapon":{ "_":[ "stencil", "dataWeapons", "enemy-handgun" ] },
+      "states":{
+        "name":"run",
+        "code":{
+          "name":"Execute",
+          "data":{
+            "when":{ "_":[ "this", "dead", "not" ] },
+            "execute":[
+              { "set":{ "directionCouch":0, "directionWalk":0, "moveBomb":0, "moveFire":0, "moveJump":0 } },
+              {
+                "when":{ "_":[ "this", "x", "isLessThan", { "_":[ "objectTyped", "player", "x" ] } ] },
+                "set":{ "directionSide":0 },
+                "elseExecute":{ "set":{ "directionSide":1 } }
+              },
+              {
+                "when":{ "_":[ "this", "aggroTimer" ] },
+                "execute":[
+                  { "subtract":1, "to":{ "_":[ "this", "aggroTimer" ] } },
+                  {
+                    "when":{ "_":[ "this", "aggroTimer", "isLessThan", { "_":[ "this", "aggroTime" ] } ] },
+                    "execute":{
+                      "when":{ "_":[ "this", "distanceTo", { "_":[ "objectTyped", "player" ] }, "isGreaterThan", 64 ] },
+                      "set":{ "directionWalk":1 },
+                      "elseExecute":{ "set":{ "directionWalk":0 } }
+                    }
+                  }
+                ],
+                "elseExecute":{ "set":{ "aggroTimer":{ "_":[ "this", "aggroLength" ] } } }
+              },
+              { "set":{ "wAim":{ "_":[ "this", "angleTo", { "_":[ "objectTyped", "player" ] } ] } } },
+              {
+                "when":{ "_":[ "this", "flipX" ] },
+                "execute":{ "set":{ "directionAngle":{ "_":[ 360, "-", { "_":[ "this", "wAim" ] }, "limitValue", [ 0, 180 ], "-", 90 ] } } },
+                "elseExecute":{ "set":{ "directionAngle":{ "_":[ "this", "wAim", "limitValue", [ 0, 180 ], "-", 90 ] } } }
+              },
+              {
+                "when":{ "_":[ "this", "distanceTo", { "_":[ "objectTyped", "player" ] }, "isLessThan", 100 ] },
+                "execute":{
+                  "when":{ "_":[ "this", "fireTimer" ] },
+                  "subtract":1,
+                  "to":{ "_":[ "this", "fireTimer" ] },
+                  "elseExecute":{ "set":{ "fireTimer":{ "_":[ "randomNumber", { "_":[ "this", "fireTime" ] } ] }, "moveFire":1 } }
+                }
+              },
+              {
+                "when":{ "_":[ "this", "canCouch" ] },
+                "execute":{
+                  "when":{ "_":[ "this", "couchTimer" ] },
+                  "execute":[
+                    { "subtract":1, "to":{ "_":[ "this", "couchTimer" ] } },
+                    {
+                      "when":{ "_":[ "this", "couchTimer", "isLessThan", 50 ] },
+                      "execute":{
+                        "when":{ "_":[ "this", "directionAngle", "isGreaterEqualThan", -20, "and", { "_":[ "this", "directionAngle", "isLessThan", 20 ] } ] },
+                        "set":{ "directionCouch":1 }
+                      }
+                    }
+                  ],
+                  "elseExecute":{ "set":{ "couchTimer":{ "_":[ "randomNumber", { "_":[ "this", "fireTime" ] } ] } } }
+                }
+              },
+              {
+                "when":{ "_":[ "this", "canJump" ] },
+                "execute":{
+                  "when":{ "_":[ "this", "jumpTimer" ] },
+                  "subtract":1,
+                  "to":{ "_":[ "this", "jumpTimer" ] },
+                  "elseExecute":[
+                    {
+                      "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "objectTyped", "wall" ] }, "hitbox":{ "width":32, "height":2, "x":-8, "y":16 } } ] },
+                      "set":{ "moveJump":1 }
+                    },
+                    {
+                      "when":{ "_":[ "this", "directionAngle", "isGreaterEqualThan", -20, "and", { "_":[ "this", "directionAngle", "isLessThan", 20 ] } ] },
+                      "set":{ "moveJump":1 }
+                    },
+                    { "set":{ "jumpTimer":{ "_":[ "randomNumber", { "_":[ "this", "jumpTime" ] } ] } } }
+                  ]
+                }
+              },
+              {
+                "when":{ "_":[ "this", "canBomb" ] },
+                "execute":{
+                  "when":{ "_":[ "this", "bombTimer" ] },
+                  "subtract":1,
+                  "to":{ "_":[ "this", "bombTimer" ] },
+                  "elseExecute":[
+                    { "when":{ "_":[ "this", "distanceTo", { "_":[ "objectTyped", "player" ] }, "isGreaterThan", 30 ] }, "set":{ "moveBomb":1 } },
+                    { "set":{ "bombTimer":{ "_":[ "randomNumber", { "_":[ "this", "bombTime" ] } ] } } }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "actions":[
+          {
+            "name":"hit",
+            "execute":{
+              "when":{ "_":[ "this", "invulnerability", "not" ] },
+              "execute":[
+                { "object":{ "_":[ "stencil", "bloodsplat" ] } },
+                { "subtract":{ "_":[ "that", "damage" ] }, "to":{ "_":[ "this", "health" ] } },
+                {
+                  "when":{ "_":[ "this", "health", "isLessThan", 1 ] },
+                  "execute":[
+                    { "when":{ "_":[ "this", "deadAudio" ] }, "playAudio":{ "_":[ "randomValue", { "_":[ "this", "deadAudio" ] } ] } },
+                    { "when":{ "_":[ "this", "score" ] }, "sum":{ "_":[ "this", "score" ] }, "to":{ "_":[ "variable", "score" ] } },
+                    { "when":{ "_":[ "that", "basicScore" ] }, "sum":{ "_":[ "that", "basicScore" ] }, "to":{ "_":[ "variable", "score" ] } },
+                    {
+                      "when":{ "_":[ "this", "content" ] },
+                      "execute":{
+                        "when":{ "_":[ "randomNumber", [ 0, 100 ], "isLessThan", 70 ] },
+                        "object":{ "set":{ "_":[ "stencil", { "_":[ "randomValue", { "_":[ "that", "content" ] } ] } ] }, "at":{ "_":"that" } }
+                      }
+                    },
+                    { "set":{ "isBurning":{ "_":[ "that", "isBurning" ] } } },
+                    { "executeAction":"kill" }
+                  ],
+                  "elseExecute":{ "set":{ "invulnerability":{ "_":[ "this", "invulnerabilityTime" ] } } }
+                }
+              ]
+            }
+          },
+          { "name":"kill", "execute":{ "set":{ "removeType":"playerHitable", "dead":1, "wallType":"wall" } } },
+          {
+            "name":"dead",
+            "execute":[ { "when":{ "_":[ "variable", "targetSoldier" ] }, "subtract":1, "to":{ "_":[ "variable", "targetSoldier" ] } }, { "executeAction":"remove" } ]
+          }
+        ]
+      }
+    },
+    "enemyBasicSoldier":{ "set":{ "_":[ "stencil", "enemySoldierModel" ] }, "canBomb":0, "canJump":0, "deadAudio":[ "scream", "scream2" ], "health":1 },
+    "enemyBombingSoldier":{ "set":{ "_":[ "stencil", "enemySoldierModel" ] }, "canBomb":1, "canJump":0, "deadAudio":[ "scream", "scream2" ], "health":1 },
+    "enemyFlameSoldier":{
+      "set":{ "_":[ "stencil", "enemySoldierModel" ] },
+      "tileY":48,
+      "canBomb":0,
+      "canJump":0,
+      "deadAudio":[ "scream", "scream2" ],
+      "health":1,
+      "weapon":{ "_":[ "stencil", "dataWeapons", "enemy-flame" ] }
+    },
+    "enemyHelicopter":{
+      "set":{ "_":[ "stencil", "bigEnemyModel" ] },
+      "verticalGap":72,
+      "states":[
+        { "execute":{ "set":{ "destinationY":{ "_":[ "this", "y", "+", { "_":[ "this", "verticalGap" ] } ] } } } },
+        {
+          "name":"run",
+          "set":{
+            "hitbox":{ "width":60, "height":36, "x":2, "y":11 },
+            "animations":{ "idle":{ "frames":2, "speed":1, "loopTo":0 } },
+            "animation":"idle",
+            "explodeForceX":0,
+            "explodeForceY":0.3,
+            "explodeGravityY":0
+          },
+          "code":[
+            {
+              "name":"Execute",
+              "data":[
+                {
+                  "when":{ "_":[ "this", "y", "-", { "_":[ "this", "destinationY" ] }, "abs", "isGreaterThan", 1 ] },
+                  "execute":{
+                    "when":{ "_":[ "this", "y", "isLessThan", { "_":[ "this", "destinationY" ] } ] },
+                    "sum":1,
+                    "to":{ "_":[ "this", "y" ] },
+                    "elseExecute":{ "subtract":1, "to":{ "_":[ "this", "y" ] } }
+                  }
+                },
+                { "set":{ "destination":{ "_":[ "objectTyped", "player", "x", "-", 24 ] } } },
+                {
+                  "when":{ "_":[ "this", "destination", "-", { "_":[ "this", "x" ] }, "abs", "isGreaterThan", 8 ] },
+                  "execute":{
+                    "when":{ "_":[ "this", "x", "isLessThan", { "_":[ "this", "destination" ] } ] },
+                    "sum":0.8,
+                    "to":{ "_":[ "this", "x" ] },
+                    "elseExecute":{ "subtract":0.8, "to":{ "_":[ "this", "x" ] } }
+                  }
+                }
+              ]
+            },
+            {
+              "name":"Sequence",
+              "data":[
+                {
+                  "object":{
+                    "set":{ "_":[ "stencil", "bomb" ] },
+                    "tileX":64,
+                    "x":{ "_":[ "that", "x", "+", 25 ] }, "y":{ "_":[ "that", "y", "+", 34 ] },
+                    "animation":"enemy",
+                    "damage":3,
+                    "enemy":"enemyHitable",
+                    "gravity":0.1,
+                    "isBurning":1,
+                    "life":300,
+                    "sparksWith":"codeBigExplosion",
+                    "toForceY":0,
+                    "toSpeed":0
+                  }
+                },
+                { "wait":10, "cycles":3, "loopTo":0 },
+                { "wait":80, "loopTo":0 }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "enemyTank":{
+      "set":{ "_":[ "stencil", "bigEnemyModel" ] },
+      "idleTimer":0,
+      "states":[
+        { "execute":{ "set":{ "destinationY":{ "_":[ "this", "y", "+", { "_":[ "this", "verticalGap" ] } ] } } } },
+        {
+          "name":"run",
+          "set":{ "tileY":64, "hitbox":{ "width":54, "height":42, "x":5, "y":3 }, "animations":{ "move":{ "frames":2, "speed":1, "loopTo":0 } } },
+          "code":[
+            {
+              "name":"Execute",
+              "data":[
+                { "set":{ "flipX":{ "_":[ "this", "x", "isGreaterThan", { "_":[ "objectTyped", "player", "x" ] } ] } } },
+                {
+                  "when":{ "_":[ "this", "x", "-", { "_":[ "objectTyped", "player", "x" ] }, "isGreaterThan", 100 ] },
+                  "set":{ "forceX":-1, "animation":"move" },
+                  "elseExecute":{
+                    "when":{ "_":[ "this", "x", "-", { "_":[ "objectTyped", "player", "x" ] }, "isLessThan", -100 ] },
+                    "set":{ "forceX":1, "animation":"move" },
+                    "elseExecute":{
+                      "when":{ "_":[ "this", "idleTimer" ] },
+                      "subtract":1,
+                      "to":{ "_":[ "this", "idleTimer" ] },
+                      "elseExecute":[
+                        { "set":{ "forceX":{ "_":[ "randomValue", [ -1, 0, 0, 0, 0, 0, 1 ] ] }, "idleTimer":10 } },
+                        { "when":{ "_":[ "this", "forceX" ] }, "set":{ "animation":"move" }, "elseExecute":{ "set":{ "animation":"none" } } }
+                      ]
+                    }
+                  }
+                }
+              ]
+            },
+            { "name":"Physics", "data":{ "walls":{ "type":"enemyWall", "restitution":0 }, "gravityY":1, "limitX":[ -1, 1 ], "limitY":[ -1, 1 ] } },
+            {
+              "name":"Sequence",
+              "data":[
+                { "when":{ "_":[ "this", "flipX" ] }, "set":{ "fireX":0 }, "elseExecute":{ "set":{ "fireX":56 } } },
+                { "playAudio":"fire" },
+                {
+                  "object":[
+                    {
+                      "set":{ "_":[ "stencil", "bomb" ] },
+                      "tileX":96,
+                      "x":{ "_":[ "that", "x", "+", { "_":[ "that", "fireX" ] } ] }, "y":{ "_":[ "that", "y", "+", 5 ] },
+                      "animation":"enemy",
+                      "damage":3,
+                      "enemy":"enemyHitable",
+                      "gravity":0.03,
+                      "isBurning":1,
+                      "life":300,
+                      "sparksWith":"codeBigExplosion",
+                      "toForceY":-0.1,
+                      "toSide":{ "_":[ "that", "flipX" ] },
+                      "toSpeed":2
+                    },
+                    { "set":{ "_":[ "stencil", "explosion" ] }, "x":{ "_":[ "that", "x", "+", { "_":[ "that", "fireX" ] } ] }, "y":{ "_":[ "that", "y", "+", 5 ] } }
+                  ]
+                },
+                { "wait":10, "cycles":3, "loopTo":0 },
+                { "wait":80, "loopTo":0 }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "bloodsplat":{
+      "image":"sprites", "tileX":96, "tileY":24, "width":16, "height":16,
+      "zIndex":60, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "flipX":{ "_":[ "randomValue", [ 0, 1 ] ] }, "flipY":{ "_":[ "randomValue", [ 0, 1 ] ] }, "angle":{ "_":[ "randomValue", [ 0, 90, 180, 270 ] ] },
+      "animations":{ "idle":{ "frames":3, "speed":3 } },
+      "animation":"idle",
+      "states":{ "code":{ "name":"Sequence", "data":[ { "wait":12 }, { "remove":1 } ] } }
+    },
+    "bulletModel":{
+      "type":"bullet",
+      "zIndex":30,
+      "animations":{ "enemy":{ "frames":2, "speed":0, "loopTo":0 } },
+      "damage":1,
+      "sparksWith":0,
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":{
+            "when":{ "_":[ "this", "collidesWith", { "_":[ "object", { "_":[ "this", "enemy" ] } ] } ] },
+            "execute":[ { "as":{ "_":"that" }, "executeAction":"hit" }, { "executeAction":"end" } ]
+          }
+        },
+        "actions":{
+          "name":"end",
+          "execute":[
+            { "when":{ "_":[ "this", "sparksWith" ] }, "execute":{ "_":[ "stencil", { "_":[ "this", "sparksWith" ] } ] } },
+            {
+              "when":{ "_":[ "this", "explodes" ] },
+              "object":{
+                "set":{ "_":[ "stencil", "explosion" ] },
+                "x":{ "_":[ "that", "x", "-", 4 ] }, "y":{ "_":[ "that", "y", "-", 4 ] },
+                "basicScore":{ "_":[ "that", "basicScore" ] },
+                "damage":{ "_":[ "that", "damage" ] },
+                "enemy":{ "_":[ "that", "enemy" ] },
+                "isBurning":{ "_":[ "that", "isBurning" ] }
+              },
+              "playAudio":"explode"
+            },
+            { "remove":1 }
+          ]
+        }
+      }
+    },
+    "bomb":{
+      "set":{ "_":[ "stencil", "bulletModel" ] },
+      "image":"sprites", "tileY":68, "width":16, "height":16,
+      "hitbox":{ "width":12, "height":12, "x":2, "y":2 },
+      "gravity":0.3,
+      "spinSpeed":0,
+      "states":{
+        "execute":[
+          {
+            "when":{ "_":[ "this", "toSide" ] },
+            "set":{ "forceX":{ "_":[ "this", "toSpeed", "*", -1 ] } },
+            "elseExecute":{ "set":{ "forceX":{ "_":[ "this", "toSpeed" ] } } }
+          },
+          { "set":{ "forceY":{ "_":[ "this", "toForceY" ] } } }
+        ],
+        "code":[
+          {
+            "name":"Execute",
+            "data":[
+              {
+                "when":{ "_":[ "this", "spinSpeed" ] },
+                "execute":{
+                  "when":{ "_":[ "this", "forceX", "isGreaterThan", 1 ] },
+                  "sum":{ "_":[ "this", "spinSpeed" ] },
+                  "to":{ "_":[ "this", "angle" ] },
+                  "elseExecute":{ "subtract":{ "_":[ "this", "spinSpeed" ] }, "to":{ "_":[ "this", "angle" ] } }
+                }
+              },
+              { "when":{ "_":[ "this", "life" ] }, "subtract":1, "to":{ "_":[ "this", "life" ] }, "elseExecute":{ "executeAction":"end" } }
+            ]
+          },
+          {
+            "name":"Physics",
+            "data":{ "walls":{ "type":"wall", "execute":{ "executeAction":"end" } }, "gravityY":{ "_":[ "this", "gravity" ] }, "limitX":[ -5, 5 ], "limitY":[ -5, 5 ] }
+          }
+        ]
+      }
+    },
+    "bullet":{
+      "set":{ "_":[ "stencil", "bulletModel" ] },
+      "image":"sprites", "tileY":16, "width":8, "height":8,
+      "hitbox":{ "width":4, "height":4, "x":2, "y":2 },
+      "states":{
+        "execute":[
+          { "set":{ "angle":{ "_":[ "this", "toAngle", "+", 90 ] } } },
+          { "applyVector":{ "angle":{ "_":[ "this", "toAngle" ] }, "length":{ "_":[ "this", "toSpeed" ] } } }
+        ],
+        "code":[
+          {
+            "name":"Execute",
+            "data":{ "when":{ "_":[ "this", "life" ] }, "subtract":1, "to":{ "_":[ "this", "life" ] }, "elseExecute":{ "executeAction":"end" } }
+          },
+          { "name":"Physics", "data":{ "walls":{ "type":"bulletwall", "execute":{ "executeAction":"end" } } } }
+        ]
+      }
+    },
+    "dataWeapons":{
+      "enemy-flame":{
+        "times":3,
+        "speed":4,
+        "anglePrecision":1,
+        "armFrame":3,
+        "bulletTileX":16,
+        "bulletType":"flame",
+        "damage":1,
+        "fireAudio":"blam",
+        "fireGapY":[ 8, 4 ],
+        "hailCount":2,
+        "hailTimer":4,
+        "isBurning":1,
+        "life":20,
+        "precision":10,
+        "reloadTimer":30
+      },
+      "enemy-grenade":{
+        "forceY":-6,
+        "speed":2,
+        "bulletTileX":32,
+        "bulletType":"bomb",
+        "damage":5,
+        "fireAudio":"fire",
+        "fireGapY":[ 0, 8 ],
+        "gravity":0.2,
+        "isBurning":1,
+        "life":200,
+        "sparksWith":"codeBigExplosion",
+        "spinSpeed":9
+      },
+      "enemy-handgun":{
+        "times":1,
+        "speed":2,
+        "anglePrecision":45,
+        "armFrame":0,
+        "bulletTileX":0,
+        "bulletType":"bullet",
+        "damage":1,
+        "fireAudio":"fire",
+        "fireGapY":[ 14, 10 ],
+        "hailCount":1,
+        "hailTimer":1,
+        "life":100,
+        "precision":3,
+        "reloadTimer":10
+      },
+      "enemy-rockets":{
+        "times":1,
+        "speed":3,
+        "anglePrecision":1,
+        "armFrame":5,
+        "bulletTileX":16,
+        "bulletType":"bullet",
+        "damage":1,
+        "explodes":1,
+        "fireAudio":"fire",
+        "fireGapY":[ 14, 10 ],
+        "hailCount":1,
+        "hailTimer":6,
+        "isBurning":1,
+        "life":60,
+        "precision":0,
+        "reloadTimer":30,
+        "sparksWith":"codeBigExplosion"
+      },
+      "flame":{
+        "times":3,
+        "label":"FLAME",
+        "speed":4,
+        "anglePrecision":1,
+        "armFrame":3,
+        "arms":30,
+        "basicScore":100,
+        "bulletTileX":16,
+        "bulletType":"flame",
+        "damage":1,
+        "fireAudio":"blam",
+        "fireGapY":[ 8, 4 ],
+        "hailCount":2,
+        "hailTimer":4,
+        "icon":2,
+        "isBurning":1,
+        "life":20,
+        "precision":10,
+        "reloadTimer":30
+      },
+      "grenade":{
+        "forceY":-6,
+        "speed":2,
+        "arms":5,
+        "basicScore":100,
+        "bulletTileX":0,
+        "bulletType":"bomb",
+        "damage":2,
+        "fireAudio":"fire",
+        "fireGapY":[ 0, 8 ],
+        "gravity":0.3,
+        "isBurning":1,
+        "life":200,
+        "sparksWith":"codeBigExplosion",
+        "spinSpeed":9
+      },
+      "handgun":{
+        "times":1,
+        "speed":5,
+        "anglePrecision":90,
+        "armFrame":0,
+        "arms":-1,
+        "basicScore":300,
+        "bulletTileX":0,
+        "bulletType":"bullet",
+        "damage":1,
+        "fireAudio":"fire",
+        "fireGapY":[ 12, 8 ],
+        "hailCount":1,
+        "hailTimer":1,
+        "life":100,
+        "precision":0,
+        "reloadTimer":5
+      },
+      "machinegun":{
+        "times":1,
+        "label":"MACHINEGUN",
+        "speed":5,
+        "anglePrecision":1,
+        "armFrame":1,
+        "arms":100,
+        "basicScore":100,
+        "bulletTileX":32,
+        "bulletType":"bullet",
+        "damage":1,
+        "fireAudio":"fire",
+        "fireGapY":[ 12, 8 ],
+        "hailCount":10,
+        "hailTimer":3,
+        "icon":0,
+        "life":100,
+        "precision":3,
+        "reloadTimer":0
+      },
+      "rocket":{
+        "times":1,
+        "label":"ROCKET",
+        "speed":3,
+        "anglePrecision":1,
+        "armFrame":2,
+        "arms":10,
+        "basicScore":100,
+        "bulletTileX":16,
+        "bulletType":"bullet",
+        "damage":1,
+        "explodes":1,
+        "fireAudio":"blam",
+        "fireGapY":[ 12, 8 ],
+        "hailCount":2,
+        "hailTimer":6,
+        "icon":1,
+        "isBurning":1,
+        "life":30,
+        "precision":0,
+        "reloadTimer":30,
+        "sparksWith":"codeBigExplosion"
+      }
+    },
+    "exit":{
+      "type":"triggerarea",
+      "states":[
+        {
+          "actions":{
+            "name":"trigger",
+            "execute":[
+              { "as":{ "_":"scene" }, "set":{ "state":"pause" } },
+              { "as":{ "_":[ "objectTyped", "player" ] }, "set":{ "state":"exiting" } },
+              { "set":{ "state":"exit" } }
+            ]
+          }
+        },
+        {
+          "name":"exit",
+          "execute":{
+            "object":{
+              "image":"fader", "width":352, "height":240,
+              "zIndex":10, "x":-48, "y":-8,
+              "execute":[
+                { "when":{ "_":[ "this", "fadeOutEffect", "isEqualTo", "right" ] }, "set":{ "x":262 } },
+                { "when":{ "_":[ "this", "fadeOutEffect", "isEqualTo", "left" ] }, "set":{ "x":-358 } },
+                { "when":{ "_":[ "this", "fadeOutEffect", "isEqualTo", "down" ] }, "set":{ "y":302 } },
+                { "when":{ "_":[ "this", "fadeOutEffect", "isEqualTo", "up" ] }, "set":{ "y":-318 } }
+              ],
+              "fadeOutEffect":{ "_":[ "that", "fadeOutEffect" ] },
+              "states":{
+                "code":{
+                  "name":"Sequence",
+                  "data":[
+                    { "when":{ "_":[ "this", "fadeOutEffect", "isEqualTo", "right" ] }, "subtract":10, "to":{ "_":[ "this", "x" ] } },
+                    { "when":{ "_":[ "this", "fadeOutEffect", "isEqualTo", "left" ] }, "sum":10, "to":{ "_":[ "this", "x" ] } },
+                    { "when":{ "_":[ "this", "fadeOutEffect", "isEqualTo", "down" ] }, "subtract":10, "to":{ "_":[ "this", "y" ] } },
+                    { "when":{ "_":[ "this", "fadeOutEffect", "isEqualTo", "up" ] }, "sum":10, "to":{ "_":[ "this", "y" ] } },
+                    { "wait":1, "cycles":31, "loopTo":0 }
+                  ]
+                }
+              }
+            },
+            "into":{ "_":"scenehud" }
+          },
+          "code":{ "name":"Sequence", "data":[ { "wait":50 }, { "gotoScene":{ "_":[ "this", "gotoStage" ] }, "withTransition":2 } ] }
+        }
+      ]
+    },
+    "explosion":{
+      "image":"sprites", "tileY":24, "width":16, "height":16,
+      "zIndex":60, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "forceX":0,
+      "animations":{ "idle":{ "frames":6, "speed":3 } },
+      "animation":"idle",
+      "damage":1,
+      "isBurning":1,
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[
+            {
+              "when":{ "_":[ "this", "enemy" ] },
+              "execute":{ "when":{ "_":[ "this", "collidesWith", { "_":[ "object", { "_":[ "this", "enemy" ] } ] } ] }, "as":{ "_":"that" }, "executeAction":"hit" }
+            },
+            { "sum":{ "_":[ "this", "forceX" ] }, "to":{ "_":[ "this", "x" ] }, "wait":1, "loop":1, "cycles":24 },
+            { "remove":1 }
+          ]
+        }
+      }
+    },
+    "flame":{
+      "image":"sprites", "tileY":24, "width":16, "height":16,
+      "zIndex":60,
+      "animations":{ "enemy":{ "frames":6, "speed":3 }, "idle":{ "frames":6, "speed":3 } },
+      "animation":"idle",
+      "states":{
+        "execute":[
+          { "set":{ "angle":{ "_":[ "this", "toAngle", "+", 90 ] } } },
+          { "applyVector":{ "angle":{ "_":[ "this", "toAngle" ] }, "length":{ "_":[ "this", "toSpeed" ] } } }
+        ],
+        "code":[
+          {
+            "name":"Execute",
+            "data":[
+              { "when":{ "_":[ "this", "life" ] }, "subtract":1, "to":{ "_":[ "this", "life" ] }, "elseExecute":{ "executeAction":"end" } },
+              {
+                "when":{ "_":[ "this", "collidesWith", { "_":[ "object", { "_":[ "this", "enemy" ] } ] } ] },
+                "execute":{ "as":{ "_":"that" }, "executeAction":"hit" }
+              }
+            ]
+          },
+          { "name":"Physics", "data":{ "walls":{ "type":"bulletwall" } } }
+        ],
+        "actions":{
+          "name":"end",
+          "execute":[
+            {
+              "when":{ "_":[ "this", "explodes" ] },
+              "object":{ "set":{ "_":[ "stencil", "explosion" ] }, "x":{ "_":[ "that", "x", "-", 4 ] }, "y":{ "_":[ "that", "y", "-", 4 ] } },
+              "playAudio":"explode"
+            },
+            { "remove":1 }
+          ]
+        }
+      }
+    },
+    "bigEnemyModel":{
+      "set":{ "_":[ "stencil", "gameElementModel" ] },
+      "damage":3,
+      "explodeForceX":0,
+      "explodeForceY":-1.5,
+      "explodeGravityY":0.1,
+      "explodeSpin":{ "_":[ "randomValue", [ -0.5, 0.5 ] ] },
+      "health":50,
+      "score":1000,
+      "states":[
+        {
+          "name":"run",
+          "set":{ "type":[ "enemy", "playerHitable", "hitPlayer" ], "image":"big", "width":64, "height":64, "zIndex":24 },
+          "actions":[
+            {
+              "name":"hit",
+              "execute":{
+                "when":{ "_":[ "this", "invulnerability", "not" ] },
+                "execute":[
+                  { "subtract":{ "_":[ "that", "damage" ] }, "to":{ "_":[ "this", "health" ] } },
+                  { "object":{ "_":[ "stencil", "spark" ] }, "as":{ "_":"that" } },
+                  {
+                    "when":{ "_":[ "this", "health", "isLessThan", 1 ] },
+                    "execute":[
+                      { "playAudio":"explode2" },
+                      { "when":{ "_":[ "this", "score" ] }, "sum":{ "_":[ "this", "score" ] }, "to":{ "_":[ "variable", "score" ] } },
+                      { "when":{ "_":[ "variable", "targetBigEnemy" ] }, "subtract":1, "to":{ "_":[ "variable", "targetBigEnemy" ] } },
+                      { "executeAction":"kill" }
+                    ],
+                    "elseExecute":{ "set":{ "invulnerability":{ "_":[ "this", "invulnerabilityTime" ] } } }
+                  }
+                ]
+              }
+            },
+            { "name":"kill", "execute":{ "set":{ "invulnerability":1, "state":"explode" } } }
+          ]
+        },
+        {
+          "name":"explode",
+          "set":{ "removeType":"playerHitable", "forceX":{ "_":[ "this", "explodeForceX" ] }, "forceY":{ "_":[ "this", "explodeForceY" ] } },
+          "code":[
+            {
+              "name":"Sequence",
+              "data":[
+                { "playAudio":"explode2" },
+                {
+                  "times":10,
+                  "object":{
+                    "set":{ "_":[ "stencil", "explosion" ] },
+                    "x":{ "_":[ "that", "x", "+", { "_":[ "randomNumber", [ 0, 64 ] ] } ] }, "y":{ "_":[ "that", "y", "+", { "_":[ "randomNumber", [ 0, 47 ] ] } ] }
+                  }
+                },
+                { "wait":10, "cycles":3, "loopTo":0 },
+                { "remove":1 }
+              ]
+            },
+            { "name":"Physics", "data":{ "gravityY":{ "_":[ "this", "explodeGravityY" ] } } },
+            { "name":"Execute", "data":{ "sum":{ "_":[ "this", "explodeSpin" ] }, "to":{ "_":[ "this", "angle" ] } } },
+            { "name":"Sequence", "data":{ "set":{ "visible":{ "_":[ "this", "visible", "not" ] } }, "wait":1, "loop":1 } }
+          ]
+        }
+      ]
+    },
+    "bonusAmmo":{
+      "set":{ "_":[ "stencil", "bonusModel" ] },
+      "tileX":16, "tileY":116,
+      "labelPick":"AMMO",
+      "states":{
+        "name":"run",
+        "actions":{
+          "name":"pick",
+          "execute":{
+            "when":{ "_":[ "objectTyped", "humanPlayer", "arms", "isGreaterThan", 0 ] },
+            "sum":{ "_":[ "objectTyped", "humanPlayer", "weapon", "arms" ] },
+            "to":{ "_":[ "objectTyped", "humanPlayer", "arms" ] },
+            "elseExecute":[ { "set":{ "labelPick":"500" } }, { "sum":500, "to":{ "_":[ "variable", "score" ] } } ]
+          }
+        }
+      }
+    },
+    "gameElementModel":{
+      "visible":0,
+      "states":[
+        {
+          "code":{
+            "name":"Execute",
+            "data":{ "when":{ "_":[ "this", "distanceTo", { "_":[ "objectTyped", "player" ] }, "isLessThan", 290 ] }, "set":{ "visible":1, "state":"run" } }
+          }
+        },
+        {
+          "name":"run",
+          "code":{
+            "name":"Execute",
+            "data":{
+              "when":{ "_":[ "this", "distanceTo", { "_":[ "objectTyped", "player" ] }, "isGreaterThan", 390 ] },
+              "execute":[ { "executeAction":"remove" }, { "remove":1 } ]
+            }
+          }
+        }
+      ]
+    },
+    "bonusBombs":{
+      "set":{ "_":[ "stencil", "bonusModel" ] },
+      "tileY":116,
+      "labelPick":"BOMB",
+      "states":{ "name":"run", "actions":{ "name":"pick", "execute":{ "sum":3, "to":{ "_":[ "variable", "bomb" ] } } } }
+    },
+    "bonusModel":{
+      "set":{ "_":[ "stencil", "gameElementModel" ] },
+      "image":"sprites", "width":16, "height":16,
+      "zIndex":40,
+      "labelPick":"bonus",
+      "life":600,
+      "states":{
+        "name":"run",
+        "code":[
+          {
+            "name":"Execute",
+            "data":[
+              { "when":{ "_":[ "this", "life" ] }, "subtract":1, "to":{ "_":[ "this", "life" ] }, "elseExecute":{ "remove":1 } },
+              {
+                "when":{ "_":[ "this", "collidesWith", { "_":[ "objectTyped", "player" ] } ] },
+                "execute":[
+                  { "playAudio":"bigfire" },
+                  { "executeAction":"pick" },
+                  { "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "html":{ "_":[ "that", "labelPick" ] } } },
+                  { "remove":1 }
+                ]
+              }
+            ]
+          },
+          {
+            "name":"Physics",
+            "data":{
+              "walls":[
+                { "type":"wall", "restitution":0 },
+                { "type":"wallonlytop", "restitution":0, "only":{ "top":1 } },
+                { "area":{ "_":[ "scene", "sceneArea" ] }, "restitution":0 }
+              ],
+              "gravityY":0.3,
+              "limitX":[ -1, 1 ],
+              "limitY":[ -1, 1 ]
+            }
+          }
+        ]
+      }
+    },
+    "bonusGas":{
+      "set":{ "_":[ "stencil", "bonusModel" ] },
+      "tileX":48, "tileY":116,
+      "labelPick":"GAS",
+      "states":{
+        "name":"run",
+        "actions":{
+          "name":"pick",
+          "execute":{
+            "when":{ "_":[ "objectTyped", "vehiclePlayer" ] },
+            "execute":[
+              { "sum":3, "to":{ "_":[ "that", "health" ] } },
+              {
+                "when":{ "_":[ "that", "health", "isGreaterThan", { "_":[ "that", "maxHealth" ] } ] },
+                "as":{ "_":"that" },
+                "set":{ "health":{ "_":[ "this", "maxHealth" ] } }
+              }
+            ],
+            "elseExecute":[ { "set":{ "labelPick":"500" } }, { "sum":500, "to":{ "_":[ "variable", "score" ] } } ]
+          }
+        }
+      }
+    },
+    "bonusWeaponModel":{
+      "set":{ "_":[ "stencil", "bonusModel" ] },
+      "tileY":100,
+      "states":{
+        "name":"run",
+        "set":{ "animations":{ "idle":{ "frames":2, "loopTo":0 } }, "animation":"idle" },
+        "execute":[
+          { "set":{ "labelPick":{ "_":[ "this", "weapon", "label" ] } } },
+          {
+            "object":{ "image":"sprites", "tileX":32, "tileY":100, "width":16, "height":16, "x":0, "y":0, "frame":{ "_":[ "that", "weapon", "icon" ] } },
+            "into":{ "_":"this" }
+          }
+        ],
+        "actions":{
+          "name":"pick",
+          "execute":[
+            { "object":{ "_":[ "stencil", "pickSpark" ] } },
+            {
+              "as":{ "_":[ "objectTyped", "humanPlayer" ] },
+              "set":{ "arms":{ "_":[ "that", "weapon", "arms" ] }, "firing":0, "weapon":{ "_":[ "that", "weapon" ] } }
+            }
+          ]
+        }
+      }
+    },
+    "bonusWeaponFlame":{ "set":{ "_":[ "stencil", "bonusWeaponModel" ] }, "weapon":{ "_":[ "stencil", "dataWeapons", "flame" ] } },
+    "bonusWeaponMachinegun":{ "set":{ "_":[ "stencil", "bonusWeaponModel" ] }, "weapon":{ "_":[ "stencil", "dataWeapons", "machinegun" ] } },
+    "bonusWeaponRocket":{ "set":{ "_":[ "stencil", "bonusWeaponModel" ] }, "weapon":{ "_":[ "stencil", "dataWeapons", "rocket" ] } },
+    "goPopupModel":{
+      "type":"gopopup",
+      "image":"hud", "tileY":32, "width":32, "height":32,
+      "zIndex":1,
+      "animations":{ "idle":{ "frames":[ 0, 1, 2, 1 ], "speed":2, "loopTo":0 } },
+      "animation":"idle",
+      "playAudio":"notify",
+      "states":{ "code":{ "name":"Sequence", "data":[ { "wait":200 }, { "remove":1 } ] } }
+    },
+    "gunfire":{
+      "image":"sprites", "tileY":52, "width":40, "height":16,
+      "zIndex":{ "_":[ "that", "zIndex", "+", 1 ] }, "at":{ "_":"that" },
+      "originX":"4px", "originY":"5px", "flipX":{ "_":[ "that", "flipX" ] }, "angle":{ "_":[ "that", "angle" ] },
+      "animations":{ "idle":{ "frames":4, "speed":1 } },
+      "animation":"idle",
+      "states":{ "code":{ "name":"Sequence", "data":[ { "wait":8 }, { "remove":1 } ] } }
+    },
+    "humanModel":{
+      "image":"soldiers", "width":16, "height":24,
+      "zIndex":50,
+      "flipX":0,
+      "animation":"idle",
+      "aimAngle":0,
+      "aimSpeed":10,
+      "aniMode":"idle",
+      "aniTimer":0,
+      "armRumble":0,
+      "cagedInArena":"none",
+      "currentAim":0,
+      "dead":0,
+      "directionAngle":0,
+      "directionControlled":0,
+      "directionSide":0,
+      "directionWalk":0,
+      "firing":0,
+      "hailTimer":0,
+      "invulnerability":0,
+      "isBurning":0,
+      "moveBomb":0,
+      "moveDown":0,
+      "moveFire":0,
+      "moveJump":0,
+      "moveLeft":0,
+      "moveRight":0,
+      "moveUp":0,
+      "reloadTimer":0,
+      "status":"stand",
+      "wallType":"wall",
+      "wallonlytop":"none",
+      "states":{
+        "name":"run",
+        "execute":[
+          { "when":{ "_":[ "this", "armType", "not" ] }, "set":{ "armType":{ "_":[ "arm-", ".", { "_":[ "this", "serial" ] } ] } } },
+          {
+            "when":{ "_":[ "objectTyped", { "_":[ "this", "armType" ] }, "not" ] },
+            "object":{
+              "type":{ "_":[ "that", "armType" ] },
+              "image":"sprites", "width":24, "height":16,
+              "zIndex":{ "_":[ "that", "zIndex", "+", 1 ] },
+              "originX":"4px", "originY":"5px"
+            }
+          }
+        ],
+        "code":[
+          {
+            "name":"Physics",
+            "data":{
+              "walls":[
+                { "type":{ "_":[ "this", "wallType" ] }, "restitution":0 },
+                { "type":{ "_":[ "this", "wallTopType" ] }, "restitution":0, "only":{ "top":1 } },
+                { "area":{ "_":[ "objectTyped", { "_":[ "this", "cagedInArena" ] } ] }, "restitution":0 },
+                { "area":{ "_":[ "scene", "sceneArea" ] }, "restitution":0 }
+              ],
+              "gravityY":0.3,
+              "limitX":[ -1.5, 1.5 ],
+              "limitY":[ -5, 5 ]
+            }
+          },
+          {
+            "name":"Execute",
+            "data":[
+              {
+                "when":{ "_":[ "this", "directionControlled" ] },
+                "execute":{
+                  "when":{ "_":[ "this", "moveUp" ] },
+                  "execute":{
+                    "when":{ "_":[ "this", "moveRight" ] },
+                    "set":{ "directionAngle":-45, "directionCouch":0, "directionSide":0, "directionWalk":1 },
+                    "elseExecute":{
+                      "when":{ "_":[ "this", "moveLeft" ] },
+                      "set":{ "directionAngle":-45, "directionCouch":0, "directionSide":1, "directionWalk":1 },
+                      "elseExecute":{ "set":{ "directionAngle":-90, "directionCouch":0, "directionWalk":0 } }
+                    }
+                  },
+                  "elseExecute":{
+                    "when":{ "_":[ "this", "moveDown" ] },
+                    "execute":{
+                      "when":{ "_":[ "this", "moveRight" ] },
+                      "set":{ "directionAngle":45, "directionCouch":1, "directionSide":0, "directionWalk":1 },
+                      "elseExecute":{
+                        "when":{ "_":[ "this", "moveLeft" ] },
+                        "set":{ "directionAngle":45, "directionCouch":1, "directionSide":1, "directionWalk":1 },
+                        "elseExecute":{ "set":{ "directionAngle":90, "directionCouch":1, "directionWalk":0 } }
+                      }
+                    },
+                    "elseExecute":{
+                      "when":{ "_":[ "this", "moveRight" ] },
+                      "set":{ "directionAngle":0, "directionCouch":0, "directionSide":0, "directionWalk":1 },
+                      "elseExecute":{
+                        "when":{ "_":[ "this", "moveLeft" ] },
+                        "set":{ "directionAngle":0, "directionCouch":0, "directionSide":1, "directionWalk":1 },
+                        "elseExecute":{ "set":{ "directionAngle":0, "directionCouch":0, "directionWalk":0 } }
+                      }
+                    }
+                  }
+                }
+              },
+              {
+                "when":{ "_":[ "this", "invulnerability" ] },
+                "subtract":1,
+                "to":{ "_":[ "this", "invulnerability" ] },
+                "set":{ "isVisible":{ "_":[ "this", "invulnerability", "/", 3, "floor", "%", 2 ] } },
+                "elseExecute":{ "set":{ "isVisible":1 } }
+              },
+              {
+                "when":{ "_":[ "this", "dead" ] },
+                "set":{ "directionAngle":0, "directionCouch":0, "directionWalk":0, "firing":0, "moveBomb":0, "moveFire":0, "moveJump":0 },
+                "elseExecute":{
+                  "when":{ "_":[ "this", "directionCouch", "not", "or", { "_":[ "this", "moveJump" ] } ] },
+                  "execute":{
+                    "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "wall" ] }, "hitbox":{ "width":12, "height":22, "x":2, "y":2 } } ] },
+                    "set":{ "directionCouch":1, "moveJump":0 }
+                  }
+                }
+              },
+              {
+                "when":{ "_":[ "this", "moveBomb" ] },
+                "execute":[
+                  {
+                    "when":{ "_":[ "this", "status", "isEqualTo", "couch" ] },
+                    "set":{ "fireGapY":{ "_":[ "this", "bomb", "fireGapY", 0 ] } },
+                    "elseExecute":{ "set":{ "fireGapY":{ "_":[ "this", "bomb", "fireGapY", 1 ] } } }
+                  },
+                  { "playAudio":{ "_":[ "this", "bomb", "fireAudio" ] } },
+                  {
+                    "object":{
+                      "set":{ "_":[ "stencil", { "_":[ "that", "bomb", "bulletType" ] } ] },
+                      "tileX":{ "_":[ "that", "bomb", "bulletTileX" ] },
+                      "x":{ "_":[ "that", "x" ] }, "y":{ "_":[ "that", "y", "+", { "_":[ "that", "fireGapY" ] } ] },
+                      "animation":{ "_":[ "that", "bulletAnimation" ] },
+                      "basicScore":{ "_":[ "that", "bomb", "basicScore" ] },
+                      "damage":{ "_":[ "that", "bomb", "damage" ] },
+                      "enemy":{ "_":[ "that", "enemy" ] },
+                      "explodes":{ "_":[ "that", "bomb", "explodes" ] },
+                      "gravity":{ "_":[ "that", "bomb", "gravity" ] },
+                      "isBurning":{ "_":[ "that", "bomb", "isBurning" ] },
+                      "life":{ "_":[ "that", "bomb", "life" ] },
+                      "sparksWith":{ "_":[ "that", "bomb", "sparksWith" ] },
+                      "spinSpeed":{ "_":[ "that", "bomb", "spinSpeed" ] },
+                      "toForceY":{ "_":[ "that", "bomb", "forceY" ] },
+                      "toSide":{ "_":[ "that", "flipX" ] },
+                      "toSpeed":{ "_":[ "that", "bomb", "speed" ] }
+                    }
+                  },
+                  { "when":{ "_":[ "this", "useBomb" ] }, "subtract":1, "to":{ "_":[ "variable", "bomb" ] } }
+                ]
+              },
+              {
+                "when":{ "_":[ "this", "dead" ] },
+                "execute":{
+                  "when":{ "_":[ "this", "dead", "isEqualTo", 1 ] },
+                  "execute":{
+                    "when":{ "_":[ "this", "flipX" ] },
+                    "set":{
+                      "forceX":{ "_":[ "randomNumber", [ 3, 5 ] ] }, "forceY":{ "_":[ "randomNumber", [ -5, -3 ] ] },
+                      "aniTimer":0,
+                      "dead":2,
+                      "status":"dying",
+                      "touchDown":0
+                    },
+                    "elseExecute":{
+                      "set":{
+                        "forceX":{ "_":[ "randomNumber", [ -5, -3 ] ] }, "forceY":{ "_":[ "randomNumber", [ -5, -3 ] ] },
+                        "aniTimer":0,
+                        "dead":2,
+                        "status":"dying",
+                        "touchDown":0
+                      }
+                    }
+                  }
+                },
+                "elseExecute":[
+                  { "set":{ "status":"stand" } },
+                  {
+                    "when":{ "_":[ "this", "touchDown" ] },
+                    "execute":{
+                      "when":{ "_":[ "this", "moveJump" ] },
+                      "set":{ "forceY":-4.6, "status":"jump" },
+                      "elseExecute":{ "when":{ "_":[ "this", "directionCouch" ] }, "set":{ "status":"couch" } }
+                    },
+                    "elseExecute":{ "set":{ "status":"jump" } }
+                  }
+                ]
+              },
+              {
+                "when":{ "_":[ "this", "status", "isEqualTo", "stand" ] },
+                "execute":[
+                  { "set":{ "hitbox":{ "width":12, "height":22, "x":2, "y":2 }, "flipX":{ "_":[ "this", "directionSide" ] } } },
+                  { "as":{ "_":[ "objectTyped", { "_":[ "that", "armType" ] } ] }, "set":{ "flipX":{ "_":[ "that", "directionSide" ] } } },
+                  {
+                    "set":{
+                      "aimAngle":{
+                        "_":[ "this", "directionAngle", "/", { "_":[ "this", "weapon", "anglePrecision" ] }, "floor", "*", { "_":[ "this", "weapon", "anglePrecision" ] } ]
+                      }
+                    }
+                  },
+                  {
+                    "when":{ "_":[ "this", "directionWalk" ] },
+                    "execute":{ "when":{ "_":[ "this", "directionSide" ] }, "set":{ "forceX":-2, "aniMode":"walk" }, "elseExecute":{ "set":{ "forceX":2, "aniMode":"walk" } } },
+                    "elseExecute":{ "set":{ "forceX":0, "aniMode":"idle" } }
+                  }
+                ]
+              },
+              {
+                "when":{ "_":[ "this", "status", "isEqualTo", "jump" ] },
+                "execute":[
+                  { "set":{ "hitbox":{ "width":12, "height":22, "x":2, "y":2 }, "aimAngle":{ "_":[ "this", "directionAngle" ] } } },
+                  {
+                    "when":{ "_":[ "this", "directionWalk" ] },
+                    "execute":{
+                      "when":{ "_":[ "this", "directionSide" ] },
+                      "subtract":0.2,
+                      "to":{ "_":[ "this", "forceX" ] },
+                      "elseExecute":{ "sum":0.2, "to":{ "_":[ "this", "forceX" ] } }
+                    }
+                  },
+                  { "set":{ "aniMode":"jump" } }
+                ]
+              },
+              {
+                "when":{ "_":[ "this", "status", "isEqualTo", "couch" ] },
+                "execute":[
+                  {
+                    "set":{ "hitbox":{ "width":12, "height":8, "x":2, "y":16 }, "flipX":{ "_":[ "this", "directionSide" ] }, "aimAngle":0, "currentAim":0, "directionAngle":0 }
+                  },
+                  { "as":{ "_":[ "objectTyped", { "_":[ "that", "armType" ] } ] }, "set":{ "flipX":{ "_":[ "that", "directionSide" ] } } },
+                  {
+                    "when":{ "_":[ "this", "directionWalk" ] },
+                    "execute":{
+                      "when":{ "_":[ "this", "directionSide" ] },
+                      "set":{ "forceX":-0.5, "aniMode":"couchwalk" },
+                      "elseExecute":{ "set":{ "forceX":0.5, "aniMode":"couchwalk" } }
+                    },
+                    "elseExecute":{ "set":{ "forceX":0, "aniMode":"couch" } }
+                  }
+                ]
+              },
+              {
+                "when":{ "_":[ "this", "status", "isEqualTo", "dying" ] },
+                "execute":[
+                  { "set":{ "hitbox":{ "width":12, "height":22, "x":2, "y":2 }, "aniMode":"dying" } },
+                  { "when":{ "_":[ "this", "touchDown" ] }, "set":{ "forceX":0, "forceY":0, "aniTimer":0, "status":"dead" } }
+                ]
+              },
+              {
+                "when":{ "_":[ "this", "status", "isEqualTo", "dead" ] },
+                "execute":[ { "set":{ "aniMode":"dead" } }, { "when":{ "_":[ "this", "aniTimer", "isEqualTo", 40 ] }, "executeAction":"dead" } ]
+              },
+              { "as":{ "_":[ "objectTyped", { "_":[ "that", "armType" ] } ] }, "set":{ "frame":{ "_":[ "that", "weapon", "armFrame" ] } } },
+              {
+                "when":{ "_":[ "this", "currentAim", "isNotEqualTo", "aimAngle" ] },
+                "execute":[
+                  {
+                    "when":{ "_":[ "this", "currentAim", "-", { "_":[ "this", "aimAngle" ] }, "abs", "isLessThan", { "_":[ "this", "aimSpeed" ] } ] },
+                    "set":{ "currentAim":{ "_":[ "this", "aimAngle" ] } },
+                    "elseExecute":{
+                      "when":{ "_":[ "this", "currentAim", "isLessThan", { "_":[ "this", "aimAngle" ] } ] },
+                      "sum":{ "_":[ "this", "aimSpeed" ] },
+                      "to":{ "_":[ "this", "currentAim" ] },
+                      "elseExecute":{ "subtract":{ "_":[ "this", "aimSpeed" ] }, "to":{ "_":[ "this", "currentAim" ] } }
+                    }
+                  },
+                  { "as":{ "_":[ "objectTyped", { "_":[ "that", "armType" ] } ] }, "set":{ "angle":{ "_":[ "that", "currentAim" ] } } }
+                ]
+              },
+              {
+                "when":{ "_":[ "this", "moveFire" ] },
+                "execute":{ "when":{ "_":[ "this", "firing", "not" ] }, "execute":{ "set":{ "firing":1, "hailCount":0, "hailTimer":0, "reloadTimer":-1 } } }
+              },
+              { "set":{ "armRumble":0 } },
+              {
+                "when":{ "_":[ "this", "firing" ] },
+                "execute":{
+                  "when":{ "_":[ "this", "reloadTimer", "isEqualTo", -1 ] },
+                  "execute":{
+                    "when":{ "_":[ "this", "hailTimer" ] },
+                    "subtract":1,
+                    "to":{ "_":[ "this", "hailTimer" ] },
+                    "elseExecute":[
+                      {
+                        "when":{ "_":[ "this", "flipX" ] },
+                        "set":{ "fireAngle":{ "_":[ 270, "-", { "_":[ "this", "currentAim" ] } ] }, "fireGapX":1 },
+                        "elseExecute":{ "set":{ "fireAngle":{ "_":[ "this", "currentAim", "+", 90 ] }, "fireGapX":5 } }
+                      },
+                      {
+                        "when":{ "_":[ "this", "status", "isEqualTo", "couch" ] },
+                        "set":{ "fireGapY":{ "_":[ "this", "weapon", "fireGapY", 0 ] } },
+                        "elseExecute":{ "set":{ "fireGapY":{ "_":[ "this", "weapon", "fireGapY", 1 ] } } }
+                      },
+                      { "set":{ "armRumble":1 } },
+                      { "as":{ "_":[ "objectTyped", { "_":[ "that", "armType" ] } ] }, "execute":{ "object":{ "_":[ "stencil", "gunfire" ] } } },
+                      { "playAudio":{ "_":[ "this", "weapon", "fireAudio" ] } },
+                      {
+                        "times":{ "_":[ "this", "weapon", "times" ] },
+                        "object":{
+                          "set":{ "_":[ "stencil", { "_":[ "that", "weapon", "bulletType" ] } ] },
+                          "tileX":{ "_":[ "that", "weapon", "bulletTileX" ] },
+                          "x":{ "_":[ "that", "x", "+", { "_":[ "that", "fireGapX" ] } ] }, "y":{ "_":[ "that", "y", "+", { "_":[ "that", "fireGapY" ] } ] },
+                          "animation":{ "_":[ "that", "bulletAnimation" ] },
+                          "basicScore":{ "_":[ "that", "weapon", "basicScore" ] },
+                          "damage":{ "_":[ "that", "weapon", "damage" ] },
+                          "enemy":{ "_":[ "that", "enemy" ] },
+                          "explodes":{ "_":[ "that", "weapon", "explodes" ] },
+                          "isBurning":{ "_":[ "that", "weapon", "isBurning" ] },
+                          "life":{ "_":[ "that", "weapon", "life" ] },
+                          "sparksWith":{ "_":[ "that", "weapon", "sparksWith" ] },
+                          "toAngle":{
+                            "_":[
+                              "that",
+                              "fireAngle",
+                              "+",
+                              { "_":[ "randomNumber", [ { "_":[ "that", "weapon", "precision", "*", -1 ] }, { "_":[ "that", "weapon", "precision" ] } ] ] }
+                            ]
+                          },
+                          "toSpeed":{ "_":[ "that", "weapon", "speed" ] }
+                        }
+                      },
+                      { "sum":1, "to":{ "_":[ "this", "hailCount" ] } },
+                      {
+                        "when":{ "_":[ "this", "hailCount", "isEqualTo", { "_":[ "this", "weapon", "hailCount" ] } ] },
+                        "execute":{ "set":{ "reloadTimer":{ "_":[ "this", "weapon", "reloadTimer" ] } } },
+                        "elseExecute":{ "set":{ "hailTimer":{ "_":[ "this", "weapon", "hailTimer" ] } } }
+                      },
+                      {
+                        "when":{ "_":[ "this", "arms", "isGreaterThan", 0 ] },
+                        "execute":[ { "subtract":1, "to":{ "_":[ "this", "arms" ] } }, { "when":{ "_":[ "this", "arms", "not" ] }, "set":{ "firing":0 }, "executeAction":"outofammo" } ]
+                      }
+                    ]
+                  },
+                  "elseExecute":{ "when":{ "_":[ "this", "reloadTimer" ] }, "subtract":1, "to":{ "_":[ "this", "reloadTimer" ] }, "elseExecute":{ "set":{ "firing":0 } } }
+                }
+              },
+              {
+                "when":{ "_":[ "this", "aniMode", "isEqualTo", "dead" ] },
+                "execute":[
+                  { "when":{ "_":[ "this", "aniTimer", "isLessThan", 41 ] }, "set":{ "aniTimer":{ "_":[ "this", "aniTimer", "+", 1 ] } } },
+                  { "set":{ "frame":8, "visible":{ "_":[ "this", "aniTimer", "/", 2, "floor", "%", 2 ] } } },
+                  { "as":{ "_":[ "objectTyped", { "_":[ "that", "armType" ] } ] }, "set":{ "visible":0 } }
+                ]
+              },
+              {
+                "when":{ "_":[ "this", "aniMode", "isEqualTo", "dying" ] },
+                "execute":[
+                  {
+                    "when":{ "_":[ "this", "isBurning" ] },
+                    "execute":{
+                      "when":{ "_":[ "this", "aniTimer" ] },
+                      "subtract":1,
+                      "to":{ "_":[ "this", "aniTimer" ] },
+                      "elseExecute":[ { "object":{ "_":[ "stencil", "explosion" ] } }, { "set":{ "aniTimer":10 } } ]
+                    }
+                  },
+                  { "set":{ "frame":7, "visible":1 } },
+                  { "as":{ "_":[ "objectTyped", { "_":[ "that", "armType" ] } ] }, "set":{ "visible":0 } }
+                ]
+              },
+              {
+                "when":{ "_":[ "this", "aniMode", "isEqualTo", "couch" ] },
+                "execute":[
+                  { "set":{ "frame":5, "visible":{ "_":[ "this", "isVisible" ] } } },
+                  {
+                    "as":{ "_":[ "objectTyped", { "_":[ "that", "armType" ] } ] },
+                    "set":{
+                      "x":{ "_":[ "that", "x", "+", 4 ] }, "y":{ "_":[ "that", "y", "+", 9, "+", { "_":[ "that", "armRumble" ] } ] },
+                      "visible":{ "_":[ "that", "isVisible" ] }
+                    }
+                  }
+                ]
+              },
+              {
+                "when":{ "_":[ "this", "aniMode", "isEqualTo", "couchwalk" ] },
+                "execute":[
+                  { "set":{ "aniTimer":{ "_":[ "this", "aniTimer", "+", 1, "%", 20 ] } } },
+                  { "set":{ "aniFrame":{ "_":[ "this", "aniTimer", "/", 10, "floor" ] } } },
+                  {
+                    "when":{ "_":[ "this", "aniFrame", "isEqualTo", 0 ] },
+                    "execute":[
+                      { "set":{ "frame":5, "visible":{ "_":[ "this", "isVisible" ] } } },
+                      {
+                        "as":{ "_":[ "objectTyped", { "_":[ "that", "armType" ] } ] },
+                        "set":{
+                          "x":{ "_":[ "that", "x", "+", 4 ] }, "y":{ "_":[ "that", "y", "+", 9, "+", { "_":[ "that", "armRumble" ] } ] },
+                          "visible":{ "_":[ "that", "isVisible" ] }
+                        }
+                      }
+                    ],
+                    "elseExecute":[
+                      { "set":{ "frame":6, "visible":{ "_":[ "this", "isVisible" ] } } },
+                      {
+                        "as":{ "_":[ "objectTyped", { "_":[ "that", "armType" ] } ] },
+                        "set":{
+                          "x":{ "_":[ "that", "x", "+", 4 ] }, "y":{ "_":[ "that", "y", "+", 9, "+", { "_":[ "that", "armRumble" ] } ] },
+                          "visible":{ "_":[ "that", "isVisible" ] }
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "when":{ "_":[ "this", "aniMode", "isEqualTo", "idle" ] },
+                "execute":[
+                  { "set":{ "aniTimer":{ "_":[ "this", "aniTimer", "+", 1, "%", 20 ] } } },
+                  { "set":{ "aniFrame":{ "_":[ "this", "aniTimer", "/", 10, "floor" ] } } },
+                  {
+                    "when":{ "_":[ "this", "aniFrame", "isEqualTo", 0 ] },
+                    "execute":[
+                      { "set":{ "frame":0, "visible":{ "_":[ "this", "isVisible" ] } } },
+                      {
+                        "as":{ "_":[ "objectTyped", { "_":[ "that", "armType" ] } ] },
+                        "set":{
+                          "x":{ "_":[ "that", "x", "+", 4 ] }, "y":{ "_":[ "that", "y", "+", 5, "+", { "_":[ "that", "armRumble" ] } ] },
+                          "visible":{ "_":[ "that", "isVisible" ] }
+                        }
+                      }
+                    ],
+                    "elseExecute":[
+                      { "set":{ "frame":1, "visible":{ "_":[ "this", "isVisible" ] } } },
+                      {
+                        "as":{ "_":[ "objectTyped", { "_":[ "that", "armType" ] } ] },
+                        "set":{
+                          "x":{ "_":[ "that", "x", "+", 4 ] }, "y":{ "_":[ "that", "y", "+", 6, "+", { "_":[ "that", "armRumble" ] } ] },
+                          "visible":{ "_":[ "that", "isVisible" ] }
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "when":{ "_":[ "this", "aniMode", "isEqualTo", "walk" ] },
+                "execute":[
+                  { "set":{ "aniTimer":{ "_":[ "this", "aniTimer", "+", 1, "%", 20 ] } } },
+                  { "set":{ "aniFrame":{ "_":[ "this", "aniTimer", "/", 5, "floor" ] } } },
+                  {
+                    "when":{ "_":[ "this", "aniFrame", "isEqualTo", 0, "or", { "_":[ "this", "aniFrame", "isEqualTo", 2 ] } ] },
+                    "execute":[
+                      { "set":{ "frame":0, "visible":{ "_":[ "this", "isVisible" ] } } },
+                      {
+                        "as":{ "_":[ "objectTyped", { "_":[ "that", "armType" ] } ] },
+                        "set":{
+                          "x":{ "_":[ "that", "x", "+", 4 ] }, "y":{ "_":[ "that", "y", "+", 5, "+", { "_":[ "that", "armRumble" ] } ] },
+                          "visible":{ "_":[ "that", "isVisible" ] }
+                        }
+                      }
+                    ],
+                    "elseExecute":[
+                      {
+                        "as":{ "_":[ "objectTyped", { "_":[ "that", "armType" ] } ] },
+                        "set":{
+                          "x":{ "_":[ "that", "x", "+", 4 ] }, "y":{ "_":[ "that", "y", "+", 6, "+", { "_":[ "that", "armRumble" ] } ] },
+                          "visible":{ "_":[ "that", "isVisible" ] }
+                        }
+                      },
+                      {
+                        "when":{ "_":[ "this", "aniFrame", "isEqualTo", 0, "or", { "_":[ "this", "aniFrame", "isEqualTo", 1 ] } ] },
+                        "execute":{ "set":{ "frame":2, "visible":{ "_":[ "this", "isVisible" ] } } },
+                        "elseExecute":{ "set":{ "frame":3 } }
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "when":{ "_":[ "this", "aniMode", "isEqualTo", "jump" ] },
+                "execute":[
+                  { "set":{ "frame":4, "visible":{ "_":[ "this", "isVisible" ] } } },
+                  {
+                    "as":{ "_":[ "objectTyped", { "_":[ "that", "armType" ] } ] },
+                    "set":{ "x":{ "_":[ "that", "x", "+", 4 ] }, "y":{ "_":[ "that", "y", "+", 6 ] }, "visible":{ "_":[ "that", "isVisible" ] } }
+                  }
+                ]
+              },
+              { "executeAction":"update" }
+            ]
+          }
+        ],
+        "actions":{ "name":"remove", "execute":[ { "as":{ "_":[ "objectTyped", { "_":[ "this", "armType" ] } ] }, "remove":1 }, { "remove":1 } ] }
+      }
+    },
+    "indicate":{
+      "type":"triggerarea",
+      "thenDo":"goRight",
+      "states":{ "actions":{ "name":"trigger", "execute":[ { "_":[ "stencil", "codeThenDo" ] }, { "remove":1 } ] } }
+    },
+    "pickSpark":{
+      "image":"sprites", "tileX":144, "tileY":24, "width":16, "height":16,
+      "zIndex":60, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "animations":{ "idle":{ "frames":3, "speed":2 } },
+      "animation":"idle",
+      "states":{ "code":{ "name":"Sequence", "data":[ { "subtract":1, "to":{ "_":[ "this", "y" ] }, "wait":1, "loop":1, "cycles":9 }, { "remove":1 } ] } }
+    },
+    "arena":{
+      "type":"removeonmissioncomplete",
+      "set":{ "_":[ "stencil", "sleepGameElementModel" ] },
+      "hitbox":{ "_":[ "new", { "width":8, "height":8, "x":0, "y":0 } ] },
+      "thenDo":"goRight",
+      "states":[
+        {
+          "name":"run",
+          "execute":{
+            "when":{ "_":[ "this", "initialized", "not" ] },
+            "execute":[
+              {
+                "when":{ "_":[ "this", "isHorizontal" ] },
+                "as":{ "_":[ "this", "hitbox" ] },
+                "set":{ "width":{ "_":[ "that", "width" ] }, "y":{ "_":[ "that", "height", "-", 8, "/", 2 ] } },
+                "elseExecute":{ "as":{ "_":[ "this", "hitbox" ] }, "set":{ "height":{ "_":[ "that", "height" ] }, "x":{ "_":[ "that", "width", "-", 8, "/", 2 ] } } }
+              },
+              { "set":{ "initialized":1 } }
+            ]
+          },
+          "code":{ "name":"Execute", "data":{ "when":{ "_":[ "this", "collidesWith", { "_":[ "objectTyped", "player" ] } ] }, "set":{ "state":"ambush" } } }
+        },
+        {
+          "name":"ambush",
+          "execute":[
+            { "set":{ "type":"runningarena", "follow":1 } },
+            { "_":[ "stencil", "codeSetAmbushCamera" ] },
+            { "assign":{ "_":[ "this", "targetCount" ] }, "to":{ "_":[ "variable", { "_":[ "this", "targetEnemy" ] } ] } },
+            { "as":{ "_":"variable" }, "set":{ "time":60 } }
+          ],
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "wait":75 },
+              { "when":{ "_":[ "variable", { "_":[ "this", "targetEnemy" ] } ] }, "as":{ "_":[ "object", { "_":[ "this", "arena" ] } ] }, "executeAction":"spawn" },
+              { "loopTo":0, "until":{ "_":[ "variable", { "_":[ "this", "targetEnemy" ] }, "not" ] } },
+              { "_":[ "stencil", "codeThenDo" ] },
+              { "as":{ "_":[ "object", { "_":[ "this", "arena" ] } ] }, "remove":1 },
+              { "remove":1 },
+              { "_":[ "stencil", "codeSetPlayerCamera" ] }
+            ]
+          }
+        }
+      ]
+    },
+    "bonusBox":{
+      "set":{ "_":[ "stencil", "sleepGameElementModel" ] },
+      "zIndex":40,
+      "states":[
+        {
+          "name":"run",
+          "set":{ "type":"playerHitable", "image":"sprites", "tileX":32, "tileY":116, "width":16, "height":16 },
+          "code":{
+            "name":"Physics",
+            "data":{
+              "walls":[
+                { "type":"wall", "restitution":0 },
+                { "type":"wallonlytop", "restitution":0, "only":{ "top":1 } },
+                { "area":{ "_":[ "scene", "sceneArea" ] }, "restitution":0 }
+              ],
+              "gravityY":1,
+              "limitX":[ -1, 1 ],
+              "limitY":[ -1, 1 ]
+            }
+          },
+          "actions":{
+            "name":"hit",
+            "execute":[
+              { "object":{ "_":[ "stencil", "pickSpark" ] } },
+              { "object":{ "set":{ "_":[ "stencil", { "_":[ "randomValue", { "_":[ "that", "content" ] } ] } ] }, "at":{ "_":"that" } } },
+              { "remove":1 }
+            ]
+          }
+        },
+        { "set":{ "removeType":"playerHitable" } }
+      ]
+    },
+    "prisoner":{
+      "set":{ "_":[ "stencil", "sleepGameElementModel" ] },
+      "image":"sprites", "tileY":132, "width":16, "height":24,
+      "zIndex":35,
+      "hitbox":{ "width":12, "height":22, "x":2, "y":2 },
+      "flipX":{ "_":[ "randomValue", [ 0, 1 ] ] },
+      "animations":{
+        "free":{ "frames":[ 5, 6, 6, 6, 5, 7 ], "speed":10 },
+        "trapped":{ "frames":2, "speed":10, "loopTo":0 },
+        "walk":{ "frames":[ 2, 4, 2, 3 ], "speed":5, "loopTo":0 }
+      },
+      "states":[
+        { "set":{ "removeType":"playerHitable", "animation":"none" } },
+        {
+          "name":"run",
+          "set":{ "type":"playerHitable", "animation":"trapped" },
+          "code":{
+            "name":"Physics",
+            "data":{
+              "walls":[
+                { "type":"wall", "restitution":0 },
+                { "type":"wallonlytop", "restitution":0, "only":{ "top":1 } },
+                { "area":{ "_":[ "scene", "sceneArea" ] }, "restitution":0 }
+              ],
+              "gravityY":0.3,
+              "limitX":[ -1.5, 1.5 ],
+              "limitY":[ -5, 5 ]
+            }
+          },
+          "actions":{ "name":"hit", "set":{ "playAudio":"beep", "state":"walk" }, "execute":{ "object":{ "_":[ "stencil", "spark" ] } } }
+        },
+        {
+          "name":"walk",
+          "set":{ "removeType":"playerHitable", "forceX":{ "_":[ "randomValue", [ -0.7, 0.7 ] ] }, "animation":"walk" },
+          "code":[
+            {
+              "name":"Sequence",
+              "data":[ { "wait":500 }, { "set":{ "visible":{ "_":[ "this", "visible", "not" ] } }, "wait":1, "loop":1, "cycles":50 }, { "remove":1 } ]
+            },
+            {
+              "name":"Execute",
+              "data":[
+                { "when":{ "_":[ "this", "collidesWith", { "_":[ "objectTyped", "player" ] } ] }, "set":{ "state":"free" } },
+                { "set":{ "flipX":{ "_":[ "this", "forceX", "isLessThan", 0 ] } } }
+              ]
+            },
+            {
+              "name":"Physics",
+              "data":{
+                "walls":[
+                  { "type":"wall", "restitutionX":1, "restitutionY":0 },
+                  { "type":"wallonlytop", "restitutionX":1, "restitutionY":0, "only":{ "top":1 } },
+                  { "area":{ "_":[ "scene", "sceneArea" ] }, "restitutionX":1, "restitutionY":0 }
+                ],
+                "gravityY":0.3,
+                "limitX":[ -1.5, 1.5 ],
+                "limitY":[ -5, 5 ]
+              }
+            }
+          ]
+        },
+        {
+          "name":"free",
+          "set":{ "forceX":0, "animation":"free" },
+          "execute":[
+            { "playAudio":"beep" },
+            { "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "html":"THANK YOU!" } },
+            { "sum":500, "to":{ "_":[ "variable", "score" ] } },
+            { "sum":1, "to":{ "_":[ "variable", "saved" ] } }
+          ],
+          "code":[
+            {
+              "name":"Physics",
+              "data":{
+                "walls":[
+                  { "type":"wall", "restitution":0 },
+                  { "type":"wallonlytop", "restitution":0, "only":{ "top":1 } },
+                  { "area":{ "_":[ "scene", "sceneArea" ] }, "restitution":0 }
+                ],
+                "gravityY":0.3,
+                "limitX":[ -1.5, 1.5 ],
+                "limitY":[ -5, 5 ]
+              }
+            },
+            {
+              "name":"Sequence",
+              "data":[
+                { "wait":20 },
+                { "object":{ "set":{ "_":[ "stencil", { "_":[ "randomValue", { "_":[ "that", "content" ] } ] } ] }, "at":{ "_":"that" } } },
+                { "wait":50 },
+                { "set":{ "visible":{ "_":[ "this", "visible", "not" ] } }, "wait":1, "loop":1, "cycles":50 },
+                { "remove":1 }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "airplane":{
+      "set":{ "_":[ "stencil", "vehicleModel" ] },
+      "tileY":48,
+      "hitbox":{ "width":42, "height":20, "x":3, "y":7 },
+      "animations":{ "idle":{ "frame":0 }, "still":{ "frame":0 } },
+      "gravityOnBoard":0.01,
+      "weapon":{ "_":[ "stencil", "dataWeapons", "machinegun" ] },
+      "states":[
+        {
+          "name":"run",
+          "actions":{
+            "name":"operate",
+            "execute":{
+              "as":{ "_":[ "objectTyped", { "_":[ "this", "armType" ] } ] },
+              "set":{ "x":{ "_":[ "that", "x" ] }, "y":{ "_":[ "that", "y", "+", 5 ] }, "angle":{ "_":[ "that", "currentAim" ] } }
+            }
+          }
+        },
+        {
+          "name":"working",
+          "actions":{
+            "name":"operate",
+            "execute":[
+              {
+                "as":{ "_":[ "objectTyped", { "_":[ "this", "armType" ] } ] },
+                "set":{ "x":{ "_":[ "that", "x" ] }, "y":{ "_":[ "that", "y", "+", 5 ] }, "angle":{ "_":[ "that", "currentAim" ] } }
+              },
+              { "set":{ "thrust":1 } },
+              {
+                "when":{ "_":[ "keyLeft", "isDown" ] },
+                "set":{ "forceX":-1, "thrust":5 },
+                "elseExecute":{ "when":{ "_":[ "keyRight", "isDown" ] }, "set":{ "forceX":1, "thrust":5 }, "elseExecute":{ "set":{ "forceX":0 } } }
+              },
+              {
+                "when":{ "_":[ "keyUp", "isDown" ] },
+                "set":{ "forceY":-1, "thrust":5 },
+                "elseExecute":{ "when":{ "_":[ "keyDown", "isDown" ] }, "set":{ "forceY":1, "thrust":5 }, "elseExecute":{ "set":{ "forceY":0.1 } } }
+              },
+              {
+                "when":{ "_":[ "this", "thrustTimer" ] },
+                "execute":[
+                  { "subtract":{ "_":[ "this", "thrust" ] }, "to":{ "_":[ "this", "thrustTimer" ] } },
+                  { "when":{ "_":[ "this", "thrustTimer", "isLessThan", 0 ] }, "set":{ "thrustTimer":0 } }
+                ],
+                "elseExecute":[
+                  { "object":{ "set":{ "_":[ "stencil", "explosion" ] }, "x":{ "_":[ "that", "x", "-", 12 ] }, "y":{ "_":[ "that", "y", "+", 8 ] }, "forceX":-1 } },
+                  { "set":{ "thrustTimer":30 } }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name":"exploding",
+          "actions":{
+            "name":"operate",
+            "execute":{
+              "as":{ "_":[ "objectTyped", { "_":[ "this", "armType" ] } ] },
+              "set":{ "x":{ "_":[ "that", "x" ] }, "y":{ "_":[ "that", "y", "+", 5 ] }, "angle":{ "_":[ "that", "currentAim" ] } }
+            }
+          }
+        }
+      ]
+    },
+    "sleepGameElementModel":{
+      "states":[
+        {
+          "execute":{ "set":{ "visible":0 } },
+          "code":{
+            "name":"Execute",
+            "data":{ "when":{ "_":[ "this", "distanceTo", { "_":[ "objectTyped", "player" ] }, "isLessThan", 290 ] }, "set":{ "state":"run" } }
+          }
+        },
+        {
+          "name":"run",
+          "execute":{ "set":{ "visible":1 } },
+          "code":{
+            "name":"Execute",
+            "data":{ "when":{ "_":[ "this", "distanceTo", { "_":[ "objectTyped", "player" ] }, "isGreaterThan", 390 ] }, "execute":{ "set":{ "state":"default" } } }
+          }
+        }
+      ]
+    },
+    "tank":{
+      "set":{ "_":[ "stencil", "vehicleModel" ] },
+      "width":48, "height":48,
+      "hitbox":{ "width":34, "height":35, "x":6, "y":11 },
+      "animations":{ "idle":{ "frames":2, "loopTo":0 }, "jump":{ "frame":4 }, "moving":{ "frames":[ 2, 3 ], "speed":2, "loopTo":0 }, "still":{ "frame":0 } },
+      "weapon":{ "_":[ "stencil", "dataWeapons", "machinegun" ] },
+      "states":[
+        {
+          "name":"run",
+          "actions":{
+            "name":"operate",
+            "execute":{
+              "as":{ "_":[ "objectTyped", { "_":[ "this", "armType" ] } ] },
+              "set":{ "x":{ "_":[ "that", "x" ] }, "y":{ "_":[ "that", "y", "+", 23 ] }, "angle":{ "_":[ "that", "currentAim" ] } }
+            }
+          }
+        },
+        {
+          "name":"working",
+          "actions":{
+            "name":"operate",
+            "execute":[
+              {
+                "as":{ "_":[ "objectTyped", { "_":[ "this", "armType" ] } ] },
+                "set":{ "x":{ "_":[ "that", "x" ] }, "y":{ "_":[ "that", "y", "+", 23 ] }, "angle":{ "_":[ "that", "currentAim" ] } }
+              },
+              {
+                "when":{ "_":[ "this", "bombCooldown" ] },
+                "subtract":1,
+                "to":{ "_":[ "this", "bombCooldown" ] },
+                "elseExecute":{
+                  "when":{ "_":[ "keyC", "isHit" ] },
+                  "execute":[
+                    { "set":{ "bombCooldown":50 } },
+                    { "playAudio":"fire" },
+                    {
+                      "object":[
+                        {
+                          "set":{ "_":[ "stencil", "bomb" ] },
+                          "tileX":96,
+                          "x":{ "_":[ "that", "x", "+", 36 ] }, "y":{ "_":[ "that", "y", "+", 11 ] },
+                          "animation":"idle",
+                          "damage":3,
+                          "enemy":"playerHitable",
+                          "gravity":0.09,
+                          "isBurning":1,
+                          "life":300,
+                          "sparksWith":"codeBigExplosion",
+                          "toForceY":-0.1,
+                          "toSide":{ "_":[ "that", "flipX" ] },
+                          "toSpeed":3
+                        },
+                        { "set":{ "_":[ "stencil", "explosion" ] }, "x":{ "_":[ "that", "x", "+", 36 ] }, "y":{ "_":[ "that", "y", "+", 11 ] } }
+                      ]
+                    }
+                  ]
+                }
+              },
+              {
+                "when":{ "_":[ "keyLeft", "isDown" ] },
+                "set":{ "forceX":-1, "animation":"moving" },
+                "elseExecute":{ "when":{ "_":[ "keyRight", "isDown" ] }, "set":{ "forceX":1, "animation":"moving" }, "elseExecute":{ "set":{ "forceX":0, "animation":"idle" } } }
+              },
+              {
+                "when":{ "_":[ "this", "touchDown" ] },
+                "execute":{ "when":{ "_":[ "keyB", "isHit" ] }, "execute":{ "execute":{ "set":{ "forceY":-2 } } } },
+                "elseExecute":{ "set":{ "animation":"jump" } }
+              }
+            ]
+          }
+        },
+        {
+          "name":"exploding",
+          "actions":{
+            "name":"operate",
+            "execute":{
+              "as":{ "_":[ "objectTyped", { "_":[ "this", "armType" ] } ] },
+              "set":{ "x":{ "_":[ "that", "x" ] }, "y":{ "_":[ "that", "y", "+", 23 ] }, "angle":{ "_":[ "that", "currentAim" ] } }
+            }
+          }
+        }
+      ]
+    },
+    "vehicleModel":{
+      "set":{ "_":[ "stencil", "sleepGameElementModel" ] },
+      "image":"vehicle", "width":48, "height":48,
+      "disabled":0,
+      "zIndex":25,
+      "execute":[
+        {
+          "set":{
+            "armType":{ "_":[ "vehi-", ".", { "_":[ "variable", "nextSerial" ] } ] },
+            "popupType":{ "_":[ "vehipop-", ".", { "_":[ "variable", "nextSerial" ] } ] }
+          }
+        },
+        { "sum":1, "to":{ "_":[ "variable", "nextSerial" ] } },
+        { "object":{ "type":{ "_":[ "that", "popupType" ] }, "set":{ "_":[ "stencil", "upPopup" ] }, "tileX":48, "visible":0 } },
+        {
+          "object":{
+            "type":{ "_":[ "that", "armType" ] },
+            "image":"sprites", "tileX":96, "width":24, "height":16,
+            "zIndex":35,
+            "visible":0, "originX":"7px", "originY":"9px"
+          }
+        }
+      ],
+      "arms":-1,
+      "bulletAnimation":"idle",
+      "enemy":"playerHitable",
+      "firing":0,
+      "gravityOffBoard":0.1,
+      "gravityOnBoard":0.1,
+      "hailTimer":0,
+      "health":10,
+      "maxHealth":10,
+      "reloadTimer":0,
+      "states":[
+        {
+          "execute":[
+            { "as":{ "_":[ "objectTyped", { "_":[ "this", "armType" ] } ] }, "set":{ "visible":0 } },
+            { "as":{ "_":[ "objectTyped", { "_":[ "this", "popupType" ] } ] }, "set":{ "visible":0 } }
+          ]
+        },
+        {
+          "name":"run",
+          "set":{ "animation":"still", "currentAim":0, "directionAngle":0 },
+          "execute":[
+            { "as":{ "_":[ "objectTyped", { "_":[ "this", "armType" ] } ] }, "set":{ "visible":1 } },
+            { "as":{ "_":[ "objectTyped", { "_":[ "this", "popupType" ] } ] }, "set":{ "tileX":48, "visible":1 } }
+          ],
+          "code":[
+            {
+              "name":"Physics",
+              "data":{
+                "walls":[
+                  { "type":"wall", "restitution":0 },
+                  { "type":"wallonlytop", "restitution":0, "only":{ "top":1 } },
+                  { "area":{ "_":[ "scene", "sceneArea" ] }, "restitution":0 }
+                ],
+                "gravityY":{ "_":[ "this", "gravityOffBoard" ] },
+                "limitX":[ -1.5, 1.5 ],
+                "limitY":[ -5, 5 ]
+              }
+            },
+            {
+              "name":"Execute",
+              "data":[
+                { "executeAction":"operate" },
+                {
+                  "as":{ "_":[ "objectTyped", { "_":[ "that", "popupType" ] } ] },
+                  "set":{ "x":{ "_":[ "that", "x", "+", 16 ] }, "y":{ "_":[ "that", "y", "-", 16 ] } }
+                },
+                {
+                  "when":{ "_":[ "this", "disabled" ] },
+                  "subtract":1,
+                  "to":{ "_":[ "this", "disabled" ] },
+                  "elseExecute":{
+                    "when":{ "_":[ "this", "collidesWith", { "_":[ "objectTyped", "player" ] } ] },
+                    "execute":{
+                      "when":{ "_":[ "that", "forceY", "isGreaterThan", 0, "and", { "_":[ "that", "dead", "not" ] } ] },
+                      "execute":[
+                        { "object":{ "_":[ "stencil", "pickSpark" ] }, "as":{ "_":"that" } },
+                        { "when":{ "_":[ "that", "forceY", "isGreaterThan", 0 ] }, "set":{ "state":"working" } }
+                      ]
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name":"working",
+          "execute":[
+            { "as":{ "_":[ "objectTyped", "player" ] }, "executeAction":"onvehicle" },
+            { "set":{ "type":[ "player", "enemyHitable", "vehiclePlayer" ] } },
+            { "as":{ "_":[ "objectTyped", { "_":[ "this", "popupType" ] } ] }, "set":{ "visible":0 } },
+            { "object":{ "type":"vehipopup", "set":{ "_":[ "stencil", "upPopup" ] }, "state":"timed" } },
+            { "_":[ "stencil", "codeSetVehicleCamera" ] }
+          ],
+          "code":[
+            {
+              "name":"Physics",
+              "data":{
+                "walls":[
+                  { "type":"wall", "restitution":0 },
+                  { "type":"wallonlytop", "restitution":0, "only":{ "top":1 } },
+                  { "area":{ "_":[ "scene", "sceneArea" ] }, "restitution":0 }
+                ],
+                "gravityY":{ "_":[ "this", "gravityOnBoard" ] },
+                "limitX":[ -1.5, 1.5 ],
+                "limitY":[ -5, 5 ]
+              }
+            },
+            {
+              "name":"Execute",
+              "data":{
+                "when":{ "_":[ "keyDown", "isDown", "and", { "_":[ "keyB", "isDown" ] } ] },
+                "executeAction":"getout",
+                "elseExecute":[
+                  {
+                    "when":{ "_":[ "keyUp", "isDown" ] },
+                    "execute":{
+                      "when":{ "_":[ "keyRight", "isDown" ] },
+                      "set":{ "directionAngle":315 },
+                      "elseExecute":{ "when":{ "_":[ "keyLeft", "isDown" ] }, "set":{ "directionAngle":225 }, "elseExecute":{ "set":{ "directionAngle":-90 } } }
+                    },
+                    "elseExecute":{
+                      "when":{ "_":[ "keyDown", "isDown" ] },
+                      "execute":{
+                        "when":{ "_":[ "keyRight", "isDown" ] },
+                        "set":{ "directionAngle":45 },
+                        "elseExecute":{ "when":{ "_":[ "keyLeft", "isDown" ] }, "set":{ "directionAngle":135 }, "elseExecute":{ "set":{ "directionAngle":90 } } }
+                      },
+                      "elseExecute":{
+                        "when":{ "_":[ "keyRight", "isDown" ] },
+                        "set":{ "directionAngle":0 },
+                        "elseExecute":{ "when":{ "_":[ "keyLeft", "isDown" ] }, "set":{ "directionAngle":180 } }
+                      }
+                    }
+                  },
+                  {
+                    "when":{ "_":[ "this", "directionAngle", "isNotEqualTo", "currentAim" ] },
+                    "execute":[
+                      { "set":{ "gap":{ "_":[ "this", "currentAim", "shortestAngleTo", { "_":[ "this", "directionAngle" ] } ] } } },
+                      {
+                        "when":{ "_":[ "this", "gap", "abs", "isLessThan", 5 ] },
+                        "set":{ "currentAim":{ "_":[ "this", "directionAngle" ] } },
+                        "elseExecute":{
+                          "when":{ "_":[ "this", "gap", "isLessThan", 0 ] },
+                          "subtract":5,
+                          "to":{ "_":[ "this", "currentAim" ] },
+                          "elseExecute":{ "sum":5, "to":{ "_":[ "this", "currentAim" ] } }
+                        }
+                      }
+                    ]
+                  },
+                  { "executeAction":"operate" },
+                  {
+                    "when":{ "_":[ "keyA", "isHit" ] },
+                    "execute":{ "when":{ "_":[ "this", "firing", "not" ] }, "execute":{ "set":{ "firing":1, "hailCount":0, "hailTimer":0, "reloadTimer":-1 } } }
+                  },
+                  { "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "hitPlayer" ] } ] }, "executeAction":"hit" },
+                  { "as":{ "_":[ "objectTyped", "vehipopup" ] }, "set":{ "x":{ "_":[ "that", "x", "+", 16 ] }, "y":{ "_":[ "that", "y", "-", 16 ] } } },
+                  { "when":{ "_":[ "keyC", "isHit" ] }, "set":{ "damage":1 }, "executeAction":"hit" },
+                  {
+                    "when":{ "_":[ "this", "firing" ] },
+                    "execute":{
+                      "when":{ "_":[ "this", "reloadTimer", "isEqualTo", -1 ] },
+                      "execute":{
+                        "when":{ "_":[ "this", "hailTimer" ] },
+                        "subtract":1,
+                        "to":{ "_":[ "this", "hailTimer" ] },
+                        "elseExecute":[
+                          {
+                            "as":{ "_":[ "objectTyped", { "_":[ "that", "armType" ] } ] },
+                            "execute":{ "object":{ "set":{ "_":[ "stencil", "gunfire" ] }, "originX":"7px", "originY":"9px" } }
+                          },
+                          { "playAudio":{ "_":[ "this", "weapon", "fireAudio" ] } },
+                          {
+                            "times":{ "_":[ "this", "weapon", "times" ] },
+                            "object":{
+                              "set":{ "_":[ "stencil", { "_":[ "that", "weapon", "bulletType" ] } ] },
+                              "tileX":{ "_":[ "that", "weapon", "bulletTileX" ] },
+                              "x":{ "_":[ "objectTyped", { "_":[ "that", "armType" ] }, "x", "+", 4 ] }, "y":{ "_":[ "objectTyped", { "_":[ "that", "armType" ] }, "y", "+", 4 ] },
+                              "animation":{ "_":[ "that", "bulletAnimation" ] },
+                              "basicScore":{ "_":[ "that", "weapon", "basicScore" ] },
+                              "damage":{ "_":[ "that", "weapon", "damage" ] },
+                              "enemy":{ "_":[ "that", "enemy" ] },
+                              "explodes":{ "_":[ "that", "weapon", "explodes" ] },
+                              "isBurning":{ "_":[ "that", "weapon", "isBurning" ] },
+                              "life":{ "_":[ "that", "weapon", "life" ] },
+                              "sparksWith":{ "_":[ "that", "weapon", "sparksWith" ] },
+                              "toAngle":{
+                                "_":[
+                                  "that",
+                                  "currentAim",
+                                  "+",
+                                  90,
+                                  "+",
+                                  { "_":[ "randomNumber", [ { "_":[ "that", "weapon", "precision", "*", -1 ] }, { "_":[ "that", "weapon", "precision" ] } ] ] }
+                                ]
+                              },
+                              "toSpeed":{ "_":[ "that", "weapon", "speed" ] }
+                            }
+                          },
+                          { "sum":1, "to":{ "_":[ "this", "hailCount" ] } },
+                          {
+                            "when":{ "_":[ "this", "hailCount", "isEqualTo", { "_":[ "this", "weapon", "hailCount" ] } ] },
+                            "execute":{ "set":{ "reloadTimer":{ "_":[ "this", "weapon", "reloadTimer" ] } } },
+                            "elseExecute":{ "set":{ "hailTimer":{ "_":[ "this", "weapon", "hailTimer" ] } } }
+                          }
+                        ]
+                      },
+                      "elseExecute":{ "when":{ "_":[ "this", "reloadTimer" ] }, "subtract":1, "to":{ "_":[ "this", "reloadTimer" ] }, "elseExecute":{ "set":{ "firing":0 } } }
+                    }
+                  },
+                  {
+                    "when":{ "_":[ "this", "invulnerability" ] },
+                    "execute":[ { "subtract":1, "to":{ "_":[ "this", "invulnerability" ] } }, { "set":{ "visible":{ "_":[ "this", "visible", "not" ] } } } ],
+                    "elseExecute":{ "as":{ "_":"this" }, "set":{ "visible":1 } }
+                  }
+                ]
+              }
+            }
+          ],
+          "actions":[
+            {
+              "name":"getout",
+              "execute":[
+                { "as":{ "_":[ "objectTyped", "vehipopup" ] }, "remove":1 },
+                { "set":{ "removeType":[ "player", "enemyHitable", "vehiclePlayer" ], "disabled":50, "forceX":0, "forceY":0, "invulnerability":0, "state":"run" } },
+                {
+                  "as":{ "_":[ "objectTyped", "playerOnVehicle" ] },
+                  "set":{ "x":{ "_":[ "that", "x", "+", 13 ] }, "y":{ "_":[ "that", "y", "+", 11 ] } },
+                  "executeAction":"getout"
+                }
+              ]
+            },
+            {
+              "name":"hit",
+              "execute":{
+                "when":{ "_":[ "this", "invulnerability", "not" ] },
+                "execute":[
+                  { "object":{ "_":[ "stencil", "spark" ] }, "as":{ "_":"that" } },
+                  { "subtract":{ "_":[ "that", "damage" ] }, "to":{ "_":[ "this", "health" ] } },
+                  { "when":{ "_":[ "this", "health", "isLessThan", 1 ] }, "set":{ "state":"exploding" }, "elseExecute":{ "set":{ "invulnerability":50 } } }
+                ]
+              }
+            },
+            { "name":"kill", "set":{ "playerMode":"dead", "state":"explode" } },
+            {
+              "name":"missionComplete",
+              "execute":[
+                { "as":{ "_":"scene" }, "set":{ "endedWithTank":1 } },
+                { "as":{ "_":[ "objectTyped", "vehipopup" ] }, "remove":1 },
+                { "set":{ "removeType":[ "player", "enemyHitable", "vehiclePlayer" ], "disabled":50, "forceX":0, "forceY":0, "invulnerability":0, "state":"run" } },
+                {
+                  "as":{ "_":[ "objectTyped", "playerOnVehicle" ] },
+                  "set":{ "x":{ "_":[ "that", "x", "+", 13 ] }, "y":{ "_":[ "that", "y", "+", 11 ] } },
+                  "executeAction":"missionComplete"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name":"exploding",
+          "set":{ "removeType":[ "enemyHitable", "vehiclePlayer" ], "forceX":0, "forceY":0, "blinkAt":150, "playerMode":"dead", "timer":150 },
+          "execute":[
+            { "as":{ "_":[ "objectTyped", "vehipopup" ] }, "remove":1 },
+            { "as":{ "_":[ "objectTyped", { "_":[ "this", "popupType" ] } ] }, "set":{ "tileX":96, "visible":1 } }
+          ],
+          "code":[
+            {
+              "name":"Physics",
+              "data":{
+                "walls":[
+                  { "type":"wall", "restitution":0 },
+                  { "type":"wallonlytop", "restitution":0, "only":{ "top":1 } },
+                  { "area":{ "_":[ "scene", "sceneArea" ] }, "restitution":0 }
+                ],
+                "gravityY":{ "_":[ "this", "gravityOnBoard" ] },
+                "limitX":[ -1.5, 1.5 ],
+                "limitY":[ -5, 5 ]
+              }
+            },
+            {
+              "name":"Execute",
+              "data":[
+                {
+                  "as":{ "_":[ "objectTyped", { "_":[ "that", "popupType" ] } ] },
+                  "set":{ "x":{ "_":[ "that", "x", "+", 16 ] }, "y":{ "_":[ "that", "y", "-", 16 ] } }
+                },
+                { "executeAction":"operate" },
+                { "when":{ "_":[ "keyB", "isHit" ] }, "set":{ "playerMode":"getout", "timer":0 } },
+                {
+                  "when":{ "_":[ "this", "timer" ] },
+                  "execute":[
+                    {
+                      "when":{ "_":[ "this", "timer", "isEqualTo", { "_":[ "this", "blinkAt" ] } ] },
+                      "execute":{ "set":{ "visible":0, "blinkAt":{ "_":[ "this", "blinkAt", "*", 0.8, "ceil" ] } }, "playAudio":"beep" },
+                      "elseExecute":{ "set":{ "visible":1 } }
+                    },
+                    { "subtract":1, "to":{ "_":[ "this", "timer" ] } }
+                  ],
+                  "elseExecute":{ "set":{ "state":"explode" } }
+                }
+              ]
+            }
+          ],
+          "actions":{ "name":"kill", "set":{ "playerMode":"dead", "state":"explode" } }
+        },
+        {
+          "name":"explode",
+          "set":{ "forceX":0, "forceY":-1.5, "playAudio":"explode2", "explodeSpin":{ "_":[ "randomValue", [ -0.5, 0.5 ] ] } },
+          "execute":[
+            { "as":{ "_":[ "objectTyped", { "_":[ "this", "armType" ] } ] }, "remove":1 },
+            { "as":{ "_":[ "objectTyped", { "_":[ "this", "popupType" ] } ] }, "remove":1 },
+            { "as":{ "_":[ "objectTyped", "vehipopup" ] }, "remove":1 },
+            { "set":{ "removeType":[ "player", "enemyHitable", "vehiclePlayer" ] } },
+            {
+              "as":{ "_":[ "objectTyped", "playerOnVehicle" ] },
+              "set":{ "x":{ "_":[ "that", "x", "+", 13 ] }, "y":{ "_":[ "that", "y", "+", 11 ] } },
+              "executeAction":{ "_":[ "that", "playerMode" ] }
+            }
+          ],
+          "code":[
+            {
+              "name":"Sequence",
+              "data":[
+                { "playAudio":"explode2" },
+                {
+                  "times":10,
+                  "object":{
+                    "set":{ "_":[ "stencil", "explosion" ] },
+                    "x":{ "_":[ "that", "x", "+", { "_":[ "randomNumber", [ 0, 64 ] ] } ] }, "y":{ "_":[ "that", "y", "+", { "_":[ "randomNumber", [ 0, 47 ] ] } ] }
+                  }
+                },
+                { "wait":10, "cycles":3, "loopTo":0 },
+                { "remove":1 }
+              ]
+            },
+            { "name":"Physics", "data":{ "gravityY":{ "_":[ "this", "gravityOffBoard" ] } } },
+            { "name":"Execute", "data":{ "sum":{ "_":[ "this", "explodeSpin" ] }, "to":{ "_":[ "this", "angle" ] } } },
+            { "name":"Sequence", "data":{ "set":{ "visible":{ "_":[ "this", "visible", "not" ] } }, "wait":1, "loop":1 } }
+          ]
+        }
+      ]
+    },
+    "spawnPoint":{
+      "type":"removeonmissioncomplete",
+      "visible":0,
+      "verticalGap":72,
+      "state":"run",
+      "states":[
+        {
+          "name":"run",
+          "execute":[ { "set":{ "owns":{ "_":[ "spawned-", ".", { "_":[ "variable", "nextSerial" ] } ] } } }, { "sum":1, "to":{ "_":[ "variable", "nextSerial" ] } } ],
+          "actions":{
+            "name":"spawn",
+            "execute":[
+              {
+                "object":{
+                  "type":{ "_":[ "that", "owns" ] },
+                  "set":{ "_":[ "stencil", { "_":[ "that", "spawns" ] } ] },
+                  "at":{ "_":"that" },
+                  "verticalGap":{ "_":[ "that", "verticalGap" ] }
+                }
+              },
+              { "set":{ "state":"wait" } }
+            ]
+          }
+        },
+        {
+          "name":"wait",
+          "code":{ "name":"Execute", "data":{ "when":{ "_":[ "objectTyped", { "_":[ "this", "owns" ] }, "not" ] }, "set":{ "state":"run" } } }
+        }
+      ]
+    },
+    "upPopup":{
+      "image":"sprites", "tileY":84, "width":16, "height":16,
+      "zIndex":100,
+      "animations":{ "idle":{ "frames":[ 0, 1, 2, 1 ], "speed":2, "loopTo":0 } },
+      "animation":"idle",
+      "states":{ "name":"timed", "code":{ "name":"Sequence", "data":[ { "wait":100 }, { "remove":1 } ] } }
+    },
+    "#":{ "type":[ "wall", "bulletwall", "enemyWall" ], "image":"tiles", "tileX":16, "tileY":0, "width":16, "height":16, "zIndex":5 },
+    "J":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":32, "tileY":48 },
+    "K":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":48, "tileY":48 },
+    "L":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":64, "tileY":48 },
+    "U":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":160, "tileY":48 },
+    "a":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":0, "tileY":16 },
+    "b":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":16, "tileY":16 },
+    "c":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":32, "tileY":16 },
+    "d":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":48, "tileY":16 },
+    "e":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":64, "tileY":16 },
+    "f":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":80, "tileY":16 },
+    "g":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":96, "tileY":16 },
+    "h":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":112, "tileY":16 },
+    "i":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":128, "tileY":16 },
+    "j":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":144, "tileY":16 },
+    "k":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":160, "tileY":16 },
+    "l":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":176, "tileY":16 },
+    "1":{ "set":{ "_":[ "stencil", "(" ] }, "tileX":32, "tileY":96 },
+    "(":{ "image":"tiles", "tileX":64, "tileY":0, "width":16, "height":16, "zIndex":5 },
+    "2":{ "set":{ "_":[ "stencil", "(" ] }, "tileX":16, "tileY":112 },
+    "3":{ "set":{ "_":[ "stencil", "(" ] }, "tileX":32, "tileY":112 },
+    "4":{ "set":{ "_":[ "stencil", "(" ] }, "tileX":48, "tileY":64 },
+    "5":{ "set":{ "_":[ "stencil", "(" ] }, "tileX":64, "tileY":64 },
+    "6":{ "set":{ "_":[ "stencil", "(" ] }, "tileX":80, "tileY":64 },
+    "A":{ "set":{ "_":[ "stencil", "(" ] }, "tileX":176, "tileY":32 },
+    "B":{ "set":{ "_":[ "stencil", "(" ] }, "tileX":192, "tileY":32 },
+    "C":{ "set":{ "_":[ "stencil", "(" ] }, "tileX":208, "tileY":32 },
+    "D":{ "set":{ "_":[ "stencil", "(" ] }, "tileX":224, "tileY":32 },
+    "E":{ "set":{ "_":[ "stencil", "(" ] }, "tileX":240, "tileY":32 },
+    "F":{ "set":{ "_":[ "stencil", "(" ] }, "tileX":0, "tileY":48 },
+    "G":{ "set":{ "_":[ "stencil", "(" ] }, "tileX":0, "tileY":64 },
+    "H":{ "set":{ "_":[ "stencil", "(" ] }, "tileX":160, "tileY":32 },
+    "I":{ "set":{ "_":[ "stencil", "(" ] }, "tileX":16, "tileY":48 },
+    "M":{ "set":{ "_":[ "stencil", "(" ] }, "tileX":80, "tileY":48 },
+    "N":{ "set":{ "_":[ "stencil", "(" ] }, "tileX":96, "tileY":48 },
+    "O":{ "set":{ "_":[ "stencil", "(" ] }, "tileX":112, "tileY":48 },
+    "Q":{ "set":{ "_":[ "stencil", "(" ] }, "tileX":144, "tileY":48 },
+    "R":{ "set":{ "_":[ "stencil", "(" ] }, "tileX":208, "tileY":48 },
+    "S":{ "set":{ "_":[ "stencil", "(" ] }, "tileX":224, "tileY":48 },
+    "T":{ "set":{ "_":[ "stencil", "(" ] }, "tileX":240, "tileY":48 },
+    "V":{ "set":{ "_":[ "stencil", "(" ] }, "tileX":16, "tileY":64 },
+    "W":{ "set":{ "_":[ "stencil", "(" ] }, "tileX":16, "tileY":96 },
+    "X":{ "set":{ "_":[ "stencil", "(" ] }, "tileX":32, "tileY":64 },
+    "Y":{ "set":{ "_":[ "stencil", "(" ] }, "tileX":16, "tileY":80 },
+    "Z":{ "set":{ "_":[ "stencil", "(" ] }, "tileX":32, "tileY":80 },
+    "m":{ "set":{ "_":[ "stencil", "(" ] }, "tileX":192, "tileY":16 },
+    "n":{ "set":{ "_":[ "stencil", "(" ] }, "tileX":208, "tileY":16 },
+    "o":{ "set":{ "_":[ "stencil", "(" ] }, "tileX":224, "tileY":16 },
+    "p":{ "set":{ "_":[ "stencil", "(" ] }, "tileX":240, "tileY":16 },
+    "u":{ "set":{ "_":[ "stencil", "(" ] }, "tileX":64, "tileY":32 },
+    "v":{ "set":{ "_":[ "stencil", "(" ] }, "tileX":80, "tileY":32 },
+    "x":{ "set":{ "_":[ "stencil", "(" ] }, "tileX":96, "tileY":32 },
+    "y":{ "set":{ "_":[ "stencil", "(" ] }, "tileX":112, "tileY":32 },
+    "z":{ "set":{ "_":[ "stencil", "(" ] }, "tileX":128, "tileY":32 },
+    ")":{ "image":"tiles", "tileX":80, "tileY":0, "width":16, "height":16, "zIndex":100 },
+    "w":{ "set":{ "_":[ "stencil", ")" ] }, "tileX":144, "tileY":32 },
+    ":":{ "type":"wallonlytop", "image":"tiles", "tileX":32, "tileY":0, "width":16, "height":16, "zIndex":5 },
+    "P":{ "set":{ "_":[ "stencil", ":" ] }, "tileX":128, "tileY":48 },
+    "q":{ "set":{ "_":[ "stencil", ":" ] }, "tileX":0, "tileY":32 },
+    "r":{ "set":{ "_":[ "stencil", ":" ] }, "tileX":16, "tileY":32 },
+    "s":{ "set":{ "_":[ "stencil", ":" ] }, "tileX":32, "tileY":32 },
+    "t":{ "set":{ "_":[ "stencil", ":" ] }, "tileX":48, "tileY":32 },
+    "~":{ "type":"enemyWall", "image":"tiles", "tileX":48, "tileY":0, "width":16, "height":16, "visible":0 }
+  },
+  "execute":[
+    { "when":{ "_":[ "storage", "hiscore", "not" ] }, "as":{ "_":"storage" }, "set":{ "hiscore":0 } },
+    { "as":{ "_":"variable" }, "set":{ "hiscore":{ "_":[ "storage", "hiscore" ] } } }
+  ],
+  "scenes":{
+    "intro":{
+      "object":[
+        { "width":256, "height":192, "x":0, "y":0, "bgcolor":"#0ff" },
+        {
+          "box":"label", "width":256,
+          "zIndex":100, "x":0, "y":143,
+          "color":"#000",
+          "font":"spectrum", "fontSize":20, "lineHeight":20, "outline":"#0ff", "textAlign":"center", "html":"PRESS START",
+          "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "visible":0 }, "wait":20 }, { "set":{ "visible":1 }, "wait":20, "loopTo":0 } ] } }
+        },
+        {
+          "box":"label", "width":256,
+          "zIndex":100, "x":0, "y":172,
+          "color":"#000",
+          "font":"spectrum", "fontSize":20, "lineHeight":20, "outline":"#0ff", "textAlign":"center", "html":{ "_":[ "HI-SCORE: ", ".", { "_":[ "variable", "hiscore" ] } ] }
+        },
+        {
+          "image":"title", "width":156, "height":43,
+          "zIndex":1, "x":125, "y":-45,
+          "counter":0,
+          "gap":1,
+          "states":{
+            "code":{
+              "name":"Sequence",
+              "data":[
+                { "subtract":{ "_":[ "this", "gap" ] }, "to":{ "_":[ "this", "x" ] } },
+                { "sum":{ "_":[ "this", "gap" ] }, "to":{ "_":[ "this", "y" ] } },
+                { "set":{ "gap":{ "_":[ "this", "gap", "*", 1.2 ] } } },
+                { "wait":1, "cycles":15, "loopTo":0 },
+                { "playAudio":"explode2" },
+                {
+                  "times":16,
+                  "execute":[
+                    {
+                      "object":{ "set":{ "_":[ "stencil", "explosion" ] }, "x":{ "_":[ "that", "counter" ] }, "y":{ "_":[ 65, "-", { "_":[ "randomNumber", [ -2, 2 ] ] } ] } }
+                    },
+                    { "sum":16, "to":{ "_":[ "this", "counter" ] } }
+                  ]
+                },
+                {
+                  "object":{
+                    "width":256, "height":192,
+                    "zIndex":20, "x":0, "y":0,
+                    "bgcolor":"#0ff",
+                    "states":{
+                      "code":{ "name":"Sequence", "data":[ { "set":{ "visible":{ "_":[ "this", "visible", "not" ] } }, "wait":1, "loop":1, "cycles":5 }, { "remove":1 } ] }
+                    }
+                  }
+                },
+                { "sum":1, "to":{ "_":[ "this", "x" ] }, "wait":1 },
+                { "subtract":1, "to":{ "_":[ "this", "x" ] }, "wait":1, "cycles":10, "loopTo":-1 }
+              ]
+            }
+          }
+        },
+        {
+          "image":"title", "tileY":43, "width":156, "height":43,
+          "zIndex":1, "x":-20, "y":148,
+          "gap":1,
+          "states":{
+            "code":{
+              "name":"Sequence",
+              "data":[
+                { "sum":{ "_":[ "this", "gap" ] }, "to":{ "_":[ "this", "x" ] } },
+                { "subtract":{ "_":[ "this", "gap" ] }, "to":{ "_":[ "this", "y" ] } },
+                { "set":{ "gap":{ "_":[ "this", "gap", "*", 1.2 ] } } },
+                { "wait":1, "cycles":15, "loopTo":0 },
+                { "subtract":1, "to":{ "_":[ "this", "x" ] }, "wait":1 },
+                { "sum":1, "to":{ "_":[ "this", "x" ] }, "wait":1, "cycles":10, "loopTo":-1 }
+              ]
+            }
+          }
+        }
+      ],
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":{
+            "when":{ "_":[ "keyA", "isHit" ] },
+            "execute":[
+              { "as":{ "_":"variable" }, "set":{ "bomb":0, "credits":5, "lives":3, "saved":0, "score":0, "time":60 } },
+              { "gotoScene":"stage1", "withTransition":3 }
+            ]
+          }
+        }
+      }
+    },
+    "ending":{
+      "object":{
+        "width":256, "height":1000,
+        "x":0, "y":192,
+        "font":"spectrum", "textAlign":"center", "html":"IRON WAR<br>(c) 2017<br>A tiny jump-and-gun tribute<br><br><br>Graphics by:<br>KesieV Norimaki<br><br><br>Story by:<br>KesieV Norimaki<br><br><br>Code by:<br>KesieV Norimaki<br><br><br>Music:<br><br>Dot scroller part<br>by Agent X<br><br>March<br>by Terminator<br><br><br>Big thanks to:<br>Bianca<br>Il Marsicano<br>The JTTA Team<br>Stefano \"Il Kusagari\" Fioretto<br>Romolo Camplani<br>All Akihabara age friends<br><br><br><br><br>Peace forever!",
+        "forceY":-0.5,
+        "playAudio":"bgm",
+        "states":{ "code":{ "name":"Physics" } }
+      },
+      "states":{
+        "code":[
+          { "name":"Sequence", "data":[ { "wait":1900 }, { "gotoScene":"intro", "withTransition":3, "stopChannel":"music" } ] },
+          { "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"intro", "withTransition":3, "stopChannel":"music" } }
+        ]
+      }
+    },
+    "gameover":{
+      "object":{ "width":256, "height":192, "x":0, "color":"#0ff", "font":"spectrum", "fontSize":60, "lineHeight":192, "textAlign":"center", "html":"GAME OVER" },
+      "playAudio":"explode2",
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[ { "wait":25 }, { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } }, { "gotoScene":"intro", "withTransition":3 } ]
+        }
+      }
+    },
+    "stage1":{
+      "object":[
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":288, "y":56 },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":480, "y":104 },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":528, "y":104 },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":576, "y":104 },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":592, "y":40 },
+        { "set":{ "_":[ "stencil", "player" ] }, "x":16, "y":72, "thenDo":"goRight" },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":688, "y":40 },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":848, "y":56 },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":816, "y":56 },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":768, "y":88 },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":1024, "y":72 },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":960, "y":88 },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":1072, "y":88 },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":1152, "y":88 },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":1024, "y":24 },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":336, "y":24 },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":1216, "y":40 },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":1248, "y":104 },
+        { "type":"arena1", "set":{ "_":[ "stencil", "spawnPoint" ] }, "x":1312, "y":40, "spawns":"enemyBasicSoldier" },
+        { "type":"arena1", "set":{ "_":[ "stencil", "spawnPoint" ] }, "x":1488, "y":40, "spawns":"enemyBasicSoldier" },
+        { "type":"arena1", "set":{ "_":[ "stencil", "spawnPoint" ] }, "x":1536, "y":104, "spawns":"enemyBasicSoldier" },
+        { "type":"arena1", "set":{ "_":[ "stencil", "spawnPoint" ] }, "x":1264, "y":104, "spawns":"enemyBasicSoldier" },
+        {
+          "set":{ "_":[ "stencil", "arena" ] },
+          "width":256, "height":144,
+          "x":1280, "y":0,
+          "arena":"arena1",
+          "targetCount":20,
+          "targetEnemy":"targetSoldier",
+          "thenDo":"goRight"
+        },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":1760, "y":24 },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":1808, "y":72 },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":1888, "y":72 },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":1952, "y":72 },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":2016, "y":72 },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":1728, "y":88 },
+        {
+          "set":{ "_":[ "stencil", "arena" ] },
+          "width":256, "height":144,
+          "x":2208, "y":0,
+          "arena":"arena2",
+          "targetCount":1,
+          "targetEnemy":"targetBigEnemy",
+          "thenDo":"goRight"
+        },
+        { "type":"arena2", "set":{ "_":[ "stencil", "spawnPoint" ] }, "x":2224, "y":-64, "spawns":"enemyHelicopter" },
+        { "type":"arena2", "set":{ "_":[ "stencil", "spawnPoint" ] }, "x":2464, "y":104, "spawns":"enemyBasicSoldier" },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":2144, "y":104 },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":2080, "y":104 },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":2080, "y":40 },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":2112, "y":40 },
+        { "set":{ "_":[ "stencil", "bonusBombs" ] }, "x":2096, "y":48 },
+        { "set":{ "_":[ "stencil", "bonusAmmo" ] }, "x":832, "y":64 },
+        { "set":{ "_":[ "stencil", "exit" ] }, "width":16, "height":144, "x":2544, "y":0, "fadeOutEffect":"right", "gotoStage":"stage2" },
+        { "set":{ "_":[ "stencil", "prisoner" ] }, "x":432, "y":104, "content":[ "bonusWeaponMachinegun" ] },
+        { "set":{ "_":[ "stencil", "prisoner" ] }, "x":1008, "y":72, "content":[ "bonusWeaponMachinegun" ] },
+        { "set":{ "_":[ "stencil", "prisoner" ] }, "x":1392, "y":104, "content":[ "bonusWeaponMachinegun" ] },
+        { "set":{ "_":[ "stencil", "prisoner" ] }, "x":2336, "y":104, "content":[ "bonusWeaponMachinegun" ] },
+        { "set":{ "_":[ "stencil", "prisoner" ] }, "x":1776, "y":24, "content":[ "bonusWeaponMachinegun" ] }
+      ],
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "fadeInEffect":"right",
+      "missionStart":1,
+      "music":"bgm",
+      "tilemap":{
+        "tileWidth":16,
+        "tileHeight":16,
+        "map":[
+          "                    qrs                                                                                         defdfdefdeefdfdfdfdfdfdfdf               z  z  z",
+          "                    FFF                                                          BAE        BAE                  dfwwdfwwdfwwdf  df  df                  qrrrrrr",
+          "                   ~GGG~                                     ~z  z~              mnp        mnp             ~z  z~ ww  ww  ww                          z F  F  F",
+          "                    qrs           ~ z z ~ z z ~               qrrs        ~ zz ~ mnp z    z mnp              qrrs  ww  ww  ww   ~zzzz~                 qrs  G  G",
+          "6666544454466454~ux FFF            qrrrs qrrrs     uvyy~      G  G         qrrs  qrrrs    qrrrs   64646556546F  F  ww  ww  ww    qrrs  tac BCDE     BAEF F  G  G",
+          "xuxxuvvuy     uyyabcGGG             F F   F F     abbbc      ~G  G          FF   FF  F    F  FF      BCDE    GvvGx ww yww vww x  FFFF  tglEmoop  BAEmopG G  GyxG",
+          "abbbbbbbbcabbbbbcgjlGGG             G G   G G    dfhiidf  ~x ~qrrsuv  ~  ~  GG   GG  t    t  GG      monp   vacacacwwacwwacwwac  GGGG  tglpmonp  mnpmnpG G uGabb",
+          "jikjhjjihkhhjjjjlgjlGGG   yvvy      G GyxyG G   dfghikil   ac G  Gac   acxyxGG   GGxxG    GvyGG   yxymonpvvacglglglacglacglacglc GGGG  tglpmonpvxmnpmnpGyG acghj",
+          "ihikjjjihkjhkhhilgjlabbbbbbcabbbcacabbbcabbbbbbcgggikjilwwwglwwwwwglwwwglcabbcabcabcabbbbcabbbbcabbbbbbbbbbgdflgdeeflglglglglgllcbbbbbbbglbbbbbbbbbbbbbbbbbglghi"
+        ]
+      }
+    },
+    "stage2":{
+      "object":[
+        { "set":{ "_":[ "stencil", "player" ] }, "x":16, "y":1544, "thenDo":"goUp" },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":32, "y":1368 },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":208, "y":1368 },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":80, "y":1368 },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":144, "y":1368 },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":80, "y":1272 },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":128, "y":1272 },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":208, "y":1272 },
+        { "set":{ "_":[ "stencil", "prisoner" ] }, "x":112, "y":1368, "content":[ "bonusWeaponFlame" ] },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":144, "y":1176 },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":96, "y":1176 },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":48, "y":1176 },
+        { "set":{ "_":[ "stencil", "enemyFlameSoldier" ] }, "x":144, "y":1064 },
+        { "set":{ "_":[ "stencil", "enemyFlameSoldier" ] }, "x":224, "y":1000 },
+        { "set":{ "_":[ "stencil", "enemyFlameSoldier" ] }, "x":48, "y":1000 },
+        { "set":{ "_":[ "stencil", "prisoner" ] }, "x":112, "y":1176, "content":[ "bonusAmmo" ] },
+        { "set":{ "_":[ "stencil", "prisoner" ] }, "x":112, "y":920, "content":[ "bonusWeaponMachinegun" ] },
+        {
+          "set":{ "_":[ "stencil", "arena" ] },
+          "width":256, "height":144,
+          "x":0, "y":752,
+          "arena":"arena1",
+          "isHorizontal":1,
+          "targetCount":2,
+          "targetEnemy":"targetBigEnemy",
+          "thenDo":"goUp"
+        },
+        { "type":"arena1", "set":{ "_":[ "stencil", "spawnPoint" ] }, "x":0, "y":896, "spawns":"enemyHelicopter", "verticalGap":-136 },
+        { "type":"arena1", "set":{ "_":[ "stencil", "spawnPoint" ] }, "x":0, "y":792, "spawns":"enemyBasicSoldier" },
+        { "type":"arena1", "set":{ "_":[ "stencil", "spawnPoint" ] }, "x":240, "y":792, "spawns":"enemyBasicSoldier" },
+        { "set":{ "_":[ "stencil", "prisoner" ] }, "x":16, "y":856, "content":[ "bonusWeaponMachinegun" ] },
+        { "set":{ "_":[ "stencil", "prisoner" ] }, "x":224, "y":856, "content":[ "bonusWeaponMachinegun" ] },
+        {
+          "set":{ "_":[ "stencil", "arena" ] },
+          "width":256, "height":144,
+          "x":0, "y":352,
+          "arena":"arena2",
+          "isHorizontal":1,
+          "targetCount":20,
+          "targetEnemy":"targetSoldier",
+          "thenDo":"goUp"
+        },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":96, "y":712 },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":144, "y":712 },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":96, "y":648 },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":144, "y":648 },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":96, "y":584 },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":144, "y":584 },
+        { "set":{ "_":[ "stencil", "prisoner" ] }, "x":224, "y":696, "content":[ "bonusWeaponFlame" ] },
+        { "set":{ "_":[ "stencil", "prisoner" ] }, "x":48, "y":568, "content":[ "bonusWeaponFlame" ] },
+        { "set":{ "_":[ "stencil", "prisoner" ] }, "x":112, "y":712, "content":[ "bonusAmmo" ] },
+        { "type":"arena2", "set":{ "_":[ "stencil", "spawnPoint" ] }, "x":208, "y":360, "spawns":"enemyFlameSoldier" },
+        { "type":"arena2", "set":{ "_":[ "stencil", "spawnPoint" ] }, "x":32, "y":360, "spawns":"enemyFlameSoldier" },
+        { "type":"arena2", "set":{ "_":[ "stencil", "spawnPoint" ] }, "x":208, "y":424, "spawns":"enemyBasicSoldier" },
+        { "type":"arena2", "set":{ "_":[ "stencil", "spawnPoint" ] }, "x":32, "y":424, "spawns":"enemyBasicSoldier" },
+        { "type":"arena2", "set":{ "_":[ "stencil", "spawnPoint" ] }, "x":80, "y":456, "spawns":"enemyBasicSoldier" },
+        { "type":"arena2", "set":{ "_":[ "stencil", "spawnPoint" ] }, "x":160, "y":456, "spawns":"enemyBasicSoldier" },
+        { "set":{ "_":[ "stencil", "enemyFlameSoldier" ] }, "x":160, "y":200 },
+        { "set":{ "_":[ "stencil", "enemyFlameSoldier" ] }, "x":64, "y":168 },
+        { "set":{ "_":[ "stencil", "enemyFlameSoldier" ] }, "x":192, "y":152 },
+        { "set":{ "_":[ "stencil", "enemyFlameSoldier" ] }, "x":16, "y":136 },
+        { "set":{ "_":[ "stencil", "indicate" ] }, "width":208, "height":16, "x":0, "y":80, "thenDo":"goRight" },
+        { "set":{ "_":[ "stencil", "exit" ] }, "width":16, "height":64, "x":240, "y":0, "fadeOutEffect":"right", "gotoStage":"stage3" },
+        { "set":{ "_":[ "stencil", "prisoner" ] }, "x":208, "y":264, "content":[ "bonusWeaponFlame" ] },
+        { "set":{ "_":[ "stencil", "bonusBox" ] }, "x":128, "y":400, "content":[ "bonusWeaponMachinegun" ] }
+      ],
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "fadeInEffect":"up",
+      "tilemap":{
+        "tileWidth":16,
+        "tileHeight":16,
+        "map":[
+          "               ~",
+          "                ",
+          "                ",
+          "              vy",
+          "65544554455656ab",
+          "            yach",
+          "IIIIIIIIIIIIackj",
+          "fqrrrrrrrrsdgihk",
+          " F  z     F dgkj",
+          "~G~ t     G  dgh",
+          " t  G     G~z~de",
+          " Gz~G~ z  t t  d",
+          " Gt t  t  G G  d",
+          " GG G  G ~G~t  d",
+          " GG G  G  t G  d",
+          " GGzGt Gt G G  d",
+          " GGtGG GG G G  d",
+          " GGGGGzGGzGzGzzd",
+          "eeefqrrrrrrsdeee",
+          "klfQQQQQQQQQQdgh",
+          "lf     t      dg",
+          "fCDE   Gz   BCDd",
+          "fonp   Gt   mnod",
+          "fonp~  GG  ~mnod",
+          "frrs   tG   qrrd",
+          "fCDE   GG   BCDd",
+          "fonp   Gt   mnod",
+          "fonpBAEGGBAEmnod",
+          "frrsmnptGmnpqrrd",
+          "fFFFmnpGGmnpFFFd",
+          "bbbbbcqrrsabbbbb",
+          "eeefgl z  gldeee",
+          "f   gl t  gl   d",
+          "f   gl Gz gl   d",
+          "f   gl Gt gl   d",
+          "f   df GG df   d",
+          "f z    tG    z d",
+          "frrsdfzGGzdfrrrd",
+          "f F glqrrsgl F d",
+          "frrsdf FF dfrrrd",
+          "f F    GG    F d",
+          "frrsdftGGtdfrrrd",
+          "f F glqrrsgl F d",
+          "frrsdfF  Fdfrrrd",
+          "f F   G  G   F d",
+          "frrsdft  tdfrrrd",
+          "f F  deeeef  F d",
+          "f t          t d",
+          "DEG          GBC",
+          "npt          tmn",
+          "npG          Gmn",
+          "frrrrs    qrrrrd",
+          "ftG          Gtd",
+          "ftG          Gtd",
+          "fIIIIIIIIIIIIIId",
+          "qrrrrrrrrrrrrrrs",
+          "fQQQQQQQQQQQQQQd",
+          "f             td",
+          "f             Gd",
+          "ft  t  t  t  tGd",
+          "fG  G  G  G  GGd",
+          "ft  G  G  G  GGd",
+          "fG  G  G  G  GGd",
+          "ft  G~ G  G~ GGd",
+          "eeeft  t  tqrrrd",
+          "lf  G  G  GF dgk",
+          "f   G  G  Gt Gdg",
+          "f   G  G  GU G d",
+          "frrrrrrrrrrrrrrd",
+          "ftQ FQQQFQQQQFQd",
+          "ft  G   G    G d",
+          "ft  G   G    G d",
+          "ft  G   G    G d",
+          "fU  G   G    G d",
+          "fUUyG uuG xv~G d",
+          "cabcabcabbbc Gtd",
+          "ihkijkhkijl  GGd",
+          "eeeeeeeeeef  Gtd",
+          "f            GGd",
+          "f            Gtd",
+          "f  ~      ~~ GGd",
+          "ft  deeeef  deee",
+          "fG   t  t    dgk",
+          "ft   G  G     dg",
+          "fG   G  G      d",
+          "ft   G  G      d",
+          "fGzzzGzzGzzzzzzd",
+          "frrrrrrrrrrrrrrd",
+          "fQQQQQQQQQQQQQQd",
+          "          qrs  d",
+          "          F F  d",
+          "          qrs  d",
+          "          F F  d",
+          "6456665456qrs66d",
+          "          F Fyud",
+          "          G Gdfg",
+          "          Gudgkk",
+          "yxuuyuuyvuGdgjld",
+          "bbbbbbbbbbbgklde"
+        ]
+      }
+    },
+    "stage3":{
+      "object":[
+        { "set":{ "_":[ "stencil", "tank" ] }, "x":160, "y":50 },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":288, "y":40 },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":288, "y":8 },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":288, "y":72 },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":288, "y":104 },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":480, "y":72 },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":480, "y":40 },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":480, "y":8 },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":560, "y":88 },
+        { "set":{ "_":[ "stencil", "player" ] }, "x":16, "y":40, "thenDo":"goRight" },
+        { "set":{ "_":[ "stencil", "enemyFlameSoldier" ] }, "x":336, "y":8 },
+        { "set":{ "_":[ "stencil", "enemyBombingSoldier" ] }, "x":528, "y":40 },
+        { "set":{ "_":[ "stencil", "enemyBombingSoldier" ] }, "x":592, "y":40 },
+        { "set":{ "_":[ "stencil", "prisoner" ] }, "x":848, "y":40, "content":[ "bonusGas" ] },
+        { "type":"arena1", "set":{ "_":[ "stencil", "spawnPoint" ] }, "x":624, "y":8, "spawns":"enemyBombingSoldier" },
+        { "type":"arena1", "set":{ "_":[ "stencil", "spawnPoint" ] }, "x":624, "y":40, "spawns":"enemyBombingSoldier" },
+        { "type":"arena1", "set":{ "_":[ "stencil", "spawnPoint" ] }, "x":624, "y":72, "spawns":"enemyBombingSoldier" },
+        { "type":"arena1", "set":{ "_":[ "stencil", "spawnPoint" ] }, "x":896, "y":8, "spawns":"enemyBombingSoldier" },
+        { "type":"arena1", "set":{ "_":[ "stencil", "spawnPoint" ] }, "x":896, "y":72, "spawns":"enemyBombingSoldier" },
+        { "type":"arena1", "set":{ "_":[ "stencil", "spawnPoint" ] }, "x":896, "y":104, "spawns":"enemyBombingSoldier" },
+        { "type":"arena1", "set":{ "_":[ "stencil", "spawnPoint" ] }, "x":624, "y":104, "spawns":"enemyBombingSoldier" },
+        {
+          "set":{ "_":[ "stencil", "arena" ] },
+          "width":256, "height":144,
+          "x":640, "y":0,
+          "arena":"arena1",
+          "targetCount":40,
+          "targetEnemy":"targetSoldier",
+          "thenDo":"goRight"
+        },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":416, "y":8 },
+        { "set":{ "_":[ "stencil", "enemyFlameSoldier" ] }, "x":336, "y":104 },
+        { "set":{ "_":[ "stencil", "enemyFlameSoldier" ] }, "x":400, "y":104 },
+        { "set":{ "_":[ "stencil", "enemyBombingSoldier" ] }, "x":544, "y":8 },
+        { "set":{ "_":[ "stencil", "enemyBombingSoldier" ] }, "x":576, "y":8 },
+        { "set":{ "_":[ "stencil", "enemyBombingSoldier" ] }, "x":480, "y":104 },
+        { "set":{ "_":[ "stencil", "enemyFlameSoldier" ] }, "x":1120, "y":104 },
+        { "set":{ "_":[ "stencil", "enemyFlameSoldier" ] }, "x":1168, "y":104 },
+        { "set":{ "_":[ "stencil", "enemyFlameSoldier" ] }, "x":1264, "y":104 },
+        { "set":{ "_":[ "stencil", "enemyFlameSoldier" ] }, "x":1312, "y":104 },
+        { "set":{ "_":[ "stencil", "enemyBombingSoldier" ] }, "x":1216, "y":88 },
+        { "set":{ "_":[ "stencil", "enemyBombingSoldier" ] }, "x":1216, "y":24 },
+        { "set":{ "_":[ "stencil", "enemyBombingSoldier" ] }, "x":1264, "y":56 },
+        { "set":{ "_":[ "stencil", "enemyBombingSoldier" ] }, "x":1360, "y":24 },
+        { "set":{ "_":[ "stencil", "enemyBombingSoldier" ] }, "x":1360, "y":88 },
+        { "set":{ "_":[ "stencil", "enemyBombingSoldier" ] }, "x":1072, "y":8 },
+        { "set":{ "_":[ "stencil", "bonusBox" ] }, "x":1296, "y":80, "content":[ "bonusWeaponFlame" ] },
+        { "set":{ "_":[ "stencil", "bonusBox" ] }, "x":1632, "y":112, "content":[ "bonusAmmo" ] },
+        { "set":{ "_":[ "stencil", "prisoner" ] }, "x":1424, "y":72, "content":[ "bonusWeaponMachinegun" ] },
+        { "set":{ "_":[ "stencil", "bonusBox" ] }, "x":1728, "y":32, "content":[ "bonusAmmo" ] },
+        { "set":{ "_":[ "stencil", "enemyFlameSoldier" ] }, "x":1472, "y":72 },
+        { "set":{ "_":[ "stencil", "enemyFlameSoldier" ] }, "x":1568, "y":72 },
+        { "set":{ "_":[ "stencil", "enemyBombingSoldier" ] }, "x":1504, "y":8 },
+        { "set":{ "_":[ "stencil", "enemyBombingSoldier" ] }, "x":1584, "y":8 },
+        { "set":{ "_":[ "stencil", "enemyBombingSoldier" ] }, "x":1424, "y":8 },
+        { "type":"enemyWall", "set":{ "_":[ "stencil", "~" ] }, "x":1088, "y":16, "visible":0 },
+        { "type":"enemyWall", "set":{ "_":[ "stencil", "~" ] }, "x":1040, "y":16, "visible":0 },
+        { "set":{ "_":[ "stencil", "enemyBombingSoldier" ] }, "x":1312, "y":24 },
+        { "set":{ "_":[ "stencil", "enemyFlameSoldier" ] }, "x":1216, "y":56 },
+        { "set":{ "_":[ "stencil", "enemyFlameSoldier" ] }, "x":1360, "y":56 },
+        { "set":{ "_":[ "stencil", "enemyFlameSoldier" ] }, "x":1136, "y":8 },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":1824, "y":104 },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":1872, "y":104 },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":1920, "y":104 },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":1968, "y":104 },
+        { "set":{ "_":[ "stencil", "prisoner" ] }, "x":1808, "y":104, "content":[ "bonusBombs" ] },
+        { "set":{ "_":[ "stencil", "prisoner" ] }, "x":1856, "y":104, "content":[ "bonusBombs" ] },
+        { "set":{ "_":[ "stencil", "prisoner" ] }, "x":1904, "y":104, "content":[ "bonusBombs" ] },
+        {
+          "set":{ "_":[ "stencil", "arena" ] },
+          "width":256, "height":144,
+          "x":2128, "y":0,
+          "arena":"arena2",
+          "targetCount":2,
+          "targetEnemy":"targetBigEnemy",
+          "thenDo":"goRight"
+        },
+        { "type":"arena2", "set":{ "_":[ "stencil", "spawnPoint" ] }, "x":2384, "y":83, "spawns":"enemyTank" },
+        { "type":"arena2", "set":{ "_":[ "stencil", "spawnPoint" ] }, "x":2144, "y":104, "spawns":"enemyBombingSoldier" },
+        { "type":"arena2", "set":{ "_":[ "stencil", "spawnPoint" ] }, "x":2112, "y":24, "spawns":"enemyBasicSoldier" },
+        { "type":"arena2", "set":{ "_":[ "stencil", "spawnPoint" ] }, "x":2384, "y":24, "spawns":"enemyBasicSoldier" },
+        { "set":{ "_":[ "stencil", "prisoner" ] }, "x":2272, "y":104, "content":[ "bonusWeaponMachinegun" ] },
+        { "set":{ "_":[ "stencil", "prisoner" ] }, "x":2352, "y":24, "content":[ "bonusBombs" ] },
+        { "set":{ "_":[ "stencil", "exit" ] }, "width":16, "height":48, "x":2544, "y":0, "fadeOutEffect":"right", "gotoStage":"stage4" }
+      ],
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "fadeInEffect":"right",
+      "tilemap":{
+        "tileWidth":16,
+        "tileHeight":16,
+        "map":[
+          "                qrrs GG  GG qrrs   G    qrrs        qrrs       dfHHHHH                JLHHHHHHHHHHHHHL                     HHHHHdf                         JLHHH",
+          "            ~   F  F~GG~~GG~F  F~~ G ~~ F  F   ~~   F  F ~     dfHHHH~H ~             JL    ~   ~    ~                    H HHHHdf                         JLHHH",
+          "             qrrrrrs qs  qs qrrs  qrs  qrrrrrrs  qrrrrrrs      dfHPPHHPP  ~  ~  ~  ~  JLPPPPPPPPPPPPP                      H    df         ~     ~        ~JLHHH",
+          "               ~F  F~      ~F  F~ F F ~ F  F~      ~F  F~       mHHHH H    PP    PP PPJLP            JKL  UUUUUPPPPPPPPPPPPPPP  dfrrrrrrrrs       qrrrrrrs JLPPJ",
+          "abbc            qrrs        qrrs qrrrs qrrrs        qrrs        mHHHHH    ~  ~  ~  ~  JLP             ~   UUUUU            HHHHHp MNNNNOFQQ       QQFMNNOF JLPPd",
+          "hhhlIIIIIIIIIIIIFIIF~      ~FIItt      IFIIFIIIIIIIIFIIFIIIIIIIJLHHHH H    PP PP    PPJLP             ~   UUUUU           H HHHHp MNNNNOG45544446644GMNNOG JLPPg",
+          "kjklqrrrrrrrrrrrrrrs        qUrrs~   ~qrrrrrrrrrrrrrrrrrrrrrrrsdfHHHUH    ~  ~   U ~  JKKKKPPKKKKPPKKKKP  UUUUU            HHHHJJLMNNNnOG           GMNnOG mHPPg",
+          "hkhlQQQQQQQQQQQ~F  F~  ~~  UUU F~ qrs ~ F  F~QQQQQQ F  F ~QQQQQglHHUUUH  H PP  HUUH PPF   F  F  F  F  FP JKKKKKL          H HHJKdfMNNNnOG  yvuxuxxu GMNnOGxmHPPg",
+          "kjkl            qrrs qs  qrrrrrs  FQF  qrrrrrrrrrrrrrrrrs      glJKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKLglabbbbbbbbbcabbbcabbbbbcabbbbcg"
+        ]
+      }
+    },
+    "stage4":{
+      "object":[
+        { "set":{ "_":[ "stencil", "tank" ] }, "x":544, "y":210 },
+        { "set":{ "_":[ "stencil", "airplane" ] }, "x":48, "y":100 },
+        { "set":{ "_":[ "stencil", "player" ] }, "x":16, "y":24, "thenDo":"goRight" },
+        { "set":{ "_":[ "stencil", "enemyBombingSoldier" ] }, "x":368, "y":56 },
+        { "set":{ "_":[ "stencil", "enemyBombingSoldier" ] }, "x":496, "y":56 },
+        { "set":{ "_":[ "stencil", "enemyBombingSoldier" ] }, "x":592, "y":56 },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":448, "y":40 },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":544, "y":40 },
+        { "set":{ "_":[ "stencil", "enemyFlameSoldier" ] }, "x":320, "y":88 },
+        { "set":{ "_":[ "stencil", "enemyHelicopter" ] }, "x":544, "y":-64 },
+        { "set":{ "_":[ "stencil", "enemyTank" ] }, "x":288, "y":211 },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":160, "y":232 },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":208, "y":232 },
+        { "set":{ "_":[ "stencil", "enemyBombingSoldier" ] }, "x":256, "y":232 },
+        { "type":"enemyWall", "set":{ "_":[ "stencil", "~" ] }, "x":496, "y":112, "visible":0 },
+        { "type":"enemyWall", "set":{ "_":[ "stencil", "~" ] }, "x":448, "y":112, "visible":0 },
+        { "set":{ "_":[ "stencil", "enemyBombingSoldier" ] }, "x":480, "y":104 },
+        { "set":{ "_":[ "stencil", "enemyBombingSoldier" ] }, "x":528, "y":104 },
+        { "set":{ "_":[ "stencil", "enemyBombingSoldier" ] }, "x":608, "y":104 },
+        { "type":"enemyWall", "set":{ "_":[ "stencil", "~" ] }, "x":448, "y":240, "visible":0 },
+        { "set":{ "_":[ "stencil", "enemyFlameSoldier" ] }, "x":416, "y":232 },
+        { "set":{ "_":[ "stencil", "enemyFlameSoldier" ] }, "x":368, "y":232 },
+        { "set":{ "_":[ "stencil", "enemyBombingSoldier" ] }, "x":240, "y":88 },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":288, "y":8 },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":320, "y":8 },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":352, "y":8 },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":160, "y":184 },
+        { "type":"enemyWall", "set":{ "_":[ "stencil", "~" ] }, "x":208, "y":192, "visible":0 },
+        { "type":"enemyWall", "set":{ "_":[ "stencil", "~" ] }, "x":224, "y":240, "visible":0 },
+        { "set":{ "_":[ "stencil", "prisoner" ] }, "x":112, "y":232, "content":[ "bonusBombs" ] },
+        { "set":{ "_":[ "stencil", "prisoner" ] }, "x":624, "y":232, "content":[ "bonusBombs" ] },
+        { "set":{ "_":[ "stencil", "prisoner" ] }, "x":720, "y":648, "content":[ "bonusWeaponRocket" ] },
+        {
+          "set":{ "_":[ "stencil", "arena" ] },
+          "width":256, "height":144,
+          "x":512, "y":576,
+          "arena":"arena1",
+          "isHorizontal":1,
+          "targetCount":3,
+          "targetEnemy":"targetBigEnemy",
+          "thenDo":"goLeft"
+        },
+        { "set":{ "_":[ "stencil", "bonusBox" ] }, "x":720, "y":688, "content":[ "bonusAmmo" ] },
+        { "type":"arena1", "set":{ "_":[ "stencil", "spawnPoint" ] }, "x":512, "y":512, "spawns":"enemyHelicopter" },
+        { "type":"arena1", "set":{ "_":[ "stencil", "spawnPoint" ] }, "x":432, "y":659, "spawns":"enemyTank" },
+        { "set":{ "_":[ "stencil", "indicate" ] }, "width":16, "height":64, "x":688, "y":0, "thenDo":"goDown" },
+        {
+          "set":{ "_":[ "stencil", "arena" ] },
+          "width":256, "height":144,
+          "x":16, "y":576,
+          "arena":"arena2",
+          "targetCount":40,
+          "targetEnemy":"targetSoldier",
+          "thenDo":"missionComplete"
+        },
+        { "set":{ "_":[ "stencil", "enemyAlien" ] }, "x":352, "y":680 },
+        { "set":{ "_":[ "stencil", "enemyAlien" ] }, "x":352, "y":648 },
+        { "set":{ "_":[ "stencil", "enemyAlien" ] }, "x":320, "y":584 },
+        { "set":{ "_":[ "stencil", "enemyAlien" ] }, "x":368, "y":584 },
+        { "type":"arena2", "set":{ "_":[ "stencil", "spawnPoint" ] }, "x":272, "y":680, "spawns":"enemyAlien" },
+        { "type":"arena2", "set":{ "_":[ "stencil", "spawnPoint" ] }, "x":272, "y":632, "spawns":"enemyAlien" },
+        { "type":"arena2", "set":{ "_":[ "stencil", "spawnPoint" ] }, "x":272, "y":584, "spawns":"enemyAlien" },
+        { "type":"arena2", "set":{ "_":[ "stencil", "spawnPoint" ] }, "x":0, "y":584, "spawns":"enemyAlien" },
+        { "type":"arena2", "set":{ "_":[ "stencil", "spawnPoint" ] }, "x":0, "y":632, "spawns":"enemyAlien" },
+        { "type":"arena2", "set":{ "_":[ "stencil", "spawnPoint" ] }, "x":0, "y":680, "spawns":"enemyAlien" },
+        { "set":{ "_":[ "stencil", "bonusBox" ] }, "x":304, "y":592, "content":[ "bonusWeaponRocket" ] },
+        { "set":{ "_":[ "stencil", "prisoner" ] }, "x":384, "y":648, "content":[ "bonusBombs" ] },
+        { "set":{ "_":[ "stencil", "tank" ] }, "x":112, "y":658 },
+        { "set":{ "_":[ "stencil", "enemyBasicSoldier" ] }, "x":192, "y":136 }
+      ],
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "fadeInEffect":"right",
+      "tilemap":{
+        "tileWidth":16,
+        "tileHeight":16,
+        "map":[
+          "HHHHHJL                                  z zVXgh",
+          "HHHHHJL          ~z   z~                 RSTVXgh",
+          "HHHHHJL           qrrrs                  MnOVXgh",
+          "JJJHHJL           F   F    ~z~   ~z~     MnOVXgh",
+          "eefHHJL           G  ~G  ~  t ~z~ t ~z~ taccVXgi",
+          "kjl             VXG   abc   G  t  G  t  GgjlVXgh",
+          "khl          ~ VXacwwwgilc  G  G  G  G  GghlVXgk",
+          "jil  z z z    abbglbbckihlc G  G~ G~~G ~GgklVXgi",
+          "iklJKKKKKKL zagihkkhjkhkijlcGacG ac  ac GgilVXgk",
+          "jhleeeeeef  tgkhikkikkkhhiilGglG gl  gl GgklVXgj",
+          "ijl      z  GdfkjjikhikijldfGdfG df  gl GgilVXgh",
+          "hhl      qrrstdeeeeeefkhldftGVXG VX  gl GgjlVXgj",
+          "hkl     ~F  FGtt      deeftGGVXG VX  df GdefVXgk",
+          "kjl      qrrsGGG         tGGGVXG VX  VX GFFUVXgj",
+          "jhlVX    MNnOGGG   VX    GGGGVXG VX  VX GGUUVXgh",
+          "kklVXxvvxMNnUGGGuyVXVXuuxGGGGVXG VXxxVXxGUUUVXgj",
+          "acabbcabbbcabbbbbcabbbbbbbcabbbbbbbbbbbbbbbcVXab",
+          "fhihihjikjikhjjkiiiijkikkjhiikihkkjikkhihiilVXgi",
+          "khhjkjhkkjdefkiijdefkhkiikjihkhjiikhjijijjhlVXgi",
+          "hhkidefjjkjjhkihikikkihhijjhhdefiijijhihidefVXgj",
+          "                                kijhikjkjjl VXgi",
+          "                                jjjjjjhjkjdfVXgi",
+          "                                ikjijkdefkhlVXgj",
+          "                                kkkihhhhkjklVXdf",
+          "                                ikiikhjikkklVXug",
+          "                                iijhijkkdeflVXdf",
+          "                                jjijihjihihlVXgh",
+          "                                hiikkijkjhdfVXgh",
+          "                                jjjkjkdfhjluVXgj",
+          "                                ijijikhijhdfVXdf",
+          "                                idefhhkiidflVXgd",
+          "                                ijhjiikhhhdfVXdf",
+          "fdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdf VXxd",
+          "dfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfVXdf",
+          "fdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfxVX d",
+          "dfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfYZdf",
+          " mp mp mp mp mp mp           ww    dfwwdf   W1  ",
+          " mp mp mp mp mp mp    z     zww      ww     23  ",
+          "dfqrrs mp mpqrrsdfdfdfqrrrrrsww      ww         ",
+          " mp mp mp mp mp mp dfxF    zFww      ww         ",
+          " mp mp mp mp mp mpdfdfG    tGww      ww         ",
+          "dfqrrs mp mpqrrsdefdfvG    GGww      ww    xxx  ",
+          " mp mp mp mp mp mpdfdfqrrrrrsww      ww    qrrs ",
+          " mpxmU mp mpUmpxmp dfuF    GFww xvyxUww xxxGxxGx",
+          "dfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdf"
+        ]
+      }
+    }
+  },
+  "codeSetAnimation":{
+    "set":{ "aniMode":{ "_":[ "this", "toAnimation" ] }, "aniTimer":0 }
+  }
+}
