@@ -4455,7 +4455,7 @@ function Wright(gameId,mods) {
 										list = list.sort(_Code.sort[args.sortby]); // @TODO: This touches a private list of Box. Could be better.
 									}
 								}
-								sub=game.iterateCollisions(p.notMe&&from,rect,list,0,0,0,0,args,_Code.collision);
+								sub=game.iterateCollisions(p.notThis&&from,rect,list,0,0,0,0,args,_Code.collision);
 								if (args&&args.all) sub=args.all.length?args.all:0;
 							}
 						}
