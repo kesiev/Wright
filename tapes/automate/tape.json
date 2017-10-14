@@ -1,0 +1,1872 @@
+{
+  "name":"Automate",
+  "author":"KesieV",
+  "year":2017,
+  "genre":"Puzzle",
+  "description":"<p>Imagine a bowling ball rolling over the alley and then striking all the pins.</p><p>In bowling, a strike is the best score you can get with a single hit. So, a circumstance like that can be considered something important in a game, even crucial in some cases.</p><p>Was the ball thinking about that? Has the ball decided to hit the pins and lead to the victory? The ball <i>wins</i>? Clearly not. The well prepared bowling player aimed to the space between the 1 and 3 pin in order to perform a good shot.</p><p>So it was <i>the player</i> the one thinking about the outcome of his throw, not the ball - the ball was just <i>its vessel</i>. By the way, the action the player performed wasn't actually <i>hitting the pins</i>. It was a composition of well refined coordinated movements of the arms and the legs, mixed together with a precise and fast elaboration of the images coming from eyes, made by the brain in just few seconds.</p><p>I wonder. If the exact movement and processing leads to the very same outcome - a strike - why there are bowling courses and tournaments? Why bowling is <i>fun</i> in the first place?</p><p>When something starts losing its meaning it's probably because we're oversimplifying it. And this bowling case is likely one of them. Is bowling <i>truly</i> a game in which <i>you have to hit as many pins as you can</i>? Yeah, obviously. But... <i>that's it</i>?</p><p>What about evaluating the ball weight, estimating the oil placement on the alley, learning how to aim correctly and then move the arm accordingly, with the right angle and spin and even control your own mood, attention and temperature?</p><p>There are a lot of tiny variables pulling away the player to the strike. And setting in motion an astonishingly perfect <a href='https://en.wikipedia.org/wiki/Rube_Goldberg_machine'>Rube Goldberg</a> machine in no time is the true key to the victory.</p><p>I'd like you to enlarge this vision now to the entire arc of your own life. I want you to see the stomach-turning number of these <i>non-decisions</i> you, some-other and some-thing made in order to bring you here and right now. And, if that's not enough, zoom out to the enitre existance.</p><p>Can you see it? Can you see the complex chain of both controlled and arbitrary <i>cause-effects</i> dominoes hitting each other and ending with you reading these lines? Even if there is someone or something that gave the first hit, are you sure that hit was <i>intentional</i> - and even in that case, we are living his/its <i>perfect hit</i>? Or just his/its <i>miss</i>?</p><p>But, more importantly, since everything you are is <i>mostly</i> a consequence of by your past life, are you <i>a ball</i> or <i>a player</i>? Is just the meaning of the words <i>win</i> and <i>lose</i> that makes them different?</p><p>Who knows. And, perhaps, <i>who cares</i>. Just roll the best way you can.</p><p>Plot!</p><p>Set the perfect Rube Goldberg in motion with Automate! Each level has a target to reach: make it happen placing unrelated objects around and seeing what happens!</p><p>Hit the objects on the bar in the right side of the screen for adding them to the scene. Then drag them with the pointer for moving around. Some elements can be rotated hitting them while on the scene. Select the trash can on the right bottom of the screen for entering in delete mode: you can now move the elements you added back to the right bar hitting them. You can toggle the delete mode hitting the trash can again. Hit the play button on the top right of the screen for running the scene and seeing how your composition works - if it reaches the scene goal, you won!</p>",
+  "screenshots":[ "automate-1.png", "automate-2.png" ],
+  "hardware":{
+    "width":320,
+    "height":200,
+    "filter":"retro",
+    "controls":"pointer"
+  },
+  "cheats":{},
+  "resources":{
+    "bars":"bars.png",
+    "buttons":"buttons.png",
+    "cga":"cga.font",
+    "hud":"hud.png",
+    "sprites":"sprites.png",
+    "title":"title.png"
+  },
+  "stencils":{
+    "codeGotoStage":{ "gotoScene":{ "_":[ "stage", ".", { "_":[ "variable", "stage" ] } ] }, "withTransition":3 },
+    "codeLoadData":[
+      { "as":{ "_":[ "object", "sceneobject" ] }, "remove":1 },
+      {
+        "as":{ "_":[ "this", "stageData" ] },
+        "execute":{ "object":{ "set":[ { "_":[ "stencil", { "_":[ "that", "stencilName" ] } ] }, { "_":"that" } ] } }
+      }
+    ],
+    "codeSaveSandbox":[
+      { "as":{ "_":"scene" }, "set":{ "out":{ "_":[ "new", [] ] } } },
+      {
+        "as":{ "_":[ "object", "sceneobject" ] },
+        "execute":[
+          { "as":{ "_":"scene" }, "set":{ "nel":{ "_":[ "new", {} ] } } },
+          { "as":{ "_":[ "scene", "nel" ] }, "execute":{ "as":{ "_":"that" }, "executeAction":"serialize" } },
+          { "as":{ "_":[ "scene", "nel" ] }, "pushInto":{ "_":[ "scene", "out" ] } }
+        ]
+      },
+      { "as":{ "_":"storage" }, "set":{ "editor":{ "_":[ "scene", "out" ] } } }
+    ],
+    "spark":{
+      "image":"sprites", "tileX":12, "tileY":0, "width":16, "height":16,
+      "zIndex":100, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "animations":{ "spark":{ "frames":4, "speed":0 } },
+      "animation":"spark",
+      "states":{ "code":{ "name":"Sequence", "data":[ { "wait":4 }, { "remove":1 } ] } }
+    },
+    "stageModel":{
+      "object":{ "type":[ "mouseelement", "introbox" ], "width":320, "height":200, "zIndex":20100, "x":0, "y":0 },
+      "set":{ "_":[ "stencil", "sceneModel" ] },
+      "bonus":500,
+      "bonusTimer":75,
+      "states":[
+        {
+          "execute":{
+            "object":[
+              {
+                "type":"hud",
+                "hudType":"label", "label":"SCORE: %number|variable.score|0|6%&nbsp;&nbsp;&nbsp;BONUS: %number|scene.bonus|0|3%",
+                "width":280, "height":24,
+                "zIndex":10100, "x":8, "y":176,
+                "color":"#fff",
+                "font":"cga", "fontSize":8, "lineHeight":24
+              },
+              { "type":"introbox", "width":280, "height":120, "zIndex":20110, "x":8, "y":28, "bgcolor":"#000", "border":"#fff" },
+              { "type":"introbox", "width":280, "height":120, "zIndex":20109, "x":9, "y":29, "border":"#fff" },
+              {
+                "type":"introbox",
+                "width":280, "height":10,
+                "zIndex":20120, "x":8, "y":36,
+                "color":"#fff",
+                "font":"cga", "fontSize":8, "lineHeight":10, "textAlign":"center", "html":{ "_":[ "Stage ", ".", { "_":[ "variable", "stage" ] } ] }
+              },
+              {
+                "type":"introbox",
+                "width":280, "height":10,
+                "zIndex":20120, "x":8, "y":46,
+                "color":"#55ffff",
+                "font":"cga", "fontSize":8, "lineHeight":10, "textAlign":"center", "html":{ "_":[ "scene", "stageTitle" ] }
+              },
+              {
+                "type":"introbox",
+                "width":264, "height":40,
+                "zIndex":20120, "x":16, "y":66,
+                "color":"#fff",
+                "font":"cga", "fontSize":8, "lineHeight":10, "textAlign":"center", "html":{ "_":[ "scene", "stageDescription" ] }
+              },
+              {
+                "type":"introbox",
+                "set":{ "_":[ "stencil", "guiButtonModel" ] },
+                "width":112,
+                "zIndex":20120, "x":92, "y":114,
+                "html":"Let's play!",
+                "states":{
+                  "actions":{ "name":"click", "execute":[ { "as":{ "_":[ "object", "introbox" ] }, "remove":1 }, { "as":{ "_":"scene" }, "set":{ "state":"play" } } ] }
+                }
+              }
+            ]
+          }
+        },
+        {
+          "name":"play",
+          "code":{
+            "name":"Execute",
+            "data":{
+              "when":{ "_":[ "scene", "isrunning", "not" ] },
+              "execute":[
+                { "subtract":1, "to":{ "_":[ "this", "bonusTimer" ] } },
+                {
+                  "when":{ "_":[ "this", "bonusTimer", "isEqualTo", 0 ] },
+                  "execute":[
+                    { "subtract":10, "to":{ "_":[ "this", "bonus" ] } },
+                    { "when":{ "_":[ "this", "bonus", "isLessThan", 0 ] }, "set":{ "bonus":0 } },
+                    { "set":{ "bonusTimer":75 } }
+                  ]
+                }
+              ]
+            }
+          },
+          "actions":{
+            "name":"success",
+            "execute":[ { "as":{ "_":[ "object", "sceneobject" ] }, "set":{ "animation":"frozen", "state":"frozen" } }, { "set":{ "state":"success" } } ]
+          }
+        },
+        {
+          "name":"success",
+          "execute":[
+            { "set":{ "prevScore":{ "_":[ "variable", "score" ] }, "spareBonus":0 } },
+            { "as":{ "_":[ "object", "paletteButton" ] }, "execute":{ "sum":{ "_":[ "this", "qty", "*", 10 ] }, "to":{ "_":[ "scene", "spareBonus" ] } } },
+            { "sum":{ "_":[ "scene", "bonus" ] }, "to":{ "_":[ "variable", "score" ] } },
+            { "sum":{ "_":[ "scene", "spareBonus" ] }, "to":{ "_":[ "variable", "score" ] } },
+            {
+              "object":[
+                { "type":[ "mouseelement", "introbox" ], "width":320, "height":200, "zIndex":20100, "x":0, "y":0 },
+                { "type":"introbox", "width":280, "height":120, "zIndex":20110, "x":8, "y":28, "bgcolor":"#000", "border":"#fff" },
+                { "type":"introbox", "width":280, "height":120, "zIndex":20109, "x":9, "y":29, "border":"#fff" },
+                {
+                  "type":"introbox",
+                  "width":280, "height":10,
+                  "zIndex":20120, "x":8, "y":36,
+                  "color":"#55ffff",
+                  "font":"cga", "fontSize":8, "lineHeight":10, "textAlign":"center", "html":{ "_":[ "Stage ", ".", { "_":[ "variable", "stage" ] }, ".", " clear!" ] }
+                },
+                {
+                  "type":"introbox",
+                  "width":280, "height":30,
+                  "zIndex":20120, "x":8, "y":56,
+                  "color":"#fff",
+                  "font":"cga", "fontSize":8, "lineHeight":10, "textAlign":"center", "html":{ "_":[ "Your score: ", ".", { "_":[ "scene", "prevScore" ] }, ".", " pts.<br>Time bonus: ", ".", { "_":[ "scene", "bonus" ] }, ".", " pts.<br>Spare parts bonus: ", ".", { "_":[ "scene", "spareBonus" ] }, ".", "pts." ] }
+                },
+                {
+                  "type":"introbox",
+                  "width":280, "height":10,
+                  "zIndex":20120, "x":8, "y":96,
+                  "color":"#55ffff",
+                  "font":"cga", "fontSize":8, "lineHeight":10, "textAlign":"center", "html":{ "_":[ "New score: ", ".", { "_":[ "variable", "score" ] }, ".", " pts!" ] }
+                },
+                {
+                  "type":"introbox",
+                  "set":{ "_":[ "stencil", "guiButtonModel" ] },
+                  "width":112,
+                  "zIndex":20120, "x":92, "y":114,
+                  "html":"Next stage",
+                  "states":{
+                    "actions":{
+                      "name":"click",
+                      "execute":[
+                        { "sum":1, "to":{ "_":[ "variable", "stage" ] } },
+                        { "as":{ "_":"storage" }, "set":{ "score":{ "_":[ "variable", "score" ] }, "stage":{ "_":[ "variable", "stage" ] } } },
+                        { "_":[ "stencil", "codeGotoStage" ] }
+                      ]
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "aliveObjectModel":{
+      "set":[
+        { "_":[ "stencil", "flippableObjectModel" ] },
+        { "_":[ "stencil", "withPhysicsModel" ] },
+        { "_":[ "stencil", "weightNormalModel" ] },
+        { "_":[ "stencil", "frictionNormalModel" ] }
+      ],
+      "zIndex":10,
+      "lookFor":"something",
+      "moveSpeed":2,
+      "sight":64,
+      "states":[
+        {
+          "name":"run",
+          "set":{ "removeType":"turnonswitch", "isMoving":0 },
+          "code":{
+            "name":"Execute",
+            "data":[
+              {
+                "when":{ "_":[ "this", "isMoving", "isEqualTo", 0 ] },
+                "execute":[
+                  {
+                    "when":{ "_":[ "this", "objFlip", "isEqualTo", 0 ] },
+                    "execute":{
+                      "when":{
+                        "_":[
+                          "this",
+                          "complexCollidesWith",
+                          {
+                            "subject":{ "_":[ "object", { "_":[ "this", "lookFor" ] } ] },
+                            "hitbox":{ "width":{ "_":[ "this", "sight" ] }, "height":{ "_":[ "this", "height" ] }, "x":{ "_":[ "this", "width" ] }, "y":0 }
+                          }
+                        ]
+                      },
+                      "set":{ "type":"turnonswitch", "animation":"walk", "isMoving":1 }
+                    }
+                  },
+                  {
+                    "when":{ "_":[ "this", "objFlip", "isEqualTo", 1 ] },
+                    "execute":{
+                      "when":{
+                        "_":[
+                          "this",
+                          "complexCollidesWith",
+                          {
+                            "subject":{ "_":[ "object", { "_":[ "this", "lookFor" ] } ] },
+                            "hitbox":{ "width":{ "_":[ "this", "sight" ] }, "height":{ "_":[ "this", "height" ] }, "x":{ "_":[ "this", "sight", "*", -1 ] }, "y":0 }
+                          }
+                        ]
+                      },
+                      "set":{ "type":"turnonswitch", "animation":"walk", "isMoving":1 }
+                    }
+                  }
+                ]
+              },
+              {
+                "when":{ "_":[ "this", "isMoving", "isEqualTo", 1 ] },
+                "execute":[
+                  {
+                    "when":{ "_":[ "this", "forceX", "abs", "isLessThan", { "_":[ "this", "moveSpeed" ] } ] },
+                    "execute":{
+                      "when":{ "_":[ "this", "flipX" ] },
+                      "set":{ "forceX":{ "_":[ "this", "moveSpeed", "*", -1 ] } },
+                      "elseExecute":{ "set":{ "forceX":{ "_":[ "this", "moveSpeed" ] } } }
+                    }
+                  },
+                  { "set":{ "flipX":{ "_":[ "this", "forceX", "isLessThan", 0 ] } } },
+                  {
+                    "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "handlephysics" ] } ] },
+                    "sum":{ "_":[ "this", "forceX", "/", { "_":[ "that", "objWeight" ] }, "*", 0.3 ] },
+                    "to":{ "_":[ "that", "forceX" ] }
+                  },
+                  {
+                    "when":{ "_":[ "this", "collidesWith", { "_":[ "object", { "_":[ "this", "lookFor" ] } ] } ] },
+                    "execute":[
+                      { "as":{ "_":"that" }, "set":{ "state":"disappear" } },
+                      { "set":{ "removeType":"turnonswitch", "forceX":0, "animation":"still", "isMoving":0 } },
+                      { "when":{ "_":[ "that", "mustEaten" ] }, "as":{ "_":"scene" }, "executeAction":"success" }
+                    ]
+                  },
+                  {
+                    "when":{ "_":[ "this", "touchRight", "or", { "_":[ "this", "touchLeft" ] } ] },
+                    "set":{ "flipX":{ "_":[ "this", "flipX", "not" ] }, "forceX":{ "_":[ "this", "forceX", "*", -1 ] } }
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        { "name":"disappear", "actions":{ "name":"disappearing", "execute":{ "set":{ "removeType":"turnonswitch" } } } }
+      ]
+    },
+    "cat":{
+      "set":{ "_":[ "stencil", "aliveObjectModel" ] },
+      "tileX":16, "tileY":51, "width":16, "height":16,
+      "animations":{ "still":{ "frame":0 }, "walk":{ "frames":[ 1, 2 ], "speed":2, "loopTo":0 } },
+      "boundHeight":16,
+      "boundWidth":16,
+      "lookFor":"ismice",
+      "moveSpeed":2,
+      "stencilIcon":6,
+      "stencilName":"cat",
+      "tooltip":"Cat",
+      "states":[ { "name":"disappear", "set":{ "removeType":"iscat" } }, { "name":"run", "set":{ "type":"iscat" } } ]
+    },
+    "mice":{
+      "set":{ "_":[ "stencil", "aliveObjectModel" ] },
+      "tileX":16, "tileY":67, "width":8, "height":8,
+      "animations":{ "still":{ "frame":0 }, "walk":{ "frames":2, "speed":2, "loopTo":0 } },
+      "boundHeight":8,
+      "boundWidth":8,
+      "lookFor":"ischeese",
+      "moveSpeed":2,
+      "objWeight":0.4,
+      "sight":128,
+      "stencilIcon":7,
+      "stencilName":"mice",
+      "tooltip":"Mice",
+      "states":[ { "name":"disappear", "set":{ "removeType":"ismice" } }, { "name":"run", "set":{ "type":"ismice" } } ]
+    },
+    "ballModel":{
+      "set":[ { "_":[ "stencil", "objectModel" ] }, { "_":[ "stencil", "withPhysicsModel" ] } ],
+      "states":[
+        { "set":{ "angle":0 } },
+        { "name":"run", "code":{ "name":"Execute", "data":{ "sum":{ "_":[ "this", "forceX", "*", 3 ] }, "to":{ "_":[ "this", "angle" ] } } } }
+      ]
+    },
+    "balloon":{
+      "type":"turnonswitch",
+      "set":[
+        { "_":[ "stencil", "objectModel" ] },
+        { "_":[ "stencil", "withPhysicsModel" ] },
+        { "_":[ "stencil", "weightFloatingModel" ] },
+        { "_":[ "stencil", "frictionLowModel" ] }
+      ],
+      "tileY":51, "width":16, "height":24,
+      "boundHeight":24,
+      "boundWidth":16,
+      "stencilIcon":2,
+      "stencilName":"balloon",
+      "tooltip":"Balloon",
+      "states":{
+        "name":"run",
+        "actions":{
+          "name":"hit",
+          "execute":{
+            "when":{ "_":[ "that", "isSpike" ] },
+            "execute":[ { "when":{ "_":[ "this", "mustPop" ] }, "as":{ "_":"scene" }, "executeAction":"success" }, { "set":{ "state":"disappear" } } ]
+          }
+        }
+      }
+    },
+    "beachBall":{
+      "type":"turnonswitch",
+      "set":[ { "_":[ "stencil", "ballModel" ] }, { "_":[ "stencil", "weightSoftModel" ] }, { "_":[ "stencil", "frictionLowModel" ] } ],
+      "tileY":35, "width":16, "height":16,
+      "boundHeight":16,
+      "boundWidth":16,
+      "stencilIcon":1,
+      "stencilName":"beachBall",
+      "tooltip":"Beach ball",
+      "states":{ "name":"run", "actions":{ "name":"hit", "execute":{ "when":{ "_":[ "that", "isSpike" ] }, "set":{ "state":"disappear" } } } }
+    },
+    "bowlingBall":{
+      "type":"turnonswitch",
+      "set":[ { "_":[ "stencil", "ballModel" ] }, { "_":[ "stencil", "weightHeavyModel" ] }, { "_":[ "stencil", "frictionLowModel" ] } ],
+      "tileY":19, "width":16, "height":16,
+      "boundHeight":16,
+      "boundWidth":16,
+      "stencilIcon":0,
+      "stencilName":"bowlingBall",
+      "tooltip":"Bowling ball"
+    },
+    "buttonModel":{
+      "type":"mouseelement",
+      "zIndex":10100,
+      "font":"cga", "fontSize":8,
+      "hoverBgColor":"#55ffff",
+      "hoverColor":"#fff",
+      "tooltip":"none",
+      "unhoverBgColor":"transparent",
+      "unhoverColor":"#fff",
+      "states":{
+        "execute":{ "executeAction":"unhover" },
+        "actions":[
+          { "name":"hover", "set":{ "bgcolor":{ "_":[ "this", "hoverBgColor" ] }, "color":{ "_":[ "this", "hoverColor" ] } } },
+          { "name":"unhover", "set":{ "bgcolor":{ "_":[ "this", "unhoverBgColor" ] }, "color":{ "_":[ "this", "unhoverColor" ] } } }
+        ]
+      }
+    },
+    "guiButtonModel":{
+      "set":{ "_":[ "stencil", "buttonModel" ] },
+      "width":48, "height":24,
+      "border":"#fff",
+      "lineHeight":24, "textAlign":"center",
+      "hoverColor":"#000",
+      "unhoverBgColor":"#000",
+      "unhoverColor":"#fff"
+    },
+    "toolButtonModel":{
+      "type":"tool",
+      "set":{ "_":[ "stencil", "buttonModel" ] },
+      "image":"buttons", "width":23, "height":16,
+      "executeAction":"deselect",
+      "animations":{ "deselected":{ "frame":0 }, "selected":{ "frame":1 } },
+      "animation":"deselected",
+      "toolId":"toolid",
+      "states":{
+        "actions":[
+          {
+            "name":"click",
+            "execute":{
+              "when":{ "_":[ "scene", "isrunning", "not" ] },
+              "execute":[
+                { "set":{ "selectTool":{ "_":[ "this", "toolId", "isNotEqualTo", { "_":[ "scene", "currentTool" ] } ] } } },
+                { "as":{ "_":[ "object", "tool" ] }, "executeAction":"deselect" },
+                { "when":{ "_":[ "this", "selectTool" ] }, "executeAction":"select" }
+              ]
+            }
+          },
+          { "name":"deselect", "execute":[ { "assign":0, "to":{ "_":[ "scene", "currentTool" ] } }, { "set":{ "animation":"deselected" } } ] },
+          {
+            "name":"select",
+            "execute":[ { "assign":{ "_":[ "this", "toolId" ] }, "to":{ "_":[ "scene", "currentTool" ] } }, { "set":{ "animation":"selected" } } ]
+          }
+        ]
+      }
+    },
+    "cheese":{
+      "set":[
+        { "_":[ "stencil", "objectModel" ] },
+        { "_":[ "stencil", "withPhysicsModel" ] },
+        { "_":[ "stencil", "weightNormalModel" ] },
+        { "_":[ "stencil", "frictionNormalModel" ] }
+      ],
+      "tileY":75, "width":16, "height":16,
+      "boundHeight":16,
+      "boundWidth":16,
+      "stencilIcon":3,
+      "stencilName":"cheese",
+      "tooltip":"Cheese",
+      "states":[ { "name":"disappear", "set":{ "removeType":"ischeese" } }, { "name":"run", "set":{ "type":"ischeese" } } ]
+    },
+    "fan":{
+      "type":"hasswitch",
+      "set":[
+        { "_":[ "stencil", "turnableObjectModel" ] },
+        { "_":[ "stencil", "withPhysicsModel" ] },
+        { "_":[ "stencil", "weightNormalModel" ] },
+        { "_":[ "stencil", "frictionNormalModel" ] }
+      ],
+      "tileX":16, "tileY":19, "width":16, "height":32,
+      "animations":{ "spin":{ "frames":2, "speed":0, "loopTo":0 }, "still":{ "frame":0 } },
+      "boundHeight":16,
+      "boundWidth":16,
+      "fanArea":[
+        { "width":32, "height":32, "x":16, "y":0 },
+        { "width":32, "height":32, "x":-32, "y":0 },
+        { "width":32, "height":32, "x":0, "y":-32 },
+        { "width":32, "height":32, "x":0, "y":16 }
+      ],
+      "fanPower":0.2,
+      "fanSpin":[ { "x":1, "y":0 }, { "x":-1, "y":0 }, { "x":0, "y":-1 }, { "x":0, "y":1 } ],
+      "stencilIcon":4,
+      "stencilName":"fan",
+      "tooltip":"Fan",
+      "states":{
+        "name":"run",
+        "set":{ "animation":"still", "turned":0 },
+        "code":{
+          "name":"Execute",
+          "data":{
+            "when":{ "_":[ "this", "turned" ] },
+            "execute":{
+              "when":{
+                "_":[
+                  "this",
+                  "complexCollidesWith",
+                  { "subject":{ "_":[ "object", "handlephysics" ] }, "all":1, "hitbox":{ "_":[ "this", "fanArea", { "_":[ "this", "objFlip" ] } ] } }
+                ]
+              },
+              "as":{ "_":"that" },
+              "execute":[
+                {
+                  "sum":{ "_":[ "that", "fanSpin", { "_":[ "that", "objFlip" ] }, "x", "*", { "_":[ "that", "fanPower" ] }, "/", { "_":[ "this", "objWeight" ] } ] },
+                  "to":{ "_":[ "this", "forceX" ] }
+                },
+                {
+                  "sum":{ "_":[ "that", "fanSpin", { "_":[ "that", "objFlip" ] }, "y", "*", { "_":[ "that", "fanPower" ] }, "/", { "_":[ "this", "objWeight" ] } ] },
+                  "to":{ "_":[ "this", "forceY" ] }
+                }
+              ]
+            },
+            "elseExecute":{ "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "turnonswitch" ] } ] }, "executeAction":"switch" }
+          }
+        },
+        "actions":[
+          { "name":"mod", "execute":{ "set":{ "objFlip":{ "_":[ "this", "objFlip", "+", 1, "%", 4 ] } } } },
+          { "name":"switch", "execute":{ "set":{ "animation":"spin", "turned":1 } } }
+        ]
+      }
+    },
+    "frictionLowModel":{ "objFrictionX":0.99, "objFrictionY":0.99 },
+    "frictionNormalModel":{ "objFrictionX":0.9, "objFrictionY":0.9 },
+    "ironBar":{
+      "type":"wall",
+      "set":[ { "_":[ "stencil", "barModel" ] }, { "_":[ "stencil", "solidModel" ] } ],
+      "objRestitution":-0.8,
+      "stencilIcon":9,
+      "stencilName":"ironBar",
+      "tooltip":"Iron bar"
+    },
+    "barModel":{
+      "type":"switchable",
+      "set":{ "_":[ "stencil", "objectModel" ] },
+      "image":"bars", "width":32, "height":8,
+      "zIndex":20,
+      "originX":"4px", "originY":"4px",
+      "barLength":8,
+      "boundHeight":8,
+      "boundWidth":8,
+      "objFlip":0,
+      "objRestitution":-1,
+      "objTractionSide":0,
+      "objTractionX":0,
+      "objTractionY":0,
+      "objWeight":0.8,
+      "states":[
+        {
+          "code":{
+            "name":"Execute",
+            "data":{
+              "when":{ "_":[ "this", "objFlip" ] },
+              "set":{
+                "width":{ "_":[ "this", "barLength" ] }, "height":8,
+                "hitbox":{ "width":8, "height":{ "_":[ "this", "barLength" ] }, "x":0, "y":0 },
+                "angle":90,
+                "objTractionX":0,
+                "objTractionY":{ "_":[ "this", "objTractionSide" ] }
+              },
+              "elseExecute":{
+                "set":{
+                  "width":{ "_":[ "this", "barLength" ] }, "height":8,
+                  "hitbox":{ "width":{ "_":[ "this", "barLength" ] }, "height":8, "x":0, "y":0 },
+                  "angle":0,
+                  "objTractionX":{ "_":[ "this", "objTractionSide" ] },
+                  "objTractionY":0
+                }
+              }
+            }
+          },
+          "actions":[
+            { "name":"mod", "execute":{ "set":{ "objFlip":{ "_":[ "this", "objFlip", "not" ] } } } },
+            { "name":"enlarge", "execute":{ "when":{ "_":[ "this", "barLength", "isLessThan", 286 ] }, "sum":8, "to":{ "_":[ "this", "barLength" ] } } },
+            { "name":"shrink", "execute":{ "when":{ "_":[ "this", "barLength", "isGreaterThan", 8 ] }, "subtract":8, "to":{ "_":[ "this", "barLength" ] } } },
+            {
+              "name":"serialize",
+              "execute":{ "as":{ "_":"that" }, "set":{ "barLength":{ "_":[ "that", "barLength" ] }, "objFlip":{ "_":[ "that", "objFlip" ] } } }
+            }
+          ]
+        },
+        {
+          "name":"disappear",
+          "actions":{ "name":"disappearing", "execute":{ "when":{ "_":[ "this", "objFlip" ] }, "set":{ "width":8, "height":{ "_":[ "this", "barLength" ] } } } }
+        }
+      ]
+    },
+    "goalBar":{
+      "type":"goalarea",
+      "set":{ "_":[ "stencil", "barModel" ] },
+      "tileY":32,
+      "zIndex":1,
+      "stencilIcon":13,
+      "stencilName":"goalBar",
+      "tooltip":"Goal",
+      "states":[
+        { "set":{ "tileY":32 } },
+        { "name":"run", "code":{ "name":"Sequence", "data":[ { "set":{ "tileY":32 }, "wait":4 }, { "set":{ "tileY":40 }, "wait":4, "loopTo":0 } ] } }
+      ]
+    },
+    "carpet":{
+      "type":"wall",
+      "set":{ "_":[ "stencil", "objectModel" ] },
+      "tileX":48, "tileY":19, "width":24, "height":8,
+      "zIndex":25,
+      "boundHeight":8,
+      "boundWidth":24,
+      "objRestitution":-0.8,
+      "stencilIcon":5,
+      "stencilName":"carpet",
+      "tooltip":"Carpet",
+      "states":[
+        { "set":{ "tileY":19, "hitbox":0 } },
+        {
+          "name":"run",
+          "set":{ "tileY":19, "hitbox":{ "width":24, "height":2, "x":0, "y":6 } },
+          "code":{
+            "name":"Execute",
+            "data":{
+              "when":{
+                "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "handlephysics" ] }, "all":1, "hitbox":{ "width":24, "height":6, "x":0, "y":0 } } ]
+              },
+              "execute":[
+                { "set":{ "tileY":27 } },
+                { "as":{ "_":"that" }, "execute":{ "assign":{ "_":[ "this", "forceY", "abs", "*", -1.5 ] }, "to":{ "_":[ "this", "forceY" ] } } }
+              ],
+              "elseExecute":{ "set":{ "tileY":19 } }
+            }
+          }
+        }
+      ]
+    },
+    "catapult":{
+      "type":"wall",
+      "set":{ "_":[ "stencil", "objectModel" ] },
+      "tileX":16, "tileY":75, "width":48, "height":16,
+      "zIndex":25,
+      "boundHeight":16,
+      "boundWidth":48,
+      "objRestitution":-0.8,
+      "stencilIcon":8,
+      "stencilName":"catapult",
+      "tooltip":"Catapult",
+      "states":[
+        { "set":{ "tileY":75, "hitbox":0 } },
+        {
+          "name":"run",
+          "set":{ "tileY":75, "hitbox":[ { "width":48, "height":2, "x":0, "y":14 }, { "width":4, "height":8, "x":22, "y":6 } ], "flipState":0 },
+          "code":{
+            "name":"Execute",
+            "data":[
+              {
+                "when":{ "_":[ "this", "flipState", "isEqualTo", 0 ] },
+                "execute":{
+                  "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "handlephysics" ] }, "hitbox":{ "width":2, "height":2, "x":10, "y":6 } } ] },
+                  "set":{ "tileY":91, "flipState":1 },
+                  "elseExecute":{
+                    "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "handlephysics" ] }, "hitbox":{ "width":2, "height":2, "x":36, "y":6 } } ] },
+                    "set":{ "tileY":107, "flipState":2 }
+                  }
+                }
+              },
+              {
+                "when":{ "_":[ "this", "flipState", "isEqualTo", 1 ] },
+                "execute":{
+                  "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "handlephysics" ] }, "hitbox":{ "width":2, "height":2, "x":36, "y":6 } } ] },
+                  "execute":[
+                    { "set":{ "impacted":{ "_":"that" } } },
+                    {
+                      "when":{
+                        "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "handlephysics" ] }, "all":1, "hitbox":{ "width":2, "height":2, "x":10, "y":6 } } ]
+                      },
+                      "as":{ "_":"that" },
+                      "execute":[
+                        { "assign":{ "_":[ "that", "impacted", "forceY", "abs", "/", { "_":[ "this", "objWeight" ] }, "*", -10 ] }, "to":{ "_":[ "this", "forceY" ] } },
+                        { "subtract":1, "to":{ "_":[ "this", "forceX" ] } }
+                      ]
+                    },
+                    { "set":{ "tileY":107, "flipState":2 } }
+                  ]
+                }
+              },
+              {
+                "when":{ "_":[ "this", "flipState", "isEqualTo", 2 ] },
+                "execute":{
+                  "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "handlephysics" ] }, "hitbox":{ "width":2, "height":2, "x":10, "y":6 } } ] },
+                  "execute":[
+                    { "set":{ "impacted":{ "_":"that" } } },
+                    {
+                      "when":{
+                        "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "handlephysics" ] }, "all":1, "hitbox":{ "width":2, "height":2, "x":36, "y":6 } } ]
+                      },
+                      "as":{ "_":"that" },
+                      "execute":[
+                        { "assign":{ "_":[ "that", "impacted", "forceY", "abs", "/", { "_":[ "this", "objWeight" ] }, "*", -10 ] }, "to":{ "_":[ "this", "forceY" ] } },
+                        { "assign":1, "to":{ "_":[ "this", "forceX" ] } }
+                      ]
+                    },
+                    { "set":{ "tileY":91, "flipState":1 } }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "objectModel":{
+      "type":"sceneobject",
+      "image":"sprites",
+      "zIndex":1,
+      "boundHeight":8,
+      "boundWidth":8,
+      "isChangeable":0,
+      "objRestitution":-1,
+      "objTractionX":0,
+      "objTractionY":0,
+      "stencilName":"none",
+      "tooltip":"None",
+      "toremove":0,
+      "states":[
+        {
+          "set":{ "visible":1, "animation":"still" },
+          "execute":{ "when":{ "_":[ "this", "isChangeable" ] }, "execute":{ "set":{ "type":"mouseelement", "isDraggable":1 } } },
+          "actions":[
+            {
+              "name":"drag",
+              "execute":[
+                { "set":{ "x":{ "_":[ "that", "dragX" ] }, "y":{ "_":[ "that", "dragY" ] } } },
+                { "when":{ "_":[ "this", "x", "isLessThan", 0 ] }, "set":{ "x":0 } },
+                {
+                  "when":{ "_":[ "this", "x", "+", { "_":[ "this", "boundWidth" ] }, "isGreaterThan", 296 ] },
+                  "set":{ "x":{ "_":[ 296, "-", { "_":[ "this", "boundWidth" ] } ] } }
+                },
+                { "when":{ "_":[ "this", "y", "isLessThan", 0 ] }, "set":{ "y":0 } },
+                {
+                  "when":{ "_":[ "this", "y", "+", { "_":[ "this", "boundHeight" ] }, "isGreaterThan", 176 ] },
+                  "set":{ "y":{ "_":[ 176, "-", { "_":[ "this", "boundHeight" ] } ] } }
+                }
+              ]
+            },
+            {
+              "name":"click",
+              "execute":[
+                {
+                  "when":{ "_":[ "scene", "currentTool", "isEqualTo", "trashcan" ] },
+                  "execute":[
+                    { "sum":1, "to":{ "_":[ "objectTyped", { "_":[ "counter-", ".", { "_":[ "this", "stencilName" ] } ] }, "qty" ] } },
+                    { "set":{ "toremove":1, "state":"disappear" } }
+                  ]
+                },
+                { "when":{ "_":[ "scene", "currentTool", "isEqualTo", "enlarge" ] }, "executeAction":"enlarge" },
+                { "when":{ "_":[ "scene", "currentTool", "isEqualTo", "shrink" ] }, "executeAction":"shrink" },
+                { "when":{ "_":[ "scene", "currentTool", "not" ] }, "executeAction":"mod" }
+              ]
+            },
+            { "name":"run", "execute":[ { "executeAction":"savestate" }, { "set":{ "state":"run" } } ] },
+            { "name":"savestate", "execute":{ "set":{ "savedX":{ "_":[ "this", "x" ] }, "savedY":{ "_":[ "this", "y" ] } } } },
+            {
+              "name":"serialize",
+              "execute":{ "as":{ "_":"that" }, "set":{ "x":{ "_":[ "that", "x" ] }, "y":{ "_":[ "that", "y" ] }, "stencilName":{ "_":[ "that", "stencilName" ] } } }
+            }
+          ]
+        },
+        {
+          "name":"run",
+          "set":{ "removeType":"mouseelement", "isDraggable":0 },
+          "code":{
+            "name":"Execute",
+            "data":[
+              {
+                "when":{
+                  "_":[
+                    "this",
+                    "y",
+                    "isGreaterThan",
+                    640,
+                    "or",
+                    { "_":[ "this", "x", "isLessThan", -320 ] },
+                    "or",
+                    { "_":[ "this", "x", "isGreaterThan", 640 ] },
+                    "or",
+                    { "_":[ "this", "y", "isLessThan", -320 ] }
+                  ]
+                },
+                "set":{ "state":"disappear" }
+              },
+              {
+                "when":{ "_":[ "this", "mustReachGoal" ] },
+                "execute":{ "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "goalarea" ] } ] }, "as":{ "_":"scene" }, "executeAction":"success" }
+              }
+            ]
+          },
+          "actions":{ "name":"abort", "execute":{ "set":{ "x":{ "_":[ "this", "savedX" ] }, "y":{ "_":[ "this", "savedY" ] }, "state":"default" } } }
+        },
+        {
+          "name":"disappear",
+          "execute":[
+            { "executeAction":"disappearing" },
+            { "when":{ "_":[ "this", "toremove" ] }, "remove":1, "elseExecute":{ "set":{ "visible":0 } } },
+            { "object":{ "_":[ "stencil", "spark" ] } }
+          ],
+          "actions":{ "name":"abort", "execute":{ "set":{ "x":{ "_":[ "this", "savedX" ] }, "y":{ "_":[ "this", "savedY" ] }, "state":"default" } } }
+        }
+      ]
+    },
+    "flippableObjectModel":{
+      "set":{ "_":[ "stencil", "objectModel" ] },
+      "objFlip":0,
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":[
+            { "when":{ "_":[ "this", "objFlip", "isEqualTo", 0 ] }, "set":{ "flipX":0 } },
+            { "when":{ "_":[ "this", "objFlip", "isEqualTo", 1 ] }, "set":{ "flipX":1 } }
+          ]
+        },
+        "actions":[
+          { "name":"mod", "execute":{ "set":{ "objFlip":{ "_":[ "this", "objFlip", "not" ] } } } },
+          { "name":"serialize", "execute":{ "as":{ "_":"that" }, "set":{ "objFlip":{ "_":[ "that", "objFlip" ] } } } }
+        ]
+      }
+    },
+    "turnableObjectModel":{
+      "set":{ "_":[ "stencil", "objectModel" ] },
+      "objFlip":0,
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":[
+            {
+              "when":{ "_":[ "this", "objFlip", "isEqualTo", 0 ] },
+              "set":{
+                "hitbox":{ "width":{ "_":[ "this", "width" ] }, "height":{ "_":[ "this", "height" ] }, "x":0, "y":0 },
+                "originX":{ "_":[ "this", "width", "/", 2, ".", "px" ] }, "originY":{ "_":[ "this", "height", "/", 2, ".", "px" ] }, "flipX":0, "flipY":0, "angle":0
+              }
+            },
+            {
+              "when":{ "_":[ "this", "objFlip", "isEqualTo", 1 ] },
+              "set":{
+                "hitbox":{ "width":{ "_":[ "this", "width" ] }, "height":{ "_":[ "this", "height" ] }, "x":0, "y":0 },
+                "originX":{ "_":[ "this", "width", "/", 2, ".", "px" ] }, "originY":{ "_":[ "this", "height", "/", 2, ".", "px" ] }, "flipX":1, "flipY":0, "angle":0
+              }
+            },
+            {
+              "when":{ "_":[ "this", "objFlip", "isEqualTo", 2 ] },
+              "set":{
+                "hitbox":{ "width":{ "_":[ "this", "height" ] }, "height":{ "_":[ "this", "width" ] }, "x":0, "y":0 },
+                "originX":{ "_":[ "this", "width", "/", 2, ".", "px" ] }, "originY":{ "_":[ "this", "width", "/", 2, ".", "px" ] }, "flipX":0, "flipY":0, "angle":-90
+              }
+            },
+            {
+              "when":{ "_":[ "this", "objFlip", "isEqualTo", 3 ] },
+              "set":{
+                "hitbox":{ "width":{ "_":[ "this", "height" ] }, "height":{ "_":[ "this", "width" ] }, "x":0, "y":0 },
+                "originX":{ "_":[ "this", "width", "/", 2, ".", "px" ] }, "originY":{ "_":[ "this", "width", "/", 2, ".", "px" ] }, "flipX":0, "flipY":1, "angle":-90
+              }
+            }
+          ]
+        },
+        "actions":[
+          { "name":"mod", "execute":{ "set":{ "objFlip":{ "_":[ "this", "objFlip", "+", 1, "%", 4 ] } } } },
+          { "name":"serialize", "execute":{ "as":{ "_":"that" }, "set":{ "objFlip":{ "_":[ "that", "objFlip" ] } } } }
+        ]
+      }
+    },
+    "switch":{
+      "type":"hasswitch",
+      "set":{ "_":[ "stencil", "turnableObjectModel" ] },
+      "tileX":32, "tileY":67, "width":8, "height":8,
+      "animations":{ "blink":{ "frames":2, "loopTo":0 }, "still":{ "frame":0 } },
+      "boundHeight":8,
+      "boundWidth":8,
+      "stencilIcon":14,
+      "stencilName":"switch",
+      "switchArea":[
+        { "width":8, "height":8, "x":-8, "y":0 },
+        { "width":8, "height":8, "x":8, "y":0 },
+        { "width":8, "height":8, "x":0, "y":8 },
+        { "width":8, "height":8, "x":0, "y":-8 }
+      ],
+      "tooltip":"Switch",
+      "states":{
+        "name":"run",
+        "set":{ "animation":"blink", "turned":0 },
+        "code":{ "name":"Execute", "data":{ "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "turnonswitch" ] } ] }, "executeAction":"switch" } },
+        "actions":[
+          { "name":"mod", "execute":{ "set":{ "objFlip":{ "_":[ "this", "objFlip", "+", 1, "%", 4 ] } } } },
+          {
+            "name":"switch",
+            "execute":[
+              {
+                "as":{
+                  "_":[
+                    "this",
+                    "complexCollidesWith",
+                    { "subject":{ "_":[ "object", "switchable" ] }, "all":1, "hitbox":{ "_":[ "this", "switchArea", { "_":[ "this", "objFlip" ] } ] } }
+                  ]
+                },
+                "set":{ "state":"disappear" }
+              },
+              { "set":{ "state":"disappear" } }
+            ]
+          }
+        ]
+      }
+    },
+    "pointer":{
+      "type":"pointer",
+      "image":"sprites", "width":15, "height":19,
+      "zIndex":30000,
+      "hitbox":{ "width":1, "height":1, "x":0, "y":0 },
+      "dragging":0,
+      "hovering":0,
+      "wasDown":0,
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":[
+            { "set":{ "x":{ "_":[ "pointer", "x" ] }, "y":{ "_":[ "pointer", "y" ] } } },
+            {
+              "when":{ "_":[ "this", "hovering", "removed" ] },
+              "execute":[ { "set":{ "dragging":0, "hovering":0 } }, { "as":{ "_":[ "objectTyped", "tooltipobject" ] }, "set":{ "html":"" } } ]
+            },
+            {
+              "when":{ "_":[ "this", "dragging" ] },
+              "execute":[
+                {
+                  "set":{
+                    "dragX":{ "_":[ "this", "dx", "+", { "_":[ "this", "x", "-", { "_":[ "this", "ox" ] } ] } ] },
+                    "dragY":{ "_":[ "this", "dy", "+", { "_":[ "this", "y", "-", { "_":[ "this", "oy" ] } ] } ] }
+                  }
+                },
+                { "as":{ "_":[ "this", "hovering" ] }, "executeAction":"drag" },
+                { "when":{ "_":[ "keyPointer", "isUp" ] }, "execute":{ "set":{ "dragging":0, "wasDown":0 } } }
+              ],
+              "elseExecute":[
+                {
+                  "when":{ "_":[ "this", "hovering" ] },
+                  "execute":{
+                    "when":{ "_":[ "keyPointer", "isDown" ] },
+                    "execute":{
+                      "when":{ "_":[ "this", "wasDown" ] },
+                      "execute":[
+                        { "sum":1, "to":{ "_":[ "this", "wasDown" ] } },
+                        {
+                          "when":{
+                            "_":[
+                              "this",
+                              "x",
+                              "-",
+                              { "_":[ "this", "ox" ] },
+                              "abs",
+                              "isGreaterThan",
+                              2,
+                              "or",
+                              { "_":[ "this", "y", "-", { "_":[ "this", "oy" ] }, "abs", "isGreaterThan", 2 ] }
+                            ]
+                          },
+                          "set":{ "dragging":1 }
+                        }
+                      ],
+                      "elseExecute":{
+                        "set":{
+                          "dx":{ "_":[ "this", "hovering", "x" ] },
+                          "dy":{ "_":[ "this", "hovering", "y" ] },
+                          "ox":{ "_":[ "this", "x" ] },
+                          "oy":{ "_":[ "this", "y" ] },
+                          "wasDown":1
+                        }
+                      }
+                    },
+                    "elseExecute":{
+                      "when":{ "_":[ "keyPointer", "isUp" ] },
+                      "execute":[
+                        {
+                          "when":{ "_":[ "this", "wasDown", "isLessThan", 10, "and", { "_":[ "this", "wasDown" ] } ] },
+                          "as":{ "_":[ "this", "hovering" ] },
+                          "executeAction":"click"
+                        },
+                        { "set":{ "wasDown":0 } }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "when":{ "_":[ "this", "wasDown", "not" ] },
+                  "execute":{
+                    "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "mouseelement" ] }, "sortBy":"zIndex" } ] },
+                    "execute":{
+                      "when":{ "_":[ "that", "isNotEqualTo", { "_":[ "this", "hovering" ] } ] },
+                      "execute":[
+                        { "when":{ "_":[ "this", "hovering" ] }, "as":{ "_":[ "this", "hovering" ] }, "executeAction":"unhover" },
+                        { "set":{ "hovering":{ "_":"that" }, "wasDown":0 } },
+                        { "as":{ "_":[ "this", "hovering" ] }, "executeAction":"hover" },
+                        { "as":{ "_":[ "objectTyped", "tooltipobject" ] }, "set":{ "html":{ "_":[ "that", "hovering", "tooltip" ] } } }
+                      ]
+                    },
+                    "elseExecute":{
+                      "when":{ "_":[ "this", "hovering" ] },
+                      "execute":[
+                        { "when":{ "_":[ "this", "hovering" ] }, "as":{ "_":[ "this", "hovering" ] }, "executeAction":"unhover" },
+                        { "as":{ "_":[ "objectTyped", "tooltipobject" ] }, "set":{ "html":"" } },
+                        { "set":{ "hovering":0 } }
+                      ]
+                    }
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "roulantRight":{
+      "type":"wall",
+      "set":[ { "_":[ "stencil", "barModel" ] }, { "_":[ "stencil", "solidModel" ] } ],
+      "tileY":8,
+      "objRestitution":-0.8,
+      "objTractionSide":0.1,
+      "sideScroll":-1,
+      "stencilIcon":10,
+      "stencilName":"roulantRight",
+      "tooltip":"Roulant (right)",
+      "states":[
+        { "set":{ "tileX":8 } },
+        {
+          "name":"run",
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "sum":{ "_":[ "this", "sideScroll" ] }, "to":{ "_":[ "this", "tileX" ] }, "wait":1, "loop":1, "cycles":7 },
+              { "set":{ "tileX":8 }, "wait":1, "loopTo":0 }
+            ]
+          }
+        }
+      ]
+    },
+    "roulantLeft":{
+      "type":"wall",
+      "set":{ "_":[ "stencil", "roulantRight" ] },
+      "tileY":16,
+      "objRestitution":-0.8,
+      "objTractionSide":-0.1,
+      "sideScroll":1,
+      "stencilIcon":11,
+      "stencilName":"roulantLeft",
+      "tooltip":"Roulant (left)"
+    },
+    "sceneModel":{
+      "object":[
+        { "_":[ "stencil", "pointer" ] },
+        { "image":"hud", "width":320, "height":200, "zIndex":10000, "x":0, "y":0 },
+        {
+          "set":{ "_":[ "stencil", "buttonModel" ] },
+          "image":"buttons", "tileY":16, "width":23, "height":16,
+          "x":297, "y":4,
+          "tooltip":"Play/Stop",
+          "states":{
+            "actions":{
+              "name":"click",
+              "execute":[
+                { "as":{ "_":[ "object", "tool" ] }, "executeAction":"deselect" },
+                { "as":{ "_":"scene" }, "set":{ "isrunning":{ "_":[ "scene", "isrunning", "not" ] } } },
+                {
+                  "when":{ "_":[ "scene", "isrunning" ] },
+                  "execute":[ { "set":{ "frame":1 } }, { "as":{ "_":"scene" }, "executeAction":"playing" }, { "as":{ "_":[ "object", "sceneobject" ] }, "executeAction":"run" } ],
+                  "elseExecute":[ { "set":{ "frame":0 } }, { "as":{ "_":[ "object", "sceneobject" ] }, "executeAction":"abort" } ]
+                }
+              ]
+            }
+          }
+        },
+        { "set":{ "_":[ "stencil", "toolButtonModel" ] }, "tileX":46, "tileY":16, "x":297, "y":180, "toolId":"trashcan", "tooltip":"Remove object" }
+      ],
+      "currentTool":0,
+      "isrunning":0,
+      "paletteGap":16,
+      "states":{
+        "execute":[
+          { "_":[ "stencil", "codeLoadData" ] },
+          { "set":{ "counter":24 } },
+          {
+            "as":{ "_":[ "this", "stagePalette" ] },
+            "execute":[
+              {
+                "object":{
+                  "type":[ "hud", "paletteButton", { "_":[ "counter-", ".", { "_":[ "that", "stencilName" ] } ] } ],
+                  "set":{ "_":[ "stencil", "buttonModel" ] },
+                  "hudType":"label", "label":"%number|this.qty%",
+                  "image":"buttons", "width":23, "height":{ "_":[ "scene", "paletteGap" ] },
+                  "x":297, "y":{ "_":[ "scene", "counter" ] }, "frame":{ "_":[ "stencil", { "_":[ "that", "stencilName" ] }, "stencilIcon" ] },
+                  "lineHeight":16, "outline":"#000", "textAlign":"right",
+                  "itemData":{ "_":"that" },
+                  "qty":{ "_":[ "that", "qty" ] },
+                  "states":{
+                    "actions":{
+                      "name":"click",
+                      "execute":{
+                        "when":{ "_":[ "scene", "isrunning", "not" ] },
+                        "execute":{
+                          "when":{ "_":[ "this", "qty" ] },
+                          "execute":[
+                            { "subtract":1, "to":{ "_":[ "this", "qty" ] } },
+                            { "object":{ "type":"newcreated", "set":[ { "_":[ "stencil", { "_":[ "that", "itemData", "stencilName" ] } ] }, { "_":[ "that", "itemData" ] } ] } },
+                            {
+                              "as":{ "_":[ "objectTyped", "newcreated" ] },
+                              "set":{
+                                "removeType":"newcreated",
+                                "x":{ "_":[ 292, "-", { "_":[ "this", "width" ] }, "limitValue", [ 0, { "_":[ 296, "-", { "_":[ "this", "width" ] } ] } ] ] }, "y":{ "_":[ "that", "y", "-", { "_":[ "this", "height", "-", { "_":[ "scene", "paletteGap" ] }, "/", 2 ] }, "floor", "limitValue", [ 0, { "_":[ 176, "-", { "_":[ "this", "height" ] } ] } ] ] },
+                                "isChangeable":1
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              },
+              { "sum":{ "_":[ "scene", "paletteGap" ] }, "to":{ "_":[ "scene", "counter" ] } }
+            ]
+          }
+        ]
+      }
+    },
+    "solidModel":{
+      "states":[
+        { "name":"run", "set":{ "type":"wall" } },
+        { "name":"disappear", "actions":{ "name":"disappearing", "execute":{ "set":{ "removeType":"wall" } } } }
+      ]
+    },
+    "spikeBar":{
+      "type":"wall",
+      "set":[ { "_":[ "stencil", "barModel" ] }, { "_":[ "stencil", "solidModel" ] } ],
+      "tileY":24,
+      "isSpike":1,
+      "objRestitution":-0.8,
+      "stencilIcon":12,
+      "stencilName":"spikeBar",
+      "tooltip":"Spikes"
+    },
+    "weightFloatingModel":{ "objGravity":-1, "objSoftness":0.3, "objWeight":0.2 },
+    "weightHeavyModel":{ "objGravity":1, "objSoftness":0.3, "objWeight":2 },
+    "weightNormalModel":{ "objGravity":1, "objSoftness":0.5, "objWeight":1 },
+    "weightSoftModel":{ "objGravity":1, "objSoftness":1, "objWeight":0.4 },
+    "withPhysicsModel":{
+      "type":"handlephysics",
+      "objGravity":1,
+      "objSoftness":1,
+      "objWeight":0.8,
+      "states":{
+        "name":"run",
+        "set":{ "forceX":0, "forceY":0 },
+        "code":{
+          "name":"Physics",
+          "data":{
+            "walls":{
+              "type":"wall",
+              "execute":[
+                {
+                  "when":{ "_":[ "this", "touchDown", "or", { "_":[ "this", "touchUp" ] } ] },
+                  "execute":[
+                    { "set":{ "forceY":{ "_":[ "this", "forceY", "*", { "_":[ "that", "objRestitution" ] }, "*", { "_":[ "this", "objSoftness" ] } ] } } },
+                    { "multiply":{ "_":[ "this", "objFrictionX" ] }, "to":{ "_":[ "this", "forceX" ] } }
+                  ]
+                },
+                {
+                  "when":{ "_":[ "this", "touchLeft", "or", { "_":[ "this", "touchRight" ] } ] },
+                  "execute":[
+                    { "set":{ "forceX":{ "_":[ "this", "forceX", "*", { "_":[ "that", "objRestitution" ] }, "*", { "_":[ "this", "objSoftness" ] } ] } } },
+                    { "multiply":{ "_":[ "this", "objFrictionY" ] }, "to":{ "_":[ "this", "forceY" ] } }
+                  ]
+                },
+                { "sum":{ "_":[ "that", "objTractionX" ] }, "to":{ "_":[ "this", "forceX" ] } },
+                { "sum":{ "_":[ "that", "objTractionY" ] }, "to":{ "_":[ "this", "forceY" ] } },
+                { "as":{ "_":"that" }, "execute":{ "as":{ "_":"that" }, "executeAction":"hit" } }
+              ]
+            },
+            "gravityY":{ "_":[ "this", "objWeight", "*", { "_":[ "this", "objGravity" ] } ] },
+            "limitX":[ -8, 8 ],
+            "limitY":[ -8, 8 ]
+          }
+        }
+      }
+    }
+  },
+  "execute":[
+    { "when":{ "_":[ "storage", "hiscore", "not" ] }, "as":{ "_":"storage" }, "set":{ "hiscore":0 } },
+    { "when":{ "_":[ "storage", "score", "not" ] }, "as":{ "_":"storage" }, "set":{ "score":0 } },
+    { "when":{ "_":[ "storage", "stage", "not" ] }, "as":{ "_":"storage" }, "set":{ "stage":1 } },
+    { "as":{ "_":"variable" }, "set":{ "hiscore":{ "_":[ "storage", "hiscore" ] } } }
+  ],
+  "scenes":{
+    "intro":{
+      "object":[
+        { "_":[ "stencil", "pointer" ] },
+        {
+          "image":"title", "tileY":23, "width":33, "height":38,
+          "x":36, "y":23,
+          "timer":1.57,
+          "states":{
+            "code":{
+              "name":"Sequence",
+              "data":[
+                { "set":{ "x":{ "_":[ 36, "-", { "_":[ "this", "timer", "sin", "*", 69 ] } ] } } },
+                { "sum":0.08, "to":{ "_":[ "this", "timer" ] } },
+                { "wait":1, "cycles":60, "loopTo":0 },
+                { "set":{ "x":36 } }
+              ]
+            }
+          }
+        },
+        {
+          "image":"title", "tileX":33, "tileY":23, "width":29, "height":38,
+          "x":69, "y":23,
+          "timer":1.57,
+          "states":{
+            "code":{
+              "name":"Sequence",
+              "data":[
+                { "set":{ "y":{ "_":[ 23, "-", { "_":[ "this", "timer", "sin", "*", 69 ] } ] } } },
+                { "sum":0.08, "to":{ "_":[ "this", "timer" ] } },
+                { "wait":1, "cycles":60, "loopTo":0 },
+                { "set":{ "y":23 } }
+              ]
+            }
+          }
+        },
+        {
+          "image":"title", "tileX":62, "tileY":23, "width":29, "height":38,
+          "x":98, "y":23,
+          "timer":1.57,
+          "states":{
+            "code":{
+              "name":"Sequence",
+              "data":[
+                { "set":{ "y":{ "_":[ 23, "+", { "_":[ "this", "timer", "sin", "*", 138 ] } ] } } },
+                { "sum":0.08, "to":{ "_":[ "this", "timer" ] } },
+                { "wait":1, "cycles":60, "loopTo":0 },
+                { "set":{ "y":23 } }
+              ]
+            }
+          }
+        },
+        {
+          "image":"title", "tileX":91, "tileY":23, "width":38, "height":38,
+          "x":125, "y":23,
+          "radius":240,
+          "timer":1.57,
+          "states":{
+            "code":{
+              "name":"Sequence",
+              "data":[
+                {
+                  "set":{
+                    "x":{ "_":[ 125, "+", { "_":[ "this", "timer", "sin", "*", { "_":[ "this", "radius" ] } ] } ] }, "y":{ "_":[ 23, "+", { "_":[ "this", "timer", "cos", "*", { "_":[ "this", "radius" ] } ] } ] }
+                  }
+                },
+                { "subtract":4, "to":{ "_":[ "this", "radius" ] } },
+                { "sum":0.08, "to":{ "_":[ "this", "timer" ] } },
+                { "wait":1, "cycles":60, "loopTo":0 },
+                { "set":{ "x":125, "y":23 } }
+              ]
+            }
+          }
+        },
+        {
+          "image":"title", "tileX":129, "tileY":23, "width":35, "height":38,
+          "x":163, "y":23,
+          "radius":240,
+          "timer":1.57,
+          "states":{
+            "code":{
+              "name":"Sequence",
+              "data":[
+                {
+                  "set":{
+                    "x":{ "_":[ 163, "-", { "_":[ "this", "timer", "sin", "*", { "_":[ "this", "radius" ] } ] } ] }, "y":{ "_":[ 23, "-", { "_":[ "this", "timer", "cos", "*", { "_":[ "this", "radius" ] } ] } ] }
+                  }
+                },
+                { "subtract":4, "to":{ "_":[ "this", "radius" ] } },
+                { "sum":0.08, "to":{ "_":[ "this", "timer" ] } },
+                { "wait":1, "cycles":60, "loopTo":0 },
+                { "set":{ "x":163, "y":23 } }
+              ]
+            }
+          }
+        },
+        {
+          "image":"title", "tileY":23, "width":33, "height":38,
+          "x":198, "y":23,
+          "timer":1.57,
+          "states":{
+            "code":{
+              "name":"Sequence",
+              "data":[
+                {
+                  "set":{ "x":{ "_":[ 198, "-", { "_":[ "this", "timer", "sin", "*", 69 ] } ] }, "y":{ "_":[ 23, "-", { "_":[ "this", "timer", "sin", "*", 69 ] } ] } }
+                },
+                { "sum":0.08, "to":{ "_":[ "this", "timer" ] } },
+                { "wait":1, "cycles":60, "loopTo":0 },
+                { "set":{ "x":198, "y":23 } }
+              ]
+            }
+          }
+        },
+        {
+          "image":"title", "tileX":62, "tileY":23, "width":29, "height":38,
+          "x":229, "y":23,
+          "timer":1.57,
+          "states":{
+            "code":{
+              "name":"Sequence",
+              "data":[
+                {
+                  "set":{ "x":{ "_":[ 229, "+", { "_":[ "this", "timer", "sin", "*", 69 ] } ] }, "y":{ "_":[ 23, "-", { "_":[ "this", "timer", "sin", "*", 69 ] } ] } }
+                },
+                { "sum":0.08, "to":{ "_":[ "this", "timer" ] } },
+                { "wait":1, "cycles":60, "loopTo":0 },
+                { "set":{ "x":229, "y":23 } }
+              ]
+            }
+          }
+        },
+        {
+          "image":"title", "tileX":164, "tileY":23, "width":25, "height":38,
+          "x":258, "y":23,
+          "timer":1.57,
+          "states":{
+            "code":{
+              "name":"Sequence",
+              "data":[
+                { "set":{ "x":{ "_":[ 258, "+", { "_":[ "this", "timer", "sin", "*", 69 ] } ] } } },
+                { "sum":0.08, "to":{ "_":[ "this", "timer" ] } },
+                { "wait":1, "cycles":60, "loopTo":0 },
+                { "set":{ "x":258 } }
+              ]
+            }
+          }
+        },
+        {
+          "width":320, "height":10,
+          "x":0, "y":182,
+          "color":"#ff55ff",
+          "font":"cga", "fontSize":8, "lineHeight":10, "textAlign":"center", "html":{ "_":[ "HI-SCORE: ", ".", { "_":[ "variable", "hiscore" ] } ] }
+        },
+        {
+          "set":{ "_":[ "stencil", "guiButtonModel" ] },
+          "width":220,
+          "x":50, "y":88,
+          "html":{ "_":[ "Continue from Stage ", ".", { "_":[ "storage", "stage" ] } ] },
+          "states":{
+            "actions":{
+              "name":"click",
+              "execute":[
+                { "as":{ "_":"variable" }, "set":{ "score":{ "_":[ "storage", "score" ] }, "stage":{ "_":[ "storage", "stage" ] } } },
+                { "_":[ "stencil", "codeGotoStage" ] }
+              ]
+            }
+          }
+        },
+        {
+          "set":{ "_":[ "stencil", "guiButtonModel" ] },
+          "width":100,
+          "x":110, "y":118,
+          "html":"New game",
+          "states":{ "actions":{ "name":"click", "execute":[ { "as":{ "_":"variable" }, "set":{ "score":0, "stage":1 } }, { "_":[ "stencil", "codeGotoStage" ] } ] } }
+        }
+      ],
+      "execute":{
+        "when":{ "_":[ "storage", "sandbox" ] },
+        "object":{
+          "set":{ "_":[ "stencil", "guiButtonModel" ] },
+          "width":100,
+          "x":110, "y":148,
+          "html":"Sandbox",
+          "states":{ "actions":{ "name":"click", "execute":{ "gotoScene":"sandbox", "withTransition":3 } } }
+        }
+      }
+    },
+    "sandbox":{
+      "set":{ "_":[ "stencil", "sceneModel" ] },
+      "execute":{
+        "when":{ "_":[ "storage", "editor" ] },
+        "set":{ "stageData":{ "_":[ "storage", "editor" ] } },
+        "elseExecute":{ "set":{ "stageData":{ "_":[ "new", [] ] } } }
+      },
+      "paletteGap":10,
+      "stagePalette":[
+        { "barLength":32, "qty":90, "stencilName":"goalBar" },
+        { "barLength":32, "qty":90, "stencilName":"ironBar" },
+        { "barLength":32, "qty":90, "stencilName":"roulantLeft" },
+        { "barLength":32, "qty":90, "stencilName":"roulantRight" },
+        { "barLength":32, "qty":90, "stencilName":"spikeBar" },
+        { "qty":90, "stencilName":"bowlingBall" },
+        { "qty":90, "stencilName":"beachBall" },
+        { "qty":90, "stencilName":"balloon" },
+        { "qty":90, "stencilName":"cheese" },
+        { "qty":90, "stencilName":"fan" },
+        { "qty":90, "stencilName":"carpet" },
+        { "qty":90, "stencilName":"cat" },
+        { "qty":90, "stencilName":"mice" },
+        { "qty":90, "stencilName":"catapult" },
+        { "qty":90, "stencilName":"switch" }
+      ],
+      "states":[
+        {
+          "execute":[
+            {
+              "as":{ "_":[ "object", "paletteButton" ] },
+              "set":{ "label":"", "tileY":3, "x":300, "tooltip":{ "_":[ "stencil", { "_":[ "this", "itemData", "stencilName" ] }, "tooltip" ] } }
+            },
+            { "as":{ "_":[ "object", "sceneobject" ] }, "set":{ "isChangeable":1 } },
+            {
+              "object":[
+                {
+                  "type":"tooltipobject",
+                  "width":248, "height":24,
+                  "zIndex":10100, "x":77, "y":176,
+                  "color":"#fff",
+                  "font":"cga", "fontSize":8, "lineHeight":24, "html":"Welcome!"
+                },
+                {
+                  "set":{ "_":[ "stencil", "toolButtonModel" ] },
+                  "tileX":92, "tileY":16,
+                  "x":274, "y":180,
+                  "animations":{ "deselected":{ "frame":0 }, "selected":{ "frames":2, "speed":1, "loopTo":0 } },
+                  "toolId":"enlarge",
+                  "tooltip":"Enlarge object"
+                },
+                {
+                  "set":{ "_":[ "stencil", "toolButtonModel" ] },
+                  "tileX":138, "tileY":16,
+                  "x":251, "y":180,
+                  "animations":{ "deselected":{ "frame":0 }, "selected":{ "frames":2, "speed":1, "loopTo":0 } },
+                  "toolId":"shrink",
+                  "tooltip":"Shrink object"
+                },
+                {
+                  "set":{ "_":[ "stencil", "buttonModel" ] },
+                  "image":"buttons", "tileX":230, "tileY":16, "width":23, "height":16,
+                  "x":4, "y":180,
+                  "tooltip":"Quit sandbox",
+                  "states":{ "actions":{ "name":"click", "execute":[ { "_":[ "stencil", "codeSaveSandbox" ] }, { "gotoScene":"intro", "withTransition":3 } ] } }
+                },
+                {
+                  "set":{ "_":[ "stencil", "buttonModel" ] },
+                  "image":"buttons", "tileX":207, "tileY":16, "width":23, "height":16,
+                  "x":27, "y":180,
+                  "tooltip":"Import sandbox",
+                  "states":{ "actions":{ "name":"click", "execute":{ "as":{ "_":"scene" }, "set":{ "state":"loadScene" } } } }
+                },
+                {
+                  "set":{ "_":[ "stencil", "buttonModel" ] },
+                  "image":"buttons", "tileX":184, "tileY":16, "width":23, "height":16,
+                  "x":50, "y":180,
+                  "tooltip":"Export sandbox",
+                  "states":{ "actions":{ "name":"click", "execute":{ "as":{ "_":"scene" }, "set":{ "state":"saveScene" } } } }
+                }
+              ]
+            },
+            { "set":{ "state":"editing" } }
+          ]
+        },
+        { "name":"editing", "actions":{ "name":"playing", "execute":{ "_":[ "stencil", "codeSaveSandbox" ] } } },
+        {
+          "name":"saveScene",
+          "execute":{ "set":{ "datasetteWorking":0 } },
+          "code":[
+            {
+              "name":"Sequence",
+              "data":[
+                { "_":[ "stencil", "codeSaveSandbox" ] },
+                { "set":{ "datasetteWorking":1 } },
+                { "wait":1, "loop":1, "until":{ "_":[ "this", "datasetteWorking", "not" ] } },
+                { "set":{ "state":"editing" } }
+              ]
+            },
+            {
+              "name":"Datasette",
+              "data":{
+                "when":{ "_":[ "this", "datasetteWorking" ] },
+                "prompt":"Copy this text and share as you like!",
+                "data":{ "_":[ "storage", "editor", "jsonEncode" ] },
+                "execute":{ "set":{ "datasetteWorking":0 } }
+              }
+            }
+          ]
+        },
+        {
+          "name":"loadScene",
+          "execute":{ "set":{ "datasetteWorking":0 } },
+          "code":[
+            {
+              "name":"Datasette",
+              "data":{
+                "when":{ "_":[ "this", "datasetteWorking" ] },
+                "prompt":"Paste the custom sandbox data here!",
+                "execute":{ "set":{ "datasetteWorking":0, "loadedData":{ "_":"that" } } }
+              }
+            },
+            {
+              "name":"Sequence",
+              "data":[
+                { "set":{ "datasetteWorking":1 } },
+                { "wait":1, "loop":1, "until":{ "_":[ "this", "datasetteWorking", "not" ] } },
+                {
+                  "when":{ "_":[ "this", "loadedData" ] },
+                  "execute":[
+                    { "set":{ "stageData":{ "_":[ "this", "loadedData", "jsonDecode" ] } } },
+                    { "when":{ "_":[ "this", "stageData", "not" ] }, "set":{ "stageData":{ "_":[ "new", [] ] } } },
+                    { "_":[ "stencil", "codeLoadData" ] },
+                    { "as":{ "_":[ "object", "sceneobject" ] }, "set":{ "isChangeable":1 } },
+                    { "set":{ "state":"editor" } }
+                  ],
+                  "elseExecute":{ "set":{ "state":"editor" } }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "stage1":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "stageData":[
+        { "x":22, "y":114, "barLength":32, "objFlip":0, "stencilName":"roulantRight" },
+        { "x":243, "y":32, "barLength":32, "objFlip":0, "stencilName":"goalBar" },
+        { "x":21, "y":98, "mustReachGoal":1, "stencilName":"beachBall" }
+      ],
+      "stageDescription":"Throw the beach ball into the target area.",
+      "stagePalette":[ { "qty":5, "stencilName":"carpet" } ],
+      "stageSolution":[ { "x":84, "y":168, "stencilName":"carpet" }, { "x":174, "y":135, "stencilName":"carpet" }, { "x":245, "y":86, "stencilName":"carpet" } ],
+      "stageTitle":"Boom Shaka Laka"
+    },
+    "stage10":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "stageData":[
+        { "x":56, "y":104, "barLength":48, "objFlip":true, "stencilName":"spikeBar" },
+        { "x":16, "y":24, "barLength":32, "objFlip":true, "stencilName":"ironBar" },
+        { "x":16, "y":16, "barLength":48, "objFlip":0, "stencilName":"ironBar" },
+        { "x":56, "y":24, "barLength":32, "objFlip":true, "stencilName":"ironBar" },
+        { "x":16, "y":56, "barLength":48, "objFlip":0, "stencilName":"ironBar" },
+        { "x":27, "y":48, "mustReachGoal":1, "objFlip":0, "stencilName":"mice" },
+        { "x":35, "y":64, "objFlip":3, "stencilName":"switch" },
+        { "x":152, "y":122, "stencilName":"balloon" },
+        { "x":16, "y":165, "barLength":48, "objFlip":0, "stencilName":"goalBar" },
+        { "x":16, "y":157, "barLength":48, "objFlip":0, "stencilName":"goalBar" },
+        { "x":189, "y":113, "objFlip":1, "stencilName":"fan" }
+      ],
+      "stageDescription":"Free the mice!",
+      "stagePalette":[
+        { "barLength":24, "qty":1, "stencilName":"roulantRight" },
+        { "barLength":32, "qty":1, "stencilName":"ironBar" },
+        { "qty":2, "stencilName":"carpet" }
+      ],
+      "stageSolution":[
+        { "x":142, "y":113, "barLength":24, "objFlip":0, "stencilName":"roulantRight" },
+        { "x":140, "y":77, "barLength":32, "objFlip":false, "stencilName":"ironBar" },
+        { "x":182, "y":158, "stencilName":"carpet" }
+      ],
+      "stageTitle":"Mice in trap"
+    },
+    "stage11":{
+      "object":{ "_":[ "stencil", "pointer" ] },
+      "execute":[ { "as":{ "_":"storage" }, "set":{ "sandbox":1, "score":0, "stage":1 } }, { "publishScore":{ "_":[ "variable", "score" ] } } ],
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[
+            {
+              "object":{ "width":320, "height":10, "x":0, "y":10, "color":"#fff", "font":"cga", "fontSize":8, "lineHeight":10, "textAlign":"center", "html":"Wow!" }
+            },
+            { "wait":25 },
+            {
+              "when":{ "_":[ "variable", "score", "isGreaterThan", { "_":[ "variable", "hiscore" ] } ] },
+              "execute":[
+                { "as":{ "_":"variable" }, "set":{ "hiscore":{ "_":[ "variable", "score" ] } } },
+                { "as":{ "_":"storage" }, "set":{ "hiscore":{ "_":[ "variable", "score" ] } } },
+                {
+                  "object":{
+                    "width":320, "height":10,
+                    "x":0, "y":30,
+                    "color":"#fff",
+                    "font":"cga", "fontSize":8, "lineHeight":10, "textAlign":"center", "html":"That's a new hi-score, so..."
+                  }
+                }
+              ],
+              "elseExecute":{
+                "object":{
+                  "width":320, "height":10,
+                  "x":0, "y":30,
+                  "color":"#fff",
+                  "font":"cga", "fontSize":8, "lineHeight":10, "textAlign":"center", "html":"You've completed the game, so..."
+                }
+              }
+            },
+            { "wait":25 },
+            {
+              "object":{
+                "width":320, "height":10,
+                "x":0, "y":50,
+                "color":"#fff",
+                "font":"cga", "fontSize":8, "lineHeight":10, "textAlign":"center", "html":"...you deserved my blinking..."
+              }
+            },
+            { "wait":25 },
+            {
+              "object":{
+                "image":"title", "width":283, "height":23,
+                "x":18, "y":70,
+                "states":{
+                  "code":{
+                    "name":"Sequence",
+                    "data":[
+                      { "set":{ "bgcolor":"#ff55ff" }, "wait":10 },
+                      { "set":{ "bgcolor":"#55ffff" }, "wait":10 },
+                      { "set":{ "bgcolor":"#fff" }, "wait":10 },
+                      { "loopTo":0 }
+                    ]
+                  }
+                }
+              }
+            },
+            { "wait":125 },
+            {
+              "object":{
+                "width":320, "height":10,
+                "x":0, "y":103,
+                "color":"#fff",
+                "font":"cga", "fontSize":8, "lineHeight":10, "textAlign":"center", "html":"...and the right to use..."
+              }
+            },
+            { "wait":25 },
+            {
+              "object":{ "width":320, "height":10, "x":0, "y":123, "color":"#fff", "font":"cga", "fontSize":8, "lineHeight":10, "textAlign":"center", "html":"THE SANDBOX!" }
+            },
+            { "wait":25 },
+            {
+              "object":{
+                "width":320, "height":10,
+                "x":0, "y":143,
+                "color":"#fff",
+                "font":"cga", "fontSize":8, "lineHeight":10, "textAlign":"center", "html":"and play as you like!"
+              }
+            },
+            { "wait":25 },
+            {
+              "object":{
+                "set":{ "_":[ "stencil", "guiButtonModel" ] },
+                "width":100,
+                "x":110, "y":163,
+                "html":"Okay",
+                "states":{ "actions":{ "name":"click", "execute":{ "gotoScene":"intro", "withTransition":3 } } }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "stage2":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "stageData":[
+        { "x":238, "y":139, "mustReachGoal":1, "stencilName":"balloon" },
+        { "x":222, "y":65, "barLength":40, "objFlip":false, "stencilName":"spikeBar" },
+        { "x":264, "y":106, "barLength":24, "objFlip":false, "stencilName":"spikeBar" },
+        { "x":182, "y":65, "barLength":40, "objFlip":false, "stencilName":"ironBar" },
+        { "x":174, "y":65, "barLength":56, "objFlip":true, "stencilName":"ironBar" },
+        { "x":149, "y":99, "barLength":24, "objFlip":0, "stencilName":"spikeBar" },
+        { "x":224, "y":167, "barLength":72, "objFlip":0, "stencilName":"roulantRight" },
+        { "x":288, "y":69, "barLength":80, "objFlip":true, "stencilName":"ironBar" },
+        { "x":109, "y":72, "barLength":104, "objFlip":true, "stencilName":"ironBar" },
+        { "x":141, "y":27, "barLength":80, "objFlip":true, "stencilName":"ironBar" },
+        { "x":37, "y":35, "barLength":32, "objFlip":true, "stencilName":"goalBar" },
+        { "x":37, "y":27, "barLength":104, "objFlip":0, "stencilName":"roulantLeft" }
+      ],
+      "stageDescription":"Keep the balloon alive and let it reach the target area.",
+      "stagePalette":[ { "qty":4, "stencilName":"bowlingBall" }, { "qty":4, "stencilName":"fan" } ],
+      "stageSolution":[
+        { "x":208, "y":21, "stencilName":"bowlingBall" },
+        { "x":250, "y":113, "stencilName":"bowlingBall" },
+        { "x":268, "y":8, "stencilName":"bowlingBall" },
+        { "x":273, "y":71, "objFlip":1, "stencilName":"fan" },
+        { "x":203, "y":48, "objFlip":3, "stencilName":"fan" },
+        { "x":151, "y":61, "objFlip":0, "stencilName":"fan" },
+        { "x":272, "y":135, "objFlip":1, "stencilName":"fan" }
+      ],
+      "stageTitle":"Balloon trip"
+    },
+    "stage3":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "stageData":[
+        { "x":7, "y":161, "barLength":280, "objFlip":0, "stencilName":"ironBar" },
+        { "x":279, "y":81, "barLength":8, "objFlip":0, "stencilName":"goalBar" },
+        { "x":134, "y":145, "stencilName":"catapult" },
+        { "x":167, "y":132, "stencilName":"beachBall" },
+        { "x":63, "y":11, "stencilName":"bowlingBall" },
+        { "x":50, "y":36, "barLength":56, "objFlip":0, "stencilName":"ironBar" },
+        { "x":42, "y":4, "objFlip":0, "stencilName":"fan" },
+        { "x":106, "y":56, "stencilName":"beachBall" },
+        { "x":7, "y":9, "barLength":152, "objFlip":true, "stencilName":"ironBar" },
+        { "x":279, "y":89, "barLength":72, "objFlip":true, "stencilName":"ironBar" },
+        { "x":237, "y":85, "mustReachGoal":1, "stencilName":"beachBall" }
+      ],
+      "stageDescription":"Hit the blinking light with the rightmost beach ball.",
+      "stagePalette":[ { "qty":2, "stencilName":"carpet" }, { "barLength":32, "qty":2, "stencilName":"roulantLeft" }, { "qty":1, "stencilName":"catapult" } ],
+      "stageSolution":[
+        { "x":32, "y":127, "stencilName":"carpet" },
+        { "x":80, "y":82, "barLength":32, "objFlip":0, "stencilName":"roulantLeft" },
+        { "x":205, "y":98, "stencilName":"catapult" }
+      ],
+      "stageTitle":"Bounce the blinker"
+    },
+    "stage4":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "stageData":[
+        { "x":201, "y":4, "objFlip":1, "stencilName":"fan" },
+        { "x":56, "y":37, "barLength":200, "objFlip":0, "stencilName":"ironBar" },
+        { "x":191, "y":14, "barLength":24, "objFlip":true, "stencilName":"ironBar" },
+        { "x":171, "y":16, "stencilName":"bowlingBall" },
+        { "x":30, "y":95, "barLength":96, "objFlip":false, "stencilName":"ironBar" },
+        { "x":70, "y":49, "stencilName":"bowlingBall" },
+        { "x":216, "y":62, "mustReachGoal":1, "stencilName":"beachBall" },
+        { "x":22, "y":63, "barLength":40, "objFlip":true, "stencilName":"ironBar" },
+        { "x":126, "y":127, "barLength":56, "objFlip":0, "stencilName":"ironBar" },
+        { "x":238, "y":152, "barLength":56, "objFlip":false, "stencilName":"roulantLeft" },
+        { "x":86, "y":152, "barLength":152, "objFlip":false, "stencilName":"ironBar" },
+        { "x":22, "y":103, "barLength":32, "objFlip":true, "stencilName":"goalBar" },
+        { "x":118, "y":103, "barLength":32, "objFlip":true, "stencilName":"ironBar" },
+        { "x":256, "y":37, "barLength":32, "objFlip":0, "stencilName":"roulantLeft" },
+        { "x":182, "y":119, "barLength":16, "objFlip":true, "stencilName":"ironBar" }
+      ],
+      "stageDescription":"Hit the target area with the beach ball.",
+      "stagePalette":[
+        { "qty":1, "stencilName":"carpet" },
+        { "qty":2, "stencilName":"catapult" },
+        { "barLength":24, "qty":1, "stencilName":"roulantLeft" },
+        { "qty":1, "stencilName":"bowlingBall" }
+      ],
+      "stageSolution":[
+        { "x":263, "y":14, "stencilName":"bowlingBall" },
+        { "x":52, "y":167, "stencilName":"carpet" },
+        { "x":37, "y":79, "stencilName":"catapult" },
+        { "x":131, "y":111, "stencilName":"catapult" },
+        { "x":203, "y":110, "barLength":24, "objFlip":false, "stencilName":"roulantLeft" }
+      ],
+      "stageTitle":"The long journey"
+    },
+    "stage5":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "stageData":[
+        { "x":19, "y":162, "barLength":264, "objFlip":0, "stencilName":"ironBar" },
+        { "x":19, "y":123, "barLength":224, "objFlip":0, "stencilName":"ironBar" },
+        { "x":39, "y":135, "mustReachGoal":1, "stencilName":"balloon" },
+        { "x":268, "y":123, "barLength":16, "objFlip":false, "stencilName":"ironBar" },
+        { "x":19, "y":80, "barLength":16, "objFlip":0, "stencilName":"ironBar" },
+        { "x":63, "y":80, "barLength":224, "objFlip":0, "stencilName":"ironBar" },
+        { "x":279, "y":31, "barLength":48, "objFlip":true, "stencilName":"goalBar" },
+        { "x":22, "y":22, "barLength":264, "objFlip":0, "stencilName":"spikeBar" }
+      ],
+      "stageDescription":"Let the balloon escape!",
+      "stagePalette":[
+        { "qty":2, "stencilName":"cheese" },
+        { "qty":2, "stencilName":"cat" },
+        { "qty":2, "stencilName":"mice" },
+        { "qty":2, "stencilName":"fan" },
+        { "barLength":32, "qty":1, "stencilName":"roulantRight" },
+        { "barLength":32, "qty":3, "stencilName":"ironBar" }
+      ],
+      "stageSolution":[
+        { "x":50, "y":35, "barLength":32, "objFlip":0, "stencilName":"ironBar" },
+        { "x":176, "y":32, "barLength":32, "objFlip":0, "stencilName":"roulantRight" },
+        { "x":66, "y":139, "stencilName":"cheese" },
+        { "x":20, "y":144, "objFlip":0, "stencilName":"cat" },
+        { "x":100, "y":152, "objFlip":true, "stencilName":"mice" },
+        { "x":263, "y":91, "objFlip":1, "stencilName":"fan" },
+        { "x":34, "y":47, "objFlip":0, "stencilName":"fan" },
+        { "x":98, "y":34, "barLength":32, "objFlip":0, "stencilName":"ironBar" }
+      ],
+      "stageTitle":"The ceiling is lava"
+    },
+    "stage6":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "stageData":[
+        { "x":24, "y":39, "barLength":32, "objFlip":0, "stencilName":"ironBar" },
+        { "x":24, "y":70, "barLength":32, "objFlip":0, "stencilName":"ironBar" },
+        { "x":24, "y":101, "barLength":32, "objFlip":0, "stencilName":"ironBar" },
+        { "x":56, "y":19, "barLength":144, "objFlip":true, "stencilName":"ironBar" },
+        { "x":24, "y":133, "barLength":32, "objFlip":0, "stencilName":"ironBar" },
+        { "x":16, "y":19, "barLength":144, "objFlip":true, "stencilName":"ironBar" },
+        { "x":64, "y":153, "objFlip":0, "stencilName":"switch" },
+        { "x":16, "y":163, "barLength":264, "objFlip":false, "stencilName":"ironBar" },
+        { "x":82, "y":133, "barLength":176, "objFlip":0, "stencilName":"ironBar" },
+        { "x":260, "y":22, "stencilName":"beachBall" },
+        { "x":46, "y":30, "mustReachGoal":1, "objFlip":0, "stencilName":"mice" },
+        { "x":25, "y":61, "mustReachGoal":1, "objFlip":0, "stencilName":"mice" },
+        { "x":47, "y":92, "mustReachGoal":1, "objFlip":0, "stencilName":"mice" },
+        { "x":24, "y":109, "barLength":24, "objFlip":true, "stencilName":"goalBar" },
+        { "x":115, "y":97, "barLength":80, "objFlip":0, "stencilName":"ironBar" },
+        { "x":132, "y":64, "barLength":64, "objFlip":0, "stencilName":"ironBar" },
+        { "x":250, "y":21, "barLength":112, "objFlip":true, "stencilName":"ironBar" }
+      ],
+      "stageDescription":"Let one of the mices win the race.",
+      "stagePalette":[ { "qty":1, "stencilName":"fan" }, { "qty":1, "stencilName":"cheese" }, { "qty":2, "stencilName":"carpet" } ],
+      "stageSolution":[
+        { "x":264, "y":131, "objFlip":1, "stencilName":"fan" },
+        { "x":65, "y":19, "stencilName":"cheese" },
+        { "x":82, "y":124, "stencilName":"carpet" },
+        { "x":211, "y":79, "stencilName":"carpet" }
+      ],
+      "stageTitle":"Rat race"
+    },
+    "stage7":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "stageData":[
+        { "x":78, "y":39, "barLength":152, "objFlip":0, "stencilName":"ironBar" },
+        { "x":83, "y":23, "objFlip":0, "stencilName":"cat" },
+        { "x":162, "y":31, "objFlip":true, "stencilName":"mice" },
+        { "x":278, "y":20, "barLength":64, "objFlip":true, "stencilName":"ironBar" },
+        { "x":246, "y":84, "barLength":40, "objFlip":0, "stencilName":"ironBar" },
+        { "x":134, "y":84, "barLength":112, "objFlip":0, "stencilName":"roulantLeft" },
+        { "x":96, "y":126, "stencilName":"carpet" },
+        { "x":15, "y":154, "barLength":272, "objFlip":false, "stencilName":"ironBar" },
+        { "x":15, "y":18, "barLength":136, "objFlip":true, "stencilName":"ironBar" },
+        { "x":266, "y":138, "mustEaten":1, "stencilName":"cheese" },
+        { "x":230, "y":39, "barLength":24, "objFlip":true, "stencilName":"ironBar" }
+      ],
+      "stageDescription":"Let the mice eat the cheese on bottom right.",
+      "stagePalette":[ { "qty":3, "stencilName":"cheese" }, { "qty":2, "stencilName":"fan" }, { "qty":1, "stencilName":"catapult" } ],
+      "stageSolution":[
+        { "x":139, "y":23, "stencilName":"cheese" },
+        { "x":114, "y":6, "objFlip":0, "stencilName":"fan" },
+        { "x":193, "y":47, "stencilName":"cheese" },
+        { "x":30, "y":138, "stencilName":"catapult" }
+      ],
+      "stageTitle":"Food chain"
+    },
+    "stage8":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "stageData":[
+        { "x":200, "y":102, "barLength":24, "objFlip":true, "stencilName":"ironBar" },
+        { "x":236, "y":126, "barLength":32, "objFlip":0, "stencilName":"ironBar" },
+        { "x":244, "y":135, "mustReachGoal":1, "stencilName":"balloon" },
+        { "x":249, "y":118, "objFlip":2, "stencilName":"switch" },
+        { "x":268, "y":53, "barLength":120, "objFlip":true, "stencilName":"ironBar" },
+        { "x":154, "y":9, "stencilName":"beachBall" },
+        { "x":106, "y":126, "barLength":128, "objFlip":false, "stencilName":"ironBar" },
+        { "x":41, "y":29, "barLength":144, "objFlip":true, "stencilName":"ironBar" },
+        { "x":192, "y":134, "barLength":40, "objFlip":true, "stencilName":"goalBar" },
+        { "x":200, "y":134, "barLength":40, "objFlip":true, "stencilName":"ironBar" },
+        { "x":151, "y":134, "barLength":40, "objFlip":true, "stencilName":"spikeBar" }
+      ],
+      "stageDescription":"Reach the target area with the balloon.",
+      "stagePalette":[
+        { "barLength":32, "qty":1, "stencilName":"roulantLeft" },
+        { "barLength":32, "qty":1, "stencilName":"ironBar" },
+        { "qty":2, "stencilName":"fan" },
+        { "qty":2, "stencilName":"mice" },
+        { "qty":2, "stencilName":"cheese" }
+      ],
+      "stageSolution":[
+        { "x":225, "y":19, "barLength":32, "objFlip":0, "stencilName":"roulantLeft" },
+        { "x":83, "y":11, "barLength":32, "objFlip":0, "stencilName":"ironBar" },
+        { "x":113, "y":118, "objFlip":0, "stencilName":"mice" },
+        { "x":209, "y":107, "stencilName":"cheese" },
+        { "x":47, "y":13, "objFlip":3, "stencilName":"fan" },
+        { "x":257, "y":20, "objFlip":1, "stencilName":"fan" }
+      ],
+      "stageTitle":"So near and so far"
+    },
+    "stage9":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "stageData":[
+        { "x":60, "y":129, "barLength":24, "objFlip":true, "stencilName":"ironBar" },
+        { "x":24, "y":12, "objFlip":false, "stencilName":"mice" },
+        { "x":14, "y":20, "barLength":72, "objFlip":0, "stencilName":"ironBar" },
+        { "x":52, "y":55, "barLength":144, "objFlip":0, "stencilName":"ironBar" },
+        { "x":258, "y":46, "objFlip":true, "stencilName":"cat" },
+        { "x":225, "y":20, "barLength":40, "objFlip":true, "stencilName":"ironBar" },
+        { "x":261, "y":63, "barLength":16, "objFlip":0, "stencilName":"ironBar" },
+        { "x":163, "y":104, "barLength":80, "objFlip":false, "stencilName":"ironBar" },
+        { "x":265, "y":71, "barLength":80, "objFlip":true, "stencilName":"ironBar" },
+        { "x":121, "y":20, "barLength":72, "objFlip":0, "stencilName":"roulantLeft" },
+        { "x":40, "y":130, "mustPop":1, "stencilName":"balloon" },
+        { "x":36, "y":121, "barLength":32, "objFlip":0, "stencilName":"ironBar" },
+        { "x":12, "y":64, "barLength":104, "objFlip":true, "stencilName":"ironBar" },
+        { "x":8, "y":32, "objFlip":0, "stencilName":"fan" },
+        { "x":20, "y":160, "barLength":264, "objFlip":0, "stencilName":"ironBar" },
+        { "x":189, "y":112, "barLength":32, "objFlip":true, "stencilName":"ironBar" },
+        { "x":193, "y":20, "barLength":32, "objFlip":0, "stencilName":"spikeBar" },
+        { "x":173, "y":87, "stencilName":"beachBall" }
+      ],
+      "stageDescription":"Just pop the balloon.",
+      "stagePalette":[
+        { "qty":2, "stencilName":"cheese" },
+        { "qty":2, "stencilName":"catapult" },
+        { "barLength":16, "qty":2, "stencilName":"ironBar" }
+      ],
+      "stageSolution":[
+        { "x":175, "y":2, "stencilName":"cheese" },
+        
+        { "x":46, "y":144, "stencilName":"catapult" },
+        { "x":222, "y":71, "barLength":16, "objFlip":true, "stencilName":"ironBar" }
+      ],
+      "stageTitle":"The great escape"
+    }
+  }
+}
