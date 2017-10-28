@@ -1,0 +1,710 @@
+{
+  
+
+  "*":"If you're reading this I managed to bring you in front of a videogame source code!",
+  "*":"You're a step closer to be a developer now! Oh... that thing about the techniques?",
+  "*":"That was a lie... at least, for now. :) Opensource moves in unpredictable way... Spooky!",
+  "*":"Anyway, there are a lot of interesting things I've hidden in this game source code...",
+  "*":"Just keep reading! Bye and thank you for your time! - KesieV",
+
+
+  "name":"Multytron",
+  "author":"KesieV",
+  "year":2017,
+  "genre":"Shooter",
+  "description":"<p>According to <a href='https://en.wikipedia.org/wiki/Urban_legend'>Wikipedia</a>, a urban legend is a form of <i>modern folklore</i>. That means that having some sort of urban legend about something mostly means that's shared by a wide community of people who perceives it as a form of <i>popular culture</i>.<br>We <i>actually</i> have a number of urban legends around the videogame world so, if we can argue for years about videogames being an art form or not, nothing can be said about it being a very important slice of humanity culture. Not bad as <i>second place prize</i>, huh.</p><p>Besides fanboysm, urban legends are mostly fictional events, unrealistically macabre or funny, <i>presented</i> as true - and so the videogame urban legends are: wrapped in a coat of mystery, we will never know how much truth they are hiding.<br>Coming up with the <a href='https://en.wikipedia.org/wiki/Polybius_(urban_legend)'>Polybius</a> story at this point of the article it's pretty obvious. Polybius was supposed to be a videogame placed in few copies during 1981 in Portland arcades, coded by the mysterious Sinnesl&#246;schen for FBI in order to test mind control technologies on people.<br>Everything about this urban legend has been already said, probably culminating with the <a href='https://www.youtube.com/channel/UCE1jXbVAGJQEORz9nZqb5bQ'>Ahoy</a>'s documentary <a href='https://www.youtube.com/watch?v=_7X6Yeydgyg'>POLYBIUS - The Video Game That Doesn't Exist</a> as the best compendium.<br></p><p>The Wright! project tries to explore the thin line between right and wrong crossing the videogame world... and It's Halloween already! So... why not trying to scare you a little, this time? With <i>something true</i>, maybe?</p><p>Speaking of games... do you know the <a hrf='https://en.wikipedia.org/wiki/Blue_Whale_(game)'>Blue Whale game</a>? It's supposed that, in 2016, a group of a russian social network administrators guided a group of online players in a <i>50-days long real world violent game</i> that ended with the player's suicide.</p><p>Is this story true? Well, we don't know it for sure... but <i>it didn't stop it to become real</i>.<br>A wave of <i>true</i> attempted and succeeded child suicides hit the world the next year, together with the arrest of many supporters, promoters and even <i>supposed fathers</i> of the game.</p><p>Is this surprising? Be honest: it isn't. We <i>want these made up stories to be real</i> because <i>our daily life is boring</i>. We aren't able to learn a lesson or even accept these fictional stories until <i>they are true</i>. Telling these stories or reciting them isn't enough... we've to <i>enact</i> them, in order to becoming witness of the legend and finally proving that <i>real life is as interesting than fiction</i>.</p><p>It's quite naive, isn't it? You've just to give life a closer look in the right way to see its marvels. But there are people that simply can't understand.</p><p>That's why I'm gifting the world with this issue game: <b>Multytron</b>. It's the first opensource attempt to actually <i>implement</i> Polybius with the effort of the community. It's still a draft and the effects I've tested on my friends are quite mild right now... but I <i>hope</i> that human foolishness will bring more ideas to the project, maybe coming from more scientific studies on the topic in the future - even when I'll be dead.</p><p>Use arrows for moving and the A button for firing. Read carefully the initial disclaimer. More info about the techniques I've used are into the <a href='https://github.com/kesiev/Wright/tree/master/tapes/multytron'>game sources</a> - have a look if you're curious. Good luck.</p>",
+  "screenshots":[ "multytron-1.png", "multytron-2.png" ],
+  "hardware":{
+    "width":256,
+    "height":192,
+    "filter":"retro",
+    "fps":50
+  },
+  "audioChannels":{
+    "sfx":{ "volume":1, "samples":[ "fire", "scream", "scream2", "explode2", "beep", "beep2", "blam", "beep3" ] },
+    "music":{ "volume":0.9, "looping":1, "samples":[ "shooter", "trance" ] }
+  },
+  "cheats":{},
+  "resources":{
+    "cores":"cores.png",
+    "enemies":"enemies.png",
+    "hypno1":"hypno1.png",
+    "hypno2":"hypno2.png",
+    "hypno3":"hypno3.png",
+    "hypno4":"hypno4.png",
+    "hypno5":"hypno5.png",
+    "hypno6":"hypno6.png",
+    "hypno7":"hypno7.png",
+    "hypno8":"hypno8.png",
+    "hypno9":"hypno9.png",
+    "shooter":"shooter.ogg",
+    "spectrum":"spectrum.font",
+    "sprites":"sprites.png",
+    "title":"title.png",
+    "trance":"trance.ogg",
+    "beep":"../default/zxsounds/beep.ogg",
+    "beep2":"../default/zxsounds/beep2.ogg",
+    "beep3":"../default/zxsounds/beep3.ogg",
+    "blam":"../default/zxsounds/blam.ogg",
+    "explode2":"../default/zxsounds/explode2.ogg",
+    "fire":"../default/zxsounds/fire.ogg",
+    "scream":"../default/zxsounds/scream.ogg",
+    "scream2":"../default/zxsounds/scream2.ogg"
+  },
+  "stencils":{
+    "codeCore":[
+      { "sum":0.01, "to":{ "_":[ "this", "timer" ] } },
+      { "sum":0.02, "to":{ "_":[ "this", "timer2" ] } },
+      { "sum":{ "_":[ "this", "timer", "*", { "_":[ "variable", "speedRatio" ] }, "sin", "*", 3 ] }, "to":{ "_":[ "this", "angle" ] } },
+      { "set":{ "scale":{ "_":[ "this", "spawningScale", "+", { "_":[ "this", "timer2", "sin", "*", 0.1 ] } ] } } }
+    ],
+    "codeSubcore":[
+      { "sum":0.02, "to":{ "_":[ "this", "timer" ] } },
+      { "sum":0.01, "to":{ "_":[ "this", "timer2" ] } },
+      { "sum":{ "_":[ "this", "timer", "*", { "_":[ "variable", "speedRatio" ] }, "sin", "*", 10 ] }, "to":{ "_":[ "this", "angle" ] } },
+      { "set":{ "scale":{ "_":[ "this", "spawningScale", "+", { "_":[ "this", "timer2", "sin", "*", 0.1 ] } ] } } }
+    ],
+    "player":{
+      "image":"sprites", "width":16, "height":16,
+      "zIndex":110, "x":192, "y":88,
+      "states":[
+        {
+          "set":{ "visible":1, "invulnerability":100 },
+          "code":[
+            { "name":"Player", "data":{ "horizontal":{ "control":1, "gotoZero":1 }, "vertical":{ "control":1, "gotoZero":1 } } },
+            {
+              "name":"Physics",
+              "data":{ "walls":{ "area":{ "width":128, "height":192, "x":128, "y":0 }, "restitution":0 }, "limitX":[ -1, 1 ], "limitY":[ -1, 1 ] }
+            },
+            {
+              "name":"Execute",
+              "data":{
+                "when":{ "_":[ "objectTyped", "bullet", "not" ] },
+                "execute":[
+                  {
+                    "when":{ "_":[ "this", "invulnerability" ] },
+                    "execute":[ { "set":{ "frame":1 } }, { "subtract":1, "to":{ "_":[ "this", "invulnerability" ] } } ],
+                    "elseExecute":[ { "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "killPlayer" ] } ] }, "set":{ "state":"dead" } }, { "set":{ "frame":0 } } ]
+                  },
+                  {
+                    "when":{ "_":[ "keyA", "isHit" ] },
+                    "execute":{ "object":{ "set":{ "_":[ "stencil", "playerBullet" ] }, "x":{ "_":[ "that", "x" ] }, "y":{ "_":[ "that", "y", "+", 6 ] } }, "playAudio":"fire" }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name":"dead",
+          "execute":{ "playAudio":"blam" },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "subtract":1, "to":{ "_":[ "variable", "lives" ] } },
+              { "set":{ "visible":0, "forceX":0, "forceY":0 } },
+              { "object":{ "set":{ "_":[ "stencil", "explosion" ] }, "at":{ "_":"that" } } },
+              { "wait":50 },
+              { "when":{ "_":[ "variable", "lives" ] }, "set":{ "state":"default" }, "elseExecute":{ "as":{ "_":"scene" }, "set":{ "state":"gameover" } } }
+            ]
+          }
+        }
+      ]
+    },
+    "playerBullet":{
+      "type":"bullet",
+      "image":"sprites", "tileY":16, "width":4, "height":4,
+      "zIndex":110,
+      "states":{
+        "execute":{ "applyVector":{ "angle":{ "_":[ "this", "angleTo", { "_":[ "objectTyped", "core" ] } ] }, "length":2 } },
+        "code":[
+          { "name":"Physics" },
+          {
+            "name":"Execute",
+            "data":[
+              { "when":{ "_":[ "this", "x", "isLessEqualThan", 128 ] }, "remove":1 },
+              {
+                "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "playerhitable" ] } ] },
+                "execute":[ { "as":{ "_":"that" }, "executeAction":"hit" }, { "remove":1 } ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "enemy":{
+      "type":[ "playerhitable", "killPlayer", "enemy" ],
+      "image":"enemies", "width":16, "height":16,
+      "zIndex":100,
+      "visible":0, "originX":"8px", "originY":"8px",
+      "spin":0,
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":[
+            { "sum":{ "_":[ "this", "spin", "*", { "_":[ "variable", "speedRatio" ] } ] }, "to":{ "_":[ "this", "angle" ] } },
+            { "when":{ "_":[ "variable", "blinkingEnemy" ] }, "set":{ "frame":{ "_":[ "randomNumber", { "_":[ "randomNumber", [ 0, 6 ] ] } ] } } }
+          ]
+        },
+        "actions":{
+          "name":"hit",
+          "execute":[
+            { "playAudio":{ "_":[ "this", "killAudio" ] } },
+            { "object":{ "set":{ "_":[ "stencil", "explosion" ] }, "at":{ "_":"that" } } },
+            { "sum":100, "to":{ "_":[ "variable", "score" ] } },
+            { "remove":1 }
+          ]
+        }
+      }
+    },
+    "core":{
+      "type":[ "core", "killPlayer" ],
+      "image":"cores", "width":48, "height":48,
+      "zIndex":99, "x":104, "y":72,
+      "originX":"24px", "originY":"24px",
+      "enemyOriginX":120,
+      "enemyOriginY":88,
+      "states":[
+        {
+          "execute":{
+            "when":{ "_":[ "objectTyped", "enemy", "not" ] },
+            "execute":[
+              { "sum":{ "_":[ "variable", "level", "*", 10 ] }, "to":{ "_":[ "variable", "score" ] } },
+              { "sum":1, "to":{ "_":[ "variable", "level" ] } },
+              {
+                "when":{ "_":[ "variable", "level", "isGreaterThan", 9 ] },
+                "set":{ "audioSet":[ "scream", "scream2" ] },
+                "elseExecute":{ "set":{ "audioSet":[ "beep", "beep2" ] } }
+              },
+              {
+                "set":{
+                  "distanceRatio":0,
+                  "enemyDistances":{ "_":[ "new", [] ] },
+                  "enemyFormation":{ "_":[ "new", [] ] },
+                  "enemyRotationSpin":{ "_":[ "new", [] ] },
+                  "enemyWaving":{ "_":[ "new", [] ] },
+                  "spawningDistance":0,
+                  "spawningScale":0,
+                  "timer":0,
+                  "timer2":0
+                }
+              },
+              { "times":3, "as":{ "_":[ "randomValue", { "_":[ "stencil", "dataFormations", "waving" ] } ] }, "pushInto":{ "_":[ "that", "enemyWaving" ] } },
+              { "times":3, "as":{ "_":[ "randomNumber", [ 3, 12 ] ] }, "pushInto":{ "_":[ "that", "enemyFormation" ] } },
+              { "set":{ "counter":20 } },
+              {
+                "times":3,
+                "execute":[
+                  { "as":{ "_":[ "this", "counter" ] }, "pushInto":{ "_":[ "that", "enemyDistances" ] } },
+                  { "sum":{ "_":[ "randomNumber", [ 20, 30 ] ] }, "to":{ "_":[ "this", "counter" ] } }
+                ]
+              },
+              { "times":3, "as":{ "_":[ "randomValue", [ -1, 1 ] ] }, "pushInto":{ "_":[ "that", "enemyRotationSpin" ] } },
+              { "set":{ "counter2":0 } },
+              {
+                "times":{ "_":[ "this", "enemyFormation", "count" ] },
+                "execute":[
+                  {
+                    "set":{
+                      "counter":0,
+                      "enemyFrame":{ "_":[ "randomNumber", [ 0, 6 ] ] },
+                      "enemyTileY":{ "_":[ "randomNumber", [ 0, 5 ], "*", 16 ] },
+                      "spin":{ "_":[ "randomValue", [ -1, -2, 1, 2 ] ] }
+                    }
+                  },
+                  {
+                    "times":{ "_":[ "this", "enemyFormation", { "_":[ "this", "counter2" ] } ] },
+                    "execute":[
+                      { "set":{ "enemyType":{ "_":[ "enemy-", ".", { "_":[ "this", "counter2" ] }, ".", "~", ".", { "_":[ "this", "counter" ] } ] } } },
+                      {
+                        "object":{
+                          "type":{ "_":[ "that", "enemyType" ] },
+                          "set":{ "_":[ "stencil", "enemy" ] },
+                          "tileY":{ "_":[ "that", "enemyTileY" ] },
+                          "frame":{ "_":[ "that", "enemyFrame" ] },
+                          "killAudio":{ "_":[ "randomValue", { "_":[ "that", "audioSet" ] } ] },
+                          "spin":{ "_":[ "that", "spin" ] }
+                        }
+                      },
+                      { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+                    ]
+                  },
+                  { "sum":1, "to":{ "_":[ "this", "counter2" ] } }
+                ]
+              },
+              { "as":{ "_":[ "objectTyped", "core" ] }, "set":{ "frame":{ "_":[ "randomNumber", [ 0, 4 ] ] } } },
+              { "as":{ "_":[ "objectTyped", "subcore" ] }, "set":{ "frame":{ "_":[ "randomNumber", [ 0, 4 ] ] }, "state":"default" } },
+              { "_":[ "stencil", "dataHypno", "offAll" ] },
+              { "when":{ "_":[ "variable", "level", "isGreaterThan", 1 ] }, "execute":{ "_":[ "stencil", "dataHypno", "starfield", "on" ] } },
+              { "when":{ "_":[ "variable", "level", "isGreaterThan", 2 ] }, "execute":{ "_":[ "stencil", "dataHypno", "tunnel", "on" ] } },
+              { "when":{ "_":[ "variable", "level", "isGreaterThan", 4 ] }, "execute":{ "_":[ "stencil", "dataHypno", "hypno", "on" ] } },
+              {
+                "when":{ "_":[ "variable", "level", "isEqualTo", 10 ] },
+                "execute":[ { "playAudio":"trance", "stopChannel":"music" }, { "playAudio":"scream" }, { "playAudio":"scream2" } ]
+              },
+              {
+                "when":{ "_":[ "variable", "level", "isGreaterThan", 12 ] },
+                "execute":{ "when":{ "_":[ "variable", "speedRatio", "isLessThan", 3 ] }, "sum":0.5, "to":{ "_":[ "variable", "speedRatio" ] } }
+              },
+              { "when":{ "_":[ "variable", "level", "isEqualTo", 6 ] }, "execute":{ "_":[ "stencil", "dataHypno", "message", "on" ] } },
+              {
+                "as":{ "_":"variable" },
+                "set":{
+                  "blinkingEnemy":{ "_":[ "variable", "level", "isGreaterThan", 12 ] },
+                  "blinkingHypno":{ "_":[ "variable", "level", "isGreaterThan", 10 ] },
+                  "blinkingStars":{ "_":[ "variable", "level", "isGreaterThan", 6 ] },
+                  "blinkingTunnel":{ "_":[ "variable", "level", "isGreaterThan", 8 ] },
+                  "hypnoLightColors":{ "_":[ "variable", "level", "isGreaterThan", 14 ] },
+                  "notifyMessage":{ "_":[ "variable", "level", "isGreaterThan", 11 ] }
+                }
+              }
+            ]
+          },
+          "code":{
+            "name":"Execute",
+            "data":[
+              { "_":[ "stencil", "codeCore" ] },
+              { "when":{ "_":[ "this", "spawningDistance", "isLessThan", 1 ] }, "sum":0.005, "to":{ "_":[ "this", "spawningDistance" ] } },
+              { "when":{ "_":[ "this", "spawningScale", "isLessThan", 1 ] }, "sum":0.005, "to":{ "_":[ "this", "spawningScale" ] } },
+              { "set":{ "distanceRatio":{ "_":[ "this", "timer", "sin", "*", 0.2, "+", { "_":[ "this", "spawningDistance" ] } ] } } },
+              { "set":{ "counter2":0 } },
+              {
+                "times":{ "_":[ "this", "enemyFormation", "count" ] },
+                "execute":[
+                  { "set":{ "counter":0 } },
+                  {
+                    "times":{ "_":[ "this", "enemyFormation", { "_":[ "this", "counter2" ] } ] },
+                    "execute":[
+                      { "set":{ "ang":{ "_":[ 6.28, "/", { "_":[ "this", "enemyFormation", { "_":[ "this", "counter2" ] } ] }, "*", { "_":[ "this", "counter" ] } ] } } },
+                      {
+                        "as":{ "_":[ "objectTyped", { "_":[ "enemy-", ".", { "_":[ "this", "counter2" ] }, ".", "~", ".", { "_":[ "this", "counter" ] } ] } ] },
+                        "set":{
+                          "x":{ "_":[ "that", "enemyOriginX", "+", { "_":[ "that", "enemyDistances", { "_":[ "that", "counter2" ] }, "+", { "_":[ "that", "timer2", "*", { "_":[ "variable", "speedRatio" ] }, "sin", "*", { "_":[ "that", "enemyWaving", { "_":[ "that", "counter2" ] }, "wave", { "_":[ "that", "counter" ] } ] } ] }, "*", { "_":[ "that", "timer", "*", { "_":[ "variable", "speedRatio" ] }, "*", { "_":[ "that", "enemyRotationSpin", { "_":[ "that", "counter2" ] } ] }, "+", { "_":[ "that", "ang" ] }, "sin" ] }, "*", { "_":[ "that", "distanceRatio" ] } ] } ] }, "y":{ "_":[ "that", "enemyOriginY", "+", { "_":[ "that", "enemyDistances", { "_":[ "that", "counter2" ] }, "+", { "_":[ "that", "timer2", "*", { "_":[ "variable", "speedRatio" ] }, "sin", "*", { "_":[ "that", "enemyWaving", { "_":[ "that", "counter2" ] }, "wave", { "_":[ "that", "counter" ] } ] } ] }, "*", { "_":[ "that", "timer", "*", { "_":[ "variable", "speedRatio" ] }, "*", { "_":[ "that", "enemyRotationSpin", { "_":[ "that", "counter2" ] } ] }, "+", { "_":[ "that", "ang" ] }, "cos" ] }, "*", { "_":[ "that", "distanceRatio" ] } ] } ] },
+                          "visible":1
+                        }
+                      },
+                      { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+                    ]
+                  },
+                  { "sum":1, "to":{ "_":[ "this", "counter2" ] } }
+                ]
+              },
+              { "when":{ "_":[ "objectTyped", "enemy", "not" ] }, "set":{ "state":"newwave" } }
+            ]
+          }
+        },
+        {
+          "name":"newwave",
+          "execute":{ "as":{ "_":[ "objectTyped", "subcore" ] }, "set":{ "state":"newwave" } },
+          "code":{
+            "name":"Execute",
+            "data":[
+              { "_":[ "stencil", "codeCore" ] },
+              {
+                "when":{ "_":[ "this", "spawningScale", "isGreaterThan", 0 ] },
+                "subtract":0.05,
+                "to":{ "_":[ "this", "spawningScale" ] },
+                "elseExecute":{ "set":{ "spawningScale":0, "state":"default" } }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "dataDarkColors":[ "#7f0000", "#007f00", "#00007f", "#7f7f00", "#007f7f", "#7f007f" ],
+    "dataFormations":{
+      "waving":[
+        { "wave":[ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ] },
+        { "wave":[ 0, -20, 0, -20, 0, -20, 0, -20, 0, -20, 0, -20 ] },
+        { "wave":[ -20, 0, -20, 0, -20, 0, -20, 0, -20, 0, -20, 0 ] },
+        { "wave":[ 0, 20, 0, 20, 0, 20, 0, 20, 0, 20, 0, 20 ] },
+        { "wave":[ 20, 0, 20, 0, 20, 0, 20, 0, 20, 0, 20, 0 ] },
+        { "wave":[ 20, -20, 20, -20, 20, -20, 20, -20, 20, -20, 20, -20 ] },
+        { "wave":[ -20, 20, -20, 20, -20, 20, -20, 20, -20, 20, -20, 20 ] }
+      ]
+    },
+    "dataHypno":{
+      "hypno":{
+        "off":{ "as":{ "_":[ "object", "hhypno" ] }, "remove":1 },
+        "on":{
+          "object":[
+            {
+              "set":{ "_":[ "stencil", "hypnoModel" ] },
+              "zIndex":10,
+              "bgcolor":{ "_":[ "randomValue", { "_":[ "stencil", "dataDarkColors" ] } ] },
+              "states":{
+                "code":{
+                  "name":"Execute",
+                  "data":{
+                    "when":{ "_":[ "variable", "blinkingHypno" ] },
+                    "execute":{
+                      "when":{ "_":[ "variable", "hypnoLightColors" ] },
+                      "set":{ "bgcolor":{ "_":[ "randomValue", { "_":[ "stencil", "dataLightColors" ] } ] } },
+                      "elseExecute":{ "set":{ "bgcolor":{ "_":[ "randomValue", { "_":[ "stencil", "dataDarkColors" ] } ] } } }
+                    }
+                  }
+                }
+              }
+            },
+            { "set":{ "_":[ "stencil", "hypnoModel" ] }, "zIndex":11 }
+          ]
+        }
+      },
+      "message":{
+        "off":{ "as":{ "_":[ "object", "hmessage" ] }, "remove":1 },
+        "on":{
+          "object":{
+            "type":"hmessage",
+            "states":{
+              "code":{
+                "name":"Sequence",
+                "data":[
+                  { "wait":{ "_":[ "randomNumber", [ 1500, 2000 ], "/", { "_":[ "variable", "speedRatio" ] }, "floor" ] } },
+                  { "when":{ "_":[ "variable", "notifyMessage" ] }, "playAudio":"beep3" },
+                  { "object":{ "set":[ { "_":[ "stencil", "messageModel" ] }, { "_":[ "randomValue", { "_":[ "stencil", "dataMessages" ] } ] } ] } },
+                  { "loopTo":0 }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "offAll":[
+        { "_":[ "stencil", "dataHypno", "starfield", "off" ] },
+        { "_":[ "stencil", "dataHypno", "tunnel", "off" ] },
+        { "_":[ "stencil", "dataHypno", "hypno", "off" ] }
+      ],
+      "starfield":{
+        "off":{ "as":{ "_":[ "object", "hstarfield" ] }, "remove":1 },
+        "on":{
+          "times":40,
+          "object":{
+            "type":"hstarfield",
+            "distance":{ "_":[ "randomNumber", [ 0, 100 ] ] },
+            "zIndex":50, "x":-100, "y":-100,
+            "bgcolor":{ "_":[ "randomValue", { "_":[ "stencil", "dataLightColors" ] } ] },
+            "speed":10,
+            "states":{
+              "code":{
+                "name":"Execute",
+                "data":[
+                  {
+                    "when":{ "_":[ "this", "distance", "isGreaterThan", 150 ] },
+                    "execute":[
+                      {
+                        "set":{
+                          "distance":0,
+                          "visible":1,
+                          "speed":{ "_":[ "randomNumber", [ 0, 10 ], "/", 2 ] },
+                          "moveAngle":{ "_":[ "randomNumber", [ 0, 100 ], "*", 0.06 ] },
+                          "starSize":{ "_":[ "randomValue", [ 1, 2 ] ] }
+                        }
+                      },
+                      { "set":{ "width":{ "_":[ "this", "starSize" ] }, "height":{ "_":[ "this", "starSize" ] } } }
+                    ]
+                  },
+                  { "sum":{ "_":[ "this", "speed", "*", { "_":[ "variable", "speedRatio" ] } ] }, "to":{ "_":[ "this", "distance" ] } },
+                  {
+                    "set":{
+                      "x":{ "_":[ "this", "moveAngle", "sin", "*", { "_":[ "this", "distance" ] }, "+", 128 ] }, "y":{ "_":[ "this", "moveAngle", "cos", "*", { "_":[ "this", "distance" ] }, "+", 96 ] }
+                    }
+                  },
+                  { "when":{ "_":[ "variable", "blinkingStars" ] }, "set":{ "bgcolor":{ "_":[ "randomValue", { "_":[ "stencil", "dataLightColors" ] } ] } } }
+                ]
+              }
+            }
+          }
+        }
+      },
+      "tunnel":{
+        "off":{ "as":{ "_":[ "object", "htunnel" ] }, "remove":1 },
+        "on":[
+          { "set":{ "counter":0, "tiltSpeed":{ "_":[ "randomNumber", [ 5, 20 ] ] }, "tunnelGap":{ "_":[ "randomNumber", [ 10, 30 ] ] } } },
+          {
+            "times":10,
+            "execute":[
+              {
+                "object":{
+                  "type":"htunnel",
+                  "distance":{ "_":[ "that", "counter", "*", { "_":[ "that", "tunnelGap" ] } ] },
+                  "zIndex":40,
+                  "border":{ "_":[ "randomValue", { "_":[ "stencil", "dataLightColors" ] } ] },
+                  "tiltSpeed":{ "_":[ "that", "tiltSpeed" ] },
+                  "timer":{ "_":[ "that", "counter", "*", 0.5 ] },
+                  "states":{
+                    "code":{
+                      "name":"Execute",
+                      "data":[
+                        { "when":{ "_":[ "this", "distance", "isGreaterThan", 200 ] }, "set":{ "distance":{ "_":[ "this", "distance", "%", 200 ] } } },
+                        { "sum":{ "_":[ "variable", "speedRatio" ] }, "to":{ "_":[ "this", "distance" ] } },
+                        { "set":{ "originX":{ "_":[ "this", "distance", ".", "px" ] }, "originY":{ "_":[ "this", "distance", ".", "px" ] } } },
+                        { "sum":0.1, "to":{ "_":[ "this", "timer" ] } },
+                        { "set":{ "angle":{ "_":[ "this", "timer", "sin", "*", { "_":[ "this", "tiltSpeed" ] }, "*", { "_":[ "variable", "speedRatio" ] } ] } } },
+                        {
+                          "set":{
+                            "width":{ "_":[ "that", "distance", "*", 2 ] }, "height":{ "_":[ "that", "distance", "*", 2 ] },
+                            "x":{ "_":[ 128, "-", { "_":[ "this", "distance" ] } ] }, "y":{ "_":[ 96, "-", { "_":[ "this", "distance" ] } ] }
+                          }
+                        },
+                        { "when":{ "_":[ "variable", "blinkingTunnel" ] }, "set":{ "border":{ "_":[ "randomValue", { "_":[ "stencil", "dataLightColors" ] } ] } } }
+                      ]
+                    }
+                  }
+                }
+              },
+              { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+            ]
+          }
+        ]
+      }
+    },
+    "dataHypnos":[ "hypno1", "hypno2", "hypno3", "hypno4", "hypno5", "hypno6", "hypno7", "hypno8", "hypno9" ],
+    "dataLightColors":[ "#f00", "#0f0", "#00f", "#ff0", "#0ff", "#f0f" ],
+    "dataMessages":[
+      { "fontSize":80, "lineHeight":64, "html":"BE<br>YOUR<br>SELF" },
+      { "fontSize":80, "lineHeight":64, "html":"BE<br>CREA<br>TIVE" },
+      { "fontSize":80, "lineHeight":64, "html":"THINK<br>THEN<br>ACT" },
+      { "fontSize":74, "lineHeight":64, "html":"MAKE<br>YOUR<br>OPINIONS" },
+      { "fontSize":60, "lineHeight":64, "html":"DIFFERENT<br>IS<br>GOOD" },
+      { "fontSize":80, "lineHeight":64, "html":"YOU<br>ARE<br>UNIQUE" },
+      { "fontSize":80, "lineHeight":64, "html":"YOU<br>ARE<br>HUMAN" },
+      { "fontSize":80, "lineHeight":64, "html":"LEARN<br>FROM<br>ERRORS" },
+      { "fontSize":80, "lineHeight":64, "html":"LEARN<br>FROM<br>PAST" },
+      { "fontSize":80, "lineHeight":64, "html":"ACCEPT<br>DIFFE<br>RENCES" },
+      { "fontSize":60, "lineHeight":64, "html":"GOOD<br>IS<br>SUBJECTIVE" },
+      { "fontSize":60, "lineHeight":64, "html":"BAD<br>IS<br>SUBJECTIVE" },
+      { "fontSize":60, "lineHeight":64, "html":"FACTS<br>ARE<br>OBJECTIVE" },
+      { "fontSize":80, "lineHeight":64, "html":"PAST<br>NEVER<br>COMES" },
+      { "fontSize":80, "lineHeight":64, "html":"DECIDE<br>YOUR<br>FUTURE" },
+      { "fontSize":80, "lineHeight":64, "html":"DECIDE<br>YOUR<br>LIFE" },
+      { "fontSize":80, "lineHeight":64, "html":"IMPROVE<br>EVERY<br>DAY" },
+      { "fontSize":80, "lineHeight":64, "html":"FIND<br>HAPPY<br>NES" },
+      { "fontSize":80, "lineHeight":64, "html":"NOTHING<br>DEFINES<br>YOU" },
+      { "fontSize":80, "lineHeight":96, "html":"LIVE<br>ON" },
+      { "fontSize":80, "lineHeight":96, "html":"DENY<br>LABELS" },
+      { "fontSize":80, "lineHeight":96, "html":"DENY<br>RACISM" },
+      { "fontSize":60, "lineHeight":96, "html":"DENY<br>PREJUDICE" },
+      { "fontSize":80, "lineHeight":96, "html":"ACCEPT<br>LIFE" },
+      { "fontSize":80, "lineHeight":96, "html":"ACCEPT<br>DESTINY" },
+      { "fontSize":74, "lineHeight":96, "html":"ACCEPT<br>FEELINGS" },
+      { "fontSize":80, "lineHeight":96, "html":"ACCEPT<br>OTHERS" },
+      { "fontSize":74, "lineHeight":96, "html":"ACCEPT<br>YOURSELF" }
+    ],
+    "explosion":{
+      "image":"enemies", "width":16, "height":16,
+      "zIndex":150,
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[
+            {
+              "sum":20,
+              "to":{ "_":[ "this", "angle" ] },
+              "set":{ "tileY":{ "_":[ "randomNumber", [ 0, 5 ], "*", 16 ] }, "frame":{ "_":[ "randomNumber", [ 0, 6 ] ] } },
+              "wait":1, "loop":1, "cycles":25
+            },
+            { "remove":1 }
+          ]
+        }
+      }
+    },
+    "hypnoModel":{
+      "type":"hhypno",
+      "image":{ "_":[ "randomValue", { "_":[ "stencil", "dataHypnos" ] } ] }, "width":512, "height":512,
+      "x":-128, "y":-160,
+      "originX":"256px", "originY":"256px",
+      "scaleSpeed":{ "_":[ "randomValue", [ 0.1, 0.2, 0.3, 0.4 ] ] },
+      "spin":{ "_":[ "randomValue", [ -2, -1, 2, 1 ] ] },
+      "timer":0,
+      "timer1":0,
+      "timer2":0,
+      "timer2radius":{ "_":[ "randomNumber", [ 5, 20 ] ] },
+      "timer2speed":{ "_":[ "randomNumber", [ 0, 10 ], "/", 300 ] },
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":[
+            { "sum":{ "_":[ "this", "timer2speed" ] }, "to":{ "_":[ "this", "timer2" ] } },
+            {
+              "set":{
+                "x":{ "_":[ "this", "timer2", "*", { "_":[ "variable", "speedRatio" ] }, "sin", "*", { "_":[ "this", "timer2radius" ] }, "-", 128 ] }, "y":{ "_":[ "this", "timer2", "*", { "_":[ "variable", "speedRatio" ] }, "cos", "*", { "_":[ "this", "timer2radius" ] }, "-", 160 ] }
+              }
+            },
+            { "sum":0.05, "to":{ "_":[ "this", "timer" ] } },
+            { "sum":{ "_":[ "this", "spin", "*", { "_":[ "variable", "speedRatio" ] } ] }, "to":{ "_":[ "this", "angle" ] } },
+            { "set":{ "scale":{ "_":[ "this", "timer", "sin", "*", { "_":[ "this", "scaleSpeed" ] }, "+", 1 ] } } }
+          ]
+        }
+      }
+    },
+    "messageModel":{
+      "type":"hmessage",
+      "width":256, "height":192,
+      "zIndex":10000,
+      "color":"#0f0",
+      "font":"spectrum", "fontSize":60, "lineHeight":192, "outline":"#000", "textAlign":"center",
+      "states":{ "code":{ "name":"Sequence", "data":[ { "wait":3 }, { "remove":1 } ] } }
+    },
+    "subcore":{
+      "type":"subcore",
+      "image":"cores", "width":48, "height":48,
+      "zIndex":98, "x":104, "y":72,
+      "originX":"24px", "originY":"24px",
+      "spawningScale":0,
+      "timer":0,
+      "timer2":0,
+      "states":[
+        {
+          "code":{
+            "name":"Execute",
+            "data":[
+              { "_":[ "stencil", "codeSubcore" ] },
+              { "when":{ "_":[ "this", "spawningScale", "isLessThan", 1 ] }, "sum":0.005, "to":{ "_":[ "this", "spawningScale" ] } }
+            ]
+          }
+        },
+        {
+          "name":"newwave",
+          "execute":{ "playAudio":"explode2" },
+          "code":{
+            "name":"Execute",
+            "data":[
+              { "_":[ "stencil", "codeSubcore" ] },
+              {
+                "when":{ "_":[ "this", "spawningScale", "isGreaterThan", 0 ] },
+                "subtract":0.05,
+                "to":{ "_":[ "this", "spawningScale" ] },
+                "elseExecute":{ "set":{ "spawningScale":0 } }
+              }
+            ]
+          }
+        }
+      ]
+    }
+  },
+  "execute":[
+    { "when":{ "_":[ "storage", "hiscore", "not" ] }, "as":{ "_":"storage" }, "set":{ "hiscore":0 } },
+    { "as":{ "_":"variable" }, "set":{ "hiscore":{ "_":[ "storage", "hiscore" ] } } }
+  ],
+  "scenes":{
+    "intro":{
+      "object":{
+        "width":240, "height":180,
+        "x":8, "y":6,
+        "color":"#0f0",
+        "font":"spectrum", "fontSize":20, "lineHeight":15, "textAlign":"center", "html":"MULTYTRON USES SPECIAL VISUAL<br>AND AUDITORY EFFECTS<br><br>PERSONS WITH<br>SEIZURES<br>MOTION SICKNESS<br>CARDIAC ARRHYTHMIA<br>PSYCHOACTIVE DRUGS<br><br>DO NOT PLAY THIS GAME<br><br>MUSIC BY:<br>SCALESMANN, FATAL SNIPE"
+      },
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[ { "wait":50 }, { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } }, { "gotoScene":"title", "withTransition":3 } ]
+        }
+      }
+    },
+    "gameover":{
+      "execute":[
+        { "playAudio":"explode2", "stopChannel":"music" },
+        { "publishScore":{ "_":[ "variable", "score" ] } },
+        {
+          "when":{ "_":[ "variable", "score", "isGreaterThan", { "_":[ "variable", "hiscore" ] } ] },
+          "execute":[
+            { "as":{ "_":"variable" }, "set":{ "hiscore":{ "_":[ "variable", "score" ] } } },
+            { "as":{ "_":"storage" }, "set":{ "hiscore":{ "_":[ "variable", "score" ] } } }
+          ]
+        },
+        {
+          "object":{
+            "type":"info",
+            "box":"label", "width":256, "height":192,
+            "zIndex":10, "x":0, "y":0,
+            "font":"spectrum", "lineHeight":192, "textAlign":"center", "html":"GAME OVER"
+          }
+        }
+      ],
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[ { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } }, { "wait":1 }, { "gotoScene":"title", "withTransition":3 } ]
+        }
+      }
+    },
+    "game":{
+      "object":[ { "_":[ "stencil", "core" ] }, { "_":[ "stencil", "subcore" ] }, { "_":[ "stencil", "player" ] } ],
+      "execute":[
+        { "set":{ "counter":0 }, "playAudio":"shooter" },
+        { "object":{ "_":[ "stencil", "messageModel" ] } },
+        {
+          "times":4,
+          "execute":[
+            {
+              "object":{
+                "image":"sprites", "tileX":4, "tileY":16, "width":8, "height":8,
+                "zIndex":10000, "x":{ "_":[ "that", "counter", "*", 8 ] }, "y":184,
+                "slot":{ "_":[ "that", "counter" ] },
+                "states":{ "code":{ "name":"Execute", "data":{ "set":{ "visible":{ "_":[ "variable", "lives", "isGreaterThan", { "_":[ "this", "slot" ] } ] } } } } }
+              }
+            },
+            { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+          ]
+        },
+        {
+          "object":{
+            "type":"hud",
+            "hudType":"label", "label":"%number|variable.score%",
+            "width":256, "height":10,
+            "zIndex":10000, "x":0, "y":182,
+            "color":"#f00",
+            "font":"spectrum", "lineHeight":10, "textAlign":"right"
+          }
+        }
+      ],
+      "states":{ "name":"gameover", "execute":{ "gotoScene":"gameover", "withTransition":2 } }
+    },
+    "title":{
+      "object":[
+        { "image":"title", "width":214, "height":33, "zIndex":10, "x":21, "y":30 },
+        {
+          "image":"title", "tileY":33, "width":224, "height":43,
+          "x":16, "y":25,
+          "timer":0,
+          "states":{
+            "code":{
+              "name":"Sequence",
+              "data":[
+                { "set":{ "bgcolor":{ "_":[ "stencil", "dataLightColors", { "_":[ "this", "timer" ] } ] } } },
+                { "set":{ "timer":{ "_":[ "this", "timer", "+", 1, "%", { "_":[ "stencil", "dataLightColors", "count" ] } ] } } },
+                { "wait":50, "loopTo":0 }
+              ]
+            }
+          }
+        },
+        {
+          "box":"label", "width":256,
+          "zIndex":30, "x":0, "y":123,
+          "color":"#fff",
+          "font":"spectrum", "fontSize":20, "lineHeight":20, "textAlign":"center", "html":"PRESS START",
+          "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "visible":0 }, "wait":20 }, { "set":{ "visible":1 }, "wait":20, "loopTo":0 } ] } }
+        },
+        {
+          "box":"label", "width":256,
+          "zIndex":5, "x":0, "y":172,
+          "color":"#f00",
+          "font":"spectrum", "fontSize":20, "lineHeight":20, "textAlign":"center", "html":{ "_":[ "HI-SCORE: ", ".", { "_":[ "variable", "hiscore" ] } ] }
+        }
+      ],
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":{
+            "when":{ "_":[ "keyA", "isHit" ] },
+            "execute":[
+              { "playAudio":"beep2" },
+              { "as":{ "_":"variable" }, "set":{ "level":0, "lives":4, "score":0, "speedRatio":1 } },
+              { "gotoScene":"game", "withTransition":3 }
+            ]
+          }
+        }
+      }
+    }
+  }
+}
