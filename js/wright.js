@@ -302,8 +302,9 @@ var Controllers=function(controller,config,game,gameconfig){
 			Supports.setStorage(data.substr(1,data.indexOf("~")-1),data.substr(data.indexOf("~")+1));
 		else if (data.substr(0,1)=="T") {
 			var ask=JSON.parse(data.substr(1));
-			var out=prompt(ask.text,ask.data)
-			this.controller.sendToReceiver(self,"T"+out);
+			this.wright.getGame().node.htmlPrompt(ask.text,ask.data,function(out){
+				self.controller.sendToReceiver(self,"T"+(out?out:""));	
+			});
 		}
 	}
 	return this;
@@ -478,7 +479,10 @@ var DOMInator=function(useCanvas,aliasmode,controller){
 		return size;
 	}
 	function topFixes(font,pos){
-		if ((font=="spectrum")&&Supports.isFirefox) return pos-1;
+		if (Supports.isFirefox) {
+			if (font=="spectrum") return pos-1;
+			if (font=="small") return pos+1;
+		}
 		return pos;
 	}
 
@@ -499,7 +503,9 @@ var DOMInator=function(useCanvas,aliasmode,controller){
 	/* Nodes and context handling */
 	function createNode(type) {
 		var node=document.createElement(type);
-		for (var a in extracss) node.style[a]=extracss[a];
+		for (var a in extracss) {
+			node.style[a]=extracss[a];
+		}
 		return node;
 	}
 	function resetContext(ctx) { if (pixelated) pixelatedContext(ctx); }
@@ -744,6 +750,43 @@ var DOMInator=function(useCanvas,aliasmode,controller){
 			}
 		}
 	};
+
+	/* Custom HTML prompt */
+	this.htmlPrompt=function(body,text,onok){
+		var css={
+			footerbar:{textAlign:"right",margin:"10px 0"},
+			label:{margin:"10px 0"},
+			form:{fontFamily:"sans-serif",position:"fixed",left:"10px",right:"10px",top:0,padding:"10px",border:"1px solid #000",zIndex:1000,backgroundColor:"#ccc"},
+			textarea:{width:"100%",border:0,fontFamily:"monospace"}
+		};
+		var prompt=document.createElement("div");
+		var label=document.createElement("div");
+		var footerbar=document.createElement("div");
+		var textarea=document.createElement("textarea");
+		var okbutton=document.createElement("button");
+		var cancelbutton=document.createElement("button");
+		prompt.appendChild(label);
+		prompt.appendChild(textarea);
+		prompt.appendChild(footerbar);
+		footerbar.appendChild(okbutton);
+		footerbar.appendChild(cancelbutton);
+		okbutton.innerHTML="OK";
+		okbutton.onclick=function(){root.removeChild(prompt);onok(textarea.value)}
+		cancelbutton.innerHTML="Cancel";
+		cancelbutton.onclick=function(){root.removeChild(prompt);onok();}
+		label.innerHTML=body;
+		textarea.value=text;
+		textarea.rows=10;
+		for (var a in css.label) label.style[a]=css.label[a];
+		for (var a in css.form) prompt.style[a]=css.form[a];
+		for (var a in css.textarea) textarea.style[a]=css.textarea[a];
+		for (var a in css.footerbar) footerbar.style[a]=css.footerbar[a];
+		root.appendChild(prompt);
+		textarea.focus();
+		textarea.setSelectionRange(0, text.length);
+	}
+	
+
 
 	/* Game cycle and frameskip throttle */
 	var skipFrames=0,timeout=0,fps=0,mspf=0,frameTimestamp=0,gamecycle=0,renderer=0,self=this;
@@ -1444,10 +1487,7 @@ var DOMInator=function(useCanvas,aliasmode,controller){
 			controller.controller.askDatasette(text,data,cb);
 		}
 	else
-		this.showDatasette=function(text,data,cb) {
-			data=prompt(text,data);
-			cb(data);
-		}
+		this.showDatasette=function(text,data,cb) { this.htmlPrompt(text,data,function(txt){cb(txt);})}
 
 	/* Controls: keyboard/touch controller */
 	var key=this.key={};
@@ -1917,6 +1957,7 @@ var DOMInator=function(useCanvas,aliasmode,controller){
 			}
 		}
 	}
+
 }
 
 DOMInator.CONTROLS={
@@ -3060,7 +3101,7 @@ Box.limit = function(val, min, max) {
 	else if (val > max) return max;
 	else return val;
 };
-Box.capitalize = function(str) { return str.substr(0, 1).toUpperCase() + str.substr(1); };
+Box.capitalize = function(str) { return typeof str=="number"?str:str.substr(0, 1).toUpperCase() + str.substr(1); };
 // UTILS - Distances
 Box.distanceX = function(a, b, dx1) {
 	if (a && b) {
@@ -4455,7 +4496,7 @@ function Wright(gameId,mods) {
 										list = list.sort(_Code.sort[args.sortby]); // @TODO: This touches a private list of Box. Could be better.
 									}
 								}
-								sub=game.iterateCollisions(p.notThis&&from,rect,list,0,0,0,0,args,_Code.collision);
+								sub=game.iterateCollisions((!complex||p.notThis)&&from,rect,list,0,0,0,0,args,_Code.collision);
 								if (args&&args.all) sub=args.all.length?args.all:0;
 							}
 						}
@@ -4535,6 +4576,7 @@ function Wright(gameId,mods) {
 						break;
 					}
 					case "count":{ ret = ret ? ret.length : 0; break; }
+					case "objectKeys":{ ret = ret && (typeof ret=="object")? Object.keys(ret) : 0; break; }
 					case "subString":{
 						p = get(from, tox, struct[++id]);
 						if (p instanceof Array) {
@@ -4675,6 +4717,10 @@ function Wright(gameId,mods) {
 					if (line.pushInto !== undefined) {
 						var into= get(item, curtox, line.pushInto);
 						if (into && (into instanceof Array)) into.push(item);
+					}
+					if (line.deleteKey !== undefined) {
+						var key= get(item, curtox, line.deleteKey);
+						if (key && (typeof item == "object")) delete item[key];
 					}
 					if (line.unshiftInto !== undefined) {
 						var into= get(item, curtox, line.unshiftInto);
