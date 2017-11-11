@@ -258,7 +258,7 @@ function WrightTools() {
 	  try {
 		return JSON.parse(text);
 	  } catch(e) {
-		logLine("error","Can't parse JSON: "+text);
+		logLine("error","Can't parse JSON: "+text+" ("+e+")");
 	  }
 	}
 
@@ -409,7 +409,7 @@ function WrightTools() {
 		"like", // Actions
 
 		"assign","sum","subtract","multiply","to", // Execute
-		"pushInto","unpush","unpushAt", "from", // Execute -> Array manipulation
+		"emptyList","deleteKey","unshiftInto","pushInto","unpush","unpushAt", "from", // Execute -> Array manipulation
 		"placeInto", // Execute -> Object placement
 
 		"into", // Execute
