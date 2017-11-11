@@ -771,12 +771,34 @@ var DOMInator=function(useCanvas,aliasmode,controller){
 		footerbar.appendChild(okbutton);
 		footerbar.appendChild(cancelbutton);
 		okbutton.innerHTML="OK";
-		okbutton.onclick=function(){root.removeChild(prompt);onok(textarea.value)}
+		okbutton.onclick=function(){
+			root.removeChild(prompt);
+			gameScreen.focus();
+			onok(textarea.value);
+		}
 		cancelbutton.innerHTML="Cancel";
-		cancelbutton.onclick=function(){root.removeChild(prompt);onok();}
+		cancelbutton.onclick=function(){
+			root.removeChild(prompt);
+			gameScreen.focus();
+			onok();
+		}
 		label.innerHTML=body;
 		textarea.value=text;
 		textarea.rows=10;
+		textarea.onkeydown=function(e){
+			switch (e.keyCode) {
+				case 13:{
+					okbutton.onclick();
+					e.preventDefault();
+					break;
+				}
+				case 27:{
+					cancelbutton.onclick();
+					e.preventDefault();
+					break;
+				}
+			}
+		}
 		for (var a in css.label) label.style[a]=css.label[a];
 		for (var a in css.form) prompt.style[a]=css.form[a];
 		for (var a in css.textarea) textarea.style[a]=css.textarea[a];
@@ -4714,6 +4736,10 @@ function Wright(gameId,mods) {
 					if (line.subtract !== undefined) set(item, curtox, line.to, FIX(get(item, curtox, line.to) - get(item, curtox, line.subtract)));
 					if (line.multiply !== undefined) set(item, curtox, line.to, FIX(get(item, curtox, line.to) * get(item, curtox, line.multiply)));
 					if (line.assign !== undefined) set(item, curtox, line.to, get(item, curtox, line.assign));
+					if (line.emptyList !== undefined) {
+						var into= get(item, curtox, line.emptyList);
+						if (into && (into instanceof Array)) into.length=0;
+					}
 					if (line.pushInto !== undefined) {
 						var into= get(item, curtox, line.pushInto);
 						if (into && (into instanceof Array)) into.push(item);
