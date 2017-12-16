@@ -1,0 +1,3312 @@
+{
+  "name":"Breaktown",
+  "author":"KesieV",
+  "year":2017,
+  "genre":"Sandbox",
+  "description":"<p>The evolution of the sandbox concept gives a stunningly accurate snapshot of the human controversy - and I'm not talking about just the <a href='https://en.wikipedia.org/wiki/Glossary_of_video_game_terms#Sandbox_game'>sandbox game genre</a>.</p><p>As usual let's start with the <a href='http://www.dictionary.com/browse/sandbox'>term</a> itself: a sandbox is \"a box or receptacle for holding sand, especially one large enough for children to play in\". <a htef='https://en.wikipedia.org/wiki/Toca_Boca'>Toca Boca</a>, a sweden game development studio, nicely <a href='https://tocaboca.com/magazine/sandbox-play/'>lists</a> a set of activities children can experience in sandboxes: exploring stuff, dig into imaginary play, getting stronger, add to their sensory vocabulary, practice social skills, collaborate and experiencing impermanence.</p><p>Joining meaning and purpose together, a sandbox is a <i>controlled and enclosed environment</i> in which a set of common rules applies mainly as-is (social interactions protocols, impermanence of the world etc.) and other rules are damped (increased range of exploration, role play is socially accepted) in order to gain new skills easier.</p><p>Now let's try to find some everyday sandboxes and understand how and why these works - and we're going to start with our beloved <a href='https://en.wikipedia.org/wiki/Grand_Theft_Auto'>Grand Theft Auto</a> for a very important reason: why this very influential game series even <i>exists</i>.</p><p>In 1995, the game studio DMA Design was working on an open world car racing game called Race'n'Chase in which the player had to do a number of missions in a city as a criminal or as a police officer. While it should be engaging on the paper, playtesters found the concept pretty dull and the development slowed down.</p><p>The legend says that, due to a <a href='https://www.gamefaqs.com/top10/2563-the-top-10-glitches-that-became-features'>bug</a>, a build of the game had a very aggressive version of the police that chased the player recklessly instead of <i>obviously</i> following of the laws. And these wild runs were way more engaging than the main missions the game offered, becoming an official gameplay mechanic and trasforming Race'n'Chase in the GTA we all know.</p><p>While it's always fascinating seeing errors becoming features, what I've also found particular is the <i>reason</i> the playtesters found the glitched gameplay interesting. Why the game started being fun when the cops stopped following the rules? In my opinion, even when the player plays the role of a criminal, he realistically applies <i>good sense</i>, limiting damages and playing safe.</p><p>But the cops <i>not</i> following the rules clearly attests the fact that these rules are damped in that enclosed environment, transforming Race'n'Chase in a <i>true child sandbox</i>: role playing is now less limited, allowing the player to better dig into imaginary play and becoming a full-fledged criminal and, in order to play his new role well and keep experiencing this <i>wild rampage</i> he can't experience in real life, he is incentivized on getting better on running from the police. And, finally, in <a href='https://en.wikipedia.org/wiki/Grand_Theft_Auto_V'>Grand Theft Auto V</a> (2013), he can collaborate and experience impermanence online with friends.</p><p>Now just think about supporters screaming at a soccer match, cosplayers at comic and videogame events, paintball and boxe matches, discotheque and even all-you-can-eat restaurants. Making an enclosed and controlled environment in which some selected rules doesn't applies - often the same rules the society decided for itself - always makes humans happy: probably what makes singles different is just <i>the set of rules we like to remove from time to time</i>.</p><p>Funny, isn't it?</p><p>Plot!</p><p>There is just one thing you can't do in Breaktown, and that's making Frank, the local boss, angry. Sadly you managed to do that and, if you and your family want to stay alive, you've to find a lot of cash for him. The good news is that's a quite easy task in Breaktown: just keep answering to the public phones and follow the instructions. Good luck!</p><p>When walking use UP/DOWN/LEFT/RIGHT for moving, A BUTTON for firing with your weapon and the B BUTTON for punching and interacting with stores, cars and other objects. When driving use LEFT/RIGHT for steering, UP for accelerating, DOWN for braking, A BUTTON for firing with your gun and the B BUTTON for leaving the car.</p>",
+  "screenshots":[ "breaktown-1.png", "breaktown-2.png" ],
+  "hardware":{
+    "width":256,
+    "height":192,
+    "filter":"retro"
+  },
+  "audioChannels":{
+    "sfx":{ "volume":1, "samples":[ "fire", "scream", "scream2", "blam", "beep2", "explode2", "beep", "lose", "beep3", "bigfire" ] },
+    "music":{ "volume":0.8, "looping":1, "samples":[ "bgmintro", "bgm1", "bgm2", "bgm3" ] }
+  },
+  "cheats":{},
+  "resources":{
+    "bgm1":"ravensrave.ogg",
+    "bgm2":"secretpart.ogg",
+    "bgm3":"groove.ogg",
+    "bgmintro":"bitenergy.ogg",
+    "cars":"cars.png",
+    "effects":"effects.png",
+    "frank":"frank.png",
+    "gameboy":"gameboy.font",
+    "people":"people.png",
+    "spectrum":"spectrum.font",
+    "tiles":"tiles.png",
+    "title":"title.png",
+    "beep":"../default/zxsounds/beep.ogg",
+    "beep2":"../default/zxsounds/beep2.ogg",
+    "beep3":"../default/zxsounds/beep3.ogg",
+    "bigfire":"../default/zxsounds/bigfire.ogg",
+    "blam":"../default/zxsounds/blam.ogg",
+    "explode2":"../default/zxsounds/explode2.ogg",
+    "fire":"../default/zxsounds/fire.ogg",
+    "lose":"../default/zxsounds/lose.ogg",
+    "scream":"../default/zxsounds/scream.ogg",
+    "scream2":"../default/zxsounds/scream2.ogg"
+  },
+  "stencils":{
+    "codeBusted":[
+      { "stopChannel":"music" },      
+      { "_":[ "stencil", "codeResetMission" ] },
+      {
+        "object":{ "set":{ "_":[ "stencil", "flashMessage" ] }, "html":"BUSTED", "color1":"#f00", "color2":"#7f0000" },
+        "into":{ "_":"scenehud" },
+        "playAudio":"lose"
+      },
+      { "as":{ "_":[ "object", "cityactivity" ] }, "set":{ "type":[ "wantindicator", "isplayerinteractive" ] } }
+    ],
+    "codeCheckWayOut":{
+      "as":{ "_":[ "objectTyped", "tester" ] },
+      "execute":[
+        {
+          "set":{
+            "removeType":"wayout",
+            "width":8, "height":8,
+            "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] }
+          }
+        },
+        { "translateBy":{ "angle":{ "_":[ "that", "driveAngle", "-", 90 ] }, "length":14 } },
+        {
+          "when":{ "_":[ "objectTyped", "tester", "collidesWith", { "_":[ "object", "personwall" ] }, "not" ] },
+          "set":{ "type":"wayout" },
+          "elseExecute":[
+            { "set":{ "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] } } },
+            { "translateBy":{ "angle":{ "_":[ "that", "driveAngle", "+", 90 ] }, "length":14 } },
+            { "when":{ "_":[ "objectTyped", "tester", "collidesWith", { "_":[ "object", "personwall" ] }, "not" ] }, "set":{ "type":"wayout" } }
+          ]
+        }
+      ]
+    },
+    "codeCitizen":{
+      "when":{ "_":[ "this", "follows" ] },
+      "execute":[
+        { "applyVector":{ "angle":{ "_":[ "this", "angleTo", { "_":[ "this", "follows" ] }, "+", { "_":[ "randomNumber", [ -10, 10 ] ] } ] }, "length":1 } },
+        {
+          "as":{ "_":[ "objectTyped", "tester" ] },
+          "set":{
+            "width":8, "height":8,
+            "x":{ "_":[ "that", "interactionBox", "x", "+", { "_":[ "that", "x" ] } ] }, "y":{ "_":[ "that", "interactionBox", "y", "+", { "_":[ "that", "y" ] } ] }
+          }
+        },
+        {
+          "when":{ "_":[ "this", "follows", "not", "or", { "_":[ "this", "follows", "removed" ] } ] },
+          "set":{ "follows":0 },
+          "elseExecute":{
+            "when":{ "_":[ "this", "attacktime" ] },
+            "subtract":1,
+            "to":{ "_":[ "this", "attacktime" ] },
+            "elseExecute":[
+              {
+                "when":{ "_":[ "this", "weapon" ] },
+                "execute":{
+                  "object":{
+                    "set":{ "_":[ "stencil", "dataWeapons", { "_":[ "that", "weapon" ] }, "bullet" ] },
+                    "execute":{ "applyVector":{ "angle":{ "_":[ "that", "angleTo", { "_":[ "that", "follows" ] } ] }, "length":{ "_":[ "this", "bulletSpeed" ] } } },
+                    "bulletColor":"#f00",
+                    "bulletTarget":"ishitablebyenemy"
+                  }
+                },
+                "elseExecute":[
+                  { "set":{ "forceZ":-3 } },
+                  {
+                    "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "this", "follows" ] }, "hitbox":{ "_":[ "this", "interactionBox" ] }, "notThis":1 } ] },
+                    "execute":[ { "set":{ "follows":0 } }, { "as":{ "_":"that" }, "executeAction":"interactByFoot" } ]
+                  }
+                ]
+              },
+              { "set":{ "attacktime":25 } }
+            ]
+          }
+        }
+      ],
+      "elseExecute":{
+        "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "peoplewalk" ] } ] },
+        "execute":[
+          {
+            "when":{ "_":[ "this", "forceX", "not", "and", { "_":[ "this", "forceY", "not" ] } ] },
+            "decide":{
+              "options":[
+                { "set":{ "forceX":{ "_":[ "this", "movingSpeed" ] }, "forceY":0 } },
+                { "set":{ "forceX":{ "_":[ "this", "movingSpeed", "*", -1 ] }, "forceY":0 } },
+                { "set":{ "forceX":0, "forceY":{ "_":[ "this", "movingSpeed" ] } } },
+                { "set":{ "forceX":0, "forceY":{ "_":[ "this", "movingSpeed", "*", -1 ] } } }
+              ]
+            }
+          },
+          {
+            "when":{
+              "_":[
+                "this",
+                "complexCollidesWith",
+                {
+                  "subject":{ "_":[ "object", "peoplewalk" ] },
+                  "hitbox":{ "width":4, "height":4, "x":{ "_":[ "this", "forceX", "*", 8, "+", 2 ] }, "y":{ "_":[ "this", "forceY", "*", 8, "+", 2 ] } }
+                },
+                "not"
+              ]
+            },
+            "set":{ "forceX":0, "forceY":0 }
+          }
+        ],
+        "elseExecute":{
+          "when":{ "_":[ "this", "panic" ] },
+          "subtract":1,
+          "to":{ "_":[ "this", "panic" ] },
+          "elseExecute":[
+            { "set":{ "panic":10 } },
+            {
+              "decide":{
+                "options":[
+                  { "set":{ "forceX":2, "forceY":0 } },
+                  { "set":{ "forceX":-2, "forceY":0 } },
+                  { "set":{ "forceX":0, "forceY":2 } },
+                  { "set":{ "forceX":0, "forceY":-2 } }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    "codeCloud":{
+      "times":20,
+      "object":{ "_":[ "stencil", "smoke" ] },
+      "execute":[
+        { "sum":{ "_":[ "randomNumber", [ { "_":[ "this", "width", "/", -2 ] }, { "_":[ "this", "width", "/", 2 ] } ] ] }, "to":{ "_":[ "that", "x" ] } },
+        { "sum":{ "_":[ "randomNumber", [ { "_":[ "this", "height", "/", -2 ] }, { "_":[ "this", "height", "/", 2 ] } ] ] }, "to":{ "_":[ "that", "y" ] } }
+      ]
+    },
+    "codeDropLoot":[
+      { "set":{ "prizeValue":{ "_":[ "randomNumber", [ { "_":[ "variable", "felony", "-", 2 ] }, { "_":[ "variable", "felony" ] } ] ] } } },
+      { "sum":{ "_":[ "this", "prizeBonus" ] }, "to":{ "_":[ "this", "prizeValue" ] } },
+      {
+        "when":{ "_":[ "this", "prizeValue", "isGreaterThan", -1 ] },
+        "object":{ "set":{ "_":[ "stencil", "moneyBonus" ] }, "moneyValue":{ "_":[ "that", "prizeValue", "limitValue", [ 0, 5 ] ] } },
+        "elseExecute":{
+          "when":{ "_":[ "objectTyped", "player", "health", "isLessThan", { "_":[ "objectTyped", "player", "maxHealth" ] } ] },
+          "object":{ "_":[ "stencil", "healthBonus" ] },
+          "elseExecute":{ "object":{ "_":[ "stencil", "ammoBonus" ] } }
+        }
+      }
+    ],
+    "codeEndInstruction":[
+      { "as":{ "_":[ "object", "destinationindicator" ] }, "remove":1 },
+      { "as":{ "_":[ "objectTyped", "missionmessage" ] }, "set":{ "html":"" } },
+      { "as":{ "_":"variable" }, "set":{ "missionTargetCar":0, "missionTargetCitizen":0 } },
+      { "set":{ "destinationY":0, "instruction":0 } },
+      { "executeAction":"stopTimer" }
+    ],
+    "codeGenerateCityLife":[
+      {
+        "when":{ "_":[ "object", "citizen", "count", "isLessThan", 30 ] },
+        "execute":{
+          "as":{ "_":[ "randomValue", { "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "citizengenerator" ] }, "all":1 } ] } ] },
+          "execute":{
+            "when":{ "_":[ "variable", "missionTargetCitizen", "and", { "_":[ "objectTyped", "missionTargetCitizen", "not" ] } ] },
+            "execute":{
+              "object":{
+                "set":{ "_":[ "stencil", { "_":[ "variable", "missionTargetCitizen" ] } ] },
+                "x":{ "_":[ "randomNumber", [ 0, 8 ], "+", { "_":[ "that", "x" ] } ] }, "y":{ "_":[ "randomNumber", [ 0, 8 ], "+", { "_":[ "that", "y" ] } ] }
+              }
+            },
+            "elseExecute":{
+              "when":{ "_":[ "variable", "cops" ] },
+              "execute":[
+                { "subtract":1, "to":{ "_":[ "variable", "cops" ] } },
+                {
+                  "object":{
+                    "set":{ "_":[ "stencil", "cop" ] },
+                    "x":{ "_":[ "randomNumber", [ 0, 8 ], "+", { "_":[ "that", "x" ] } ] }, "y":{ "_":[ "randomNumber", [ 0, 8 ], "+", { "_":[ "that", "y" ] } ] }
+                  }
+                }
+              ],
+              "elseExecute":{
+                "when":{ "_":[ "objectTyped", "worker", "not", "and", { "_":[ "randomNumber", [ 0, 1 ], "not" ] } ] },
+                "object":{
+                  "set":{ "_":[ "stencil", "worker" ] },
+                  "x":{ "_":[ "randomNumber", [ 0, 8 ], "+", { "_":[ "that", "x" ] } ] }, "y":{ "_":[ "randomNumber", [ 0, 8 ], "+", { "_":[ "that", "y" ] } ] }
+                },
+                "elseExecute":{
+                  "object":{
+                    "set":{ "_":[ "stencil", "citizen" ] },
+                    "x":{ "_":[ "randomNumber", [ 0, 8 ], "+", { "_":[ "that", "x" ] } ] }, "y":{ "_":[ "randomNumber", [ 0, 8 ], "+", { "_":[ "that", "y" ] } ] }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      {
+        "when":{ "_":[ "object", "parkedcars", "count", "isLessThan", 5 ] },
+        "execute":{
+          "as":{ "_":[ "randomValue", { "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "cargenerator" ] }, "all":1 } ] } ] },
+          "execute":{
+            "when":{ "_":[ "this", "collidesWith", "car", "not" ] },
+            "object":{
+              "type":"parkedcars",
+              "set":{ "_":[ "stencil", "basicCar" ] },
+              "at":{ "_":"that" },
+              "driveAngle":{ "_":[ "randomNumber", { "_":[ "that", "spawnAngle" ] } ] }
+            }
+          }
+        }
+      },
+      {
+        "when":{ "_":[ "object", "traffic", "count", "isLessThan", 10 ] },
+        "execute":{
+          "as":{ "_":[ "randomValue", { "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "trafficgenerator" ] }, "all":1 } ] } ] },
+          "execute":[
+            {
+              "when":{ "_":[ "this", "spawnSide", "isEqualTo", 0 ] },
+              "as":{ "_":[ "scene", "spawnBox" ] },
+              "set":{
+                "x":{ "_":[ 256, "-", { "_":[ "scene", "x" ] }, "limitValue", [ { "_":[ "that", "x" ] }, { "_":[ "that", "x", "+", { "_":[ "that", "width" ] }, "-", 16 ] } ] ] }, "y":{ "_":[ "that", "y" ] },
+                "driveAngle":{ "_":[ "that", "steerAngle" ] }
+              }
+            },
+            {
+              "when":{ "_":[ "this", "spawnSide", "isEqualTo", 1 ] },
+              "as":{ "_":[ "scene", "spawnBox" ] },
+              "set":{
+                "x":{ "_":[ -16, "-", { "_":[ "scene", "x" ] }, "limitValue", [ { "_":[ "that", "x" ] }, { "_":[ "that", "x", "+", { "_":[ "that", "width" ] }, "-", 16 ] } ] ] }, "y":{ "_":[ "that", "y" ] },
+                "driveAngle":{ "_":[ "that", "steerAngle" ] }
+              }
+            },
+            {
+              "when":{ "_":[ "this", "spawnSide", "isEqualTo", 2 ] },
+              "as":{ "_":[ "scene", "spawnBox" ] },
+              "set":{
+                "x":{ "_":[ "that", "x" ] }, "y":{ "_":[ 192, "-", { "_":[ "scene", "y" ] }, "limitValue", [ { "_":[ "that", "y" ] }, { "_":[ "that", "y", "+", { "_":[ "that", "height" ] }, "-", 16 ] } ] ] },
+                "driveAngle":{ "_":[ "that", "steerAngle" ] }
+              }
+            },
+            {
+              "when":{ "_":[ "this", "spawnSide", "isEqualTo", 3 ] },
+              "as":{ "_":[ "scene", "spawnBox" ] },
+              "set":{
+                "x":{ "_":[ "that", "x" ] }, "y":{ "_":[ -16, "-", { "_":[ "scene", "y" ] }, "limitValue", [ { "_":[ "that", "y" ] }, { "_":[ "that", "y", "+", { "_":[ "that", "height" ] }, "-", 16 ] } ] ] },
+                "driveAngle":{ "_":[ "that", "steerAngle" ] }
+              }
+            },
+            {
+              "when":{ "_":[ "scene", "spawnBox", "collidesWith", { "_":[ "objectTyped", "viewport" ] }, "not" ] },
+              "execute":{
+                "when":{ "_":[ "variable", "missionTargetCar", "and", { "_":[ "objectTyped", "missionTargetCar", "not" ] } ] },
+                "object":{ "set":[ { "_":[ "stencil", { "_":[ "variable", "missionTargetCar" ] } ] }, { "_":[ "scene", "spawnBox" ] } ] },
+                "elseExecute":{
+                  "when":{ "_":[ "variable", "copCars" ] },
+                  "object":{
+                    "set":[ { "_":[ "stencil", "basicCar" ] }, { "_":[ "scene", "spawnBox" ] } ],
+                    "tileY":{ "_":[ "stencil", "cop", "carTileY" ] },
+                    "aggressive":1,
+                    "driver":"cop",
+                    "weapon":{ "_":[ "randomValue", { "_":[ "variable", "copCarsWeapon" ] } ] },
+                    "state":"drivenByCitizen"
+                  },
+                  "elseExecute":{ "object":{ "set":[ { "_":[ "stencil", "basicCar" ] }, { "_":[ "scene", "spawnBox" ] } ], "state":"drivenByCitizen" } }
+                }
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "codeGetRandomDestination":[
+      {
+        "when":{ "_":[ "this", "destinationType", "not" ] },
+        "set":{ "destinationType":"poi" },
+        "elseExecute":{ "set":{ "destinationType":{ "_":[ "randomValue", { "_":[ "this", "destinationType" ] } ] } } }
+      },
+      {
+        "set":{
+          "availDestinations":{ "_":[ "new", [] ] },
+          "destination":{ "_":[ "randomObject", { "_":[ "object", { "_":[ "this", "destinationType" ] } ] }, "label" ] }
+        }
+      },
+      {
+        "as":{ "_":[ "object", { "_":[ "this", "destinationType" ] } ] },
+        "execute":[
+          { "set":{ "poiDistance":{ "_":[ "this", "distanceTo", { "_":[ "objectTyped", "playerbody" ] } ] } } },
+          {
+            "when":{
+              "_":[
+                "this",
+                "poiDistance",
+                "isGreaterThan",
+                { "_":[ "that", "betweenDistance" ] },
+                "and",
+                { "_":[ "this", "poiDistance", "isLessThan", { "_":[ "that", "andDistance" ] } ] }
+              ]
+            },
+            "pushInto":{ "_":[ "that", "availDestinations" ] }
+          }
+        ]
+      },
+      {
+        "when":{ "_":[ "this", "availDestinations", "count" ] },
+        "set":{ "set":{ "destination":{ "_":[ "randomValue", { "_":[ "this", "availDestinations" ] }, "label" ] } } }
+      },
+      { "set":{ "availDestinations":0, "destinationType":0 } }
+    ],
+    "codeGetRandomDestinationFar":{ "set":{ "andDistance":1500, "betweenDistance":800 }, "execute":{ "_":[ "stencil", "codeGetRandomDestination" ] } },
+    "codeGetRandomDestinationMid":{ "set":{ "andDistance":800, "betweenDistance":500 }, "execute":{ "_":[ "stencil", "codeGetRandomDestination" ] } },
+    "codeGetRandomDestinationNearby":{ "set":{ "andDistance":300, "betweenDistance":100 }, "execute":{ "_":[ "stencil", "codeGetRandomDestination" ] } },
+    "codeHitableHandler":[
+      { "set":{ "doLogic":1 } },
+      {
+        "when":{ "_":[ "this", "stunned" ] },
+        "execute":[
+          { "subtract":1, "to":{ "_":[ "this", "stunned" ] }, "set":{ "doLogic":0 } },
+          { "when":{ "_":[ "this", "stunned", "not" ] }, "executeAction":"endStun" }
+        ],
+        "elseExecute":{
+          "when":{ "_":[ "this", "invulnerability" ] },
+          "execute":{ "subtract":1, "to":{ "_":[ "this", "invulnerability" ] } },
+          "elseExecute":{
+            "when":{ "_":[ "this", "hitBy" ] },
+            "execute":{
+              "when":{ "_":[ "this", "invulnerability", "not" ] },
+              "execute":[
+                {
+                  "when":{ "_":[ "this", "hitBy", "damage" ] },
+                  "subtract":{ "_":[ "this", "hitBy", "damage" ] },
+                  "to":{ "_":[ "this", "health" ] },
+                  "elseExecute":{ "subtract":1, "to":{ "_":[ "this", "health" ] } }
+                },
+                { "when":{ "_":[ "this", "health", "isLessEqualThan", 0 ] }, "execute":{ "executeAction":"die" }, "elseExecute":{ "executeAction":"hit" } },
+                { "set":{ "doLogic":0 } }
+              ]
+            }
+          }
+        }
+      },
+      { "set":{ "hitBy":0 } }
+    ],
+    "codeLoadGame":{
+      "when":{ "_":[ "storage", "saved" ] },
+      "execute":[
+        {
+          "as":{ "_":"variable" },
+          "set":{
+            "ammo":{ "_":[ "storage", "ammo" ] },
+            "hours":{ "_":[ "storage", "hours" ] },
+            "level":{ "_":[ "storage", "level" ] },
+            "minutes":{ "_":[ "storage", "minutes" ] },
+            "money":{ "_":[ "storage", "money" ] },
+            "seconds":{ "_":[ "storage", "seconds" ] },
+            "weapon":{ "_":[ "storage", "weapon" ] }
+          }
+        },
+        { "gotoScene":"play", "withTransition":2 }
+      ],
+      "elseExecute":{ "_":[ "stencil", "codeNewGame" ] }
+    },
+    "codeMissionClear":[
+      {
+        "when":{ "_":[ "objectTyped", "currentmission" ] },
+        "execute":[
+          { "sum":{ "_":[ "objectTyped", "currentmission", "missionValue" ] }, "to":{ "_":[ "variable", "money" ] } },
+          {
+            "as":{ "_":[ "objectTyped", "playerbody" ] },
+            "execute":{
+              "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "color":"#ff0", "html":{ "_":[ "objectTyped", "currentmission", "missionValue", ".", "$" ] } }
+            }
+          }
+        ]
+      },
+      { "as":{ "_":[ "object", "removeonendmission" ] }, "execute":{ "_":[ "stencil", "removeWithSmoke" ] } },
+      {
+        "as":{ "_":[ "object", "car" ] },
+        "execute":{ "when":{ "_":[ "this", "driver", "isEqualTo", "cop" ] }, "execute":{ "_":[ "stencil", "removeWithSmoke" ] } }
+      },
+      { "as":{ "_":"variable" }, "set":{ "felony":0, "level":{ "_":[ "variable", "nextLevel" ] } } },
+      { "_":[ "stencil", "codeUpdateFelony" ] },
+      { "_":[ "stencil", "codeResetMission" ] },
+      {
+        "object":{ "set":{ "_":[ "stencil", "flashMessage" ] }, "html":"MISSION CLEAR", "color1":"#ff0", "color2":"#0f0" },
+        "into":{ "_":"scenehud" },
+        "playAudio":"bigfire"
+      },
+      { "as":{ "_":[ "object", "cityactivity" ] }, "set":{ "type":[ "wantindicator", "isplayerinteractive" ] } },
+      { "stopChannel":"music" },
+      { "_":[ "stencil", "codeSaveGame" ] }
+    ],
+    "codeMissionFailed":[
+      { "_":[ "stencil", "codeResetMission" ] },
+      {
+        "object":{ "set":{ "_":[ "stencil", "flashMessage" ] }, "html":"MISSION FAILED", "color1":"#f00", "color2":"#fff" },
+        "into":{ "_":"scenehud" },
+        "playAudio":"lose"
+      },
+      { "as":{ "_":[ "object", "cityactivity" ] }, "set":{ "type":[ "wantindicator", "isplayerinteractive" ] } },
+      { "stopChannel":"music" }
+    ],
+    "codeNewGame":[
+      { "as":{ "_":"variable" }, "set":{ "ammo":20, "hours":0, "level":-1, "minutes":0, "money":0, "seconds":0, "weapon":"gun" } },
+      { "gotoScene":"introduction", "withTransition":3 }
+    ],
+    "codeRemoveWithExplosion":[
+      {
+        "type":"gameelement",
+        "object":{
+          "width":{ "_":[ "that", "width", "+", 16 ] }, "height":{ "_":[ "that", "height", "+", 16 ] },
+          "zIndex":10000, "x":{ "_":[ "that", "x", "-", 8 ] }, "y":{ "_":[ "that", "y", "-", 8 ] },
+          "bgcolor":"#fff",
+          "execute":{ "_":[ "stencil", "codeCloud" ] },
+          "damage":2,
+          "states":{
+            "code":{
+              "name":"Sequence",
+              "data":[
+                { "sum":45, "to":{ "_":[ "this", "angle" ] } },
+                {
+                  "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "ishitable" ] }, "all":1 } ] },
+                  "as":{ "_":"that" },
+                  "set":{ "hitBy":{ "_":"that" } }
+                },
+                { "wait":1, "cycles":3, "loopTo":0 },
+                { "remove":1 }
+              ]
+            }
+          }
+        },
+        "playAudio":"explode2"
+      },
+      { "executeAction":"getOut" },
+      { "remove":1 }
+    ],
+    "codeResetMission":[
+      { "as":{ "_":[ "objectTyped", "missionmessage" ] }, "set":{ "html":"" } },
+      { "as":{ "_":[ "objectTyped", "missionname" ] }, "set":{ "html":"" } },
+      { "as":{ "_":[ "objectTyped", "missiontimer" ] }, "set":{ "visible":0 } },
+      { "as":{ "_":"variable" }, "set":{ "missionTargetCar":0, "missionTargetCitizen":0 } },
+      { "as":{ "_":[ "object", "missionTarget" ] }, "execute":{ "_":[ "stencil", "removeWithSmoke" ] } },
+      { "as":{ "_":[ "object", "flashmessage" ] }, "remove":1 },
+      { "as":{ "_":[ "object", "indicator" ] }, "remove":1 },
+      { "as":{ "_":[ "object", "missionelement" ] }, "remove":1 },
+      { "as":{ "_":[ "object", "cityactivity" ] }, "set":{ "removeType":[ "wantindicator", "isplayerinteractive" ] } }
+    ],
+    "codeSaveGame":[
+      {
+        "as":{ "_":"storage" },
+        "set":{
+          "ammo":{ "_":[ "objectTyped", "playerbody", "ammo" ] },
+          "hours":{ "_":[ "variable", "hours" ] },
+          "level":{ "_":[ "variable", "level" ] },
+          "minutes":{ "_":[ "variable", "minutes" ] },
+          "money":{ "_":[ "variable", "money" ] },
+          "saved":1,
+          "seconds":{ "_":[ "variable", "seconds" ] },
+          "weapon":{ "_":[ "objectTyped", "playerbody", "weapon" ] }
+        }
+      },
+      { "as":{ "_":[ "object", "savedlabel" ] }, "remove":1 },
+      {
+        "object":{
+          "type":"savedlabel",
+          "width":68, "height":10,
+          "zIndex":20, "x":8, "y":18,
+          "bgcolor":"#f00", "color":"#fff",
+          "font":"spectrum", "lineHeight":10, "textAlign":"center", "html":"SAVED",
+          "states":{ "code":{ "name":"Sequence", "data":[ { "wait":75 }, { "remove":1 } ] } }
+        },
+        "into":{ "_":"scenehud" }
+      }
+    ],
+    "codeStartInstruction":[
+      { "executeAction":"startTimer", "playAudio":"beep3" },
+      { "as":{ "_":[ "objectTyped", "missionmessage" ] }, "set":{ "html":{ "_":[ "that", "instruction" ] } } },
+      { "as":{ "_":[ "object", "destinationindicator" ] }, "remove":1 }
+    ],
+    "codeUpdateFelony":[
+      { "as":{ "_":"variable" }, "set":{ "_":[ "stencil", "dataFelonyLevels", { "_":[ "variable", "felony" ] } ] } },
+      { "as":{ "_":[ "objectTyped", "felonyIndicator" ] }, "set":{ "width":{ "_":[ "variable", "felony", "*", 8 ] } } },
+      { "as":{ "_":"scene" }, "set":{ "crimeCooldown":250, "crimeThreshold":125 } }
+    ],
+    "codeWaitEvent":[
+      { "assign":0, "to":{ "_":[ "this", { "_":[ "this", "waitEvent" ] } ] } },
+      { "wait":1, "loop":1, "until":{ "_":[ "this", { "_":[ "this", "waitEvent" ] } ] } }
+    ],
+    "spark":{
+      "type":"gameelement",
+      "image":"effects", "tileX":32, "tileY":0, "width":8, "height":8,
+      "zIndex":100000, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "animations":{ "spark":{ "frames":4, "speed":0 } },
+      "animation":"spark",
+      "states":{ "code":{ "name":"Sequence", "data":[ { "wait":4 }, { "remove":1 } ] } }
+    },
+    "removeNotVisibleBehaviour":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "visiblearea" ] }, "not" ] }, "remove":1 } } },
+    "removeWithSmoke":[ { "object":{ "_":[ "stencil", "smoke" ] } }, { "remove":1 } ],
+    "modelBonus":{
+      "type":"gameelement",
+      "image":"effects", "tileY":16, "width":8, "height":8,
+      "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "bonusLabel":"Bonus",
+      "states":{
+        "set":{ "type":"pickable" },
+        "code":[
+          {
+            "name":"Sequence",
+            "data":[ { "wait":125 }, { "set":{ "visible":{ "_":[ "this", "visible", "not" ] } }, "wait":1, "loop":1, "cycles":125 }, { "remove":1 } ]
+          },
+          { "name":"ZPerspective" }
+        ],
+        "actions":{
+          "name":"pick",
+          "execute":[
+            { "playAudio":"beep2" },
+            { "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "color":"#ff0", "html":{ "_":[ "that", "bonusLabel" ] } } },
+            { "remove":1 }
+          ]
+        }
+      }
+    },
+    "modelPopupLabel":{
+      "width":100, "height":10,
+      "zIndex":100000, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "that", "y", "-", 5 ] },
+      "color":"#fff",
+      "font":"spectrum", "lineHeight":12, "outline":"#000", "textAlign":"center",
+      "speed":0.5,
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[ { "subtract":{ "_":[ "this", "speed" ] }, "to":{ "_":[ "this", "y" ] }, "wait":1, "loop":1, "cycles":15 }, { "remove":1 } ]
+        }
+      }
+    },
+    "stageModel":{
+      "object":[
+        { "set":{ "type":"tester" } },
+        { "set":{ "_":[ "stencil", "basicCar" ] }, "x":784, "y":800 },
+        { "set":{ "_":[ "stencil", "crowdGenerator" ] }, "width":48, "height":320, "dx":-64, "dy":-64 },
+        { "set":{ "_":[ "stencil", "crowdGenerator" ] }, "width":48, "height":320, "dx":272, "dy":-64 },
+        { "set":{ "_":[ "stencil", "crowdGenerator" ] }, "width":288, "height":48, "dx":-16, "dy":-64 },
+        { "set":{ "_":[ "stencil", "crowdGenerator" ] }, "width":288, "height":48, "dx":-16, "dy":208 },
+        { "set":{ "_":[ "stencil", "visibleArea" ] }, "width":448, "height":384, "dx":-96, "dy":-96 },
+        { "set":{ "_":[ "stencil", "viewport" ] }, "width":256, "height":192, "dx":0, "dy":0 },
+        { "type":"screencenter", "set":{ "_":[ "stencil", "followCameraModel" ] }, "width":2, "height":2, "dx":120, "dy":88 }
+      ],
+      "execute":[
+        {
+          "object":[
+            {
+              "type":"hud",
+              "hudType":"label", "label":"%number|variable.hours|0|2%:%number|variable.minutes|0|2%:%number|variable.seconds|0|2%",
+              "width":256, "height":10,
+              "zIndex":20, "x":8, "y":8,
+              "color":"#fff",
+              "font":"spectrum", "lineHeight":10, "outline":"#000"
+            },
+            {
+              "type":"hud",
+              "hudType":"label", "label":"HP:%number|objectTyped.playerbody.health|0|2% AMMO:%number|objectTyped.playerbody.ammo|0|3%",
+              "width":256, "height":10,
+              "zIndex":20, "x":-8, "y":14,
+              "color":"#f00",
+              "font":"spectrum", "lineHeight":10, "outline":"#000", "textAlign":"right"
+            },
+            {
+              "type":"hud",
+              "hudType":"label", "label":"%number|variable.money|0|10%$",
+              "width":256, "height":10,
+              "zIndex":20, "x":-8, "y":4,
+              "color":"#ff0",
+              "font":"spectrum", "lineHeight":10, "outline":"#000", "textAlign":"right"
+            },
+            {
+              "type":"missionmessage",
+              "width":240, "height":10,
+              "zIndex":20, "x":8, "y":174,
+              "color":"#ff0",
+              "font":"spectrum", "lineHeight":10, "outline":"#000"
+            },
+            { "type":"missiontimer", "height":3, "zIndex":20, "x":8, "y":186, "bgcolor":"#ff0", "border":"#000" },
+            { "type":"missionname", "width":240, "height":10, "zIndex":20, "x":8, "y":164, "color":"#f00", "font":"spectrum", "lineHeight":10, "outline":"#000" },
+            { "image":"effects", "tileY":8, "width":48, "height":8, "zIndex":20, "x":200, "y":24 },
+            {
+              "type":"felonyIndicator",
+              "image":"effects", "tileX":48, "tileY":8, "width":0, "height":8,
+              "zIndex":30, "x":200, "y":24,
+              "blinkTimer":0,
+              "states":{
+                "code":{
+                  "name":"Execute",
+                  "data":{
+                    "when":{ "_":[ "this", "blinkTimer" ] },
+                    "subtract":1,
+                    "to":{ "_":[ "this", "blinkTimer" ] },
+                    "elseExecute":{
+                      "when":{ "_":[ "scene", "crimeThreshold" ] },
+                      "set":{ "visible":{ "_":[ "this", "visible", "not" ] }, "blinkTimer":10 },
+                      "elseExecute":{ "set":{ "visible":1 } }
+                    }
+                  }
+                }
+              }
+            },
+            {
+              "image":"effects", "tileX":16, "tileY":24, "width":16, "height":16,
+              "zIndex":10,
+              "animations":{ "idle":{ "frames":2, "loopTo":0 } },
+              "animation":"idle",
+              "states":{
+                "code":{
+                  "name":"Execute",
+                  "data":{
+                    "when":{ "_":[ "objectTyped", "directionTo" ] },
+                    "execute":{
+                      "when":{ "_":[ "objectTyped", "screencenter", "distanceTo", { "_":[ "objectTyped", "directionTo" ] }, "isLessThan", 70 ] },
+                      "set":{ "visible":0 },
+                      "elseExecute":[
+                        { "set":{ "x":120, "y":88, "visible":1, "angle":{ "_":[ "objectTyped", "screencenter", "angleTo", { "_":[ "objectTyped", "directionTo" ] } ] } } },
+                        { "translateBy":{ "angle":{ "_":[ "this", "angle" ] }, "length":80 } }
+                      ]
+                    },
+                    "elseExecute":{ "set":{ "visible":0 } }
+                  }
+                }
+              }
+            }
+          ],
+          "into":{ "_":"scenehud" }
+        },
+        { "as":{ "_":"variable" }, "set":{ "missionTargetCar":0, "missionTargetCitizen":0 } }
+      ],
+      "blinkFrame":0,
+      "crimeCooldown":0,
+      "crimeThreshold":0,
+      "poiIndex":{ "_":[ "new", {} ] },
+      "spawnBox":{ "_":[ "new", { "width":16, "height":16 } ] },
+      "states":{
+        "code":[
+          {
+            "name":"Sequence",
+            "data":[
+              { "as":{ "_":[ "object", "cityactivity" ] }, "set":{ "type":[ "wantindicator", "isplayerinteractive" ] } },
+              { "as":{ "_":"variable" }, "set":{ "felony":0 } },
+              { "_":[ "stencil", "codeUpdateFelony" ] },
+              { "object":{ "type":"dimmer", "width":256, "height":192, "zIndex":1000, "x":0, "y":0, "bgcolor":"#000" }, "into":{ "_":"scenehud" } },
+              { "wait":1 },
+              { "as":{ "_":[ "object", "gameelement" ] }, "remove":1 },
+              { "set":{ "spawnpoint":{ "_":[ "this", "poiIndex", { "_":[ "randomObject", { "_":[ "object", "poihospital" ] }, "label" ] } ] } } },
+              {
+                "object":{
+                  "set":{ "_":[ "stencil", "player" ] },
+                  "x":{ "_":[ "that", "spawnpoint", "x", "+", 4 ] }, "y":{ "_":[ "that", "spawnpoint", "y", "+", 4 ] },
+                  "ammo":{ "_":[ "variable", "ammo" ] },
+                  "weapon":{ "_":[ "variable", "weapon" ] }
+                }
+              },
+              { "as":{ "_":[ "objectTyped", "visiblearea" ] }, "execute":{ "_":[ "stencil", "codeGenerateCityLife" ] } },
+              { "wait":1, "cycles":25, "loopTo":-1 },
+              { "as":{ "_":[ "objectTyped", "dimmer" ] }, "remove":1 },
+              { "wait":10 },
+              { "set":{ "blinkFrame":{ "_":[ "this", "blinkFrame", "+", 1, "%", 2 ] } } },
+              {
+                "as":{ "_":[ "objectTyped", "visiblearea", "complexCollidesWith", { "subject":{ "_":[ "object", "animated" ] }, "all":1 } ] },
+                "set":{ "frame":{ "_":[ "scene", "blinkFrame" ] } }
+              },
+              {
+                "when":{ "_":[ "objectTyped", "visiblearea", "complexCollidesWith", { "subject":{ "_":[ "object", "wantindicator" ] }, "all":1 } ] },
+                "as":{ "_":"that" },
+                "execute":{ "object":{ "_":[ "stencil", "indicator" ] } }
+              },
+              { "as":{ "_":[ "randomObject", { "_":[ "object", "generatortrigger" ] } ] }, "execute":{ "_":[ "stencil", "codeGenerateCityLife" ] } },
+              { "loopTo":11, "until":{ "_":[ "objectTyped", "playerbody", "not" ] } },
+              { "wait":75 },
+              { "subtract":10, "to":{ "_":[ "variable", "money" ] } },
+              { "when":{ "_":[ "variable", "money", "isLessThan", 0 ] }, "as":{ "_":"variable" }, "set":{ "money":0 } },
+              { "as":{ "_":"variable" }, "set":{ "ammo":20, "weapon":"gun" } },
+              { "loopTo":0 }
+            ]
+          },
+          {
+            "name":"Execute",
+            "data":{
+              "when":{ "_":[ "this", "crimeThreshold" ] },
+              "subtract":1,
+              "to":{ "_":[ "this", "crimeThreshold" ] },
+              "set":{ "crime":0 },
+              "elseExecute":{
+                "when":{ "_":[ "scene", "crime" ] },
+                "execute":[
+                  { "when":{ "_":[ "variable", "felony", "isLessThan", 6 ] }, "sum":1, "to":{ "_":[ "variable", "felony" ] } },
+                  { "_":[ "stencil", "codeUpdateFelony" ] }
+                ],
+                "elseExecute":{
+                  "when":{ "_":[ "variable", "felony" ] },
+                  "execute":{
+                    "when":{ "_":[ "variable", "copCars", "not", "and", { "_":[ "variable", "cops", "not" ] } ] },
+                    "execute":{
+                      "when":{ "_":[ "this", "crimeCooldown" ] },
+                      "subtract":1,
+                      "to":{ "_":[ "this", "crimeCooldown" ] },
+                      "elseExecute":[
+                        { "subtract":1, "to":{ "_":[ "variable", "felony" ] } },
+                        { "as":{ "_":[ "objectTyped", "felonyIndicator" ] }, "set":{ "width":{ "_":[ "variable", "felony", "*", 8 ] } } },
+                        { "set":{ "crimeCooldown":250 } }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            "name":"Sequence",
+            "data":[
+              { "wait":25 },
+              { "sum":1, "to":{ "_":[ "variable", "seconds" ] } },
+              {
+                "when":{ "_":[ "variable", "seconds", "isGreaterThan", 59 ] },
+                "execute":[
+                  { "sum":1, "to":{ "_":[ "variable", "minutes" ] } },
+                  {
+                    "when":{ "_":[ "variable", "minutes", "isGreaterThan", 59 ] },
+                    "execute":[ { "sum":1, "to":{ "_":[ "variable", "hours" ] } }, { "as":{ "_":"variable" }, "set":{ "minutes":0 } } ]
+                  },
+                  { "as":{ "_":"variable" }, "set":{ "seconds":0 } }
+                ]
+              },
+              { "loopTo":0 }
+            ]
+          }
+        ]
+      }
+    },
+    "player":{
+      "type":"playerbody",
+      "follow":1,
+      "set":{ "_":[ "stencil", "personModel" ] },
+      "tileX":0,
+      "health":4,
+      "maxHealth":6,
+      "states":[
+        {
+          "like":{ "_":[ "stencil", "byFootBehaviour" ] },
+          "set":{ "type":[ "player", "ishitablebyenemy", "ishitable" ], "visible":1, "driving":0 },
+          "actions":[
+            {
+              "name":"logic",
+              "execute":[
+                {
+                  "when":{ "_":[ "keyA", "isHit" ] },
+                  "execute":{
+                    "when":{ "_":[ "this", "ammo" ] },
+                    "execute":[
+                      { "subtract":1, "to":{ "_":[ "this", "ammo" ] } },
+                      {
+                        "object":{
+                          "set":{ "_":[ "stencil", "dataWeapons", { "_":[ "that", "weapon" ] }, "bullet" ] },
+                          "execute":{ "applyVector":{ "angle":{ "_":[ "that", "interactionBox", "angle" ] }, "length":{ "_":[ "this", "bulletSpeed" ] } } },
+                          "bulletColor":"#ff0"
+                        }
+                      }
+                    ],
+                    "elseExecute":{ "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "color":"#ff0", "html":"NO AMMO" } }
+                  }
+                },
+                {
+                  "when":{ "_":[ "keyRight", "isDown" ] },
+                  "sum":1,
+                  "to":{ "_":[ "this", "forceX" ] },
+                  "elseExecute":{ "when":{ "_":[ "keyLeft", "isDown" ] }, "subtract":1, "to":{ "_":[ "this", "forceX" ] }, "elseExecute":{ "set":{ "forceX":0 } } }
+                },
+                {
+                  "when":{ "_":[ "keyDown", "isDown" ] },
+                  "sum":1,
+                  "to":{ "_":[ "this", "forceY" ] },
+                  "elseExecute":{ "when":{ "_":[ "keyUp", "isDown" ] }, "subtract":1, "to":{ "_":[ "this", "forceY" ] }, "elseExecute":{ "set":{ "forceY":0 } } }
+                },
+                {
+                  "when":{ "_":[ "keyB", "isHit" ] },
+                  "execute":[
+                    { "playAudio":"fire" },
+                    {
+                      "as":{
+                        "_":[
+                          "this",
+                          "complexCollidesWith",
+                          { "subject":{ "_":[ "object", "isplayerinteractive" ] }, "hitbox":{ "_":[ "this", "interactionBox" ] }, "notThis":1 }
+                        ]
+                      },
+                      "executeAction":"interactByFoot"
+                    }
+                  ]
+                },
+                { "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "pickable" ] } ] }, "as":{ "_":"that" }, "executeAction":"pick" }
+              ]
+            },
+            {
+              "name":"onVehicle",
+              "execute":[ { "set":{ "driving":{ "_":"that" }, "state":"onVehicle" } }, { "as":{ "_":"that" }, "set":{ "state":"drivenByPlayer" } } ]
+            },
+            { "name":"die", "execute":{ "_":[ "stencil", "codeBusted" ] } }
+          ]
+        },
+        {
+          "name":"onVehicle",
+          "set":{ "removeType":[ "ishitable", "ishitablebyenemy" ], "visible":0, "forceX":0, "forceY":0, "invulnerability":0 },
+          "code":{ "name":"Execute", "data":{ "set":{ "x":{ "_":[ "this", "driving", "x", "+", 2 ] }, "y":{ "_":[ "this", "driving", "y", "+", 2 ] } } } },
+          "actions":{
+            "name":"interactByFoot",
+            "execute":{ "as":{ "_":"that" }, "execute":{ "as":{ "_":[ "objectTyped", "playerbody", "driving" ] }, "executeAction":"interactByFoot" } }
+          }
+        }
+      ]
+    },
+    "animatedPanel":{ "type":"animated", "set":{ "_":[ "stencil", "T" ] } },
+    "missionStarter":{
+      "type":"cityactivity",
+      "set":{ "_":[ "stencil", "T" ] },
+      "states":{
+        "actions":{
+          "name":"interactByFoot",
+          "execute":[
+            { "_":[ "stencil", "codeResetMission" ] },
+            {
+              "object":{
+                "type":"missionelement",
+                "set":{ "_":[ "stencil", "missionModel" ] },
+                "execute":[
+                  { "_":[ "stencil", "codeSaveGame" ] },
+                  {
+                    "when":{ "_":[ "variable", "money", "isGreaterEqualThan", 500000 ] },
+                    "set":{ "_":[ "stencil", "dataMissionFinal" ] },
+                    "elseExecute":[
+                      {
+                        "as":{ "_":"variable" },
+                        "set":{ "nextLevel":{ "_":[ "variable", "level", "+", { "_":[ "randomNumber", [ 1, 3 ] ] }, "%", { "_":[ "stencil", "dataMissions", "count" ] } ] } }
+                      },
+                      {
+                        "playAudio":{ "_":[ "stencil", "dataMissionMusics", { "_":[ "variable", "nextLevel", "%", { "_":[ "stencil", "dataMissionMusics", "count" ] } ] } ] }
+                      },
+                      { "set":{ "_":[ "stencil", "dataMissions", { "_":[ "variable", "nextLevel" ] } ] } }
+                    ],
+                    "playAudio":"bgmintro"
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    "ammoShop":{
+      "set":{ "_":[ "stencil", "shopModel" ] },
+      "onBuy":"AMMO GOT",
+      "onCantBuy":"TOO AMMO",
+      "price":100,
+      "states":{
+        "actions":{
+          "name":"canBuy",
+          "execute":{
+            "when":{ "_":[ "that", "ammo", "isLessThan", { "_":[ "stencil", "dataWeapons", { "_":[ "that", "weapon" ] }, "maxAmmo" ] } ] },
+            "execute":[
+              { "sum":{ "_":[ "stencil", "dataWeapons", { "_":[ "that", "weapon" ] }, "ammoPack" ] }, "to":{ "_":[ "that", "ammo" ] } },
+              {
+                "when":{ "_":[ "that", "ammo", "isGreaterThan", { "_":[ "stencil", "dataWeapons", { "_":[ "that", "weapon" ] }, "maxAmmo" ] } ] },
+                "as":{ "_":"that" },
+                "set":{ "ammo":{ "_":[ "stencil", "dataWeapons", { "_":[ "this", "weapon" ] }, "maxAmmo" ] } }
+              },
+              { "set":{ "doBuy":1 } }
+            ]
+          }
+        }
+      }
+    },
+    "foodShop":{
+      "set":{ "_":[ "stencil", "shopModel" ] },
+      "onBuy":"HEALTH UP",
+      "onCantBuy":"TOO HEALTH",
+      "price":50,
+      "states":{
+        "actions":{
+          "name":"canBuy",
+          "execute":{
+            "when":{ "_":[ "that", "health", "isLessThan", { "_":[ "that", "maxHealth" ] } ] },
+            "execute":[ { "sum":1, "to":{ "_":[ "that", "health" ] } }, { "set":{ "doBuy":1 } } ]
+          }
+        }
+      }
+    },
+    "weaponShopModel":{
+      "set":{ "_":[ "stencil", "shopModel" ] },
+      "onCantBuy":"NOT NEEDED",
+      "states":{
+        "actions":{
+          "name":"canBuy",
+          "execute":{
+            "when":{ "_":[ "that", "weapon", "isNotEqualTo", { "_":[ "this", "weapon" ] } ] },
+            "execute":[
+              {
+                "as":{ "_":"that" },
+                "set":{ "ammo":{ "_":[ "stencil", "dataWeapons", { "_":[ "this", "weapon" ] }, "newAmmo" ] }, "weapon":{ "_":[ "that", "weapon" ] } }
+              },
+              { "set":{ "doBuy":1 } }
+            ]
+          }
+        }
+      }
+    },
+    "shopModel":{
+      "type":"cityactivity",
+      "set":{ "_":[ "stencil", "T" ] },
+      "price":100,
+      "states":{
+        "actions":{
+          "name":"interactByFoot",
+          "execute":{
+            "when":{ "_":[ "variable", "felony" ] },
+            "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "color":"#f00", "html":"NO FELONY!" },
+            "elseExecute":{
+              "when":{ "_":[ "variable", "money", "isGreaterEqualThan", { "_":[ "this", "price" ] } ] },
+              "execute":[
+                { "set":{ "doBuy":0 } },
+                { "executeAction":"canBuy" },
+                {
+                  "when":{ "_":[ "this", "doBuy" ] },
+                  "execute":[
+                    { "subtract":{ "_":[ "this", "price" ] }, "to":{ "_":[ "variable", "money" ] }, "playAudio":"beep2" },
+                    { "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "color":"#0f0", "html":{ "_":[ "that", "onBuy" ] } } }
+                  ],
+                  "elseExecute":{ "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "color":"#f00", "html":{ "_":[ "that", "onCantBuy" ] } }, "playAudio":"beep" }
+                }
+              ],
+              "elseExecute":{
+                "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "color":"#f00", "html":{ "_":[ "NEED ", ".", { "_":[ "that", "price" ] }, ".", "$" ] } },
+                "playAudio":"beep"
+              }
+            }
+          }
+        }
+      }
+    },
+    "gunShop":{ "set":{ "_":[ "stencil", "weaponShopModel" ] }, "onBuy":"GUN", "price":500, "weapon":"gun" },
+    "rocketShop":{ "set":{ "_":[ "stencil", "weaponShopModel" ] }, "onBuy":"ROCKET", "price":1000, "weapon":"rocket" },
+    "blood":{
+      "type":"gameelement",
+      "image":"effects", "tileX":64, "width":8, "height":8,
+      "zIndex":2, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "states":{ "code":{ "name":"Sequence", "data":[ { "wait":50 }, { "remove":1 } ] } }
+    },
+    "bulletModel":{
+      "type":[ "gameelement", "removeonendmission" ],
+      "width":2, "height":2,
+      "zIndex":2, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "playAudio":"fire",
+      "bulletColor":"#f00",
+      "bulletLife":50,
+      "bulletTarget":"ishitablebyplayer",
+      "damage":1,
+      "states":{
+        "code":[
+          {
+            "name":"Execute",
+            "data":[
+              {
+                "when":{ "_":[ "this", "bgcolor", "isEqualTo", "#fff" ] },
+                "set":{ "bgcolor":{ "_":[ "this", "bulletColor" ] } },
+                "elseExecute":{ "set":{ "bgcolor":"#fff" } }
+              },
+              {
+                "when":{ "_":[ "this", "bulletLife" ] },
+                "execute":[
+                  { "subtract":1, "to":{ "_":[ "this", "bulletLife" ] } },
+                  { "when":{ "_":[ "this", "collidesWith", { "_":[ "object", { "_":[ "this", "bulletTarget" ] } ] } ] }, "execute":{ "executeAction":"explode" } }
+                ],
+                "elseExecute":{ "executeAction":"explode" }
+              }
+            ]
+          },
+          { "name":"Physics", "data":{ "walls":{ "type":"wall", "execute":{ "executeAction":"explode" } } } }
+        ],
+        "actions":{ "name":"explode", "execute":{ "object":{ "_":[ "stencil", "smoke" ] }, "remove":1 } }
+      }
+    },
+    "byFootBehaviour":{
+      "like":{ "_":[ "stencil", "canInteractBehaviour" ] },
+      "set":{ "type":[ "isinteractive", "isplayerinteractive", "ishitable" ], "invulnerability":0 },
+      "code":[
+        {
+          "name":"Execute",
+          "data":[
+            { "when":{ "_":[ "this", "forceX" ] }, "set":{ "flipX":{ "_":[ "this", "forceX", "isLessThan", 0 ] } } },
+            {
+              "when":{ "_":[ "this", "forceX", "or", { "_":[ "this", "forceY" ] } ] },
+              "set":{ "animation":"walk" },
+              "elseExecute":{ "set":{ "animation":"still" } }
+            },
+            { "_":[ "stencil", "codeHitableHandler" ] },
+            { "when":{ "_":[ "this", "doLogic" ] }, "executeAction":"logic" }
+          ]
+        },
+        { "name":"Physics", "data":{ "walls":[ { "type":"personwall", "restitution":0 }, { "z":0 } ], "gravityZ":1, "limitX":[ -1, 1 ], "limitY":[ -1, 1 ] } },
+        { "name":"ZPerspective" }
+      ],
+      "actions":[
+        { "name":"interactByFoot", "execute":{ "set":{ "hitBy":{ "_":"that" } } } },
+        {
+          "name":"die",
+          "execute":[
+            { "playAudio":{ "_":[ "randomValue", [ "scream", "scream2" ] ] } },
+            { "object":[ { "_":[ "stencil", "spark" ] }, { "_":[ "stencil", "blood" ] } ], "remove":1 }
+          ]
+        },
+        {
+          "name":"hit",
+          "execute":[
+            { "object":{ "_":[ "stencil", "spark" ] }, "playAudio":"blam" },
+            {
+              "set":{
+                "angle":{ "_":[ "randomValue", [ 90, -90 ] ] },
+                "forceX":0, "forceY":0, "forceZ":{ "_":[ "randomNumber", [ -6, -4 ] ] },
+                "invulnerability":10,
+                "stunned":20
+              }
+            }
+          ]
+        },
+        { "name":"endStun", "execute":{ "set":{ "angle":0 } } }
+      ]
+    },
+    "canInteractBehaviour":{
+      "set":{ "interactionBox":{ "_":[ "new", { "width":8, "height":8, "x":0, "y":0, "angle":0 } ] } },
+      "code":{
+        "name":"Execute",
+        "data":{
+          "as":{ "_":[ "this", "interactionBox" ] },
+          "execute":{
+            "when":{ "_":[ "that", "forceX", "isGreaterThan", 0 ] },
+            "execute":{
+              "when":{ "_":[ "that", "forceY", "isGreaterThan", 0 ] },
+              "set":{ "x":4, "y":4, "angle":135 },
+              "elseExecute":{ "when":{ "_":[ "that", "forceY", "isLessThan", 0 ] }, "set":{ "x":4, "y":-4, "angle":45 }, "elseExecute":{ "set":{ "x":8, "y":0, "angle":90 } } }
+            },
+            "elseExecute":{
+              "when":{ "_":[ "that", "forceX", "isLessThan", 0 ] },
+              "execute":{
+                "when":{ "_":[ "that", "forceY", "isGreaterThan", 0 ] },
+                "set":{ "x":-4, "y":4, "angle":225 },
+                "elseExecute":{
+                  "when":{ "_":[ "that", "forceY", "isLessThan", 0 ] },
+                  "set":{ "x":-4, "y":-4, "angle":315 },
+                  "elseExecute":{ "set":{ "x":-8, "y":0, "angle":270 } }
+                }
+              },
+              "elseExecute":{
+                "when":{ "_":[ "that", "forceY", "isGreaterThan", 0 ] },
+                "set":{ "x":0, "y":4, "angle":180 },
+                "elseExecute":{ "when":{ "_":[ "that", "forceY", "isLessThan", 0 ] }, "set":{ "x":0, "y":-4, "angle":0 } }
+              }
+            }
+          }
+        }
+      }
+    },
+    "carBehaviour":{
+      "set":{ "smoking":0 },
+      "code":[
+        {
+          "name":"Execute",
+          "data":[
+            {
+              "when":{ "_":[ "this", "driveAccelerator" ] },
+              "set":{
+                "driveSpeed":{
+                  "_":[
+                    "this",
+                    "driveSpeed",
+                    "+",
+                    { "_":[ "this", "driveAcceleration", "*", { "_":[ "this", "driveAccelerator" ] } ] },
+                    "limitValue",
+                    { "_":[ "this", "driveMaxSpeed" ] }
+                  ]
+                }
+              },
+              "elseExecute":{
+                "when":{ "_":[ "this", "driveSpeed", "abs", "isLessThan", { "_":[ "this", "driveAcceleration" ] } ] },
+                "set":{ "driveSpeed":0 },
+                "elseExecute":{
+                  "when":{ "_":[ "this", "driveSpeed", "isLessThan", 0 ] },
+                  "sum":{ "_":[ "this", "driveAcceleration" ] },
+                  "to":{ "_":[ "this", "driveSpeed" ] },
+                  "elseExecute":{ "subtract":{ "_":[ "this", "driveAcceleration" ] }, "to":{ "_":[ "this", "driveSpeed" ] } }
+                }
+              }
+            },
+            {
+              "when":{ "_":[ "this", "driveSteeringSide", "isGreaterThan", 0 ] },
+              "sum":{ "_":[ "this", "driveSteeringSpeed" ] },
+              "to":{ "_":[ "this", "driveAngle" ] },
+              "elseExecute":{
+                "when":{ "_":[ "this", "driveSteeringSide", "isLessThan", 0 ] },
+                "subtract":{ "_":[ "this", "driveSteeringSpeed" ] },
+                "to":{ "_":[ "this", "driveAngle" ] }
+              }
+            },
+            { "set":{ "driveAngle":{ "_":[ "this", "driveAngle", "%", 360 ] } } },
+            { "when":{ "_":[ "this", "driveAngle", "isLessThan", 0 ] }, "set":{ "driveAngle":{ "_":[ "this", "driveAngle", "+", 360 ] } } },
+            { "set":{ "frame":{ "_":[ "this", "driveAngle", "+", 22.5, "/", 45, "floor", "%", 8 ] } } },
+            { "set":{ "angle":{ "_":[ "this", "driveAngle", "-", { "_":[ "this", "frame", "*", 45 ] }, "/", 20, "floor", "*", 20 ] } } },
+            { "applyVector":{ "angle":{ "_":[ "this", "driveAngle" ] }, "length":{ "_":[ "this", "driveSpeed" ] } } },
+            {
+              "when":{ "_":[ "this", "driveSpeed", "isGreaterThan", 2 ] },
+              "execute":{
+                "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "ishitable" ] }, "all":1, "notThis":1 } ] },
+                "as":{ "_":"that" },
+                "set":{ "hitBy":{ "_":"that" } }
+              }
+            },
+            {
+              "when":{ "_":[ "this", "health", "isEqualTo", 1 ] },
+              "execute":{
+                "when":{ "_":[ "this", "smoking" ] },
+                "subtract":1,
+                "to":{ "_":[ "this", "smoking" ] },
+                "elseExecute":[ { "object":{ "set":{ "_":[ "stencil", "smoke" ] }, "forceY":-1 } }, { "set":{ "smoking":5 } } ]
+              }
+            },
+            { "_":[ "stencil", "codeHitableHandler" ] }
+          ]
+        },
+        {
+          "name":"Physics",
+          "data":{
+            "walls":{
+              "type":"carwall",
+              "restitution":0,
+              "execute":[
+                { "executeAction":"bump" },
+                { "when":{ "_":[ "this", "driveSpeed", "isGreaterThan", 2 ] }, "set":{ "hitBy":{ "_":"that" } } },
+                { "set":{ "driveSpeed":{ "_":[ "this", "driveSpeed", "*", -0.5 ] } } }
+              ]
+            }
+          }
+        },
+        { "name":"ZPerspective" }
+      ],
+      "actions":[
+        { "name":"hit", "execute":[ { "playAudio":"beep" }, { "_":[ "stencil", "codeCloud" ] } ] },
+        {
+          "name":"die",
+          "execute":[
+            {
+              "when":{ "_":[ "this", "eventOnDie" ] },
+              "execute":{ "assign":1, "to":{ "_":[ "objectTyped", "currentmission", { "_":[ "this", "eventOnDie" ] } ] } }
+            },
+            { "_":[ "stencil", "codeRemoveWithExplosion" ] }
+          ]
+        }
+      ]
+    },
+    "carModel":{
+      "type":[ "personwall", "car", "stoptraffic", "ishitable", "gameelement" ],
+      "image":"cars", "tileX":{ "_":[ "randomValue", [ 0, 128, 256 ] ] }, "width":16, "height":16,
+      "hitbox":{ "width":12, "height":12, "x":2, "y":2 },
+      "attacktime":10,
+      "basicDriveAcceleration":0.1,
+      "basicDriveMaxSpeed":[ -1, 4 ],
+      "basicDriveSteeringSpeed":5,
+      "damage":1,
+      "driveAccelerator":0,
+      "driveAngle":0,
+      "driveSpeed":0,
+      "driveSteeringSide":0,
+      "driver":"citizen",
+      "health":3,
+      "weapon":{ "_":[ "randomValue", [ 0, "gun" ] ] },
+      "states":[
+        {
+          "like":[ { "_":[ "stencil", "carBehaviour" ] }, { "_":[ "stencil", "removeNotVisibleBehaviour" ] }, { "_":[ "stencil", "stealableBehaviour" ] } ],
+          "set":{
+            "type":[ "traffic", "isinteractive", "isplayerinteractive", "ishitablebyplayer", "ishitablebyenemy" ],
+            "removeType":"playercar",
+            "tileY":0,
+            "aggressive":0,
+            "driveAcceleration":{ "_":[ "this", "basicDriveAcceleration" ] },
+            "driveAccelerator":0,
+            "driveMaxSpeed":[ -1, 2 ],
+            "driveSteeringSide":0,
+            "driveSteeringSpeed":{ "_":[ "this", "basicDriveSteeringSpeed" ] },
+            "driver":0
+          }
+        },
+        {
+          "name":"drivenByCitizen",
+          "like":[ { "_":[ "stencil", "carBehaviour" ] }, { "_":[ "stencil", "removeNotVisibleBehaviour" ] }, { "_":[ "stencil", "stealableBehaviour" ] } ],
+          "set":{
+            "type":[ "traffic", "isinteractive", "isplayerinteractive", "ishitablebyplayer" ],
+            "removeType":[ "ishitablebyenemy", "playercar" ],
+            "driveAcceleration":{ "_":[ "this", "basicDriveAcceleration" ] },
+            "driveAccelerator":0,
+            "driveMaxSpeed":[ -1, 2 ],
+            "driveSteeringSide":0,
+            "driveSteeringSpeed":{ "_":[ "this", "basicDriveSteeringSpeed" ] },
+            "lost":0,
+            "patience":0,
+            "steerTimer":0
+          },
+          "code":{
+            "name":"Execute",
+            "data":[
+              {
+                "set":{
+                  "currentRoad":{
+                    "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "steeroption" ] }, "all":1, "hitbox":{ "width":2, "height":2, "x":7, "y":7 } } ]
+                  }
+                }
+              },
+              {
+                "when":{ "_":[ "this", "currentRoad", "count" ] },
+                "execute":[
+                  { "when":{ "_":[ "this", "lost" ] }, "set":{ "lost":0, "steerTimer":0 } },
+                  {
+                    "when":{ "_":[ "this", "steerTimer" ] },
+                    "subtract":1,
+                    "to":{ "_":[ "this", "steerTimer" ] },
+                    "elseExecute":[
+                      { "set":{ "steerTimer":{ "_":[ "randomValue", [ 10, 20 ] ] }, "steeroptions":{ "_":[ "new", [] ] } } },
+                      {
+                        "as":{ "_":[ "this", "currentRoad" ] },
+                        "execute":[
+                          {
+                            "set":{
+                              "isValid":{
+                                "_":[
+                                  "that",
+                                  "complexCollidesWith",
+                                  { "subject":{ "_":[ "object", "steeroption" ] }, "hitbox":{ "width":16, "height":16, "x":{ "_":[ "this", "dx" ] }, "y":{ "_":[ "this", "dy" ] } } },
+                                  "not",
+                                  "not"
+                                ]
+                              }
+                            }
+                          },
+                          { "when":{ "_":[ "this", "isValid" ] }, "pushInto":{ "_":[ "that", "steeroptions" ] } }
+                        ]
+                      },
+                      {
+                        "when":{ "_":[ "this", "steeroptions", "count" ] },
+                        "as":{ "_":[ "randomValue", { "_":[ "this", "steeroptions" ] } ] },
+                        "execute":[
+                          { "when":{ "_":[ "this", "steerAngle", "isNotEqualTo", { "_":[ "that", "driveAngle" ] } ] }, "as":{ "_":"that" }, "set":{ "steerTimer":20 } },
+                          { "as":{ "_":"that" }, "set":{ "driveAngle":{ "_":[ "that", "steerAngle" ] } } },
+                          {
+                            "when":{ "_":[ "this", "isHorizontal" ] },
+                            "as":{ "_":"that" },
+                            "set":{ "y":{ "_":[ "that", "y" ] } },
+                            "elseExecute":{ "as":{ "_":"that" }, "set":{ "x":{ "_":[ "that", "x" ] } } }
+                          }
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "when":{
+                      "_":[
+                        "this",
+                        "complexCollidesWith",
+                        {
+                          "subject":{ "_":[ "object", "stoptraffic" ] },
+                          "hitbox":{ "width":12, "height":12, "x":{ "_":[ "this", "forceX", "*", 12, "+", 2 ] }, "y":{ "_":[ "this", "forceY", "*", 12, "+", 2 ] } },
+                          "notThis":1
+                        }
+                      ]
+                    },
+                    "execute":[
+                      { "subtract":1, "to":{ "_":[ "this", "patience" ] } },
+                      { "when":{ "_":[ "this", "patience", "isLessThan", 10 ] }, "set":{ "driveAccelerator":1 }, "elseExecute":{ "set":{ "driveAccelerator":0 } } },
+                      { "when":{ "_":[ "this", "patience", "isLessThan", 0 ] }, "set":{ "patience":{ "_":[ "randomNumber", [ 20, 80 ] ] } } }
+                    ],
+                    "elseExecute":{ "set":{ "driveAccelerator":1, "patience":40 } }
+                  }
+                ],
+                "elseExecute":[
+                  { "set":{ "lost":1 } },
+                  {
+                    "when":{ "_":[ "this", "steerTimer" ] },
+                    "execute":{ "subtract":1, "to":{ "_":[ "this", "steerTimer" ] } },
+                    "elseExecute":[
+                      { "when":{ "_":[ "this", "driveAccelerator", "not" ] }, "set":{ "driveAccelerator":1 } },
+                      { "set":{ "driveAccelerator":{ "_":[ "this", "driveAccelerator", "*", -1 ] } } },
+                      { "sum":10, "to":{ "_":[ "this", "driveAngle" ] } },
+                      { "set":{ "steerTimer":70 } }
+                    ]
+                  }
+                ]
+              },
+              {
+                "when":{ "_":[ "this", "aggressive" ] },
+                "execute":{
+                  "when":{ "_":[ "this", "weapon" ] },
+                  "execute":{
+                    "when":{ "_":[ "objectTyped", "player" ] },
+                    "execute":{
+                      "when":{ "_":[ "this", "attacktime" ] },
+                      "subtract":1,
+                      "to":{ "_":[ "this", "attacktime" ] },
+                      "elseExecute":[
+                        {
+                          "object":{
+                            "set":{ "_":[ "stencil", "dataWeapons", { "_":[ "that", "weapon" ] }, "bullet" ] },
+                            "execute":{
+                              "applyVector":{
+                                "angle":{ "_":[ "that", "angleTo", { "_":[ "objectTyped", "playerbody" ] }, "+", { "_":[ "randomValue", [ -10, 10 ] ] } ] },
+                                "length":{ "_":[ "this", "bulletSpeed", "*", 2 ] }
+                              }
+                            },
+                            "bulletColor":"#f00",
+                            "bulletTarget":"ishitablebyenemy"
+                          }
+                        },
+                        { "set":{ "attacktime":25 } }
+                      ]
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          "actions":[
+            {
+              "name":"stolen",
+              "execute":[
+                { "as":{ "_":[ "objectTyped", "currentmission" ] }, "set":{ "eventCarStolen":1 } },
+                { "as":{ "_":"scene" }, "set":{ "crime":1 } },
+                {
+                  "object":{
+                    "set":{ "_":[ "stencil", { "_":[ "that", "driver" ] } ] },
+                    "at":{ "_":[ "that", "stealer" ] },
+                    "execute":{ "when":{ "_":[ "randomValue", [ 0, 1 ] ] }, "set":{ "follows":{ "_":[ "this", "hitBy" ] } } },
+                    "follows":{ "_":"that" },
+                    "hitBy":{ "_":[ "that", "stealer" ] },
+                    "weapon":{ "_":[ "that", "weapon" ] }
+                  }
+                }
+              ]
+            },
+            {
+              "name":"getOut",
+              "execute":{ "object":{ "set":{ "_":[ "stencil", { "_":[ "that", "driver" ] } ] }, "at":{ "_":"that" }, "weapon":{ "_":[ "that", "weapon" ] } } }
+            },
+            { "name":"bump", "execute":{ "set":{ "driveSpeed":0, "steerTimer":0 } } }
+          ]
+        },
+        {
+          "name":"drivenByPlayer",
+          "like":[ { "_":[ "stencil", "carBehaviour" ] }, { "_":[ "stencil", "stealableBehaviour" ] } ],
+          "set":{
+            "type":[ "ishitablebyenemy", "playercar" ],
+            "removeType":[ "traffic", "isinteractive", "isplayerinteractive", "ishitablebyplayer", "parkedcars" ],
+            "tileY":0,
+            "aggressive":0,
+            "driveAcceleration":{ "_":[ "this", "basicDriveAcceleration" ] },
+            "driveAccelerator":0,
+            "driveMaxSpeed":{ "_":[ "this", "basicDriveMaxSpeed" ] },
+            "driveSteeringSide":0,
+            "driveSteeringSpeed":{ "_":[ "this", "basicDriveSteeringSpeed" ] },
+            "driver":0,
+            "engine":0,
+            "waitGetOut":2
+          },
+          "code":{
+            "name":"Execute",
+            "data":[
+              {
+                "when":{ "_":[ "keyRight", "isDown" ] },
+                "set":{ "driveSteeringSide":1 },
+                "elseExecute":{ "when":{ "_":[ "keyLeft", "isDown" ] }, "set":{ "driveSteeringSide":-1 }, "elseExecute":{ "set":{ "driveSteeringSide":0 } } }
+              },
+              {
+                "when":{ "_":[ "keyUp", "isDown" ] },
+                "set":{ "driveAccelerator":1 },
+                "elseExecute":{ "when":{ "_":[ "keyDown", "isDown" ] }, "set":{ "driveAccelerator":-1 }, "elseExecute":{ "set":{ "driveAccelerator":0 } } }
+              },
+              {
+                "when":{ "_":[ "keyA", "isHit" ] },
+                "execute":{
+                  "when":{ "_":[ "objectTyped", "playerbody", "ammo" ] },
+                  "execute":[
+                    { "subtract":1, "to":{ "_":[ "objectTyped", "playerbody", "ammo" ] } },
+                    {
+                      "object":{
+                        "set":{ "_":[ "stencil", "dataWeapons", { "_":[ "objectTyped", "playerbody", "weapon" ] }, "bullet" ] },
+                        "execute":{ "applyVector":{ "angle":{ "_":[ "that", "driveAngle" ] }, "length":{ "_":[ "this", "bulletSpeed", "*", 2 ] } } },
+                        "bulletColor":"#ff0"
+                      }
+                    }
+                  ],
+                  "elseExecute":{ "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "color":"#ff0", "html":"NO AMMO" } }
+                }
+              },
+              {
+                "when":{ "_":[ "this", "waitGetOut" ] },
+                "subtract":1,
+                "to":{ "_":[ "this", "waitGetOut" ] },
+                "elseExecute":{
+                  "when":{ "_":[ "keyB", "isHit" ] },
+                  "execute":[
+                    { "_":[ "stencil", "codeCheckWayOut" ] },
+                    {
+                      "when":{ "_":[ "objectTyped", "wayout" ] },
+                      "execute":[
+                        { "as":{ "_":[ "objectTyped", "playerbody" ] }, "set":{ "at":{ "_":[ "objectTyped", "wayout" ] }, "invulnerability":5, "state":"default" } },
+                        { "set":{ "state":"default" } }
+                      ]
+                    }
+                  ]
+                }
+              },
+              { "sum":{ "_":[ "this", "driveSpeed" ] }, "to":{ "_":[ "this", "engine" ] } },
+              { "when":{ "_":[ "this", "engine", "isGreaterThan", 10 ] }, "set":{ "engine":0 }, "playAudio":"fire" }
+            ]
+          },
+          "actions":[
+            {
+              "name":"stolen",
+              "execute":{
+                "as":{ "_":[ "objectTyped", "playerbody" ] },
+                "set":{ "at":{ "_":[ "that", "stealer" ] }, "hitBy":{ "_":[ "that", "stealer" ] }, "state":"default" }
+              }
+            },
+            { "name":"getOut", "execute":{ "as":{ "_":[ "objectTyped", "playerbody" ] }, "set":{ "at":{ "_":"that" }, "state":"default" } } }
+          ]
+        }
+      ]
+    },
+    "basicCar":{ "set":{ "_":[ "stencil", "carModel" ] } },
+    "targetCar":{
+      "type":[ "missionTarget", "missionTargetCar", "directionTo" ],
+      "set":{ "_":[ "stencil", "carModel" ] },
+      "tileY":32,
+      "eventOnDie":"eventMissionTargetCarDead",
+      "state":"drivenByCitizen"
+    },
+    "targetCopCar":{
+      "type":[ "missionTarget", "missionTargetCar", "directionTo" ],
+      "set":{ "_":[ "stencil", "carModel" ] },
+      "tileY":16,
+      "aggressive":1,
+      "driver":"cop",
+      "eventOnDie":"eventMissionTargetCarDead",
+      "weapon":"gun",
+      "state":"drivenByCitizen"
+    },
+    "dataFelonyLevels":[
+      { "copCars":0, "copCarsWeapon":[ "gun" ], "cops":0, "copsWeapon":[ 0 ] },
+      { "copCars":0, "copCarsWeapon":[ "gun" ], "cops":3, "copsWeapon":[ 0 ] },
+      { "copCars":0, "copCarsWeapon":[ "gun" ], "cops":5, "copsWeapon":[ 0 ] },
+      { "copCars":2, "copCarsWeapon":[ "gun" ], "cops":10, "copsWeapon":[ 0, 0, "gun" ] },
+      { "copCars":4, "copCarsWeapon":[ "gun" ], "cops":10, "copsWeapon":[ 0, "gun" ] },
+      { "copCars":4, "copCarsWeapon":[ "gun" ], "cops":20, "copsWeapon":[ "gun" ] },
+      { "copCars":8, "copCarsWeapon":[ "gun" ], "cops":30, "copsWeapon":[ "gun" ] }
+    ],
+    "dataInstruction":{
+      "bringTo":[
+        {
+          "when":{ "_":[ "this", "instruction", "not" ] },
+          "set":{ "instruction":{ "_":[ "Bring it to ", ".", { "_":[ "that", "destination" ] }, ".", "." ] } }
+        },
+        { "_":[ "stencil", "codeStartInstruction" ] },
+        {
+          "object":{
+            "type":"directionTo",
+            "set":[ { "_":[ "scene", "poiIndex", { "_":[ "that", "destination" ] } ] }, { "_":[ "stencil", "destinationIndicator" ] } ],
+            "execute":{ "sum":{ "_":[ "that", "destinationY" ] }, "to":{ "_":[ "this", "y" ] } }
+          }
+        },
+        { "wait":5 },
+        { "when":{ "_":[ "objectTyped", "playercar", "not" ] }, "execute":{ "_":[ "stencil", "codeMissionFailed" ] } },
+        { "wait":1, "loopTo":-1, "until":{ "_":[ "objectTyped", "playercar", "collidesWith", { "_":[ "objectTyped", "destinationindicator" ] } ] } },
+        { "sum":{ "_":[ "this", "proportionalTimer", "*", 10000, "+", 100, "ceil" ] }, "to":{ "_":[ "this", "missionValue" ] } },
+        { "_":[ "stencil", "codeEndInstruction" ] }
+      ],
+      "defend":[
+        {
+          "when":{ "_":[ "this", "instruction", "not" ] },
+          "set":{ "instruction":{ "_":[ "Eliminate ", ".", { "_":[ "that", "destination" ] }, ".", "." ] } }
+        },
+        { "_":[ "stencil", "codeStartInstruction" ] },
+        { "as":{ "_":"variable" }, "set":{ "missionTargetCitizen":"aggressor" } },
+        { "set":{ "waitEvent":"eventMissionTargetCitizenDead" }, "subsequence":{ "_":[ "stencil", "codeWaitEvent" ] } },
+        { "sum":{ "_":[ "this", "proportionalTimer", "*", 7000, "+", 100, "ceil" ] }, "to":{ "_":[ "this", "missionValue" ] } },
+        { "_":[ "stencil", "codeEndInstruction" ] }
+      ],
+      "driveTo":[
+        { "when":{ "_":[ "this", "instruction", "not" ] }, "set":{ "instruction":{ "_":[ "Drive to ", ".", { "_":[ "that", "destination" ] }, ".", "." ] } } },
+        { "_":[ "stencil", "codeStartInstruction" ] },
+        {
+          "object":{
+            "type":"directionTo",
+            "set":[ { "_":[ "scene", "poiIndex", { "_":[ "that", "destination" ] } ] }, { "_":[ "stencil", "destinationIndicator" ] } ],
+            "execute":{ "sum":{ "_":[ "that", "destinationY" ] }, "to":{ "_":[ "this", "y" ] } }
+          }
+        },
+        { "wait":1, "loop":1, "until":{ "_":[ "objectTyped", "playercar", "collidesWith", { "_":[ "objectTyped", "destinationindicator" ] } ] } },
+        { "sum":{ "_":[ "this", "proportionalTimer", "*", 2000, "+", 100, "ceil" ] }, "to":{ "_":[ "this", "missionValue" ] } },
+        { "_":[ "stencil", "codeEndInstruction" ] }
+      ],
+      "findPackage":[
+        { "when":{ "_":[ "this", "instruction", "not" ] }, "set":{ "instruction":"Find the package." } },
+        { "_":[ "stencil", "codeStartInstruction" ] },
+        { "as":{ "_":"variable" }, "set":{ "missionTargetCitizen":"package" } },
+        { "set":{ "waitEvent":"eventMissionPackageFound" }, "subsequence":{ "_":[ "stencil", "codeWaitEvent" ] } },
+        { "sum":{ "_":[ "this", "proportionalTimer", "*", 1500, "+", 100, "ceil" ] }, "to":{ "_":[ "this", "missionValue" ] } },
+        { "_":[ "stencil", "codeEndInstruction" ] }
+      ],
+      "getCar":[
+        { "when":{ "_":[ "this", "instruction", "not" ] }, "set":{ "instruction":"Get a car." } },
+        { "_":[ "stencil", "codeStartInstruction" ] },
+        { "wait":1, "loop":1, "until":{ "_":[ "objectTyped", "playercar" ] } },
+        { "sum":{ "_":[ "this", "proportionalTimer", "*", 1000, "+", 100, "ceil" ] }, "to":{ "_":[ "this", "missionValue" ] } },
+        { "_":[ "stencil", "codeEndInstruction" ] }
+      ],
+      "goTo":[
+        { "when":{ "_":[ "this", "instruction", "not" ] }, "set":{ "instruction":{ "_":[ "Reach ", ".", { "_":[ "that", "destination" ] }, ".", "." ] } } },
+        { "_":[ "stencil", "codeStartInstruction" ] },
+        {
+          "object":{
+            "type":"directionTo",
+            "set":[ { "_":[ "scene", "poiIndex", { "_":[ "that", "destination" ] } ] }, { "_":[ "stencil", "destinationIndicator" ] } ],
+            "execute":{ "sum":{ "_":[ "that", "destinationY" ] }, "to":{ "_":[ "this", "y" ] } }
+          }
+        },
+        { "wait":1, "loop":1, "until":{ "_":[ "objectTyped", "playerbody", "collidesWith", { "_":[ "objectTyped", "destinationindicator" ] } ] } },
+        { "sum":{ "_":[ "this", "proportionalTimer", "*", 500, "+", 100, "ceil" ] }, "to":{ "_":[ "this", "missionValue" ] } },
+        { "_":[ "stencil", "codeEndInstruction" ] }
+      ],
+      "kill":[
+        {
+          "when":{ "_":[ "this", "instruction", "not" ] },
+          "set":{ "instruction":{ "_":[ "Eliminate ", ".", { "_":[ "that", "destination" ] }, ".", "." ] } }
+        },
+        { "_":[ "stencil", "codeStartInstruction" ] },
+        { "as":{ "_":"variable" }, "set":{ "missionTargetCitizen":"victim" } },
+        { "set":{ "waitEvent":"eventMissionTargetCitizenDead" }, "subsequence":{ "_":[ "stencil", "codeWaitEvent" ] } },
+        { "sum":{ "_":[ "this", "proportionalTimer", "*", 5000, "+", 100, "ceil" ] }, "to":{ "_":[ "this", "missionValue" ] } },
+        { "_":[ "stencil", "codeEndInstruction" ] }
+      ],
+      "killCar":[
+        { "when":{ "_":[ "this", "instruction", "not" ] }, "set":{ "instruction":"Eliminate the vehicle." } },
+        { "_":[ "stencil", "codeStartInstruction" ] },
+        { "as":{ "_":"variable" }, "set":{ "missionTargetCar":"targetCar" } },
+        { "set":{ "waitEvent":"eventMissionTargetCarDead" }, "subsequence":{ "_":[ "stencil", "codeWaitEvent" ] } },
+        { "sum":{ "_":[ "this", "proportionalTimer", "*", 6000, "+", 100, "ceil" ] }, "to":{ "_":[ "this", "missionValue" ] } },
+        { "_":[ "stencil", "codeEndInstruction" ] }
+      ],
+      "killCopCar":[
+        { "when":{ "_":[ "this", "instruction", "not" ] }, "set":{ "instruction":"Eliminate the vehicle." } },
+        { "_":[ "stencil", "codeStartInstruction" ] },
+        { "as":{ "_":"variable" }, "set":{ "missionTargetCar":"targetCopCar" } },
+        { "set":{ "waitEvent":"eventMissionTargetCarDead" }, "subsequence":{ "_":[ "stencil", "codeWaitEvent" ] } },
+        { "sum":{ "_":[ "this", "proportionalTimer", "*", 7500, "+", 100, "ceil" ] }, "to":{ "_":[ "this", "missionValue" ] } },
+        { "_":[ "stencil", "codeEndInstruction" ] }
+      ],
+      "pickUp":[
+        { "when":{ "_":[ "this", "instruction", "not" ] }, "set":{ "instruction":{ "_":[ "Pick up ", ".", { "_":[ "that", "destination" ] }, ".", "." ] } } },
+        { "_":[ "stencil", "codeStartInstruction" ] },
+        { "as":{ "_":"variable" }, "set":{ "missionTargetCitizen":"friend" } },
+        { "set":{ "eventMissionTargetCitizenDead":0, "eventMissionTargetCitizenOnBoard":0 } },
+        { "when":{ "_":[ "this", "eventMissionTargetCitizenDead" ] }, "execute":{ "_":[ "stencil", "codeMissionFailed" ] } },
+        { "wait":1, "loopTo":-1, "until":{ "_":[ "this", "eventMissionTargetCitizenOnBoard" ] } },
+        { "sum":{ "_":[ "this", "proportionalTimer", "*", 4000, "+", 100, "ceil" ] }, "to":{ "_":[ "this", "missionValue" ] } },
+        { "_":[ "stencil", "codeEndInstruction" ] }
+      ],
+      "stealCar":[
+        { "when":{ "_":[ "this", "instruction", "not" ] }, "set":{ "instruction":"Steal a car." } },
+        { "_":[ "stencil", "codeStartInstruction" ] },
+        { "set":{ "waitEvent":"eventCarStolen" }, "subsequence":{ "_":[ "stencil", "codeWaitEvent" ] } },
+        { "sum":{ "_":[ "this", "proportionalTimer", "*", 1500, "+", 100, "ceil" ] }, "to":{ "_":[ "this", "missionValue" ] } },
+        { "_":[ "stencil", "codeEndInstruction" ] }
+      ],
+      "survive":[
+        { "when":{ "_":[ "this", "instruction", "not" ] }, "set":{ "instruction":"Survive." } },
+        { "_":[ "stencil", "codeStartInstruction" ] },
+        { "wait":1, "loop":1, "until":{ "_":[ "this", "missionTimer", "isLessThan", 10 ] } },
+        { "sum":10000, "to":{ "_":[ "this", "missionValue" ] } },
+        { "_":[ "stencil", "codeEndInstruction" ] }
+      ]
+    },
+    "dataMissionFinal":{
+      "missionName":"Finally, Frank",
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[ { "subsequence":{ "_":[ "stencil", "dataInstruction", "getCar" ] } }, { "stopChannel":"music" }, { "gotoScene":"ending", "withTransition":3 } ]
+        }
+      }
+    },
+    "dataMissionMusics":[ "bgm1", "bgm2", "bgm3" ],
+    "dataMissions":[
+      {
+        "missionName":"Huge Stealing Car",
+        "states":{
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "subsequence":{ "_":[ "stencil", "dataInstruction", "stealCar" ] } },
+              { "execute":{ "_":[ "stencil", "codeGetRandomDestinationNearby" ] }, "subsequence":{ "_":[ "stencil", "dataInstruction", "bringTo" ] } },
+              { "_":[ "stencil", "codeMissionClear" ] }
+            ]
+          }
+        }
+      },
+      {
+        "missionName":"Food Delivery",
+        "states":{
+          "code":{
+            "name":"Sequence",
+            "data":[
+              {
+                "set":{ "destinationType":[ "poirestaurant" ], "instruction":"Drive and get the food." },
+                "execute":{ "_":[ "stencil", "codeGetRandomDestinationNearby" ] },
+                "subsequence":{ "_":[ "stencil", "dataInstruction", "driveTo" ] }
+              },
+              { "execute":{ "_":[ "stencil", "codeGetRandomDestinationNearby" ] }, "destinationType":[ "poicompany" ] },
+              {
+                "set":{ "instruction":{ "_":[ "Bring it to ", ".", { "_":[ "this", "destination" ] }, ".", "." ] } },
+                "subsequence":{ "_":[ "stencil", "dataInstruction", "bringTo" ] }
+              },
+              { "_":[ "stencil", "codeMissionClear" ] }
+            ]
+          }
+        }
+      },
+      {
+        "missionName":"Customer Service",
+        "states":{
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "subsequence":{ "_":[ "stencil", "dataInstruction", "getCar" ] } },
+              {
+                "set":{ "instruction":"Pick up our product." },
+                "execute":{ "_":[ "stencil", "codeGetRandomDestinationNearby" ] },
+                "subsequence":{ "_":[ "stencil", "dataInstruction", "driveTo" ] }
+              },
+              { "set":{ "instruction":"Deliver it to the customer." }, "subsequence":{ "_":[ "stencil", "dataInstruction", "pickUp" ] } },
+              { "_":[ "stencil", "codeMissionClear" ] }
+            ]
+          }
+        }
+      },
+      {
+        "missionName":"Lost luggage.",
+        "states":{
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "execute":{ "_":[ "stencil", "codeGetRandomDestinationNearby" ] } },
+              { "set":{ "house":{ "_":[ "this", "destination" ] } } },
+              { "subsequence":{ "_":[ "stencil", "dataInstruction", "goTo" ] } },
+              { "subsequence":{ "_":[ "stencil", "dataInstruction", "findPackage" ] } },
+              {
+                "set":{ "destination":{ "_":[ "this", "house" ] }, "instruction":"Bring it back." },
+                "subsequence":{ "_":[ "stencil", "dataInstruction", "goTo" ] }
+              },
+              { "_":[ "stencil", "codeMissionClear" ] }
+            ]
+          }
+        }
+      },
+      {
+        "missionName":"Breaktown Racing",
+        "states":{
+          "code":{
+            "name":"Sequence",
+            "data":[
+              {
+                "set":{ "destinationY":16, "instruction":"Drive to the starting line." },
+                "execute":{ "_":[ "stencil", "codeGetRandomDestinationNearby" ] },
+                "subsequence":{ "_":[ "stencil", "dataInstruction", "driveTo" ] }
+              },
+              { "execute":{ "_":[ "stencil", "codeGetRandomDestinationMid" ] } },
+              {
+                "set":{ "destinationY":16, "instruction":{ "_":[ "Goal: ", ".", { "_":[ "this", "destination" ] } ] } },
+                "subsequence":{ "_":[ "stencil", "dataInstruction", "bringTo" ] }
+              },
+              { "_":[ "stencil", "codeMissionClear" ] }
+            ]
+          }
+        }
+      },
+      {
+        "missionName":"Credit collector",
+        "states":{
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "execute":{ "_":[ "stencil", "codeGetRandomDestinationMid" ] }, "subsequence":{ "_":[ "stencil", "dataInstruction", "goTo" ] } },
+              { "set":{ "instruction":"Let him pay the debt." }, "subsequence":{ "_":[ "stencil", "dataInstruction", "kill" ] } },
+              { "_":[ "stencil", "codeMissionClear" ] }
+            ]
+          }
+        }
+      },
+      {
+        "missionName":"Taxi Driving",
+        "states":{
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "execute":{ "_":[ "stencil", "codeGetRandomDestinationNearby" ] }, "subsequence":{ "_":[ "stencil", "dataInstruction", "driveTo" ] } },
+              { "set":{ "instruction":"Find the customer." }, "subsequence":{ "_":[ "stencil", "dataInstruction", "pickUp" ] } },
+              { "execute":{ "_":[ "stencil", "codeGetRandomDestinationNearby" ] }, "subsequence":{ "_":[ "stencil", "dataInstruction", "bringTo" ] } },
+              { "_":[ "stencil", "codeMissionClear" ] }
+            ]
+          }
+        }
+      },
+      {
+        "missionName":"Carfight",
+        "states":{
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "execute":{ "_":[ "stencil", "codeGetRandomDestinationNearby" ] }, "subsequence":{ "_":[ "stencil", "dataInstruction", "driveTo" ] } },
+              { "subsequence":{ "_":[ "stencil", "dataInstruction", "killCopCar" ] } },
+              { "_":[ "stencil", "codeMissionClear" ] }
+            ]
+          }
+        }
+      },
+      {
+        "missionName":"Angry Nerd",
+        "states":{
+          "code":{
+            "name":"Sequence",
+            "data":[
+              {
+                "set":{ "destinationType":[ "poicompany" ] },
+                "execute":{ "_":[ "stencil", "codeGetRandomDestinationNearby" ] },
+                "subsequence":{ "_":[ "stencil", "dataInstruction", "goTo" ] }
+              },
+              { "set":{ "instruction":"Kill the Angry Nerd." }, "subsequence":{ "_":[ "stencil", "dataInstruction", "defend" ] } },
+              { "_":[ "stencil", "codeMissionClear" ] }
+            ]
+          }
+        }
+      },
+      {
+        "missionName":"Retirement",
+        "states":{
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "execute":{ "_":[ "stencil", "codeGetRandomDestinationNearby" ] }, "subsequence":{ "_":[ "stencil", "dataInstruction", "goTo" ] } },
+              { "set":{ "instruction":"Eliminate Old Joe." }, "subsequence":{ "_":[ "stencil", "dataInstruction", "kill" ] } },
+              { "set":{ "instruction":"Eliminate Old Jack." }, "subsequence":{ "_":[ "stencil", "dataInstruction", "kill" ] } },
+              { "set":{ "instruction":"Eliminate Old Jim." }, "subsequence":{ "_":[ "stencil", "dataInstruction", "kill" ] } },
+              { "_":[ "stencil", "codeMissionClear" ] }
+            ]
+          }
+        }
+      },
+      {
+        "missionName":"Good Cop Bad Cop",
+        "states":{
+          "code":{
+            "name":"Sequence",
+            "data":[
+              {
+                "set":{ "destinationType":[ "poipolice" ], "instruction":"Drive to the Police dept." },
+                "execute":{ "_":[ "stencil", "codeGetRandomDestinationNearby" ] },
+                "subsequence":{ "_":[ "stencil", "dataInstruction", "driveTo" ] }
+              },
+              { "set":{ "instruction":"Talk with infiltrate." }, "subsequence":{ "_":[ "stencil", "dataInstruction", "pickUp" ] } },
+              {
+                "set":{ "destinationType":[ "poipolice" ] },
+                "execute":{ "_":[ "stencil", "codeGetRandomDestinationMid" ] },
+                "subsequence":{ "_":[ "stencil", "dataInstruction", "driveTo" ] }
+              },
+              { "set":{ "instruction":"Close cop investigations." }, "subsequence":{ "_":[ "stencil", "dataInstruction", "kill" ] } },
+              { "_":[ "stencil", "codeMissionClear" ] }
+            ]
+          }
+        }
+      },
+      {
+        "missionName":"Breaktown Racing II",
+        "states":{
+          "code":{
+            "name":"Sequence",
+            "data":[
+              {
+                "set":{ "destinationY":16, "instruction":"Drive to the starting line." },
+                "execute":{ "_":[ "stencil", "codeGetRandomDestinationNearby" ] },
+                "subsequence":{ "_":[ "stencil", "dataInstruction", "driveTo" ] }
+              },
+              { "execute":{ "_":[ "stencil", "codeGetRandomDestinationNearby" ] } },
+              {
+                "set":{ "destinationY":16, "instruction":{ "_":[ "1/3: ", ".", { "_":[ "this", "destination" ] } ] } },
+                "subsequence":{ "_":[ "stencil", "dataInstruction", "bringTo" ] }
+              },
+              { "execute":{ "_":[ "stencil", "codeGetRandomDestinationMid" ] } },
+              {
+                "set":{ "destinationY":16, "instruction":{ "_":[ "2/3: ", ".", { "_":[ "this", "destination" ] } ] } },
+                "subsequence":{ "_":[ "stencil", "dataInstruction", "bringTo" ] }
+              },
+              { "execute":{ "_":[ "stencil", "codeGetRandomDestinationNearby" ] } },
+              {
+                "set":{ "destinationY":16, "instruction":{ "_":[ "Goal: ", ".", { "_":[ "this", "destination" ] } ] } },
+                "subsequence":{ "_":[ "stencil", "dataInstruction", "bringTo" ] }
+              },
+              { "_":[ "stencil", "codeMissionClear" ] }
+            ]
+          }
+        }
+      },
+      {
+        "missionName":"Trip Advising",
+        "states":{
+          "code":{
+            "name":"Sequence",
+            "data":[
+              {
+                "set":{ "destinationType":"poirestaurant", "instruction":"Eat at this restaurant." },
+                "execute":{ "_":[ "stencil", "codeGetRandomDestinationNearby" ] },
+                "subsequence":{ "_":[ "stencil", "dataInstruction", "goTo" ] }
+              },
+              {
+                "set":{ "destinationType":"poirestaurant", "instruction":"Try this other one." },
+                "execute":{ "_":[ "stencil", "codeGetRandomDestinationMid" ] },
+                "subsequence":{ "_":[ "stencil", "dataInstruction", "goTo" ] }
+              },
+              { "set":{ "instruction":"Give your 0 stars rating." }, "subsequence":{ "_":[ "stencil", "dataInstruction", "kill" ] } },
+              { "_":[ "stencil", "codeMissionClear" ] }
+            ]
+          }
+        }
+      },
+      {
+        "missionName":"The Heist Circus",
+        "states":{
+          "code":{
+            "name":"Sequence",
+            "data":[
+              {
+                "set":{ "destinationType":"poifactory", "instruction":"Drive to the factory." },
+                "execute":{ "_":[ "stencil", "codeGetRandomDestinationNearby" ] },
+                "subsequence":{ "_":[ "stencil", "dataInstruction", "driveTo" ] }
+              },
+              { "set":{ "instruction":"Pickup Jack the Mountain." }, "subsequence":{ "_":[ "stencil", "dataInstruction", "pickUp" ] } },
+              {
+                "set":{ "destinationType":"poigirls", "destinationY":16, "instruction":"Drive to the club." },
+                "execute":{ "_":[ "stencil", "codeGetRandomDestinationMid" ] },
+                "subsequence":{ "_":[ "stencil", "dataInstruction", "bringTo" ] }
+              },
+              { "set":{ "instruction":"Pickup Janet the Slim." }, "subsequence":{ "_":[ "stencil", "dataInstruction", "pickUp" ] } },
+              {
+                "set":{ "destinationType":"poirich" },
+                "execute":{ "_":[ "stencil", "codeGetRandomDestinationNearby" ] },
+                "subsequence":{ "_":[ "stencil", "dataInstruction", "bringTo" ] }
+              },
+              { "_":[ "stencil", "codeMissionClear" ] }
+            ]
+          }
+        }
+      },
+      {
+        "missionName":"Congratulations",
+        "states":{
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "set":{ "instruction":"Get your reward..." }, "subsequence":{ "_":[ "stencil", "dataInstruction", "defend" ] } },
+              { "set":{ "instruction":"For helping..." }, "subsequence":{ "_":[ "stencil", "dataInstruction", "defend" ] } },
+              { "set":{ "instruction":"That shithead of Frank." }, "subsequence":{ "_":[ "stencil", "dataInstruction", "defend" ] } },
+              { "_":[ "stencil", "codeMissionClear" ] }
+            ]
+          }
+        }
+      },
+      {
+        "missionName":"My Precious",
+        "states":{
+          "code":{
+            "name":"Sequence",
+            "data":[
+              {
+                "set":{ "destinationType":"poirich" },
+                "execute":{ "_":[ "stencil", "codeGetRandomDestinationNearby" ] },
+                "subsequence":{ "_":[ "stencil", "dataInstruction", "goTo" ] }
+              },
+              { "set":{ "instruction":"Get the stolen stuff." }, "subsequence":{ "_":[ "stencil", "dataInstruction", "findPackage" ] } },
+              { "set":{ "instruction":"Keep the package with you." }, "subsequence":{ "_":[ "stencil", "dataInstruction", "defend" ] } },
+              {
+                "set":{ "instruction":"Bring it to me." },
+                "execute":{ "_":[ "stencil", "codeGetRandomDestinationMid" ] },
+                "subsequence":{ "_":[ "stencil", "dataInstruction", "goTo" ] }
+              },
+              { "_":[ "stencil", "codeMissionClear" ] }
+            ]
+          }
+        }
+      },
+      {
+        "missionName":"Get the Party Ended",
+        "states":{
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "set":{ "destinationType":"poiresidence" }, "execute":{ "_":[ "stencil", "codeGetRandomDestinationNearby" ] } },
+              { "set":{ "house":{ "_":[ "this", "destination" ] } } },
+              {
+                "set":{ "destination":{ "_":[ "this", "house" ] }, "instruction":"Drive to Manuel house." },
+                "subsequence":{ "_":[ "stencil", "dataInstruction", "driveTo" ] }
+              },
+              { "set":{ "instruction":"Pickup Manuel." }, "subsequence":{ "_":[ "stencil", "dataInstruction", "pickUp" ] } },
+              {
+                "set":{ "destinationType":"poigirls", "instruction":"Let him have a bit of fun." },
+                "execute":{ "_":[ "stencil", "codeGetRandomDestinationNearby" ] },
+                "subsequence":{ "_":[ "stencil", "dataInstruction", "bringTo" ] }
+              },
+              {
+                "set":{ "destination":{ "_":[ "this", "house" ] }, "instruction":"Get the stuff he stolen." },
+                "subsequence":{ "_":[ "stencil", "dataInstruction", "goTo" ] }
+              },
+              { "set":{ "instruction":"Dispose of Manuel." }, "subsequence":{ "_":[ "stencil", "dataInstruction", "kill" ] } },
+              { "_":[ "stencil", "codeMissionClear" ] }
+            ]
+          }
+        }
+      },
+      {
+        "missionName":"Body Guard",
+        "states":{
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "set":{ "destinationType":"poigirls" }, "execute":{ "_":[ "stencil", "codeGetRandomDestinationNearby" ] } },
+              { "set":{ "house":{ "_":[ "this", "destination" ] } } },
+              { "subsequence":{ "_":[ "stencil", "dataInstruction", "driveTo" ] } },
+              { "set":{ "instruction":"Eliminate escaping voyeur." }, "subsequence":{ "_":[ "stencil", "dataInstruction", "killCopCar" ] } },
+              { "set":{ "instruction":"Eliminate his accomplice." }, "subsequence":{ "_":[ "stencil", "dataInstruction", "kill" ] } },
+              {
+                "subsequence":{ "_":[ "stencil", "dataInstruction", "driveTo" ] },
+                "instruction":{ "_":[ "Go back to ", ".", { "_":[ "this", "house" ] }, ".", "." ] }
+              },
+              { "set":{ "instruction":"Pickup Lisa." }, "subsequence":{ "_":[ "stencil", "dataInstruction", "pickUp" ] } },
+              {
+                "set":{ "destinationType":"poiresidence", "instruction":"Bring her home." },
+                "execute":{ "_":[ "stencil", "codeGetRandomDestinationNearby" ] },
+                "subsequence":{ "_":[ "stencil", "dataInstruction", "bringTo" ] }
+              },
+              { "_":[ "stencil", "codeMissionClear" ] }
+            ]
+          }
+        }
+      },
+      {
+        "missionName":"Company Shake-out",
+        "states":{
+          "code":{
+            "name":"Sequence",
+            "data":[
+              {
+                "set":{ "destinationType":"poicompany" },
+                "execute":{ "_":[ "stencil", "codeGetRandomDestinationNearby" ] },
+                "subsequence":{ "_":[ "stencil", "dataInstruction", "goTo" ] }
+              },
+              { "set":{ "instruction":"Dispose company security." }, "subsequence":{ "_":[ "stencil", "dataInstruction", "defend" ] } },
+              { "set":{ "instruction":"Eliminate CEO." }, "subsequence":{ "_":[ "stencil", "dataInstruction", "kill" ] } },
+              { "set":{ "instruction":"Eliminate escaping manager." }, "subsequence":{ "_":[ "stencil", "dataInstruction", "killCar" ] } },
+              { "_":[ "stencil", "codeMissionClear" ] }
+            ]
+          }
+        }
+      },
+      {
+        "missionName":"A Normal Life",
+        "states":{
+          "code":{
+            "name":"Sequence",
+            "data":[
+              {
+                "set":{ "destinationType":"poicompany", "instruction":"Go to work." },
+                "execute":{ "_":[ "stencil", "codeGetRandomDestinationNearby" ] },
+                "subsequence":{ "_":[ "stencil", "dataInstruction", "goTo" ] }
+              },
+              {
+                "set":{ "destinationType":"poistore", "instruction":"Go shopping." },
+                "execute":{ "_":[ "stencil", "codeGetRandomDestinationNearby" ] },
+                "subsequence":{ "_":[ "stencil", "dataInstruction", "goTo" ] }
+              },
+              {
+                "set":{ "destinationType":"poigirls", "instruction":"Have fun." },
+                "execute":{ "_":[ "stencil", "codeGetRandomDestinationMid" ] },
+                "subsequence":{ "_":[ "stencil", "dataInstruction", "goTo" ] }
+              },
+              { "set":{ "instruction":"Meet with friends." }, "subsequence":{ "_":[ "stencil", "dataInstruction", "defend" ] } },
+              {
+                "set":{ "destinationType":"poiresidence", "instruction":"Go back home." },
+                "execute":{ "_":[ "stencil", "codeGetRandomDestinationMid" ] },
+                "subsequence":{ "_":[ "stencil", "dataInstruction", "goTo" ] }
+              },
+              { "_":[ "stencil", "codeMissionClear" ] }
+            ]
+          }
+        }
+      },
+      {
+        "missionName":"Breaktown Racing III",
+        "states":{
+          "code":{
+            "name":"Sequence",
+            "data":[
+              {
+                "set":{ "destinationY":16, "instruction":"Drive to the starting line." },
+                "execute":{ "_":[ "stencil", "codeGetRandomDestinationNearby" ] },
+                "subsequence":{ "_":[ "stencil", "dataInstruction", "driveTo" ] }
+              },
+              { "execute":{ "_":[ "stencil", "codeGetRandomDestinationFar" ] } },
+              {
+                "set":{ "destinationY":16, "instruction":{ "_":[ "1/3: ", ".", { "_":[ "this", "destination" ] } ] } },
+                "subsequence":{ "_":[ "stencil", "dataInstruction", "bringTo" ] }
+              },
+              { "execute":{ "_":[ "stencil", "codeGetRandomDestinationMid" ] } },
+              {
+                "set":{ "destinationY":16, "instruction":{ "_":[ "2/3: ", ".", { "_":[ "this", "destination" ] } ] } },
+                "subsequence":{ "_":[ "stencil", "dataInstruction", "bringTo" ] }
+              },
+              { "execute":{ "_":[ "stencil", "codeGetRandomDestinationNearby" ] } },
+              {
+                "set":{ "destinationY":16, "instruction":{ "_":[ "Goal: ", ".", { "_":[ "this", "destination" ] } ] } },
+                "subsequence":{ "_":[ "stencil", "dataInstruction", "bringTo" ] }
+              },
+              { "_":[ "stencil", "codeMissionClear" ] }
+            ]
+          }
+        }
+      },
+      {
+        "missionName":"Failing Startup",
+        "states":{
+          "code":{
+            "name":"Sequence",
+            "data":[
+              {
+                "set":{ "destinationType":"poistore", "instruction":"Buy rat poison." },
+                "execute":{ "_":[ "stencil", "codeGetRandomDestinationNearby" ] },
+                "subsequence":{ "_":[ "stencil", "dataInstruction", "goTo" ] }
+              },
+              {
+                "set":{ "destinationType":"poirestaurant", "instruction":"Buy some food." },
+                "execute":{ "_":[ "stencil", "codeGetRandomDestinationNearby" ] },
+                "subsequence":{ "_":[ "stencil", "dataInstruction", "goTo" ] }
+              },
+              {
+                "set":{ "destinationType":"poicompany", "instruction":"Offer free meal to the staff." },
+                "execute":{ "_":[ "stencil", "codeGetRandomDestinationNearby" ] },
+                "subsequence":{ "_":[ "stencil", "dataInstruction", "goTo" ] }
+              },
+              { "set":{ "instruction":"Fire the management." }, "subsequence":{ "_":[ "stencil", "dataInstruction", "kill" ] } },
+              { "_":[ "stencil", "codeMissionClear" ] }
+            ]
+          }
+        }
+      },
+      {
+        "missionName":"Who's The Boss",
+        "states":{
+          "code":{
+            "name":"Sequence",
+            "data":[
+              {
+                "set":{ "destinationType":"poipolice" },
+                "execute":{ "_":[ "stencil", "codeGetRandomDestinationNearby" ] },
+                "subsequence":{ "_":[ "stencil", "dataInstruction", "goTo" ] }
+              },
+              { "set":{ "instruction":"Explain who's the boss. 1/4" }, "subsequence":{ "_":[ "stencil", "dataInstruction", "defend" ] } },
+              { "set":{ "instruction":"Explain who's the boss. 2/4" }, "subsequence":{ "_":[ "stencil", "dataInstruction", "defend" ] } },
+              { "set":{ "instruction":"Explain who's the boss. 3/4" }, "subsequence":{ "_":[ "stencil", "dataInstruction", "killCopCar" ] } },
+              { "set":{ "instruction":"Explain who's the boss. 4/4" }, "subsequence":{ "_":[ "stencil", "dataInstruction", "killCopCar" ] } },
+              { "_":[ "stencil", "codeMissionClear" ] }
+            ]
+          }
+        }
+      },
+      {
+        "missionName":"Pay Day",
+        "states":{
+          "code":{
+            "name":"Sequence",
+            "data":[
+              {
+                "set":{ "destinationType":"poigirls" },
+                "execute":{ "_":[ "stencil", "codeGetRandomDestinationNearby" ] },
+                "subsequence":{ "_":[ "stencil", "dataInstruction", "driveTo" ] }
+              },
+              { "set":{ "instruction":"Pay Lara." }, "subsequence":{ "_":[ "stencil", "dataInstruction", "pickUp" ] } },
+              {
+                "set":{ "destinationType":"poigirls" },
+                "execute":{ "_":[ "stencil", "codeGetRandomDestinationMid" ] },
+                "subsequence":{ "_":[ "stencil", "dataInstruction", "driveTo" ] }
+              },
+              { "set":{ "instruction":"Pay Linsley." }, "subsequence":{ "_":[ "stencil", "dataInstruction", "pickUp" ] } },
+              { "set":{ "instruction":"Do some customer care." }, "subsequence":{ "_":[ "stencil", "dataInstruction", "defend" ] } },
+              { "_":[ "stencil", "codeMissionClear" ] }
+            ]
+          }
+        }
+      },
+      {
+        "missionName":"Stores Competition",
+        "states":{
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "set":{ "destinationType":"poistore" }, "execute":{ "_":[ "stencil", "codeGetRandomDestinationNearby" ] } },
+              { "set":{ "house":{ "_":[ "this", "destination" ] } } },
+              { "set":{ "instruction":"Get the 50% of payment." }, "subsequence":{ "_":[ "stencil", "dataInstruction", "goTo" ] } },
+              {
+                "set":{ "destinationType":"poistore", "instruction":"Pay a visit to a competitor." },
+                "execute":{ "_":[ "stencil", "codeGetRandomDestinationNearby" ] },
+                "subsequence":{ "_":[ "stencil", "dataInstruction", "goTo" ] }
+              },
+              { "set":{ "instruction":"Kill a customer." }, "subsequence":{ "_":[ "stencil", "dataInstruction", "killCar" ] } },
+              { "set":{ "instruction":"Kill another customer." }, "subsequence":{ "_":[ "stencil", "dataInstruction", "kill" ] } },
+              {
+                "set":{ "destination":{ "_":[ "this", "house" ] }, "instruction":"Get the other 50%." },
+                "subsequence":{ "_":[ "stencil", "dataInstruction", "goTo" ] }
+              },
+              { "_":[ "stencil", "codeMissionClear" ] }
+            ]
+          }
+        }
+      },
+      {
+        "missionName":"The 80s",
+        "states":{
+          "code":{
+            "name":"Sequence",
+            "data":[
+              {
+                "set":{ "destinationType":"poiresidence", "instruction":"Go to Christian house." },
+                "execute":{ "_":[ "stencil", "codeGetRandomDestinationNearby" ] },
+                "subsequence":{ "_":[ "stencil", "dataInstruction", "driveTo" ] }
+              },
+              { "set":{ "instruction":"Get Christian." }, "subsequence":{ "_":[ "stencil", "dataInstruction", "pickUp" ] } },
+              {
+                "set":{ "destinationType":"poirestaurant", "instruction":"Find Max." },
+                "execute":{ "_":[ "stencil", "codeGetRandomDestinationNearby" ] },
+                "subsequence":{ "_":[ "stencil", "dataInstruction", "bringTo" ] }
+              },
+              { "set":{ "instruction":"Get Max." }, "subsequence":{ "_":[ "stencil", "dataInstruction", "pickUp" ] } },
+              {
+                "set":{ "destinationType":"poiresidence", "instruction":"Find Enzo." },
+                "execute":{ "_":[ "stencil", "codeGetRandomDestinationNearby" ] },
+                "subsequence":{ "_":[ "stencil", "dataInstruction", "bringTo" ] }
+              },
+              { "set":{ "instruction":"Get Enzo." }, "subsequence":{ "_":[ "stencil", "dataInstruction", "pickUp" ] } },
+              {
+                "set":{ "destinationType":"poigirls", "instruction":"Bring them to the girls." },
+                "execute":{ "_":[ "stencil", "codeGetRandomDestinationNearby" ] },
+                "subsequence":{ "_":[ "stencil", "dataInstruction", "bringTo" ] }
+              },
+              { "_":[ "stencil", "codeMissionClear" ] }
+            ]
+          }
+        }
+      },
+      {
+        "missionName":"The Great Escape",
+        "states":{
+          "code":{
+            "name":"Sequence",
+            "data":[
+              {
+                "set":{ "destinationType":"poipolice" },
+                "execute":{ "_":[ "stencil", "codeGetRandomDestinationNearby" ] },
+                "subsequence":{ "_":[ "stencil", "dataInstruction", "goTo" ] }
+              },
+              { "as":{ "_":"variable" }, "set":{ "felony":4 } },
+              { "_":[ "stencil", "codeUpdateFelony" ] },
+              { "set":{ "instruction":"Wait for Yong." }, "subsequence":{ "_":[ "stencil", "dataInstruction", "survive" ] } },
+              { "set":{ "instruction":"Get Yong." }, "subsequence":{ "_":[ "stencil", "dataInstruction", "pickUp" ] } },
+              { "execute":{ "_":[ "stencil", "codeGetRandomDestinationNearby" ] }, "subsequence":{ "_":[ "stencil", "dataInstruction", "bringTo" ] } },
+              { "_":[ "stencil", "codeMissionClear" ] }
+            ]
+          }
+        }
+      },
+      {
+        "missionName":"It's a Trap",
+        "states":{
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "as":{ "_":"variable" }, "set":{ "felony":4 } },
+              { "_":[ "stencil", "codeUpdateFelony" ] },
+              { "set":{ "instruction":"Eliminate ambush leader. 1/3" }, "subsequence":{ "_":[ "stencil", "dataInstruction", "defend" ] } },
+              { "set":{ "instruction":"Eliminate ambush leader. 2/3" }, "subsequence":{ "_":[ "stencil", "dataInstruction", "defend" ] } },
+              { "set":{ "instruction":"Eliminate ambush leader. 3/3" }, "subsequence":{ "_":[ "stencil", "dataInstruction", "defend" ] } },
+              { "_":[ "stencil", "codeMissionClear" ] }
+            ]
+          }
+        }
+      },
+      {
+        "missionName":"Breaktown Racing Special",
+        "states":{
+          "code":{
+            "name":"Sequence",
+            "data":[
+              {
+                "set":{ "destinationY":16, "instruction":"Drive to the starting line." },
+                "execute":{ "_":[ "stencil", "codeGetRandomDestinationNearby" ] },
+                "subsequence":{ "_":[ "stencil", "dataInstruction", "driveTo" ] }
+              },
+              { "execute":{ "_":[ "stencil", "codeGetRandomDestinationNearby" ] } },
+              {
+                "set":{ "destinationY":16, "instruction":{ "_":[ "1/3: ", ".", { "_":[ "this", "destination" ] } ] } },
+                "subsequence":{ "_":[ "stencil", "dataInstruction", "bringTo" ] }
+              },
+              { "execute":{ "_":[ "stencil", "codeGetRandomDestinationMid" ] } },
+              {
+                "set":{ "destinationY":16, "instruction":{ "_":[ "2/3: ", ".", { "_":[ "this", "destination" ] } ] } },
+                "subsequence":{ "_":[ "stencil", "dataInstruction", "bringTo" ] }
+              },
+              { "as":{ "_":"variable" }, "set":{ "felony":4 } },
+              { "_":[ "stencil", "codeUpdateFelony" ] },
+              { "execute":{ "_":[ "stencil", "codeGetRandomDestinationNearby" ] } },
+              {
+                "set":{ "destinationY":16, "instruction":{ "_":[ "Goal: ", ".", { "_":[ "this", "destination" ] } ] } },
+                "subsequence":{ "_":[ "stencil", "dataInstruction", "bringTo" ] }
+              },
+              { "_":[ "stencil", "codeMissionClear" ] }
+            ]
+          }
+        }
+      },
+      {
+        "missionName":"The Three Hot Packages",
+        "states":{
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "execute":{ "_":[ "stencil", "codeGetRandomDestinationNearby" ] } },
+              { "set":{ "house":{ "_":[ "this", "destination" ] } } },
+              { "subsequence":{ "_":[ "stencil", "dataInstruction", "goTo" ] } },
+              { "set":{ "instruction":"Find the package. 1/3" }, "subsequence":{ "_":[ "stencil", "dataInstruction", "findPackage" ] } },
+              { "as":{ "_":"variable" }, "set":{ "felony":4 } },
+              { "_":[ "stencil", "codeUpdateFelony" ] },
+              { "set":{ "instruction":"Find the package. 2/3" }, "subsequence":{ "_":[ "stencil", "dataInstruction", "findPackage" ] } },
+              { "set":{ "instruction":"Find the package. 3/3" }, "subsequence":{ "_":[ "stencil", "dataInstruction", "findPackage" ] } },
+              {
+                "set":{ "destination":{ "_":[ "this", "house" ] }, "instruction":"Bring them back." },
+                "subsequence":{ "_":[ "stencil", "dataInstruction", "goTo" ] }
+              },
+              { "_":[ "stencil", "codeMissionClear" ] }
+            ]
+          }
+        }
+      }
+    ],
+    "dataWeapons":{
+      "gun":{
+        "ammoPack":5,
+        "bullet":{
+          "set":{ "_":[ "stencil", "bulletModel" ] },
+          "bulletSpeed":3,
+          "states":{ "actions":{ "name":"explode", "execute":{ "as":{ "_":"that" }, "set":{ "hitBy":{ "_":"that" } } } } }
+        },
+        "maxAmmo":50,
+        "newAmmo":20
+      },
+      "rocket":{
+        "ammoPack":2,
+        "bullet":{
+          "set":{ "_":[ "stencil", "bulletModel" ] },
+          "bulletSpeed":4,
+          "states":{ "actions":{ "name":"explode", "execute":{ "_":[ "stencil", "codeRemoveWithExplosion" ] } } }
+        },
+        "maxAmmo":20,
+        "newAmmo":5
+      }
+    },
+    "destinationIndicator":{ "type":[ "missionelement", "destinationindicator", "wantindicator", "gameelement" ], "image":"effects", "tileY":24, "zIndex":10 },
+    "flashMessage":{
+      "type":"flashmessage",
+      "width":256, "height":40,
+      "zIndex":20, "x":0,
+      "font":"spectrum", "fontSize":40, "lineHeight":40, "outline":"#000", "textAlign":"center", "html":"Message",
+      "color1":"#f00",
+      "color2":"#fff",
+      "timer":0,
+      "states":{
+        "code":[
+          {
+            "name":"Execute",
+            "data":[ { "sum":0.2, "to":{ "_":[ "this", "timer" ] } }, { "set":{ "y":{ "_":[ 76, "+", { "_":[ "this", "timer", "sin", "*", 5 ] } ] } } } ]
+          },
+          {
+            "name":"Sequence",
+            "data":[
+              { "set":{ "color":{ "_":[ "this", "color1" ] } }, "wait":10 },
+              { "set":{ "color":{ "_":[ "this", "color2" ] } }, "wait":10, "cycles":4, "loopTo":0 },
+              { "remove":1 }
+            ]
+          }
+        ]
+      }
+    },
+    "crowdGenerator":{ "type":"generatortrigger", "set":{ "_":[ "stencil", "followCameraModel" ] } },
+    "followCameraModel":{
+      "zIndex":1000,
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":{
+            "set":{ "x":{ "_":[ "scene", "x", "*", -1, "+", { "_":[ "this", "dx" ] } ] }, "y":{ "_":[ "scene", "y", "*", -1, "+", { "_":[ "this", "dy" ] } ] } }
+          }
+        }
+      }
+    },
+    "viewport":{ "type":"viewport", "set":{ "_":[ "stencil", "followCameraModel" ] } },
+    "visibleArea":{ "type":"visiblearea", "set":{ "_":[ "stencil", "followCameraModel" ] } },
+    "indicator":{
+      "type":[ "indicator", "gameelement" ],
+      "image":"effects", "tileX":64, "tileY":16, "width":8, "height":8,
+      "zIndex":9999999, "x":{ "_":[ "that", "x", "+", { "_":[ "that", "width", "-", 8, "/", 2 ] }, "floor" ] }, "y":{ "_":[ "that", "y", "-", 4 ] },
+      "attachedTo":{ "_":"that" },
+      "states":{
+        "execute":{ "as":{ "_":[ "this", "attachedTo" ] }, "set":{ "removeType":"wantindicator" } },
+        "code":[
+          {
+            "name":"Execute",
+            "data":[
+              {
+                "when":{ "_":[ "this", "collidesWith", { "_":[ "objectTyped", "visiblearea" ] }, "not" ] },
+                "execute":[ { "as":{ "_":[ "this", "attachedTo" ] }, "set":{ "type":"wantindicator" } }, { "remove":1 } ]
+              },
+              { "when":{ "_":[ "this", "attachedTo", "not", "or", { "_":[ "this", "attachedTo", "removed" ] } ] }, "remove":1 }
+            ]
+          },
+          {
+            "name":"Sequence",
+            "data":[ { "subtract":3, "to":{ "_":[ "this", "y" ] }, "wait":10 }, { "sum":3, "to":{ "_":[ "this", "y" ] }, "wait":10, "loopTo":0 } ]
+          }
+        ]
+      }
+    },
+    "introCity":{
+      "type":"intropart",
+      "image":"title", "tileY":35, "width":256, "height":28,
+      "zIndex":5, "x":0, "y":88,
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[ { "wait":2 }, { "sum":1, "to":{ "_":[ "this", "x" ] } }, { "when":{ "_":[ "this", "x", "isEqualTo", 256 ] }, "set":{ "x":-255 } }, { "loopTo":0 } ]
+        }
+      }
+    },
+    "missionModel":{
+      "type":"currentmission",
+      "destinationY":0,
+      "missionValue":0,
+      "states":[
+        {
+          "execute":[ { "as":{ "_":[ "objectTyped", "missionname" ] }, "set":{ "html":{ "_":[ "that", "missionName" ] } } }, { "executeAction":"startTimer" } ],
+          "code":{
+            "name":"Execute",
+            "data":{
+              "when":{ "_":[ "this", "missionTimer" ] },
+              "execute":[
+                { "subtract":1, "to":{ "_":[ "this", "missionTimer" ] } },
+                { "set":{ "proportionalTimer":{ "_":[ "this", "missionTimer", "/", 1500 ] } } },
+                { "as":{ "_":[ "objectTyped", "missiontimer" ] }, "set":{ "width":{ "_":[ 0.16, "*", { "_":[ "that", "missionTimer" ] } ] } } },
+                { "when":{ "_":[ "this", "missionTimer", "not" ] }, "set":{ "state":"failed" } }
+              ]
+            }
+          },
+          "actions":[
+            {
+              "name":"startTimer",
+              "execute":[ { "set":{ "missionTimer":1500, "proportionalTimer":1 } }, { "as":{ "_":[ "objectTyped", "missiontimer" ] }, "set":{ "width":0, "visible":1 } } ]
+            },
+            {
+              "name":"stopTimer",
+              "execute":[ { "set":{ "missionTimer":0, "proportionalTimer":0 } }, { "as":{ "_":[ "objectTyped", "missiontimer" ] }, "set":{ "visible":0 } } ]
+            }
+          ]
+        },
+        { "name":"failed", "execute":{ "_":[ "stencil", "codeMissionFailed" ] } }
+      ]
+    },
+    "ammoBonus":{
+      "set":{ "_":[ "stencil", "modelBonus" ] },
+      "tileX":48,
+      "bonusLabel":"AMMO",
+      "states":{
+        "actions":{
+          "name":"pick",
+          "execute":[
+            { "sum":{ "_":[ "stencil", "dataWeapons", { "_":[ "that", "weapon" ] }, "ammoPack" ] }, "to":{ "_":[ "that", "ammo" ] } },
+            {
+              "when":{ "_":[ "that", "ammo", "isGreaterThan", { "_":[ "stencil", "dataWeapons", { "_":[ "that", "weapon" ] }, "maxAmmo" ] } ] },
+              "as":{ "_":"that" },
+              "set":{ "ammo":{ "_":[ "stencil", "dataWeapons", { "_":[ "this", "weapon" ] }, "maxAmmo" ] } }
+            }
+          ]
+        }
+      }
+    },
+    "healthBonus":{
+      "set":{ "_":[ "stencil", "modelBonus" ] },
+      "tileX":56,
+      "bonusLabel":"HEALTH",
+      "states":{
+        "actions":{
+          "name":"pick",
+          "execute":[
+            { "sum":1, "to":{ "_":[ "that", "health" ] } },
+            {
+              "when":{ "_":[ "that", "health", "isGreaterThan", { "_":[ "that", "maxHealth" ] } ] },
+              "as":{ "_":"that" },
+              "set":{ "health":{ "_":[ "this", "maxHealth" ] } }
+            }
+          ]
+        }
+      }
+    },
+    "moneyBonus":{
+      "set":{ "_":[ "stencil", "modelBonus" ] },
+      "states":{
+        "execute":[
+          { "set":{ "frame":{ "_":[ "this", "moneyValue" ] }, "realValue":{ "_":[ 2, "^", { "_":[ "this", "moneyValue" ] }, "*", 10 ] } } },
+          { "set":{ "bonusLabel":{ "_":[ "this", "realValue", ".", "$" ] } } }
+        ],
+        "actions":{ "name":"pick", "execute":{ "sum":{ "_":[ "this", "realValue" ] }, "to":{ "_":[ "variable", "money" ] } } }
+      }
+    },
+    "package":{
+      "type":[ "gameelement", "missionTarget", "missionTargetCitizen", "directionTo", "pickable" ],
+      "image":"effects", "tileX":72, "tileY":16, "width":8, "height":8,
+      "states":{
+        "code":{ "name":"ZPerspective" },
+        "actions":{
+          "name":"pick",
+          "execute":[
+            { "playAudio":"beep2" },
+            { "execute":{ "as":{ "_":[ "objectTyped", "currentmission" ] }, "set":{ "eventMissionPackageFound":1 } } },
+            { "_":[ "stencil", "removeWithSmoke" ] }
+          ]
+        }
+      }
+    },
+    "aggressor":{
+      "type":[ "missionTarget", "missionTargetCitizen", "directionTo" ],
+      "set":{ "_":[ "stencil", "citizenModel" ] },
+      "tileY":32,
+      "driver":"target",
+      "health":1,
+      "weapon":"gun",
+      "states":{
+        "actions":[
+          {
+            "name":"logic",
+            "execute":[
+              {
+                "when":{ "_":[ "this", "follows", "not" ] },
+                "execute":{ "when":{ "_":[ "objectTyped", "playerbody" ] }, "set":{ "follows":{ "_":[ "objectTyped", "playerbody" ] } } }
+              },
+              { "_":[ "stencil", "codeCitizen" ] }
+            ]
+          },
+          { "name":"die", "execute":{ "as":{ "_":[ "objectTyped", "currentmission" ] }, "set":{ "eventMissionTargetCitizenDead":1 } } }
+        ]
+      }
+    },
+    "citizen":{
+      "set":{ "_":[ "stencil", "citizenModel" ] },
+      "driver":"citizen",
+      "weapon":{ "_":[ "randomValue", [ 0, "gun" ] ] },
+      "states":{
+        "actions":[
+          { "name":"logic", "execute":{ "_":[ "stencil", "codeCitizen" ] } },
+          { "name":"hit", "execute":{ "when":{ "_":[ "randomValue", [ 0, 1 ] ] }, "set":{ "follows":{ "_":[ "this", "hitBy" ] } } } }
+        ]
+      }
+    },
+    "cop":{
+      "type":"removeonendmission",
+      "set":{ "_":[ "stencil", "citizenModel" ] },
+      "tileY":16,
+      "carAggressive":1,
+      "carTileY":16,
+      "driver":"cop",
+      "prizeBonus":1,
+      "weapon":{ "_":[ "randomValue", { "_":[ "variable", "copsWeapon" ] } ] },
+      "states":{
+        "actions":{
+          "name":"logic",
+          "execute":[
+            {
+              "when":{ "_":[ "this", "follows", "not" ] },
+              "execute":{ "when":{ "_":[ "objectTyped", "playerbody" ] }, "set":{ "follows":{ "_":[ "objectTyped", "playerbody" ] } } }
+            },
+            { "_":[ "stencil", "codeCitizen" ] }
+          ]
+        }
+      }
+    },
+    "friend":{
+      "type":[ "missionTarget", "missionTargetCitizen", "directionTo" ],
+      "set":{ "_":[ "stencil", "citizenModel" ] },
+      "tileY":24,
+      "driver":"friend",
+      "states":{
+        "actions":[
+          {
+            "name":"logic",
+            "execute":{
+              "when":{ "_":[ "this", "distanceTo", { "_":[ "objectTyped", "playerbody" ] }, "isLessThan", 15 ] },
+              "execute":[
+                { "set":{ "forceX":0, "forceY":0 } },
+                {
+                  "when":{ "_":[ "objectTyped", "playercar" ] },
+                  "execute":[ { "remove":1 }, { "as":{ "_":[ "objectTyped", "currentmission" ] }, "set":{ "eventMissionTargetCitizenOnBoard":1 } } ]
+                }
+              ],
+              "elseExecute":{
+                "when":{ "_":[ "this", "distanceTo", { "_":[ "objectTyped", "playerbody" ] }, "isLessThan", 100 ] },
+                "execute":{
+                  "applyVector":{ "angle":{ "_":[ "this", "angleTo", { "_":[ "objectTyped", "playerbody" ] }, "+", { "_":[ "randomNumber", [ -10, 10 ] ] } ] }, "length":1 }
+                },
+                "elseExecute":{ "_":[ "stencil", "codeCitizen" ] }
+              }
+            }
+          },
+          { "name":"die", "execute":{ "as":{ "_":[ "objectTyped", "currentmission" ] }, "set":{ "eventMissionTargetCitizenDead":1 } } }
+        ]
+      }
+    },
+    "citizenModel":{
+      "type":[ "gameelement", "citizen", "ishitablebyplayer" ],
+      "set":{ "_":[ "stencil", "personModel" ] },
+      "tileY":8,
+      "attacktime":10,
+      "carAggressive":0,
+      "carTileY":0,
+      "follows":0,
+      "movingSpeed":{ "_":[ "randomValue", [ 0.3, 0.5, 1 ] ] },
+      "panic":0,
+      "prizeBonus":0,
+      "weapon":0,
+      "states":{
+        "like":[ { "_":[ "stencil", "removeNotVisibleBehaviour" ] }, { "_":[ "stencil", "byFootBehaviour" ] } ],
+        "actions":[
+          { "name":"onVehicle", "execute":{ "remove":1 } },
+          { "name":"die", "execute":[ { "as":{ "_":"scene" }, "set":{ "crime":1 } }, { "_":[ "stencil", "codeDropLoot" ] } ] },
+          {
+            "name":"onVehicle",
+            "execute":{
+              "as":{ "_":"that" },
+              "set":{
+                "tileY":{ "_":[ "that", "carTileY" ] },
+                "aggressive":{ "_":[ "that", "carAggressive" ] },
+                "driver":{ "_":[ "that", "driver" ] },
+                "weapon":{ "_":[ "that", "weapon" ] },
+                "state":"drivenByCitizen"
+              }
+            }
+          }
+        ]
+      }
+    },
+    "personModel":{
+      "type":"stoptraffic",
+      "image":"people", "tileX":{ "_":[ "randomValue", [ 0, 32, 64 ] ] }, "width":8, "height":8,
+      "hitbox":{ "width":8, "height":4, "x":0, "y":4 },
+      "animations":{ "still":{ "frame":0 }, "walk":{ "frames":[ 1, 2, 3, 2 ], "speed":1, "loopTo":0 } },
+      "damage":1,
+      "health":2,
+      "maxHealth":3
+    },
+    "victim":{
+      "type":[ "missionTarget", "missionTargetCitizen", "directionTo" ],
+      "set":{ "_":[ "stencil", "citizenModel" ] },
+      "tileY":32,
+      "driver":"target",
+      "health":1,
+      "weapon":"gun",
+      "states":{
+        "actions":[
+          {
+            "name":"logic",
+            "execute":{
+              "when":{ "_":[ "this", "distanceTo", { "_":[ "objectTyped", "playerbody" ] }, "isLessThan", 100 ] },
+              "execute":[
+                {
+                  "applyVector":{
+                    "angle":{ "_":[ "this", "angleTo", { "_":[ "objectTyped", "playerbody" ] }, "+", 180, "+", { "_":[ "randomNumber", [ -10, 10 ] ] } ] },
+                    "length":0.5
+                  }
+                },
+                {
+                  "when":{ "_":[ "this", "attacktime" ] },
+                  "subtract":1,
+                  "to":{ "_":[ "this", "attacktime" ] },
+                  "elseExecute":[
+                    {
+                      "when":{ "_":[ "this", "weapon" ] },
+                      "object":{
+                        "set":{ "_":[ "stencil", "dataWeapons", { "_":[ "that", "weapon" ] }, "bullet" ] },
+                        "execute":{ "applyVector":{ "angle":{ "_":[ "that", "angleTo", { "_":[ "objectTyped", "playerbody" ] } ] }, "length":{ "_":[ "this", "bulletSpeed" ] } } },
+                        "bulletColor":"#f00",
+                        "bulletTarget":"ishitablebyenemy"
+                      }
+                    },
+                    { "set":{ "attacktime":25 } }
+                  ]
+                }
+              ],
+              "elseExecute":{ "_":[ "stencil", "codeCitizen" ] }
+            }
+          },
+          { "name":"die", "execute":{ "as":{ "_":[ "objectTyped", "currentmission" ] }, "set":{ "eventMissionTargetCitizenDead":1 } } }
+        ]
+      }
+    },
+    "worker":{
+      "type":"worker",
+      "set":{ "_":[ "stencil", "citizenModel" ] },
+      "tileY":40,
+      "driver":"target",
+      "health":1,
+      "price":100,
+      "states":{
+        "actions":{
+          "name":"logic",
+          "execute":{
+            "when":{ "_":[ "objectTyped", "playerbody", "health", "isLessThan", { "_":[ "objectTyped", "playerbody", "maxHealth", "+", 1 ] } ] },
+            "execute":{
+              "when":{ "_":[ "this", "distanceTo", { "_":[ "objectTyped", "playercar" ] }, "isLessThan", 15 ] },
+              "execute":[
+                { "set":{ "forceX":0, "forceY":0 } },
+                {
+                  "when":{ "_":[ "variable", "money", "isGreaterEqualThan", { "_":[ "this", "price" ] } ] },
+                  "execute":[
+                    { "subtract":{ "_":[ "this", "price" ] }, "to":{ "_":[ "variable", "money" ] } },
+                    {
+                      "as":{ "_":[ "objectTyped", "playerbody" ] },
+                      "execute":[
+                        { "set":{ "health":{ "_":[ "this", "maxHealth", "+", 1 ] } } },
+                        { "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "color":"#f0f", "html":"GOT LOVE" }, "playAudio":"beep2" }
+                      ]
+                    },
+                    { "remove":1 }
+                  ]
+                }
+              ],
+              "elseExecute":{
+                "when":{ "_":[ "this", "distanceTo", { "_":[ "objectTyped", "playercar" ] }, "isLessThan", 32 ] },
+                "execute":{
+                  "applyVector":{ "angle":{ "_":[ "this", "angleTo", { "_":[ "objectTyped", "playercar" ] }, "+", { "_":[ "randomNumber", [ -10, 10 ] ] } ] }, "length":1 }
+                },
+                "elseExecute":{ "_":[ "stencil", "codeCitizen" ] }
+              }
+            },
+            "elseExecute":{ "_":[ "stencil", "codeCitizen" ] }
+          }
+        }
+      }
+    },
+    "poiCompany":{ "type":"poicompany", "set":{ "_":[ "stencil", "poi" ] } },
+    "poiFactory":{ "type":"poifactory", "set":{ "_":[ "stencil", "poi" ] } },
+    "poiGirls":{ "type":"poigirls", "set":{ "_":[ "stencil", "poi" ] } },
+    "poiHospital":{ "type":"poihospital", "set":{ "_":[ "stencil", "poi" ] } },
+    "poiPolice":{ "type":"poipolice", "set":{ "_":[ "stencil", "poi" ] } },
+    "poi":{
+      "type":"poi",
+      "zIndex":10,
+      "bgcolor":"#000", "border":"#fff",
+      "font":"gameboy", "fontSize":6, "lineHeight":12, "textAlign":"center",
+      "states":{
+        "execute":[
+          { "set":{ "html":{ "_":[ "this", "label" ] } } },
+          { "subtract":4, "to":{ "_":[ "this", "height" ] } },
+          { "sum":2, "to":{ "_":[ "this", "y" ] } },
+          {
+            "as":{ "_":[ "new", {} ] },
+            "execute":[
+              {
+                "set":{
+                  "width":16, "height":16,
+                  "x":{ "_":[ "that", "x", "+", { "_":[ "that", "width", "-", 8, "/", 2 ] }, "floor" ] }, "y":{ "_":[ "that", "y", "+", { "_":[ "that", "height" ] }, "+", 16 ] }
+                }
+              },
+              { "assign":{ "_":"this" }, "to":{ "_":[ "scene", "poiIndex", { "_":[ "that", "label" ] } ] } }
+            ]
+          }
+        ]
+      }
+    },
+    "poiResidence":{ "type":"poiresidence", "set":{ "_":[ "stencil", "poi" ] } },
+    "poiRestaurant":{ "type":"poirestaurant", "set":{ "_":[ "stencil", "poi" ] } },
+    "poiRich":{ "type":"poirich", "set":{ "_":[ "stencil", "poi" ] } },
+    "poiStore":{ "type":"poistore", "set":{ "_":[ "stencil", "poi" ] } },
+    "roadDown":{ "type":[ "trafficgenerator", "steeroption" ], "dx":0, "dy":16, "spawnSide":3, "steerAngle":180 },
+    "roadLeft":{ "type":[ "trafficgenerator", "steeroption" ], "dx":-16, "dy":0, "isHorizontal":1, "spawnSide":0, "steerAngle":270 },
+    "roadRight":{ "type":[ "trafficgenerator", "steeroption" ], "dx":16, "dy":0, "isHorizontal":1, "spawnSide":1, "steerAngle":90 },
+    "roadUp":{ "type":[ "trafficgenerator", "steeroption" ], "dx":0, "dy":-16, "spawnSide":2, "steerAngle":0 },
+    "smoke":{
+      "type":"gameelement",
+      "image":"effects", "tileY":0, "width":8, "height":8,
+      "zIndex":100000, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "animations":{ "spark":{ "frames":4, "speed":1 } },
+      "animation":"spark",
+      "states":{ "code":[ { "name":"Physics" }, { "name":"Sequence", "data":[ { "wait":8 }, { "remove":1 } ] } ] }
+    },
+    "stealableBehaviour":{
+      "set":{ "type":[ "isinteractive", "isplayerinteractive" ] },
+      "actions":{
+        "name":"interactByFoot",
+        "execute":[ { "set":{ "stealer":{ "_":"that" } } }, { "executeAction":"stolen" }, { "as":{ "_":"that" }, "executeAction":"onVehicle" } ]
+      }
+    },
+    "#":{ "type":[ "citizengenerator", "peoplewalk" ], "image":"tiles", "tileX":80, "tileY":0, "width":16, "height":16 },
+    ".":{ "set":{ "_":[ "stencil", "#" ] }, "tileX":64, "tileY":32 },
+    ":":{ "image":"tiles", "tileX":96, "tileY":32, "width":16, "height":16 },
+    "A":{ "type":"cargenerator", "image":"tiles", "tileX":80, "tileY":16, "width":16, "height":16, "spawnAngle":[ -10, 10 ] },
+    "C":{ "set":{ "_":[ "stencil", "A" ] }, "tileX":96, "tileY":16, "spawnAngle":[ 260, 280 ] },
+    "U":{ "set":{ "_":[ "stencil", "A" ] }, "tileX":112, "tileY":16, "spawnAngle":[ 170, 190 ] },
+    "Z":{ "set":{ "_":[ "stencil", "A" ] }, "tileX":128, "tileY":16, "spawnAngle":[ 80, 100 ] },
+    "M":{ "image":"tiles", "tileX":48, "tileY":32, "width":16, "height":16 },
+    "E":{ "set":{ "_":[ "stencil", "T" ] }, "tileX":112, "tileY":32 },
+    "H":{ "set":{ "_":[ "stencil", "T" ] }, "tileX":160, "tileY":16 },
+    "J":{ "set":{ "_":[ "stencil", "T" ] }, "tileX":16, "tileY":16 },
+    "L":{ "set":{ "_":[ "stencil", "T" ] }, "tileX":0, "tileY":16 },
+    "O":{ "set":{ "_":[ "stencil", "T" ] }, "tileX":0, "tileY":32 },
+    "W":{ "set":{ "_":[ "stencil", "T" ] }, "tileX":16, "tileY":32 },
+    "Y":{ "set":{ "_":[ "stencil", "T" ] }, "tileX":16, "tileY":0 },
+    "a":{ "set":{ "_":[ "stencil", "T" ] }, "tileX":48, "tileY":16 },
+    "*":{ "set":{ "_":[ "stencil", "animatedPanel" ] }, "tileX":0, "tileY":48 },
+    "1":{ "set":{ "_":[ "stencil", "animatedPanel" ] }, "tileX":0, "tileY":64 },
+    "T":{ "type":[ "personwall", "carwall", "wall" ], "image":"tiles", "tileX":0, "tileY":0, "width":16, "height":16 },
+    "2":{ "set":{ "_":[ "stencil", "animatedPanel" ] }, "tileX":0, "tileY":80 },
+    "3":{ "set":{ "_":[ "stencil", "animatedPanel" ] }, "tileX":32, "tileY":48 },
+    "4":{ "set":{ "_":[ "stencil", "animatedPanel" ] }, "tileX":64, "tileY":48 },
+    "5":{ "set":{ "_":[ "stencil", "animatedPanel" ] }, "tileX":96, "tileY":48 },
+    "6":{ "set":{ "_":[ "stencil", "animatedPanel" ] }, "tileX":64, "tileY":64 },
+    "~":{ "set":{ "_":[ "stencil", "animatedPanel" ] }, "tileX":32, "tileY":64 },
+    "b":{ "set":{ "_":[ "stencil", "T" ] }, "tileX":208, "tileY":0 },
+    "c":{ "set":{ "_":[ "stencil", "T" ] }, "tileX":224, "tileY":0 },
+    "d":{ "set":{ "_":[ "stencil", "T" ] }, "tileX":208, "tileY":16 },
+    "e":{ "set":{ "_":[ "stencil", "T" ] }, "tileX":224, "tileY":16 },
+    "f":{ "set":{ "_":[ "stencil", "T" ] }, "tileX":240, "tileY":0 },
+    "g":{ "set":{ "_":[ "stencil", "T" ] }, "tileX":192, "tileY":32 },
+    "h":{ "set":{ "_":[ "stencil", "T" ] }, "tileX":144, "tileY":16 },
+    "i":{ "set":{ "_":[ "stencil", "T" ] }, "tileX":32, "tileY":0 },
+    "j":{ "set":{ "_":[ "stencil", "T" ] }, "tileX":64, "tileY":16 },
+    "k":{ "set":{ "_":[ "stencil", "T" ] }, "tileX":240, "tileY":16 },
+    "l":{ "set":{ "_":[ "stencil", "T" ] }, "tileX":32, "tileY":16 },
+    "m":{ "set":{ "_":[ "stencil", "T" ] }, "tileX":144, "tileY":32 },
+    "P":{ "set":{ "_":[ "stencil", "missionStarter" ] }, "tileX":96, "tileY":0 },
+    "n":{ "set":{ "_":[ "stencil", "T" ] }, "tileX":160, "tileY":32 },
+    "B":{ "set":{ "_":[ "stencil", "ammoShop" ] }, "tileX":128, "tileY":0 },
+    "F":{ "set":{ "_":[ "stencil", "foodShop" ] }, "tileX":112, "tileY":0 },
+    "G":{ "set":{ "_":[ "stencil", "gunShop" ] }, "tileX":160, "tileY":0 },
+    "R":{ "set":{ "_":[ "stencil", "rocketShop" ] }, "tileX":144, "tileY":0 },
+    "t":{ "set":{ "_":[ "stencil", "T" ] }, "tileX":64, "tileY":0 },
+    "w":{ "set":{ "_":[ "stencil", "T" ] }, "tileX":128, "tileY":32 },
+    "x":{ "set":{ "_":[ "stencil", "T" ] }, "tileX":80, "tileY":32 },
+    "y":{ "set":{ "_":[ "stencil", "T" ] }, "tileX":176, "tileY":32 },
+    "z":{ "set":{ "_":[ "stencil", "T" ] }, "tileX":32, "tileY":32 },
+    "X":{ "image":"tiles", "tileX":48, "tileY":0, "width":16, "height":16 },
+    "o":{ "image":"tiles", "tileX":176, "tileY":16, "width":16, "height":16 },
+    "s":{ "image":"tiles", "tileX":192, "tileY":16, "width":16, "height":16 }
+  },
+  "execute":[
+    { "when":{ "_":[ "storage", "hiscore", "not" ] }, "as":{ "_":"storage" }, "set":{ "hiscore":0 } },
+    { "as":{ "_":"variable" }, "set":{ "hiscore":{ "_":[ "storage", "hiscore" ] } } }
+  ],
+  "scenes":{
+    "intro":{
+      "object":[
+        { "type":"intropart", "width":256, "height":116, "x":0, "y":0, "bgcolor":"#0ff" },
+        { "type":"intropart", "width":256, "height":76, "x":0, "y":116, "bgcolor":"#00f" },
+        { "_":[ "stencil", "introCity" ] },
+        { "set":{ "_":[ "stencil", "introCity" ] }, "x":-255 },
+        { "type":"intropart", "image":"title", "width":235, "height":35, "zIndex":10, "x":10, "y":30 },
+        {
+          "type":"intropart",
+          "box":"label", "width":256, "height":40,
+          "zIndex":10, "x":0, "y":143,
+          "color":"#fff",
+          "font":"spectrum", "fontSize":20, "lineHeight":10, "outline":"#000", "textAlign":"center", "html":"PRESS A TO CONTINUE<br>PRESS DOWN FOR NEW GAME"
+        },
+        {
+          "type":"intropart",
+          "box":"label", "width":256,
+          "zIndex":10, "x":0, "y":172,
+          "color":"#fff",
+          "font":"spectrum", "fontSize":20, "lineHeight":20, "outline":"#000", "textAlign":"center", "html":{ "_":[ "HI-SCORE: ", ".", { "_":[ "variable", "hiscore" ] }, ".", "$" ] }
+        }
+      ],
+      "execute":[
+        { "set":{ "counter":0 } },
+        {
+          "times":10,
+          "execute":[
+            {
+              "object":{
+                "type":"intropart",
+                "image":"title", "tileY":{ "_":[ "that", "counter", "+", 63 ] }, "width":256, "height":1,
+                "zIndex":5, "x":0, "y":{ "_":[ "that", "counter", "*", 2, "+", 116 ] },
+                "timer":{ "_":[ "that", "counter" ] },
+                "states":{
+                  "code":{ "name":"Execute", "data":[ { "sum":0.04, "to":{ "_":[ "this", "timer" ] } }, { "set":{ "x":{ "_":[ "this", "timer", "sin", "*", 10 ] } } } ] }
+                }
+              }
+            },
+            { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+          ]
+        }
+      ],
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[
+            {
+              "when":{ "_":[ "keyA", "isHit" ] },
+              "elseExecute":{
+                "when":{ "_":[ "keyDown", "isHit" ] },
+                "subsequence":[ { "as":{ "_":[ "object", "intropart" ] }, "remove":1 }, { "wait":1 }, { "_":[ "stencil", "codeNewGame" ] } ]
+              },
+              "subsequence":[ { "as":{ "_":[ "object", "intropart" ] }, "remove":1 }, { "wait":1 }, { "_":[ "stencil", "codeLoadGame" ] } ]
+            },
+            { "wait":1, "loopTo":0 }
+          ]
+        }
+      }
+    },
+    "introduction":{
+      "object":[
+        { "type":"intropart", "image":"frank", "width":96, "height":192, "x":0, "y":0 },
+        {
+          "type":[ "intropart", "roll" ],
+          "width":144, "height":0,
+          "x":104, "y":8,
+          "font":"spectrum", "lineHeight":10, "html":"Looks like we've a misunderstanding. The 500.000$ you've stolen from the Central Bank wasn't meant to be lost. But don't worry, pal. We've your son tied on a chair here, having fun with our 'concierges'. Just make it quick and recover my fucking money.<br><br>You've 1 hour. Now get the fuck out of here."
+        }
+      ],
+      "playAudio":"bgmintro",
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[
+            { "sum":1, "to":{ "_":[ "objectTyped", "roll", "height" ] }, "wait":1, "loop":1, "cycles":192 },
+            { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+            { "as":{ "_":[ "object", "intropart" ] }, "remove":1 },
+            { "wait":1 },
+            { "gotoScene":"play", "withTransition":2, "stopChannel":"music" }
+          ]
+        }
+      }
+    },
+    "ending":{
+      "object":[
+        { "image":"frank", "width":96, "height":192, "x":0, "y":0 },
+        {
+          "type":"roll",
+          "width":144, "height":0,
+          "x":104, "y":8,
+          "font":"spectrum", "lineHeight":10, "html":"How did you managed to get so much money in so little time?! You deserve your good news! The whole son and time limit thing was all a joke. Hah! What's that face? Your sense of humor sucks big time! Look. You can take back your part now..."
+        }
+      ],
+      "playAudio":"bgm1",
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[
+            {
+              "as":{ "_":"variable" },
+              "set":{
+                "score":{
+                  "_":[
+                    120,
+                    "-",
+                    { "_":[ "variable", "hours", "*", 60, "+", { "_":[ "variable", "minutes" ] } ] },
+                    "limitValue",
+                    [ 0, 120 ],
+                    "floor",
+                    "/",
+                    120,
+                    "*",
+                    500000,
+                    "ceil",
+                    "/",
+                    100,
+                    "floor",
+                    "*",
+                    100,
+                    "limitValue",
+                    [ 100, 500000 ]
+                  ]
+                }
+              }
+            },
+            { "publishScore":{ "_":[ "variable", "score" ] } },
+            {
+              "when":{ "_":[ "variable", "score", "isGreaterThan", { "_":[ "variable", "hiscore" ] } ] },
+              "execute":[
+                { "as":{ "_":"variable" }, "set":{ "hiscore":{ "_":[ "variable", "score" ] } } },
+                { "as":{ "_":"storage" }, "set":{ "hiscore":{ "_":[ "variable", "score" ] } } }
+              ]
+            },
+            { "sum":1, "to":{ "_":[ "objectTyped", "roll", "height" ] }, "wait":1, "loop":1, "cycles":144 },
+            { "wait":75 },
+            {
+              "object":{
+                "width":144, "height":24,
+                "x":104, "y":160,
+                "color":"#000",
+                "font":"spectrum", "fontSize":40, "lineHeight":24, "textAlign":"center", "html":{ "_":[ "variable", "score", ".", "$" ] },
+                "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "outline":"#ff0" }, "wait":1 }, { "set":{ "outline":"#0f0" }, "wait":1, "loopTo":0 } ] } }
+              },
+              "playAudio":"bigfire"
+            },
+            { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+            { "as":{ "_":[ "object", "roll" ] }, "remove":1 },
+            {
+              "object":{
+                "type":"roll",
+                "width":144, "height":0,
+                "x":104, "y":8,
+                "font":"spectrum", "lineHeight":10, "html":"Buy something nice for you and your son... Tomorrow we will teach the Breaktown Police that Frank is the boss here. We will hit the Central Bank again... but this time without losing the money. Don't test my generosity again, okay?"
+              }
+            },
+            { "sum":1, "to":{ "_":[ "objectTyped", "roll", "height" ] }, "wait":1, "loop":1, "cycles":144 },
+            { "wait":25 },
+            { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+            { "gotoScene":"credits", "withTransition":3, "stopChannel":"music" }
+          ]
+        }
+      }
+    },
+    "credits":{
+      "object":{
+        "width":256, "height":1000,
+        "x":0, "y":192,
+        "font":"spectrum", "textAlign":"center", "html":"BREAKTOWN<br>(c) 2017<br>A small sandbox game.<br><br><br>Graphics by:<br>KesieV Norimaki<br><br><br>Story by:<br>KesieV Norimaki<br><br><br>Code by:<br>KesieV Norimaki<br><br><br>Music:<br><br>Groooove<br>by LaesQ<br><br>Ravens Rave<br>by LaesQ<br><br>Secret Part<br>by LaesQ<br><br>Bit Energy<br>by AER<br><br><br>Big thanks to:<br>Bianca<br>Il Marsicano<br>The JTTA Team<br>Stefano \"Il Kusagari\" Fioretto<br>Romolo Camplani<br>All Akihabara age friends<br>All Breaktown stores!<br><br><br><br><br>Winners don't use drugs!",
+        "forceY":-0.5,
+        "playAudio":"bgmintro",
+        "states":{ "code":{ "name":"Physics" } }
+      },
+      "states":{
+        "code":[
+          { "name":"Sequence", "data":[ { "wait":2096 }, { "gotoScene":"intro", "withTransition":3, "stopChannel":"music" } ] },
+          { "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"intro", "withTransition":3, "stopChannel":"music" } }
+        ]
+      }
+    },
+    "play":{
+      "object":[
+        { "set":{ "_":[ "stencil", "poiHospital" ] }, "label":"Sun Hospital", "width":64, "height":32, "x":192, "y":1360 },
+        { "set":{ "_":[ "stencil", "poiHospital" ] }, "label":"North Hospital", "width":64, "height":32, "x":864, "y":208 },
+        { "set":{ "_":[ "stencil", "poiHospital" ] }, "label":"Saint Hospital", "width":64, "height":32, "x":1440, "y":848 },
+        { "set":{ "_":[ "stencil", "poiRich" ] }, "label":"Southern Bank", "width":64, "height":32, "x":864, "y":1360 },
+        { "set":{ "_":[ "stencil", "poiRich" ] }, "label":"Development House", "width":96, "height":32, "x":800, "y":848 },
+        { "set":{ "_":[ "stencil", "poiRich" ] }, "label":"Shiny Jewels", "width":64, "height":32, "x":576, "y":80 },
+        { "set":{ "_":[ "stencil", "poiRich" ] }, "label":"Art Gallery", "width":64, "height":32, "x":384, "y":720 },
+        { "set":{ "_":[ "stencil", "poiRich" ] }, "label":"Central Bank", "width":64, "height":32, "x":1152, "y":464 },
+        { "set":{ "_":[ "stencil", "poiRich" ] }, "label":"Gold Miners Refinery", "width":64, "height":32, "x":1392, "y":976 },
+        { "set":{ "_":[ "stencil", "poiRich" ] }, "label":"Frank's Villa", "width":64, "height":32, "x":112, "y":1232 },
+        { "set":{ "_":[ "stencil", "poiRestaurant" ] }, "label":"Mary Houly Diner", "width":64, "height":32, "x":192, "y":464 },
+        { "set":{ "_":[ "stencil", "poiRestaurant" ] }, "label":"Alien Burger 2", "width":64, "height":32, "x":672, "y":208 },
+        { "set":{ "_":[ "stencil", "poiRestaurant" ] }, "label":"Alien Burger 1", "width":64, "height":32, "x":384, "y":1232 },
+        { "set":{ "_":[ "stencil", "poiRestaurant" ] }, "label":"Alien Burger 3", "width":64, "height":32, "x":1152, "y":1360 },
+        { "set":{ "_":[ "stencil", "poiRestaurant" ] }, "label":"Alien Burger 4", "width":64, "height":32, "x":1248, "y":720 },
+        { "set":{ "_":[ "stencil", "poiFactory" ] }, "label":"Custom Made", "width":64, "height":32, "x":1344, "y":1488 },
+        { "set":{ "_":[ "stencil", "poiFactory" ] }, "label":"Stuff Inc.", "width":64, "height":32, "x":1456, "y":1232 },
+        { "set":{ "_":[ "stencil", "poiFactory" ] }, "label":"Donetti Corp.", "width":64, "height":32, "x":1424, "y":1104 },
+        { "set":{ "_":[ "stencil", "poiFactory" ] }, "label":"Cruz Logistics", "width":96, "height":32, "x":1424, "y":1360 },
+        { "set":{ "_":[ "stencil", "poiCompany" ] }, "label":"Agile Offices", "width":64, "height":32, "x":1248, "y":592 },
+        { "set":{ "_":[ "stencil", "poiCompany" ] }, "label":"Unknown Software", "width":64, "height":32, "x":1056, "y":1104 },
+        { "set":{ "_":[ "stencil", "poiCompany" ] }, "label":"Mintendo HQ", "width":64, "height":32, "x":816, "y":1232 },
+        { "set":{ "_":[ "stencil", "poiCompany" ] }, "label":"Western Journal", "width":64, "height":32, "x":288, "y":592 },
+        { "set":{ "_":[ "stencil", "poiCompany" ] }, "label":"Martia Fashon", "width":64, "height":32, "x":952, "y":80 },
+        { "set":{ "_":[ "stencil", "poiCompany" ] }, "label":"Stairbros Soft", "width":64, "height":32, "x":192, "y":1104 },
+        { "set":{ "_":[ "stencil", "poiCompany" ] }, "label":"More Offices", "width":64, "height":32, "x":192, "y":1488 },
+        { "set":{ "_":[ "stencil", "poiCompany" ] }, "label":"Good Pharma", "width":64, "height":32, "x":480, "y":80 },
+        { "set":{ "_":[ "stencil", "poiResidence" ] }, "label":"Work Residence", "width":64, "height":32, "x":1232, "y":1104 },
+        { "set":{ "_":[ "stencil", "poiResidence" ] }, "label":"Seaside Hotel", "width":64, "height":32, "x":192, "y":336 },
+        { "set":{ "_":[ "stencil", "poiResidence" ] }, "label":"Beach Residence", "width":64, "height":32, "x":176, "y":848 },
+        { "set":{ "_":[ "stencil", "poiResidence" ] }, "label":"Memory house", "width":64, "height":32, "x":1248, "y":848 },
+        { "set":{ "_":[ "stencil", "poiGirls" ] }, "label":"Marco's Pleasure", "width":64, "height":32, "x":1152, "y":208 },
+        { "set":{ "_":[ "stencil", "poiGirls" ] }, "label":"Just Dancers", "width":64, "height":32, "x":576, "y":1488 },
+        { "set":{ "_":[ "stencil", "poiGirls" ] }, "label":"Disco Techque", "width":64, "height":32, "x":192, "y":976 },
+        { "set":{ "_":[ "stencil", "poiGirls" ] }, "label":"Lovebox", "width":64, "height":32, "x":1440, "y":720 },
+        { "set":{ "_":[ "stencil", "poiStore" ] }, "label":"Star Cat Mall", "width":80, "height":32, "x":1392, "y":336 },
+        { "set":{ "_":[ "stencil", "poiStore" ] }, "label":"Cheap Stuff", "width":64, "height":32, "x":384, "y":1360 },
+        { "set":{ "_":[ "stencil", "poiStore" ] }, "label":"Tiny Mart", "width":64, "height":32, "x":376, "y":336 },
+        { "set":{ "_":[ "stencil", "poiStore" ] }, "label":"24h Sale", "width":64, "height":32, "x":1056, "y":1488 },
+        { "set":{ "_":[ "stencil", "poiPolice" ] }, "label":"Police Dept", "width":64, "height":32, "x":288, "y":80 },
+        { "set":{ "_":[ "stencil", "poiPolice" ] }, "label":"BFI", "width":64, "height":32, "x":1440, "y":80 },
+        { "set":{ "_":[ "stencil", "poiPolice" ] }, "label":"Police Central", "width":64, "height":32, "x":768, "y":1488 },
+        { "set":{ "_":[ "stencil", "poiPolice" ] }, "label":"Proof Storage", "width":64, "height":32, "x":864, "y":1488 },
+        { "set":{ "_":[ "stencil", "poi" ] }, "label":"Car Sale", "width":32, "height":32, "x":560, "y":1232 },
+        { "set":{ "_":[ "stencil", "poi" ] }, "label":"Byrolla Theatre", "width":64, "height":32, "x":960, "y":576 },
+        { "set":{ "_":[ "stencil", "poi" ] }, "label":"Wrightmag Arcade", "width":64, "height":32, "x":1144, "y":848 },
+        { "set":{ "_":[ "stencil", "poi" ] }, "label":"Breaktown University", "width":64, "height":32, "x":192, "y":592 },
+        { "set":{ "_":[ "stencil", "poi" ] }, "label":"Elec Tronics", "width":64, "height":32, "x":288, "y":1104 },
+        { "set":{ "_":[ "stencil", "poi" ] }, "label":"Call Of Beauty", "width":64, "height":32, "x":1152, "y":1232 },
+        { "set":{ "_":[ "stencil", "poi" ] }, "label":"Friend Shop", "width":64, "height":32, "x":1152, "y":80 },
+        { "set":{ "_":[ "stencil", "poi" ] }, "label":"Mauro Gadgetry", "width":64, "height":32, "x":864, "y":464 },
+        { "set":{ "_":[ "stencil", "poi" ] }, "label":"Flowerse", "width":64, "height":32, "x":368, "y":464 },
+        { "set":{ "_":[ "stencil", "poi" ] }, "label":"Toys We Are", "width":64, "height":32, "x":480, "y":1104 },
+        { "set":{ "_":[ "stencil", "poi" ] }, "label":"Bianca Bookshop", "width":64, "height":32, "x":1440, "y":208 },
+        { "set":{ "_":[ "stencil", "poi" ] }, "label":"Arnald Music Store", "width":64, "height":32, "x":1152, "y":1488 },
+        { "set":{ "_":[ "stencil", "poi" ] }, "label":"Juliet Hairstyle", "width":64, "height":32, "x":768, "y":80 },
+        { "set":{ "_":[ "stencil", "roadUp" ] }, "width":16, "height":1168, "x":128, "y":32 },
+        { "set":{ "_":[ "stencil", "roadDown" ] }, "width":16, "height":1168, "x":112, "y":32 },
+        { "set":{ "_":[ "stencil", "roadUp" ] }, "width":16, "height":272, "x":128, "y":1296 },
+        { "set":{ "_":[ "stencil", "roadDown" ] }, "width":16, "height":272, "x":112, "y":1296 },
+        { "set":{ "_":[ "stencil", "roadUp" ] }, "width":16, "height":400, "x":320, "y":1168 },
+        { "set":{ "_":[ "stencil", "roadDown" ] }, "width":16, "height":400, "x":304, "y":1168 },
+        { "set":{ "_":[ "stencil", "roadUp" ] }, "width":16, "height":400, "x":512, "y":1168 },
+        { "set":{ "_":[ "stencil", "roadDown" ] }, "width":16, "height":400, "x":496, "y":1168 },
+        { "set":{ "_":[ "stencil", "roadDown" ] }, "width":16, "height":528, "x":688, "y":1040 },
+        { "set":{ "_":[ "stencil", "roadUp" ] }, "width":16, "height":160, "x":704, "y":1040 },
+        { "set":{ "_":[ "stencil", "roadUp" ] }, "width":16, "height":144, "x":704, "y":1424 },
+        { "set":{ "_":[ "stencil", "roadDown" ] }, "width":16, "height":528, "x":976, "y":1040 },
+        { "set":{ "_":[ "stencil", "roadUp" ] }, "width":16, "height":528, "x":992, "y":1040 },
+        { "set":{ "_":[ "stencil", "roadUp" ] }, "width":16, "height":288, "x":1088, "y":1168 },
+        { "set":{ "_":[ "stencil", "roadDown" ] }, "width":16, "height":288, "x":1072, "y":1168 },
+        { "set":{ "_":[ "stencil", "roadUp" ] }, "width":16, "height":400, "x":1280, "y":1168 },
+        { "set":{ "_":[ "stencil", "roadDown" ] }, "width":16, "height":400, "x":1264, "y":1168 },
+        { "set":{ "_":[ "stencil", "roadDown" ] }, "width":16, "height":416, "x":1360, "y":1040 },
+        { "set":{ "_":[ "stencil", "roadUp" ] }, "width":16, "height":416, "x":1376, "y":1040 },
+        { "set":{ "_":[ "stencil", "roadDown" ] }, "width":16, "height":144, "x":1456, "y":1424 },
+        { "set":{ "_":[ "stencil", "roadUp" ] }, "width":16, "height":160, "x":1280, "y":912 },
+        { "set":{ "_":[ "stencil", "roadDown" ] }, "width":16, "height":160, "x":1264, "y":912 },
+        { "set":{ "_":[ "stencil", "roadUp" ] }, "width":16, "height":288, "x":1168, "y":912 },
+        { "set":{ "_":[ "stencil", "roadDown" ] }, "width":16, "height":288, "x":400, "y":912 },
+        { "set":{ "_":[ "stencil", "roadUp" ] }, "width":16, "height":288, "x":416, "y":912 },
+        { "set":{ "_":[ "stencil", "roadUp" ] }, "width":16, "height":416, "x":320, "y":656 },
+        { "set":{ "_":[ "stencil", "roadDown" ] }, "width":16, "height":416, "x":304, "y":656 },
+        { "set":{ "_":[ "stencil", "roadUp" ] }, "width":16, "height":800, "x":512, "y":272 },
+        { "set":{ "_":[ "stencil", "roadDown" ] }, "width":16, "height":800, "x":496, "y":272 },
+        { "set":{ "_":[ "stencil", "roadDown" ] }, "width":16, "height":160, "x":400, "y":528 },
+        { "set":{ "_":[ "stencil", "roadUp" ] }, "width":16, "height":160, "x":416, "y":528 },
+        { "set":{ "_":[ "stencil", "roadUp" ] }, "width":16, "height":160, "x":320, "y":400 },
+        { "set":{ "_":[ "stencil", "roadDown" ] }, "width":16, "height":288, "x":304, "y":272 },
+        { "set":{ "_":[ "stencil", "roadUp" ] }, "width":16, "height":272, "x":224, "y":32 },
+        { "set":{ "_":[ "stencil", "roadDown" ] }, "width":16, "height":272, "x":208, "y":32 },
+        { "set":{ "_":[ "stencil", "roadUp" ] }, "width":16, "height":272, "x":416, "y":32 },
+        { "set":{ "_":[ "stencil", "roadDown" ] }, "width":16, "height":272, "x":400, "y":32 },
+        { "set":{ "_":[ "stencil", "roadUp" ] }, "width":16, "height":160, "x":608, "y":144 },
+        { "set":{ "_":[ "stencil", "roadDown" ] }, "width":16, "height":160, "x":592, "y":144 },
+        { "set":{ "_":[ "stencil", "roadUp" ] }, "width":16, "height":144, "x":704, "y":32 },
+        { "set":{ "_":[ "stencil", "roadDown" ] }, "width":16, "height":144, "x":688, "y":32 },
+        { "set":{ "_":[ "stencil", "roadUp" ] }, "width":16, "height":160, "x":608, "y":1040 },
+        { "set":{ "_":[ "stencil", "roadDown" ] }, "width":16, "height":160, "x":592, "y":1040 },
+        { "set":{ "_":[ "stencil", "roadUp" ] }, "width":16, "height":160, "x":800, "y":1296 },
+        { "set":{ "_":[ "stencil", "roadDown" ] }, "width":16, "height":160, "x":784, "y":1296 },
+        { "set":{ "_":[ "stencil", "roadUp" ] }, "width":16, "height":672, "x":1088, "y":400 },
+        { "set":{ "_":[ "stencil", "roadDown" ] }, "width":16, "height":1040, "x":1072, "y":32 },
+        { "set":{ "_":[ "stencil", "roadUp" ] }, "width":16, "height":320, "x":1088, "y":32 },
+        { "set":{ "_":[ "stencil", "roadDown" ] }, "width":16, "height":288, "x":1168, "y":528 },
+        { "set":{ "_":[ "stencil", "roadUp" ] }, "width":16, "height":288, "x":1184, "y":528 },
+        { "set":{ "_":[ "stencil", "roadDown" ] }, "width":16, "height":288, "x":880, "y":528 },
+        { "set":{ "_":[ "stencil", "roadUp" ] }, "width":16, "height":288, "x":896, "y":528 },
+        { "set":{ "_":[ "stencil", "roadDown" ] }, "width":16, "height":544, "x":784, "y":272 },
+        { "set":{ "_":[ "stencil", "roadUp" ] }, "width":16, "height":544, "x":800, "y":272 },
+        { "set":{ "_":[ "stencil", "roadDown" ] }, "width":16, "height":160, "x":688, "y":272 },
+        { "set":{ "_":[ "stencil", "roadUp" ] }, "width":16, "height":160, "x":704, "y":272 },
+        { "set":{ "_":[ "stencil", "roadDown" ] }, "width":16, "height":160, "x":208, "y":1168 },
+        { "set":{ "_":[ "stencil", "roadUp" ] }, "width":16, "height":160, "x":224, "y":1168 },
+        { "set":{ "_":[ "stencil", "roadDown" ] }, "width":16, "height":544, "x":1360, "y":400 },
+        { "set":{ "_":[ "stencil", "roadUp" ] }, "width":16, "height":416, "x":1376, "y":528 },
+        { "set":{ "_":[ "stencil", "roadDown" ] }, "width":16, "height":528, "x":1264, "y":32 },
+        { "set":{ "_":[ "stencil", "roadUp" ] }, "width":16, "height":528, "x":1280, "y":32 },
+        { "set":{ "_":[ "stencil", "roadDown" ] }, "width":16, "height":272, "x":1376, "y":32 },
+        { "set":{ "_":[ "stencil", "roadDown" ] }, "width":16, "height":160, "x":976, "y":144 },
+        { "set":{ "_":[ "stencil", "roadUp" ] }, "width":16, "height":160, "x":992, "y":144 },
+        { "set":{ "_":[ "stencil", "roadDown" ] }, "width":16, "height":144, "x":880, "y":32 },
+        { "set":{ "_":[ "stencil", "roadUp" ] }, "width":16, "height":144, "x":896, "y":32 },
+        { "set":{ "_":[ "stencil", "roadUp" ] }, "width":16, "height":144, "x":992, "y":400 },
+        { "set":{ "_":[ "stencil", "roadDown" ] }, "width":16, "height":112, "x":1408, "y":400 },
+        { "set":{ "_":[ "stencil", "roadUp" ] }, "width":16, "height":112, "x":1424, "y":400 },
+        { "set":{ "_":[ "stencil", "roadDown" ] }, "width":16, "height":112, "x":1472, "y":400 },
+        { "set":{ "_":[ "stencil", "roadUp" ] }, "width":16, "height":112, "x":1488, "y":400 },
+        { "set":{ "_":[ "stencil", "roadDown" ] }, "width":16, "height":112, "x":1536, "y":400 },
+        { "set":{ "_":[ "stencil", "roadUp" ] }, "width":16, "height":1536, "x":1552, "y":32 },
+        { "set":{ "_":[ "stencil", "roadLeft" ] }, "width":1184, "height":16, "x":112, "y":1168 },
+        { "set":{ "_":[ "stencil", "roadRight" ] }, "width":1184, "height":16, "x":112, "y":1184 },
+        { "set":{ "_":[ "stencil", "roadLeft" ] }, "width":128, "height":16, "x":112, "y":1296 },
+        { "set":{ "_":[ "stencil", "roadRight" ] }, "width":128, "height":16, "x":112, "y":1312 },
+        { "set":{ "_":[ "stencil", "roadRight" ] }, "width":224, "height":16, "x":112, "y":1440 },
+        { "set":{ "_":[ "stencil", "roadLeft" ] }, "width":224, "height":16, "x":112, "y":1424 },
+        { "set":{ "_":[ "stencil", "roadRight" ] }, "width":224, "height":16, "x":112, "y":1056 },
+        { "set":{ "_":[ "stencil", "roadLeft" ] }, "width":224, "height":16, "x":112, "y":1040 },
+        { "set":{ "_":[ "stencil", "roadRight" ] }, "width":416, "height":16, "x":112, "y":800 },
+        { "set":{ "_":[ "stencil", "roadLeft" ] }, "width":416, "height":16, "x":112, "y":784 },
+        { "set":{ "_":[ "stencil", "roadLeft" ] }, "width":416, "height":16, "x":112, "y":528 },
+        { "set":{ "_":[ "stencil", "roadRight" ] }, "width":416, "height":16, "x":112, "y":544 },
+        { "set":{ "_":[ "stencil", "roadLeft" ] }, "width":896, "height":16, "x":112, "y":400 },
+        { "set":{ "_":[ "stencil", "roadRight" ] }, "width":896, "height":16, "x":112, "y":416 },
+        { "set":{ "_":[ "stencil", "roadLeft" ] }, "width":416, "height":16, "x":112, "y":272 },
+        { "set":{ "_":[ "stencil", "roadRight" ] }, "width":416, "height":16, "x":112, "y":288 },
+        { "set":{ "_":[ "stencil", "roadLeft" ] }, "width":320, "height":16, "x":400, "y":144 },
+        { "set":{ "_":[ "stencil", "roadRight" ] }, "width":320, "height":16, "x":400, "y":160 },
+        { "set":{ "_":[ "stencil", "roadLeft" ] }, "width":512, "height":16, "x":592, "y":272 },
+        { "set":{ "_":[ "stencil", "roadRight" ] }, "width":512, "height":16, "x":592, "y":288 },
+        { "set":{ "_":[ "stencil", "roadLeft" ] }, "width":128, "height":16, "x":880, "y":144 },
+        { "set":{ "_":[ "stencil", "roadRight" ] }, "width":128, "height":16, "x":880, "y":160 },
+        { "set":{ "_":[ "stencil", "roadLeft" ] }, "width":128, "height":16, "x":784, "y":784 },
+        { "set":{ "_":[ "stencil", "roadRight" ] }, "width":128, "height":16, "x":784, "y":800 },
+        { "set":{ "_":[ "stencil", "roadLeft" ] }, "width":784, "height":16, "x":784, "y":528 },
+        { "set":{ "_":[ "stencil", "roadRight" ] }, "width":128, "height":16, "x":784, "y":544 },
+        { "set":{ "_":[ "stencil", "roadRight" ] }, "width":496, "height":16, "x":1072, "y":544 },
+        { "set":{ "_":[ "stencil", "roadLeft" ] }, "width":224, "height":16, "x":1072, "y":400 },
+        { "set":{ "_":[ "stencil", "roadRight" ] }, "width":224, "height":16, "x":1072, "y":416 },
+        { "set":{ "_":[ "stencil", "roadRight" ] }, "width":224, "height":16, "x":1072, "y":304 },
+        { "set":{ "_":[ "stencil", "roadLeft" ] }, "width":224, "height":16, "x":1072, "y":144 },
+        { "set":{ "_":[ "stencil", "roadLeft" ] }, "width":304, "height":16, "x":1264, "y":272 },
+        { "set":{ "_":[ "stencil", "roadRight" ] }, "width":304, "height":16, "x":1264, "y":288 },
+        { "set":{ "_":[ "stencil", "roadRight" ] }, "width":192, "height":16, "x":1376, "y":160 },
+        { "set":{ "_":[ "stencil", "roadLeft" ] }, "width":400, "height":16, "x":1168, "y":656 },
+        { "set":{ "_":[ "stencil", "roadRight" ] }, "width":400, "height":16, "x":1168, "y":672 },
+        { "set":{ "_":[ "stencil", "roadLeft" ] }, "width":224, "height":16, "x":880, "y":656 },
+        { "set":{ "_":[ "stencil", "roadRight" ] }, "width":224, "height":16, "x":880, "y":672 },
+        { "set":{ "_":[ "stencil", "roadLeft" ] }, "width":496, "height":16, "x":1072, "y":784 },
+        { "set":{ "_":[ "stencil", "roadRight" ] }, "width":496, "height":16, "x":1072, "y":800 },
+        { "set":{ "_":[ "stencil", "roadLeft" ] }, "width":128, "height":16, "x":1072, "y":912 },
+        { "set":{ "_":[ "stencil", "roadRight" ] }, "width":128, "height":16, "x":1072, "y":928 },
+        { "set":{ "_":[ "stencil", "roadLeft" ] }, "width":304, "height":16, "x":1264, "y":912 },
+        { "set":{ "_":[ "stencil", "roadRight" ] }, "width":304, "height":16, "x":1264, "y":928 },
+        { "set":{ "_":[ "stencil", "roadLeft" ] }, "width":144, "height":16, "x":976, "y":1040 },
+        { "set":{ "_":[ "stencil", "roadRight" ] }, "width":144, "height":16, "x":976, "y":1056 },
+        { "set":{ "_":[ "stencil", "roadLeft" ] }, "width":224, "height":16, "x":1168, "y":1040 },
+        { "set":{ "_":[ "stencil", "roadRight" ] }, "width":224, "height":16, "x":1168, "y":1056 },
+        { "set":{ "_":[ "stencil", "roadLeft" ] }, "width":704, "height":16, "x":688, "y":1296 },
+        { "set":{ "_":[ "stencil", "roadRight" ] }, "width":704, "height":16, "x":688, "y":1312 },
+        { "set":{ "_":[ "stencil", "roadLeft" ] }, "width":496, "height":16, "x":1072, "y":1424 },
+        { "set":{ "_":[ "stencil", "roadRight" ] }, "width":496, "height":16, "x":1072, "y":1440 },
+        { "set":{ "_":[ "stencil", "roadLeft" ] }, "width":512, "height":16, "x":496, "y":1424 },
+        { "set":{ "_":[ "stencil", "roadRight" ] }, "width":512, "height":16, "x":496, "y":1440 },
+        { "set":{ "_":[ "stencil", "roadLeft" ] }, "width":224, "height":16, "x":304, "y":1296 },
+        { "set":{ "_":[ "stencil", "roadRight" ] }, "width":224, "height":16, "x":304, "y":1312 },
+        { "set":{ "_":[ "stencil", "roadLeft" ] }, "width":128, "height":16, "x":400, "y":912 },
+        { "set":{ "_":[ "stencil", "roadRight" ] }, "width":128, "height":16, "x":400, "y":928 },
+        { "set":{ "_":[ "stencil", "roadLeft" ] }, "width":128, "height":16, "x":304, "y":656 },
+        { "set":{ "_":[ "stencil", "roadRight" ] }, "width":128, "height":16, "x":304, "y":672 },
+        { "set":{ "_":[ "stencil", "roadLeft" ] }, "width":208, "height":16, "x":1360, "y":400 },
+        { "set":{ "_":[ "stencil", "roadRight" ] }, "width":208, "height":16, "x":1360, "y":432 },
+        { "set":{ "_":[ "stencil", "roadLeft" ] }, "width":208, "height":16, "x":1360, "y":464 },
+        { "set":{ "_":[ "stencil", "roadRight" ] }, "width":208, "height":16, "x":1360, "y":496 },
+        { "set":{ "_":[ "stencil", "roadRight" ] }, "width":1456, "height":16, "x":112, "y":1552 },
+        { "set":{ "_":[ "stencil", "roadLeft" ] }, "width":1456, "height":16, "x":112, "y":32 },
+        { "set":{ "_":[ "stencil", "roadRight" ] }, "width":224, "height":16, "x":496, "y":1056 },
+        { "set":{ "_":[ "stencil", "roadLeft" ] }, "width":224, "height":16, "x":496, "y":1040 }
+      ],
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "tilemap":{
+        "tileWidth":16,
+        "tileHeight":16,
+        "map":[
+          "~xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+          "~M...##############################################################################################x",
+          "~M...##                                                                                           #x",
+          "~Ms..y#  ####   bffffffc    TYOOOOTYOOOOTY    bcbffcbc    TYTOOYTY    TYTOOYTY    TOY   TYTOOYTY  #x",
+          "~M...x#  #mn#   dkkkkkke    LJWWWWLJWWWWLJ    dedkkede    LJLWWJLJ    LJLWWJLJ    6WJ   LJLWWJLJ  #x",
+          "~Mo..x#  #::#   iXXXXXXt    itggggitXXXXit    TYXXXXTY    igXXXgTY    itXXXXit    TYt   itXXXXit  #x",
+          "~M...x#  #mm#  Pi4XggX4t#  #itggggi5XXXX5t#  #hHXXXXhH#  PigXXXghH#  ZitXXXXitC  #LJtP ZitXggXitC #x",
+          "~Ms..x#  #nm#  #laazzaaj#  #ljazzaljzaazlj#  #hHzaazhH#  #laazaahH#  ZljzaazljC  #TYj# ZljazzaljC #x",
+          "~M...y#  #mn#  #mxA##Axn#  #AA####AA####AA#  #hH####hH#  #######hH#  ZAA####AAC  #LJ## ####  #### #x",
+          "~Mo..##  #mn#  #:x    x:#                    #hH#  #hH#        #hH#              #TY#  yx4m  n4xy #x",
+          "~M...##  #nm#  #mx    xn#                    #LJC  ZLJ#        ZLJC     TOOY     #LJ#             #x",
+          "~Mo..y#  #mm#  #TOY  TOY#   bffffffc    TOOOOOOYC  ZTOOOOOOY   ZTYC   bc6WWJbc   #TOY   TOOOOOOY  #x",
+          "~M...x#  #mn#  #LWJ  LWJ#   dkkkkkke    LWWWWWWJC  Z6WWWWWWJ   ZLJC   deggggde   #LWJ   6WWWWWWJ  #x",
+          "~Ms..x#  #nn#  #iXt  iXt#   iXXXXXTY    iEXXXXEtC  Zi*XXXX*t   ZitC   iXXXXXXt1  #iXt   iXXXXXXt  #x",
+          "~M...x#  #::#  ZiXt  iXtC  PiXXXXXhHP  #iXXXXXXt#  PiXXXXXXtC  #it#  ZiXXXXXXt2  ZiXtC PiXXXXXXtC #x",
+          "~Ms..x#  #mn#  ZlBj  lajC  #laaaaahH#  #lFzaazFj#  #laazzaajC  #lj#  ZlzzaazzjC  ZlBjC #laazzaajC #x",
+          "~M...y#  ####  ####  ####  #AA###AhH#  #AA####AA#  #AA####AA#  ####  #::#  #::#  ##### #AA####AA# #x",
+          "~M#####                          #hH#                                #m:#  #:m#                   #x",
+          "~M#####                          ZLJ#                                #AA#  #AA#                   #x",
+          "~Mo..y#   TOOOOOOY   bfffffffc   ZTYTOOYTY    TY   ################               bcTOOOOOOOOOOY  #x",
+          "~M...xC   LWWWWWWJ   d3kkkkk3e   ZLJLWWJLJ    LJ   #m:n:n:n:m:m:m:#  bff    bc    de6WWWWWWWWWWJ  #x",
+          "~M...xC   iXXXXXXt   iXXXXXXXt   #itXXXXit    it   #::::::::::::::#  dkk    de    TYXX3XXXXX3XXt  #x",
+          "~Ms..xC  #iXXXXXXtP ZiXXXXXXXt#  #itXXXXit#  #it#  #::::::::::::::# ZiXtC  #it#  #hHXX3XXXXX3XEtC #x",
+          "~M...xC  #laazzaaj# ZlRazzzaaj#  #ljazzalj#  #lj#  #m:m:m:m:m:n:m:# ZlGjC  #lj#  #hHaBaGaRaaaaFjC #x",
+          "~Mso.y#  #AA####AA# #AA#####AA#  ##########  ####  #############::# #####  ####  ZhH############# #x",
+          "~M...##                                                        #::#              ZhH              #x",
+          "~Ms..##                                                        #::#              #hH  AA  AA  AA  #x",
+          "~M...y#   TOOOOOOY    TOOOOOOY   ################   TYTOOYTOY  #::#   TOOOOOOY   ZhH              #x",
+          "~M...xC   6WWWWWWJ    6WWWWWWJ   #xxxxxy##yxxxxx#   6JLWWJLWJ  #::#   LWWWWWWJ   ZLJ  AA  AA  AA  #x",
+          "~Mo..xC   iXXXXXXt    iXXXXXXt   #xm::::##::::nx#   itXXXXiXt  #::#   iXXXXXXt   #it              #x",
+          "~M...xC  #iXXXXXXt#  #iXXXXXXtC  #x:::::##:::::x#  PitXXXXiXtC #::#  #i5XXXX5t#  Pit# AA  AA  AA  #x",
+          "~Moo.xC  #lzazzazj#  #laazzaBjC  #x:::::##:::::x#  #ljazzalBjC #nm#  #laazzaaj#  #lj#             #x",
+          "~M...y#  #AA####AA#  ##########  #y::::m##n::::y#  AAA######## ####  #P########  ####  yxxy  yxxy #x",
+          "~M#####                          ################                                                 #x",
+          "~M#####                          ################           bcbc                                  #x",
+          "~M...y#   bcTOOYbcOOOOTY    TY   #y:::::##:::::y#   TY    bcdedebc    TY    TOOOOOOY   P######### #x",
+          "~M.o.xC   de6WWJdeWWWWLJ    6J   #x:m:n:##:n:m:x#   6J    deXXXXde    LJ    6WWWWWWJ   #::::::::# #x",
+          "~M...xC   TYXXXXTYXggXit    TY   #x:::::##:::::x#   TY    itXXXXit    TY    iggggggt   #:m:n::n:# #x",
+          "~Ms..xC  #hHXXXXhHXggXitC  PhH#  #x:::::##:::::x#  #hHP  ZitzaazitC  #hH#  ZiXXXXXXtC  #:m::m:m:# #x",
+          "~M...xC  #hHzaazhHzaazljC  #hH#  #x:m:n:##:n:n:x#  #hH#  Zlj####ljC  #hH#  ZlazaazajC  #::::::::# #x",
+          "~M...y#  #hH####hHP###AAA  #hH#  #y:::::##:::::y#  #hH#  ZAA#  #AAC  #hH#  ZAA####AAC  ########## #x",
+          "~Mo..##  #hH#::#hH#        #hHC  ################  ZhHC              ZhHC                         #x",
+          "~M...##  #hH#::#hH#        #LJC  ################  ZLJC              ZLJC                         #x",
+          "~M.s.y#  #hH#::#hH#   TOOOOOOYC  #y:::::##:::::y#  ZTYC  ##########  ZTYC   TOOOOOOY    TOOOOOOY  #x",
+          "~M...xC  #LJ#::#LJ#   LWWWWWWJC  #x:m:m:##:m:m:x#  #LJ#  #xxy##yxx#  #6J#   LWWWWWWJ    6WWWWWWJ  #x",
+          "~Ms..xC  #it#::#it#   iXXXXXXtC  #x:::::##:::::x#  #it#  #xn:##:mx#  #it#   iXXXXXXt    i1XggX1t  #x",
+          "~M...xC  #it#::#it#  #i5XXXX5t#  #x:::::##:::::x#  #it#  #x::##::x#  Pit#  ZiEXXXXEtC  Pi2XXXX2t# #x",
+          "~M...xC  #lj#::#lj#  Plzazzazj#  #x:m:m:##:m:m:x#  #lj#  #x::##::x#  #lj#  ZlFEaaEFjC  #ljazzalj# #x",
+          "~M.o.y#  ####  ####  #AA####AA#  #y:::::##:::::y#  ####  #y:n##m:y#  ####  #A######A#  ########## #x",
+          "~M#####                          ################        ##########                               #x",
+          "~M#####                          ################        ##########                               #x",
+          "~Mo..y#   bffffffc    TYTOOYTY   #y:::::##::::bffffffffffffc:::::y#   TOOOOYTYTOOYTY    TOOOOOOY  #x",
+          "~M...xC   dkkkkkke    6JLWWJLJ   #x:m:n:##:m::dkkkkkkkkkkkke:n:m:x#   6WWWWJLJLWWJLJ    6*WWWW*J  #x",
+          "~M...xC   iXXXXXTY    TYXXXXXt   #x:::::##::::iXXXggggggXXXt:::::x#   iXXXXXTYXXXXit    iXXXXXXt  #x",
+          "~M.s.xC  ZiXXXXXhHP  #hHXXXXXtP  #x:::::##:::#iX5XggggggX5Xt#::::x#  ZiXXXXXhHXXXXitC  PiXXXXXXtP #x",
+          "~M...xC  ZlzaaazhH#  #hHazzzaj#  #x:m:n:##:n:#laazzzaazzzaaj#::n:x#  ZlBazaahHaaaaljC  #lazaazaj# #x",
+          "~M...y#  #AA####hH#  #hH#######  #y:::::##:::PAAA########AAA#::::y#  #######hH####AA#  AAA####AAA #x",
+          "~Ms..##        #hHC  #hH#        ##################################        #hH#                   #x",
+          "~M...##        ZLJC  #hHC        ###############::::##::::#########        #LJ#                   #x",
+          "~M...y#   TOOOOOOYC  #hHC   TY   #ym::::##:::::m:########:n::::::y#   bc   #TY#   wwwwwwwwwwwwww  #x",
+          "~M.o.xC   6WWWWWWJC  #hH#   LJ   #x:::::##::n::::##yxxy##::::n:::x#   de   #LJ#   wwwwwwwwwwwwww  #x",
+          "~M...xC   i1ggggXtC  #hHC   TY   #x:::::##::n::::##x~~x##::::m:::x#   TY   ZitC   iggggggggggggt  #x",
+          "~M...xC  #i2XXXXXtC  #hHC  #hH#  #x::::m##:::::n:##x~~x##:n::::::x#  #hH#  ZitC  #iXX5XggggX5XXt# #x",
+          "~Mo..xC  #laazzaaj#  #hH#  #hHC  #xxxxxy##yxxxx::##yxxy##::xxxxxxx#  #hH#  #lj#  #lazzaazzaazzaj# #x",
+          "~M...y#  #AA###AA##  #hHC  ZhHC  #############x::########::x#######  #hH#  P###  #########AAAAAA# #x",
+          "~M#####              #hHC  ZhH#              #y::::m##m::::y#         hH                        # #x",
+          "~M#####              #LJ#  #LJ#              ################         6J                  UUUUUU# #x",
+          "~M.s.y#   bcTOOYbcTOOYbcC  TOYbffcTY   ####  ################   TOOOOOOY   TOOOOOYTY    wwwwwwww# #x",
+          "~M...xC   deLWWJdeLWWJdeC  6WJdkkeLJ   #TY#  #y::::n##n::::y#   LWWWWWWJ   6WWWWWJLJ    wwwwwwww# #x",
+          "~M...xC   itggggiXXXXXXt#  iXtXXXXit   #LJ#  #x::::y##y::::x#   igXggXgt  PiXXXXXXTY    igggggww# #x",
+          "~M...xC  ZitggggiXXXXXXtC  iXtXXXXitC  #it#  #x:::::##:::::x#  ZigXggXgt# ZiXXXXXXhH#  ZigggggwwP #x",
+          "~Ms..xC  ZljazzalBazzaajC  lBjazzaljC  #lj#  #xxxxxy##yxxxxx#  ZlRazzaaj# ZlBzaazahH#  Zlaaaaaww# #x",
+          "~M...y#  #AA#########AAA#  P#####AAAC  ####  ################  #AA####AA# AAA#####hH#  #AA##AAww# #x",
+          "~M...##                                                                          #hHC         ww  #x",
+          "~M.o.##                                                                          #hHC         ww  #x",
+          "~M...#TOOOOY    TY    TOOOOOOY    TOOY        TYOOOOOOOOOOTY   ####   bffffffc   #hHC   wwwwwwww  #x",
+          "~Mo..#LW55WJ    LJ    6WWWWWWJ    6WWJ        LJ6WWWWWWWWWLJ   #nn#   dkkkkkke   #LJC   wwwwwwww  #x",
+          "~M...#iXXXXt    TY    iEXXXXEt    iXXt        itggggggggggit   #::C   iXXXXXXt   #it#   wwgggggt  #x",
+          "~Ms..#iXXXXt#  #hH#  ZiEXXXXEtC  xiXXtxxxxx  PitggggggggggitP  #::C  #iXXXXXXt#  ZitP  #wwgggggt# #x",
+          "~M...#lzaazj#  #hH#  ZlFaaaaFjC  xlaajAAAmx  #ljaaazzzzaaalj#  #nn#  #lzazzazj#  Zlj#  #wwaaaaaj# #x",
+          "~M###########  ZhHC  ##########  x ...... x  #AAAA######AAAA#  ####  ##########  ZAA#  #wwC###### #x",
+          "~M#####        ZhHC                .AAAA.                                               wwC       #x",
+          "~M...##        ZLJC                ......                                               wwC       #x",
+          "~M...y#   bffcbffcC   TOOOOOOY   xC.AAAA.Zx         TOOOOOOY    TY    TOOOOOOY   ####   wwwwwwww  #x",
+          "~Ms..xC   dkkedkke#   LWWWWWWJ   xC......Zx  TOY    L5WWWW5J    LJ    6WWWWWWJ   #n:#   wwwwwwww  #x",
+          "~M...xC   iXXXXXXt#   iXXXXXXt   xC.AAAA.Zx  LWJ    iXXXXXXt    TY    iXXXXXXt   #::C   iggggggt  #x",
+          "~M.o.xC  Zi*XXXX*tP  #i3XXXX3tP  xC......Zx PiXtC  #iXXXXXXt#  #hH#  PiXXXXXXtC  P::C  #iggggggt# #x",
+          "~M...xC  Zlzazzazj#  #laaaaaaj#  xmUUUUUUnx ZlBjC  #laazzaaj#  ZhHC  #lFaEEaFjC  #:n#  #laaaaaaj# #x",
+          "~M...x#  #AA####AA#  #AA####AA#  xxxxxxxxxx #####  #AA####AA#  ZhHC  ##########  ####  #AAA##AAA# #x",
+          "~Mo..y#              #        #                                #hHC                               #x",
+          "~M...##              #AA    AA#                                #LJ#                               #x",
+          "~M.s.y#   TOOOOOOY   ####  ####   bffffffc    TYOOOOTYOOOOTY   #TYTOOYTYTOOYTY    wwwwwwww   bfc  #x",
+          "~M...xC   LWWWWWWJ                dkkkkkke    6J4WW46J4WW4LJ   #LJL33JLJ6WWJLJ    wwwwwwww   dke  #x",
+          "~Mo..xC   iXggggXt   ##########   iXXggX1t    itXXXXitXXXXit   #itXXXXitXXXXit    iggggggt   iXt  #x",
+          "~M...xC  ZiXggggXtC  #n::::::n#  #iXXggX2tP  #itXggXitXggXitP  ZitXXXXitXXXXit#  ZiggggggtP ZiXtC #x",
+          "~M.o.xC  ZlBzaazajC  #m::::::n#  #lzzaazzj#  #ljazzaljazzalj#  Zljazzaljazzalj#  Zlaazzaaj# ZlBjC #x",
+          "~M...y#  ##########  P########P  #AA####AA#  ################  #AA####AA####AA#  #AA####AA# ##### #x",
+          "~M.s.##                                                                                           #x",
+          "~M...##############################################################################################x",
+          "~xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        ]
+      }
+    }
+  }
+}
