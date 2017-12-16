@@ -1,0 +1,3151 @@
+{
+  "name":"Gamerush",
+  "author":"KesieV",
+  "year":2017,
+  "genre":"Minigames",
+  "description":"<p><b>This is the story</b></p><p>This is the story of men of all works and tasks, specialists, masters and even professors of everything that understands nothing. The story of men skilled in seven trades but all the trades they know are just dull.</p><p>This is the story of bold do-all men that knows everything and yet, doesn't know and are good at anything. The story of thousand tasks artists of the renaissance with any talent.</p><p>This is the church of praying saints that knows Ten Thousand Things, specialist in wide range but still apprentice of everything.</p><p>This is the story of a tired city on the river of an ocean of knowledge that was just one inch deep.</p><p><b>Jack Harry</b></p><p>In the southern fringe of the city, master Jack was a man of many crafts and a deserted home.</p><p>\"When you have nine trades, then your tenth one is misery and famine!\" used to say his old man, now quietily resting in his grave.</p><p>Jack always wanted to be an every talent lord - and his dad may be surprised on seeing him now, buttoning up his pants after his latest one hour-rent husband job.</p><p>\"Nine trades, huh.\". He was smirking at the bathroom mirror. \"I'm at the seventh... and I'm already without money. I'm even disappointing for daddy John expectations!\"</p><p>A female voice came from the bedroom nearby. \"The money is on the nightstand, honey. And thank you for fixing the sink.\"</p><p>She was a true angel, this time. \"Can you leave now, please? My husband will come home in minutes\".</p><p>Jack's smirk was just another wound on his face. \"Touching everything and being good in nothing is not too bad after all. But still...\".</p><p>Whilst seeking something he wanted, he lost what he already had once in his life. Why trying twice? He was all trades and no authority, after all.</p><p>\"The one who knows two trades is probably a liar.\" whispered. Then he put one of his many hats on and left.</p><p><b>Kate Barbie</b></p><p>Kate was the younger of seven brothers and used to work at the family farm. She became a tailor and a reaper but her true dream was to be an artist and play her beloved flute - and she was a goddess at it. She used to play at the annual celebrations of the town as the \"Orchestra girl\", enchanding kids and adults with her mesmerizing songs.</p><p>Time passed and she decided to leave the family farm to go to the city, with a bright future shining in her eyes. But the city ate her dream in one bite.</p><p>She had nine trades, and the tenth one was just hunger and no wealth. She was incomplete and, now, she is just a heap of rags.</p><p>\"I... I embraced too much... for my weak grasp?\" She thought, mirroring in the golden finished of her flute.</p><p>She was a thousand tasks artist and now she's just a girl for everything. She had ten different skills on her ten fingers and now she's just master in all hands.</p><p><b>We are</b></p><p>We are the sinuous cats with only 3 legs. We're ducks that can walk, fly, and swim but they are good at nothing. We are the 10.000 gold oil, the plane for all purposes, the peg for every barrel.</p><p>We are the <a href='https://en.wikipedia.org/wiki/Jack_of_all_trades,_master_of_none'>expert of everything and the masters of none</a>.</p><p><b>Plot!</b></p><p>Inspired by Nintendo <a href='https://it.wikipedia.org/wiki/WarioWare,_Inc.:_Mega_Party_Game$'>Wario Ware</a> (2003), in this game... you have to do your best at many games! Try to understand how each minigame works as fast as you can and jump, drive or fire to the victory! Use UP/DOWN/LEFT/RIGHT for moving and the A BUTTON/B BUTTON for performing various actions! Good luck!</p>",
+  "screenshots":[ "gamerush-1.png", "gamerush-2.png" ],
+  "hardware":{
+    "width":256,
+    "height":192,
+    "filter":"retro"
+  },
+  "audioChannels":{
+    "music":{ "volume":1, "looping":1, "samples":[ "music" ] },
+    "sfx":{ "volume":1, "samples":[ "beep", "fire", "blam", "explode2", "beep2", "beep3", "bigfire", "open", "shut", "lose", "rampup" ] }
+  },
+  "cheats":{},
+  "resources":{
+    "gui":"gui.png",
+    "logo":"logo.png",
+    "music":"sploogieboogie.ogg",
+    "panels":"panels.png",
+    "spectrum":"spectrum.font",
+    "sprites":"sprites.png",
+    "texture-check":"texture-check.png",
+    "texture-dirt":"texture-dirt.png",
+    "texture-wall":"texture-wall.png",
+    "beep":"../default/zxsounds/beep.ogg",
+    "beep2":"../default/zxsounds/beep2.ogg",
+    "beep3":"../default/zxsounds/beep3.ogg",
+    "bigfire":"../default/zxsounds/bigfire.ogg",
+    "blam":"../default/zxsounds/blam.ogg",
+    "explode2":"../default/zxsounds/explode2.ogg",
+    "fire":"../default/zxsounds/fire.ogg",
+    "lose":"../default/zxsounds/lose.ogg",
+    "open":"../default/zxsounds/open.ogg",
+    "rampup":"../default/zxsounds/rampup.ogg",
+    "shut":"../default/zxsounds/shut.ogg"
+  },
+  "stencils":{
+    "spark":{
+      "type":"game",
+      "image":"sprites", "tileX":64, "width":16, "height":16,
+      "zIndex":10000, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "animations":{ "spark":{ "frames":4, "speed":0 } },
+      "animation":"spark",
+      "states":{ "code":{ "name":"Sequence", "data":[ { "wait":4 }, { "remove":1 } ] } }
+    },
+    "removeWithSmoke":[ { "object":{ "_":[ "stencil", "smoke" ] } }, { "remove":1 } ],
+    "removeWithSpark":[ { "object":{ "_":[ "stencil", "spark" ] } }, { "remove":1 } ],
+    "modelBonus":{
+      "type":[ "game", "pickable", "bonus" ],
+      "image":"sprites", "tileY":32, "width":16, "height":16,
+      "zIndex":10,
+      "states":{
+        "name":"play",
+        "set":{ "animation":"move" },
+        "actions":{ "name":"pick", "execute":{ "execute":{ "_":[ "stencil", "removeWithSpark" ] }, "playAudio":"beep" } }
+      }
+    },
+    "modelBullet":{
+      "type":"game",
+      "image":"sprites", "width":8, "height":8,
+      "zIndex":11,
+      "bulletSpeed":5,
+      "hits":"enemy",
+      "sender":{ "_":"that" },
+      "state":"play",
+      "states":{
+        "name":"play",
+        "execute":{
+          "set":{
+            "x":{ "_":[ "this", "xCenteredWith", { "_":[ "this", "sender" ] } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":[ "this", "sender" ] } ] },
+            "angle":{ "_":[ "this", "sender", "aimAngle" ] }
+          },
+          "applyVector":{ "angle":{ "_":[ "this", "sender", "aimAngle" ] }, "length":{ "_":[ "this", "bulletSpeed" ] } }
+        },
+        "code":[
+          {
+            "name":"Execute",
+            "data":{
+              "when":{ "_":[ "this", "collidesWith", { "_":[ "object", { "_":[ "this", "hits" ] } ] } ] },
+              "execute":[ { "as":{ "_":"that" }, "executeAction":"hit" }, { "_":[ "stencil", "removeWithSmoke" ] } ]
+            }
+          },
+          {
+            "name":"Physics",
+            "data":{
+              "walls":[
+                {
+                  "type":"wall",
+                  "execute":[ { "when":{ "_":[ "that", "isBreakable" ] }, "as":{ "_":"that" }, "executeAction":"hit" }, { "_":[ "stencil", "removeWithSmoke" ] } ]
+                },
+                { "area":{ "width":240, "height":176, "x":0, "y":0 }, "execute":{ "_":[ "stencil", "removeWithSmoke" ] } }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "modelEnemyAimPlayer":{
+      "aimSpeed":5,
+      "states":{
+        "name":"play",
+        "code":{
+          "name":"Execute",
+          "data":[
+            { "set":{ "angto":{ "_":[ "this", "angleTo", { "_":[ "objectTyped", "player" ] } ] } } },
+            { "set":{ "anggap":{ "_":[ "this", "aimAngle", "shortestAngleTo", { "_":[ "this", "angto" ] } ] } } },
+            {
+              "when":{ "_":[ "this", "anggap", "abs", "isLessThan", { "_":[ "this", "aimSpeed" ] } ] },
+              "set":{ "aimAngle":{ "_":[ "this", "angto" ] } },
+              "elseExecute":{
+                "when":{ "_":[ "this", "anggap", "isGreaterThan", 0 ] },
+                "sum":{ "_":[ "this", "aimSpeed" ] },
+                "to":{ "_":[ "this", "aimAngle" ] },
+                "elseExecute":{ "subtract":{ "_":[ "this", "aimSpeed" ] }, "to":{ "_":[ "this", "aimAngle" ] } }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "modelEnemyFirebullet":{
+      "bulletSpeed":5,
+      "bulletTimer":0,
+      "bulletType":"enemyBullet",
+      "fireFrequency":50,
+      "states":{
+        "name":"play",
+        "code":{
+          "name":"Execute",
+          "data":{
+            "when":{ "_":[ "this", "bulletTimer" ] },
+            "subtract":1,
+            "to":{ "_":[ "this", "bulletTimer" ] },
+            "elseExecute":[
+              { "object":{ "set":{ "_":[ "stencil", { "_":[ "that", "bulletType" ] } ] }, "bulletSpeed":{ "_":[ "that", "bulletSpeed" ] } }, "playAudio":"blam" },
+              { "set":{ "bulletTimer":{ "_":[ "this", "fireFrequency" ] } } }
+            ]
+          }
+        }
+      }
+    },
+    "modelEnemyObstacle":{
+      "type":"enemy",
+      "set":[ { "_":[ "stencil", "modelGameElement" ] }, { "_":[ "stencil", "modelHitPlayer" ] } ],
+      "image":"sprites", "tileX":96, "tileY":48, "width":16, "height":16,
+      "zIndex":10,
+      "hitbox":{ "width":12, "height":12, "x":2, "y":2 }
+    },
+    "modelEnemyCone":{
+      "set":{ "_":[ "stencil", "modelEnemyObstacle" ] },
+      "states":{
+        "name":"play",
+        "code":{
+          "name":"Execute",
+          "data":{
+            "when":{ "_":[ "this", "y", "isGreaterThan", -16 ] },
+            "subtract":{ "_":[ "this", "movingSpeed" ] },
+            "to":{ "_":[ "this", "y" ] },
+            "elseExecute":{ "remove":1 }
+          }
+        }
+      }
+    },
+    "modelFakeLeftScrolling":{
+      "width":248,
+      "states":{
+        "name":"play",
+        "code":{
+          "name":"Execute",
+          "data":[
+            { "subtract":1, "to":{ "_":[ "this", "x" ] } },
+            { "when":{ "_":[ "this", "x", "isLessThan", -8 ] }, "set":{ "x":{ "_":[ "this", "x", "+", 8 ] } } }
+          ]
+        }
+      }
+    },
+    "modelEnemyBall":{
+      "type":"enemy",
+      "set":{ "_":[ "stencil", "modelGameElement" ] },
+      "image":"sprites", "tileX":128, "tileY":48, "width":16, "height":16,
+      "zIndex":10,
+      "movingSpeed":5,
+      "states":{
+        "name":"play",
+        "execute":{ "applyVector":{ "angle":{ "_":[ "this", "angleTo", { "_":[ "objectTyped", "player" ] } ] }, "length":{ "_":[ "this", "movingSpeed" ] } } },
+        "code":{ "name":"Physics" }
+      }
+    },
+    "modelEnemyBouncing":{
+      "type":"enemy",
+      "set":{ "_":[ "stencil", "modelGameElement" ] },
+      "image":"sprites", "tileX":128, "tileY":48, "width":16, "height":16,
+      "zIndex":10,
+      "hitbox":{ "width":12, "height":12, "x":2, "y":2 },
+      "states":{
+        "name":"play",
+        "code":{
+          "name":"Physics",
+          "data":{ "walls":[ { "type":"wall", "restitution":1 }, { "area":{ "width":240, "height":176, "x":0, "y":0 }, "restitution":1 } ] }
+        }
+      }
+    },
+    "modelGameElement":{
+      "type":"game",
+      "aimAngle":0,
+      "health":1,
+      "invulnerability":0,
+      "moving":0,
+      "states":{
+        "name":"play",
+        "code":{
+          "name":"Execute",
+          "data":{
+            "when":{ "_":[ "this", "invulnerability" ] },
+            "execute":[ { "subtract":1, "to":{ "_":[ "this", "invulnerability" ] } }, { "set":{ "visible":{ "_":[ "this", "visible", "not" ] } } } ],
+            "elseExecute":{ "set":{ "visible":1 } }
+          }
+        },
+        "actions":{
+          "name":"hit",
+          "execute":{
+            "when":{ "_":[ "this", "invulnerability", "not" ] },
+            "execute":[
+              { "subtract":1, "to":{ "_":[ "this", "health" ] }, "playAudio":"explode2" },
+              { "when":{ "_":[ "this", "health", "isGreaterThan", 0 ] }, "set":{ "invulnerability":10 }, "elseExecute":{ "_":[ "stencil", "removeWithSmoke" ] } }
+            ]
+          }
+        }
+      }
+    },
+    "modelEnemyFloating":{
+      "type":"enemy",
+      "set":{ "_":[ "stencil", "modelGameElement" ] },
+      "image":"sprites", "tileX":112, "tileY":48, "width":16, "height":16,
+      "zIndex":10,
+      "hitbox":{ "width":12, "height":12, "x":2, "y":2 },
+      "angle":180,
+      "forceX":5,
+      "aimAngle":180,
+      "floatSpeed":0.2,
+      "floatsin":0,
+      "states":{
+        "name":"play",
+        "code":[
+          {
+            "name":"Execute",
+            "data":[
+              { "sum":{ "_":[ "this", "floatSpeed" ] }, "to":{ "_":[ "this", "floatsin" ] } },
+              { "set":{ "forceY":{ "_":[ "this", "floatsin", "sin", "*", 5 ] } } }
+            ]
+          },
+          {
+            "name":"Physics",
+            "data":{ "walls":[ { "type":"wall", "restitution":1 }, { "area":{ "width":240, "height":116, "x":0, "y":0 }, "restitution":1 } ] }
+          }
+        ]
+      }
+    },
+    "modelEnemyPhasing":{
+      "type":"enemy",
+      "set":{ "_":[ "stencil", "modelGameElement" ] },
+      "image":"sprites", "tileX":144, "tileY":48, "width":16, "height":16,
+      "zIndex":10,
+      "hitbox":{ "width":12, "height":12, "x":2, "y":2 },
+      "forceX":0, "forceY":0,
+      "doRandomX":0,
+      "doRandomY":0,
+      "moving":1,
+      "randomnessX":0,
+      "randomnessY":0,
+      "states":{
+        "name":"play",
+        "code":[
+          {
+            "name":"Execute",
+            "data":[
+              { "sum":{ "_":[ "this", "forceX", "*", 2 ] }, "to":{ "_":[ "this", "angle" ] } },
+              {
+                "when":{ "_":[ "this", "forceX", "isLessThan", 0 ] },
+                "execute":{ "when":{ "_":[ "this", "x", "isLessThan", -16 ] }, "execute":{ "set":{ "x":{ "_":[ 256, "+", { "_":[ "this", "x" ] } ] }, "doRandomY":1 } } }
+              },
+              {
+                "when":{ "_":[ "this", "forceY", "isLessThan", 0 ] },
+                "execute":{ "when":{ "_":[ "this", "y", "isLessThan", -16 ] }, "execute":{ "set":{ "y":{ "_":[ 192, "+", { "_":[ "this", "y" ] } ] }, "doRandomX":1 } } }
+              },
+              {
+                "when":{ "_":[ "this", "forceY", "isGreaterThan", 0 ] },
+                "execute":{ "when":{ "_":[ "this", "y", "isGreaterThan", 176 ] }, "execute":{ "set":{ "y":{ "_":[ "this", "y", "-", 192 ] }, "doRandomX":1 } } }
+              },
+              {
+                "when":{ "_":[ "this", "forceX", "isGreaterThan", 0 ] },
+                "execute":{ "when":{ "_":[ "this", "x", "isGreaterThan", 240 ] }, "execute":{ "set":{ "x":{ "_":[ "this", "x", "-", 256 ] }, "doRandomY":1 } } }
+              },
+              {
+                "when":{ "_":[ "this", "doRandomY" ] },
+                "execute":[
+                  { "set":{ "doRandomY":0 } },
+                  { "when":{ "_":[ "this", "randomnessY" ] }, "set":{ "y":{ "_":[ "randomValue", { "_":[ "this", "randomnessY" ] } ] } } }
+                ]
+              },
+              {
+                "when":{ "_":[ "this", "doRandomX" ] },
+                "execute":[
+                  { "set":{ "doRandomX":0 } },
+                  { "when":{ "_":[ "this", "randomnessX" ] }, "set":{ "x":{ "_":[ "randomValue", { "_":[ "this", "randomnessX" ] } ] } } }
+                ]
+              }
+            ]
+          },
+          { "name":"Physics", "data":{ "walls":{ "type":"wall", "restitution":1 } } }
+        ]
+      }
+    },
+    "modelEnemyPlatformer":{
+      "type":"enemy",
+      "set":{ "_":[ "stencil", "modelGameElement" ] },
+      "image":"sprites", "tileX":32, "tileY":48, "width":16, "height":16,
+      "hitbox":{ "width":12, "height":14, "x":2, "y":2 },
+      "animations":{ "fall":{ "frame":0 }, "jump":{ "frame":0 }, "still":{ "frame":3 }, "walk":{ "frames":4, "loopTo":0 } },
+      "animation":"still",
+      "aimAngle":90,
+      "states":{
+        "name":"play",
+        "code":[
+          {
+            "name":"Execute",
+            "data":[
+              { "when":{ "_":[ "this", "flipX" ] }, "set":{ "aimAngle":270 }, "elseExecute":{ "set":{ "aimAngle":90 } } },
+              { "set":{ "moving":{ "_":[ "this", "forceX", "and", { "_":[ "this", "touchDown" ] } ] } } }
+            ]
+          },
+          {
+            "name":"Physics",
+            "data":{
+              "walls":[
+                { "type":"wallonlytop", "restitutionY":0, "restitutionC":1 },
+                { "type":"wall", "restitutionX":1, "restitutionY":0 },
+                { "area":{ "width":240, "height":176, "x":0, "y":0 }, "restitutionX":1, "restitutionY":0 }
+              ],
+              "gravityX":0,
+              "gravityY":1,
+              "limitX":[ -5, 5 ],
+              "limitY":[ -9, 5 ]
+            }
+          },
+          { "_":[ "stencil", "platformerAnimation" ] }
+        ]
+      }
+    },
+    "modelEnemyTopdown":{
+      "type":"enemy",
+      "set":{ "_":[ "stencil", "modelGameElement" ] },
+      "image":"sprites", "tileY":48, "width":16, "height":16,
+      "zIndex":10,
+      "hitbox":{ "width":12, "height":12, "x":2, "y":2 },
+      "animations":{ "moving":{ "frames":2, "speed":2, "loopTo":0 }, "still":{ "frame":0 } },
+      "aimAngle":0,
+      "states":{
+        "name":"play",
+        "code":[
+          {
+            "name":"Execute",
+            "data":[
+              {
+                "when":{ "_":[ "this", "forceX", "or", { "_":[ "this", "forceY" ] } ] },
+                "set":{ "animation":"moving" },
+                "elseExecute":{ "set":{ "animation":"still" } }
+              },
+              { "set":{ "angle":{ "_":[ "this", "aimAngle" ] } } }
+            ]
+          },
+          {
+            "name":"Physics",
+            "data":{ "walls":[ { "type":"wall", "restitution":0 }, { "area":{ "width":240, "height":176, "x":0, "y":0 }, "restitution":0 } ] }
+          }
+        ]
+      }
+    },
+    "modelEnemyTopdownRoam":{
+      "type":"enemy",
+      "set":{ "_":[ "stencil", "modelGameElement" ] },
+      "image":"sprites", "tileX":160, "tileY":48, "width":16, "height":16,
+      "zIndex":10,
+      "hitbox":{ "width":12, "height":12, "x":2, "y":2 },
+      "animations":{ "moving":{ "frames":2, "speed":2, "loopTo":0 } },
+      "aimAngle":0,
+      "followside":{ "_":[ "randomValue", [ 0, 1 ] ] },
+      "movingSpeed":2,
+      "states":{
+        "name":"play",
+        "set":{ "animation":"moving" },
+        "code":[
+          {
+            "name":"Sequence",
+            "data":[
+              { "set":{ "followside":{ "_":[ "this", "followside", "not" ] } } },
+              {
+                "when":{ "_":[ "this", "followside" ] },
+                "execute":{
+                  "when":{ "_":[ "this", "x", "isLessThan", { "_":[ "objectTyped", "player", "x" ] } ] },
+                  "set":{ "forceX":{ "_":[ "this", "movingSpeed" ] }, "forceY":0 },
+                  "elseExecute":{ "set":{ "forceX":{ "_":[ "this", "movingSpeed", "*", -1 ] }, "forceY":0 } }
+                },
+                "elseExecute":{
+                  "when":{ "_":[ "this", "y", "isLessThan", { "_":[ "objectTyped", "player", "y" ] } ] },
+                  "set":{ "forceX":0, "forceY":{ "_":[ "this", "movingSpeed" ] } },
+                  "elseExecute":{ "set":{ "forceX":0, "forceY":{ "_":[ "this", "movingSpeed", "*", -1 ] } } }
+                }
+              },
+              { "wait":10, "loopTo":0 }
+            ]
+          },
+          {
+            "name":"Physics",
+            "data":{ "walls":[ { "type":"wall", "restitution":1 }, { "area":{ "width":240, "height":176, "x":0, "y":0 }, "restitution":1 } ] }
+          }
+        ]
+      }
+    },
+    "modelPlayerBouncer":{
+      "set":{ "_":[ "stencil", "modelPlayer" ] },
+      "tileX":192,
+      "hitbox":{ "width":12, "height":14, "x":2, "y":2 },
+      "animation":"still",
+      "aimAngle":90,
+      "bounceY":-5,
+      "states":{
+        "name":"play",
+        "code":[
+          {
+            "name":"Execute",
+            "data":[ { "sum":{ "_":[ "this", "forceX", "*", 2 ] }, "to":{ "_":[ "this", "angle" ] } }, { "set":{ "moving":{ "_":[ "this", "touchDown" ] } } } ]
+          },
+          { "name":"Player", "data":{ "horizontal":{ "control":1, "gotoZero":1 } } },
+          {
+            "name":"Physics",
+            "data":{
+              "walls":[
+                {
+                  "type":"wall",
+                  "restitution":1,
+                  "execute":{ "when":{ "_":[ "this", "touchDown" ] }, "set":{ "forceY":{ "_":[ "this", "bounceY" ] } }, "playAudio":"fire" }
+                },
+                {
+                  "area":{ "width":240, "height":176, "x":0, "y":0 },
+                  "restitution":1,
+                  "execute":{ "when":{ "_":[ "this", "touchDown" ] }, "set":{ "forceY":{ "_":[ "this", "bounceY" ] } } }
+                }
+              ],
+              "gravityX":0,
+              "gravityY":1,
+              "limitX":[ -5, 5 ],
+              "limitY":[ -16, 16 ]
+            }
+          }
+        ]
+      }
+    },
+    "modelPlayer":{
+      "type":"player",
+      "set":{ "_":[ "stencil", "modelGameElement" ] },
+      "image":"sprites", "tileY":16, "width":16, "height":16,
+      "zIndex":10,
+      "bulletSpeed":10,
+      "states":{
+        "name":"play",
+        "code":{
+          "name":"Execute",
+          "data":{ "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "pickable" ] } ] }, "as":{ "_":"that" }, "executeAction":"pick" }
+        }
+      }
+    },
+    "modelPlayerCar":{
+      "set":{ "_":[ "stencil", "modelPlayer" ] },
+      "tileX":128,
+      "x":112, "y":80,
+      "animations":{ "moving":{ "frames":2, "speed":2, "loopTo":0 }, "still":{ "frame":0 } },
+      "acceleration":0.3,
+      "currentSpeed":0,
+      "deceleration":-0.2,
+      "movingSpeed":5,
+      "steeringSpeed":10,
+      "states":{
+        "name":"play",
+        "code":[
+          {
+            "name":"Execute",
+            "data":[
+              { "set":{ "forceX":0, "forceY":0, "moving":0 } },
+              {
+                "when":{ "_":[ "keyUp", "isDown" ] },
+                "set":{ "currentSpeed":{ "_":[ "this", "currentSpeed", "+", { "_":[ "this", "acceleration" ] }, "limitValue", [ 0, { "_":[ "this", "movingSpeed" ] } ] ] } },
+                "elseExecute":{
+                  "set":{ "currentSpeed":{ "_":[ "this", "currentSpeed", "+", { "_":[ "this", "deceleration" ] }, "limitValue", [ 0, { "_":[ "this", "movingSpeed" ] } ] ] } }
+                }
+              },
+              { "when":{ "_":[ "keyRight", "isDown" ] }, "sum":{ "_":[ "this", "steeringSpeed" ] }, "to":{ "_":[ "this", "angle" ] } },
+              { "when":{ "_":[ "keyLeft", "isDown" ] }, "subtract":{ "_":[ "this", "steeringSpeed" ] }, "to":{ "_":[ "this", "angle" ] } },
+              { "applyVector":{ "angle":{ "_":[ "this", "angle" ] }, "length":{ "_":[ "this", "currentSpeed" ] } } },
+              { "when":{ "_":[ "this", "currentSpeed" ] }, "set":{ "animation":"moving", "moving":1 }, "elseExecute":{ "set":{ "animation":"still", "moving":0 } } }
+            ]
+          },
+          {
+            "name":"Physics",
+            "data":{ "walls":[ { "type":"wall", "restitution":0 }, { "area":{ "width":240, "height":176, "x":0, "y":0 }, "restitution":0 } ] }
+          }
+        ]
+      }
+    },
+    "modelPlayerPlatformer":{
+      "set":{ "_":[ "stencil", "modelPlayer" ] },
+      "hitbox":{ "width":12, "height":14, "x":2, "y":2 },
+      "animations":{ "fall":{ "frame":5 }, "jump":{ "frame":4 }, "still":{ "frames":4, "loopTo":0 }, "walk":"still" },
+      "animation":"still",
+      "aimAngle":90,
+      "states":{
+        "name":"play",
+        "code":[
+          {
+            "name":"Execute",
+            "data":[
+              { "when":{ "_":[ "this", "flipX" ] }, "set":{ "aimAngle":270 }, "elseExecute":{ "set":{ "aimAngle":90 } } },
+              { "set":{ "moving":{ "_":[ "this", "forceX", "and", { "_":[ "this", "touchDown" ] } ] } } }
+            ]
+          },
+          { "name":"Player", "data":{ "horizontal":{ "control":1, "gotoZero":1 }, "jump":{ "forceY":-9, "playAudio":"fire" } } },
+          {
+            "name":"Physics",
+            "data":{
+              "walls":[
+                { "type":"wallonlytop", "restitution":0, "only":{ "top":1 } },
+                { "type":"wall", "restitution":0 },
+                { "area":{ "width":240, "height":176, "x":0, "y":0 }, "restitution":0 }
+              ],
+              "gravityX":0,
+              "gravityY":1,
+              "limitX":[ -5, 5 ],
+              "limitY":[ -9, 5 ]
+            }
+          },
+          { "_":[ "stencil", "platformerAnimation" ] }
+        ]
+      }
+    },
+    "modelPlayerRacing":{
+      "set":{ "_":[ "stencil", "modelPlayer" ] },
+      "tileX":128,
+      "x":112, "y":56,
+      "angle":180,
+      "animations":{ "moving":{ "frames":2, "speed":2, "loopTo":0 } },
+      "states":{
+        "name":"play",
+        "set":{ "animation":"moviing" },
+        "code":[
+          { "name":"Execute", "data":{ "set":{ "angle":{ "_":[ 180, "-", { "_":[ "this", "forceX", "*", 3 ] } ] } } } },
+          {
+            "name":"Sequence",
+            "data":{
+              "object":{ "set":{ "_":[ "stencil", "smoke" ] }, "x":{ "_":[ "this", "x" ] }, "y":{ "_":[ "this", "y", "-", 14 ] } },
+              "playAudio":"fire",
+              "wait":5, "loop":1
+            }
+          },
+          { "name":"Player", "data":{ "horizontal":{ "control":1, "gotoZero":1 } } },
+          {
+            "name":"Physics",
+            "data":{ "walls":[ { "type":"wall", "restitution":0 }, { "area":{ "width":240, "height":176, "x":0, "y":0 }, "restitution":0 } ] }
+          }
+        ]
+      }
+    },
+    "modelPlayerSpaceship":{
+      "set":{ "_":[ "stencil", "modelPlayer" ] },
+      "tileX":160,
+      "x":112, "y":132,
+      "states":{
+        "name":"play",
+        "code":[
+          { "name":"Player", "data":{ "horizontal":{ "control":1, "gotoZero":1 }, "vertical":{ "control":1, "gotoZero":1 } } },
+          {
+            "name":"Physics",
+            "data":{
+              "walls":[ { "type":"wall", "restitution":0 }, { "area":{ "width":240, "height":60, "x":0, "y":116 }, "restitution":0 } ],
+              "limitX":[ -6, 6 ],
+              "limitY":[ -6, 6 ]
+            }
+          }
+        ]
+      }
+    },
+    "modelPlayerTopdown":{
+      "set":{ "_":[ "stencil", "modelPlayer" ] },
+      "tileX":96,
+      "x":112, "y":80,
+      "animations":{ "moving":{ "frames":2, "speed":2, "loopTo":0 }, "still":{ "frame":0 } },
+      "movingSpeed":3,
+      "states":{
+        "name":"play",
+        "code":[
+          {
+            "name":"Execute",
+            "data":[
+              { "set":{ "forceX":0, "forceY":0, "moving":0 } },
+              { "when":{ "_":[ "keyUp", "isDown" ] }, "set":{ "angle":0, "forceX":0, "forceY":{ "_":[ "this", "movingSpeed", "*", -1 ] }, "moving":1 } },
+              { "when":{ "_":[ "keyDown", "isDown" ] }, "set":{ "angle":180, "forceX":0, "forceY":{ "_":[ "this", "movingSpeed" ] }, "moving":1 } },
+              {
+                "when":{ "_":[ "keyLeft", "isDown" ] },
+                "execute":[
+                  { "set":{ "forceX":{ "_":[ "this", "movingSpeed", "*", -1 ] }, "moving":1 } },
+                  {
+                    "when":{ "_":[ "this", "forceY", "isLessThan", 0 ] },
+                    "set":{ "angle":315 },
+                    "elseExecute":{ "when":{ "_":[ "this", "forceY", "isGreaterThan", 0 ] }, "set":{ "angle":225 }, "elseExecute":{ "set":{ "angle":270 } } }
+                  }
+                ]
+              },
+              {
+                "when":{ "_":[ "keyRight", "isDown" ] },
+                "execute":[
+                  { "set":{ "forceX":{ "_":[ "this", "movingSpeed" ] }, "moving":1 } },
+                  {
+                    "when":{ "_":[ "this", "forceY", "isLessThan", 0 ] },
+                    "set":{ "angle":45 },
+                    "elseExecute":{ "when":{ "_":[ "this", "forceY", "isGreaterThan", 0 ] }, "set":{ "angle":135 }, "elseExecute":{ "set":{ "angle":90 } } }
+                  }
+                ]
+              },
+              { "set":{ "aimAngle":{ "_":[ "this", "angle" ] } } },
+              { "when":{ "_":[ "this", "moving" ] }, "set":{ "animation":"moving" }, "elseExecute":{ "set":{ "animation":"still" } } }
+            ]
+          },
+          {
+            "name":"Physics",
+            "data":{ "walls":[ { "type":"wall", "restitution":0 }, { "area":{ "width":240, "height":176, "x":0, "y":0 }, "restitution":0 } ] }
+          }
+        ]
+      }
+    },
+    "modelHitPlayer":{
+      "states":{
+        "name":"play",
+        "code":{ "name":"Execute", "data":{ "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "player" ] } ] }, "as":{ "_":"that" }, "executeAction":"hit" } }
+      }
+    },
+    "modelMovingTrail":{
+      "moving":0,
+      "trailSprite":"smoke",
+      "trailtimer":0,
+      "states":{
+        "name":"play",
+        "code":{
+          "name":"Execute",
+          "data":{
+            "when":{ "_":[ "this", "moving" ] },
+            "execute":{
+              "when":{ "_":[ "this", "trailtimer" ] },
+              "subtract":1,
+              "to":{ "_":[ "this", "trailtimer" ] },
+              "elseExecute":{ "object":{ "set":{ "_":[ "stencil", { "_":[ "that", "trailSprite" ] } ] }, "zIndex":2 }, "set":{ "trailtimer":5 }, "playAudio":"fire" }
+            }
+          }
+        }
+      }
+    },
+    "modelOnlyTopWall":{ "type":[ "game", "wallonlytop" ], "zIndex":10 },
+    "modelPlayerFirebullet":{
+      "bulletType":"playerBullet",
+      "states":{
+        "name":"play",
+        "code":{
+          "name":"Execute",
+          "data":{
+            "when":{ "_":[ "keyA", "isHit" ] },
+            "object":{ "set":{ "_":[ "stencil", { "_":[ "that", "bulletType" ] } ] }, "bulletSpeed":{ "_":[ "that", "bulletSpeed" ] } },
+            "playAudio":"fire"
+          }
+        }
+      }
+    },
+    "modelPlayerFreeMoving":{
+      "states":{ "name":"play", "code":{ "name":"Player", "data":{ "horizontal":{ "control":1, "gotoZero":1 }, "vertical":{ "control":1, "gotoZero":1 } } } }
+    },
+    "modelPlayerReticle":{
+      "set":[ { "_":[ "stencil", "modelGameElement" ] }, { "_":[ "stencil", "modelSpinning" ] } ],
+      "image":"sprites", "tileX":176, "tileY":16, "width":16, "height":16,
+      "zIndex":50, "x":112, "y":80,
+      "states":{
+        "name":"play",
+        "code":[
+          {
+            "name":"Execute",
+            "data":{
+              "when":{ "_":[ "keyA", "isHit" ] },
+              "execute":[
+                {
+                  "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "enemy" ] }, "all":1, "hitbox":{ "width":8, "height":8, "x":4, "y":4 } } ] },
+                  "as":{ "_":"that" },
+                  "execute":{ "executeAction":"hit" },
+                  "elseExecute":{ "executeAction":"miss" }
+                },
+                { "object":{ "_":[ "stencil", "spark" ] }, "playAudio":"fire" }
+              ]
+            }
+          },
+          {
+            "name":"Physics",
+            "data":{ "walls":{ "area":{ "width":240, "height":176, "x":0, "y":0 }, "restitution":0 }, "limitX":[ -6, 6 ], "limitY":[ -6, 6 ] }
+          }
+        ]
+      }
+    },
+    "modelSpinning":{ "states":{ "name":"play", "code":{ "name":"Execute", "data":{ "sum":10, "to":{ "_":[ "this", "angle" ] } } } } },
+    "modelStar":{
+      "type":"game",
+      "width":1, "height":1,
+      "bgcolor":{ "_":[ "randomValue", [ "#fff", "#7f7f7f" ] ] },
+      "forceX":0, "forceY":0,
+      "states":{
+        "name":"play",
+        "code":{
+          "name":"Execute",
+          "data":[
+            { "when":{ "_":[ "this", "bgcolor", "isEqualTo", "#fff" ] }, "set":{ "bgcolor":"#7f7f7f" }, "elseExecute":{ "set":{ "bgcolor":"#fff" } } },
+            {
+              "set":{ "x":{ "_":[ "this", "x", "+", { "_":[ "this", "forceX" ] }, "%", 240 ] }, "y":{ "_":[ "this", "y", "+", { "_":[ "this", "forceY" ] }, "%", 176 ] } }
+            },
+            { "when":{ "_":[ "this", "x", "isLessThan", 0 ] }, "set":{ "x":{ "_":[ 240, "+", { "_":[ "this", "x" ] } ] } } }
+          ]
+        }
+      }
+    },
+    "modelWall":{ "type":[ "game", "wall" ], "zIndex":10 },
+    "stageModel":{
+      "set":{ "combo":0, "difficulty":1, "gameId":1000, "hudSpeed":25, "lives":3, "stage":0, "state":"newgame" },
+      "execute":{
+        "object":[
+          { "type":"gui-border", "width":256, "height":8, "zIndex":200, "x":0, "y":0 },
+          { "type":"gui-border", "width":256, "height":8, "zIndex":200, "x":0, "y":184 },
+          { "type":"gui-border", "width":8, "height":176, "zIndex":200, "x":0, "y":8 },
+          { "type":"gui-border", "width":8, "height":176, "zIndex":200, "x":248, "y":8 },
+          { "width":250, "height":186, "zIndex":201, "x":3, "y":3, "border":"#000" },
+          {
+            "type":"hud",
+            "hudType":"label", "label":"%number|scene.playFrames./.25.floor%",
+            "width":40, "height":40,
+            "zIndex":220, "x":8, "y":152,
+            "color":"#fff",
+            "font":"spectrum", "fontSize":40, "lineHeight":40, "outline":"#000", "textAlign":"center"
+          },
+          {
+            "width":0, "height":4,
+            "zIndex":210, "x":46, "y":176,
+            "bgcolor":"#fff", "border":"#000",
+            "states":{ "code":{ "name":"Execute", "data":{ "set":{ "width":{ "_":[ "scene", "playFrames", "/", 125, "*", 194 ] } } } } }
+          },
+          {
+            "type":"gui-bomb",
+            "image":"gui", "width":34, "height":32,
+            "zIndex":215, "x":13, "y":155,
+            "animations":{ "explode":{ "frames":[ 3, 4 ], "speed":0, "loopTo":0 }, "progress":{ "frames":[ 0, 1, 0, 2 ], "speed":2, "loopTo":0 }, "still":{ "frame":0 } }
+          }
+        ],
+        "into":{ "_":"scenehud" }
+      },
+      "states":{
+        "name":"play",
+        "set":{ "timing":1 },
+        "execute":[ { "as":{ "_":[ "object", "game" ] }, "set":{ "state":"play" } }, { "as":{ "_":[ "objectTyped", "gui-bomb" ] }, "set":{ "animation":"progress" } } ],
+        "code":{
+          "name":"Execute",
+          "data":{
+            "when":{ "_":[ "this", "timing" ] },
+            "execute":{
+              "when":{ "_":[ "this", "playFrames" ] },
+              "execute":[ { "subtract":1, "to":{ "_":[ "this", "playFrames" ] } }, { "_":[ "scene", "game", "condition" ] } ],
+              "elseExecute":{ "executeAction":{ "_":[ "scene", "game", "onTimeout" ] } }
+            },
+            "elseExecute":{ "_":[ "scene", "game", "condition" ] }
+          }
+        },
+        "actions":[
+          { "name":"freeze", "execute":{ "as":{ "_":[ "object", "game" ] }, "set":{ "animation":"gamefrozen", "state":"gamefrozen" } } },
+          {
+            "name":"win",
+            "execute":[ { "as":{ "_":[ "objectTyped", "gui-bomb" ] }, "set":{ "animation":"still" } }, { "set":{ "state":"win" }, "executeAction":"freeze" } ]
+          },
+          {
+            "name":"lose",
+            "execute":[
+              { "set":{ "playFrames":0 } },
+              { "as":{ "_":[ "objectTyped", "gui-bomb" ] }, "set":{ "animation":"explode" } },
+              { "executeAction":"freeze" },
+              { "when":{ "_":[ "scene", "lives" ] }, "set":{ "state":"lose" }, "elseExecute":{ "set":{ "state":"gameover" } } }
+            ]
+          },
+          { "name":"stopTimer", "execute":{ "set":{ "timing":0 } } }
+        ]
+      }
+    },
+    "playerBullet":{ "type":"playerbullet", "set":{ "_":[ "stencil", "modelBullet" ] }, "tileX":128, "tileY":8, "hits":"enemy" },
+    "enemyBullet":{
+      "set":[ { "_":[ "stencil", "modelBullet" ] }, { "_":[ "stencil", "modelSpinning" ] } ],
+      "tileX":128,
+      "animations":{ "idle":{ "frames":2, "speed":1, "loopTo":0 } },
+      "animation":"idle",
+      "hits":"player"
+    },
+    "backgroundStarScrollLeft":{
+      "times":30,
+      "object":{
+        "set":{ "_":[ "stencil", "modelStar" ] },
+        "x":{ "_":[ "randomNumber", [ 0, 240 ] ] }, "y":{ "_":[ "randomNumber", [ 0, 176 ] ] },
+        "forceX":{ "_":[ "randomNumber", [ -5, -1 ] ] }
+      }
+    },
+    "backgroundStarfield":{
+      "times":30,
+      "object":{
+        "set":{ "_":[ "stencil", "modelStar" ] },
+        "x":{ "_":[ "randomNumber", [ 0, 240 ] ] }, "y":{ "_":[ "randomNumber", [ 0, 176 ] ] },
+        "forceY":{ "_":[ "randomNumber", [ 1, 5 ] ] }
+      }
+    },
+    "backgroundStarred":{
+      "times":30,
+      "object":{ "set":{ "_":[ "stencil", "modelStar" ] }, "x":{ "_":[ "randomNumber", [ 0, 240 ] ] }, "y":{ "_":[ "randomNumber", [ 0, 176 ] ] } }
+    },
+    "dataColors":[ "#f00", "#0f0", "#00f", "#ff0", "#0ff", "#f0f" ],
+    "dataGames":[
+      0,
+      {
+        "name":"WEIGHT!",
+        "condition":{
+          "when":{ "_":[ "keyLeft", "isHit" ] },
+          "execute":{
+            "when":{ "_":[ "scene", "pileWin", "isEqualTo", "column-1" ] },
+            "executeAction":"win",
+            "elseExecute":{ "executeAction":"lose", "playAudio":"explode2" },
+            "playAudio":"beep"
+          },
+          "elseExecute":{
+            "when":{ "_":[ "keyRight", "isHit" ] },
+            "execute":{
+              "when":{ "_":[ "scene", "pileWin", "isEqualTo", "column-2" ] },
+              "executeAction":"win",
+              "elseExecute":{ "executeAction":"lose", "playAudio":"explode2" },
+              "playAudio":"beep"
+            }
+          }
+        },
+        "onTimeout":"lose",
+        "prepare":[
+          {
+            "object":[
+              { "type":"game", "image":"texture-wall", "width":240, "height":32, "y":144, "bgcolor":"#f00" },
+              {
+                "type":"game",
+                "width":240, "height":20,
+                "x":0, "y":16,
+                "color":"#fff",
+                "font":"spectrum", "fontSize":20, "lineHeight":20, "outline":"#000", "textAlign":"center", "html":"WHAT WEIGHS MORE?"
+              }
+            ]
+          },
+          { "set":{ "counter":0 } },
+          {
+            "times":10,
+            "execute":[
+              {
+                "object":{
+                  "type":[ "game", "column-1" ],
+                  "image":"texture-dirt", "width":32, "height":8,
+                  "x":48, "y":{ "_":[ "that", "counter", "*", 8, "+", 64 ] },
+                  "bgcolor":"#ff0", "border":"#000"
+                }
+              },
+              {
+                "object":{
+                  "type":[ "game", "column-2" ],
+                  "image":"texture-dirt", "width":32, "height":8,
+                  "x":160, "y":{ "_":[ "that", "counter", "*", 8, "+", 64 ] },
+                  "bgcolor":"#ff0", "border":"#000"
+                }
+              },
+              { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+            ]
+          },
+          {
+            "times":{ "_":[ "scene", "difficulty", "*", 5 ] },
+            "execute":[
+              {
+                "as":{ "_":[ "randomObject", { "_":[ "object", "column-1" ] } ] },
+                "execute":[
+                  { "sum":16, "to":{ "_":[ "this", "width" ] } },
+                  { "subtract":8, "to":{ "_":[ "this", "x" ] } },
+                  { "when":{ "_":[ "this", "width", "isGreaterThan", 75 ] }, "set":{ "removeType":"column-1" } }
+                ]
+              },
+              {
+                "as":{ "_":[ "randomObject", { "_":[ "object", "column-2" ] } ] },
+                "execute":[
+                  { "sum":16, "to":{ "_":[ "this", "width" ] } },
+                  { "subtract":8, "to":{ "_":[ "this", "x" ] } },
+                  { "when":{ "_":[ "this", "width", "isGreaterThan", 75 ] }, "set":{ "removeType":"column-2" } }
+                ]
+              }
+            ]
+          },
+          {
+            "as":{ "_":[ "randomValue", [ "column-1", "column-2" ] ] },
+            "execute":[
+              { "as":{ "_":"scene" }, "set":{ "pileWin":{ "_":"that" } } },
+              {
+                "times":2,
+                "execute":{
+                  "as":{ "_":[ "randomObject", { "_":[ "object", { "_":"this" } ] } ] },
+                  "execute":[
+                    { "sum":16, "to":{ "_":[ "this", "width" ] } },
+                    { "subtract":8, "to":{ "_":[ "this", "x" ] } },
+                    { "when":{ "_":[ "this", "width", "isGreaterThan", 75 ] }, "set":{ "removeType":{ "_":"that" } } }
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name":"RACE!",
+        "condition":{ "when":{ "_":[ "objectTyped", "player", "not" ] }, "executeAction":"lose" },
+        "onTimeout":"win",
+        "prepare":[
+          { "set":{ "gameSpeed":5 } },
+          {
+            "object":[
+              { "_":[ "stencil", "modelPlayerRacing" ] },
+              {
+                "type":"game",
+                "execute":{
+                  "times":7,
+                  "execute":[
+                    {
+                      "object":[
+                        {
+                          "set":{ "_":[ "stencil", "modelEnemyCone" ] },
+                          "x":{ "_":[ "that", "xpos" ] }, "y":{ "_":[ "that", "counter" ] },
+                          "movingSpeed":{ "_":[ "scene", "gameSpeed" ] }
+                        },
+                        {
+                          "set":{ "_":[ "stencil", "modelEnemyCone" ] },
+                          "x":{ "_":[ "that", "xpos", "+", { "_":[ "that", "roadSize" ] } ] }, "y":{ "_":[ "that", "counter" ] },
+                          "movingSpeed":{ "_":[ "scene", "gameSpeed" ] }
+                        }
+                      ]
+                    },
+                    { "sum":{ "_":[ "scene", "gameSpeed", "*", 5 ] }, "to":{ "_":[ "this", "counter" ] } }
+                  ]
+                },
+                "counter":8,
+                "roadSize":128,
+                "timer":0,
+                "xpos":48,
+                "states":{
+                  "name":"play",
+                  "code":{
+                    "name":"Sequence",
+                    "data":[
+                      { "subtract":{ "_":[ "scene", "difficulty" ] }, "to":{ "_":[ "this", "roadSize" ] } },
+                      { "sum":{ "_":[ "randomNumber", [ 1, { "_":[ "scene", "difficulty" ] } ], "*", 0.2 ] }, "to":{ "_":[ "this", "timer" ] } },
+                      { "set":{ "xpos":{ "_":[ "this", "timer", "sin", "*", 48, "+", 48 ] } } },
+                      {
+                        "object":{
+                          "set":{ "_":[ "stencil", "modelEnemyCone" ] },
+                          "x":{ "_":[ "that", "xpos" ] }, "y":176,
+                          "movingSpeed":{ "_":[ "scene", "gameSpeed" ] },
+                          "state":"play"
+                        }
+                      },
+                      {
+                        "object":{
+                          "set":{ "_":[ "stencil", "modelEnemyCone" ] },
+                          "x":{ "_":[ "that", "xpos", "+", { "_":[ "that", "roadSize" ] } ] }, "y":176,
+                          "movingSpeed":{ "_":[ "scene", "gameSpeed" ] },
+                          "state":"play"
+                        }
+                      },
+                      { "wait":5, "loopTo":0 }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name":"SNIPE!",
+        "condition":{},
+        "onTimeout":"win",
+        "prepare":{
+          "object":[
+            { "type":"game", "image":"texture-wall", "width":240, "height":176, "bgcolor":"#7f0000" },
+            {
+              "type":[ "player", "game" ],
+              "set":{ "_":[ "stencil", "modelPlayerReticle" ] },
+              "image":"sprites", "tileX":176, "tileY":16, "width":16, "height":16,
+              "zIndex":50,
+              "states":{ "name":"play", "actions":{ "name":"miss", "execute":{ "as":{ "_":"scene" }, "executeAction":"lose" } } }
+            },
+            {
+              "type":"game",
+              "states":{
+                "name":"play",
+                "code":{
+                  "name":"Sequence",
+                  "data":[
+                    { "playAudio":"beep" },
+                    {
+                      "decide":{
+                        "options":[
+                          {
+                            "object":{
+                              "set":{ "_":[ "stencil", "modelEnemyBall" ] },
+                              "x":-16, "y":{ "_":[ "randomNumber", [ -16, 192 ] ] },
+                              "movingSpeed":{ "_":[ "scene", "difficulty", "+", 4 ] },
+                              "state":"play",
+                              "states":{
+                                "name":"play",
+                                "code":{ "name":"Execute", "data":{ "when":{ "_":[ "this", "x", "isGreaterThan", 144 ] }, "as":{ "_":"scene" }, "executeAction":"lose" } }
+                              }
+                            }
+                          },
+                          {
+                            "object":{
+                              "set":{ "_":[ "stencil", "modelEnemyBall" ] },
+                              "x":240, "y":{ "_":[ "randomNumber", [ -16, 192 ] ] },
+                              "movingSpeed":{ "_":[ "scene", "difficulty", "+", 4 ] },
+                              "state":"play",
+                              "states":{
+                                "name":"play",
+                                "code":{ "name":"Execute", "data":{ "when":{ "_":[ "this", "x", "isLessThan", 96 ] }, "as":{ "_":"scene" }, "executeAction":"lose" } }
+                              }
+                            }
+                          },
+                          {
+                            "object":{
+                              "set":{ "_":[ "stencil", "modelEnemyBall" ] },
+                              "x":{ "_":[ "randomNumber", [ -16, 240 ] ] }, "y":-16,
+                              "movingSpeed":{ "_":[ "scene", "difficulty", "+", 4 ] },
+                              "state":"play",
+                              "states":{
+                                "name":"play",
+                                "code":{ "name":"Execute", "data":{ "when":{ "_":[ "this", "y", "isGreaterThan", 112 ] }, "as":{ "_":"scene" }, "executeAction":"lose" } }
+                              }
+                            }
+                          },
+                          {
+                            "object":{
+                              "set":{ "_":[ "stencil", "modelEnemyBall" ] },
+                              "x":{ "_":[ "randomNumber", [ -16, 240 ] ] }, "y":176,
+                              "movingSpeed":{ "_":[ "scene", "difficulty", "+", 4 ] },
+                              "state":"play",
+                              "states":{
+                                "name":"play",
+                                "code":{ "name":"Execute", "data":{ "when":{ "_":[ "this", "y", "isLessThan", 64 ] }, "as":{ "_":"scene" }, "executeAction":"lose" } }
+                              }
+                            }
+                          }
+                        ]
+                      }
+                    },
+                    { "wait":10, "loopTo":0 }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "name":"AIM!",
+        "condition":{},
+        "onTimeout":"lose",
+        "prepare":[
+          { "_":[ "stencil", "backgroundStarred" ] },
+          {
+            "object":[
+              { "type":"game", "image":"texture-wall", "width":240, "height":16, "zIndex":10, "x":0, "y":160, "bgcolor":"#f00" },
+              {
+                "type":[ "game", "player" ],
+                "image":"sprites", "tileY":16, "width":16, "height":16,
+                "zIndex":10, "x":16, "y":144,
+                "animations":{ "idle":{ "frames":[ 0, 1, 2, 1 ], "speed":2, "loopTo":0 } },
+                "animation":"idle"
+              },
+              {
+                "type":"game",
+                "width":2, "height":64,
+                "zIndex":5, "x":26, "y":88,
+                "originX":1, "originY":64,
+                "bgcolor":"#fff",
+                "states":{
+                  "name":"play",
+                  "code":[
+                    {
+                      "name":"Sequence",
+                      "data":[
+                        { "playAudio":"beep" },
+                        { "sum":5, "to":{ "_":[ "this", "angle" ] }, "wait":1, "loop":1, "cycles":18 },
+                        { "playAudio":"beep" },
+                        { "subtract":5, "to":{ "_":[ "this", "angle" ] }, "wait":1, "loop":1, "cycles":18 },
+                        { "loopTo":0 }
+                      ]
+                    },
+                    {
+                      "name":"Execute",
+                      "data":{
+                        "when":{ "_":[ "objectTyped", "playerbullet", "not" ] },
+                        "execute":{
+                          "when":{ "_":[ "keyA", "isHit" ] },
+                          "execute":{
+                            "as":{ "_":[ "objectTyped", "player" ] },
+                            "execute":[
+                              { "set":{ "aimAngle":{ "_":[ "that", "angle" ] } }, "playAudio":"fire" },
+                              { "object":[ { "set":{ "_":[ "stencil", "spark" ] }, "x":32, "y":136 }, { "set":{ "_":[ "stencil", "playerBullet" ] }, "bulletSpeed":10 } ] }
+                            ]
+                          }
+                        }
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                "type":"game",
+                "states":{
+                  "name":"play",
+                  "code":{
+                    "name":"Sequence",
+                    "data":[
+                      {
+                        "object":{
+                          "set":[ { "_":[ "stencil", "modelEnemyObstacle" ] }, { "_":[ "stencil", "modelSpinning" ] } ],
+                          "tileX":144, "tileY":48,
+                          "x":{ "_":[ "randomNumber", [ 88, 160 ] ] }, "y":{ "_":[ "randomNumber", [ 0, 80 ] ] },
+                          "state":"play"
+                        }
+                      },
+                      { "wait":1, "loop":1, "until":{ "_":[ "objectTyped", "enemy", "not" ] } },
+                      { "cycles":{ "_":[ "scene", "difficulty" ] }, "loopTo":0 },
+                      { "as":{ "_":"scene" }, "executeAction":"win" }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name":"DESTROY!",
+        "condition":{ "when":{ "_":[ "objectTyped", "player", "not" ] }, "executeAction":"lose" },
+        "onTimeout":"win",
+        "prepare":{
+          "object":[
+            { "type":"game", "image":"texture-dirt", "width":240, "height":176, "x":0, "y":0, "bgcolor":"#007f7f" },
+            { "set":[ { "_":[ "stencil", "modelPlayerTopdown" ] }, { "_":[ "stencil", "modelMovingTrail" ] }, { "_":[ "stencil", "modelPlayerFirebullet" ] } ] },
+            {
+              "type":"game",
+              "width":240,
+              "x":0, "y":0,
+              "states":{
+                "name":"play",
+                "code":{
+                  "name":"Execute",
+                  "data":[
+                    { "set":{ "height":{ "_":[ "objectTyped", "player", "y", "-", 32 ] } } },
+                    { "when":{ "_":[ "this", "height", "isGreaterThan", 16 ] }, "set":{ "type":"spawner" }, "elseExecute":{ "set":{ "removeType":"spawner" } } }
+                  ]
+                }
+              }
+            },
+            {
+              "type":"game",
+              "height":176,
+              "x":0, "y":0,
+              "states":{
+                "name":"play",
+                "code":{
+                  "name":"Execute",
+                  "data":[
+                    { "set":{ "width":{ "_":[ "objectTyped", "player", "x", "-", 32 ] } } },
+                    { "when":{ "_":[ "this", "width", "isGreaterThan", 16 ] }, "set":{ "type":"spawner" }, "elseExecute":{ "set":{ "removeType":"spawner" } } }
+                  ]
+                }
+              }
+            },
+            {
+              "type":"game",
+              "height":176,
+              "y":0,
+              "states":{
+                "name":"play",
+                "code":{
+                  "name":"Execute",
+                  "data":[
+                    { "set":{ "x":{ "_":[ "objectTyped", "player", "x", "+", 48 ] } } },
+                    { "set":{ "width":{ "_":[ 240, "-", { "_":[ "this", "x" ] } ] } } },
+                    { "when":{ "_":[ "this", "width", "isGreaterThan", 16 ] }, "set":{ "type":"spawner" }, "elseExecute":{ "set":{ "removeType":"spawner" } } }
+                  ]
+                }
+              }
+            },
+            {
+              "type":"game",
+              "width":240,
+              "x":0,
+              "states":{
+                "name":"play",
+                "code":{
+                  "name":"Execute",
+                  "data":[
+                    { "set":{ "y":{ "_":[ "objectTyped", "player", "y", "+", 48 ] } } },
+                    { "set":{ "height":{ "_":[ 176, "-", { "_":[ "this", "y" ] } ] } } },
+                    { "when":{ "_":[ "this", "height", "isGreaterThan", 16 ] }, "set":{ "type":"spawner" }, "elseExecute":{ "set":{ "removeType":"spawner" } } }
+                  ]
+                }
+              }
+            },
+            {
+              "type":"game",
+              "states":{
+                "name":"play",
+                "code":{
+                  "name":"Sequence",
+                  "data":[
+                    {
+                      "as":{ "_":[ "randomObject", { "_":[ "object", "spawner" ] } ] },
+                      "execute":{
+                        "object":{
+                          "set":[ { "_":[ "stencil", "modelEnemyTopdownRoam" ] }, { "_":[ "stencil", "modelHitPlayer" ] } ],
+                          "x":{ "_":[ "randomNumber", [ 0, { "_":[ "that", "width", "-", 16 ] } ], "+", { "_":[ "that", "x" ] } ] }, "y":{ "_":[ "randomNumber", [ 0, { "_":[ "that", "height", "-", 16 ] } ], "+", { "_":[ "that", "y" ] } ] },
+                          "execute":{ "object":{ "_":[ "stencil", "spark" ] } },
+                          "state":"play"
+                        },
+                        "playAudio":"beep"
+                      }
+                    },
+                    { "wait":{ "_":[ 4, "-", { "_":[ "scene", "difficulty" ] }, "*", 5 ] }, "loopTo":0 }
+                  ]
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "name":"DROP!",
+        "condition":{},
+        "onTimeout":"lose",
+        "prepare":[
+          {
+            "object":[
+              { "type":"game", "image":"texture-wall", "width":64, "height":176, "x":0, "y":0, "bgcolor":"#00f" },
+              { "type":"game", "image":"texture-wall", "width":64, "height":176, "x":176, "y":0, "bgcolor":"#00f" },
+              { "type":[ "game", "wall" ], "image":"texture-wall", "width":112, "height":16, "x":64, "y":160, "bgcolor":"#00f" },
+              {
+                "type":[ "game", "laser", "scrolling" ],
+                "width":112, "height":2,
+                "x":64, "y":{ "_":[ 135, "-", { "_":[ "scene", "difficulty", "*", 16 ] } ] },
+                "bgcolor":"#f00",
+                "states":{ "name":"play", "code":{ "name":"Execute", "data":{ "set":{ "visible":{ "_":[ "this", "visible", "not" ] } } } } }
+              },
+              {
+                "type":[ "game", "gamecontroller" ],
+                "states":{
+                  "name":"play",
+                  "execute":{ "executeAction":"next" },
+                  "actions":{
+                    "name":"next",
+                    "execute":{
+                      "object":{
+                        "type":[ "game", "wall", "toclear", "scrolling" ],
+                        "image":"texture-dirt", "width":16, "height":16,
+                        "x":{ "_":[ "scene", "startx" ] }, "y":0,
+                        "bgcolor":"#f00", "border":"#000",
+                        "states":[
+                          {
+                            "code":{
+                              "name":"Execute",
+                              "data":[
+                                { "when":{ "_":[ "keyLeft", "isHit" ] }, "subtract":16, "to":{ "_":[ "this", "x" ] }, "playAudio":"fire" },
+                                { "when":{ "_":[ "keyRight", "isHit" ] }, "sum":16, "to":{ "_":[ "this", "x" ] }, "playAudio":"fire" },
+                                { "when":{ "_":[ "this", "x", "isLessThan", 64 ] }, "set":{ "x":160 } },
+                                { "when":{ "_":[ "this", "x", "isGreaterThan", 160 ] }, "set":{ "x":64 } },
+                                { "when":{ "_":[ "keyA", "isHit" ] }, "set":{ "state":"dropped" }, "playAudio":"beep2" }
+                              ]
+                            }
+                          },
+                          {
+                            "name":"dropped",
+                            "code":{
+                              "name":"Sequence",
+                              "data":[
+                                { "as":{ "_":"scene" }, "set":{ "startx":{ "_":[ "that", "x" ] } } },
+                                {
+                                  "times":10,
+                                  "execute":{
+                                    "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "wall" ] }, "hitbox":{ "width":16, "height":2, "x":0, "y":16 } }, "not" ] },
+                                    "sum":16,
+                                    "to":{ "_":[ "this", "y" ] }
+                                  }
+                                },
+                                {
+                                  "object":{
+                                    "width":16, "height":{ "_":[ "that", "y", "+", 16 ] },
+                                    "zIndex":20, "x":{ "_":[ "scene", "startx" ] }, "y":0,
+                                    "bgcolor":"#f00",
+                                    "states":{ "code":{ "name":"Sequence", "data":[ { "wait":1 }, { "remove":1 } ] } }
+                                  }
+                                },
+                                {
+                                  "when":{ "_":[ "this", "collidesWith", { "_":[ "objectTyped", "laser" ] } ] },
+                                  "as":{ "_":"scene" },
+                                  "executeAction":"lose",
+                                  "elseExecute":[
+                                    {
+                                      "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "wall" ] }, "all":1, "hitbox":{ "width":456, "height":2, "x":-100, "y":0 } } ] },
+                                      "execute":{
+                                        "when":{ "_":[ "that", "count", "isEqualTo", 7 ] },
+                                        "execute":[
+                                          { "playAudio":"blam" },
+                                          {
+                                            "as":{
+                                              "_":[
+                                                "this",
+                                                "complexCollidesWith",
+                                                { "subject":{ "_":[ "object", "scrolling" ] }, "all":1, "hitbox":{ "width":456, "height":300, "x":-100, "y":-300 } }
+                                              ]
+                                            },
+                                            "execute":{ "sum":16, "to":{ "_":[ "this", "y" ] } }
+                                          },
+                                          { "as":{ "_":"that" }, "execute":{ "_":[ "stencil", "removeWithSpark" ] } }
+                                        ]
+                                      }
+                                    },
+                                    {
+                                      "when":{ "_":[ "objectTyped", "toclear", "not" ] },
+                                      "as":{ "_":"scene" },
+                                      "executeAction":"win",
+                                      "elseExecute":{ "as":{ "_":[ "objectTyped", "gamecontroller" ] }, "executeAction":"next" }
+                                    }
+                                  ],
+                                  "playAudio":"explode2"
+                                }
+                              ]
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            ]
+          },
+          { "set":{ "counter":27, "startx":112 } },
+          {
+            "times":{ "_":[ "scene", "difficulty", "+", 1, "*", 7 ] },
+            "execute":[
+              {
+                "object":{
+                  "type":[ "game", "toclear", "scrolling", "wall", { "_":[ "row-", ".", { "_":[ "that", "counter", "/", 7, "floor" ] } ] } ],
+                  "image":"texture-dirt", "width":16, "height":16,
+                  "zIndex":10000, "x":{ "_":[ "that", "counter", "%", 7, "*", 16, "+", 64 ] }, "y":{ "_":[ "that", "counter", "/", 7, "floor", "*", 16, "+", 96 ] },
+                  "bgcolor":"#ff0", "border":"#000"
+                }
+              },
+              { "subtract":1, "to":{ "_":[ "this", "counter" ] } }
+            ]
+          },
+          { "set":{ "counter":3 } },
+          {
+            "times":{ "_":[ "scene", "difficulty", "+", 1 ] },
+            "execute":[
+              { "times":2, "as":{ "_":[ "randomObject", { "_":[ "object", { "_":[ "row-", ".", { "_":[ "that", "counter" ] } ] } ] } ] }, "execute":{ "remove":1 } },
+              { "subtract":1, "to":{ "_":[ "this", "counter" ] } }
+            ]
+          }
+        ]
+      },
+      {
+        "name":"RESCUE!",
+        "condition":{ "when":{ "_":[ "objectTyped", "bonus", "not" ] }, "executeAction":"win" },
+        "onTimeout":"lose",
+        "prepare":[
+          {
+            "object":[
+              { "type":"game", "image":"texture-dirt", "width":240, "height":176, "x":0, "y":0, "bgcolor":"#7f0000" },
+              {
+                "set":[ { "_":[ "stencil", "modelPlayerTopdown" ] }, { "_":[ "stencil", "modelMovingTrail" ] }, { "_":[ "stencil", "modelPlayerFirebullet" ] } ],
+                "x":8,
+                "angle":90
+              }
+            ]
+          },
+          { "set":{ "counter":0 } },
+          {
+            "times":16,
+            "execute":[
+              {
+                "object":{
+                  "type":[ "game", "wallslot" ],
+                  "width":52, "height":8,
+                  "x":{ "_":[ "that", "counter", "%", 4, "*", 44, "+", 28 ] }, "y":{ "_":[ "that", "counter", "/", 4, "floor", "*", 35, "+", 31 ] }
+                }
+              },
+              { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+            ]
+          },
+          { "set":{ "counter":0 } },
+          {
+            "times":25,
+            "execute":[
+              {
+                "object":{
+                  "type":[ "wallslot", "game" ],
+                  "width":8, "height":43,
+                  "x":{ "_":[ "that", "counter", "%", 5, "*", 44, "+", 28 ] }, "y":{ "_":[ "that", "counter", "/", 5, "floor", "*", 35, "-", 4 ] }
+                }
+              },
+              { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+            ]
+          },
+          { "set":{ "counter":0 } },
+          {
+            "times":25,
+            "execute":[
+              {
+                "object":{
+                  "type":[ "bonusslot", "game" ],
+                  "width":16, "height":16,
+                  "x":{ "_":[ "that", "counter", "%", 5, "*", 44, "+", 44 ] }, "y":{ "_":[ "that", "counter", "/", 5, "floor", "*", 35, "+", 10 ] }
+                }
+              },
+              { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+            ]
+          },
+          {
+            "times":10,
+            "execute":{
+              "as":{ "_":[ "randomObject", { "_":[ "object", "wallslot" ] } ] },
+              "set":{
+                "type":"wall",
+                "set":{ "_":[ "stencil", "modelGameElement" ] },
+                "removeType":"wallslot",
+                "image":"texture-dirt",
+                "zIndex":10,
+                "bgcolor":"#7f7f7f",
+                "health":2,
+                "isBreakable":1
+              }
+            }
+          },
+          {
+            "times":{ "_":[ "scene", "difficulty", "+", 1 ] },
+            "execute":{
+              "as":{ "_":[ "randomObject", { "_":[ "object", "bonusslot" ] } ] },
+              "set":{ "set":{ "_":[ "stencil", "modelBonus" ] }, "removeType":"bonusslot", "tileX":16, "animations":{ "move":{ "frames":2, "loopTo":0 } } }
+            }
+          }
+        ]
+      },
+      {
+        "name":"CLIMB!",
+        "condition":{
+          "when":{ "_":[ "objectTyped", "player", "not" ] },
+          "executeAction":"lose",
+          "elseExecute":{ "when":{ "_":[ "objectTyped", "player", "collidesWith", { "_":[ "object", "goal" ] } ] }, "executeAction":"win", "playAudio":"beep" }
+        },
+        "onTimeout":"lose",
+        "prepare":[
+          {
+            "object":[
+              { "set":{ "_":[ "stencil", "modelWall" ] }, "image":"texture-wall", "width":64, "height":176, "x":0, "y":0, "bgcolor":"#00007f" },
+              { "set":{ "_":[ "stencil", "modelWall" ] }, "image":"texture-wall", "width":64, "height":176, "x":176, "y":0, "bgcolor":"#00007f" },
+              { "set":{ "_":[ "stencil", "modelWall" ] }, "image":"texture-wall", "width":112, "height":16, "x":64, "y":160, "bgcolor":"#f00" },
+              { "type":[ "goal", "game" ], "image":"texture-check", "width":112, "height":16, "x":64, "y":0, "bgcolor":"#fff" },
+              { "set":[ { "_":[ "stencil", "modelPlayerPlatformer" ] }, { "_":[ "stencil", "modelMovingTrail" ] } ], "zIndex":20, "x":120, "y":144 }
+            ]
+          },
+          { "set":{ "counter":32 } },
+          {
+            "times":4,
+            "execute":[
+              {
+                "object":{
+                  "set":{ "_":[ "stencil", "modelOnlyTopWall" ] },
+                  "image":"texture-dirt", "width":112, "height":8,
+                  "x":64, "y":{ "_":[ "that", "counter" ] },
+                  "bgcolor":"#0f0"
+                }
+              },
+              {
+                "object":{
+                  "set":[ { "_":[ "stencil", "modelEnemyPlatformer" ] }, { "_":[ "stencil", "modelHitPlayer" ] } ],
+                  "x":{ "_":[ "randomNumber", [ 64, 160 ] ] }, "y":{ "_":[ "that", "counter", "-", 16 ] },
+                  "forceX":{ "_":[ "randomValue", [ -1, 1 ], "*", { "_":[ "scene", "difficulty" ] } ] }
+                }
+              },
+              { "sum":32, "to":{ "_":[ "this", "counter" ] } }
+            ]
+          }
+        ]
+      },
+      {
+        "name":"SCULPT!",
+        "condition":{ "when":{ "_":[ "objectTyped", "right", "not" ] }, "executeAction":"win" },
+        "onTimeout":"lose",
+        "prepare":[
+          {
+            "object":[
+              { "type":"game", "image":"texture-wall", "width":240, "height":48, "x":0, "y":129, "bgcolor":"#f00" },
+              { "type":"game", "width":80, "height":16, "x":16, "y":16, "color":"#fff", "font":"spectrum", "lineHeight":16, "textAlign":"center", "html":"YOU" },
+              { "type":"game", "width":80, "height":16, "x":144, "y":16, "color":"#fff", "font":"spectrum", "lineHeight":16, "textAlign":"center", "html":"MODEL" },
+              {
+                "type":"game",
+                "set":{ "_":[ "stencil", "modelSpinning" ] },
+                "image":"sprites", "tileX":176, "tileY":16, "width":16, "height":16,
+                "zIndex":20, "x":48, "y":80,
+                "states":{
+                  "name":"play",
+                  "code":{
+                    "name":"Execute",
+                    "data":[
+                      { "when":{ "_":[ "keyUp", "isHit" ] }, "subtract":16, "to":{ "_":[ "this", "y" ] }, "playAudio":"fire" },
+                      { "when":{ "_":[ "keyDown", "isHit" ] }, "sum":16, "to":{ "_":[ "this", "y" ] }, "playAudio":"fire" },
+                      { "when":{ "_":[ "keyLeft", "isHit" ] }, "subtract":16, "to":{ "_":[ "this", "x" ] }, "playAudio":"fire" },
+                      { "when":{ "_":[ "keyRight", "isHit" ] }, "sum":16, "to":{ "_":[ "this", "x" ] }, "playAudio":"fire" },
+                      { "when":{ "_":[ "this", "x", "isLessThan", 16 ] }, "set":{ "x":80 } },
+                      { "when":{ "_":[ "this", "x", "isGreaterThan", 80 ] }, "set":{ "x":16 } },
+                      { "when":{ "_":[ "this", "y", "isLessThan", 48 ] }, "set":{ "y":112 } },
+                      { "when":{ "_":[ "this", "y", "isGreaterThan", 112 ] }, "set":{ "y":48 } },
+                      {
+                        "when":{ "_":[ "keyA", "isHit" ] },
+                        "execute":[
+                          { "object":{ "_":[ "stencil", "spark" ] } },
+                          {
+                            "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "block" ] } ] },
+                            "execute":[
+                              {
+                                "when":{ "_":[ "that", "right", "not" ] },
+                                "as":{ "_":"scene" },
+                                "executeAction":"lose",
+                                "elseExecute":{ "playAudio":"beep" },
+                                "playAudio":"explode2"
+                              },
+                              { "as":{ "_":"that" }, "remove":1 }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          },
+          { "set":{ "counter":0, "pos":1, "sculpture":{ "_":[ "new", [] ] } } },
+          {
+            "times":25,
+            "execute":[
+              {
+                "object":[
+                  {
+                    "type":[ "game", "block", { "_":[ "you-", ".", { "_":[ "that", "pos" ] } ] } ],
+                    "image":"texture-dirt", "width":16, "height":16,
+                    "zIndex":10, "x":{ "_":[ 16, "+", { "_":[ "that", "counter", "%", 5, "*", 16 ] } ] }, "y":{ "_":[ 48, "+", { "_":[ "that", "counter", "/", 5, "floor", "*", 16 ] } ] },
+                    "bgcolor":"#7f7f7f", "border":"#000"
+                  },
+                  {
+                    "type":[ "game", { "_":[ "model-", ".", { "_":[ "that", "pos" ] } ] } ],
+                    "image":"texture-wall", "width":16, "height":16,
+                    "zIndex":10, "x":{ "_":[ 144, "+", { "_":[ "that", "counter", "%", 5, "*", 16 ] } ] }, "y":{ "_":[ 48, "+", { "_":[ "that", "counter", "/", 5, "floor", "*", 16 ] } ] },
+                    "bgcolor":"#ff0", "border":"#000"
+                  }
+                ]
+              },
+              { "as":{ "_":[ "this", "pos" ] }, "pushInto":{ "_":[ "that", "sculpture" ] } },
+              { "sum":1, "to":{ "_":[ "this", "counter" ] } },
+              { "sum":1, "to":{ "_":[ "this", "pos" ] } }
+            ]
+          },
+          { "shuffle":{ "_":[ "this", "sculpture" ] }, "set":{ "counter":0 } },
+          {
+            "times":{ "_":[ "scene", "difficulty", "*", 2, "+", 1 ] },
+            "execute":[
+              {
+                "as":{ "_":[ "objectTyped", { "_":[ "you-", ".", { "_":[ "this", "sculpture", { "_":[ "this", "counter" ] } ] } ] } ] },
+                "set":{ "type":"right", "right":1 }
+              },
+              { "as":{ "_":[ "objectTyped", { "_":[ "model-", ".", { "_":[ "this", "sculpture", { "_":[ "this", "counter" ] } ] } ] } ] }, "remove":1 },
+              { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+            ]
+          }
+        ]
+      },
+      {
+        "name":"AIM!",
+        "condition":{},
+        "onTimeout":"win",
+        "prepare":[
+          {
+            "object":[
+              { "set":[ { "_":[ "stencil", "modelPlayerReticle" ] }, { "_":[ "stencil", "modelPlayerFreeMoving" ] } ] },
+              {
+                "type":"game",
+                "states":{
+                  "name":"play",
+                  "code":{
+                    "name":"Sequence",
+                    "data":[
+                      {
+                        "object":{
+                          "type":[ "game", "enemy" ],
+                          "image":"sprites", "tileX":208, "tileY":16, "width":16, "height":16,
+                          "zIndex":10, "x":{ "_":[ "randomNumber", [ 0, 224 ] ] }, "y":176,
+                          "forceX":{ "_":[ "randomNumber", [ -3, 3 ] ] }, "forceY":{ "_":[ "randomNumber", [ -10, -8 ] ] },
+                          "execute":{ "when":{ "_":[ "randomNumber", [ 0, 1 ] ] }, "set":{ "tileX":144, "tileY":48, "wrong":1 } },
+                          "states":{
+                            "code":[
+                              {
+                                "name":"Execute",
+                                "data":[
+                                  { "sum":{ "_":[ "this", "forceX", "*", 2 ] }, "to":{ "_":[ "this", "angle" ] } },
+                                  {
+                                    "when":{ "_":[ "this", "y", "isGreaterThan", 192 ] },
+                                    "execute":[ { "when":{ "_":[ "this", "wrong", "not" ] }, "as":{ "_":"scene" }, "executeAction":"lose", "playAudio":"explode2" }, { "remove":1 } ]
+                                  }
+                                ]
+                              },
+                              { "name":"Physics", "data":{ "walls":{ "area":{ "width":240, "height":400, "x":0, "y":0 }, "restitution":1 }, "gravityY":0.3 } }
+                            ],
+                            "actions":{
+                              "name":"hit",
+                              "execute":[
+                                { "_":[ "stencil", "removeWithSpark" ] },
+                                { "when":{ "_":[ "this", "wrong" ] }, "as":{ "_":"scene" }, "executeAction":"lose", "elseExecute":{ "playAudio":"blam" }, "playAudio":"explode2" }
+                              ]
+                            }
+                          }
+                        }
+                      },
+                      { "wait":{ "_":[ 4, "-", { "_":[ "scene", "difficulty" ] }, "*", 15 ] }, "loopTo":0 }
+                    ]
+                  }
+                }
+              }
+            ]
+          },
+          { "_":[ "stencil", "backgroundStarred" ] }
+        ]
+      },
+      {
+        "name":"AMBUSH!",
+        "condition":{ "when":{ "_":[ "objectTyped", "player", "not" ] }, "executeAction":"lose" },
+        "onTimeout":"win",
+        "prepare":[
+          { "_":[ "stencil", "backgroundStarred" ] },
+          {
+            "object":[
+              { "set":{ "_":[ "stencil", "modelWall" ] }, "image":"texture-wall", "width":240, "height":40, "x":0, "y":136, "bgcolor":"#f00" },
+              {
+                "set":[ { "_":[ "stencil", "modelPlayerPlatformer" ] }, { "_":[ "stencil", "modelMovingTrail" ] }, { "_":[ "stencil", "modelPlayerFirebullet" ] } ],
+                "x":112, "y":120
+              },
+              {
+                "type":"game",
+                "states":{
+                  "name":"play",
+                  "code":{
+                    "name":"Sequence",
+                    "data":[
+                      {
+                        "object":{
+                          "set":[ { "_":[ "stencil", "modelEnemyBouncing" ] }, { "_":[ "stencil", "modelHitPlayer" ] } ],
+                          "x":{ "_":[ "randomNumber", [ 0, 224 ] ] }, "y":{ "_":[ "randomNumber", [ 32, 64 ] ] },
+                          "forceX":{ "_":[ "randomValue", [ -3, -2, -1, 1, 2, 3 ] ] }, "forceY":{ "_":[ "randomValue", [ 1, 2, 3 ] ] },
+                          "execute":{ "object":{ "_":[ "stencil", "spark" ] } },
+                          "state":"play"
+                        },
+                        "playAudio":"beep"
+                      },
+                      { "wait":{ "_":[ 4, "-", { "_":[ "scene", "difficulty" ] }, "*", 5 ] }, "loopTo":0 }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name":"CROSS!",
+        "condition":{},
+        "onTimeout":"win",
+        "prepare":[
+          { "_":[ "stencil", "backgroundStarfield" ] },
+          {
+            "object":[
+              { "type":[ "game", "wall" ], "image":"texture-wall", "width":32, "height":176, "zIndex":10, "x":0, "y":0, "bgcolor":"#00007f" },
+              { "type":[ "game", "wall" ], "image":"texture-wall", "width":32, "height":176, "zIndex":10, "x":208, "y":0, "bgcolor":"#00007f" },
+              { "set":{ "_":[ "stencil", "modelPlayerSpaceship" ] } },
+              {
+                "type":"game",
+                "image":"texture-check", "height":8,
+                "y":-16,
+                "bgcolor":"#fff",
+                "states":{
+                  "name":"play",
+                  "code":{
+                    "name":"Sequence",
+                    "data":[
+                      { "set":{ "width":{ "_":[ "randomNumber", [ 4, 7 ], "-", { "_":[ "scene", "difficulty" ] }, "*", 8 ] } } },
+                      { "set":{ "x":{ "_":[ "randomNumber", [ 32, { "_":[ 208, "-", { "_":[ "this", "width" ] } ] } ] ] }, "y":-8 } },
+                      { "sum":6, "to":{ "_":[ "this", "y" ] } },
+                      {
+                        "when":{ "_":[ "this", "collidesWith", { "_":[ "objectTyped", "player" ] } ] },
+                        "object":{ "_":[ "stencil", "spark" ] },
+                        "playAudio":"beep",
+                        "loopTo":0
+                      },
+                      { "when":{ "_":[ "this", "y", "isGreaterThan", 176 ] }, "as":{ "_":"scene" }, "executeAction":"lose", "playAudio":"explode2" },
+                      { "wait":1, "loopTo":2 }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name":"BOUNCE!",
+        "condition":{ "when":{ "_":[ "objectTyped", "player", "not" ] }, "executeAction":"lose" },
+        "onTimeout":"win",
+        "prepare":[
+          { "set":{ "boardSize":{ "_":[ 4, "-", { "_":[ "scene", "difficulty" ] }, "*", 16 ] } } },
+          {
+            "object":[
+              {
+                "type":"game",
+                "set":{ "_":[ "stencil", "modelHitPlayer" ] },
+                "image":"texture-dirt", "width":240, "height":32,
+                "x":0, "y":144,
+                "bgcolor":"#f00",
+                "states":{ "name":"play", "code":{ "name":"Execute", "data":{ "set":{ "tileY":{ "_":[ "this", "tileY", "+", 1, "%", 8 ] } } } } }
+              },
+              { "type":"game", "image":"texture-wall", "width":240, "height":144, "x":0, "y":0, "bgcolor":"#00007f" },
+              {
+                "set":{ "_":[ "stencil", "modelPlayerBouncer" ] },
+                "x":112, "y":72,
+                "bounceY":-12,
+                "states":{
+                  "name":"play",
+                  "code":{
+                    "name":"Execute",
+                    "data":{
+                      "when":{ "_":[ "this", "touchDown" ] },
+                      "as":{ "_":[ "objectTyped", "wall" ] },
+                      "execute":[
+                        { "set":{ "gap":{ "_":[ "randomNumber", [ 30, 80 ] ] } } },
+                        {
+                          "when":{ "_":[ "randomNumber", [ 0, 1 ] ] },
+                          "subtract":{ "_":[ "this", "gap" ] },
+                          "to":{ "_":[ "this", "x" ] },
+                          "elseExecute":{ "sum":{ "_":[ "this", "gap" ] }, "to":{ "_":[ "this", "x" ] } }
+                        },
+                        { "when":{ "_":[ "this", "x", "isLessThan", 0 ] }, "set":{ "x":0 } },
+                        { "when":{ "_":[ "this", "x", "isGreaterThan", { "_":[ "this", "maxX" ] } ] }, "set":{ "x":{ "_":[ "this", "maxX" ] } } }
+                      ]
+                    }
+                  }
+                }
+              },
+              {
+                "type":[ "game", "wall" ],
+                "image":"texture-wall", "width":{ "_":[ "that", "boardSize" ] }, "height":8,
+                "zIndex":10, "x":{ "_":[ 240, "-", { "_":[ "that", "boardSize" ] }, "/", 2, "floor" ] }, "y":120,
+                "bgcolor":"#f00",
+                "maxX":{ "_":[ 240, "-", { "_":[ "that", "boardSize" ] } ] }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name":"FOLLOW!",
+        "condition":{},
+        "onTimeout":"lose",
+        "prepare":[
+          { "set":{ "counter":1 } },
+          {
+            "times":6,
+            "execute":[
+              {
+                "object":{
+                  "type":[ "game", "cup", { "_":[ "cup-", ".", { "_":[ "that", "counter" ] } ] } ],
+                  "image":"sprites", "tileX":208, "tileY":16, "width":16, "height":16,
+                  "zIndex":10, "x":{ "_":[ "that", "counter", "*", 32 ] }, "y":84,
+                  "states":{
+                    "name":"swap",
+                    "set":{ "type":"moving", "timer":0 },
+                    "code":{
+                      "name":"Sequence",
+                      "data":[
+                        { "set":{ "dx":{ "_":[ "this", "swapToX", "-", { "_":[ "this", "x" ] }, "/", 10 ] } } },
+                        { "sum":0.31, "to":{ "_":[ "this", "timer" ] } },
+                        { "set":{ "y":{ "_":[ "this", "timer", "sin", "*", 10, "*", { "_":[ "this", "swapSide" ] }, "+", 104 ] } } },
+                        { "sum":{ "_":[ "this", "dx" ] }, "to":{ "_":[ "this", "x" ] } },
+                        { "wait":1, "cycles":10, "loopTo":1 },
+                        { "set":{ "removeType":"moving", "x":{ "_":[ "this", "swapToX" ] }, "y":104, "state":"idle" } }
+                      ]
+                    }
+                  }
+                }
+              },
+              { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+            ]
+          },
+          {
+            "object":[
+              { "type":"game", "image":"texture-dirt", "width":240, "height":176, "x":0, "y":0, "bgcolor":"#7f7f7f" },
+              {
+                "type":[ "game", "token" ],
+                "image":"sprites", "tileX":136, "tileY":8, "width":8, "height":8,
+                "zIndex":5, "x":{ "_":[ "randomNumber", [ 1, 6 ], "*", 32, "+", 4 ] }, "y":108,
+                "states":{
+                  "name":"play",
+                  "code":{ "name":"Execute", "data":{ "sum":20, "to":{ "_":[ "this", "angle" ] }, "set":{ "visible":{ "_":[ "this", "visible", "not" ] } } } }
+                }
+              },
+              {
+                "type":"game",
+                "width":240, "height":60,
+                "zIndex":10, "x":0, "y":16,
+                "color":"#fff",
+                "font":"spectrum", "fontSize":100, "lineHeight":60, "outline":"#000", "textAlign":"center", "html":"READY",
+                "playAudio":"beep",
+                "cups":{ "_":[ "new", [ 1, 2, 3, 4, 5, 6 ] ] },
+                "timer":0,
+                "timerThreshold":{ "_":[ 4, "-", { "_":[ "scene", "difficulty" ] }, "*", 6 ] },
+                "waitTime":{ "_":[ "randomNumber", [ 25, 50 ] ] },
+                "states":{
+                  "name":"play",
+                  "code":{
+                    "name":"Sequence",
+                    "data":[
+                      { "wait":15 },
+                      { "as":{ "_":[ "object", "cup" ] }, "sum":4, "to":{ "_":[ "this", "y" ] }, "wait":1, "loop":1, "cycles":4 },
+                      { "when":{ "_":[ "objectTyped", "token", "collidesWith", { "_":[ "object", "cup" ] } ] }, "as":{ "_":"that" }, "set":{ "type":"right" } },
+                      { "as":{ "_":[ "object", "token" ] }, "remove":1 },
+                      { "set":{ "html":"WATCH" }, "playAudio":"beep2" },
+                      { "shuffle":{ "_":[ "this", "cups" ] }, "set":{ "counter":0 }, "playAudio":"fire" },
+                      {
+                        "times":3,
+                        "execute":[
+                          {
+                            "as":{ "_":[ "objectTyped", { "_":[ "cup-", ".", { "_":[ "this", "cups", { "_":[ "this", "counter" ] } ] } ] } ] },
+                            "set":{ "swapSide":1, "swapToX":{ "_":[ "that", "cups", { "_":[ "that", "counter", "+", 1 ] }, "*", 32 ] }, "state":"swap" }
+                          },
+                          {
+                            "as":{ "_":[ "objectTyped", { "_":[ "cup-", ".", { "_":[ "this", "cups", { "_":[ "this", "counter", "+", 1 ] } ] } ] } ] },
+                            "set":{ "swapSide":-1, "swapToX":{ "_":[ "that", "cups", { "_":[ "that", "counter" ] }, "*", 32 ] }, "state":"swap" }
+                          },
+                          { "sum":2, "to":{ "_":[ "this", "counter" ] } }
+                        ]
+                      },
+                      { "wait":1, "loop":1, "until":{ "_":[ "objectTyped", "moving", "not" ] } },
+                      { "wait":1, "cycles":{ "_":[ "scene", "difficulty", "+", 1 ] }, "loopTo":-3 },
+                      { "set":{ "html":"FIND" }, "playAudio":"beep3" },
+                      {
+                        "object":{
+                          "type":"game",
+                          "width":32, "height":32,
+                          "zIndex":10, "x":88, "y":96,
+                          "border":"#fff",
+                          "states":{
+                            "code":{
+                              "name":"Execute",
+                              "data":[
+                                { "when":{ "_":[ "this", "border", "isEqualTo", "#fff" ] }, "set":{ "border":"#f00" }, "elseExecute":{ "set":{ "border":"#fff" } } },
+                                { "when":{ "_":[ "keyRight", "isHit" ] }, "sum":32, "to":{ "_":[ "this", "x" ] } },
+                                { "when":{ "_":[ "keyLeft", "isHit" ] }, "subtract":32, "to":{ "_":[ "this", "x" ] } },
+                                {
+                                  "when":{ "_":[ "keyA", "isHit" ] },
+                                  "execute":{
+                                    "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "right" ] } ] },
+                                    "as":{ "_":"scene" },
+                                    "executeAction":"win",
+                                    "elseExecute":{ "as":{ "_":"scene" }, "executeAction":"lose", "playAudio":"explode2" },
+                                    "playAudio":"beep"
+                                  }
+                                },
+                                { "when":{ "_":[ "this", "x", "isLessThan", 24 ] }, "set":{ "x":184 } },
+                                { "when":{ "_":[ "this", "x", "isGreaterThan", 184 ] }, "set":{ "x":24 } }
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name":"GET!",
+        "condition":{
+          "when":{ "_":[ "objectTyped", "player", "collidesWith", { "_":[ "object", "enemy" ] } ] },
+          "executeAction":"lose",
+          "elseExecute":{ "when":{ "_":[ "objectTyped", "player", "collidesWith", { "_":[ "object", "goal" ] } ] }, "executeAction":"win", "playAudio":"beep" },
+          "playAudio":"explode2"
+        },
+        "onTimeout":"lose",
+        "prepare":[
+          {
+            "object":[
+              {
+                "type":"game",
+                "image":"texture-check", "width":240, "height":184,
+                "x":0, "y":-8,
+                "bgcolor":"#7f0000",
+                "states":{
+                  "name":"play",
+                  "code":{ "name":"Sequence", "data":[ { "sum":1, "to":{ "_":[ "this", "y" ] }, "wait":1, "loop":1, "cycles":7 }, { "set":{ "y":-9 }, "loopTo":0 } ] }
+                }
+              },
+              { "type":"game", "image":"texture-dirt", "width":8, "height":136, "zIndex":10, "x":52, "y":8, "bgcolor":"#0f0" },
+              { "type":"game", "image":"texture-dirt", "width":8, "height":136, "zIndex":10, "x":116, "y":8, "bgcolor":"#0f0" },
+              { "type":"game", "image":"texture-dirt", "width":8, "height":136, "zIndex":10, "x":180, "y":8, "bgcolor":"#0f0" },
+              { "type":[ "game", "enemy" ], "image":"sprites", "tileX":144, "tileY":48, "width":16, "height":16, "zIndex":20, "x":48, "y":144 },
+              { "type":[ "game", "enemy" ], "image":"sprites", "tileX":144, "tileY":48, "width":16, "height":16, "zIndex":20, "x":112, "y":144 },
+              { "type":[ "game", "enemy" ], "image":"sprites", "tileX":144, "tileY":48, "width":16, "height":16, "zIndex":20, "x":176, "y":144 },
+              {
+                "type":[ "game", "player" ],
+                "image":"sprites", "tileX":192, "tileY":16, "width":16, "height":16,
+                "zIndex":20, "x":112, "y":0,
+                "states":{
+                  "name":"play",
+                  "code":{
+                    "name":"Sequence",
+                    "data":[
+                      { "when":{ "_":[ "keyRight", "isHit" ] }, "sum":64, "to":{ "_":[ "this", "x" ] }, "playAudio":"fire" },
+                      { "when":{ "_":[ "keyLeft", "isHit" ] }, "subtract":64, "to":{ "_":[ "this", "x" ] }, "playAudio":"fire" },
+                      { "when":{ "_":[ "this", "x", "isGreaterThan", 180 ] }, "set":{ "x":48 } },
+                      { "when":{ "_":[ "this", "x", "isLessThan", 48 ] }, "set":{ "x":176 } },
+                      { "wait":1, "loopTo":0, "until":{ "_":[ "keyA", "isHit" ] } },
+                      { "as":{ "_":"scene" }, "executeAction":"stopTimer", "playAudio":"beep3" },
+                      { "sum":4, "to":{ "_":[ "this", "y" ] }, "wait":1, "loop":1, "cycles":2 },
+                      {
+                        "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "bridge" ] }, "hitbox":{ "width":8, "height":8, "x":-8, "y":8 } } ] },
+                        "elseExecute":{
+                          "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "bridge" ] }, "hitbox":{ "width":8, "height":8, "x":16, "y":8 } } ] },
+                          "subsequence":[
+                            {
+                              "to":{ "_":[ "this", "x" ] },
+                              "execute":[ { "sum":4, "to":{ "_":[ "this", "x" ] } }, { "sum":10, "to":{ "_":[ "this", "angle" ] } } ],
+                              "wait":1, "loop":1, "cycles":16
+                            },
+                            { "playAudio":"beep" }
+                          ],
+                          "playAudio":"beep"
+                        },
+                        "subsequence":[
+                          { "execute":[ { "subtract":4, "to":{ "_":[ "this", "x" ] } }, { "subtract":10, "to":{ "_":[ "this", "angle" ] } } ], "wait":1, "loop":1, "cycles":16 },
+                          { "playAudio":"beep" }
+                        ],
+                        "playAudio":"beep"
+                      },
+                      { "wait":1, "loopTo":-2 }
+                    ]
+                  }
+                }
+              }
+            ]
+          },
+          { "as":{ "_":[ "randomObject", { "_":[ "object", "enemy" ] } ] }, "set":{ "type":"goal", "removeType":"enemy", "tileX":0, "tileY":32 } },
+          { "set":{ "counter":0, "rails":{ "_":[ "new", [ 16, 32, 48, 64, 80, 96, 112, 128 ] ] } } },
+          { "shuffle":{ "_":[ "this", "rails" ] } },
+          {
+            "times":{ "_":[ "scene", "difficulty", "+", 1 ] },
+            "execute":[
+              {
+                "object":{
+                  "type":[ "game", "bridge" ],
+                  "image":"texture-dirt", "width":56, "height":8,
+                  "zIndex":10, "x":60, "y":{ "_":[ "that", "rails", { "_":[ "that", "counter" ] } ] },
+                  "bgcolor":"#0f0"
+                }
+              },
+              { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+            ]
+          },
+          {
+            "times":{ "_":[ "scene", "difficulty", "+", 1 ] },
+            "execute":[
+              {
+                "object":{
+                  "type":[ "game", "bridge" ],
+                  "image":"texture-dirt", "width":56, "height":8,
+                  "zIndex":10, "x":124, "y":{ "_":[ "that", "rails", { "_":[ "that", "counter" ] } ] },
+                  "bgcolor":"#0f0"
+                }
+              },
+              { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+            ]
+          }
+        ]
+      },
+      {
+        "name":"MATH!",
+        "condition":[
+          {
+            "when":{ "_":[ "this", "currentY", "isLessThan", { "_":[ "this", "currentExercise", "*", 4 ] } ] },
+            "execute":[
+              { "as":{ "_":[ "object", "exercise" ] }, "execute":{ "subtract":8, "to":{ "_":[ "this", "y" ] } } },
+              { "sum":1, "to":{ "_":[ "this", "currentY" ] } }
+            ]
+          },
+          { "set":{ "answer":0, "input":0 } },
+          { "when":{ "_":[ "keyUp", "isHit" ] }, "set":{ "input":"+" } },
+          { "when":{ "_":[ "keyDown", "isHit" ] }, "set":{ "input":"-" } },
+          { "when":{ "_":[ "keyRight", "isHit" ] }, "set":{ "input":"X" } },
+          { "when":{ "_":[ "keyLeft", "isHit" ] }, "set":{ "input":":" } },
+          {
+            "when":{ "_":[ "this", "input" ] },
+            "execute":[
+              { "set":{ "exercise":{ "_":[ "this", "exercises", { "_":[ "this", "currentExercise" ] } ] } } },
+              {
+                "when":{ "_":[ "this", "input", "isEqualTo", "+" ] },
+                "set":{ "answer":{ "_":[ "this", "exercise", "n1", "+", { "_":[ "this", "exercise", "n2" ] } ] } }
+              },
+              {
+                "when":{ "_":[ "this", "input", "isEqualTo", "-" ] },
+                "set":{ "answer":{ "_":[ "this", "exercise", "n1", "-", { "_":[ "this", "exercise", "n2" ] } ] } }
+              },
+              {
+                "when":{ "_":[ "this", "input", "isEqualTo", "X" ] },
+                "set":{ "answer":{ "_":[ "this", "exercise", "n1", "*", { "_":[ "this", "exercise", "n2" ] } ] } }
+              },
+              {
+                "when":{ "_":[ "this", "input", "isEqualTo", ":" ] },
+                "set":{ "answer":{ "_":[ "this", "exercise", "n1", "/", { "_":[ "this", "exercise", "n2" ] } ] } }
+              },
+              {
+                "when":{ "_":[ "this", "answer", "isEqualTo", { "_":[ "this", "exercise", "result" ] } ] },
+                "execute":[
+                  { "as":{ "_":[ "objectTyped", { "_":[ "answer-", ".", { "_":[ "this", "currentExercise" ] } ] } ] }, "set":{ "html":{ "_":[ "that", "input" ] } } },
+                  { "sum":1, "to":{ "_":[ "this", "currentExercise" ] }, "playAudio":"beep" },
+                  { "when":{ "_":[ "this", "currentExercise", "isEqualTo", { "_":[ "this", "exercises", "count" ] } ] }, "executeAction":"win" }
+                ],
+                "elseExecute":{ "executeAction":"lose", "playAudio":"explode2" }
+              }
+            ]
+          }
+        ],
+        "onTimeout":"lose",
+        "prepare":[
+          {
+            "object":[
+              { "type":[ "game", "goal" ], "image":"texture-check", "width":240, "height":176, "x":0, "y":0, "bgcolor":"#007f7f" },
+              { "type":"game", "width":176, "height":176, "zIndex":5, "x":32, "y":0, "bgcolor":"#fff" },
+              {
+                "type":"game",
+                "width":12, "height":10,
+                "zIndex":20, "x":79, "y":73,
+                "bgcolor":"#7f7f7f", "color":"#fff",
+                "font":"spectrum", "lineHeight":10, "textAlign":"center", "html":"+"
+              },
+              {
+                "type":"game",
+                "width":14, "height":10,
+                "zIndex":20, "x":71, "y":83,
+                "bgcolor":"#7f7f7f", "color":"#fff",
+                "font":"spectrum", "lineHeight":10, "textAlign":"center", "html":":"
+              },
+              {
+                "type":"game",
+                "width":14, "height":10,
+                "zIndex":20, "x":85, "y":83,
+                "bgcolor":"#7f7f7f", "color":"#fff",
+                "font":"spectrum", "lineHeight":10, "textAlign":"center", "html":"X"
+              },
+              {
+                "type":"game",
+                "width":12, "height":10,
+                "zIndex":20, "x":79, "y":93,
+                "bgcolor":"#7f7f7f", "color":"#fff",
+                "font":"spectrum", "lineHeight":10, "textAlign":"center", "html":"-"
+              }
+            ]
+          },
+          { "set":{ "counter":0, "currentExercise":0, "currentY":0, "exercises":{ "_":[ "new", [] ] } } },
+          {
+            "times":{ "_":[ "scene", "difficulty" ] },
+            "execute":[
+              {
+                "as":{ "_":[ "new", {} ] },
+                "execute":[
+                  { "set":{ "n1":{ "_":[ "randomNumber", [ 1, 10 ] ] }, "n2":{ "_":[ "randomNumber", [ 1, 10 ] ] }, "sign":{ "_":[ "randomNumber", [ 0, 2 ] ] } } },
+                  { "when":{ "_":[ "this", "sign", "isEqualTo", 0 ] }, "set":{ "result":{ "_":[ "this", "n1", "+", { "_":[ "this", "n2" ] } ] } } },
+                  { "when":{ "_":[ "this", "sign", "isEqualTo", 1 ] }, "set":{ "result":{ "_":[ "this", "n1", "-", { "_":[ "this", "n2" ] } ] } } },
+                  { "when":{ "_":[ "this", "sign", "isEqualTo", 2 ] }, "set":{ "result":{ "_":[ "this", "n1", "*", { "_":[ "this", "n2" ] } ] } } },
+                  {
+                    "when":{ "_":[ "this", "sign", "isEqualTo", 3 ] },
+                    "execute":[
+                      { "set":{ "result":{ "_":[ "this", "n1", "/", { "_":[ "this", "n2" ] }, "ceil" ] } } },
+                      { "set":{ "n2":{ "_":[ "this", "n1", "*", { "_":[ "this", "result" ] } ] } } }
+                    ]
+                  },
+                  {
+                    "object":[
+                      {
+                        "type":[ "game", "exercise" ],
+                        "width":36, "height":30,
+                        "zIndex":10, "x":38, "y":{ "_":[ 73, "+", { "_":[ "scene", "counter", "*", 32 ] } ] },
+                        "color":"#000",
+                        "font":"spectrum", "fontSize":40, "lineHeight":30, "textAlign":"center", "html":{ "_":[ "that", "n1" ] }
+                      },
+                      {
+                        "type":[ "game", "exercise", { "_":[ "answer-", ".", { "_":[ "scene", "counter" ] } ] } ],
+                        "width":22, "height":30,
+                        "zIndex":10, "x":74, "y":{ "_":[ 73, "+", { "_":[ "scene", "counter", "*", 32 ] } ] },
+                        "color":"#000",
+                        "font":"spectrum", "fontSize":40, "lineHeight":30, "textAlign":"center", "html":"?"
+                      },
+                      {
+                        "type":[ "game", "exercise" ],
+                        "width":36, "height":30,
+                        "zIndex":10, "x":96, "y":{ "_":[ 73, "+", { "_":[ "scene", "counter", "*", 32 ] } ] },
+                        "color":"#000",
+                        "font":"spectrum", "fontSize":40, "lineHeight":30, "textAlign":"center", "html":{ "_":[ "that", "n2" ] }
+                      },
+                      {
+                        "type":[ "game", "exercise" ],
+                        "width":60, "height":30,
+                        "zIndex":10, "x":132, "y":{ "_":[ 73, "+", { "_":[ "scene", "counter", "*", 32 ] } ] },
+                        "color":"#000",
+                        "font":"spectrum", "fontSize":40, "lineHeight":30, "textAlign":"left", "html":{ "_":[ "=", ".", { "_":[ "that", "result" ] } ] }
+                      }
+                    ]
+                  },
+                  { "pushInto":{ "_":[ "that", "exercises" ] } }
+                ]
+              },
+              { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+            ]
+          }
+        ]
+      },
+      {
+        "name":"RUN!",
+        "condition":{ "when":{ "_":[ "objectTyped", "goal", "collidesWith", { "_":[ "objectTyped", "player" ] } ] }, "executeAction":"win", "playAudio":"beep" },
+        "onTimeout":"lose",
+        "prepare":{
+          "object":[
+            { "type":"game", "image":"texture-dirt", "width":240, "height":176, "x":0, "y":0, "bgcolor":"#007f00" },
+            { "type":[ "game", "goal" ], "image":"texture-check", "width":16, "height":176, "zIndex":5, "x":208, "y":0, "bgcolor":"#fff" },
+            {
+              "type":[ "game", "player" ],
+              "image":"sprites", "tileY":16, "width":16, "height":16,
+              "zIndex":10, "x":16, "y":80,
+              "states":{
+                "name":"play",
+                "code":{
+                  "name":"Execute",
+                  "data":{
+                    "when":{ "_":[ "keyA", "isHit" ] },
+                    "execute":[
+                      { "when":{ "_":[ "this", "frame" ] }, "set":{ "frame":0 }, "elseExecute":{ "set":{ "frame":2 } } },
+                      { "object":{ "set":{ "_":[ "stencil", "smoke" ] }, "zIndex":5 }, "playAudio":"fire" },
+                      { "sum":{ "_":[ 4, "-", { "_":[ "scene", "difficulty" ] }, "*", 6 ] }, "to":{ "_":[ "this", "x" ] } }
+                    ]
+                  }
+                }
+              }
+            }
+          ]
+        }
+      },
+      {
+        "name":"FIRE!",
+        "condition":{},
+        "onTimeout":"lose",
+        "prepare":{
+          "object":[
+            { "set":{ "_":[ "stencil", "modelWall" ] }, "image":"texture-dirt", "width":248, "height":40, "y":136, "bgcolor":"#7f7f00" },
+            { "type":"game", "width":240, "height":136, "x":0, "y":0, "bgcolor":"#0ff" },
+            {
+              "type":[ "game", "player" ],
+              "image":"sprites", "tileY":16, "width":16, "height":16,
+              "zIndex":10, "x":64, "y":120,
+              "animations":{ "idle":{ "frames":[ 0, 1, 2, 1 ], "loopTo":0 } },
+              "animation":"idle"
+            },
+            {
+              "type":[ "game", "enemy" ],
+              "image":"sprites", "tileX":32, "tileY":48, "width":16, "height":16,
+              "zIndex":10, "x":160, "y":120,
+              "flipX":1,
+              "animations":{ "idle":{ "frames":[ 0, 1, 2, 1 ], "loopTo":0 } },
+              "animation":"idle"
+            },
+            {
+              "type":"game",
+              "width":240, "height":60,
+              "zIndex":10, "x":0, "y":16,
+              "color":"#fff",
+              "font":"spectrum", "fontSize":100, "lineHeight":60, "outline":"#000", "textAlign":"center", "html":"READY",
+              "playAudio":"beep",
+              "timer":0,
+              "timerThreshold":{ "_":[ 4, "-", { "_":[ "scene", "difficulty" ] }, "*", 6 ] },
+              "waitTime":{ "_":[ "randomNumber", [ 25, 50 ] ] },
+              "states":[
+                {
+                  "name":"play",
+                  "code":{
+                    "name":"Sequence",
+                    "data":[
+                      { "wait":25 },
+                      { "set":{ "html":"SET" }, "playAudio":"beep2" },
+                      { "when":{ "_":[ "keyA", "isHit" ] }, "set":{ "playAudio":"explode2", "state":"lose" } },
+                      { "wait":1, "cycles":{ "_":[ "this", "waitTime" ] }, "loopTo":-1 },
+                      { "set":{ "color":"#ff0", "html":"FIRE" }, "playAudio":"beep3" },
+                      { "sum":1, "to":{ "_":[ "this", "timer" ] }, "wait":1 },
+                      { "loopTo":-1, "until":{ "_":[ "this", "timer", "isEqualTo", { "_":[ "this", "timerThreshold" ] }, "or", { "_":[ "keyA", "isHit" ] } ] } },
+                      {
+                        "when":{ "_":[ "this", "timer", "isLessThan", { "_":[ "this", "timerThreshold" ] } ] },
+                        "set":{ "state":"win" },
+                        "elseExecute":{ "set":{ "state":"lose" }, "playAudio":"explode2" },
+                        "playAudio":"blam"
+                      }
+                    ]
+                  }
+                },
+                {
+                  "name":"win",
+                  "code":{
+                    "name":"Sequence",
+                    "data":[
+                      { "object":{ "type":"blam", "width":240, "height":176, "zIndex":20, "x":0, "y":0, "bgcolor":"#fff" } },
+                      { "wait":1 },
+                      { "as":{ "_":[ "objectTyped", "blam" ] }, "remove":1 },
+                      {
+                        "object":[ { "set":{ "_":[ "stencil", "spark" ] }, "x":80, "y":120 }, { "set":{ "_":[ "stencil", "smoke" ] }, "at":{ "_":[ "objectTyped", "enemy" ] } } ]
+                      },
+                      { "as":{ "_":[ "objectTyped", "enemy" ] }, "remove":1 },
+                      { "set":{ "color":"#0f0", "html":"WIN" } },
+                      { "wait":25 },
+                      { "as":{ "_":"scene" }, "executeAction":"win" }
+                    ]
+                  }
+                },
+                {
+                  "name":"lose",
+                  "code":{
+                    "name":"Sequence",
+                    "data":[
+                      { "object":{ "type":"blam", "width":240, "height":176, "zIndex":20, "x":0, "y":0, "bgcolor":"#fff" } },
+                      { "wait":1 },
+                      { "as":{ "_":[ "objectTyped", "blam" ] }, "remove":1 },
+                      {
+                        "object":[ { "set":{ "_":[ "stencil", "spark" ] }, "x":144, "y":120 }, { "set":{ "_":[ "stencil", "smoke" ] }, "at":{ "_":[ "objectTyped", "player" ] } } ]
+                      },
+                      { "as":{ "_":[ "objectTyped", "player" ] }, "remove":1 },
+                      { "set":{ "color":"#f00", "html":"LOSE" } },
+                      { "wait":25 },
+                      { "as":{ "_":"scene" }, "executeAction":"lose" }
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      },
+      {
+        "name":"SURVIVE!",
+        "condition":{ "when":{ "_":[ "objectTyped", "player", "not" ] }, "executeAction":"lose" },
+        "onTimeout":"win",
+        "prepare":[
+          { "_":[ "stencil", "backgroundStarScrollLeft" ] },
+          {
+            "object":[
+              {
+                "set":[ { "_":[ "stencil", "modelWall" ] }, { "_":[ "stencil", "modelFakeLeftScrolling" ] } ],
+                "image":"texture-dirt", "width":248, "height":40,
+                "y":136,
+                "bgcolor":"#0f0"
+              },
+              { "set":{ "_":[ "stencil", "modelPlayerBouncer" ] }, "x":16, "y":72, "bounceY":-12 }
+            ]
+          },
+          { "set":{ "counter":256 } },
+          {
+            "times":{ "_":[ "scene", "difficulty" ] },
+            "execute":[
+              {
+                "object":{
+                  "set":[ { "_":[ "stencil", "modelEnemyPhasing" ] }, { "_":[ "stencil", "modelHitPlayer" ] } ],
+                  "x":{ "_":[ "that", "counter" ] },
+                  "forceX":{ "_":[ "randomNumber", [ -5, -3 ] ] },
+                  "doRandomY":1,
+                  "randomnessY":[ 60, 90, 120 ]
+                }
+              },
+              { "sum":32, "to":{ "_":[ "this", "counter" ] } }
+            ]
+          }
+        ]
+      },
+      {
+        "name":"INPUT!",
+        "condition":[
+          { "set":{ "keyinput":0 } },
+          { "when":{ "_":[ "keyUp", "isHit" ] }, "set":{ "keyinput":"Up" } },
+          { "when":{ "_":[ "keyDown", "isHit" ] }, "set":{ "keyinput":"Down" } },
+          { "when":{ "_":[ "keyLeft", "isHit" ] }, "set":{ "keyinput":"Left" } },
+          { "when":{ "_":[ "keyRight", "isHit" ] }, "set":{ "keyinput":"Right" } },
+          { "when":{ "_":[ "keyA", "isHit" ] }, "set":{ "keyinput":"A" } },
+          { "when":{ "_":[ "keyB", "isHit" ] }, "set":{ "keyinput":"B" } },
+          {
+            "when":{ "_":[ "this", "keyinput" ] },
+            "execute":[
+              { "set":{ "keyhistory":{ "_":[ "this", "keyhistory", ".", { "_":[ "this", "keyinput" ] }, ".", ", " ] } } },
+              {
+                "when":{ "_":[ "this", "keyinput", "isEqualTo", { "_":[ "this", "keysequence", { "_":[ "this", "keyposition" ] } ] } ] },
+                "execute":[
+                  { "sum":1, "to":{ "_":[ "this", "keyposition" ] }, "playAudio":"beep2" },
+                  { "when":{ "_":[ "this", "keyposition", "isEqualTo", { "_":[ "this", "keylength" ] } ] }, "executeAction":"win" }
+                ],
+                "elseExecute":{ "executeAction":"lose", "playAudio":"explode2" }
+              }
+            ]
+          }
+        ],
+        "onTimeout":"lose",
+        "prepare":[
+          { "set":{ "keysequence":{ "_":[ "new", [] ] } } },
+          {
+            "times":{ "_":[ "scene", "difficulty" ] },
+            "execute":[
+              { "as":"Up", "pushInto":{ "_":[ "that", "keysequence" ] } },
+              { "as":"Down", "pushInto":{ "_":[ "that", "keysequence" ] } },
+              { "as":"Left", "pushInto":{ "_":[ "that", "keysequence" ] } },
+              { "as":"Right", "pushInto":{ "_":[ "that", "keysequence" ] } },
+              { "as":"A", "pushInto":{ "_":[ "that", "keysequence" ] } },
+              { "as":"B", "pushInto":{ "_":[ "that", "keysequence" ] } }
+            ]
+          },
+          {
+            "shuffle":{ "_":[ "this", "keysequence" ] },
+            "set":{ "keyhistory":{ "_":[ "new", [] ] }, "keylength":0, "keyposition":0, "printed":{ "_":[ "new", "" ] } }
+          },
+          {
+            "times":{ "_":[ "this", "difficulty", "*", 2, "+", 4 ] },
+            "execute":[
+              { "set":{ "printed":{ "_":[ "this", "printed", ".", { "_":[ "this", "keysequence", { "_":[ "this", "keylength" ] } ] }, ".", ", " ] } } },
+              { "sum":1, "to":{ "_":[ "this", "keylength" ] } }
+            ]
+          },
+          { "set":{ "printed":{ "_":[ "this", "printed", "subString", [ 0, { "_":[ "this", "printed", "count", "-", 2 ] } ] ] } } },
+          {
+            "object":[
+              {
+                "type":"game",
+                "width":240, "height":20,
+                "x":0, "y":8,
+                "bgcolor":"#ff0", "color":"#000",
+                "font":"spectrum", "fontSize":40, "lineHeight":20, "textAlign":"center", "html":"COMMAND"
+              },
+              {
+                "type":"game",
+                "width":224, "height":40,
+                "x":8, "y":36,
+                "color":"#fff",
+                "font":"spectrum", "fontSize":20, "lineHeight":10, "textAlign":"center", "html":{ "_":[ "that", "printed" ] }
+              },
+              {
+                "type":"game",
+                "width":240, "height":20,
+                "x":0, "y":84,
+                "bgcolor":"#f0f", "color":"#000",
+                "font":"spectrum", "fontSize":40, "lineHeight":20, "textAlign":"center", "html":"YOUR INPUT"
+              },
+              {
+                "type":[ "game", "hud" ],
+                "hudType":"label", "label":"%text|scene.keyhistory%",
+                "width":224, "height":40,
+                "x":8, "y":112,
+                "color":"#fff",
+                "font":"spectrum", "fontSize":20, "lineHeight":10, "textAlign":"center"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name":"AIM!",
+        "condition":{ "when":{ "_":[ "objectTyped", "enemy", "not" ] }, "executeAction":"win" },
+        "onTimeout":"lose",
+        "prepare":[
+          { "object":{ "set":[ { "_":[ "stencil", "modelPlayerReticle" ] }, { "_":[ "stencil", "modelPlayerFreeMoving" ] } ] } },
+          { "shuffle":{ "_":[ "variable", "frameslots" ] }, "set":{ "counter":0 } },
+          {
+            "times":{ "_":[ "scene", "difficulty", "+", 1 ] },
+            "execute":[
+              {
+                "object":{
+                  "set":{ "_":[ "stencil", "modelEnemyBouncing" ] },
+                  "at":{ "_":[ "variable", "frameslots", { "_":[ "that", "counter" ] } ] },
+                  "forceX":{ "_":[ "randomValue", [ -3, -2, -1, 1, 2, 3 ] ] }, "forceY":{ "_":[ "randomValue", [ -3, -2, -1, 1, 2, 3 ] ] }
+                }
+              },
+              { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+            ]
+          }
+        ]
+      },
+      {
+        "name":"BLAST!",
+        "condition":{ "when":{ "_":[ "objectTyped", "enemy", "not" ] }, "executeAction":"win" },
+        "onTimeout":"lose",
+        "prepare":[
+          { "_":[ "stencil", "backgroundStarfield" ] },
+          { "object":{ "set":[ { "_":[ "stencil", "modelPlayerSpaceship" ] }, { "_":[ "stencil", "modelPlayerFirebullet" ] } ] } },
+          {
+            "times":{ "_":[ "scene", "difficulty", "*", 2 ] },
+            "object":{
+              "set":{ "_":[ "stencil", "modelEnemyFloating" ] },
+              "x":{ "_":[ "randomNumber", [ 48, 113 ] ] }, "y":{ "_":[ "randomNumber", [ 30, 50 ] ] },
+              "forceX":{ "_":[ "randomValue", [ -4, -3, -2, 2, 3, 4 ] ] },
+              "floatSpeed":{ "_":[ "randomValue", [ 0.2, 0.3, 0.4, 0.5 ] ] }
+            }
+          }
+        ]
+      },
+      {
+        "name":"DRIVE!",
+        "condition":[
+          { "when":{ "_":[ "objectTyped", "bonus", "not" ] }, "executeAction":"win" },
+          { "when":{ "_":[ "objectTyped", "player", "not" ] }, "executeAction":"lose" }
+        ],
+        "onTimeout":"lose",
+        "prepare":[
+          {
+            "object":[
+              { "set":[ { "_":[ "stencil", "modelPlayerCar" ] }, { "_":[ "stencil", "modelMovingTrail" ] } ] },
+              { "type":"game", "image":"texture-dirt", "width":240, "height":176, "x":0, "y":0, "bgcolor":"#7f7f7f" }
+            ]
+          },
+          { "shuffle":{ "_":[ "variable", "frameslots" ] }, "set":{ "counter":1 } },
+          {
+            "times":{ "_":[ "scene", "difficulty", "*", 2 ] },
+            "execute":[
+              {
+                "object":{
+                  "set":{ "_":[ "stencil", "modelBonus" ] },
+                  "tileX":16,
+                  "at":{ "_":[ "variable", "frameslots", { "_":[ "that", "counter" ] } ] },
+                  "animations":{ "move":{ "frames":2, "loopTo":0 } }
+                }
+              },
+              { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+            ]
+          },
+          {
+            "times":{ "_":[ "scene", "difficulty" ] },
+            "execute":[
+              { "object":{ "set":{ "_":[ "stencil", "modelEnemyObstacle" ] }, "at":{ "_":[ "variable", "frameslots", { "_":[ "that", "counter" ] } ] } } },
+              { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+            ]
+          }
+        ]
+      },
+      {
+        "name":"ESCAPE!",
+        "condition":{ "when":{ "_":[ "object", "player", "not" ] }, "set":{ "state":"lose" } },
+        "onTimeout":"win",
+        "prepare":[
+          {
+            "object":[
+              { "type":"game", "image":"texture-dirt", "width":240, "height":176, "x":0, "y":0, "bgcolor":"#007f00" },
+              { "set":[ { "_":[ "stencil", "modelPlayerTopdown" ] }, { "_":[ "stencil", "modelMovingTrail" ] } ] }
+            ]
+          },
+          { "shuffle":{ "_":[ "variable", "frameslots" ] }, "set":{ "counter":1 } },
+          {
+            "times":{ "_":[ "scene", "difficulty", "*", 3 ] },
+            "execute":[
+              {
+                "object":{
+                  "set":[ { "_":[ "stencil", "modelEnemyTopdown" ] }, { "_":[ "stencil", "modelEnemyAimPlayer" ] }, { "_":[ "stencil", "modelEnemyFirebullet" ] } ],
+                  "at":{ "_":[ "variable", "frameslots", { "_":[ "that", "counter" ] } ] },
+                  "execute":{
+                    "set":{
+                      "angle":{ "_":[ "this", "angleTo", { "_":[ "objectTyped", "player" ] } ] },
+                      "aimAngle":{ "_":[ "this", "angleTo", { "_":[ "objectTyped", "player" ] } ] }
+                    }
+                  },
+                  "bulletTimer":{ "_":[ "that", "counter", "*", 10 ] },
+                  "fireFrequency":500
+                }
+              },
+              { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+            ]
+          }
+        ]
+      },
+      {
+        "name":"PICK!",
+        "condition":{ "when":{ "_":[ "object", "pickable", "not" ] }, "executeAction":"win" },
+        "onTimeout":"lose",
+        "prepare":[
+          { "_":[ "stencil", "backgroundStarred" ] },
+          { "shuffle":{ "_":[ "variable", "h16slots" ] }, "set":{ "counter":0 } },
+          {
+            "object":[
+              { "set":{ "_":[ "stencil", "modelWall" ] }, "image":"texture-wall", "width":240, "height":40, "x":0, "y":136, "bgcolor":"#f00" },
+              {
+                "set":[ { "_":[ "stencil", "modelPlayerPlatformer" ] }, { "_":[ "stencil", "modelMovingTrail" ] } ],
+                "x":{ "_":[ "randomNumber", [ 0, 224 ] ] }, "y":120
+              }
+            ]
+          },
+          {
+            "times":{ "_":[ "scene", "difficulty", "*", 3 ] },
+            "execute":[
+              {
+                "object":{
+                  "set":[ { "_":[ "stencil", "modelBonus" ] }, { "_":[ "stencil", "modelSpinning" ] } ],
+                  "x":{ "_":[ "variable", "h16slots", { "_":[ "that", "counter" ] } ] },
+                  "execute":{ "set":{ "y":{ "_":[ "this", "timer", "sin", "*", { "_":[ 10, "*", { "_":[ "scene", "difficulty" ] } ] }, "+", 80 ] } } },
+                  "timer":{ "_":[ "randomNumber", [ 0, 10 ] ] },
+                  "states":{
+                    "name":"play",
+                    "code":{
+                      "name":"Execute",
+                      "data":[
+                        { "sum":0.1, "to":{ "_":[ "this", "timer" ] } },
+                        { "set":{ "y":{ "_":[ "this", "timer", "sin", "*", { "_":[ 10, "*", { "_":[ "scene", "difficulty" ] } ] }, "+", 80 ] } } }
+                      ]
+                    }
+                  }
+                }
+              },
+              { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+            ]
+          }
+        ]
+      }
+    ],
+    "dataLoseMessages":[ "YOU<br>LOSE", "OH<br>NO", "EPIC<br>FAIL", "VERY<br>BAD", "NOT<br>GOOD", "YOU<br>FAIL", "GAME<br>FAIL" ],
+    "dataWinMessages":[ "YOU<br>WIN", "WELL<br>DONE", "GOOD<br>JOB", "AW<br>YEAH", "VERY<br>GOOD", "SO<br>NICE", "GAME<br>DONE" ],
+    "lifePart":{ "type":"gui-door", "image":"gui", "tileY":32, "states":{ "name":"fall", "code":{ "name":"Physics", "data":{ "gravityY":1 } } } },
+    "platformerAnimation":{
+      "name":"Execute",
+      "data":[
+        { "when":{ "_":[ "this", "forceX", "isLessThan", 0 ] }, "set":{ "flipX":1 } },
+        { "when":{ "_":[ "this", "forceX", "isGreaterThan", 0 ] }, "set":{ "flipX":0 } },
+        { "when":{ "_":[ "this", "forceY", "isLessThan", 0 ] }, "set":{ "animation":"jump" } },
+        { "when":{ "_":[ "this", "forceY", "isGreaterThan", 0 ] }, "set":{ "animation":"fall" } },
+        {
+          "when":{ "_":[ "this", "forceY", "isEqualTo", 0 ] },
+          "execute":{ "when":{ "_":[ "this", "forceX", "isEqualTo", 0 ] }, "set":{ "animation":"still" }, "elseExecute":{ "set":{ "animation":"walk" } } }
+        }
+      ]
+    },
+    "smoke":{
+      "type":"game",
+      "image":"sprites", "width":16, "height":16,
+      "zIndex":{ "_":[ "that", "zIndex", "+", 1 ] }, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "animations":{ "spark":{ "frames":4, "speed":1 } },
+      "animation":"spark",
+      "states":{ "code":[ { "name":"Physics" }, { "name":"Sequence", "data":[ { "wait":8 }, { "remove":1 } ] } ] }
+    }
+  },
+  "execute":[
+    { "when":{ "_":[ "storage", "hiscore", "not" ] }, "as":{ "_":"storage" }, "set":{ "hiscore":0 } },
+    { "as":{ "_":"variable" }, "set":{ "hiscore":{ "_":[ "storage", "hiscore" ] } } },
+    { "as":{ "_":"variable" }, "set":{ "frameslots":{ "_":[ "new", [] ] }, "gamesId":{ "_":[ "new", [] ] }, "h16slots":{ "_":[ "new", [] ] } } },
+    { "set":{ "counter":0 } },
+    {
+      "times":15,
+      "execute":[ { "as":{ "_":[ "this", "counter" ] }, "pushInto":{ "_":[ "variable", "h16slots" ] } }, { "sum":16, "to":{ "_":[ "this", "counter" ] } } ]
+    },
+    { "set":{ "counter":0 } },
+    {
+      "times":165,
+      "execute":[
+        { "set":{ "rx":{ "_":[ "this", "counter", "%", 15, "*", 16 ] }, "ry":{ "_":[ "this", "counter", "/", 15, "floor", "*", 16 ] } } },
+        {
+          "when":{
+            "_":[
+              "this",
+              "rx",
+              "isLessThan",
+              80,
+              "or",
+              { "_":[ "this", "rx", "isGreaterEqualThan", 160 ] },
+              "or",
+              { "_":[ "this", "ry", "isLessThan", 48 ] },
+              "or",
+              { "_":[ "this", "ry", "isGreaterEqualThan", 128 ] }
+            ]
+          },
+          "as":{ "_":[ "new", {} ] },
+          "execute":[ { "set":{ "x":{ "_":[ "that", "rx" ] }, "y":{ "_":[ "that", "ry" ] } } }, { "pushInto":{ "_":[ "variable", "frameslots" ] } } ]
+        },
+        { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+      ]
+    },
+    { "set":{ "counter":0 } },
+    {
+      "times":{ "_":[ "stencil", "dataGames", "count" ] },
+      "execute":[ { "as":{ "_":[ "this", "counter" ] }, "pushInto":{ "_":[ "variable", "gamesId" ] } }, { "sum":1, "to":{ "_":[ "this", "counter" ] } } ]
+    }
+  ],
+  "scenes":{
+    "intro":{
+      "object":[
+        { "width":256, "height":192, "x":0, "y":0, "bgcolor":"#fff" },
+        {
+          "box":"label", "width":256,
+          "zIndex":100, "x":0, "y":123,
+          "color":"#fff",
+          "font":"spectrum", "fontSize":20, "lineHeight":20, "outline":"#000", "textAlign":"center", "html":"PRESS START",
+          "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "visible":0 }, "wait":20 }, { "set":{ "visible":1 }, "wait":20, "loopTo":0 } ] } }
+        },
+        {
+          "box":"label", "width":256,
+          "zIndex":100, "x":0, "y":152,
+          "color":"#fff",
+          "font":"spectrum", "fontSize":20, "lineHeight":20, "outline":"#000", "textAlign":"center", "html":{ "_":[ "HI-SCORE: ", ".", { "_":[ "variable", "hiscore" ] } ] }
+        },
+        {
+          "box":"label", "width":256,
+          "zIndex":100, "x":0, "y":172,
+          "color":"#7f7f7f",
+          "font":"spectrum", "fontSize":20, "lineHeight":20, "outline":"#000", "textAlign":"center", "html":"Music by Frank Triggs"
+        },
+        {
+          "image":"logo", "width":213, "height":48,
+          "zIndex":10, "x":-213, "y":40,
+          "states":{
+            "code":{
+              "name":"Sequence",
+              "data":[
+                { "sum":40, "to":{ "_":[ "this", "x" ] }, "wait":1, "loop":1, "cycles":5 },
+                { "set":{ "x":21 } },
+                { "playAudio":"explode2" },
+                { "sum":2, "to":{ "_":[ "this", "y" ] }, "wait":1 },
+                { "subtract":2, "to":{ "_":[ "this", "y" ] }, "wait":1, "cycles":5, "loopTo":-1 }
+              ]
+            }
+          }
+        }
+      ],
+      "execute":{
+        "times":10,
+        "object":{
+          "image":"sprites", "width":16, "height":16,
+          "zIndex":5, "x":500,
+          "states":{
+            "code":{
+              "name":"Execute",
+              "data":[
+                {
+                  "when":{ "_":[ "this", "x", "isGreaterThan", 256 ] },
+                  "set":{
+                    "tileY":{ "_":[ "randomValue", [ 16, 48 ] ] },
+                    "x":-16, "y":{ "_":[ "randomNumber", [ 0, 176 ] ] }, "frame":{ "_":[ "randomNumber", [ 0, 11 ] ] },
+                    "forceX":{ "_":[ "randomNumber", [ 5, 10 ] ] }
+                  }
+                },
+                { "sum":{ "_":[ "this", "forceX" ] }, "to":{ "_":[ "this", "x" ] } },
+                { "sum":{ "_":[ "this", "forceX", "*", 2 ] }, "to":{ "_":[ "this", "angle" ] } }
+              ]
+            }
+          }
+        }
+      },
+      "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"play", "withTransition":3, "playAudio":"beep" } } }
+    },
+    "monogame":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "currentGame":1,
+      "difficulty":0,
+      "lives":1,
+      "states":[
+        {
+          "name":"newgame",
+          "execute":[
+            { "as":{ "_":[ "objectTyped", "gui-bomb" ] }, "set":{ "animation":"still" } },
+            { "sum":1, "to":{ "_":[ "this", "difficulty" ] } },
+            { "when":{ "_":[ "this", "difficulty", "isEqualTo", 4 ] }, "set":{ "difficulty":1 } },
+            { "as":{ "_":[ "object", "gui-border" ] }, "set":{ "bgcolor":{ "_":[ "stencil", "dataColors", { "_":[ "scene", "difficulty" ] } ] } } },
+            { "set":{ "playFrames":125 } },
+            {
+              "set":{
+                "width":240, "height":176,
+                "cameraX":8, "cameraY":8, "cameraWidth":240, "cameraHeight":176, "cameraFocusX":80, "cameraFocusY":58, "cameraFocusWidth":80, "cameraFocusHeight":58,
+                "x":8, "y":8
+              }
+            },
+            { "set":{ "game":{ "_":[ "stencil", "dataGames", { "_":[ "this", "currentGame" ] } ] } } }
+          ],
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "as":{ "_":[ "object", "game" ] }, "remove":1 },
+              { "wait":25 },
+              { "_":[ "scene", "game", "prepare" ] },
+              { "wait":25 },
+              { "set":{ "state":"play" } }
+            ]
+          }
+        },
+        { "name":"win", "execute":{ "set":{ "state":"newgame" } } },
+        { "name":"lose", "execute":{ "set":{ "state":"newgame" } } }
+      ]
+    },
+    "play":{
+      "set":{ "_":[ "stencil", "stageModel" ] },
+      "playAudio":"music",
+      "states":[
+        {
+          "name":"newgame",
+          "set":{ "counter":1, "playFrames":125 },
+          "execute":[
+            { "as":{ "_":[ "objectTyped", "gui-bomb" ] }, "set":{ "animation":"still" } },
+            { "sum":1, "to":{ "_":[ "this", "gameId" ] } },
+            {
+              "when":{ "_":[ "scene", "gameId", "isGreaterEqualThan", { "_":[ "variable", "gamesId", "count" ] } ] },
+              "shuffle":{ "_":[ "variable", "gamesId" ] },
+              "set":{ "gameId":0 }
+            },
+            {
+              "set":{
+                "width":240, "height":176,
+                "cameraX":8, "cameraY":8, "cameraWidth":240, "cameraHeight":176, "cameraFocusX":80, "cameraFocusY":58, "cameraFocusWidth":80, "cameraFocusHeight":58,
+                "x":8, "y":8
+              }
+            },
+            { "sum":1, "to":{ "_":[ "scene", "stage" ] } },
+            { "when":{ "_":[ "scene", "hudSpeed", "isGreaterThan", 5 ] }, "subtract":1, "to":{ "_":[ "scene", "hudSpeed" ] } },
+            {
+              "when":{ "_":[ "scene", "stage", "%", 5, "isEqualTo", 0 ] },
+              "execute":{ "when":{ "_":[ "scene", "difficulty", "isLessThan", 3 ] }, "sum":1, "to":{ "_":[ "scene", "difficulty" ] } }
+            },
+            {
+              "set":{
+                "borderColor":{ "_":[ "stencil", "dataColors", { "_":[ "scene", "stage", "%", { "_":[ "stencil", "dataColors", "count" ] } ] } ] },
+                "game":{ "_":[ "stencil", "dataGames", { "_":[ "variable", "gamesId", { "_":[ "this", "gameId" ] } ] } ] },
+                "panelColor":{ "_":[ "stencil", "dataColors", { "_":[ "scene", "stage", "+", 1, "%", { "_":[ "stencil", "dataColors", "count" ] } ] } ] }
+              }
+            },
+            { "as":{ "_":[ "object", "gui-border" ] }, "set":{ "bgcolor":{ "_":[ "scene", "borderColor" ] } } },
+            {
+              "object":{
+                "type":"gui-stagenumber",
+                "width":256, "height":192,
+                "zIndex":80, "x":0, "y":0,
+                "color":{ "_":[ "scene", "borderColor" ] },
+                "font":"spectrum", "fontSize":120, "lineHeight":192, "textAlign":"center", "html":{ "_":[ "scene", "stage" ] }
+              },
+              "into":{ "_":"scenehud" }
+            }
+          ],
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "as":{ "_":[ "object", "gui-door1" ] }, "subtract":{ "_":[ "that", "counter" ] }, "to":{ "_":[ "this", "x" ] } },
+              { "as":{ "_":[ "object", "gui-door2" ] }, "sum":{ "_":[ "that", "counter" ] }, "to":{ "_":[ "this", "x" ] } },
+              { "sum":4, "to":{ "_":[ "this", "counter" ] }, "wait":1, "cycles":8, "loopTo":-2 },
+              { "wait":{ "_":[ "scene", "hudSpeed" ] } },
+              { "as":{ "_":[ "object", "gui-door" ] }, "remove":1 },
+              {
+                "object":[
+                  {
+                    "type":[ "gui-door1", "gui-stagedoor" ],
+                    "image":"panels", "width":120, "height":192,
+                    "zIndex":90, "x":-112, "y":0,
+                    "bgcolor":{ "_":[ "scene", "panelColor" ] },
+                    "execute":{
+                      "object":{
+                        "width":240, "height":192,
+                        "x":0, "y":0,
+                        "color":"#fff",
+                        "font":"spectrum", "fontSize":40, "lineHeight":192, "outline":"#000", "textAlign":"center", "html":{ "_":[ "scene", "game", "name" ] }
+                      },
+                      "into":{ "_":"this" }
+                    }
+                  },
+                  {
+                    "type":[ "gui-door2", "gui-stagedoor" ],
+                    "image":"panels", "tileX":120, "width":120, "height":192,
+                    "zIndex":90, "x":248, "y":0,
+                    "bgcolor":{ "_":[ "scene", "panelColor" ] },
+                    "execute":{
+                      "object":{
+                        "width":240, "height":192,
+                        "x":-120, "y":0,
+                        "color":"#fff",
+                        "font":"spectrum", "fontSize":40, "lineHeight":192, "outline":"#000", "textAlign":"center", "html":{ "_":[ "scene", "game", "name" ] }
+                      },
+                      "into":{ "_":"this" }
+                    }
+                  }
+                ],
+                "into":{ "_":"scenehud" }
+              },
+              { "set":{ "counter":1 } },
+              { "as":{ "_":[ "object", "gui-door1" ] }, "sum":{ "_":[ "that", "counter" ] }, "to":{ "_":[ "this", "x" ] } },
+              { "as":{ "_":[ "object", "gui-door2" ] }, "subtract":{ "_":[ "that", "counter" ] }, "to":{ "_":[ "this", "x" ] } },
+              { "sum":4, "to":{ "_":[ "this", "counter" ] }, "wait":1, "cycles":8, "loopTo":-2 },
+              { "playAudio":"shut" },
+              { "wait":{ "_":[ "scene", "hudSpeed" ] } },
+              { "playAudio":"open" },
+              { "as":{ "_":[ "object", "gui-stagenumber" ] }, "remove":1 },
+              { "_":[ "scene", "game", "prepare" ] },
+              { "set":{ "counter":1 } },
+              { "as":{ "_":[ "object", "gui-door1" ] }, "subtract":{ "_":[ "that", "counter" ] }, "to":{ "_":[ "this", "x" ] } },
+              { "as":{ "_":[ "object", "gui-door2" ] }, "sum":{ "_":[ "that", "counter" ] }, "to":{ "_":[ "this", "x" ] } },
+              { "sum":4, "to":{ "_":[ "this", "counter" ] }, "wait":1, "cycles":8, "loopTo":-2 },
+              { "as":{ "_":[ "object", "gui-stagedoor" ] }, "remove":1 },
+              { "set":{ "state":"play" } }
+            ]
+          }
+        },
+        {
+          "name":"win",
+          "set":{ "counter":1 },
+          "execute":[
+            { "set":{ "winMessage":{ "_":[ "randomValue", { "_":[ "stencil", "dataWinMessages" ] } ] } } },
+            {
+              "object":[
+                {
+                  "type":[ "gui-door1", "gui-door" ],
+                  "image":"panels", "width":120, "height":192,
+                  "zIndex":90, "x":-112, "y":0,
+                  "bgcolor":{ "_":[ "scene", "panelColor" ] },
+                  "execute":{
+                    "object":{
+                      "width":240, "height":84,
+                      "x":0, "y":48,
+                      "color":"#fff",
+                      "font":"spectrum", "fontSize":120, "lineHeight":40, "outline":"#000", "textAlign":"center", "html":{ "_":[ "scene", "winMessage" ] }
+                    },
+                    "into":{ "_":"this" }
+                  }
+                },
+                {
+                  "type":[ "gui-door2", "gui-door" ],
+                  "image":"panels", "tileX":120, "width":120, "height":192,
+                  "zIndex":90, "x":248, "y":0,
+                  "bgcolor":{ "_":[ "scene", "panelColor" ] },
+                  "execute":{
+                    "object":{
+                      "width":240, "height":84,
+                      "x":-120, "y":48,
+                      "color":"#fff",
+                      "font":"spectrum", "fontSize":120, "lineHeight":40, "outline":"#000", "textAlign":"center", "html":{ "_":[ "scene", "winMessage" ] }
+                    },
+                    "into":{ "_":"this" }
+                  }
+                }
+              ],
+              "into":{ "_":"scenehud" }
+            }
+          ],
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "as":{ "_":[ "object", "gui-door1" ] }, "sum":{ "_":[ "that", "counter" ] }, "to":{ "_":[ "this", "x" ] } },
+              { "as":{ "_":[ "object", "gui-door2" ] }, "subtract":{ "_":[ "that", "counter" ] }, "to":{ "_":[ "this", "x" ] } },
+              { "sum":4, "to":{ "_":[ "this", "counter" ] }, "wait":1, "cycles":8, "loopTo":-2 },
+              { "playAudio":"rampup" },
+              { "sum":1, "to":{ "_":[ "scene", "combo" ] } },
+              {
+                "when":{ "_":[ "scene", "combo", "isGreaterEqualThan", 5 ] },
+                "execute":[
+                  { "when":{ "_":[ "scene", "lives", "isLessThan", 3 ] }, "sum":1, "to":{ "_":[ "scene", "lives" ] } },
+                  { "set":{ "combo":0 } },
+                  {
+                    "object":{
+                      "type":"gui-doormessage",
+                      "width":256, "height":30,
+                      "zIndex":111, "x":0, "y":192,
+                      "color":"#fff",
+                      "font":"spectrum", "fontSize":40, "lineHeight":30, "outline":"#000", "textAlign":"center", "html":"1UP!",
+                      "states":{
+                        "code":{
+                          "name":"Execute",
+                          "data":[
+                            { "subtract":1, "to":{ "_":[ "this", "forceY" ] } },
+                            { "sum":{ "_":[ "this", "forceY" ] }, "to":{ "_":[ "this", "y" ] } },
+                            { "when":{ "_":[ "this", "y", "isLessEqualThan", 130 ] }, "set":{ "y":130, "forceY":0 } }
+                          ]
+                        }
+                      }
+                    },
+                    "into":{ "_":"scenehud" },
+                    "playAudio":"bigfire"
+                  }
+                ]
+              },
+              { "as":{ "_":[ "object", "game" ] }, "remove":1 },
+              { "as":{ "_":[ "object", "gui-door1" ] }, "sum":1, "to":{ "_":[ "this", "y" ] } },
+              { "as":{ "_":[ "object", "gui-door2" ] }, "subtract":1, "to":{ "_":[ "this", "y" ] } },
+              { "wait":1 },
+              { "as":{ "_":[ "object", "gui-door1" ] }, "subtract":1, "to":{ "_":[ "this", "y" ] } },
+              { "as":{ "_":[ "object", "gui-door2" ] }, "sum":1, "to":{ "_":[ "this", "y" ] } },
+              { "wait":1, "cycles":5, "loopTo":-5 },
+              { "wait":{ "_":[ "scene", "hudSpeed" ] } },
+              { "playAudio":"open" },
+              { "as":{ "_":[ "object", "gui-doormessage" ] }, "remove":1 },
+              { "set":{ "state":"newgame" } }
+            ]
+          }
+        },
+        {
+          "name":"lose",
+          "set":{ "combo":0, "counter":1 },
+          "execute":[
+            { "set":{ "loseMessage":{ "_":[ "randomValue", { "_":[ "stencil", "dataLoseMessages" ] } ] } } },
+            {
+              "when":{ "_":[ "scene", "lives", "isGreaterThan", 0 ] },
+              "object":[
+                { "type":[ "gui-door1", "gui-life1left" ], "set":{ "_":[ "stencil", "lifePart" ] }, "width":20, "height":40, "zIndex":91, "x":-60, "y":120 },
+                {
+                  "type":[ "gui-door1", "gui-life1right" ],
+                  "set":{ "_":[ "stencil", "lifePart" ] },
+                  "tileX":20, "width":20, "height":40,
+                  "zIndex":91, "x":-40, "y":120
+                }
+              ],
+              "into":{ "_":"scenehud" }
+            },
+            {
+              "when":{ "_":[ "scene", "lives", "isGreaterThan", 1 ] },
+              "object":[
+                { "type":[ "gui-door1", "gui-life2left" ], "set":{ "_":[ "stencil", "lifePart" ] }, "width":20, "height":40, "zIndex":91, "x":-12, "y":120 },
+                {
+                  "type":[ "gui-door2", "gui-life2right" ],
+                  "set":{ "_":[ "stencil", "lifePart" ] },
+                  "tileX":20, "width":20, "height":40,
+                  "zIndex":91, "x":248, "y":120
+                }
+              ],
+              "into":{ "_":"scenehud" }
+            },
+            {
+              "when":{ "_":[ "scene", "lives", "isGreaterThan", 2 ] },
+              "object":[
+                { "type":[ "gui-door2", "gui-life3left" ], "set":{ "_":[ "stencil", "lifePart" ] }, "width":20, "height":40, "zIndex":91, "x":276, "y":120 },
+                {
+                  "type":[ "gui-door2", "gui-life3right" ],
+                  "set":{ "_":[ "stencil", "lifePart" ] },
+                  "tileX":20, "width":20, "height":40,
+                  "zIndex":91, "x":296, "y":120
+                }
+              ],
+              "into":{ "_":"scenehud" }
+            },
+            {
+              "object":[
+                {
+                  "type":[ "gui-door1", "gui-door" ],
+                  "image":"panels", "width":120, "height":192,
+                  "zIndex":90, "x":-112, "y":0,
+                  "bgcolor":{ "_":[ "scene", "panelColor" ] },
+                  "execute":{
+                    "object":{
+                      "width":240, "height":84,
+                      "x":0, "y":24,
+                      "color":"#fff",
+                      "font":"spectrum", "fontSize":120, "lineHeight":40, "outline":"#000", "textAlign":"center", "html":{ "_":[ "scene", "loseMessage" ] }
+                    },
+                    "into":{ "_":"this" }
+                  }
+                },
+                {
+                  "type":[ "gui-door2", "gui-door" ],
+                  "image":"panels", "tileX":120, "width":120, "height":192,
+                  "zIndex":90, "x":248, "y":0,
+                  "bgcolor":{ "_":[ "scene", "panelColor" ] },
+                  "execute":{
+                    "object":{
+                      "width":240, "height":84,
+                      "x":-120, "y":24,
+                      "color":"#fff",
+                      "font":"spectrum", "fontSize":120, "lineHeight":40, "outline":"#000", "textAlign":"center", "html":{ "_":[ "scene", "loseMessage" ] }
+                    },
+                    "into":{ "_":"this" }
+                  }
+                }
+              ],
+              "into":{ "_":"scenehud" }
+            }
+          ],
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "as":{ "_":[ "object", "gui-door1" ] }, "sum":{ "_":[ "that", "counter" ] }, "to":{ "_":[ "this", "x" ] } },
+              { "as":{ "_":[ "object", "gui-door2" ] }, "subtract":{ "_":[ "that", "counter" ] }, "to":{ "_":[ "this", "x" ] } },
+              { "sum":4, "to":{ "_":[ "this", "counter" ] }, "wait":1, "cycles":8, "loopTo":-2 },
+              { "as":{ "_":[ "object", "game" ] }, "remove":1 },
+              { "playAudio":"lose" },
+              {
+                "as":{ "_":[ "objectTyped", { "_":[ "gui-life", ".", { "_":[ "scene", "lives" ] }, ".", "left" ] } ] },
+                "set":{
+                  "removeType":[ "gui-door1", "gui-door2" ],
+                  "forceX":{ "_":[ "randomNumber", [ -3, -1 ] ] }, "forceY":{ "_":[ "randomNumber", [ -6, -2 ] ] },
+                  "state":"fall"
+                }
+              },
+              {
+                "as":{ "_":[ "objectTyped", { "_":[ "gui-life", ".", { "_":[ "scene", "lives" ] }, ".", "right" ] } ] },
+                "set":{
+                  "removeType":[ "gui-door1", "gui-door2" ],
+                  "forceX":{ "_":[ "randomNumber", [ 1, 3 ] ] }, "forceY":{ "_":[ "randomNumber", [ -6, -2 ] ] },
+                  "state":"fall"
+                }
+              },
+              { "as":{ "_":[ "object", "gui-door1" ] }, "sum":1, "to":{ "_":[ "this", "y" ] } },
+              { "as":{ "_":[ "object", "gui-door2" ] }, "subtract":1, "to":{ "_":[ "this", "y" ] } },
+              { "wait":1 },
+              { "as":{ "_":[ "object", "gui-door1" ] }, "subtract":1, "to":{ "_":[ "this", "y" ] } },
+              { "as":{ "_":[ "object", "gui-door2" ] }, "sum":1, "to":{ "_":[ "this", "y" ] } },
+              { "wait":1, "cycles":5, "loopTo":-5 },
+              { "wait":{ "_":[ "scene", "hudSpeed" ] } },
+              { "playAudio":"open" },
+              { "subtract":1, "to":{ "_":[ "scene", "lives" ] } },
+              { "set":{ "state":"newgame" } }
+            ]
+          }
+        },
+        {
+          "name":"gameover",
+          "execute":{
+            "object":{
+              "width":256, "height":192,
+              "zIndex":110, "x":0, "y":-192,
+              "bgcolor":{ "_":[ "scene", "panelColor" ] },
+              "lineHeight":192,
+              "execute":{
+                "object":{
+                  "width":256, "height":84,
+                  "x":0, "y":44,
+                  "color":"#fff",
+                  "font":"spectrum", "fontSize":120, "lineHeight":40, "outline":"#000", "textAlign":"center", "html":"GAME OVER"
+                },
+                "into":{ "_":"this" }
+              },
+              "states":{
+                "code":{
+                  "name":"Sequence",
+                  "data":[
+                    { "sum":1, "to":{ "_":[ "this", "forceY" ] } },
+                    { "sum":{ "_":[ "this", "forceY" ] }, "to":{ "_":[ "this", "y" ] } },
+                    { "when":{ "_":[ "this", "y", "isGreaterEqualThan", 0 ] }, "set":{ "y":0, "forceY":{ "_":[ "this", "forceY", "*", -0.4 ] } }, "playAudio":"blam" },
+                    { "wait":1, "loopTo":0, "until":{ "_":[ "this", "forceY", "abs", "isLessThan", 1, "and", { "_":[ "this", "y", "isEqualTo", 0 ] } ] } }
+                  ]
+                }
+              }
+            },
+            "into":{ "_":"scenehud" },
+            "stopChannel":"music"
+          },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "wait":40 },
+              { "as":{ "_":[ "object", "game" ] }, "remove":1 },
+              { "as":{ "_":[ "objectTyped", "gui-bomb" ] }, "set":{ "visible":0 } },
+              {
+                "object":{
+                  "width":256, "height":30,
+                  "zIndex":111, "x":0, "y":192,
+                  "color":"#fff",
+                  "font":"spectrum", "fontSize":20, "lineHeight":30, "outline":"#000", "textAlign":"center", "html":{ "_":[ "YOUR SCORE: ", ".", { "_":[ "scene", "stage" ] } ] },
+                  "states":{
+                    "code":{
+                      "name":"Execute",
+                      "data":[
+                        { "subtract":1, "to":{ "_":[ "this", "forceY" ] } },
+                        { "sum":{ "_":[ "this", "forceY" ] }, "to":{ "_":[ "this", "y" ] } },
+                        { "when":{ "_":[ "this", "y", "isLessEqualThan", 130 ] }, "set":{ "y":130, "forceY":{ "_":[ "this", "forceY", "*", -0.4 ] } } }
+                      ]
+                    }
+                  }
+                },
+                "into":{ "_":"scenehud" }
+              },
+              { "publishScore":{ "_":[ "scene", "stage" ] } },
+              {
+                "when":{ "_":[ "scene", "stage", "isGreaterThan", { "_":[ "variable", "hiscore" ] } ] },
+                "execute":[
+                  { "as":{ "_":"variable" }, "set":{ "hiscore":{ "_":[ "scene", "stage" ] } } },
+                  { "as":{ "_":"storage" }, "set":{ "hiscore":{ "_":[ "scene", "stage" ] } } },
+                  {
+                    "object":{
+                      "width":256, "height":30,
+                      "zIndex":111, "x":0, "y":192,
+                      "color":"#fff",
+                      "font":"spectrum", "fontSize":20, "lineHeight":30, "outline":"#000", "textAlign":"center", "html":"NEW HIGH SCORE!",
+                      "states":{
+                        "code":{
+                          "name":"Execute",
+                          "data":[
+                            { "when":{ "_":[ "this", "color", "isEqualTo", "#fff" ] }, "set":{ "color":"#f00" }, "elseExecute":{ "set":{ "color":"#fff" } } },
+                            { "subtract":1, "to":{ "_":[ "this", "forceY" ] } },
+                            { "sum":{ "_":[ "this", "forceY" ] }, "to":{ "_":[ "this", "y" ] } },
+                            { "when":{ "_":[ "this", "y", "isLessEqualThan", 145 ] }, "set":{ "y":145, "forceY":{ "_":[ "this", "forceY", "*", -0.4 ] } } }
+                          ]
+                        }
+                      }
+                    },
+                    "into":{ "_":"scenehud" },
+                    "playAudio":"bigfire"
+                  }
+                ]
+              },
+              { "wait":25 },
+              { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+              { "gotoScene":"intro", "withTransition":3 }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}
