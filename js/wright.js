@@ -4231,7 +4231,7 @@ function Wright(gameId,mods) {
 		return valid.length ? valid[Math.floor(seededRandom() * valid.length)] : undefined;
 	}
 
-	function merge(from,tox,obj,hst){
+	function merge(from,tox,obj){
 		for (var k in obj)
 			if (obj[k] instanceof Array) merge(from,tox,obj[k]);
 			else obj[k]=get(from,tox,obj[k]);
