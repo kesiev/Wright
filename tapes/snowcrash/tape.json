@@ -1,0 +1,647 @@
+{
+  "name":"Snowcrash",
+  "author":"KesieV",
+  "year":2017,
+  "genre":"Skiing",
+  "description":"<p>Plot!</p><p>The time we crossed the starting line we felt that chill down the spine. Like them.<br>The sight of that twisting snowy track punctuated by endless opportunities and challenges was diving on us too, feeding our expectations and desire for victory.</p><p>And we also felt the atrocious pain of the first stab in the same back the ticking timer gave.</p><p>Unlike us, they are confortable with this bittersweet pattern of pain and excitement and can keep hitting the A BUTTON, going faster and faster across their entire life. Using LEFT and RIGHT for steering around the flags, dribbling obstacles and catching bonuses is a surprisingly balanced challenge: a mix of choices, strategy and personality that continuously evolves in rewards and failures.</p><p>And at checkpoints they can get a reward unconditionally: there is some time bonus for everyone - but the largest prizes goes to the best players. Winners are allowed to go even further, face harder challenges and even break hi-scores.</p><p>Some of them gave up a little too early, probably - and that's us. We are that guy that let the others in a hurry pass. We still find ourselves walking for short lenghts with our eyes closed from time to time. We are utopians dreaming of a track without hazards and prizes, with no winners and no losers - just us joyfully and freely tracing lines on the snow together.</p><p>And the price is disappearing from the challenge, no checkpoints, score or sense of progress. We want to grab the sides of this shaking track with both our hands and try to keep it as still and large as possible. But fear not: we are just a few and we all know that steering a road is nonsense. So the race can keep going on, making us a imperceptible irregularity of the the corners.</p><p>Happy holidays from Wright Magazine!</p>",
+  "screenshots":[ "snowcrash-1.png", "snowcrash-2.png" ],
+  "hardware":{
+    "width":256,
+    "height":192,
+    "filter":"retro"
+  },
+  "audioChannels":{
+    "music":{ "volume":1, "looping":1, "samples":[ "bgm" ] },
+    "sfx":{ "volume":1, "samples":[ "shut", "beep", "blam", "fire", "beep2", "beep3", "lose", "rampup", "rampdown" ] }
+  },
+  "cheats":{},
+  "resources":{
+    "bgm":"nonamedzak02.ogg",
+    "spectrum":"spectrum.font",
+    "sprites":"sprites.png",
+    "title":"title.png",
+    "beep":"../default/zxsounds/beep.ogg",
+    "beep2":"../default/zxsounds/beep2.ogg",
+    "beep3":"../default/zxsounds/beep3.ogg",
+    "blam":"../default/zxsounds/blam.ogg",
+    "fire":"../default/zxsounds/fire.ogg",
+    "lose":"../default/zxsounds/lose.ogg",
+    "rampdown":"../default/zxsounds/rampdown.ogg",
+    "rampup":"../default/zxsounds/rampup.ogg",
+    "shut":"../default/zxsounds/shut.ogg"
+  },
+  "stencils":{
+    "codeGivePoints":[
+      { "set":{ "allscore":{ "_":[ "this", "score", "*", { "_":[ "scene", "combo" ] } ] } } },
+      {
+        "set":{
+          "notifyColor":"#0ff",
+          "notifyText":{ "_":[ "this", "score", ".", "pts. X ", ".", { "_":[ "scene", "combo" ] }, ".", " = ", ".", { "_":[ "this", "allscore" ] }, ".", "pts." ] }
+        },
+        "execute":{ "_":[ "stencil", "codeNotify" ] }
+      },
+      { "sum":{ "_":[ "this", "allscore" ] }, "to":{ "_":[ "variable", "score" ] } }
+    ],
+    "codeIncreaseCombo":{ "as":{ "_":"scene" }, "set":{ "combo":{ "_":[ "scene", "combo", "+", 1, "limitValue", [ 0, 20 ] ] } } },
+    "codeLimitValues":{
+      "as":{ "_":"scene" },
+      "set":{ "bonusValues":{ "_":[ "this", "bonusValues", "limitValue", [ 0, 2 ] ] }, "time":{ "_":[ "this", "time", "limitValue", [ 0, 1500 ] ] } }
+    },
+    "codeNextDifficulty":{
+      "as":{ "_":"scene" },
+      "set":{ "difficulty":{ "_":[ "this", "difficulty", "+", 1, "limitValue", [ 0, 29 ] ] }, "stage":{ "_":[ "this", "stage", "+", 1 ] } }
+    },
+    "codeNotify":[
+      { "as":{ "_":[ "object", "notify" ] }, "remove":1 },
+      {
+        "object":{
+          "type":"notify",
+          "width":256, "height":10,
+          "zIndex":300, "y":15,
+          "color":{ "_":[ "that", "notifyColor" ] },
+          "font":"spectrum", "lineHeight":10, "outline":"#000", "textAlign":"center", "html":{ "_":[ "that", "notifyText" ] },
+          "states":{
+            "code":{
+              "name":"Sequence",
+              "data":[ { "set":{ "visible":{ "_":[ "this", "visible", "not" ] } }, "wait":1, "loop":1, "cycles":10 }, { "wait":10 }, { "remove":1 } ]
+            }
+          }
+        }
+      }
+    ],
+    "modelScrolling":{
+      "type":"scrolling",
+      "zIndex":10,
+      "visible":0,
+      "states":{
+        "actions":{
+          "name":"scroll",
+          "execute":[
+            { "set":{ "y":{ "_":[ "this", "position", "-", { "_":[ "scene", "position" ] }, "+", 208 ] }, "visible":1 } },
+            { "when":{ "_":[ "this", "y", "isLessThan", -16 ] }, "remove":1 }
+          ]
+        }
+      }
+    },
+    "player":{
+      "type":"player",
+      "image":"sprites", "tileX":96, "width":16, "height":16,
+      "zIndex":250, "x":120, "y":30, "frame":2,
+      "speed":0,
+      "facingAngle":180,
+      "flagSequence":{ "_":[ "randomNumber", [ 0, 1 ] ] },
+      "skidCounter":0,
+      "states":{
+        "name":"play",
+        "code":{
+          "name":"Execute",
+          "data":[
+            {
+              "when":{ "_":[ "keyA", "isHit" ] },
+              "sum":1,
+              "to":{ "_":[ "this", "speed" ] },
+              "set":{ "skidCounter":100 },
+              "elseExecute":{ "subtract":0.1, "to":{ "_":[ "this", "speed" ] } }
+            },
+            { "set":{ "maxSpeed":{ "_":[ 5, "+", { "_":[ "scene", "difficulty", "/", 10 ] } ] }, "rotationSpeed":{ "_":[ "this", "speed", "+", 1 ] }, "skid":0 } },
+            {
+              "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "border" ] } ] },
+              "execute":[ { "set":{ "maxSpeed":2 } }, { "sum":{ "_":[ "this", "speed", "*", 2 ] }, "to":{ "_":[ "this", "skidCounter" ] } } ]
+            },
+            { "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "hitable" ] } ] }, "as":{ "_":"that" }, "executeAction":"hit" },
+            { "when":{ "_":[ "keyRight", "isDown" ] }, "subtract":{ "_":[ "this", "rotationSpeed" ] }, "to":{ "_":[ "this", "facingAngle" ] } },
+            { "when":{ "_":[ "keyLeft", "isDown" ] }, "sum":{ "_":[ "this", "rotationSpeed" ] }, "to":{ "_":[ "this", "facingAngle" ] } },
+            {
+              "set":{
+                "speed":{ "_":[ "this", "speed", "limitValue", [ 0, { "_":[ "this", "maxSpeed" ] } ] ] },
+                "facingAngle":{ "_":[ "this", "facingAngle", "limitValue", [ 120, 240 ] ] }
+              }
+            },
+            {
+              "sum":{ "_":[ "this", "facingAngle", "-", 180, "abs", "isGreaterThan", 30, "*", { "_":[ "this", "speed" ] } ] },
+              "to":{ "_":[ "this", "skidCounter" ] }
+            },
+            {
+              "when":{ "_":[ "this", "skidCounter", "isGreaterThan", 10 ] },
+              "execute":[ { "object":{ "set":{ "_":[ "stencil", "smoke" ] }, "forceY":-2 }, "playAudio":"fire" }, { "set":{ "skidCounter":0 } } ]
+            },
+            { "applyVector":{ "angle":{ "_":[ "this", "facingAngle" ] }, "length":{ "_":[ "this", "speed" ] } } },
+            { "sum":{ "_":[ "this", "forceY" ] }, "to":{ "_":[ "scene", "position" ] } },
+            {
+              "set":{
+                "x":{ "_":[ "this", "x", "+", { "_":[ "this", "forceX" ] }, "limitValue", [ 16, 219 ] ] }, "frame":{ "_":[ "this", "facingAngle", "-", 120, "/", 25, "floor" ] }
+              }
+            },
+            {
+              "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "checkpoint" ] } ] },
+              "execute":[
+                { "as":{ "_":"that" }, "set":{ "removeType":"checkpoint" } },
+                {
+                  "set":{ "notifyColor":"#ff0", "notifyText":{ "_":[ "CHECKPOINT! +", ".", { "_":[ "scene", "combo" ] }, ".", "sec." ] } },
+                  "execute":{ "_":[ "stencil", "codeNotify" ] },
+                  "playAudio":"beep2"
+                },
+                { "_":[ "stencil", "codeNextDifficulty" ] },
+                { "set":{ "nextCheckpointAt":{ "_":[ "that", "position", "+", 1920 ] } } },
+                {
+                  "as":{ "_":"scene" },
+                  "set":{
+                    "bonusValues":{ "_":[ "this", "difficulty", "/", 10, "floor" ] },
+                    "borderSkin":{ "_":[ "this", "difficulty", "/", 6, "floor", "*", 16, "+", 32 ] },
+                    "nextCheckpointAt":{ "_":[ "that", "nextCheckpointAt" ] },
+                    "obstacleSkin":{ "_":[ "this", "difficulty", "%", 2 ] },
+                    "time":{ "_":[ "this", "time", "+", { "_":[ "scene", "combo", "*", 25 ] } ] }
+                  }
+                },
+                { "_":[ "stencil", "codeLimitValues" ] }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "backgroundDot":{
+      "type":"scrolling",
+      "width":1, "height":1,
+      "zIndex":2, "x":{ "_":[ "randomNumber", [ 0, 256 ] ] },
+      "bgcolor":"#00f",
+      "position":{ "_":[ "randomNumber", [ 0, 300 ] ] },
+      "states":{
+        "actions":{
+          "name":"scroll",
+          "execute":[
+            { "set":{ "y":{ "_":[ "this", "position", "-", { "_":[ "scene", "position" ] }, "+", 208 ] }, "visible":1 } },
+            {
+              "when":{ "_":[ "this", "y", "isLessThan", 0 ] },
+              "set":{
+                "x":{ "_":[ "scene", "roadLeft", "+", { "_":[ "randomNumber", [ 0, { "_":[ "scene", "roadWidth" ] } ] ] } ] },
+                "position":{ "_":[ "scene", "position", "+", { "_":[ "randomNumber", [ 0, 20 ] ] } ] }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "cloud":{
+      "times":10,
+      "object":{ "set":{ "_":[ "stencil", "smoke" ] }, "zIndex":400 },
+      "execute":[
+        { "sum":{ "_":[ "randomNumber", [ { "_":[ "this", "width", "/", -2 ] }, { "_":[ "this", "width", "/", 2 ] } ] ] }, "to":{ "_":[ "that", "x" ] } },
+        { "sum":{ "_":[ "randomNumber", [ { "_":[ "this", "height", "/", -2 ] }, { "_":[ "this", "height", "/", 2 ] } ] ] }, "to":{ "_":[ "that", "y" ] } }
+      ]
+    },
+    "bonus":{
+      "type":"hitable",
+      "set":{ "_":[ "stencil", "modelScrolling" ] },
+      "image":"sprites", "tileX":208, "width":16, "height":16,
+      "zIndex":15,
+      "flipX":{ "_":[ "randomNumber", [ 0, 1 ] ] },
+      "timer":0,
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":[ { "sum":0.1, "to":{ "_":[ "this", "timer" ] } }, { "sum":{ "_":[ "this", "timer", "sin" ] }, "to":{ "_":[ "this", "x" ] } } ]
+        },
+        "actions":{
+          "name":"hit",
+          "execute":[
+            { "sum":{ "_":[ 25, "*", { "_":[ "this", "frame", "+", 1 ] } ] }, "to":{ "_":[ "scene", "time" ] } },
+            { "set":{ "score":{ "_":[ "this", "frame", "+", 1, "*", 100 ] } }, "playAudio":"beep" },
+            { "_":[ "stencil", "codeLimitValues" ] },
+            { "_":[ "stencil", "codeGivePoints" ] },
+            { "_":[ "stencil", "codeIncreaseCombo" ] },
+            { "remove":1 }
+          ]
+        }
+      }
+    },
+    "border":{ "type":"border", "set":{ "_":[ "stencil", "modelScrolling" ] }, "image":"sprites", "height":16, "flipY":{ "_":[ "randomNumber", [ 0, 1 ] ] } },
+    "checkpoint":{ "type":"checkpoint", "set":{ "_":[ "stencil", "modelScrolling" ] }, "image":"sprites", "tileY":16, "height":16 },
+    "flag":{
+      "set":{ "_":[ "stencil", "modelScrolling" ] },
+      "image":"sprites", "tileX":64, "width":16, "height":16,
+      "zIndex":15, "y":500,
+      "enabled":1,
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":{
+            "when":{ "_":[ "this", "enabled" ] },
+            "execute":{
+              "when":{ "_":[ "this", "y", "isLessThan", 20 ] },
+              "execute":[
+                {
+                  "when":{ "_":[ "this", "frame" ] },
+                  "execute":{
+                    "when":{ "_":[ "this", "x", "isLessThan", { "_":[ "objectTyped", "player", "x" ] } ] },
+                    "executeAction":"ok",
+                    "elseExecute":{ "executeAction":"ko" }
+                  },
+                  "elseExecute":{
+                    "when":{ "_":[ "this", "x", "isGreaterThan", { "_":[ "objectTyped", "player", "x" ] } ] },
+                    "executeAction":"ok",
+                    "elseExecute":{ "executeAction":"ko" }
+                  }
+                },
+                { "set":{ "enabled":0 } }
+              ]
+            }
+          }
+        },
+        "actions":[
+          {
+            "name":"ok",
+            "execute":[
+              { "set":{ "score":{ "_":[ "objectTyped", "player", "speed", "*", 10, "floor" ] } }, "playAudio":"beep3" },
+              { "_":[ "stencil", "codeGivePoints" ] },
+              { "_":[ "stencil", "codeIncreaseCombo" ] }
+            ]
+          },
+          {
+            "name":"ko",
+            "execute":[
+              { "set":{ "notifyColor":"#f0f", "notifyText":"MISS!" }, "execute":{ "_":[ "stencil", "codeNotify" ] }, "playAudio":"rampdown" },
+              { "as":{ "_":"scene" }, "set":{ "combo":1 } }
+            ]
+          }
+        ]
+      }
+    },
+    "obstacle":{
+      "type":"hitable",
+      "set":{ "_":[ "stencil", "modelScrolling" ] },
+      "image":"sprites", "tileX":176, "width":16, "height":16,
+      "zIndex":20,
+      "flipX":{ "_":[ "randomNumber", [ 0, 1 ] ] },
+      "states":[
+        {
+          "actions":{
+            "name":"hit",
+            "execute":[
+              { "as":{ "_":"that" }, "set":{ "speed":0 }, "playAudio":"shut" },
+              { "as":{ "_":"that" }, "execute":{ "_":[ "stencil", "cloud" ] } },
+              { "as":{ "_":"scene" }, "set":{ "combo":1 } },
+              { "set":{ "state":"remove" } }
+            ]
+          }
+        },
+        {
+          "name":"remove",
+          "set":{ "removeType":"hitable" },
+          "code":{ "name":"Sequence", "data":[ { "set":{ "visible":{ "_":[ "this", "visible", "not" ] } }, "wait":1, "loop":1, "cycles":5 }, { "remove":1 } ] }
+        }
+      ]
+    },
+    "smoke":{
+      "image":"sprites", "width":16, "height":16,
+      "zIndex":200, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "animations":{ "idle":{ "frames":4, "speed":1 } },
+      "animation":"idle",
+      "states":{ "code":[ { "name":"Sequence", "data":[ { "wait":10 }, { "remove":1 } ] }, { "name":"Physics" } ] }
+    }
+  },
+  "execute":[
+    { "when":{ "_":[ "storage", "hiscore", "not" ] }, "as":{ "_":"storage" }, "set":{ "hiscore":0 } },
+    { "as":{ "_":"variable" }, "set":{ "hiscore":{ "_":[ "storage", "hiscore" ] } } }
+  ],
+  "scenes":{
+    "intro":{
+      "execute":[
+        {
+          "times":30,
+          "object":{
+            "y":200,
+            "bgcolor":"#fff",
+            "timer":0,
+            "states":{
+              "code":{
+                "name":"Execute",
+                "data":{
+                  "when":{ "_":[ "this", "y", "isGreaterThan", 192 ] },
+                  "execute":[
+                    { "set":{ "flakeSize":{ "_":[ "randomNumber", [ 1, 2 ] ] } } },
+                    {
+                      "set":{
+                        "width":{ "_":[ "this", "flakeSize" ] }, "height":{ "_":[ "this", "flakeSize" ] },
+                        "zIndex":{ "_":[ "randomValue", [ 20, 70 ] ] }, "x":{ "_":[ "randomNumber", [ 0, 256 ] ] }, "y":0,
+                        "speedX":{ "_":[ "randomValue", [ 1, 1.1, 1.2, 1.3 ] ] },
+                        "speedY":{ "_":[ "randomNumber", [ 10, 30 ], "/", 10 ] },
+                        "timer":{ "_":[ "randomNumber", [ 0, 100 ] ] }
+                      }
+                    }
+                  ],
+                  "elseExecute":[
+                    { "sum":{ "_":[ "this", "speedY" ] }, "to":{ "_":[ "this", "y" ] } },
+                    { "sum":{ "_":[ "this", "timer", "sin", "*", { "_":[ "this", "speedX" ] } ] }, "to":{ "_":[ "this", "x" ] } },
+                    { "sum":{ "_":[ "randomNumber", [ 0, 10 ], "/", 20 ] }, "to":{ "_":[ "this", "timer" ] } }
+                  ]
+                }
+              }
+            }
+          }
+        },
+        {
+          "object":[
+            { "image":"title", "width":256, "height":192, "x":0, "y":0 },
+            {
+              "image":"title", "tileY":192, "width":219, "height":41,
+              "zIndex":50, "x":-219, "y":40,
+              "speed":1,
+              "playAudio":"rampdown",
+              "states":{
+                "code":{
+                  "name":"Sequence",
+                  "data":[
+                    { "wait":1 },
+                    { "sum":{ "_":[ "this", "speed" ] }, "to":{ "_":[ "this", "x" ] } },
+                    { "multiply":2, "to":{ "_":[ "this", "speed" ] } },
+                    { "loopTo":0, "until":{ "_":[ "this", "x", "isGreaterThan", 18 ] } },
+                    { "set":{ "x":18 }, "playAudio":"blam" },
+                    { "sum":1, "to":{ "_":[ "this", "y" ] }, "wait":1 },
+                    { "subtract":1, "to":{ "_":[ "this", "y" ] }, "wait":1 },
+                    { "cycles":10, "loopTo":-2 }
+                  ]
+                }
+              }
+            },
+            {
+              "box":"label", "width":256,
+              "zIndex":100, "x":0, "y":113,
+              "color":"#fff",
+              "font":"spectrum", "fontSize":20, "lineHeight":20, "outline":"#000", "textAlign":"center", "html":"PRESS START",
+              "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "visible":0 }, "wait":20 }, { "set":{ "visible":1 }, "wait":20, "loopTo":0 } ] } }
+            },
+            {
+              "box":"label", "width":256,
+              "zIndex":100, "x":0, "y":152,
+              "color":"#fff",
+              "font":"spectrum", "fontSize":20, "lineHeight":20, "outline":"#000", "textAlign":"center", "html":{ "_":[ "HI-SCORE: ", ".", { "_":[ "variable", "hiscore" ] } ] }
+            },
+            {
+              "box":"label", "width":256,
+              "zIndex":100, "x":0, "y":172,
+              "color":"#ff0",
+              "font":"spectrum", "fontSize":20, "lineHeight":20, "outline":"#000", "textAlign":"center", "html":"Music: Nonamedzak02 by Agent-X"
+            }
+          ]
+        }
+      ],
+      "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"play", "withTransition":3, "playAudio":"rampup" } } }
+    },
+    "play":{
+      "execute":[
+        { "times":30, "object":{ "_":[ "stencil", "backgroundDot" ] } },
+        { "as":{ "_":"variable" }, "set":{ "score":0 } },
+        {
+          "object":[
+            { "width":256, "height":192, "x":0, "y":0, "bgcolor":"#fff" },
+            {
+              "type":"hud",
+              "hudType":"label", "label":"SCORE:%number|variable.score|0|10% TIME: %number|scene.time./.25.floor|0|2%",
+              "box":"label", "width":237, "height":16,
+              "zIndex":10000, "x":5, "y":3,
+              "color":"#fff",
+              "font":"spectrum", "lineHeight":10, "outline":"#000000"
+            },
+            {
+              "type":"hud",
+              "hudType":"label", "label":"%number|scene.combo|0|2%x",
+              "box":"label", "width":237, "height":16,
+              "zIndex":10000, "x":5, "y":176,
+              "color":"#fff",
+              "font":"spectrum", "lineHeight":10, "outline":"#000000", "textAlign":"right"
+            },
+            {
+              "type":"hud",
+              "hudType":"label", "label":"STAGE %number|scene.stage|0|2%",
+              "box":"label", "width":237, "height":16,
+              "zIndex":10000, "x":5, "y":176,
+              "color":"#fff",
+              "font":"spectrum", "lineHeight":10, "outline":"#000000"
+            },
+            { "_":[ "stencil", "player" ] }
+          ]
+        }
+      ],
+      "playAudio":"bgm",
+      "bonusValues":0,
+      "borderSkin":32,
+      "combo":1,
+      "curvePosition":{ "_":[ "randomNumber", [ 0, 400 ] ] },
+      "difficulty":-1,
+      "nextCheckpointAt":64,
+      "nextFlagAt":242,
+      "obstacleSkin":0,
+      "position":208,
+      "positionProcessed":0,
+      "roadWidth":150,
+      "stage":0,
+      "time":750,
+      "states":[
+        {
+          "code":[
+            {
+              "name":"Sequence",
+              "data":[
+                { "wait":25 },
+                {
+                  "object":{
+                    "width":100, "height":30,
+                    "zIndex":10000, "x":78, "y":81,
+                    "color":"#fff",
+                    "font":"spectrum", "fontSize":40, "lineHeight":30, "outline":"#000", "textAlign":"center", "html":"READY?",
+                    "playAudio":"beep",
+                    "states":{
+                      "code":{
+                        "name":"Sequence",
+                        "data":[
+                          { "wait":25 },
+                          { "set":{ "html":"SET..." }, "playAudio":"beep" },
+                          { "wait":25 },
+                          { "_":[ "stencil", "cloud" ] },
+                          { "set":{ "html":"GO!" }, "playAudio":"blam" },
+                          { "set":{ "color":"#0ff" }, "wait":1 },
+                          { "set":{ "color":"#007f7f" }, "wait":1, "cycles":10, "loopTo":-1 },
+                          { "remove":1 }
+                        ]
+                      }
+                    }
+                  }
+                },
+                { "wait":50 },
+                { "as":{ "_":[ "object", "player" ] }, "set":{ "state":"play" } },
+                { "subtract":1, "to":{ "_":[ "scene", "time" ] } },
+                { "wait":1, "loopTo":-1, "until":{ "_":[ "scene", "time", "not" ] } },
+                { "set":{ "state":"gameover" } }
+              ]
+            },
+            {
+              "name":"Execute",
+              "data":[
+                { "as":{ "_":[ "object", "scrolling" ] }, "executeAction":"scroll" },
+                {
+                  "times":13,
+                  "execute":{
+                    "when":{ "_":[ "this", "positionProcessed", "isLessThan", { "_":[ "this", "position" ] } ] },
+                    "execute":[
+                      {
+                        "sum":{ "_":[ "randomNumber", [ { "_":[ "this", "difficulty" ] }, { "_":[ "this", "difficulty", "+", 10 ] } ] ] },
+                        "to":{ "_":[ "this", "curvePosition" ] }
+                      },
+                      { "set":{ "roadWidth":{ "_":[ "this", "curvePosition", "*", 0.01, "sin", "*", 50, "+", 180, "-", { "_":[ "this", "difficulty" ] } ] } } },
+                      { "set":{ "centerX":{ "_":[ "this", "curvePosition", "*", 0.03, "sin", "*", 20, "+", 120 ] } } },
+                      { "set":{ "sideWidth":{ "_":[ "this", "roadWidth", "/", 2 ] } } },
+                      {
+                        "set":{
+                          "roadLeft":{ "_":[ "this", "centerX", "-", { "_":[ "this", "roadWidth", "/", 2 ] } ] },
+                          "roadRight":{ "_":[ "this", "centerX", "+", { "_":[ "this", "roadWidth", "/", 2 ] } ] }
+                        }
+                      },
+                      {
+                        "object":[
+                          {
+                            "set":{ "_":[ "stencil", "border" ] },
+                            "tileY":{ "_":[ "that", "borderSkin" ] }, "width":{ "_":[ "that", "roadLeft" ] },
+                            "x":0,
+                            "flipX":1,
+                            "position":{ "_":[ "that", "positionProcessed" ] }
+                          },
+                          {
+                            "set":{ "_":[ "stencil", "border" ] },
+                            "tileY":{ "_":[ "that", "borderSkin" ] }, "width":{ "_":[ 256, "-", { "_":[ "that", "roadRight" ] } ] },
+                            "x":{ "_":[ "that", "roadRight" ] },
+                            "position":{ "_":[ "that", "positionProcessed" ] }
+                          }
+                        ]
+                      },
+                      {
+                        "when":{ "_":[ "this", "nextCheckpointAt", "-", { "_":[ "this", "position" ] }, "isLessThan", 50 ] },
+                        "execute":{
+                          "when":{ "_":[ "this", "positionProcessed", "isEqualTo", { "_":[ "this", "nextCheckpointAt" ] } ] },
+                          "object":{
+                            "set":{ "_":[ "stencil", "checkpoint" ] },
+                            "width":{ "_":[ "that", "roadWidth" ] },
+                            "x":{ "_":[ "that", "roadLeft" ] },
+                            "position":{ "_":[ "that", "positionProcessed" ] }
+                          }
+                        },
+                        "elseExecute":{
+                          "when":{ "_":[ "this", "positionProcessed", "isGreaterThan", { "_":[ "this", "nextFlagAt" ] } ] },
+                          "execute":[
+                            {
+                              "object":{
+                                "set":{ "_":[ "stencil", "flag" ] },
+                                "x":{ "_":[ "that", "centerX", "+", { "_":[ "randomNumber", [ { "_":[ "that", "sideWidth", "-", 16, "*", -1 ] }, { "_":[ "that", "sideWidth", "-", 32 ] } ], "*", { "_":[ "that", "difficulty", "/", 30, "limitValue", [ 0, 1 ] ] } ] } ] }, "frame":{ "_":[ "that", "flagSequence" ] },
+                                "position":{ "_":[ "that", "positionProcessed" ] }
+                              }
+                            },
+                            { "set":{ "nextFlagAt":{ "_":[ "this", "positionProcessed", "+", 200 ] } } },
+                            {
+                              "when":{ "_":[ "this", "difficulty", "isLessThan", 10 ] },
+                              "set":{ "flagSequence":{ "_":[ "this", "flagSequence", "not" ] } },
+                              "elseExecute":{ "set":{ "flagSequence":{ "_":[ "randomNumber", [ 0, 1 ] ] } } }
+                            }
+                          ],
+                          "elseExecute":[
+                            {
+                              "when":{ "_":[ "this", "difficulty", "isGreaterThan", 1 ] },
+                              "execute":{
+                                "when":{ "_":[ "randomNumber", [ 0, 100 ], "isLessThan", { "_":[ "scene", "difficulty", "+", 10 ] } ] },
+                                "execute":{
+                                  "object":{
+                                    "set":{ "_":[ "stencil", "obstacle" ] },
+                                    "x":{ "_":[ "that", "roadLeft", "+", { "_":[ "randomNumber", [ 0, { "_":[ "that", "roadWidth", "-", 16 ] } ] ] } ] }, "frame":{ "_":[ "that", "obstacleSkin" ] },
+                                    "position":{ "_":[ "that", "positionProcessed" ] }
+                                  }
+                                }
+                              }
+                            },
+                            {
+                              "when":{ "_":[ "this", "difficulty", "isGreaterThan", 3 ] },
+                              "execute":{
+                                "when":{ "_":[ "randomNumber", [ 0, 100 ], "isLessThan", 5 ] },
+                                "execute":{
+                                  "object":{
+                                    "set":{ "_":[ "stencil", "bonus" ] },
+                                    "x":{ "_":[ "that", "roadLeft", "+", { "_":[ "randomNumber", [ 0, { "_":[ "that", "roadWidth", "-", 16 ] } ] ] } ] }, "frame":{ "_":[ "randomNumber", [ 0, { "_":[ "that", "bonusValues" ] } ] ] },
+                                    "position":{ "_":[ "that", "positionProcessed" ] }
+                                  }
+                                }
+                              }
+                            }
+                          ]
+                        }
+                      },
+                      { "sum":16, "to":{ "_":[ "this", "positionProcessed" ] } }
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name":"gameover",
+          "execute":[
+            { "stopChannel":"music" },
+            { "as":{ "_":[ "objectTyped", "player" ] }, "set":{ "speed":0, "state":"idle" } },
+            { "publishScore":{ "_":[ "variable", "score" ] } }
+          ],
+          "code":{
+            "name":"Sequence",
+            "data":[
+              {
+                "object":{
+                  "width":256, "height":10,
+                  "zIndex":10000, "x":0, "y":71,
+                  "bgcolor":"#000", "color":"#fff",
+                  "font":"spectrum", "lineHeight":10, "textAlign":"center", "html":"TIME UP!",
+                  "playAudio":"rampdown"
+                }
+              },
+              { "wait":25 },
+              {
+                "object":{
+                  "width":256, "height":30,
+                  "zIndex":10000, "x":0, "y":81,
+                  "font":"spectrum", "fontSize":40, "lineHeight":30, "outline":"#000", "textAlign":"center", "html":"GAME OVER",
+                  "playAudio":"blam",
+                  "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "color":"#f00" }, "wait":1 }, { "set":{ "color":"#7f0000" }, "wait":1, "loopTo":0 } ] } }
+                }
+              },
+              { "wait":25 },
+              {
+                "when":{ "_":[ "variable", "score", "isGreaterThan", { "_":[ "variable", "hiscore" ] } ] },
+                "execute":[
+                  { "as":{ "_":"variable" }, "set":{ "hiscore":{ "_":[ "variable", "score" ] } } },
+                  { "as":{ "_":"storage" }, "set":{ "hiscore":{ "_":[ "variable", "score" ] } } },
+                  {
+                    "object":{
+                      "width":256, "height":10,
+                      "zIndex":10000, "x":0, "y":111,
+                      "bgcolor":"#000", "color":"#0f0",
+                      "font":"spectrum", "lineHeight":10, "textAlign":"center", "html":"NEW HIGH SCORE! VERY GOOD!",
+                      "playAudio":"rampup"
+                    }
+                  }
+                ],
+                "elseExecute":{
+                  "object":{
+                    "width":256, "height":10,
+                    "zIndex":10000, "x":0, "y":111,
+                    "bgcolor":"#000", "color":"#fff",
+                    "font":"spectrum", "lineHeight":10, "textAlign":"center", "html":"BETTER LUCK NEXT TIME!",
+                    "playAudio":"blam"
+                  }
+                }
+              },
+              { "wait":25 },
+              { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+              { "gotoScene":"intro", "withTransition":3 }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}
