@@ -108,6 +108,7 @@ Since I've decided to implement from scratch the nicest things I learnt, thought
   * On-screen popup guide for touch controls
   * Multiple touchscreen controls layout (optimized for shooters, platformers etc.)
   * Remote gaming on another web browser or Chromecast
+  * Motion controls
 
 #### Screen
 
@@ -118,6 +119,7 @@ Since I've decided to implement from scratch the nicest things I learnt, thought
   * Customizable screen scaling (i.e. 2x, 3x...)
   * Per-game aliased/pixelated scaling
   * Automatic frameskip
+  * Disable device standby on fullscreen
   * Per-game fullscreen effects: scanlines, LCD and CRT effects etc.
   * Modular and scriptable stack-based fullscreen effects engine
 
