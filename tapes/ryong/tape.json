@@ -1,0 +1,2454 @@
+{
+  "name":"Ryong",
+  "author":"KesieV",
+  "year":2017,
+  "genre":"Tool",
+  "description":"<p><a href='https://en.wikipedia.org/wiki/Munchkin_(video_game)'>KC Munchkin</a> (1981) was one of the many Pac-Man clones that were on the market in the 80s. But, differently of the others - an the other games in general - it had a built-in level editor: choosing the 'EDITOR' option from the 'SELECT' screen, the game allowed you to create and play your own mazes.</p><p>The barrier between game creators and players has always been very thin: all in all videogames have been created by developers who wanted to play with computers and these humble and 'homebrew' origins have been in videogames DNA for decades.</p><p>Few years after Munchkin, <a href='https://en.wikipedia.org/wiki/Pinball_Construction_Set'>Pinball Construction Set</a> (1983) for Apple II appeared on the market. It wasn't just a videogame: it was a true visual videogame development tool that allowed players to build and play their own pinball tables. While it could look a pretty boring idea, it was a pure stroke of genius: the simplicity of pinball mechanics and the GUI revolution that exploded in that years provided the opportunity to enable non-coder players to actually make their own games.</p><p>But probably the earliest <i>true videogame maker</i> was <a href='https://en.wikipedia.org/wiki/Garry_Kitchen%27s_GameMaker'>Garry Kitchen's GameMaker</a> (1985). It was an all-in-one tool that finally allowed the player to live the full production chain of a videogame: using the joystick it was possible to make custom graphics and sounds, tie everything together in a scene, define a simplified gameplay logic and finally play the full game.</p><p>In a review of <a href='https://archive.org/details/1986-08-computegazette'>Compute! Gazette</a> the reviewer Niel Randall writes <i>'Like any good game, writing it is not easy, but once you've done so, the rewards are endless.'</i>.</p><p>This <i>mantra</i> wouldn't have changed in the following years - even today: videogames and its development tools are getting more and more complex, its development cycle can last for years and involve dozens of people and cost <a href='https://en.wikipedia.org/wiki/List_of_most_expensive_video_games_to_develop'>a lot of money</a>. So how the players can still live that <i>endless rewarding</i> feeling of making a game?</p><p>Players of the future still want to make games with easy tools like in the past. The long lasting bond between makers and players can't be broken. And the answer to this dilemma lies on the border between past and future, just where <i>Pinball Construction Set</i> was in the 80s.</p><p>The <a href='https://en.wikipedia.org/wiki/Pico-8'>fantasy console</a> phenomena exploded. Fantasy consoles are fascinating technical nonsenses: they are virtual machines you can use for making a game with simplified development tools and <i>self-imposed technical limits</i>, ranging from code size to chiptune sounds and limited color palette. I mean, it's weird, right?</p><p>But, as <a href='https://it.wikipedia.org/wiki/Apple'>Apple</a> well knows, <i>limits can be enabling</i>... and players are so desperately creative to accept to be stuck in the 80s, fueling the nostalgia, pixel art and chiptune movement for the future generations.</p><p>Plot!</p><p>Did you know that Wright! should have been a parametric game engine with very few genres hardcoded? Welp. I lost control very soon and now... I introduce you the <i>true</i> Wright! project, <b>Ryong</b>, made using the Wright! game engine. Now with 19 games and a <a href='https://www.lexaloffle.com/pico-8.php'>Pico-8</a> palette as tribute!</p><p>Hold down the B BUTTON and hit LEFT/RIGHT for switching section: you can load/save/share your games or play some samples I made, play your own game, change the title screen, edit the stage screen and change the objects logic.</p><p>In the Title editor and the Level editor use the UP/DOWN/LEFT/RIGHT buttons for moving the cursor around, hit the B BUTTON for opening the tile selection screen and the A BUTTON for selecting and placing a tile.</p><p>In the Logic Screen use UP/DOWN/LEFT/RIGHT buttons for moving the cursor around and the A BUTTON for selecting it. Use the UP/DOWN buttons for moving around the properties list and the A BUTTON for selecting and changing properties values. Use the B BUTTON for going back to the previous properties group.</p><p>Your game is locally saved automatically every time you change something - you'll see a tiny floppy disk on the upper right corner of the screen when the time is right.</p><p>Okay... this time everything it's quite harder to explain and probably I should write a tiny manual. For now, just move and click around... if you're stuck, drop me a line on <a href='https://twitter.com/KesieV'>Twitter</i>.</p>",
+  "screenshots":[ "ryong-1.png", "ryong-2.png" ],
+  "hardware":{
+    "width":128,
+    "height":128,
+    "gridSize":{ "width":16, "height":16 }
+  },
+  "cheats":{},
+  "resources":{
+    "hud":"hud.png",
+    "samples":"samples.json",
+    "small":"small.font",
+    "tiles":"tiles.png"
+  },
+  "stencils":{
+    "codeChecklistPicker":[
+      {
+        "when":{ "_":[ "this", "checkListPickerTitle" ] },
+        "object":{
+          "type":"checklistpicker",
+          "set":{ "_":[ "stencil", "smallLabel" ] },
+          "zIndex":9000, "x":0, "y":0,
+          "bgcolor":"#c2c3c7", "color":"#000",
+          "html":{ "_":[ "that", "checkListPickerTitle" ] }
+        }
+      },
+      {
+        "object":{
+          "type":"checklistpicker",
+          "data":{ "_":[ "that", "checkListPickerData" ] },
+          "width":128, "height":120,
+          "zIndex":9000, "x":0, "y":8,
+          "bgcolor":"#000",
+          "caller":{ "_":"that" },
+          "currentKey":0,
+          "cursor":0,
+          "listData":{ "_":[ "that", "checkListPickerItems" ] },
+          "pageStart":0,
+          "runned":0,
+          "update":1,
+          "states":[
+            { "code":{ "name":"Sequence", "data":[ { "wait":1 }, { "set":{ "state":"pick" } } ] } },
+            {
+              "name":"pick",
+              "code":{
+                "name":"Execute",
+                "data":[
+                  {
+                    "when":{ "_":[ "keyB", "isUp" ] },
+                    "execute":[
+                      { "when":{ "_":[ "keyUp", "isHit" ] }, "subtract":1, "to":{ "_":[ "this", "cursor" ] }, "set":{ "update":1 } },
+                      { "when":{ "_":[ "keyLeft", "isHit" ] }, "subtract":14, "to":{ "_":[ "this", "cursor" ] }, "set":{ "update":1 } },
+                      { "when":{ "_":[ "keyDown", "isHit" ] }, "sum":1, "to":{ "_":[ "this", "cursor" ] }, "set":{ "update":1 } },
+                      { "when":{ "_":[ "keyRight", "isHit" ] }, "sum":14, "to":{ "_":[ "this", "cursor" ] }, "set":{ "update":1 } }
+                    ]
+                  },
+                  {
+                    "when":{ "_":[ "this", "cursor", "isLessThan", 0 ] },
+                    "set":{ "cursor":{ "_":[ "this", "listData", "count", "-", 1 ] }, "pageStart":{ "_":[ "this", "listData", "count" ] } }
+                  },
+                  { "when":{ "_":[ "this", "cursor", "isGreaterEqualThan", { "_":[ "this", "listData", "count" ] } ] }, "set":{ "cursor":0, "pageStart":0 } },
+                  {
+                    "when":{ "_":[ "this", "cursor", "-", 1, "isLessThan", { "_":[ "this", "pageStart" ] } ] },
+                    "set":{ "pageStart":{ "_":[ "this", "cursor", "-", 1 ] } }
+                  },
+                  {
+                    "when":{ "_":[ "this", "cursor", "+", 2, "isGreaterEqualThan", { "_":[ "this", "pageStart", "+", 15 ] } ] },
+                    "set":{ "pageStart":{ "_":[ "this", "cursor", "-", 13 ] } }
+                  },
+                  {
+                    "when":{ "_":[ "this", "pageStart", "isGreaterEqualThan", { "_":[ "this", "listData", "count", "-", 13 ] } ] },
+                    "set":{ "pageStart":{ "_":[ "this", "listData", "count", "-", 13 ] } }
+                  },
+                  { "when":{ "_":[ "this", "pageStart", "isLessThan", 0 ] }, "set":{ "pageStart":0 } },
+                  {
+                    "when":{ "_":[ "this", "pageStart", "isGreaterEqualThan", { "_":[ "this", "listData", "count", "-", 15 ] } ] },
+                    "set":{ "pageStart":{ "_":[ "this", "listData", "count", "-", 15 ] } }
+                  },
+                  { "when":{ "_":[ "this", "pageStart", "isLessThan", 0 ] }, "set":{ "pageStart":0 } },
+                  {
+                    "when":{ "_":[ "this", "currentKey" ] },
+                    "execute":{
+                      "when":{ "_":[ "keyA", "isHit" ] },
+                      "execute":{
+                        "when":{ "_":[ "this", "currentKey", "run" ] },
+                        "set":{ "runned":{ "_":[ "this", "currentKey" ] }, "state":"select" },
+                        "elseExecute":{
+                          "when":{ "_":[ "this", "currentKey", "optionIdIsTile" ] },
+                          "set":{
+                            "tilePickerCursor":{ "_":[ "this", "data", { "_":[ "this", "currentKey", "objectKey" ] } ] },
+                            "tilePickerSelectZero":1,
+                            "tilePickerTitle":{ "_":[ "this", "currentKey", "label", ".", "..." ] },
+                            "state":"waittilepicker"
+                          },
+                          "execute":{ "_":[ "stencil", "codeTilePicker" ] },
+                          "elseExecute":{
+                            "assign":{ "_":[ "this", "data", { "_":[ "this", "currentKey", "objectKey" ] }, "not" ] },
+                            "to":{ "_":[ "this", "data", { "_":[ "this", "currentKey", "objectKey" ] } ] },
+                            "set":{ "update":1 },
+                            "execute":{ "_":[ "stencil", "codeRequestSave" ] }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  { "when":{ "_":[ "keyB", "isHit" ] }, "execute":{ "set":{ "state":"select" } } },
+                  { "when":{ "_":[ "this", "update" ] }, "set":{ "update":0 }, "executeAction":"update" }
+                ]
+              },
+              "actions":{
+                "name":"update",
+                "execute":[
+                  { "as":{ "_":[ "object", "checklistrow" ] }, "remove":1 },
+                  { "set":{ "counter":{ "_":[ "this", "pageStart" ] }, "currentKey":0, "py":8 } },
+                  {
+                    "times":15,
+                    "execute":[
+                      {
+                        "when":{ "_":[ "this", "listData", { "_":[ "this", "counter" ] } ] },
+                        "execute":[
+                          { "set":{ "objectCurrent":{ "_":[ "this", "listData", { "_":[ "this", "counter" ] } ] } } },
+                          { "set":{ "objectKey":{ "_":[ "this", "objectCurrent", "objectKey" ] } } },
+                          { "set":{ "objectValue":{ "_":[ "this", "data", { "_":[ "this", "objectKey" ] } ] } } },
+                          {
+                            "when":{ "_":[ "this", "objectKey" ] },
+                            "execute":[
+                              {
+                                "when":{ "_":[ "this", "objectCurrent", "run" ] },
+                                "object":{ "type":[ "checklistpicker", "checklistrow" ], "image":"hud", "tileX":64, "width":8, "height":8, "zIndex":9020, "x":0, "y":{ "_":[ "that", "py" ] } },
+                                "elseExecute":{
+                                  "object":{
+                                    "type":[ "checklistpicker", "checklistrow" ],
+                                    "image":"hud", "width":8, "height":8,
+                                    "zIndex":9020, "x":0, "y":{ "_":[ "that", "py" ] },
+                                    "execute":{ "when":{ "_":[ "that", "objectValue" ] }, "set":{ "tileX":40 }, "elseExecute":{ "set":{ "tileX":32 } } }
+                                  }
+                                }
+                              },
+                              {
+                                "object":{
+                                  "type":[ "checklistpicker", "checklistrow" ],
+                                  "set":{ "_":[ "stencil", "smallLabel" ] },
+                                  "zIndex":9010, "x":0, "y":{ "_":[ "that", "py" ] },
+                                  "html":{ "_":[ "&nbsp;&nbsp;&nbsp", ".", { "_":[ "that", "listData", { "_":[ "that", "counter" ] }, "label" ] } ] },
+                                  "execute":{
+                                    "when":{ "_":[ "that", "cursor", "isEqualTo", { "_":[ "that", "counter" ] } ] },
+                                    "execute":[ { "set":{ "bgcolor":"#ff004d" } }, { "as":{ "_":"that" }, "set":{ "currentKey":{ "_":[ "this", "objectCurrent" ] } } } ]
+                                  }
+                                }
+                              },
+                              {
+                                "when":{ "_":[ "this", "objectCurrent", "optionIdIsTile" ] },
+                                "execute":{
+                                  "when":{ "_":[ "this", "objectValue" ] },
+                                  "object":{
+                                    "type":[ "checklistpicker", "checklistrow" ],
+                                    "set":{ "_":[ "stencil", "tileSampleModel" ] },
+                                    "zIndex":9020, "x":120, "y":{ "_":[ "that", "py" ] },
+                                    "showTileId":{ "_":[ "that", "objectValue" ] }
+                                  }
+                                }
+                              }
+                            ],
+                            "elseExecute":{
+                              "object":{
+                                "type":[ "checklistpicker", "checklistrow" ],
+                                "set":{ "_":[ "stencil", "smallLabel" ] },
+                                "zIndex":9010, "x":0, "y":{ "_":[ "that", "py" ] },
+                                "color":"#c2c3c7",
+                                "html":{ "_":[ "that", "listData", { "_":[ "that", "counter" ] }, "label" ] },
+                                "execute":{ "when":{ "_":[ "that", "cursor", "isEqualTo", { "_":[ "that", "counter" ] } ] }, "set":{ "bgcolor":"#ff004d" } }
+                              }
+                            }
+                          }
+                        ]
+                      },
+                      { "sum":1, "to":{ "_":[ "this", "counter" ] } },
+                      { "sum":8, "to":{ "_":[ "this", "py" ] } }
+                    ]
+                  }
+                ]
+              }
+            },
+            {
+              "name":"select",
+              "code":{
+                "name":"Sequence",
+                "data":[
+                  { "wait":1 },
+                  { "as":{ "_":[ "this", "caller" ] }, "executeAction":"checklistSelected" },
+                  { "as":{ "_":[ "object", "checklistpicker" ] }, "remove":1 }
+                ]
+              }
+            },
+            {
+              "name":"waittilepicker",
+              "actions":{
+                "name":"tileSelected",
+                "execute":{
+                  "assign":{ "_":[ "that", "tileSelected" ] },
+                  "to":{ "_":[ "this", "data", { "_":[ "this", "currentKey", "objectKey" ] } ] },
+                  "set":{ "update":1, "state":"pick" },
+                  "execute":{ "_":[ "stencil", "codeRequestSave" ] }
+                }
+              }
+            }
+          ]
+        }
+      }
+    ],
+    "codeCleanGame":[
+      { "set":{ "cCounter":0, "oKeys":{ "_":[ "variable", "gameData", "objects", "objectKeys" ] } } },
+      {
+        "times":{ "_":[ "this", "oKeys", "count" ] },
+        "execute":[
+          { "set":{ "cKey":{ "_":[ "this", "oKeys", { "_":[ "this", "cCounter" ] } ] } } },
+          { "_":[ "stencil", "codeCleanTile" ] },
+          { "when":{ "_":[ "this", "cValid", "not" ] }, "as":{ "_":[ "variable", "gameData", "objects" ] }, "deleteKey":{ "_":[ "that", "cKey" ] } },
+          { "sum":1, "to":{ "_":[ "this", "cCounter" ] } }
+        ]
+      }
+    ],
+    "codeCleanTile":[
+      { "set":{ "cObj":{ "_":[ "variable", "gameData", "objects", { "_":[ "this", "cKey" ] } ] } } },
+      { "set":{ "cValid":0, "osCounter":0, "osKeys":{ "_":[ "this", "cObj", "objectKeys" ] } } },
+      {
+        "times":{ "_":[ "this", "osKeys", "count" ] },
+        "execute":[
+          { "set":{ "osKey":{ "_":[ "this", "osKeys", { "_":[ "this", "osCounter" ] } ] } } },
+          { "set":{ "obObj":{ "_":[ "this", "cObj", { "_":[ "this", "osKey" ] } ] } } },
+          {
+            "when":{ "_":[ "this", "cObj", { "_":[ "this", "osKey" ] }, "not" ] },
+            "as":{ "_":[ "this", "cObj" ] },
+            "deleteKey":{ "_":[ "that", "osKey" ] },
+            "elseExecute":[
+              { "set":{ "obCounter":0, "obKeys":{ "_":[ "this", "obObj", "objectKeys" ] }, "obValid":0 } },
+              {
+                "when":{ "_":[ "this", "obKeys" ] },
+                "execute":[
+                  {
+                    "times":{ "_":[ "this", "obKeys", "count" ] },
+                    "execute":[
+                      { "set":{ "sKey":{ "_":[ "this", "obKeys", { "_":[ "this", "obCounter" ] } ] } } },
+                      { "set":{ "sValue":{ "_":[ "this", "obObj", { "_":[ "this", "sKey" ] } ] } } },
+                      { "when":{ "_":[ "this", "sValue", "not" ] }, "as":{ "_":[ "this", "obObj" ] }, "elseExecute":{ "set":{ "obValid":1 } } },
+                      { "sum":1, "to":{ "_":[ "this", "obCounter" ] } }
+                    ]
+                  },
+                  {
+                    "when":{ "_":[ "this", "obValid", "not" ] },
+                    "as":{ "_":[ "this", "cObj" ] },
+                    "deleteKey":{ "_":[ "that", "osKey" ] },
+                    "elseExecute":{ "set":{ "cValid":1 } }
+                  }
+                ],
+                "elseExecute":{ "set":{ "cValid":1 } }
+              }
+            ]
+          },
+          { "sum":1, "to":{ "_":[ "this", "osCounter" ] } }
+        ]
+      }
+    ],
+    "codeConfirmNewGame":{
+      "object":{
+        "type":"dialog",
+        "set":{ "_":[ "stencil", "smallLabel" ] },
+        "height":32,
+        "zIndex":1000, "y":48,
+        "bgcolor":"#fff1e8", "color":"#000",
+        "textAlign":"center", "html":"Are you sure? Current<br>game will be deleted!<br><br>A: Confirm - B: Cancel",
+        "states":{
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "wait":5 },
+              {
+                "when":{ "_":[ "keyA", "isHit" ] },
+                "execute":[ { "as":{ "_":[ "objectTyped", "dialog" ] }, "remove":1 }, { "as":{ "_":"scene" }, "executeAction":"ok" } ],
+                "elseExecute":{
+                  "when":{ "_":[ "keyB", "isHit" ] },
+                  "execute":[ { "as":{ "_":[ "objectTyped", "dialog" ] }, "remove":1 }, { "as":{ "_":"scene" }, "executeAction":"ko" } ]
+                }
+              },
+              { "wait":1, "loopTo":-1 }
+            ]
+          }
+        }
+      }
+    },
+    "codeGotoTab":{ "gotoScene":{ "_":[ "this", "codeGotoTab" ] }, "withTransition":2 },
+    "codeMakeEmptyGame":[
+      { "as":{ "_":"variable" }, "set":{ "gameData":{ "_":[ "new", { "levelMap":[], "objects":{}, "titleMap":[] } ] } } },
+      { "set":{ "cy":0 } },
+      {
+        "times":15,
+        "execute":[
+          { "assign":{ "_":[ "new", [] ] }, "to":{ "_":[ "variable", "gameData", "titleMap", { "_":[ "this", "cy" ] } ] } },
+          { "assign":{ "_":[ "new", [] ] }, "to":{ "_":[ "variable", "gameData", "levelMap", { "_":[ "this", "cy" ] } ] } },
+          { "set":{ "cx":0 } },
+          {
+            "times":16,
+            "execute":[
+              { "assign":0, "to":{ "_":[ "variable", "gameData", "titleMap", { "_":[ "this", "cy" ] }, { "_":[ "this", "cx" ] } ] } },
+              { "assign":0, "to":{ "_":[ "variable", "gameData", "levelMap", { "_":[ "this", "cy" ] }, { "_":[ "this", "cx" ] } ] } },
+              { "sum":1, "to":{ "_":[ "this", "cx" ] } }
+            ]
+          },
+          { "sum":1, "to":{ "_":[ "this", "cy" ] } }
+        ]
+      }
+    ],
+    "codeProcessSpawnTile":[
+      { "when":{ "_":[ "this", "doAction", "aSpawnTileCopyAim" ] }, "as":{ "_":[ "this", "spawned" ] }, "set":{ "aim":{ "_":[ "that", "aim" ] } } },
+      {
+        "when":{ "_":[ "this", "doAction", "aSpawnTileCopyThatAim" ] },
+        "as":{ "_":[ "this", "spawned" ] },
+        "set":{ "aim":{ "_":[ "that", "doWith", "aim" ] } }
+      },
+      {
+        "when":{ "_":[ "this", "doAction", "aSpawnTileCopyTileLogic" ] },
+        "as":{ "_":[ "this", "spawned" ] },
+        "execute":[
+          { "when":{ "_":[ "variable", "gameData", "objects", { "_":[ "that", "doAction", "aSpawnTileCopyTileLogic" ] } ] }, "set":{ "_":"that" } },
+          { "_":[ "stencil", "codeTileInitialize" ] }
+        ]
+      }
+    ],
+    "codeProcessSpawnTileThat":[
+      {
+        "when":{ "_":[ "this", "doAction", "aSpawnTileThatCopyAim" ] },
+        "as":{ "_":[ "this", "doWith" ] },
+        "execute":[ { "set":{ "destaim":{ "_":[ "that", "aim" ] } } }, { "as":{ "_":[ "this", "spawned" ] }, "set":{ "aim":{ "_":[ "that", "destaim" ] } } } ]
+      },
+      {
+        "when":{ "_":[ "this", "doAction", "aSpawnTileThatCopyThatAim" ] },
+        "as":{ "_":[ "this", "doWith" ] },
+        "execute":{ "as":{ "_":[ "this", "spawned" ] }, "set":{ "aim":{ "_":[ "that", "aim" ] } } }
+      },
+      {
+        "when":{ "_":[ "this", "doAction", "aSpawnTileThatCopyTileLogic" ] },
+        "as":{ "_":[ "this", "doWith", "spawned" ] },
+        "execute":[
+          { "when":{ "_":[ "variable", "gameData", "objects", { "_":[ "that", "doAction", "aSpawnTileThatCopyTileLogic" ] } ] }, "set":{ "_":"that" } },
+          { "_":[ "stencil", "codeTileInitialize" ] }
+        ]
+      }
+    ],
+    "codeProcessTileFlag":[
+      {
+        "when":{ "_":[ "this", "doAction", "aTileFlagSpawn" ] },
+        "as":{ "_":[ "this", "processFlag" ] },
+        "execute":{ "set":{ "spawnTile":{ "_":[ "that", "doAction", "aTileFlagSpawn" ] } }, "execute":{ "_":[ "stencil", "codeSpawnTile" ] } }
+      },
+      {
+        "when":{ "_":[ "this", "doAction", "aTileFlagCopyAim" ] },
+        "as":{ "_":[ "this", "processFlag" ] },
+        "execute":{ "set":{ "aim":{ "_":[ "that", "aim" ] } } }
+      },
+      {
+        "when":{ "_":[ "this", "doAction", "aTileFlagCopyThatAim" ] },
+        "as":{ "_":[ "this", "processFlag" ] },
+        "execute":{ "set":{ "aim":{ "_":[ "that", "doWith", "aim" ] } } }
+      },
+      {
+        "when":{ "_":[ "this", "doAction", "aTileFlagCopyLogic" ] },
+        "as":{ "_":[ "this", "processFlag" ] },
+        "execute":[
+          { "when":{ "_":[ "variable", "gameData", "objects", { "_":[ "that", "doAction", "aTileFlagCopyLogic" ] } ] }, "set":{ "_":"that" } },
+          { "_":[ "stencil", "codeTileInitialize" ] }
+        ]
+      },
+      { "when":{ "_":[ "this", "doAction", "aTileFlagDelete" ] }, "as":{ "_":[ "this", "processFlag" ] }, "set":{ "removing":1 } }
+    ],
+    "codeRequestSave":{ "as":{ "_":"variable" }, "set":{ "saveTimer":50 } },
+    "codeShowTilemap":[
+      { "as":{ "_":[ "object", "gametile" ] }, "remove":1 },
+      { "set":{ "cy":0 } },
+      {
+        "times":{ "_":[ "variable", "gameData", { "_":[ "this", "showingMap" ] }, "count" ] },
+        "execute":[
+          { "set":{ "cx":0 } },
+          {
+            "times":{ "_":[ "variable", "gameData", { "_":[ "this", "showingMap" ] }, { "_":[ "this", "cy" ] }, "count" ] },
+            "execute":[
+              { "set":{ "curTile":{ "_":[ "variable", "gameData", { "_":[ "this", "showingMap" ] }, { "_":[ "this", "cy" ] }, { "_":[ "this", "cx" ] } ] } } },
+              {
+                "when":{ "_":[ "this", "curTile" ] },
+                "object":{
+                  "type":[ "gametile", { "_":[ "tile-", ".", { "_":[ "that", "curTile" ] } ] } ],
+                  "set":{ "_":[ "stencil", "gameTileLogicModel" ] },
+                  "image":"tiles", "tileX":{ "_":[ "that", "curTile", "%", 16, "*", 8 ] }, "tileY":{ "_":[ "that", "curTile", "/", 16, "floor", "*", 8 ] }, "width":8, "height":8,
+                  "x":{ "_":[ "that", "cx", "*", 8 ] }, "y":{ "_":[ "that", "cy", "*", 8, "+", { "_":[ "that", "py" ] } ] },
+                  "execute":[
+                    { "when":{ "_":[ "variable", "gameData", "objects", { "_":[ "that", "curTile" ] } ] }, "set":{ "_":"that" } },
+                    { "_":[ "stencil", "codeTileInitialize" ] }
+                  ],
+                  "curTile":{ "_":[ "that", "curTile" ] }
+                }
+              },
+              { "sum":1, "to":{ "_":[ "this", "cx" ] } }
+            ]
+          },
+          { "sum":1, "to":{ "_":[ "this", "cy" ] } }
+        ]
+      }
+    ],
+    "codeSpawnTile":{
+      "object":{
+        "type":[ "gametile", { "_":[ "tile-", ".", { "_":[ "that", "spawnTile" ] } ] } ],
+        "set":{ "_":[ "stencil", "gameTileLogicModel" ] },
+        "image":"tiles", "tileX":{ "_":[ "that", "spawnTile", "%", 16, "*", 8 ] }, "tileY":{ "_":[ "that", "spawnTile", "/", 16, "floor", "*", 8 ] }, "width":8, "height":8,
+        "at":{ "_":"that" },
+        "execute":[
+          { "when":{ "_":[ "variable", "gameData", "objects", { "_":[ "that", "spawnTile" ] } ] }, "set":{ "_":"that" } },
+          { "_":[ "stencil", "codeTileInitialize" ] }
+        ],
+        "curTile":{ "_":[ "that", "spawnTile" ] },
+        "waitRunning":{ "_":[ "that", "waitRunning" ] }
+      },
+      "assign":{ "_":"that" },
+      "to":{ "_":[ "this", "spawned" ] }
+    },
+    "codeTileConditionChecker":[
+      { "set":{ "conditionTrue":0, "conditionWith":0 } },
+      {
+        "when":{ "_":[ "this", "checkCondition" ] },
+        "execute":[
+          {
+            "when":{ "_":[ "this", "checkCondition", "cCollidesWith1" ] },
+            "execute":[
+              {
+                "set":{
+                  "isColliding":{ "_":[ "this", "collidesWith", { "_":[ "object", { "_":[ "tile-", ".", { "_":[ "this", "checkCondition", "cCollidesWith1" ] } ] } ] } ] }
+                }
+              },
+              { "when":{ "_":[ "this", "isColliding" ] }, "set":{ "conditionTrue":1, "conditionWith":{ "_":"that" } } }
+            ]
+          },
+          {
+            "when":{ "_":[ "this", "checkCondition", "cCollidesWith2" ] },
+            "execute":[
+              {
+                "set":{
+                  "isColliding":{ "_":[ "this", "collidesWith", { "_":[ "object", { "_":[ "tile-", ".", { "_":[ "this", "checkCondition", "cCollidesWith2" ] } ] } ] } ] }
+                }
+              },
+              { "when":{ "_":[ "this", "isColliding" ] }, "set":{ "conditionTrue":1, "conditionWith":{ "_":"that" } } }
+            ]
+          },
+          {
+            "when":{ "_":[ "this", "checkCondition", "cCollidesWith3" ] },
+            "execute":[
+              {
+                "set":{
+                  "isColliding":{ "_":[ "this", "collidesWith", { "_":[ "object", { "_":[ "tile-", ".", { "_":[ "this", "checkCondition", "cCollidesWith3" ] } ] } ] } ] }
+                }
+              },
+              { "when":{ "_":[ "this", "isColliding" ] }, "set":{ "conditionTrue":1, "conditionWith":{ "_":"that" } } }
+            ]
+          },
+          {
+            "when":{ "_":[ "this", "checkCondition", "cCollidesNotWith1" ] },
+            "execute":[
+              {
+                "set":{
+                  "isColliding":{ "_":[ "this", "collidesWith", { "_":[ "object", { "_":[ "tile-", ".", { "_":[ "this", "checkCondition", "cCollidesNotWith1" ] } ] } ] } ] }
+                }
+              },
+              { "when":{ "_":[ "this", "isColliding", "not" ] }, "set":{ "conditionTrue":1, "conditionWith":0 } }
+            ]
+          },
+          {
+            "when":{ "_":[ "this", "checkCondition", "cMoveNot" ] },
+            "set":{ "conditionTrue":{ "_":[ "this", "forceY", "isEqualTo", 0, "and", { "_":[ "this", "forceX", "isEqualTo", 0 ] } ] } }
+          },
+          {
+            "when":{ "_":[ "this", "checkCondition", "cMoveYes" ] },
+            "set":{ "conditionTrue":{ "_":[ "this", "forceY", "or", { "_":[ "this", "forceX" ] } ] } }
+          },
+          { "when":{ "_":[ "this", "checkCondition", "cMoveUp" ] }, "set":{ "conditionTrue":{ "_":[ "this", "forceY", "isLessThan", 0 ] } } },
+          { "when":{ "_":[ "this", "checkCondition", "cMoveDown" ] }, "set":{ "conditionTrue":{ "_":[ "this", "forceY", "isGreaterThan", 0 ] } } },
+          { "when":{ "_":[ "this", "checkCondition", "cMoveLeft" ] }, "set":{ "conditionTrue":{ "_":[ "this", "forceX", "isLessThan", 0 ] } } },
+          { "when":{ "_":[ "this", "checkCondition", "cMoveRight" ] }, "set":{ "conditionTrue":{ "_":[ "this", "forceX", "isGreaterThan", 0 ] } } },
+          { "when":{ "_":[ "this", "checkCondition", "cVeryOften" ] }, "set":{ "conditionTrue":{ "_":[ "this", "timerVeryOften", "not" ] } } },
+          { "when":{ "_":[ "this", "checkCondition", "cOften" ] }, "set":{ "conditionTrue":{ "_":[ "this", "timerOften", "not" ] } } },
+          { "when":{ "_":[ "this", "checkCondition", "cRarely" ] }, "set":{ "conditionTrue":{ "_":[ "this", "timerRarely", "not" ] } } },
+          { "when":{ "_":[ "this", "checkCondition", "cSometime" ] }, "set":{ "conditionTrue":{ "_":[ "this", "timerSometime", "not" ] } } },
+          { "when":{ "_":[ "this", "checkCondition", "cAlways" ] }, "set":{ "conditionTrue":1 } },
+          { "when":{ "_":[ "this", "checkCondition", "cEveryQuarterSecond" ] }, "set":{ "conditionTrue":{ "_":[ "this", "lifeTimer", "%", 6, "not" ] } } },
+          { "when":{ "_":[ "this", "checkCondition", "cEveryHalfSecond" ] }, "set":{ "conditionTrue":{ "_":[ "this", "lifeTimer", "%", 12, "not" ] } } },
+          { "when":{ "_":[ "this", "checkCondition", "cEverySecond" ] }, "set":{ "conditionTrue":{ "_":[ "this", "lifeTimer", "%", 25, "not" ] } } },
+          { "when":{ "_":[ "this", "checkCondition", "cEveryTwoSeconds" ] }, "set":{ "conditionTrue":{ "_":[ "this", "lifeTimer", "%", 50, "not" ] } } },
+          { "when":{ "_":[ "this", "checkCondition", "cEveryThreeSeconds" ] }, "set":{ "conditionTrue":{ "_":[ "this", "lifeTimer", "%", 75, "not" ] } } },
+          { "when":{ "_":[ "this", "checkCondition", "cEveryFourSeconds" ] }, "set":{ "conditionTrue":{ "_":[ "this", "lifeTimer", "%", 100, "not" ] } } },
+          { "when":{ "_":[ "this", "checkCondition", "cEveryFiveSeconds" ] }, "set":{ "conditionTrue":{ "_":[ "this", "lifeTimer", "%", 125, "not" ] } } },
+          { "when":{ "_":[ "this", "checkCondition", "cFlag1" ] }, "set":{ "conditionTrue":{ "_":[ "object", "flag-1", "count" ] } } },
+          { "when":{ "_":[ "this", "checkCondition", "cFlag2" ] }, "set":{ "conditionTrue":{ "_":[ "object", "flag-2", "count" ] } } },
+          { "when":{ "_":[ "this", "checkCondition", "cFlag3" ] }, "set":{ "conditionTrue":{ "_":[ "object", "flag-3", "count" ] } } },
+          { "when":{ "_":[ "this", "checkCondition", "cFlag4" ] }, "set":{ "conditionTrue":{ "_":[ "object", "flag-4", "count" ] } } },
+          { "when":{ "_":[ "this", "checkCondition", "cFlag5" ] }, "set":{ "conditionTrue":{ "_":[ "object", "flag-5", "count" ] } } },
+          { "when":{ "_":[ "this", "checkCondition", "cFlag6" ] }, "set":{ "conditionTrue":{ "_":[ "object", "flag-6", "count" ] } } },
+          { "when":{ "_":[ "this", "checkCondition", "cFlag1Not" ] }, "set":{ "conditionTrue":{ "_":[ "object", "flag-1", "count", "not" ] } } },
+          { "when":{ "_":[ "this", "checkCondition", "cFlag2Not" ] }, "set":{ "conditionTrue":{ "_":[ "object", "flag-2", "count", "not" ] } } },
+          { "when":{ "_":[ "this", "checkCondition", "cFlag3Not" ] }, "set":{ "conditionTrue":{ "_":[ "object", "flag-3", "count", "not" ] } } },
+          { "when":{ "_":[ "this", "checkCondition", "cFlag4Not" ] }, "set":{ "conditionTrue":{ "_":[ "object", "flag-4", "count", "not" ] } } },
+          { "when":{ "_":[ "this", "checkCondition", "cFlag5Not" ] }, "set":{ "conditionTrue":{ "_":[ "object", "flag-5", "count", "not" ] } } },
+          { "when":{ "_":[ "this", "checkCondition", "cFlag6Not" ] }, "set":{ "conditionTrue":{ "_":[ "object", "flag-6", "count", "not" ] } } },
+          {
+            "when":{ "_":[ "this", "checkCondition", "cCollidesWithFlag1" ] },
+            "execute":[
+              { "set":{ "isColliding":{ "_":[ "this", "collidesWith", { "_":[ "object", "flag-1" ] } ] } } },
+              { "when":{ "_":[ "this", "isColliding" ] }, "set":{ "conditionTrue":1, "conditionWith":{ "_":"that" } } }
+            ]
+          },
+          {
+            "when":{ "_":[ "this", "checkCondition", "cCollidesWithFlag2" ] },
+            "execute":[
+              { "set":{ "isColliding":{ "_":[ "this", "collidesWith", { "_":[ "object", "flag-2" ] } ] } } },
+              { "when":{ "_":[ "this", "isColliding" ] }, "set":{ "conditionTrue":1, "conditionWith":{ "_":"that" } } }
+            ]
+          },
+          {
+            "when":{ "_":[ "this", "checkCondition", "cCollidesWithFlag3" ] },
+            "execute":[
+              { "set":{ "isColliding":{ "_":[ "this", "collidesWith", { "_":[ "object", "flag-3" ] } ] } } },
+              { "when":{ "_":[ "this", "isColliding" ] }, "set":{ "conditionTrue":1, "conditionWith":{ "_":"that" } } }
+            ]
+          },
+          {
+            "when":{ "_":[ "this", "checkCondition", "cCollidesWithFlag4" ] },
+            "execute":[
+              { "set":{ "isColliding":{ "_":[ "this", "collidesWith", { "_":[ "object", "flag-4" ] } ] } } },
+              { "when":{ "_":[ "this", "isColliding" ] }, "set":{ "conditionTrue":1, "conditionWith":{ "_":"that" } } }
+            ]
+          },
+          {
+            "when":{ "_":[ "this", "checkCondition", "cCollidesWithFlag5" ] },
+            "execute":[
+              { "set":{ "isColliding":{ "_":[ "this", "collidesWith", { "_":[ "object", "flag-5" ] } ] } } },
+              { "when":{ "_":[ "this", "isColliding" ] }, "set":{ "conditionTrue":1, "conditionWith":{ "_":"that" } } }
+            ]
+          },
+          {
+            "when":{ "_":[ "this", "checkCondition", "cCollidesWithFlag6" ] },
+            "execute":[
+              { "set":{ "isColliding":{ "_":[ "this", "collidesWith", { "_":[ "object", "flag-6" ] } ] } } },
+              { "when":{ "_":[ "this", "isColliding" ] }, "set":{ "conditionTrue":1, "conditionWith":{ "_":"that" } } }
+            ]
+          }
+        ]
+      }
+    ],
+    "codeTileExecuteAction":{
+      "when":{ "_":[ "this", "doAction" ] },
+      "execute":[
+        {
+          "when":{ "_":[ "this", "doAction", "aCopyLogic" ] },
+          "execute":[
+            { "when":{ "_":[ "variable", "gameData", "objects", { "_":[ "this", "doAction", "aCopyLogic" ] } ] }, "set":{ "_":"that" } },
+            { "_":[ "stencil", "codeTileInitialize" ] }
+          ]
+        },
+        { "when":{ "_":[ "this", "doAction", "aStop" ] }, "set":{ "forceX":0, "forceY":0, "forceApplied":1 } },
+        {
+          "when":{ "_":[ "this", "doWith" ] },
+          "execute":{ "when":{ "_":[ "this", "doAction", "aCopyAim" ] }, "set":{ "aim":{ "_":[ "this", "doWith", "aim" ] } } }
+        },
+        { "when":{ "_":[ "this", "doAction", "aWarpTop" ] }, "set":{ "y":2 } },
+        { "when":{ "_":[ "this", "doAction", "aWarpBottom" ] }, "set":{ "y":124 } },
+        { "when":{ "_":[ "this", "doAction", "aWarpLeft" ] }, "set":{ "x":-4 } },
+        { "when":{ "_":[ "this", "doAction", "aWarpRight" ] }, "set":{ "x":124 } },
+        {
+          "when":{ "_":[ "this", "doAction", "aWarpH" ] },
+          "execute":[ { "when":{ "_":[ "this", "outRight" ] }, "set":{ "x":-4 } }, { "when":{ "_":[ "this", "outLeft" ] }, "set":{ "x":124 } } ]
+        },
+        {
+          "when":{ "_":[ "this", "doAction", "aWarpV" ] },
+          "execute":[ { "when":{ "_":[ "this", "outBottom" ] }, "set":{ "y":2 } }, { "when":{ "_":[ "this", "outTop" ] }, "set":{ "y":124 } } ]
+        },
+        {
+          "when":{ "_":[ "this", "doAction", "aAimUp" ] },
+          "execute":{
+            "when":{ "_":[ "this", "doAction", "aAimRight" ] },
+            "set":{ "aim":45 },
+            "elseExecute":{ "when":{ "_":[ "this", "doAction", "aAimLeft" ] }, "set":{ "aim":315 }, "elseExecute":{ "set":{ "aim":0 } } }
+          },
+          "elseExecute":{
+            "when":{ "_":[ "this", "doAction", "aAimDown" ] },
+            "execute":{
+              "when":{ "_":[ "this", "doAction", "aAimRight" ] },
+              "set":{ "aim":135 },
+              "elseExecute":{ "when":{ "_":[ "this", "doAction", "aAimLeft" ] }, "set":{ "aim":225 }, "elseExecute":{ "set":{ "aim":180 } } }
+            },
+            "elseExecute":{
+              "when":{ "_":[ "this", "doAction", "aAimRight" ] },
+              "set":{ "aim":90 },
+              "elseExecute":{ "when":{ "_":[ "this", "doAction", "aAimLeft" ] }, "set":{ "aim":270 } }
+            }
+          }
+        },
+        {
+          "when":{ "_":[ "this", "doAction", "aRotateToward" ] },
+          "execute":[
+            { "set":{ "target":{ "_":[ "objectTyped", { "_":[ "tile-", ".", { "_":[ "this", "doAction", "aRotateToward" ] } ] } ] } } },
+            {
+              "when":{ "_":[ "this", "target" ] },
+              "execute":[
+                { "set":{ "destinationAngle":{ "_":[ "this", "angleTo", { "_":[ "this", "target" ] } ] } } },
+                { "set":{ "delta":{ "_":[ "this", "aim", "shortestAngleTo", { "_":[ "this", "destinationAngle" ] } ] } } },
+                {
+                  "when":{ "_":[ "this", "delta", "abs", "isLessThan", { "_":[ "this", "tRotationSpeed" ] } ] },
+                  "set":{ "aim":{ "_":[ "this", "destinationAngle" ] } },
+                  "elseExecute":{
+                    "when":{ "_":[ "this", "delta", "isGreaterThan", 0 ] },
+                    "sum":{ "_":[ "this", "tRotationSpeed" ] },
+                    "to":{ "_":[ "this", "aim" ] },
+                    "elseExecute":{ "subtract":{ "_":[ "this", "tRotationSpeed" ] }, "to":{ "_":[ "this", "aim" ] } }
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "when":{ "_":[ "this", "doAction", "aRotateTo" ] },
+          "execute":[
+            { "set":{ "target":{ "_":[ "objectTyped", { "_":[ "tile-", ".", { "_":[ "this", "doAction", "aRotateTo" ] } ] } ] } } },
+            { "when":{ "_":[ "this", "target" ] }, "execute":{ "set":{ "aim":{ "_":[ "this", "angleTo", { "_":[ "this", "target" ] } ] } } } }
+          ]
+        },
+        { "when":{ "_":[ "this", "doAction", "aRotateRandomly" ] }, "set":{ "aim":{ "_":[ "randomNumber", [ 0, 360 ] ] } } },
+        {
+          "when":{ "_":[ "this", "doAction", "aRotateClockwise" ] },
+          "set":{ "aim":{ "_":[ "this", "aim", "+", { "_":[ "this", "tRotationSpeed" ] }, "%", 360 ] } }
+        },
+        {
+          "when":{ "_":[ "this", "doAction", "aRotateCounterClockwise" ] },
+          "execute":[
+            { "subtract":{ "_":[ "this", "tRotationSpeed" ] }, "to":{ "_":[ "this", "aim" ] } },
+            { "when":{ "_":[ "this", "aim", "isLessThan", 0 ] }, "sum":360, "to":{ "_":[ "this", "aim" ] } }
+          ]
+        },
+        {
+          "when":{ "_":[ "this", "doAction", "aWall" ] },
+          "execute":[
+            { "when":{ "_":[ "this", "touchUp", "or", { "_":[ "this", "touchDown" ] } ] }, "set":{ "forceY":0, "forceApplied":1 } },
+            { "when":{ "_":[ "this", "touchLeft", "or", { "_":[ "this", "touchRight" ] } ] }, "set":{ "forceX":0, "forceApplied":1 } }
+          ]
+        },
+        {
+          "when":{ "_":[ "this", "doAction", "aBounce" ] },
+          "execute":[
+            {
+              "when":{ "_":[ "this", "touchUp", "or", { "_":[ "this", "touchDown" ] } ] },
+              "set":{ "forceY":{ "_":[ "this", "forceY", "*", -1 ] }, "forceApplied":1 }
+            },
+            {
+              "when":{ "_":[ "this", "touchLeft", "or", { "_":[ "this", "touchRight" ] } ] },
+              "set":{ "forceX":{ "_":[ "this", "forceX", "*", -1 ] }, "forceApplied":1 }
+            },
+            { "set":{ "aim":{ "_":[ "angleToward", { "_":"this" } ] } } }
+          ]
+        },
+        {
+          "when":{ "_":[ "this", "doAction", "aBounceSoft" ] },
+          "execute":[
+            {
+              "when":{ "_":[ "this", "touchUp", "or", { "_":[ "this", "touchDown" ] } ] },
+              "set":{ "forceY":{ "_":[ "this", "forceY", "*", -0.9 ] }, "forceApplied":1 }
+            },
+            {
+              "when":{ "_":[ "this", "touchLeft", "or", { "_":[ "this", "touchRight" ] } ] },
+              "set":{ "forceX":{ "_":[ "this", "forceX", "*", -0.9 ] }, "forceApplied":1 }
+            },
+            { "set":{ "aim":{ "_":[ "angleToward", { "_":"this" } ] } } }
+          ]
+        },
+        {
+          "when":{ "_":[ "this", "doAction", "aBounceHeavy" ] },
+          "execute":[
+            {
+              "when":{ "_":[ "this", "touchUp", "or", { "_":[ "this", "touchDown" ] } ] },
+              "set":{ "forceY":{ "_":[ "this", "forceY", "*", -0.5 ] }, "forceApplied":1 }
+            },
+            {
+              "when":{ "_":[ "this", "touchLeft", "or", { "_":[ "this", "touchRight" ] } ] },
+              "set":{ "forceX":{ "_":[ "this", "forceX", "*", -0.5 ] }, "forceApplied":1 }
+            },
+            { "set":{ "aim":{ "_":[ "angleToward", { "_":"this" } ] } } }
+          ]
+        },
+        {
+          "when":{ "_":[ "this", "doAction", "aBounceV" ] },
+          "execute":[ { "set":{ "forceY":{ "_":[ "this", "forceY", "*", -1 ] }, "forceApplied":1 } }, { "set":{ "aim":{ "_":[ "angleToward", { "_":"this" } ] } } } ]
+        },
+        {
+          "when":{ "_":[ "this", "doAction", "aBounceH" ] },
+          "execute":[ { "set":{ "forceY":{ "_":[ "this", "forceY", "*", -1 ] }, "forceApplied":1 } }, { "set":{ "aim":{ "_":[ "angleToward", { "_":"this" } ] } } } ]
+        },
+        {
+          "when":{ "_":[ "this", "doAction", "aMoveRandom" ] },
+          "decide":{
+            "options":[
+              { "subtract":{ "_":[ "this", "tMoveSpeed" ] }, "to":{ "_":[ "this", "forceY" ] }, "set":{ "aim":0, "forceApplied":1 } },
+              { "sum":{ "_":[ "this", "tMoveSpeed" ] }, "to":{ "_":[ "this", "forceY" ] }, "set":{ "aim":180, "forceApplied":1 } },
+              { "subtract":{ "_":[ "this", "tMoveSpeed" ] }, "to":{ "_":[ "this", "forceX" ] }, "set":{ "aim":270, "forceApplied":1 } },
+              { "sum":{ "_":[ "this", "tMoveSpeed" ] }, "to":{ "_":[ "this", "forceX" ] }, "set":{ "aim":90, "forceApplied":1 } }
+            ]
+          }
+        },
+        {
+          "when":{ "_":[ "this", "doAction", "aMoveRandomV" ] },
+          "decide":{
+            "options":[
+              { "subtract":{ "_":[ "this", "tMoveSpeed" ] }, "to":{ "_":[ "this", "forceY" ] }, "set":{ "aim":0, "forceApplied":1 } },
+              { "sum":{ "_":[ "this", "tMoveSpeed" ] }, "to":{ "_":[ "this", "forceY" ] }, "set":{ "aim":180, "forceApplied":1 } }
+            ]
+          }
+        },
+        {
+          "when":{ "_":[ "this", "doAction", "aMoveRandomH" ] },
+          "decide":{
+            "options":[
+              { "subtract":{ "_":[ "this", "tMoveSpeed" ] }, "to":{ "_":[ "this", "forceX" ] }, "set":{ "aim":270, "forceApplied":1 } },
+              { "sum":{ "_":[ "this", "tMoveSpeed" ] }, "to":{ "_":[ "this", "forceX" ] }, "set":{ "aim":90, "forceApplied":1 } }
+            ]
+          }
+        },
+        {
+          "when":{ "_":[ "this", "doAction", "aMoveUp" ] },
+          "subtract":{ "_":[ "this", "tMoveSpeed" ] },
+          "to":{ "_":[ "this", "forceY" ] },
+          "set":{ "aim":0, "forceApplied":1 }
+        },
+        {
+          "when":{ "_":[ "this", "doAction", "aMoveDown" ] },
+          "sum":{ "_":[ "this", "tMoveSpeed" ] },
+          "to":{ "_":[ "this", "forceY" ] },
+          "set":{ "aim":180, "forceApplied":1 }
+        },
+        {
+          "when":{ "_":[ "this", "doAction", "aMoveLeft" ] },
+          "subtract":{ "_":[ "this", "tMoveSpeed" ] },
+          "to":{ "_":[ "this", "forceX" ] },
+          "set":{ "aim":270, "forceApplied":1 }
+        },
+        {
+          "when":{ "_":[ "this", "doAction", "aMoveRight" ] },
+          "sum":{ "_":[ "this", "tMoveSpeed" ] },
+          "to":{ "_":[ "this", "forceX" ] },
+          "set":{ "aim":90, "forceApplied":1 }
+        },
+        {
+          "when":{ "_":[ "this", "doAction", "aMoveFront" ] },
+          "applyVector":{ "angle":{ "_":[ "this", "aim" ] }, "length":{ "_":[ "this", "tMoveSpeed" ] } }
+        },
+        {
+          "when":{ "_":[ "this", "doAction", "aMoveBack" ] },
+          "applyVector":{ "angle":{ "_":[ "this", "aim", "+", 180 ] }, "length":{ "_":[ "this", "tMoveSpeed" ] } }
+        },
+        {
+          "when":{ "_":[ "this", "doAction", "aJumpUp" ] },
+          "execute":{
+            "when":{ "_":[ "this", "touchDown" ] },
+            "assign":{ "_":[ "this", "tJumpForce", "*", -1 ] },
+            "to":{ "_":[ "this", "forceY" ] },
+            "set":{ "forceApplied":1 }
+          }
+        },
+        {
+          "when":{ "_":[ "this", "doAction", "aJumpDown" ] },
+          "execute":{ "when":{ "_":[ "this", "touchUp" ] }, "assign":{ "_":[ "this", "tJumpForce" ] }, "to":{ "_":[ "this", "forceY" ] }, "set":{ "forceApplied":1 } }
+        },
+        {
+          "when":{ "_":[ "this", "doAction", "aJumpLeft" ] },
+          "execute":{
+            "when":{ "_":[ "this", "touchRight" ] },
+            "assign":{ "_":[ "this", "tJumpForce", "*", -1 ] },
+            "to":{ "_":[ "this", "forceX" ] },
+            "set":{ "forceApplied":1 }
+          }
+        },
+        {
+          "when":{ "_":[ "this", "doAction", "aJumpRight" ] },
+          "execute":{ "when":{ "_":[ "this", "touchLeft" ] }, "assign":{ "_":[ "this", "tJumpForce" ] }, "to":{ "_":[ "this", "forceX" ] }, "set":{ "forceApplied":1 } }
+        },
+        {
+          "when":{ "_":[ "this", "doAction", "aThrustRandom" ] },
+          "decide":{
+            "options":[
+              { "assign":{ "_":[ "this", "tThrustForce", "*", -1 ] }, "to":{ "_":[ "this", "forceY" ] }, "set":{ "forceX":0, "aim":0, "forceApplied":1 } },
+              { "assign":{ "_":[ "this", "tThrustForce" ] }, "to":{ "_":[ "this", "forceY" ] }, "set":{ "forceX":0, "aim":180, "forceApplied":1 } },
+              { "assign":{ "_":[ "this", "tThrustForce", "*", -1 ] }, "to":{ "_":[ "this", "forceX" ] }, "set":{ "forceY":0, "aim":270, "forceApplied":1 } },
+              { "assign":{ "_":[ "this", "tThrustForce" ] }, "to":{ "_":[ "this", "forceX" ] }, "set":{ "forceY":0, "aim":90, "forceApplied":1 } }
+            ]
+          }
+        },
+        {
+          "when":{ "_":[ "this", "doAction", "aThrustRandomV" ] },
+          "decide":{
+            "options":[
+              { "assign":{ "_":[ "this", "tThrustForce", "*", -1 ] }, "to":{ "_":[ "this", "forceY" ] }, "set":{ "forceX":0, "aim":0, "forceApplied":1 } },
+              { "assign":{ "_":[ "this", "tThrustForce" ] }, "to":{ "_":[ "this", "forceY" ] }, "set":{ "forceX":0, "aim":180, "forceApplied":1 } }
+            ]
+          }
+        },
+        {
+          "when":{ "_":[ "this", "doAction", "aThrustRandomH" ] },
+          "decide":{
+            "options":[
+              { "assign":{ "_":[ "this", "tThrustForce", "*", -1 ] }, "to":{ "_":[ "this", "forceX" ] }, "set":{ "forceY":0, "aim":270, "forceApplied":1 } },
+              { "assign":{ "_":[ "this", "tThrustForce" ] }, "to":{ "_":[ "this", "forceX" ] }, "set":{ "forceY":0, "aim":90, "forceApplied":1 } }
+            ]
+          }
+        },
+        {
+          "when":{ "_":[ "this", "doAction", "aThrustUp" ] },
+          "assign":{ "_":[ "this", "tThrustForce", "*", -1 ] },
+          "to":{ "_":[ "this", "forceY" ] },
+          "set":{ "aim":0, "forceApplied":1 }
+        },
+        {
+          "when":{ "_":[ "this", "doAction", "aThrustDown" ] },
+          "assign":{ "_":[ "this", "tThrustForce" ] },
+          "to":{ "_":[ "this", "forceY" ] },
+          "set":{ "aim":180, "forceApplied":1 }
+        },
+        {
+          "when":{ "_":[ "this", "doAction", "aThrustLeft" ] },
+          "assign":{ "_":[ "this", "tThrustForce", "*", -1 ] },
+          "to":{ "_":[ "this", "forceX" ] },
+          "set":{ "aim":270, "forceApplied":1 }
+        },
+        {
+          "when":{ "_":[ "this", "doAction", "aThrustRight" ] },
+          "assign":{ "_":[ "this", "tThrustForce" ] },
+          "to":{ "_":[ "this", "forceX" ] },
+          "set":{ "aim":90, "forceApplied":1 }
+        },
+        {
+          "when":{ "_":[ "this", "doAction", "aThrustFront" ] },
+          "applyVector":{ "angle":{ "_":[ "this", "aim" ] }, "length":{ "_":[ "this", "tThrustForce" ] } }
+        },
+        {
+          "when":{ "_":[ "this", "doAction", "aThrustBack" ] },
+          "applyVector":{ "angle":{ "_":[ "this", "aim", "+", 180 ] }, "length":{ "_":[ "this", "tThrustForce" ] } }
+        },
+        { "when":{ "_":[ "this", "doAction", "aDeleteThis" ] }, "set":{ "removing":1 } },
+        {
+          "when":{ "_":[ "this", "doAction", "aSpawnTileRandomly" ] },
+          "execute":[
+            { "emptyList":{ "_":[ "scene", "randomPot" ] } },
+            { "as":{ "_":[ "this", "doAction", "aSpawnTile1" ] }, "pushInto":{ "_":[ "scene", "randomPot" ] } },
+            { "as":{ "_":[ "this", "doAction", "aSpawnTile2" ] }, "pushInto":{ "_":[ "scene", "randomPot" ] } },
+            { "as":{ "_":[ "this", "doAction", "aSpawnTile3" ] }, "pushInto":{ "_":[ "scene", "randomPot" ] } },
+            { "set":{ "spawnTile":{ "_":[ "randomValue", { "_":[ "scene", "randomPot" ] } ] } }, "execute":{ "_":[ "stencil", "codeSpawnTile" ] } },
+            { "_":[ "stencil", "codeProcessSpawnTile" ] }
+          ],
+          "elseExecute":[
+            {
+              "when":{ "_":[ "this", "doAction", "aSpawnTile1" ] },
+              "execute":[
+                { "set":{ "spawnTile":{ "_":[ "this", "doAction", "aSpawnTile1" ] } }, "execute":{ "_":[ "stencil", "codeSpawnTile" ] } },
+                { "_":[ "stencil", "codeProcessSpawnTile" ] }
+              ]
+            },
+            {
+              "when":{ "_":[ "this", "doAction", "aSpawnTile2" ] },
+              "execute":[
+                { "set":{ "spawnTile":{ "_":[ "this", "doAction", "aSpawnTile2" ] } }, "execute":{ "_":[ "stencil", "codeSpawnTile" ] } },
+                { "_":[ "stencil", "codeProcessSpawnTile" ] }
+              ]
+            },
+            {
+              "when":{ "_":[ "this", "doAction", "aSpawnTile3" ] },
+              "execute":[
+                { "set":{ "spawnTile":{ "_":[ "this", "doAction", "aSpawnTile3" ] } }, "execute":{ "_":[ "stencil", "codeSpawnTile" ] } },
+                { "_":[ "stencil", "codeProcessSpawnTile" ] }
+              ]
+            }
+          ]
+        },
+        {
+          "when":{ "_":[ "this", "doAction", "aTileFlag1" ] },
+          "set":{ "processFlag":{ "_":[ "object", "flag-1" ] } },
+          "execute":{ "_":[ "stencil", "codeProcessTileFlag" ] }
+        },
+        {
+          "when":{ "_":[ "this", "doAction", "aTileFlag2" ] },
+          "set":{ "processFlag":{ "_":[ "object", "flag-2" ] } },
+          "execute":{ "_":[ "stencil", "codeProcessTileFlag" ] }
+        },
+        {
+          "when":{ "_":[ "this", "doAction", "aTileFlag3" ] },
+          "set":{ "processFlag":{ "_":[ "object", "flag-3" ] } },
+          "execute":{ "_":[ "stencil", "codeProcessTileFlag" ] }
+        },
+        {
+          "when":{ "_":[ "this", "doAction", "aTileFlag4" ] },
+          "set":{ "processFlag":{ "_":[ "object", "flag-4" ] } },
+          "execute":{ "_":[ "stencil", "codeProcessTileFlag" ] }
+        },
+        {
+          "when":{ "_":[ "this", "doAction", "aTileFlag5" ] },
+          "set":{ "processFlag":{ "_":[ "object", "flag-5" ] } },
+          "execute":{ "_":[ "stencil", "codeProcessTileFlag" ] }
+        },
+        {
+          "when":{ "_":[ "this", "doAction", "aTileFlag6" ] },
+          "set":{ "processFlag":{ "_":[ "object", "flag-6" ] } },
+          "execute":{ "_":[ "stencil", "codeProcessTileFlag" ] }
+        },
+        {
+          "when":{ "_":[ "this", "doWith" ] },
+          "execute":[
+            { "when":{ "_":[ "this", "doAction", "aDeleteThat" ] }, "as":{ "_":[ "this", "doWith" ] }, "set":{ "removing":1 } },
+            {
+              "when":{ "_":[ "this", "doAction", "aSpawnTileThatRandomly" ] },
+              "execute":[
+                { "emptyList":{ "_":[ "scene", "randomPot" ] } },
+                { "as":{ "_":[ "this", "doAction", "aSpawnTileThat1" ] }, "pushInto":{ "_":[ "scene", "randomPot" ] } },
+                { "as":{ "_":[ "this", "doAction", "aSpawnTileThat2" ] }, "pushInto":{ "_":[ "scene", "randomPot" ] } },
+                { "as":{ "_":[ "this", "doAction", "aSpawnTileThat3" ] }, "pushInto":{ "_":[ "scene", "randomPot" ] } },
+                {
+                  "as":{ "_":[ "this", "doWith" ] },
+                  "set":{ "spawnTile":{ "_":[ "randomValue", { "_":[ "scene", "randomPot" ] } ] } },
+                  "execute":{ "_":[ "stencil", "codeSpawnTile" ] }
+                },
+                { "_":[ "stencil", "codeProcessSpawnTileThat" ] }
+              ],
+              "elseExecute":[
+                {
+                  "when":{ "_":[ "this", "doAction", "aSpawnTileThat1" ] },
+                  "execute":[
+                    {
+                      "as":{ "_":[ "this", "doWith" ] },
+                      "set":{ "spawnTile":{ "_":[ "that", "doAction", "aSpawnTileThat1" ] } },
+                      "execute":{ "_":[ "stencil", "codeSpawnTile" ] }
+                    },
+                    { "_":[ "stencil", "codeProcessSpawnTileThat" ] }
+                  ]
+                },
+                {
+                  "when":{ "_":[ "this", "doAction", "aSpawnTileThat2" ] },
+                  "execute":[
+                    {
+                      "as":{ "_":[ "this", "doWith" ] },
+                      "set":{ "spawnTile":{ "_":[ "that", "doAction", "aSpawnTileThat2" ] } },
+                      "execute":{ "_":[ "stencil", "codeSpawnTile" ] }
+                    },
+                    { "_":[ "stencil", "codeProcessSpawnTileThat" ] }
+                  ]
+                },
+                {
+                  "when":{ "_":[ "this", "doAction", "aSpawnTileThat3" ] },
+                  "execute":[
+                    {
+                      "as":{ "_":[ "this", "doWith" ] },
+                      "set":{ "spawnTile":{ "_":[ "that", "doAction", "aSpawnTileThat3" ] } },
+                      "execute":{ "_":[ "stencil", "codeSpawnTile" ] }
+                    },
+                    { "_":[ "stencil", "codeProcessSpawnTileThat" ] }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        { "when":{ "_":[ "this", "doAction", "aFlipH" ] }, "set":{ "flipX":{ "_":[ "this", "flipX", "not" ] } } },
+        { "when":{ "_":[ "this", "doAction", "aFlipV" ] }, "set":{ "flipY":{ "_":[ "this", "flipY", "not" ] } } },
+        { "when":{ "_":[ "this", "doAction", "aFlipLeft" ] }, "set":{ "flipX":1 } },
+        { "when":{ "_":[ "this", "doAction", "aFlipRight" ] }, "set":{ "flipX":0 } },
+        { "when":{ "_":[ "this", "doAction", "aFlipUp" ] }, "set":{ "flipY":0 } },
+        { "when":{ "_":[ "this", "doAction", "aFlipDown" ] }, "set":{ "flipY":1 } },
+        { "when":{ "_":[ "this", "doAction", "aVisible" ] }, "set":{ "visible":1 } },
+        { "when":{ "_":[ "this", "doAction", "aInvisible" ] }, "set":{ "visible":0 } },
+        { "when":{ "_":[ "this", "doAction", "aToggleVisible" ] }, "set":{ "visible":{ "_":[ "this", "visible", "not" ] } } },
+        { "when":{ "_":[ "this", "doAction", "aRotate0" ] }, "set":{ "angle":0 } },
+        { "when":{ "_":[ "this", "doAction", "aRotate90" ] }, "set":{ "angle":90 } },
+        { "when":{ "_":[ "this", "doAction", "aRotate180" ] }, "set":{ "angle":180 } },
+        { "when":{ "_":[ "this", "doAction", "aRotate270" ] }, "set":{ "angle":270 } },
+        {
+          "when":{ "_":[ "scene", "playing" ] },
+          "execute":[
+            {
+              "when":{ "_":[ "this", "doAction", "aPoint1s" ] },
+              "subtract":1,
+              "to":{ "_":[ "scene", "score" ] },
+              "execute":{ "_":[ "stencil", "codeUpdateScore" ] }
+            },
+            { "when":{ "_":[ "this", "doAction", "aPoint1" ] }, "sum":1, "to":{ "_":[ "scene", "score" ] }, "execute":{ "_":[ "stencil", "codeUpdateScore" ] } },
+            { "when":{ "_":[ "this", "doAction", "aPoint10" ] }, "sum":10, "to":{ "_":[ "scene", "score" ] }, "execute":{ "_":[ "stencil", "codeUpdateScore" ] } },
+            { "when":{ "_":[ "this", "doAction", "aPoint50" ] }, "sum":50, "to":{ "_":[ "scene", "score" ] }, "execute":{ "_":[ "stencil", "codeUpdateScore" ] } },
+            {
+              "when":{ "_":[ "this", "doAction", "aPoint100" ] },
+              "sum":100,
+              "to":{ "_":[ "scene", "score" ] },
+              "execute":{ "_":[ "stencil", "codeUpdateScore" ] }
+            },
+            {
+              "when":{ "_":[ "this", "doAction", "aYouLose" ] },
+              "execute":{ "when":{ "_":[ "scene", "gameover", "not" ] }, "as":{ "_":"scene" }, "set":{ "gameover":2 } }
+            },
+            {
+              "when":{ "_":[ "this", "doAction", "aYouWin" ] },
+              "execute":{ "when":{ "_":[ "scene", "gameover", "not" ] }, "as":{ "_":"scene" }, "set":{ "gameover":1 } }
+            }
+          ]
+        }
+      ]
+    },
+    "codeTileInitialize":[
+      { "set":{ "speedLimitH":{ "_":[ "new", [ -8, 8 ] ] }, "speedLimitV":{ "_":[ "new", [ -8, 8 ] ] } } },
+      {
+        "when":{ "_":[ "this", "tSpeedLimitHorizontal" ] },
+        "execute":[
+          { "assign":{ "_":[ "this", "tSpeedLimitHorizontal", "*", -1 ] }, "to":{ "_":[ "this", "speedLimitH", 0 ] } },
+          { "assign":{ "_":[ "this", "tSpeedLimitHorizontal" ] }, "to":{ "_":[ "this", "speedLimitH", 1 ] } }
+        ]
+      },
+      {
+        "when":{ "_":[ "this", "tSpeedLimitVertical" ] },
+        "execute":[
+          { "assign":{ "_":[ "this", "tSpeedLimitVertical", "*", -1 ] }, "to":{ "_":[ "this", "speedLimitV", 0 ] } },
+          { "assign":{ "_":[ "this", "tSpeedLimitVertical" ] }, "to":{ "_":[ "this", "speedLimitV", 1 ] } }
+        ]
+      },
+      {
+        "set":{
+          "gravityX":{ "_":[ "this", "tGravityForceX", "*", { "_":[ "this", "tGravity" ] }, "or", 0 ] },
+          "gravityY":{ "_":[ "this", "tGravityForceY", "*", { "_":[ "this", "tGravity" ] }, "or", 0 ] },
+          "zIndex":{ "_":[ "this", "tDepth" ] }
+        }
+      },
+      { "when":{ "_":[ "this", "tHitbox" ] }, "set":{ "hitbox":{ "width":7, "height":7, "x":1, "y":1 } }, "elseExecute":{ "set":{ "hitbox":0 } } },
+      {
+        "when":{ "_":[ "this", "tFlags" ] },
+        "execute":[
+          { "when":{ "_":[ "this", "tFlags", "fFlag1" ] }, "set":{ "type":"flag-1" } },
+          { "when":{ "_":[ "this", "tFlags", "fFlag2" ] }, "set":{ "type":"flag-2" } },
+          { "when":{ "_":[ "this", "tFlags", "fFlag3" ] }, "set":{ "type":"flag-3" } },
+          { "when":{ "_":[ "this", "tFlags", "fFlag4" ] }, "set":{ "type":"flag-4" } },
+          { "when":{ "_":[ "this", "tFlags", "fFlag5" ] }, "set":{ "type":"flag-5" } },
+          { "when":{ "_":[ "this", "tFlags", "fFlag6" ] }, "set":{ "type":"flag-6" } }
+        ]
+      }
+    ],
+    "codeTilePicker":[
+      {
+        "when":{ "_":[ "this", "tilePickerTitle" ] },
+        "object":{
+          "type":"tilepicker",
+          "set":{ "_":[ "stencil", "smallLabel" ] },
+          "zIndex":10000, "x":0, "y":0,
+          "bgcolor":"#c2c3c7", "color":"#000",
+          "html":{ "_":[ "that", "tilePickerTitle" ] }
+        }
+      },
+      { "when":{ "_":[ "this", "tilePickerCursor", "not" ] }, "set":{ "tilePickerCursor":0 } },
+      {
+        "object":[
+          { "type":"tilepicker", "width":128, "height":120, "zIndex":10000, "x":0, "y":8, "bgcolor":"#000" },
+          { "type":[ "tilepicker", "cursorbg" ], "width":8, "height":8, "zIndex":10010, "visible":0 },
+          { "type":"tilepicker", "image":"tiles", "width":128, "height":120, "zIndex":10020, "x":0, "y":8 },
+          {
+            "type":[ "tilepicker", "cursorlabel" ],
+            "set":{ "_":[ "stencil", "smallLabel" ] },
+            "width":24, "height":8,
+            "zIndex":10030,
+            "visible":0,
+            "color":"#fff1e8",
+            "outline":"#000", "textAlign":"center", "html":""
+          },
+          {
+            "type":"tilepicker",
+            "width":8, "height":8,
+            "zIndex":10030, "x":{ "_":[ "that", "tilePickerCursor", "%", 16, "*", 8 ] }, "y":{ "_":[ "that", "tilePickerCursor", "/", 16, "floor", "*", 8, "+", 8 ] },
+            "caller":{ "_":"that" },
+            "moved":1,
+            "tilePickerCursorPre":{ "_":[ "that", "tilePickerCursor" ] },
+            "tilePickerSelectZero":{ "_":[ "that", "tilePickerSelectZero" ] },
+            "states":[
+              { "code":{ "name":"Sequence", "data":[ { "wait":1 }, { "set":{ "state":"pick" } } ] } },
+              {
+                "name":"pick",
+                "code":[
+                  { "name":"Sequence", "data":[ { "set":{ "border":"#fff1e8" }, "wait":1 }, { "set":{ "border":"#20337b" }, "wait":1, "loopTo":0 } ] },
+                  {
+                    "name":"Execute",
+                    "data":[
+                      {
+                        "when":{ "_":[ "keyB", "isUp" ] },
+                        "execute":[
+                          { "when":{ "_":[ "keyLeft", "isHit" ] }, "subtract":8, "to":{ "_":[ "this", "x" ] }, "set":{ "moved":1 } },
+                          { "when":{ "_":[ "keyRight", "isHit" ] }, "sum":8, "to":{ "_":[ "this", "x" ] }, "set":{ "moved":1 } },
+                          { "when":{ "_":[ "keyDown", "isHit" ] }, "sum":8, "to":{ "_":[ "this", "y" ] }, "set":{ "moved":1 } },
+                          { "when":{ "_":[ "keyUp", "isHit" ] }, "subtract":8, "to":{ "_":[ "this", "y" ] }, "set":{ "moved":1 } }
+                        ]
+                      },
+                      { "when":{ "_":[ "this", "x", "isLessThan", 0 ] }, "set":{ "x":120 } },
+                      { "when":{ "_":[ "this", "x", "isGreaterThan", 120 ] }, "set":{ "x":0 } },
+                      { "when":{ "_":[ "this", "y", "isLessThan", 8 ] }, "set":{ "y":{ "_":120 } } },
+                      { "when":{ "_":[ "this", "y", "isGreaterThan", { "_":120 } ] }, "set":{ "y":8 } },
+                      {
+                        "when":{ "_":[ "this", "moved" ] },
+                        "execute":[
+                          { "set":{ "tileSelected":{ "_":[ "this", "y", "-", 8, "/", 8, "*", 16, "+", { "_":[ "this", "x", "/", 8 ] } ] } } },
+                          {
+                            "as":{ "_":[ "objectTyped", "cursorlabel" ] },
+                            "execute":[
+                              {
+                                "when":{ "_":[ "that", "y", "isGreaterThan", 64 ] },
+                                "set":{ "y":{ "_":[ "that", "y", "-", 8 ] } },
+                                "elseExecute":{ "set":{ "y":{ "_":[ "that", "y", "+", 8 ] } } }
+                              },
+                              {
+                                "when":{ "_":[ "that", "x", "isGreaterThan", 64 ] },
+                                "set":{ "x":{ "_":[ "that", "x", "-", 16 ] }, "textAlign":"right" },
+                                "elseExecute":{ "set":{ "x":{ "_":[ "that", "x" ] }, "textAlign":"left" } }
+                              },
+                              { "set":{ "visible":1, "html":{ "_":[ "that", "tileSelected" ] } } }
+                            ]
+                          },
+                          { "as":{ "_":[ "objectTyped", "cursorbg" ] }, "set":{ "at":{ "_":"that" }, "visible":1 } },
+                          { "set":{ "moved":0 } }
+                        ]
+                      },
+                      { "as":{ "_":[ "objectTyped", "cursorbg" ] }, "set":{ "bgcolor":{ "_":[ "that", "border" ] } } },
+                      {
+                        "when":{ "_":[ "keyA", "isHit" ] },
+                        "execute":{ "executeAction":"tileSelected" },
+                        "elseExecute":{
+                          "when":{ "_":[ "keyB", "isHit" ] },
+                          "execute":[ { "set":{ "tileSelected":{ "_":[ "this", "tilePickerCursorPre" ] } } }, { "executeAction":"tileSelected" } ]
+                        }
+                      }
+                    ]
+                  }
+                ],
+                "actions":{
+                  "name":"tileSelected",
+                  "execute":{ "when":{ "_":[ "this", "tileSelected", "or", { "_":[ "this", "tilePickerSelectZero" ] } ] }, "set":{ "state":"select" } }
+                }
+              },
+              {
+                "name":"select",
+                "code":{
+                  "name":"Sequence",
+                  "data":[ { "wait":1 }, { "as":{ "_":[ "this", "caller" ] }, "executeAction":"tileSelected" }, { "as":{ "_":[ "object", "tilepicker" ] }, "remove":1 } ]
+                }
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "codeUpdateScore":{ "as":{ "_":[ "objectTyped", "editorbar" ] }, "set":{ "html":{ "_":[ "Score: ", ".", { "_":[ "scene", "score" ] } ] } } },
+    "dataConditionsList":[
+      { "label":"Tile interactions" },
+      { "label":"Collides with tile", "objectKey":"cCollidesWith1", "optionIdIsTile":1 },
+      { "label":"Collides with tile", "objectKey":"cCollidesWith2", "optionIdIsTile":1 },
+      { "label":"Collides with tile", "objectKey":"cCollidesWith3", "optionIdIsTile":1 },
+      { "label":"Don't collides with tile", "objectKey":"cCollidesNotWith1", "optionIdIsTile":1 },
+      { "label":"Collides with tile flag 1", "objectKey":"cCollidesWithFlag1" },
+      { "label":"Collides with tile flag 2", "objectKey":"cCollidesWithFlag2" },
+      { "label":"Collides with tile flag 3", "objectKey":"cCollidesWithFlag3" },
+      { "label":"Collides with tile flag 4", "objectKey":"cCollidesWithFlag4" },
+      { "label":"Collides with tile flag 5", "objectKey":"cCollidesWithFlag5" },
+      { "label":"Collides with tile flag 6", "objectKey":"cCollidesWithFlag6" },
+      { "label":"Time based" },
+      { "label":"Always", "objectKey":"cAlways" },
+      { "label":"Every 1/4 second", "objectKey":"cEveryQuarterSecond" },
+      { "label":"Every 1/2 second", "objectKey":"cEveryHalfSecond" },
+      { "label":"Every second", "objectKey":"cEverySecond" },
+      { "label":"Every 2 seconds", "objectKey":"cEveryTwoSeconds" },
+      { "label":"Every 3 seconds", "objectKey":"cEveryThreeSeconds" },
+      { "label":"Every 4 seconds", "objectKey":"cEveryFourSeconds" },
+      { "label":"Every 5 seconds", "objectKey":"cEveryFiveSeconds" },
+      { "label":"Tile flags" },
+      { "label":"There are tiles w/flag 1", "objectKey":"cFlag1" },
+      { "label":"There are tiles w/flag 2", "objectKey":"cFlag2" },
+      { "label":"There are tiles w/flag 3", "objectKey":"cFlag3" },
+      { "label":"There are tiles w/flag 4", "objectKey":"cFlag4" },
+      { "label":"There are tiles w/flag 5", "objectKey":"cFlag5" },
+      { "label":"There are tiles w/flag 6", "objectKey":"cFlag6" },
+      { "label":"There aren't tiles w/flag 1", "objectKey":"cFlag1Not" },
+      { "label":"There aren't tiles w/flag 2", "objectKey":"cFlag2Not" },
+      { "label":"There aren't tiles w/flag 3", "objectKey":"cFlag3Not" },
+      { "label":"There aren't tiles w/flag 4", "objectKey":"cFlag4Not" },
+      { "label":"There aren't tiles w/flag 5", "objectKey":"cFlag5Not" },
+      { "label":"There aren't tiles w/flag 6", "objectKey":"cFlag6Not" },
+      { "label":"Movement" },
+      { "label":"Not moving", "objectKey":"cMoveNot" },
+      { "label":"Moving", "objectKey":"cMoveYes" },
+      { "label":"Moving up", "objectKey":"cMoveUp" },
+      { "label":"Moving down", "objectKey":"cMoveDown" },
+      { "label":"Moving left", "objectKey":"cMoveLeft" },
+      { "label":"Moving right", "objectKey":"cMoveRight" },
+      { "label":"Randomly" },
+      { "label":"Rarely", "objectKey":"cRarely" },
+      { "label":"Sometime", "objectKey":"cSometime" },
+      { "label":"Often", "objectKey":"cOften" },
+      { "label":"Very often", "objectKey":"cVeryOften" }
+    ],
+    "dataFlagsList":[
+      { "label":"Flag 1", "objectKey":"fFlag1" },
+      { "label":"Flag 2", "objectKey":"fFlag2" },
+      { "label":"Flag 3", "objectKey":"fFlag3" },
+      { "label":"Flag 4", "objectKey":"fFlag4" },
+      { "label":"Flag 5", "objectKey":"fFlag5" },
+      { "label":"Flag 6", "objectKey":"fFlag6" }
+    ],
+    "dataPhysicsActionList":[
+      { "label":"Physics actions" },
+      { "label":"Block movement", "objectKey":"aWall" },
+      { "label":"Stops", "objectKey":"aStop" },
+      { "label":"Bounce", "objectKey":"aBounce" },
+      { "label":"Bounce softly", "objectKey":"aBounceSoft" },
+      { "label":"Bounce heavily", "objectKey":"aBounceHeavy" },
+      { "label":"Bounce vertically", "objectKey":"aBounceH" },
+      { "label":"Bounce horizontally", "objectKey":"aBounceV" },
+      { "label":"Movement" },
+      { "label":"Move up", "objectKey":"aMoveUp" },
+      { "label":"Move down", "objectKey":"aMoveDown" },
+      { "label":"Move left", "objectKey":"aMoveLeft" },
+      { "label":"Move right", "objectKey":"aMoveRight" },
+      { "label":"Move frontward", "objectKey":"aMoveFront" },
+      { "label":"Move backward", "objectKey":"aMoveBack" },
+      { "label":"Move randomly", "objectKey":"aMoveRandom" },
+      { "label":"Move randomly horizontal", "objectKey":"aMoveRandomH" },
+      { "label":"Move randomly vertical", "objectKey":"aMoveRandomV" },
+      { "label":"Jump" },
+      { "label":"Jump up", "objectKey":"aJumpUp" },
+      { "label":"Jump down", "objectKey":"aJumpDown" },
+      { "label":"Jump left", "objectKey":"aJumpLeft" },
+      { "label":"Jump right", "objectKey":"aJumpRight" },
+      { "label":"Thrust" },
+      { "label":"Thrust up", "objectKey":"aThrustUp" },
+      { "label":"Thrust down", "objectKey":"aThrustDown" },
+      { "label":"Thrust left", "objectKey":"aThrustLeft" },
+      { "label":"Thrust right", "objectKey":"aThrustRight" },
+      { "label":"Thrust frontward", "objectKey":"aThrustFront" },
+      { "label":"Thrust backward", "objectKey":"aThrustBack" },
+      { "label":"Thrust randomly", "objectKey":"aThrustRandom" },
+      { "label":"Thrust randomly horizontal", "objectKey":"aThrustRandomH" },
+      { "label":"Thrust randomly vertical", "objectKey":"aThrustRandomV" },
+      { "label":"Aim" },
+      { "label":"Aim up", "objectKey":"aAimUp" },
+      { "label":"Aim down", "objectKey":"aAimDown" },
+      { "label":"Aim left", "objectKey":"aAimLeft" },
+      { "label":"Aim right", "objectKey":"aAimRight" },
+      { "label":"Aim randomly", "objectKey":"aRotateRandomly" },
+      { "label":"Aim clockwise", "objectKey":"aRotateClockwise" },
+      { "label":"Aim counterclockwise", "objectKey":"aRotateCounterClockwise" },
+      { "label":"Change aim toward", "objectKey":"aRotateToward", "optionIdIsTile":1 },
+      { "label":"Set aim toward", "objectKey":"aRotateTo", "optionIdIsTile":1 },
+      { "label":"Drawing angle" },
+      { "label":"Set angle to 0 deg", "objectKey":"aRotate0" },
+      { "label":"Set angle to 90 deg", "objectKey":"aRotate90" },
+      { "label":"Set angle to 180 deg", "objectKey":"aRotate180" },
+      { "label":"Set angle to 270 deg", "objectKey":"aRotate270" },
+      { "label":"Drawing flip" },
+      { "label":"Flip horizontally", "objectKey":"aFlipH" },
+      { "label":"Flip vertically", "objectKey":"aFlipV" },
+      { "label":"Flip to left", "objectKey":"aFlipLeft" },
+      { "label":"Flip to right", "objectKey":"aFlipRight" },
+      { "label":"Flip to up", "objectKey":"aFlipUp" },
+      { "label":"Flip to down", "objectKey":"aFlipDown" },
+      { "label":"Visibility" },
+      { "label":"Make invisible", "objectKey":"aInvisible" },
+      { "label":"Make visible", "objectKey":"aVisible" },
+      { "label":"Toggle visibility", "objectKey":"aToggleVisible" },
+      { "label":"Screen edges" },
+      { "label":"Warp horizontally", "objectKey":"aWarpH" },
+      { "label":"Warp vertically", "objectKey":"aWarpV" },
+      { "label":"Warp to the left", "objectKey":"aWarpLeft" },
+      { "label":"Warp to the right", "objectKey":"aWarpRight" },
+      { "label":"Warp to the top", "objectKey":"aWarpTop" },
+      { "label":"Warp to the bottom", "objectKey":"aWarpBottom" },
+      { "label":"Tile actions" },
+      { "label":"Copy that aim", "objectKey":"aCopyAim" },
+      { "label":"Delete this tile", "objectKey":"aDeleteThis" },
+      { "label":"Delete other tile", "objectKey":"aDeleteThat" },
+      { "label":"Spawn over this tile", "objectKey":"aSpawnTile1", "optionIdIsTile":1 },
+      { "label":"Spawn over this tile", "objectKey":"aSpawnTile2", "optionIdIsTile":1 },
+      { "label":"Spawn over this tile", "objectKey":"aSpawnTile3", "optionIdIsTile":1 },
+      { "label":"...one of these randomly", "objectKey":"aSpawnTileRandomly" },
+      { "label":"...and copy this aim", "objectKey":"aSpawnTileCopyAim" },
+      { "label":"...and copy that aim", "objectKey":"aSpawnTileCopyThatAim" },
+      { "label":"...and copy tile logic", "objectKey":"aSpawnTileCopyTileLogic", "optionIdIsTile":1 },
+      { "label":"Spawn over that tile", "objectKey":"aSpawnTileThat1", "optionIdIsTile":1 },
+      { "label":"Spawn over that tile", "objectKey":"aSpawnTileThat2", "optionIdIsTile":1 },
+      { "label":"Spawn over that tile", "objectKey":"aSpawnTileThat3", "optionIdIsTile":1 },
+      { "label":"...one of these randomly", "objectKey":"aSpawnTileThatRandomly" },
+      { "label":"...and copy this aim", "objectKey":"aSpawnTileThatCopyAim" },
+      { "label":"...and copy that aim", "objectKey":"aSpawnTileThatCopyThatAim" },
+      { "label":"...and copy tile logic", "objectKey":"aSpawnTileThatCopyTileLogic", "optionIdIsTile":1 },
+      { "label":"Tile flags" },
+      { "label":"All tiles with flag 1...", "objectKey":"aTileFlag1" },
+      { "label":"All tiles with flag 2...", "objectKey":"aTileFlag2" },
+      { "label":"All tiles with flag 3...", "objectKey":"aTileFlag3" },
+      { "label":"All tiles with flag 4...", "objectKey":"aTileFlag4" },
+      { "label":"All tiles with flag 5...", "objectKey":"aTileFlag5" },
+      { "label":"All tiles with flag 6...", "objectKey":"aTileFlag6" },
+      { "label":"...spawn this tile", "objectKey":"aTileFlagSpawn", "optionIdIsTile":1 },
+      { "label":"...copy this aim", "objectKey":"aTileFlagCopyAim" },
+      { "label":"...copy that aim", "objectKey":"aTileFlagCopyThatAim" },
+      { "label":"...copy tile logic", "objectKey":"aTileFlagCopyLogic", "optionIdIsTile":1 },
+      { "label":"...delete all", "objectKey":"aTileFlagDelete" },
+      { "label":"Tile logic" },
+      { "label":"Copy tile logic", "objectKey":"aCopyLogic", "optionIdIsTile":1 },
+      { "label":"Score" },
+      { "label":"Give 1 point", "objectKey":"aPoint1" },
+      { "label":"Give 10 points", "objectKey":"aPoint10" },
+      { "label":"Give 50 points", "objectKey":"aPoint50" },
+      { "label":"Give 100 points", "objectKey":"aPoint100" },
+      { "label":"Subtract 1 point", "objectKey":"aPoint1s" },
+      { "label":"Game flow" },
+      { "label":"You win!", "objectKey":"aYouWin" },
+      { "label":"You lose!", "objectKey":"aYouLose" }
+    ],
+    "dataSettings":{
+      "label":"<root>",
+      "special":"tilePicker",
+      "sub":{
+        "label":"<tile selector>",
+        "sub":[
+          {
+            "label":"Drawing",
+            "sub":[
+              {
+                "label":"Depth",
+                "objectKey":"tDepth",
+                "optionsIds":[ 0, 1, 2, 3, 4 ],
+                "optionsLabels":[ "Background", "Background 2", "Normal", "Foreground", "On top" ]
+              },
+              {
+                "label":"Flip horizontally",
+                "objectKey":"tFlipHorizontally",
+                "optionsIds":[ 0, 1, 2 ],
+                "optionsLabels":[ "Manual", "By horizontal force", "By aim" ]
+              },
+              { "label":"Flip vertically", "objectKey":"tFlipVertically", "optionsIds":[ 0, 1, 2 ], "optionsLabels":[ "Manual", "By vertical force", "By aim" ] },
+              { "label":"Rotate", "objectKey":"tFollowAngle", "optionsIds":[ 0, 1 ], "optionsLabels":[ "Manual", "Following aim" ] }
+            ]
+          },
+          {
+            "label":"Special",
+            "sub":[
+              { "label":"Hitbox", "objectKey":"tHitbox", "optionsIds":[ 0, 1 ], "optionsLabels":[ "Normal", "Smaller" ] },
+              { "label":"Assign flags", "checkList":"dataFlagsList", "objectKey":"tFlags", "special":"checkListPicker" }
+            ]
+          },
+          {
+            "label":"Lifecycle",
+            "sub":[
+              { "label":"When created", "checkList":"dataPhysicsActionList", "objectKey":"tWhenCreated", "special":"checkListPicker" },
+              { "label":"When out of play area", "checkList":"dataPhysicsActionList", "objectKey":"tOnOut", "special":"checkListPicker" },
+              { "label":"When deleted", "checkList":"dataPhysicsActionList", "objectKey":"tWhenDeleted", "special":"checkListPicker" },
+              { "label":"When last is deleted", "checkList":"dataPhysicsActionList", "objectKey":"tWhenDeletedAll", "special":"checkListPicker" }
+            ]
+          },
+          {
+            "label":"Movement",
+            "sub":[
+              {
+                "label":"Speed settings",
+                "sub":[
+                  { "label":"Gravity", "objectKey":"tGravity", "optionsIds":[ 0, 0.1, 0.5, 1 ], "optionsLabels":[ "None", "Low", "Medium", "High" ] },
+                  { "label":"Jump force", "objectKey":"tJumpForce", "optionsIds":[ 0, 4, 5, 7 ], "optionsLabels":[ "None", "Low", "Medium", "High" ] },
+                  {
+                    "label":"Move speed",
+                    "objectKey":"tMoveSpeed",
+                    "optionsIds":[ 0, 0.1, 0.3, 1, 2, 4, 8 ],
+                    "optionsLabels":[ "None", "Slowest", "Slow", "Medium", "Fast", "Half tile", "Tile" ]
+                  },
+                  {
+                    "label":"Thrust force",
+                    "objectKey":"tThrustForce",
+                    "optionsIds":[ 0, 1, 2, 4, 5, 7 ],
+                    "optionsLabels":[ "None", "Lowest", "Very low", "Low", "Medium", "High" ]
+                  },
+                  {
+                    "label":"Rotation speed",
+                    "objectKey":"tRotationSpeed",
+                    "optionsIds":[ 0, 1, 2, 4, 8, 12, 90, 180, 270 ],
+                    "optionsLabels":[ "None", "Lowest", "Very low", "Low", "Medium", "High", "90 degrees", "180 degrees", "270 degrees" ]
+                  },
+                  {
+                    "label":"Limits",
+                    "sub":[
+                      {
+                        "label":"Horizontal",
+                        "objectKey":"tSpeedLimitHorizontal",
+                        "optionsIds":[ 0, 6, 3, 2, 1 ],
+                        "optionsLabels":[ "Fastest", "Fast", "Medium", "Slow", "Very slow" ]
+                      },
+                      {
+                        "label":"Vertical",
+                        "objectKey":"tSpeedLimitVertical",
+                        "optionsIds":[ 0, 6, 3, 2, 1 ],
+                        "optionsLabels":[ "Fastest", "Fast", "Medium", "Slow", "Very slow" ]
+                      }
+                    ]
+                  }
+                ]
+              },
+              { "label":"Mode", "objectKey":"tMoveMode", "optionsIds":[ 0, 1 ], "optionsLabels":[ "None", "Turn-based" ] },
+              {
+                "label":"Gravity",
+                "sub":[
+                  { "label":"Horizontal", "objectKey":"tGravityForceX", "optionsIds":[ 0, 1, -1 ], "optionsLabels":[ "None", "Rightward", "Leftward" ] },
+                  { "label":"Vertical", "objectKey":"tGravityForceY", "optionsIds":[ 0, 1, -1 ], "optionsLabels":[ "None", "Downward", "Upward" ] }
+                ]
+              },
+              {
+                "label":"Friction",
+                "sub":[
+                  { "label":"Horizontal", "objectKey":"tFrictionHorizontal", "optionsIds":[ 0, 0.9, 0.5, 0.1 ], "optionsLabels":[ "None", "Low", "Medium", "High" ] },
+                  { "label":"Vertical", "objectKey":"tFrictionVertical", "optionsIds":[ 0, 0.9, 0.5, 0.1 ], "optionsLabels":[ "None", "Low", "Medium", "High" ] }
+                ]
+              },
+              {
+                "label":"Walls",
+                "sub":[
+                  { "label":"When hits tile", "objectKey":"tWallTile1", "optionIdIsTile":1, "special":"tilePicker" },
+                  { "label":"then do", "checkList":"dataPhysicsActionList", "objectKey":"tOnWallTile1", "special":"checkListPicker" },
+                  { "label":"When hits tile", "objectKey":"tWallTile2", "optionIdIsTile":1, "special":"tilePicker" },
+                  { "label":"then do", "checkList":"dataPhysicsActionList", "objectKey":"tOnWallTile2", "special":"checkListPicker" },
+                  { "label":"When hits tile", "objectKey":"tWallTile3", "optionIdIsTile":1, "special":"tilePicker" },
+                  { "label":"then do", "checkList":"dataPhysicsActionList", "objectKey":"tOnWallTile3", "special":"checkListPicker" },
+                  { "label":"When hits tile", "objectKey":"tWallTile4", "optionIdIsTile":1, "special":"tilePicker" },
+                  { "label":"then do", "checkList":"dataPhysicsActionList", "objectKey":"tOnWallTile4", "special":"checkListPicker" }
+                ]
+              }
+            ]
+          },
+          {
+            "label":"Controls",
+            "sub":[
+              { "label":"When key up is hold", "checkList":"dataPhysicsActionList", "objectKey":"tOnKeyUp", "special":"checkListPicker" },
+              { "label":"When key up is hit", "checkList":"dataPhysicsActionList", "objectKey":"tOnKeyUpHit", "special":"checkListPicker" },
+              { "label":"When key down is hold", "checkList":"dataPhysicsActionList", "objectKey":"tOnKeyDown", "special":"checkListPicker" },
+              { "label":"When key down is hit", "checkList":"dataPhysicsActionList", "objectKey":"tOnKeyDownHit", "special":"checkListPicker" },
+              { "label":"When key left is hold", "checkList":"dataPhysicsActionList", "objectKey":"tOnKeyLeft", "special":"checkListPicker" },
+              { "label":"When key left is hit", "checkList":"dataPhysicsActionList", "objectKey":"tOnKeyLeftHit", "special":"checkListPicker" },
+              { "label":"When key right is hold", "checkList":"dataPhysicsActionList", "objectKey":"tOnKeyRight", "special":"checkListPicker" },
+              { "label":"When key right is hit", "checkList":"dataPhysicsActionList", "objectKey":"tOnKeyRightHit", "special":"checkListPicker" },
+              { "label":"When key A is hit", "checkList":"dataPhysicsActionList", "objectKey":"tOnKeyAHit", "special":"checkListPicker" }
+            ]
+          },
+          {
+            "label":"Program",
+            "sub":[
+              { "label":"When this happens", "checkList":"dataConditionsList", "objectKey":"tWhen1", "special":"checkListPicker" },
+              { "label":"Do this", "checkList":"dataPhysicsActionList", "objectKey":"tThen1", "special":"checkListPicker" },
+              { "label":"When this happens", "checkList":"dataConditionsList", "objectKey":"tWhen2", "special":"checkListPicker" },
+              { "label":"Do this", "checkList":"dataPhysicsActionList", "objectKey":"tThen2", "special":"checkListPicker" },
+              { "label":"When this happens", "checkList":"dataConditionsList", "objectKey":"tWhen3", "special":"checkListPicker" },
+              { "label":"Do this", "checkList":"dataPhysicsActionList", "objectKey":"tThen3", "special":"checkListPicker" },
+              { "label":"When this happens", "checkList":"dataConditionsList", "objectKey":"tWhen4", "special":"checkListPicker" },
+              { "label":"Do this", "checkList":"dataPhysicsActionList", "objectKey":"tThen4", "special":"checkListPicker" },
+              { "label":"When this happens", "checkList":"dataConditionsList", "objectKey":"tWhen5", "special":"checkListPicker" },
+              { "label":"Do this", "checkList":"dataPhysicsActionList", "objectKey":"tThen5", "special":"checkListPicker" },
+              { "label":"When this happens", "checkList":"dataConditionsList", "objectKey":"tWhen6", "special":"checkListPicker" },
+              { "label":"Do this", "checkList":"dataPhysicsActionList", "objectKey":"tThen6", "special":"checkListPicker" }
+            ]
+          }
+        ]
+      }
+    },
+    "editorModel":{
+      "editorName":"",
+      "py":8,
+      "tabs":[ "tapeLoader", "play", "titleEditor", "levelEditor", "logicEditor" ],
+      "states":{
+        "execute":{
+          "object":[
+            { "image":"hud", "tileY":8, "width":40, "height":8, "zIndex":42, "x":80, "y":0 },
+            { "width":8, "height":8, "zIndex":41, "x":{ "_":[ "that", "currentTab", "*", 8, "+", 80 ] }, "y":0, "bgcolor":"#000" },
+            {
+              "type":"editorbar",
+              "set":{ "_":[ "stencil", "smallLabel" ] },
+              "zIndex":40, "x":0, "y":0,
+              "bgcolor":"#ff004d",
+              "html":{ "_":[ "that", "editorName" ] },
+              "states":[
+                {
+                  "code":{
+                    "name":"Execute",
+                    "data":[
+                      {
+                        "when":{ "_":[ "keyB", "isDown" ] },
+                        "execute":{
+                          "when":{ "_":[ "keyRight", "isHit" ] },
+                          "sum":1,
+                          "to":{ "_":[ "scene", "currentTab" ] },
+                          "set":{ "state":"transition" },
+                          "elseExecute":{ "when":{ "_":[ "keyLeft", "isHit" ] }, "subtract":1, "to":{ "_":[ "scene", "currentTab" ] }, "set":{ "state":"transition" } }
+                        }
+                      },
+                      {
+                        "when":{ "_":[ "variable", "saveTimer", "isGreaterThan", 0 ] },
+                        "execute":[
+                          { "subtract":1, "to":{ "_":[ "variable", "saveTimer" ] } },
+                          {
+                            "when":{ "_":[ "variable", "saveTimer", "not" ] },
+                            "execute":[
+                              { "as":{ "_":[ "objectTyped", "saveindicator" ] }, "remove":1 },
+                              {
+                                "object":{
+                                  "type":"saveindicator",
+                                  "image":"hud", "tileX":56, "width":8, "height":8,
+                                  "zIndex":90000, "x":120, "y":0,
+                                  "states":{ "code":{ "name":"Sequence", "data":[ { "wait":25 }, { "remove":1 } ] } }
+                                }
+                              },
+                              { "as":{ "_":"storage" }, "set":{ "gameData":{ "_":[ "variable", "gameData" ] } } }
+                            ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                },
+                {
+                  "name":"transition",
+                  "code":{
+                    "name":"Sequence",
+                    "data":[
+                      {
+                        "as":{ "_":"scene" },
+                        "execute":[
+                          { "when":{ "_":[ "this", "currentTab", "isGreaterEqualThan", { "_":[ "this", "tabs", "count" ] } ] }, "set":{ "currentTab":0 } },
+                          { "when":{ "_":[ "this", "currentTab", "isLessThan", 0 ] }, "set":{ "currentTab":{ "_":[ "this", "tabs", "count", "-", 1 ] } } },
+                          { "set":{ "state":"transition" } }
+                        ]
+                      },
+                      { "wait":1 },
+                      { "set":{ "codeGotoTab":{ "_":[ "scene", "tabs", { "_":[ "scene", "currentTab" ] } ] } }, "execute":{ "_":[ "stencil", "codeGotoTab" ] } }
+                    ]
+                  }
+                }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "tilemapEditorModel":{
+      "set":{ "_":[ "stencil", "editorModel" ] },
+      "cx":0,
+      "cy":0,
+      "tilePickerCursor":0,
+      "tilePickerSelectZero":1,
+      "states":{
+        "execute":{ "executeAction":"redrawMap" },
+        "actions":[
+          { "name":"tileSelected", "execute":[ { "set":{ "tilePickerCursor":{ "_":[ "that", "tileSelected" ] } } }, { "executeAction":"redrawMap" } ] },
+          {
+            "name":"updateTile",
+            "execute":[
+              { "as":{ "_":[ "objectTyped", { "_":[ "tile-", ".", { "_":[ "this", "cx" ] }, ".", "-", ".", { "_":[ "this", "cy" ] } ] } ] }, "remove":1 },
+              { "set":{ "curTile":{ "_":[ "variable", "gameData", { "_":[ "this", "editingMap" ] }, { "_":[ "this", "cy" ] }, { "_":[ "this", "cx" ] } ] } } },
+              {
+                "when":{ "_":[ "this", "curTile" ] },
+                "object":{
+                  "type":[ "tilemap", { "_":[ "tile-", ".", { "_":[ "that", "cx" ] }, ".", "-", ".", { "_":[ "that", "cy" ] } ] } ],
+                  "set":{ "_":[ "stencil", "tileSampleModel" ] },
+                  "x":{ "_":[ "that", "cx", "*", 8 ] }, "y":{ "_":[ "that", "cy", "*", 8, "+", { "_":[ "that", "py" ] } ] },
+                  "showTileId":{ "_":[ "that", "curTile" ] }
+                }
+              }
+            ]
+          },
+          {
+            "name":"redrawMap",
+            "execute":[
+              {
+                "object":{
+                  "type":"tilemap",
+                  "width":8, "height":8,
+                  "zIndex":20, "x":{ "_":[ "that", "cx", "*", 8 ] }, "y":{ "_":[ "that", "py", "+", { "_":[ "that", "cy", "*", 8 ] } ] },
+                  "oy":{ "_":[ "that", "py" ] },
+                  "states":{
+                    "code":[
+                      { "name":"Sequence", "data":[ { "set":{ "border":"#fff1e8" }, "wait":1 }, { "set":{ "border":"#20337b" }, "wait":1, "loopTo":0 } ] },
+                      {
+                        "name":"Execute",
+                        "data":[
+                          { "set":{ "blit":0 } },
+                          {
+                            "when":{ "_":[ "keyB", "isUp" ] },
+                            "execute":[
+                              { "when":{ "_":[ "keyLeft", "isHit" ] }, "subtract":8, "to":{ "_":[ "this", "x" ] }, "set":{ "blit":1 } },
+                              { "when":{ "_":[ "keyRight", "isHit" ] }, "sum":8, "to":{ "_":[ "this", "x" ] }, "set":{ "blit":1 } },
+                              { "when":{ "_":[ "keyDown", "isHit" ] }, "sum":8, "to":{ "_":[ "this", "y" ] }, "set":{ "blit":1 } },
+                              { "when":{ "_":[ "keyUp", "isHit" ] }, "subtract":8, "to":{ "_":[ "this", "y" ] }, "set":{ "blit":1 } },
+                              { "when":{ "_":[ "keyA", "isHit" ] }, "set":{ "blit":1 } }
+                            ]
+                          },
+                          { "when":{ "_":[ "this", "x", "isLessThan", 0 ] }, "set":{ "x":120 } },
+                          { "when":{ "_":[ "this", "x", "isGreaterThan", 120 ] }, "set":{ "x":0 } },
+                          { "when":{ "_":[ "this", "y", "isLessThan", { "_":[ "this", "oy" ] } ] }, "set":{ "y":{ "_":[ "this", "oy", "+", 112 ] } } },
+                          { "when":{ "_":[ "this", "y", "isGreaterThan", { "_":[ "this", "oy", "+", 112 ] } ] }, "set":{ "y":{ "_":[ "this", "oy" ] } } },
+                          { "as":{ "_":"scene" }, "set":{ "cx":{ "_":[ "that", "x", "/", 8 ] }, "cy":{ "_":[ "that", "y", "-", { "_":[ "that", "oy" ] }, "/", 8 ] } } },
+                          {
+                            "when":{ "_":[ "keyA", "isDown", "and", { "_":[ "this", "blit" ] } ] },
+                            "execute":[
+                              {
+                                "when":{ "_":[ "variable", "gameData", { "_":[ "scene", "editingMap" ] }, { "_":[ "scene", "cy" ] }, "not" ] },
+                                "assign":{ "_":[ "new", [] ] },
+                                "to":{ "_":[ "variable", "gameData", { "_":[ "scene", "editingMap" ] }, { "_":[ "scene", "cy" ] } ] }
+                              },
+                              {
+                                "assign":{ "_":[ "scene", "tilePickerCursor" ] },
+                                "to":{ "_":[ "variable", "gameData", { "_":[ "scene", "editingMap" ] }, { "_":[ "scene", "cy" ] }, { "_":[ "scene", "cx" ] } ] }
+                              },
+                              { "_":[ "stencil", "codeRequestSave" ] },
+                              { "as":{ "_":"scene" }, "executeAction":"updateTile" }
+                            ]
+                          },
+                          {
+                            "when":{ "_":[ "keyB", "isHit" ] },
+                            "execute":[ { "as":{ "_":[ "object", "tilemap" ] }, "remove":1 }, { "as":{ "_":"scene" }, "execute":{ "_":[ "stencil", "codeTilePicker" ] } } ]
+                          }
+                        ]
+                      }
+                    ]
+                  }
+                }
+              },
+              { "set":{ "cy":0 } },
+              {
+                "times":{ "_":[ "variable", "gameData", { "_":[ "this", "editingMap" ] }, "count" ] },
+                "execute":[
+                  { "set":{ "cx":0 } },
+                  {
+                    "times":{ "_":[ "variable", "gameData", { "_":[ "this", "editingMap" ] }, { "_":[ "this", "cy" ] }, "count" ] },
+                    "execute":[ { "executeAction":"updateTile" }, { "sum":1, "to":{ "_":[ "this", "cx" ] } } ]
+                  },
+                  { "sum":1, "to":{ "_":[ "this", "cy" ] } }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "gameTileLogicModel":{
+      "aim":0,
+      "doCreated":1,
+      "lifeTimer":0,
+      "removing":0,
+      "timerOften":0,
+      "timerRarely":0,
+      "timerSometime":0,
+      "timerVeryOften":0,
+      "waitRunning":0,
+      "states":{
+        "code":[
+          {
+            "name":"Execute",
+            "data":[
+              { "set":{ "forceApplied":0 } },
+              {
+                "when":{ "_":[ "this", "doCreated" ] },
+                "execute":[
+                  { "set":{ "doAction":{ "_":[ "this", "tWhenCreated" ] }, "doWith":0 }, "execute":{ "_":[ "stencil", "codeTileExecuteAction" ] } },
+                  { "set":{ "doCreated":0 } }
+                ]
+              },
+              { "when":{ "_":[ "this", "forceX", "abs", "isLessThan", 0.09 ] }, "set":{ "forceX":0 } },
+              { "when":{ "_":[ "this", "forceY", "abs", "isLessThan", 0.09 ] }, "set":{ "forceY":0 } },
+              {
+                "when":{ "_":[ "this", "waitRunning" ] },
+                "subtract":1,
+                "to":{ "_":[ "this", "waitRunning" ] },
+                "elseExecute":[
+                  { "set":{ "lifeTimer":{ "_":[ "this", "lifeTimer", "+", 1, "%", 45000 ] } } },
+                  { "when":{ "_":[ "this", "tMoveMode", "isEqualTo", 1 ] }, "set":{ "forceX":0, "forceY":0 } },
+                  {
+                    "when":{ "_":[ "this", "timerVeryOften" ] },
+                    "subtract":1,
+                    "to":{ "_":[ "this", "timerVeryOften" ] },
+                    "elseExecute":{ "set":{ "timerVeryOften":{ "_":[ "randomNumber", [ 3, 5 ] ] } } }
+                  },
+                  {
+                    "when":{ "_":[ "this", "timerOften" ] },
+                    "subtract":1,
+                    "to":{ "_":[ "this", "timerOften" ] },
+                    "elseExecute":{ "set":{ "timerOften":{ "_":[ "randomNumber", [ 10, 20 ] ] } } }
+                  },
+                  {
+                    "when":{ "_":[ "this", "timerSometime" ] },
+                    "subtract":1,
+                    "to":{ "_":[ "this", "timerSometime" ] },
+                    "elseExecute":{ "set":{ "timerSometime":{ "_":[ "randomNumber", [ 50, 100 ] ] } } }
+                  },
+                  {
+                    "when":{ "_":[ "this", "timerRarely" ] },
+                    "subtract":1,
+                    "to":{ "_":[ "this", "timerRarely" ] },
+                    "elseExecute":{ "set":{ "timerRarely":{ "_":[ "randomNumber", [ 100, 150 ] ] } } }
+                  },
+                  {
+                    "when":{ "_":[ "this", "tOnKeyUpHit" ] },
+                    "execute":{
+                      "when":{ "_":[ "keyUp", "isHit" ] },
+                      "set":{ "doAction":{ "_":[ "this", "tOnKeyUpHit" ] }, "doWith":0 },
+                      "execute":{ "_":[ "stencil", "codeTileExecuteAction" ] }
+                    }
+                  },
+                  {
+                    "when":{ "_":[ "this", "tOnKeyDownHit" ] },
+                    "execute":{
+                      "when":{ "_":[ "keyDown", "isHit" ] },
+                      "set":{ "doAction":{ "_":[ "this", "tOnKeyDownHit" ] }, "doWith":0 },
+                      "execute":{ "_":[ "stencil", "codeTileExecuteAction" ] }
+                    }
+                  },
+                  {
+                    "when":{ "_":[ "this", "tOnKeyLeftHit" ] },
+                    "execute":{
+                      "when":{ "_":[ "keyLeft", "isHit" ] },
+                      "set":{ "doAction":{ "_":[ "this", "tOnKeyLeftHit" ] }, "doWith":0 },
+                      "execute":{ "_":[ "stencil", "codeTileExecuteAction" ] }
+                    }
+                  },
+                  {
+                    "when":{ "_":[ "this", "tOnKeyRightHit" ] },
+                    "execute":{
+                      "when":{ "_":[ "keyRight", "isHit" ] },
+                      "set":{ "doAction":{ "_":[ "this", "tOnKeyRightHit" ] }, "doWith":0 },
+                      "execute":{ "_":[ "stencil", "codeTileExecuteAction" ] }
+                    }
+                  },
+                  {
+                    "when":{ "_":[ "this", "tOnKeyAHit" ] },
+                    "execute":{
+                      "when":{ "_":[ "keyA", "isHit" ] },
+                      "set":{ "doAction":{ "_":[ "this", "tOnKeyAHit" ] }, "doWith":0 },
+                      "execute":{ "_":[ "stencil", "codeTileExecuteAction" ] }
+                    }
+                  },
+                  {
+                    "when":{ "_":[ "this", "tOnKeyUp" ] },
+                    "execute":{
+                      "when":{ "_":[ "keyUp", "isDown" ] },
+                      "set":{ "doAction":{ "_":[ "this", "tOnKeyUp" ] }, "doWith":0 },
+                      "execute":{ "_":[ "stencil", "codeTileExecuteAction" ] }
+                    }
+                  },
+                  {
+                    "when":{ "_":[ "this", "tOnKeyDown" ] },
+                    "execute":{
+                      "when":{ "_":[ "keyDown", "isDown" ] },
+                      "set":{ "doAction":{ "_":[ "this", "tOnKeyDown" ] }, "doWith":0 },
+                      "execute":{ "_":[ "stencil", "codeTileExecuteAction" ] }
+                    }
+                  },
+                  {
+                    "when":{ "_":[ "this", "tOnKeyLeft" ] },
+                    "execute":{
+                      "when":{ "_":[ "keyLeft", "isDown" ] },
+                      "set":{ "doAction":{ "_":[ "this", "tOnKeyLeft" ] }, "doWith":0 },
+                      "execute":{ "_":[ "stencil", "codeTileExecuteAction" ] }
+                    }
+                  },
+                  {
+                    "when":{ "_":[ "this", "tOnKeyRight" ] },
+                    "execute":{
+                      "when":{ "_":[ "keyRight", "isDown" ] },
+                      "set":{ "doAction":{ "_":[ "this", "tOnKeyRight" ] }, "doWith":0 },
+                      "execute":{ "_":[ "stencil", "codeTileExecuteAction" ] }
+                    }
+                  },
+                  {
+                    "when":{ "_":[ "this", "tWhen1" ] },
+                    "execute":[
+                      { "set":{ "checkCondition":{ "_":[ "this", "tWhen1" ] } }, "execute":{ "_":[ "stencil", "codeTileConditionChecker" ] } },
+                      {
+                        "when":{ "_":[ "this", "conditionTrue" ] },
+                        "set":{ "doAction":{ "_":[ "this", "tThen1" ] }, "doWith":{ "_":[ "this", "conditionWith" ] } },
+                        "execute":{ "_":[ "stencil", "codeTileExecuteAction" ] }
+                      }
+                    ]
+                  },
+                  {
+                    "when":{ "_":[ "this", "tWhen2" ] },
+                    "execute":[
+                      { "set":{ "checkCondition":{ "_":[ "this", "tWhen2" ] } }, "execute":{ "_":[ "stencil", "codeTileConditionChecker" ] } },
+                      {
+                        "when":{ "_":[ "this", "conditionTrue" ] },
+                        "set":{ "doAction":{ "_":[ "this", "tThen2" ] }, "doWith":{ "_":[ "this", "conditionWith" ] } },
+                        "execute":{ "_":[ "stencil", "codeTileExecuteAction" ] }
+                      }
+                    ]
+                  },
+                  {
+                    "when":{ "_":[ "this", "tWhen3" ] },
+                    "execute":[
+                      { "set":{ "checkCondition":{ "_":[ "this", "tWhen3" ] } }, "execute":{ "_":[ "stencil", "codeTileConditionChecker" ] } },
+                      {
+                        "when":{ "_":[ "this", "conditionTrue" ] },
+                        "set":{ "doAction":{ "_":[ "this", "tThen3" ] }, "doWith":{ "_":[ "this", "conditionWith" ] } },
+                        "execute":{ "_":[ "stencil", "codeTileExecuteAction" ] }
+                      }
+                    ]
+                  },
+                  {
+                    "when":{ "_":[ "this", "tWhen4" ] },
+                    "execute":[
+                      { "set":{ "checkCondition":{ "_":[ "this", "tWhen4" ] } }, "execute":{ "_":[ "stencil", "codeTileConditionChecker" ] } },
+                      {
+                        "when":{ "_":[ "this", "conditionTrue" ] },
+                        "set":{ "doAction":{ "_":[ "this", "tThen4" ] }, "doWith":{ "_":[ "this", "conditionWith" ] } },
+                        "execute":{ "_":[ "stencil", "codeTileExecuteAction" ] }
+                      }
+                    ]
+                  },
+                  {
+                    "when":{ "_":[ "this", "tWhen5" ] },
+                    "execute":[
+                      { "set":{ "checkCondition":{ "_":[ "this", "tWhen5" ] } }, "execute":{ "_":[ "stencil", "codeTileConditionChecker" ] } },
+                      {
+                        "when":{ "_":[ "this", "conditionTrue" ] },
+                        "set":{ "doAction":{ "_":[ "this", "tThen5" ] }, "doWith":{ "_":[ "this", "conditionWith" ] } },
+                        "execute":{ "_":[ "stencil", "codeTileExecuteAction" ] }
+                      }
+                    ]
+                  },
+                  {
+                    "when":{ "_":[ "this", "tWhen6" ] },
+                    "execute":[
+                      { "set":{ "checkCondition":{ "_":[ "this", "tWhen6" ] } }, "execute":{ "_":[ "stencil", "codeTileConditionChecker" ] } },
+                      {
+                        "when":{ "_":[ "this", "conditionTrue" ] },
+                        "set":{ "doAction":{ "_":[ "this", "tThen6" ] }, "doWith":{ "_":[ "this", "conditionWith" ] } },
+                        "execute":{ "_":[ "stencil", "codeTileExecuteAction" ] }
+                      }
+                    ]
+                  },
+                  {
+                    "when":{ "_":[ "this", "forceApplied", "not" ] },
+                    "execute":[
+                      { "when":{ "_":[ "this", "tFrictionHorizontal" ] }, "multiply":{ "_":[ "this", "tFrictionHorizontal" ] }, "to":{ "_":[ "this", "forceX" ] } },
+                      { "when":{ "_":[ "this", "tFrictionVertical" ] }, "multiply":{ "_":[ "this", "tFrictionVertical" ] }, "to":{ "_":[ "this", "forceY" ] } }
+                    ]
+                  },
+                  {
+                    "when":{ "_":[ "this", "tOnOut" ] },
+                    "execute":[
+                      { "set":{ "out":0, "outBottom":0, "outLeft":0, "outRight":0, "outTop":0 } },
+                      { "when":{ "_":[ "this", "x", "isGreaterThan", 124 ] }, "set":{ "out":1, "outRight":1 } },
+                      { "when":{ "_":[ "this", "x", "isLessThan", -4 ] }, "set":{ "out":1, "outLeft":1 } },
+                      { "when":{ "_":[ "this", "y", "isGreaterThan", 124 ] }, "set":{ "out":1, "outBottom":1 } },
+                      { "when":{ "_":[ "this", "y", "isLessThan", 2 ] }, "set":{ "out":1, "outTop":1 } },
+                      {
+                        "when":{ "_":[ "this", "out" ] },
+                        "set":{ "doAction":{ "_":[ "this", "tOnOut" ] }, "doWith":0 },
+                        "execute":{ "_":[ "stencil", "codeTileExecuteAction" ] }
+                      }
+                    ]
+                  },
+                  {
+                    "when":{ "_":[ "this", "removing" ] },
+                    "execute":[
+                      { "set":{ "doAction":{ "_":[ "this", "tWhenDeleted" ] }, "doWith":0 }, "execute":{ "_":[ "stencil", "codeTileExecuteAction" ] } },
+                      { "remove":1 },
+                      {
+                        "when":{ "_":[ "this", "tWhenDeletedAll" ] },
+                        "execute":{
+                          "when":{ "_":[ "object", { "_":[ "tile-", ".", { "_":[ "this", "curTile" ] } ] }, "not" ] },
+                          "set":{ "doAction":{ "_":[ "this", "tWhenDeletedAll" ] }, "doWith":0 },
+                          "execute":{ "_":[ "stencil", "codeTileExecuteAction" ] }
+                        }
+                      }
+                    ]
+                  }
+                ]
+              },
+              {
+                "when":{ "_":[ "this", "tFlipHorizontally", "isEqualTo", 1 ] },
+                "execute":{ "when":{ "_":[ "this", "forceX" ] }, "set":{ "flipX":{ "_":[ "this", "forceX", "isLessThan", 0 ] } } }
+              },
+              { "when":{ "_":[ "this", "tFlipHorizontally", "isEqualTo", 2 ] }, "set":{ "flipX":{ "_":[ "this", "aim", "isGreaterThan", 180 ] } } },
+              {
+                "when":{ "_":[ "this", "tFlipVertically", "isEqualTo", 1 ] },
+                "execute":{ "when":{ "_":[ "this", "forceY" ] }, "set":{ "flipY":{ "_":[ "this", "forceY", "isGreaterThan", 0 ] } } }
+              },
+              {
+                "when":{ "_":[ "this", "tFlipVertically", "isEqualTo", 2 ] },
+                "set":{ "flipY":{ "_":[ "this", "aim", "isGreaterThan", 90, "and", { "_":[ "this", "aim", "isLessThan", 270 ] } ] } }
+              },
+              { "when":{ "_":[ "this", "tFollowAngle" ] }, "execute":{ "set":{ "angle":{ "_":[ "this", "aim" ] } } } }
+            ]
+          },
+          {
+            "name":"Physics",
+            "data":{
+              "when":{ "_":[ "this", "waitRunning", "not" ] },
+              "walls":[
+                {
+                  "type":{ "_":[ "tile-", ".", { "_":[ "this", "tWallTile1" ] } ] },
+                  "firstExecute":{ "set":{ "doAction":{ "_":[ "this", "tOnWallTile1" ] }, "doWith":{ "_":"that" } }, "execute":{ "_":[ "stencil", "codeTileExecuteAction" ] } }
+                },
+                {
+                  "type":{ "_":[ "tile-", ".", { "_":[ "this", "tWallTile2" ] } ] },
+                  "firstExecute":{ "set":{ "doAction":{ "_":[ "this", "tOnWallTile2" ] }, "doWith":{ "_":"that" } }, "execute":{ "_":[ "stencil", "codeTileExecuteAction" ] } }
+                },
+                {
+                  "type":{ "_":[ "tile-", ".", { "_":[ "this", "tWallTile3" ] } ] },
+                  "firstExecute":{ "set":{ "doAction":{ "_":[ "this", "tOnWallTile3" ] }, "doWith":{ "_":"that" } }, "execute":{ "_":[ "stencil", "codeTileExecuteAction" ] } }
+                },
+                {
+                  "type":{ "_":[ "tile-", ".", { "_":[ "this", "tWallTile4" ] } ] },
+                  "firstExecute":{ "set":{ "doAction":{ "_":[ "this", "tOnWallTile4" ] }, "doWith":{ "_":"that" } }, "execute":{ "_":[ "stencil", "codeTileExecuteAction" ] } }
+                }
+              ],
+              "gravityX":{ "_":[ "this", "gravityX" ] },
+              "gravityY":{ "_":[ "this", "gravityY" ] },
+              "limitX":{ "_":[ "this", "speedLimitH" ] },
+              "limitY":{ "_":[ "this", "speedLimitV" ] }
+            }
+          }
+        ]
+      }
+    },
+    "smallLabel":{ "width":128, "height":8, "color":"#fff1e8", "font":"small", "fontSize":8, "lineHeight":8 },
+    "mainMenuOptionModel":{
+      "set":{ "_":[ "stencil", "smallLabel" ] },
+      "image":"hud", "tileY":48, "width":65, "height":12,
+      "x":31,
+      "lineHeight":12, "textAlign":"center",
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":{ "when":{ "_":[ "scene", "option", "isEqualTo", { "_":[ "this", "option" ] } ] }, "set":{ "tileY":60 }, "elseExecute":{ "set":{ "tileY":48 } } }
+        }
+      }
+    },
+    "tileSampleModel":{
+      "width":8, "height":8,
+      "states":{
+        "execute":{
+          "set":{ "image":"tiles", "tileX":{ "_":[ "this", "showTileId", "%", 16, "*", 8 ] }, "tileY":{ "_":[ "this", "showTileId", "/", 16, "floor", "*", 8 ] } }
+        }
+      }
+    }
+  },
+  "execute":[
+    {
+      "when":{ "_":[ "storage", "gameData" ] },
+      "as":{ "_":"variable" },
+      "set":{ "gameData":{ "_":[ "storage", "gameData" ] } },
+      "elseExecute":{ "_":[ "stencil", "codeMakeEmptyGame" ] }
+    },
+    { "as":{ "_":"variable" }, "set":{ "saveTimer":0 } }
+  ],
+  "scenes":{
+    "intro":{ "states":{ "execute":{ "gotoScene":"tapeLoader", "withTransition":2 } } },
+    "levelEditor":{ "set":{ "_":[ "stencil", "tilemapEditorModel" ] }, "currentTab":3, "editingMap":"levelMap", "editorName":"Level editor" },
+    "logicEditor":{
+      "set":{ "_":[ "stencil", "editorModel" ] },
+      "currentTab":4,
+      "cursorObject":0,
+      "doBack":0,
+      "doUpdate":1,
+      "editorName":"Logic editor",
+      "menuPosition":0,
+      "optionStack":{ "_":[ "new", [] ] },
+      "optionsCount":0,
+      "states":[
+        {
+          "code":{
+            "name":"Execute",
+            "data":[
+              {
+                "when":{ "_":[ "this", "doBack" ] },
+                "execute":[
+                  { "set":{ "menuPosition":{ "_":[ "this", "optionStack", { "_":[ "this", "optionStack", "count", "-", 1 ] }, "item" ] } } },
+                  { "unpushAt":{ "_":[ "this", "optionStack", "count", "-", 1 ] }, "from":{ "_":[ "this", "optionStack" ] } },
+                  { "set":{ "doBack":0, "doUpdate":1 } }
+                ],
+                "elseExecute":[
+                  {
+                    "when":{ "_":[ "keyB", "isUp" ] },
+                    "execute":[
+                      { "when":{ "_":[ "keyUp", "isHit" ] }, "subtract":1, "to":{ "_":[ "this", "menuPosition" ] }, "set":{ "doUpdate":1 } },
+                      { "when":{ "_":[ "keyDown", "isHit" ] }, "sum":1, "to":{ "_":[ "this", "menuPosition" ] }, "set":{ "doUpdate":1 } }
+                    ]
+                  },
+                  { "when":{ "_":[ "this", "menuPosition", "isGreaterEqualThan", { "_":[ "this", "optionsCount" ] } ] }, "set":{ "menuPosition":0 } },
+                  { "when":{ "_":[ "this", "menuPosition", "isLessThan", 0 ] }, "set":{ "menuPosition":{ "_":[ "this", "optionsCount", "-", 1 ] } } },
+                  {
+                    "when":{ "_":[ "keyA", "isHit" ] },
+                    "execute":[
+                      {
+                        "when":{ "_":[ "this", "menuMode" ] },
+                        "execute":{
+                          "assign":{ "_":[ "this", "root", "optionsIds", { "_":[ "this", "menuPosition" ] } ] },
+                          "to":{ "_":[ "this", "cursorObjectData", { "_":[ "that", "objectKey" ] } ] },
+                          "execute":{ "_":[ "stencil", "codeRequestSave" ] }
+                        },
+                        "elseExecute":[
+                          { "as":{ "_":[ "new", {} ] }, "pushInto":{ "_":[ "that", "optionStack" ] }, "set":{ "item":{ "_":[ "that", "menuPosition" ] } } },
+                          { "set":{ "menuPosition":0 } }
+                        ]
+                      },
+                      { "set":{ "doUpdate":1 } }
+                    ],
+                    "elseExecute":{ "when":{ "_":[ "keyB", "isHit" ] }, "set":{ "doBack":1 } }
+                  }
+                ]
+              },
+              { "when":{ "_":[ "this", "doUpdate" ] }, "execute":[ { "executeAction":"update" }, { "set":{ "doUpdate":0 } } ] }
+            ]
+          },
+          "actions":{
+            "name":"update",
+            "execute":[
+              { "as":{ "_":[ "object", "treeview" ] }, "remove":1 },
+              { "set":{ "counter":0, "py":8, "root":{ "_":[ "stencil", "dataSettings" ] } } },
+              {
+                "times":{ "_":[ "this", "optionStack", "count" ] },
+                "execute":[
+                  { "set":{ "curValue":{ "_":[ "that", "optionStack", { "_":[ "that", "counter" ] }, "item" ] } } },
+                  {
+                    "when":{ "_":[ "this", "root", "special", "isEqualTo", "tilePicker", "and", { "_":[ "this", "root", "optionIdIsTile", "not" ] } ] },
+                    "execute":[
+                      { "set":{ "cKey":{ "_":[ "this", "curValue" ] } }, "execute":{ "_":[ "stencil", "codeCleanTile" ] } },
+                      {
+                        "object":[
+                          {
+                            "type":"treeview",
+                            "set":{ "_":[ "stencil", "tileSampleModel" ] },
+                            "zIndex":10, "x":0, "y":{ "_":[ "that", "py" ] },
+                            "showTileId":{ "_":[ "that", "curValue" ] }
+                          },
+                          {
+                            "type":"treeview",
+                            "set":{ "_":[ "stencil", "smallLabel" ] },
+                            "x":0, "y":{ "_":[ "that", "py" ] },
+                            "bgcolor":"#c2c3c7", "color":"#000",
+                            "html":"&nbsp;&nbsp;&nbsp;Object"
+                          }
+                        ]
+                      },
+                      { "set":{ "root":{ "_":[ "this", "root", "sub" ] } } }
+                    ],
+                    "elseExecute":[
+                      {
+                        "object":[
+                          { "type":"treeview", "image":"hud", "width":8, "height":8, "zIndex":10, "x":0, "y":{ "_":[ "that", "py" ] } },
+                          {
+                            "type":"treeview",
+                            "set":{ "_":[ "stencil", "smallLabel" ] },
+                            "x":0, "y":{ "_":[ "that", "py" ] },
+                            "bgcolor":"#c2c3c7", "color":"#000",
+                            "html":{ "_":[ "&nbsp;&nbsp;&nbsp;", ".", { "_":[ "that", "root", "sub", { "_":[ "that", "curValue" ] }, "label" ] } ] }
+                          }
+                        ]
+                      },
+                      { "set":{ "root":{ "_":[ "this", "root", "sub", { "_":[ "that", "curValue" ] } ] } } }
+                    ]
+                  },
+                  { "sum":1, "to":{ "_":[ "this", "counter" ] } },
+                  { "sum":8, "to":{ "_":[ "this", "py" ] } }
+                ]
+              },
+              { "set":{ "objectKey":{ "_":[ "this", "root", "objectKey" ] } } },
+              {
+                "when":{ "_":[ "this", "root", "special" ] },
+                "execute":[
+                  {
+                    "when":{ "_":[ "this", "root", "special", "isEqualTo", "tilePicker" ] },
+                    "execute":[
+                      {
+                        "when":{ "_":[ "this", "root", "optionIdIsTile" ] },
+                        "set":{
+                          "tilePickerCursor":{ "_":[ "this", "cursorObjectData", { "_":[ "this", "objectKey" ] } ] },
+                          "tilePickerSelectZero":1,
+                          "tilePickerTitle":{ "_":[ "this", "root", "label", ".", "..." ] },
+                          "state":"waittilepicker"
+                        },
+                        "elseExecute":{ "set":{ "tilePickerCursor":{ "_":[ "this", "cursorObject" ] }, "tilePickerSelectZero":0, "tilePickerTitle":0, "state":"waitobjectpicker" } }
+                      },
+                      { "_":[ "stencil", "codeTilePicker" ] }
+                    ]
+                  },
+                  {
+                    "when":{ "_":[ "this", "root", "special", "isEqualTo", "checkListPicker" ] },
+                    "execute":[
+                      {
+                        "when":{ "_":[ "this", "cursorObjectData", { "_":[ "this", "objectKey" ] }, "not" ] },
+                        "assign":{ "_":[ "new", {} ] },
+                        "to":{ "_":[ "this", "cursorObjectData", { "_":[ "this", "objectKey" ] } ] }
+                      },
+                      {
+                        "set":{
+                          "checkListPickerData":{ "_":[ "this", "cursorObjectData", { "_":[ "this", "objectKey" ] } ] },
+                          "checkListPickerItems":{ "_":[ "stencil", { "_":[ "this", "root", "checkList" ] } ] },
+                          "checkListPickerTitle":{ "_":[ "this", "root", "label", ".", "..." ] },
+                          "state":"waitchecklist"
+                        },
+                        "execute":{ "_":[ "stencil", "codeChecklistPicker" ] }
+                      }
+                    ]
+                  }
+                ],
+                "elseExecute":{
+                  "when":{ "_":[ "this", "root", "sub" ] },
+                  "execute":[
+                    { "set":{ "menuMode":0, "optionsCount":0 } },
+                    {
+                      "times":{ "_":[ "this", "root", "sub", "count" ] },
+                      "execute":[
+                        { "set":{ "currentSub":{ "_":[ "this", "root", "sub", { "_":[ "this", "optionsCount" ] } ] } } },
+                        {
+                          "object":[
+                            {
+                              "type":"treeview",
+                              "image":"hud", "tileX":8, "width":8, "height":8,
+                              "zIndex":10, "x":0, "y":{ "_":[ "that", "py" ] },
+                              "execute":{ "when":{ "_":[ "that", "currentSub", "special" ] }, "set":{ "tileX":48 } }
+                            },
+                            {
+                              "type":"treeview",
+                              "set":{ "_":[ "stencil", "smallLabel" ] },
+                              "x":0, "y":{ "_":[ "that", "py" ] },
+                              "html":{ "_":[ "&nbsp;&nbsp;&nbsp;", ".", { "_":[ "that", "currentSub", "label" ] } ] },
+                              "execute":{ "when":{ "_":[ "that", "menuPosition", "isEqualTo", { "_":[ "that", "optionsCount" ] } ] }, "set":{ "bgcolor":"#ff004d" } }
+                            }
+                          ]
+                        },
+                        {
+                          "when":{ "_":[ "this", "currentSub", "optionsIds" ] },
+                          "execute":{
+                            "when":{ "_":[ "this", "cursorObjectData", { "_":[ "this", "currentSub", "objectKey" ] } ] },
+                            "object":{ "type":"treeview", "image":"hud", "tileX":24, "width":8, "height":8, "zIndex":10, "x":120, "y":{ "_":[ "that", "py" ] } }
+                          }
+                        },
+                        {
+                          "when":{ "_":[ "this", "currentSub", "special", "isEqualTo", "tilePicker" ] },
+                          "object":{
+                            "type":"treeview",
+                            "set":{ "_":[ "stencil", "tileSampleModel" ] },
+                            "zIndex":10, "x":120, "y":{ "_":[ "that", "py" ] },
+                            "showTileId":{ "_":[ "that", "cursorObjectData", { "_":[ "that", "currentSub", "objectKey" ] } ] }
+                          }
+                        },
+                        {
+                          "when":{ "_":[ "this", "currentSub", "special", "isEqualTo", "checkListPicker" ] },
+                          "execute":{
+                            "when":{ "_":[ "this", "cursorObjectData", { "_":[ "this", "currentSub", "objectKey" ] } ] },
+                            "object":{ "type":"treeview", "image":"hud", "tileX":48, "width":8, "height":8, "zIndex":10, "x":120, "y":{ "_":[ "that", "py" ] } }
+                          }
+                        },
+                        { "sum":8, "to":{ "_":[ "this", "py" ] } },
+                        { "sum":1, "to":{ "_":[ "this", "optionsCount" ] } }
+                      ]
+                    }
+                  ],
+                  "elseExecute":[
+                    { "set":{ "curValue":{ "_":[ "this", "cursorObjectData", { "_":[ "this", "objectKey" ] } ] }, "menuMode":1, "optionsCount":0 } },
+                    { "when":{ "_":[ "this", "curValue", "not" ] }, "set":{ "curValue":0 } },
+                    {
+                      "times":{ "_":[ "this", "root", "optionsIds", "count" ] },
+                      "execute":[
+                        {
+                          "object":{
+                            "type":"treeview",
+                            "set":{ "_":[ "stencil", "smallLabel" ] },
+                            "x":0, "y":{ "_":[ "that", "py" ] },
+                            "html":{ "_":[ "&nbsp;&nbsp;&nbsp;", ".", { "_":[ "that", "root", "optionsLabels", { "_":[ "that", "optionsCount" ] } ] } ] },
+                            "execute":{ "when":{ "_":[ "that", "menuPosition", "isEqualTo", { "_":[ "that", "optionsCount" ] } ] }, "set":{ "bgcolor":"#ff004d" } }
+                          }
+                        },
+                        {
+                          "when":{ "_":[ "this", "root", "optionsIds", { "_":[ "this", "optionsCount" ] }, "isEqualTo", { "_":[ "this", "curValue" ] } ] },
+                          "execute":{ "object":{ "type":"treeview", "image":"hud", "tileX":24, "width":8, "height":8, "zIndex":10, "x":0, "y":{ "_":[ "that", "py" ] } } },
+                          "elseExecute":{ "object":{ "type":"treeview", "image":"hud", "tileX":16, "width":8, "height":8, "zIndex":10, "x":0, "y":{ "_":[ "that", "py" ] } } }
+                        },
+                        { "sum":8, "to":{ "_":[ "this", "py" ] } },
+                        { "sum":1, "to":{ "_":[ "this", "optionsCount" ] } }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        { "name":"waitchecklist", "actions":{ "name":"checklistSelected", "execute":{ "set":{ "doBack":1, "state":"default" } } } },
+        {
+          "name":"waitobjectpicker",
+          "actions":{
+            "name":"tileSelected",
+            "execute":[
+              { "set":{ "cursorObject":{ "_":[ "that", "tileSelected" ] }, "doUpdate":1, "menuPosition":0 } },
+              {
+                "when":{ "_":[ "variable", "gameData", "objects", { "_":[ "this", "cursorObject" ] }, "not" ] },
+                "assign":{ "_":[ "new", {} ] },
+                "to":{ "_":[ "variable", "gameData", "objects", { "_":[ "this", "cursorObject" ] } ] }
+              },
+              { "set":{ "cursorObjectData":{ "_":[ "variable", "gameData", "objects", { "_":[ "this", "cursorObject" ] } ] } } },
+              { "as":{ "_":[ "new", {} ] }, "pushInto":{ "_":[ "scene", "optionStack" ] }, "set":{ "item":{ "_":[ "that", "cursorObject" ] } } },
+              { "set":{ "doUpdate":1, "state":"default" } }
+            ]
+          }
+        },
+        {
+          "name":"waittilepicker",
+          "actions":{
+            "name":"tileSelected",
+            "execute":[
+              {
+                "assign":{ "_":[ "that", "tileSelected" ] },
+                "to":{ "_":[ "this", "cursorObjectData", { "_":[ "this", "objectKey" ] } ] },
+                "execute":{ "_":[ "stencil", "codeRequestSave" ] }
+              },
+              { "set":{ "doBack":1, "state":"default" } }
+            ]
+          }
+        }
+      ]
+    },
+    "play":{
+      "set":{ "_":[ "stencil", "editorModel" ] },
+      "currentTab":1,
+      "hiscore":0,
+      "playing":0,
+      "randomPot":{ "_":[ "new", [] ] },
+      "score":0,
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[
+            { "as":{ "_":[ "objectTyped", "editorbar" ] }, "set":{ "html":{ "_":[ "Hi-score: ", ".", { "_":[ "scene", "hiscore" ] } ] } } },
+            { "set":{ "showingMap":"titleMap" }, "execute":{ "_":[ "stencil", "codeShowTilemap" ] } },
+            { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+            { "as":{ "_":[ "object", "gametile" ] }, "remove":1 },
+            { "set":{ "gameover":0, "playing":1, "score":0 } },
+            { "wait":25 },
+            { "set":{ "showingMap":"levelMap" }, "execute":{ "_":[ "stencil", "codeShowTilemap" ] } },
+            { "as":{ "_":[ "object", "gametile" ] }, "set":{ "waitRunning":27 } },
+            { "_":[ "stencil", "codeUpdateScore" ] },
+            {
+              "object":{
+                "type":"getready",
+                "set":{ "_":[ "stencil", "smallLabel" ] },
+                "width":129,
+                "zIndex":10000, "x":0, "y":60,
+                "bgcolor":"#000",
+                "textAlign":"center", "html":"GET READY!"
+              }
+            },
+            { "wait":25 },
+            { "as":{ "_":[ "object", "getready" ] }, "remove":1 },
+            { "wait":1, "loop":1, "until":{ "_":[ "this", "gameover" ] } },
+            { "set":{ "playing":0 } },
+            { "wait":2 },
+            { "as":{ "_":[ "object", "gametile" ] }, "set":{ "state":"end" } },
+            { "wait":25 },
+            { "as":{ "_":[ "object", "gametile" ] }, "remove":1 },
+            {
+              "object":{
+                "type":"getready",
+                "set":{ "_":[ "stencil", "smallLabel" ] },
+                "width":129,
+                "zIndex":10000, "x":0, "y":60,
+                "bgcolor":"#000",
+                "textAlign":"center",
+                "execute":{ "when":{ "_":[ "that", "gameover", "isEqualTo", 1 ] }, "set":{ "html":"YOU WON!" }, "elseExecute":{ "set":{ "html":"YOU LOSE..." } } }
+              }
+            },
+            {
+              "when":{ "_":[ "this", "score", "isGreaterThan", { "_":[ "this", "hiscore" ] } ] },
+              "execute":[
+                { "set":{ "hiscore":{ "_":[ "this", "score" ] } } },
+                {
+                  "object":{
+                    "type":"getready",
+                    "set":{ "_":[ "stencil", "smallLabel" ] },
+                    "width":129,
+                    "zIndex":10000, "x":0, "y":68,
+                    "textAlign":"center", "html":"NEW HI-SCORE!",
+                    "states":{
+                      "code":{ "name":"Sequence", "data":[ { "set":{ "bgcolor":"#ffa300" }, "wait":1 }, { "set":{ "bgcolor":"#000" }, "wait":1, "cycles":10, "loopTo":0 } ] }
+                    }
+                  }
+                }
+              ]
+            },
+            { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+            { "as":{ "_":[ "object", "getready" ] }, "remove":1 },
+            { "wait":25 },
+            { "loopTo":0 }
+          ]
+        }
+      }
+    },
+    "tapeLoader":{
+      "set":{ "_":[ "stencil", "editorModel" ] },
+      "execute":{
+        "object":[
+          {
+            "image":"hud", "tileY":16, "width":111, "height":29,
+            "x":8,
+            "timer":0,
+            "states":{
+              "code":{
+                "name":"Execute",
+                "data":[ { "sum":0.1, "to":{ "_":[ "this", "timer" ] } }, { "set":{ "y":{ "_":[ "this", "timer", "sin", "*", 3, "+", 14 ] } } } ]
+              }
+            }
+          },
+          { "set":{ "_":[ "stencil", "smallLabel" ] }, "y":48, "textAlign":"center", "html":"The right Wright! project" },
+          { "set":{ "_":[ "stencil", "mainMenuOptionModel" ] }, "y":62, "html":"Export tape", "option":0 },
+          { "set":{ "_":[ "stencil", "mainMenuOptionModel" ] }, "y":75, "html":"Import tape", "option":1 },
+          { "set":{ "_":[ "stencil", "mainMenuOptionModel" ] }, "y":88, "html":"New tape", "option":2 },
+          { "set":{ "_":[ "stencil", "mainMenuOptionModel" ] }, "y":101, "html":"Wright! Mini", "option":3 },
+          { "set":{ "_":[ "stencil", "smallLabel" ] }, "y":120, "color":"#c2c3c7", "textAlign":"center", "html":"B+Left/Right: Change tab" }
+        ]
+      },
+      "currentTab":0,
+      "editorName":"Home",
+      "option":0,
+      "states":[
+        {
+          "code":{
+            "name":"Execute",
+            "data":[
+              { "when":{ "_":[ "keyUp", "isHit" ] }, "subtract":1, "to":{ "_":[ "this", "option" ] } },
+              { "when":{ "_":[ "keyDown", "isHit" ] }, "sum":1, "to":{ "_":[ "this", "option" ] } },
+              { "when":{ "_":[ "this", "option", "isLessThan", 0 ] }, "set":{ "option":3 } },
+              { "when":{ "_":[ "this", "option", "isGreaterThan", 3 ] }, "set":{ "option":0 } },
+              { "when":{ "_":[ "keyA", "isHit" ] }, "set":{ "state":{ "_":[ "option", ".", { "_":[ "this", "option" ] } ] } } }
+            ]
+          }
+        },
+        {
+          "name":"option0",
+          "execute":{ "set":{ "datasetteWorking":0 } },
+          "code":[
+            {
+              "name":"Sequence",
+              "data":[
+                { "set":{ "datasetteWorking":0 } },
+                { "_":[ "stencil", "codeCleanGame" ] },
+                { "wait":2 },
+                { "set":{ "datasetteWorking":1 } },
+                { "wait":1, "loop":1, "until":{ "_":[ "this", "datasetteWorking", "not" ] } },
+                { "set":{ "state":"default" } }
+              ]
+            },
+            {
+              "name":"Datasette",
+              "data":{
+                "when":{ "_":[ "this", "datasetteWorking" ] },
+                "prompt":"Copy this text and share as you like!",
+                "data":{ "_":[ "variable", "gameData", "jsonEncode" ] },
+                "execute":{ "set":{ "datasetteWorking":0 } }
+              }
+            }
+          ]
+        },
+        {
+          "name":"option1",
+          "execute":{ "_":[ "stencil", "codeConfirmNewGame" ] },
+          "actions":[ { "name":"ok", "execute":{ "set":{ "state":"tapeLoad" } } }, { "name":"ko", "execute":{ "set":{ "state":"default" } } } ]
+        },
+        {
+          "name":"option2",
+          "execute":{ "_":[ "stencil", "codeConfirmNewGame" ] },
+          "actions":[
+            { "name":"ok", "execute":[ { "_":[ "stencil", "codeMakeEmptyGame" ] }, { "gotoScene":"titleEditor", "withTransition":3 } ] },
+            { "name":"ko", "execute":{ "set":{ "state":"default" } } }
+          ]
+        },
+        {
+          "name":"option3",
+          "execute":{ "_":[ "stencil", "codeConfirmNewGame" ] },
+          "actions":[ { "name":"ok", "execute":{ "set":{ "state":"sampleSelector" } } }, { "name":"ko", "execute":{ "set":{ "state":"default" } } } ]
+        },
+        {
+          "name":"sampleSelector",
+          "execute":{
+            "set":{ "checkListPickerData":0, "checkListPickerItems":{ "_":[ "resource", "samples", "list" ] }, "checkListPickerTitle":"Select a tape!" },
+            "execute":{ "_":[ "stencil", "codeChecklistPicker" ] }
+          },
+          "actions":{
+            "name":"checklistSelected",
+            "execute":{
+              "when":{ "_":[ "that", "runned" ] },
+              "execute":[
+                { "set":{ "runned":{ "_":"that" } } },
+                { "as":{ "_":"variable" }, "set":{ "gameData":{ "_":[ "that", "runned", "run", "merged" ] } } },
+                { "_":[ "stencil", "codeCleanGame" ] },
+                { "gotoScene":"play", "withTransition":3 }
+              ],
+              "elseExecute":{ "set":{ "state":"default" } }
+            }
+          }
+        },
+        {
+          "name":"tapeLoad",
+          "execute":{ "set":{ "datasetteWorking":0 } },
+          "code":[
+            {
+              "name":"Datasette",
+              "data":{
+                "when":{ "_":[ "this", "datasetteWorking" ] },
+                "prompt":"Paste the Ryong game data here!",
+                "execute":{ "set":{ "datasetteWorking":0, "loadedData":{ "_":"that" } } }
+              }
+            },
+            {
+              "name":"Sequence",
+              "data":[
+                { "set":{ "datasetteWorking":1 } },
+                { "wait":1, "loop":1, "until":{ "_":[ "this", "datasetteWorking", "not" ] } },
+                {
+                  "when":{ "_":[ "this", "loadedData" ] },
+                  "execute":[
+                    { "set":{ "newGameData":{ "_":[ "this", "loadedData", "jsonDecode" ] } } },
+                    {
+                      "when":{ "_":[ "this", "newGameData", "not" ] },
+                      "set":{ "state":"default" },
+                      "elseExecute":[
+                        { "as":{ "_":"variable" }, "set":{ "gameData":{ "_":[ "scene", "newGameData" ] } } },
+                        { "_":[ "stencil", "codeCleanGame" ] },
+                        { "gotoScene":"play", "withTransition":3 }
+                      ]
+                    }
+                  ],
+                  "elseExecute":{ "set":{ "state":"default" } }
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "titleEditor":{ "set":{ "_":[ "stencil", "tilemapEditorModel" ] }, "currentTab":2, "editingMap":"titleMap", "editorName":"Title editor" }
+  }
+}
