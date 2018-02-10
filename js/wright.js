@@ -133,6 +133,7 @@ var Supports = (function(){
 			if (this.orientation) window.addEventListener(this.orientation.on,function(e){cb(ret.orientation.get(e))});
 		}
 	};
+	ret.isOffline=false;
 	ret.supportsScaling=ret.css("transform")&&ret.css("transformOrigin");
 	ret.isFirefox=ret.browser("firefox");
 	ret.isTouch=!!('ontouchstart' in window || navigator.maxTouchPoints);
@@ -347,6 +348,7 @@ Controllers.methods={};
 Controllers.methods.PeerJS={
 	label:"Use another web browser as screen.",
 	isSenderSupported:function() {
+		if (Supports.isOffline) return false;
 		var defaultConfig = {'iceServers': [{ 'url': 'stun:stun.l.google.com:19302' }]};
 		var RTCPeerConnection = window.RTCPeerConnection || window.mozRTCPeerConnection || window.webkitRTCPeerConnection;
 		if (typeof RTCPeerConnection === 'undefined') return false;
@@ -432,7 +434,7 @@ Controllers.methods.PeerJS={
 }
 Controllers.methods.Chromecast={
 	label:"Use Chromecast as screen.",
-	isSenderSupported:function() { return window.chrome; },	
+	isSenderSupported:function() { return !Supports.isOffline&&window.chrome; },	
 	prepareSender:function(self,cb) {
 		window['__onGCastApiAvailable'] = function(isAvailable) { if (isAvailable) { cb(); } };
 		var script=document.createElement("script")
@@ -5300,7 +5302,7 @@ function Wright(gameId,mods) {
 	 * INITIALIZATION
 	 */
 
-	Supports.getFile(mods.tapesRoot + gameId + "/tape.json?" + Math.random(), function(text) {
+	Supports.getFile(mods.tapesRoot + gameId + "/tape.json"+(Supports.isOffline?"":"?" + Math.random()), function(text) {
 		filecache = Box.Cache();
 		gamedata = JSON.parse(text);
 		if (!gamedata.scenes) gamedata.scenes = { intro: {} };
@@ -5398,6 +5400,7 @@ function Wright(gameId,mods) {
 						row=node(mods.settingsContainer,"div","row");
 						node(row,"div","label",controlsset.keyboard[a].label+":");
 						itm=node(node(row,"div","value"),"input","input");
+						itm.setAttribute("type","text");
 						itm.setAttribute("readonly","readonly");
 						itm.setAttribute("_id",a);
 						itm.value=keySymbol(usercontrols.keyboard[a]);
@@ -5554,6 +5557,7 @@ function Wright(gameId,mods) {
 			updatePlaymodeSettings();
 			
 			itm=node(node(mods.settingsContainer,"div","startgamerow"),"button","startgame","Start game");
+			itm.id="startgame";
 			Supports.addEventListener(itm,"click",function(){
 				if (pointerCombo) usercontrols.pointer.id=pointerCombo.options[pointerCombo.selectedIndex].value;
 				if (touchcontrollerCombo) usercontrols.touchcontroller.layout=touchcontrollerCombo.options[touchcontrollerCombo.selectedIndex].value;
@@ -5603,6 +5607,7 @@ function Wright(gameId,mods) {
 				}
 				mods.settingsContainer.innerHTML=sublabels?"<ul>"+sublabels+"</ul>":"";
 			});
+			if (mods.onLoaded) mods.onLoaded();
 		} else {
 			var filterset;
 			for (var i=0;i<filters.length;i++)
