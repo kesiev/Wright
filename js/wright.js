@@ -787,15 +787,22 @@ var DOMInator=function(useCanvas,aliasmode,controller,nosleep){
 		}
 	};
 
-	/* Custom HTML prompt */
+	/* Custom HTML prompt */	
 	this.htmlPrompt=function(body,text,onok){
+		var prompt=document.createElement("div");
+
+		function closePrompt() {
+			root.removeChild(prompt);
+			if (touchlayout&&Supports.isFullScreen()) enableTouchcontroller();
+		}
+
+		disableTouchcontroller();
 		var css={
 			footerbar:{textAlign:"right",margin:"10px 0"},
 			label:{margin:"10px 0"},
-			form:{fontFamily:"sans-serif",position:"fixed",left:"10px",right:"10px",top:0,padding:"10px",border:"1px solid #000",zIndex:1000,backgroundColor:"#ccc"},
+			form:{fontFamily:"sans-serif",position:"fixed",left:"10px",right:"10px",top:0,padding:"20px 10px 10px 10px",border:"1px solid #000",zIndex:1000,backgroundColor:"#ccc"},
 			textarea:{width:"100%",border:0,fontFamily:"monospace"}
 		};
-		var prompt=document.createElement("div");
 		var label=document.createElement("div");
 		var footerbar=document.createElement("div");
 		var textarea=document.createElement("textarea");
@@ -808,13 +815,13 @@ var DOMInator=function(useCanvas,aliasmode,controller,nosleep){
 		footerbar.appendChild(cancelbutton);
 		okbutton.innerHTML="OK";
 		okbutton.onclick=function(){
-			root.removeChild(prompt);
+			closePrompt();
 			gameScreen.focus();
 			onok(textarea.value);
 		}
 		cancelbutton.innerHTML="Cancel";
 		cancelbutton.onclick=function(){
-			root.removeChild(prompt);
+			closePrompt();
 			gameScreen.focus();
 			onok();
 		}
