@@ -1,11 +1,24 @@
 RewriteEngine On
 # Site
 RewriteCond %{SERVER_PORT} 443
+
+# Remote play
 RewriteRule    ^screen/?$    http://www.kesiev.com/wright/screen/    [R,L]    # Force HTTP for screen - PeerJS hosted services do not support it.
 RewriteRule    ^screen$    http://www.kesiev.com/wright/screen/    [R,L]    # Move to the right path if trailing / is missing
 RewriteRule    ^chromecast/$    publishers/chromecast/index.html    [NC,L]    # Chromecast receiver
 RewriteRule    ^screen/?$    publishers/screen/index.html    [NC,L]    # Remote screen
+
+# Homepage
 RewriteRule    ^issue/([a-zA-Z0-9]+)/?$    publishers/site/index.php?page=issue&issueid=$1    [NC,L]    # Issue page
 RewriteRule    ^issues/?$    publishers/site/index.php?page=issues    [NC,L]    # Issues page
 RewriteRule    ^issues/([a-zA-Z0-9]+)/?$    publishers/site/index.php?page=issues&pos=$1    [NC,L]    # Issues # page
+
+# PWA - experimental
+RewriteRule    ^webapp/([a-zA-Z0-9]+)/manifest.json$    publishers/webapp/index.php?issueid=$1&file=manifest    [NC,L]    #  Webapp manifest page
+RewriteRule    ^webapp/([a-zA-Z0-9]+)/worker.js$    publishers/webapp/index.php?issueid=$1&file=worker    [NC,L]    # Webapp icon
+RewriteRule    ^webapp/([a-zA-Z0-9]+)/homescreen-([0-9]+)x([0-9]+).png$   publishers/webapp/index.php?issueid=$1&file=icon&width=$2&height=$3    [NC,L]    # Webapp icon
+RewriteRule    ^webapp/([a-zA-Z0-9]+)/index.html$    publishers/webapp/index.php?issueid=$1&file=home    [NC,L]    # Webapp page
+RewriteRule    ^webapp/([a-zA-Z0-9]+)/wright/(.*)$ $2 [NC,L] # Data folder
+
+# Fallback
 RewriteRule    ^/?$    publishers/site/index.php?page=home    [NC,L]    # Home page
