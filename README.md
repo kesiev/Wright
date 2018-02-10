@@ -15,6 +15,7 @@ Since I've decided to implement from scratch the nicest things I learnt, thought
   * Supports competitive online gaming via [Telegram Gaming platform](https://telegram.org/blog/games), using score publishing and chatbot via [@WrightMagBot](https://telegram.me/wrightmagbot) _(Sadly only 20 games are available due to Telegram limitations)_
   * Telegram chatbot supports inline invoking (i.e. <tt>@WrightMagBot starcat</tt> while chatting with friends)
   * Supports a number of tools for prettifying the game sources, converting [Tiled](http://www.mapeditor.org/) tilemaps to Wright engine and save data manipulation
+  * Single game PWA support
 
 ### Engine features
 
