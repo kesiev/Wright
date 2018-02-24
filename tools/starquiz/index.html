@@ -1,0 +1,115 @@
+<html>
+<body onload="onl()">
+<b>Questions data</b><hr>
+<textarea id="out" cols=80 rows=25></textarea>
+<hr>
+<textarea id="status"  cols=80 rows=25></textarea>
+</body>
+<script>
+	function ajax(data){
+
+	  var senddata="";
+	  var processing;
+	  var http=(window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP") ? new ActiveXObject("Msxml2.XMLHTTP") : null;
+
+	  if (http) {
+	    if (data.data) for(var a in data.data)
+	      senddata += a + "=" + (data.data[a] === undefined ? "" : encodeURIComponent(data.data[a]) ) + "&";
+	      senddata=senddata.substr(0,senddata.length-1);
+	      http.open(data.method=="POST"?"POST":"GET", data.url+(senddata&&(data.method!="POST")?(data.url.indexOf("?")>=0?"&":"?")+senddata:""), true);
+	      if(data.method == "POST") http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+	      http.onreadystatechange = function() {
+	        if(http.readyState == 4)
+	          if (((http.status == 200) && http.getAllResponseHeaders().length) || (http.status == 0))
+	            data.callback(data.isJson?JSON.parse(this.responseText):this.responseText,http.status);
+	            else data.callback(false,http.status);
+	      }
+	        try {
+	          http.send(senddata&&(data.method=="POST")?senddata:null);
+	        } catch(err) {
+	          data.callback(false,-1);
+	        }
+	 } else data.callback(false,-1);
+	};
+
+	var out={deck:[]};
+	var count=0;
+	var index={};
+	var longanswer="";
+	var longquestion="";
+	var txtarea=0;
+
+		function decodeEntities(html) {	    
+			txtarea.innerHTML = html;
+			return txtarea.value.replace(/<br>/gi,"\n");
+		}
+
+
+	function parse(set,q){
+		txtarea=document.createElement("textarea");
+		var round={label:set,questions:[]};
+		for (var i=0;i<q.results.length;i++) {
+			var p=q.results[i];
+			if (!index[p.question]) {
+				count++;
+				index[p.question]=set;
+				if (decodeEntities(p.question).length>decodeEntities(longquestion).length) longquestion=p.question;
+				switch(p.type) {
+					case "boolean":{
+						var a=p.correct_answer.toLowerCase();
+						var sa=-1;
+						if (a=="true") sa=1;
+						else if (a=="false") sa=0;
+						else console.warn("Boolean answer \""+a+"\" not valid");
+						if (sa!=-1) round.questions.push({q:p.question,t:"boolean",a:sa});
+						break;
+					}
+					case "multiple":{
+						p.incorrect_answers.unshift(p.correct_answer);
+						for (var j=0;j<p.incorrect_answers.length;j++)
+							if (decodeEntities(p.incorrect_answers[j]).length>decodeEntities(longanswer).length) longanswer=p.incorrect_answers[j];
+
+						if (sa!=-1) round.questions.push({q:p.question,t:"multiple",a:p.incorrect_answers});
+						break;
+					}
+					default:{
+						console.log(p);
+					}
+				}
+			} else console.warn("Question \""+p.question+"\" already into the \""+index[p.question]+"\" set.");
+		}
+		out.deck.push(round);
+	}
+
+	function onl(){
+
+		ajax({
+			url:"question-games-easy.json",
+			isJson:true,
+			callback:function(data) {
+				parse("Easy",data);
+				ajax({
+							url:"question-games-medium.json",
+							isJson:true,
+							callback:function(data) {
+								parse("Normal",data);
+								ajax({
+				url:"question-games-hard.json",
+				isJson:true,
+				callback:function(data) {
+					parse("Hard",data);
+
+					document.getElementById("out").value=JSON.stringify(out);
+					document.getElementById("status").value=count+" questions.\n\nLongest question:\n"+longquestion+"\n\nLongest answer:\n"+longanswer;
+					
+				}
+			})
+							}
+						})
+			}
+		})
+	}
+
+
+</script>
+</html>

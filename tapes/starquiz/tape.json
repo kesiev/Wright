@@ -1,0 +1,504 @@
+{
+  "name":"Starquiz",
+  "author":"KesieV",
+  "year":2017,
+  "genre":"Quiz",
+  "description":"<p>Aw. <i>Quiz</i>.</p><p>You could call someone <a href='https://en.wikipedia.org/wiki/Quiz'>quiz</a> 1781 to describe an odd guy and then, without any reason and about 100 years later, <i>quiz</i> was a game to test knowledge in the United States.</p><p>The Oxford English Dictionary traces the etymology of <i>quiz</i> to the word <i>quiesed</i> that means <i>to ask</i> from a reference from 1843 and a myth says that Richard Daly introduced this nonsensical word in the language in a day just for a bet 50 years before.</p><p>A quiz can be simultaneously <a href='https://en.wikipedia.org/wiki/Test_(assessment)#Support_and_criticisms'>fair and efficient and totally inaccurate</a>. It can precisely predict and analyze but in a poor way. It can improve performances and make you culturally or socioeconomically standardized.</p><p>Quizzes have humble and obscure origins, high accessibility and filled with controversy. That's why, after 200 years, the game of <i>quizzes</i> is still alive and kicking, not unlike the others immortal <a href='https://en.wikipedia.org/wiki/List_of_controversial_video_games'>controversial videogames</a>.</p><p>Plot!</p><p>Are you ready for the most famous quiz game in the Starcat world? Answer to as many questions as you can within the time limit: the faster you are the more points you get! So, will you be the champion?</p><p>Use UP/DOWN for selecting an answer and hit the A BUTTON for selecting it. That's all!</p>",
+  "screenshots":[ "starquiz-1.png", "starquiz-2.png" ],
+  "hardware":{
+    "width":256,
+    "height":192,
+    "filter":"retro"
+  },
+  "audioChannels":{
+    "sfx":{ "volume":1, "samples":[ "shut", "rampup", "lose", "fire", "explode2", "beep2", "beep" ] },
+    "music":{ "volume":0.8, "looping":1, "samples":[ "bgm" ] }
+  },
+  "cheats":{},
+  "resources":{
+    "bgm":"quiz.ogg",
+    "logo":"logo.png",
+    "questions":"questions.json",
+    "spectrum":"spectrum.font",
+    "beep":"../default/zxsounds/beep2.ogg",
+    "beep2":"../default/zxsounds/beep2.ogg",
+    "explode2":"../default/zxsounds/explode2.ogg",
+    "fire":"../default/zxsounds/fire.ogg",
+    "lose":"../default/zxsounds/lose.ogg",
+    "rampup":"../default/zxsounds/rampup.ogg",
+    "shut":"../default/zxsounds/shut.ogg",
+    "sprites":"../default/sprites.png"
+  },
+  "stencils":{
+    "codeShowScore":{
+      "object":{
+        "type":"lastscreen",
+        "width":256, "height":10,
+        "zIndex":4, "x":0, "y":192,
+        "bgcolor":"#f00",
+        "font":"spectrum", "lineHeight":10, "outline":"#000", "textAlign":"center", "html":{ "_":[ "SCORE: ", ".", { "_":[ "scene", "score" ] }, ".", " pts." ] },
+        "spin":9,
+        "states":[
+          {
+            "code":{
+              "name":"Execute",
+              "data":{
+                "when":{ "_":[ "this", "spin" ] },
+                "execute":[ { "subtract":{ "_":[ "this", "spin" ] }, "to":{ "_":[ "this", "y" ] } }, { "subtract":1, "to":{ "_":[ "this", "spin" ] } } ]
+              }
+            }
+          },
+          { "name":"leave", "code":{ "name":"Sequence", "data":[ { "sum":10, "to":{ "_":[ "this", "y" ] }, "wait":1, "loop":1 }, { "remove":1 } ] } }
+        ]
+      }
+    },
+    "dataCardsColor":[ { "bgcolor":"#00f", "border":"#fff" }, { "bgcolor":"#ff0", "border":"#fff" }, { "bgcolor":"#f00", "border":"#fff" } ],
+    "dataGameOverMessages":[ "GAME OVER", "THAT'S ALL!", "THE END" ],
+    "dataRightMessages":[ "YOU GOT IT!", "WELL DONE!", "RIGHT!", "NICE!", "VERY NICE!", "GOOD!" ],
+    "dataTextColor":[ { "color":"#fff" }, { "color":"#000" }, { "color":"#fff" } ],
+    "menuOptionModel":{
+      "type":"lastscreen",
+      "width":240,
+      "zIndex":5, "x":8,
+      "bgcolor":"#7f7f7f",
+      "font":"spectrum", "lineHeight":10, "textAlign":"center",
+      "states":[
+        {
+          "code":{
+            "name":"Execute",
+            "data":{
+              "when":{ "_":[ "this", "speed", "abs", "isGreaterThan", 1 ] },
+              "execute":[ { "sum":{ "_":[ "this", "speed" ] }, "to":{ "_":[ "this", "x" ] } }, { "set":{ "speed":{ "_":[ "this", "speed", "/", 2 ] } } } ]
+            }
+          }
+        },
+        {
+          "name":"leave",
+          "set":{ "zIndex":4 },
+          "code":{ "name":"Sequence", "data":[ { "set":{ "scale":{ "_":[ "this", "scale", "*", 0.5 ] } } }, { "wait":1, "cycles":6, "loopTo":0 }, { "remove":1 } ] }
+        }
+      ]
+    },
+    "scrollingTile":{
+      "image":"sprites", "width":16, "height":16,
+      "zIndex":5,
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":[ { "subtract":2, "to":{ "_":[ "this", "x" ] } }, { "when":{ "_":[ "this", "x", "isLessThan", -15 ] }, "set":{ "x":256 } } ]
+        }
+      }
+    }
+  },
+  "execute":[
+    { "when":{ "_":[ "storage", "hiscore", "not" ] }, "as":{ "_":"storage" }, "set":{ "hiscore":0 } },
+    { "as":{ "_":"variable" }, "set":{ "hiscore":{ "_":[ "storage", "hiscore" ] } } },
+    { "as":{ "_":"variable" }, "set":{ "questionSequence":{ "_":[ "new", [ 0 ] ] } } },
+    { "set":{ "counter":1 } },
+    {
+      "times":49,
+      "execute":[ { "as":{ "_":[ "this", "counter" ] }, "pushInto":{ "_":[ "variable", "questionSequence" ] } }, { "sum":1, "to":{ "_":[ "this", "counter" ] } } ]
+    },
+    { "shuffle":{ "_":[ "variable", "questionSequence" ] } }
+  ],
+  "scenes":{
+    "intro":{
+      "object":[
+        {
+          "image":"logo", "width":143, "height":125,
+          "x":56, "y":-125,
+          "animations":{ "idle":{ "frames":2, "loopTo":0 } },
+          "animation":"idle",
+          "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "this", "y", "isLessThan", 8 ] }, "sum":1, "to":{ "_":[ "this", "y" ] } } } }
+        },
+        {
+          "box":"label", "width":256,
+          "zIndex":100, "x":0, "y":141,
+          "color":"#fff",
+          "font":"spectrum", "fontSize":20, "lineHeight":20, "textAlign":"center", "html":"PRESS START",
+          "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "visible":0 }, "wait":20 }, { "set":{ "visible":1 }, "wait":20, "loopTo":0 } ] } }
+        },
+        {
+          "box":"label", "width":256,
+          "zIndex":100, "x":0, "y":161,
+          "color":"#fff",
+          "font":"spectrum", "fontSize":20, "lineHeight":20, "textAlign":"center", "html":{ "_":[ "HI-SCORE: ", ".", { "_":[ "variable", "hiscore" ] }, ".", " pts." ] }
+        },
+        {
+          "width":256, "height":10,
+          "zIndex":100, "x":0, "y":182,
+          "bgcolor":"#7f7f7f", "color":"#000",
+          "font":"spectrum", "fontSize":20, "lineHeight":10, "textAlign":"center", "html":"Song:HackerVBI Quiz:opentdb.com"
+        }
+      ],
+      "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"play" } } }
+    },
+    "play":{
+      "execute":[
+        { "shuffle":{ "_":[ "variable", "questionSequence" ] } },
+        { "set":{ "bonus":4500, "counter":0, "phase":0, "score":0 }, "playAudio":"bgm" },
+        {
+          "times":17,
+          "execute":[
+            { "object":{ "set":{ "_":[ "stencil", "scrollingTile" ] }, "x":{ "_":[ "that", "counter" ] }, "y":184 } },
+            { "sum":16, "to":{ "_":[ "this", "counter" ] } }
+          ]
+        },
+        {
+          "object":[
+            {
+              "type":"starcat",
+              "image":"sprites", "tileX":64, "tileY":32, "width":16, "height":16,
+              "zIndex":10, "x":8, "y":168,
+              "animations":{ "idle":{ "frames":4, "loopTo":0 }, "jumpingDown":{ "frame":5 }, "jumpingUp":{ "frame":4 } },
+              "animation":"idle",
+              "states":[
+                {
+                  "code":[
+                    {
+                      "name":"Execute",
+                      "data":[
+                        {
+                          "when":{ "_":[ "this", "touchDown" ] },
+                          "set":{ "animation":"idle" },
+                          "elseExecute":{ "when":{ "_":[ "this", "forceY", "isLessThan", 0 ] }, "set":{ "animation":"jumpingUp" }, "elseExecute":{ "set":{ "animation":"jumpingDown" } } }
+                        },
+                        { "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "blob" ] } ] }, "set":{ "state":"dead" } }
+                      ]
+                    },
+                    { "name":"Physics", "data":{ "walls":{ "area":{ "width":256, "height":184, "x":0, "y":0 }, "restitution":0.5 }, "gravityY":1 } }
+                  ],
+                  "actions":{ "name":"right", "execute":{ "set":{ "forceY":-10 } } }
+                },
+                {
+                  "name":"dead",
+                  "execute":{ "set":{ "forceY":-10 }, "playAudio":"lose" },
+                  "code":[
+                    { "name":"Execute", "data":[ { "sum":20, "to":{ "_":[ "this", "angle" ] } }, { "when":{ "_":[ "this", "y", "isGreaterThan", 192 ] }, "remove":1 } ] },
+                    { "name":"Physics", "data":{ "gravityY":1 } }
+                  ]
+                }
+              ]
+            },
+            {
+              "type":"hud",
+              "hudType":"label", "label":"BONUS: %number|scene.bonus% pts.",
+              "width":248, "height":10,
+              "zIndex":10000, "x":0, "y":180,
+              "font":"spectrum", "lineHeight":10, "outline":"#000", "textAlign":"right"
+            }
+          ]
+        }
+      ],
+      "states":[
+        {
+          "code":{
+            "name":"Sequence",
+            "data":[
+              {
+                "object":{
+                  "type":"lastscreen",
+                  "width":256, "height":40,
+                  "zIndex":100, "x":0, "y":76,
+                  "scale":0,
+                  "font":"spectrum", "fontSize":50, "lineHeight":40, "outline":"#000", "textAlign":"center", "html":"READY?",
+                  "states":[
+                    {
+                      "code":[
+                        {
+                          "name":"Sequence",
+                          "data":[
+                            { "sum":0.2, "to":{ "_":[ "this", "scale" ] }, "wait":1, "loop":1, "cycles":5 },
+                            { "playAudio":"beep" },
+                            { "set":{ "visible":{ "_":[ "this", "visible", "not" ] } }, "wait":1, "loop":1, "cycles":10 }
+                          ]
+                        },
+                        { "name":"Sequence", "data":[ { "set":{ "color":"#f00" }, "wait":1 }, { "set":{ "color":"#0f0" }, "wait":1, "loopTo":0 } ] }
+                      ]
+                    },
+                    {
+                      "name":"leave",
+                      "set":{ "zIndex":10 },
+                      "code":{ "name":"Sequence", "data":[ { "subtract":0.2, "to":{ "_":[ "this", "scale" ] }, "wait":1, "loop":1, "cycles":5 }, { "remove":1 } ] }
+                    }
+                  ]
+                }
+              },
+              { "wait":25 },
+              { "set":{ "state":"question" } }
+            ]
+          }
+        },
+        {
+          "name":"question",
+          "execute":{ "set":{ "changed":1, "option":0 } },
+          "code":[
+            {
+              "name":"Sequence",
+              "data":[
+                { "set":{ "deck":{ "_":[ "this", "phase", "/", 5, "floor", "%", 3 ] } } },
+                {
+                  "set":{
+                    "question":{
+                      "_":[ "resource", "questions", "deck", { "_":[ "this", "deck" ] }, "questions", { "_":[ "variable", "questionSequence", { "_":[ "this", "phase" ] } ] } ]
+                    }
+                  }
+                },
+                { "sum":1, "to":{ "_":[ "this", "phase" ] } },
+                { "as":{ "_":[ "object", "lastscreen" ] }, "set":{ "state":"leave" } },
+                {
+                  "object":{
+                    "type":[ "lastscreen", "unoptimized" ],
+                    "set":{ "_":[ "stencil", "dataCardsColor", { "_":[ "scene", "deck" ] } ] },
+                    "width":240, "height":16,
+                    "zIndex":20, "x":8, "y":33,
+                    "execute":{
+                      "object":{
+                        "type":"questioncontent",
+                        "set":{ "_":[ "stencil", "dataTextColor", { "_":[ "scene", "deck" ] } ] },
+                        "width":224, "height":60,
+                        "x":8, "y":8,
+                        "font":"spectrum", "lineHeight":10, "textAlign":"center", "html":{ "_":[ "scene", "question", "q" ] }
+                      },
+                      "into":{ "_":"this" }
+                    },
+                    "states":[
+                      {
+                        "code":{
+                          "name":"Sequence",
+                          "data":[
+                            { "sum":10, "to":{ "_":[ "this", "height" ] } },
+                            { "subtract":5, "to":{ "_":[ "this", "y" ] } },
+                            { "wait":1, "cycles":6, "loopTo":0 },
+                            { "playAudio":"beep" },
+                            { "as":{ "_":[ "objectTyped", "questioncontent" ] }, "set":{ "visible":{ "_":[ "this", "visible", "not" ] } }, "wait":1, "loop":1, "cycles":6 }
+                          ]
+                        }
+                      },
+                      {
+                        "name":"leave",
+                        "set":{ "zIndex":10 },
+                        "code":{
+                          "name":"Sequence",
+                          "data":[
+                            { "sum":50, "to":{ "_":[ "this", "x" ] } },
+                            { "subtract":2, "to":{ "_":[ "this", "y" ] } },
+                            { "sum":2, "to":{ "_":[ "this", "angle" ] } },
+                            { "wait":1, "cycles":6, "loopTo":0 },
+                            { "remove":1 }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                },
+                { "wait":10 },
+                {
+                  "when":{ "_":[ "scene", "question", "t", "isEqualTo", "multiple" ] },
+                  "subsequence":[
+                    { "set":{ "changed":1, "counter":0, "optionCount":4, "slots":{ "_":[ "new", [ 0, 1, 2, 3 ] ] } } },
+                    { "shuffle":{ "_":[ "this", "slots" ] } },
+                    {
+                      "times":4,
+                      "execute":[
+                        {
+                          "object":{
+                            "type":{ "_":[ "option-", ".", { "_":[ "that", "counter" ] } ] },
+                            "set":{ "_":[ "stencil", "menuOptionModel" ] },
+                            "height":20,
+                            "y":{ "_":[ "that", "counter", "*", 24, "+", 84 ] },
+                            "html":{ "_":[ "scene", "question", "a", { "_":[ "that", "slots", { "_":[ "that", "counter" ] } ] } ] },
+                            "execute":{ "when":{ "_":[ "that", "counter", "%", 2 ] }, "set":{ "x":-240, "speed":125 }, "elseExecute":{ "set":{ "x":257, "speed":-125 } } },
+                            "slot":{ "_":[ "that", "slots", { "_":[ "that", "counter" ] } ] }
+                          }
+                        },
+                        { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "when":{ "_":[ "scene", "question", "t", "isEqualTo", "boolean" ] },
+                  "subsequence":[
+                    { "set":{ "optionCount":2 } },
+                    {
+                      "object":[
+                        { "type":"option-0", "set":{ "_":[ "stencil", "menuOptionModel" ] }, "height":40, "x":257, "y":84, "html":"True", "speed":-125 },
+                        { "type":"option-1", "set":{ "_":[ "stencil", "menuOptionModel" ] }, "height":40, "x":-240, "y":132, "html":"False", "speed":125 }
+                      ]
+                    }
+                  ]
+                },
+                { "wait":10 },
+                { "when":{ "_":[ "keyUp", "isHit" ] }, "subtract":1, "to":{ "_":[ "this", "option" ] }, "set":{ "changed":1 } },
+                { "when":{ "_":[ "keyDown", "isHit" ] }, "sum":1, "to":{ "_":[ "this", "option" ] }, "set":{ "changed":1 } },
+                {
+                  "when":{ "_":[ "this", "changed" ] },
+                  "execute":[
+                    { "as":{ "_":[ "objectTyped", "selected" ] }, "set":{ "removeType":"selected", "bgcolor":"#7f7f7f" } },
+                    { "when":{ "_":[ "this", "option", "isLessThan", 0 ] }, "set":{ "option":{ "_":[ "this", "optionCount", "-", 1 ] } } },
+                    { "when":{ "_":[ "this", "option", "isGreaterEqualThan", { "_":[ "this", "optionCount" ] } ] }, "set":{ "option":0 } },
+                    { "as":{ "_":[ "objectTyped", { "_":[ "option-", ".", { "_":[ "that", "option" ] } ] } ] }, "set":{ "type":"selected", "bgcolor":"#f00" } },
+                    { "set":{ "changed":0 }, "playAudio":"fire" }
+                  ]
+                },
+                { "wait":1, "loopTo":-3, "until":{ "_":[ "keyA", "isHit" ] } },
+                { "playAudio":"beep2" },
+                { "as":{ "_":[ "objectTyped", "selected" ] }, "set":{ "visible":{ "_":[ "this", "visible", "not" ] } }, "wait":1, "loop":1, "cycles":10 },
+                {
+                  "when":{ "_":[ "scene", "question", "t", "isEqualTo", "multiple" ] },
+                  "execute":{ "when":{ "_":[ "this", "slots", { "_":[ "this", "option" ] }, "not" ] }, "set":{ "state":"right" }, "elseExecute":{ "set":{ "state":"gameover" } } }
+                },
+                {
+                  "when":{ "_":[ "scene", "question", "t", "isEqualTo", "boolean" ] },
+                  "execute":{
+                    "when":{ "_":[ "this", "option", "not", "isEqualTo", { "_":[ "scene", "question", "a" ] } ] },
+                    "set":{ "state":"right" },
+                    "elseExecute":{ "set":{ "state":"gameover" } }
+                  }
+                }
+              ]
+            },
+            { "name":"Execute", "data":{ "when":{ "_":[ "this", "bonus" ] }, "subtract":1, "to":{ "_":[ "this", "bonus" ] } } }
+          ]
+        },
+        {
+          "name":"right",
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "playAudio":"rampup" },
+              { "sum":{ "_":[ "scene", "bonus" ] }, "to":{ "_":[ "scene", "score" ] } },
+              { "as":{ "_":[ "object", "lastscreen" ] }, "set":{ "state":"leave" } },
+              { "as":{ "_":[ "objectTyped", "starcat" ] }, "executeAction":"right" },
+              { "_":[ "stencil", "codeShowScore" ] },
+              {
+                "object":{
+                  "type":"lastscreen",
+                  "width":256, "height":40,
+                  "zIndex":100, "x":0, "y":76,
+                  "scale":0,
+                  "font":"spectrum", "fontSize":50, "lineHeight":40, "outline":"#000", "textAlign":"center", "html":{ "_":[ "randomValue", { "_":[ "stencil", "dataRightMessages" ] } ] },
+                  "timer":0,
+                  "states":[
+                    {
+                      "code":[
+                        {
+                          "name":"Sequence",
+                          "data":[
+                            { "sum":0.2, "to":{ "_":[ "this", "scale" ] }, "wait":1, "loop":1, "cycles":5 },
+                            { "playAudio":"explode2" },
+                            { "set":{ "x":1 }, "wait":1 },
+                            { "set":{ "x":-1 }, "wait":1, "cycles":5, "loopTo":-1 },
+                            { "set":{ "x":0 }, "wait":1 }
+                          ]
+                        },
+                        { "name":"Execute", "data":[ { "sum":0.2, "to":{ "_":[ "this", "timer" ] } }, { "set":{ "angle":{ "_":[ "this", "timer", "sin", "*", 10 ] } } } ] },
+                        { "name":"Sequence", "data":[ { "set":{ "color":"#fff" }, "wait":1 }, { "set":{ "color":"#0f0" }, "wait":1, "loopTo":0 } ] }
+                      ]
+                    },
+                    {
+                      "name":"leave",
+                      "set":{ "zIndex":10 },
+                      "code":{ "name":"Sequence", "data":[ { "subtract":0.2, "to":{ "_":[ "this", "scale" ] }, "wait":1, "loop":1, "cycles":5 }, { "remove":1 } ] }
+                    }
+                  ]
+                }
+              },
+              { "wait":30 },
+              {
+                "when":{ "_":[ "scene", "bonus", "and", { "_":[ "scene", "phase", "isLessThan", 30 ] } ] },
+                "set":{ "state":"question" },
+                "elseExecute":{ "set":{ "state":"gameover" } }
+              }
+            ]
+          }
+        },
+        {
+          "name":"gameover",
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "stopChannel":"music" },
+              { "as":{ "_":[ "object", "lastscreen" ] }, "set":{ "state":"leave" } },
+              { "_":[ "stencil", "codeShowScore" ] },
+              { "publishScore":{ "_":[ "scene", "score" ] } },
+              {
+                "when":{ "_":[ "scene", "score", "isGreaterThan", { "_":[ "variable", "hiscore" ] } ] },
+                "execute":[
+                  { "as":{ "_":"variable" }, "set":{ "hiscore":{ "_":[ "scene", "score" ] } } },
+                  { "as":{ "_":"storage" }, "set":{ "hiscore":{ "_":[ "scene", "score" ] } } },
+                  {
+                    "object":{
+                      "width":256, "height":10,
+                      "zIndex":4, "x":0, "y":192,
+                      "bgcolor":"#0f0",
+                      "font":"spectrum", "lineHeight":10, "outline":"#000", "textAlign":"center", "html":"NEW HIGH SCORE!",
+                      "spin":7,
+                      "states":{
+                        "code":{
+                          "name":"Execute",
+                          "data":{
+                            "when":{ "_":[ "this", "spin" ] },
+                            "execute":[ { "subtract":{ "_":[ "this", "spin" ] }, "to":{ "_":[ "this", "y" ] } }, { "subtract":1, "to":{ "_":[ "this", "spin" ] } } ]
+                          }
+                        }
+                      }
+                    }
+                  }
+                ]
+              },
+              {
+                "object":{
+                  "type":"blob",
+                  "image":"sprites", "tileX":16, "tileY":32, "width":16, "height":16,
+                  "zIndex":10, "x":256, "y":168,
+                  "flipX":1,
+                  "animations":{ "idle":{ "frames":3, "loopTo":0 } },
+                  "animation":"idle",
+                  "states":{
+                    "code":{
+                      "name":"Execute",
+                      "data":{ "when":{ "_":[ "this", "x", "isGreaterThan", -16 ] }, "subtract":10, "to":{ "_":[ "this", "x" ] }, "elseExecute":{ "remove":1 } }
+                    }
+                  }
+                }
+              },
+              {
+                "object":{
+                  "type":"lastscreen",
+                  "width":256, "height":40,
+                  "zIndex":100, "x":0, "y":-40,
+                  "font":"spectrum", "fontSize":50, "lineHeight":40, "outline":"#000", "textAlign":"center", "html":{ "_":[ "randomValue", { "_":[ "stencil", "dataGameOverMessages" ] } ] },
+                  "states":{
+                    "code":[
+                      {
+                        "name":"Physics",
+                        "data":{
+                          "walls":{
+                            "area":{ "width":256, "height":216, "x":0, "y":-100 },
+                            "restitution":0.8,
+                            "execute":{
+                              "when":{ "_":[ "this", "forceY", "abs", "isGreaterThan", 3 ] },
+                              "set":{ "angle":{ "_":[ "randomNumber", [ -10, 10 ] ] }, "playAudio":"shut" },
+                              "elseExecute":{ "set":{ "angle":0 } }
+                            }
+                          },
+                          "gravityY":1
+                        }
+                      },
+                      { "name":"Sequence", "data":[ { "set":{ "color":"#7f0000" }, "wait":1 }, { "set":{ "color":"#f00" }, "wait":1, "loopTo":0 } ] }
+                    ]
+                  }
+                }
+              },
+              { "wait":30 },
+              { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+              { "gotoScene":"intro" }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}
