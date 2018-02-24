@@ -1,4 +1,6 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors',1);
 
 	$_CONFIG=Array(
 		"wrighthome"=>"http://www.kesiev.com/wright",
@@ -6,7 +8,7 @@
 		"fontpath"=>"../../fonts/",
 		"wrightpath"=>"../../",
 		"mirrorpath"=>"wright/",
-		"icons"=>["48x48","72x72","96x96","144x144","168x168","192x192"]
+		"icons"=>["48x48","72x72","96x96","128x128","144x144","152x152","168x168","192x192","256x256","512x512"]
 	);
 
 	function addDirectory($root, $subdir, $remap, &$results){
@@ -126,7 +128,7 @@ self.addEventListener('activate', function(event) {
 });
 
 self.addEventListener('fetch', function(evt) {
-  evt.respondWith(fromCache(evt.request).catch(fromServer(evt.request)));
+  evt.respondWith(fromCache(evt).catch(fromServer(evt.request)));
   evt.waitUntil(update(evt.request));
 });
 
@@ -137,10 +139,13 @@ function precache() {
   });
 }
 
-function fromCache(request) {
+function fromCache(evt) {
   return caches.open(CACHE).then(function (cache) {
-    return cache.match(request).then(function (matching) {
-      return matching || Promise.reject('no-match');
+    return cache.match(evt.request).then(function (matching) {
+      return matching || fetch(evt.request).then(function(response) {
+          cache.put(evt.request, response.clone());
+          return response;
+        });
     });
   });
 }
@@ -179,6 +184,11 @@ function fromServer(request){
 			die();
 			break;
 		}
+		default:{
+			$icons="";
+			for ($i=0;$i<count($_CONFIG["icons"]);$i++)
+				$icons.='<link rel="icon" type="image/png" sizes="'.$_CONFIG["icons"][$i].'" href="homescreen-'.$_CONFIG["icons"][$i].'.png">';
+		}
 	}
 
 ?><html>
@@ -192,12 +202,7 @@ function fromServer(request){
 	<meta name="apple-mobile-web-app-title" content="<?= $tape["label"] ?>">
 	<meta name="msapplication-starturl" content="index.html">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<link rel="icon" type="image/png" sizes="48x48" href="homescreen-48x48.png">
-	<link rel="icon" type="image/png" sizes="72x72" href="homescreen-72x72.png">
-	<link rel="icon" type="image/png" sizes="96x96" href="homescreen-96x96.png">
-	<link rel="icon" type="image/png" sizes="144x144" href="homescreen-144x144.png">
-	<link rel="icon" type="image/png" sizes="168x168" href="homescreen-168x168.png">
-	<link rel="icon" type="image/png" sizes="192x192" href="homescreen-192x192.png">
+	<?= $icons ?>	
 
 	<style>
 		BODY { background-color: #000; margin:0; padding:0; }
@@ -245,7 +250,7 @@ function fromServer(request){
 			border-bottom: 1px solid #c8c8c8;
 			overflow-x:hidden;
 		}
-		#playbuttoncontainer {
+		#playbuttoncontainer, #installbuttoncontainer {
 			z-index: 10;
 			display:none;
 			position: absolute;
@@ -253,6 +258,9 @@ function fromServer(request){
 			left:0;
 			right:0;
 			text-align: center;
+		}
+		#installbuttoncontainer {
+			bottom: 160px;
 		}
 		.hintlabel {
 			z-index: 10;
@@ -296,7 +304,7 @@ function fromServer(request){
 			background-color: #fff;
 			color:#000;
 		}
-		#playbutton {
+		#playbutton,#installbutton {
 			color:#fff;
 			border:0;
 			border-radius: 10px;
@@ -309,6 +317,11 @@ function fromServer(request){
 			background-color: #E74C3C;
 			border-bottom: 5px solid #BD3E31;
 			text-shadow: 0px -2px #BD3E31;
+		}
+		#installbutton {
+			background-color: #3498db;
+			border-bottom: 5px solid #2980B9;
+			text-shadow: 0px -2px #2980B9;
 		}		
 		.title1,.title2 {
 			font-weight: bold;
@@ -355,7 +368,8 @@ function fromServer(request){
 </head>
 <body onload="onl()">
 	<div id="intro">
-		<div id="playbuttoncontainer"><input type="button" id="playbutton" value="Play" onclick="clickRun()"></div>
+		<div id="installbuttoncontainer"><input type="button" id="installbutton" value="Install" onclick="install()"></div>
+		<div id="playbuttoncontainer"><input type="button" id="playbutton" value="Play" onclick="run()"></div>
 		<div class="background" style="background-image:url('<?= $tapeimage ?>')"></div>
 		<div class="banner">A <a target="_blank" href="<?= $_CONFIG["wrighthome"] ?>">Wright! Magazine</a> game </div>
 		<div class="title1"><?= htmlentities($tape["label"]) ?></div>
@@ -367,22 +381,38 @@ function fromServer(request){
 </body>
 <script>
 
-function clickRun() {
+var deferredInstall=false;
+
+function run() {
 	document.getElementById('startgame').click();
 }
 
+function install() {
+	if (deferredInstall) {
+		deferredInstall.prompt().then(function() {
+			return deferredInstall.userChoice;
+		}).then(function(choice) {
+			document.getElementById('installbuttoncontainer').style.display="none";
+		}).catch(function(reason) {
+			document.getElementById('installbuttoncontainer').style.display="none";
+		});
+	}
+}
 function onl() {
-	Supports.nativeFullscreen=0;
+	window.addEventListener('beforeinstallprompt', function(e) {
+		promptTriggered = true;
+		e.preventDefault();
+		deferredInstall = e;
+		document.getElementById('installbuttoncontainer').style.display="block";
+	});
 	Supports.isOffline=true;
 	runSingleWright('<?= $tapeid ?>',{
 		tapesRoot:'<?= $_CONFIG["mirrorpath"] ?>tapes/',
 		systemRoot:'<?= $_CONFIG["mirrorpath"] ?>system/',
 		gameContainer:document.getElementById('game'),
 		settingsContainer:document.getElementById('settings'),
-		scale:1,	
-		onReady:function() {
-			window._WRIGHT.getGame().node.gotoFullScreen();
-		},
+		scale:1,
+		fullscreen:1,		
 		onRun:function(){
 			var intro=document.getElementById('intro');
 			var settings=document.getElementById('settings');
