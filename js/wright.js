@@ -72,7 +72,7 @@ var Supports = (function(){
 				this._fullscreen.node.style.bottom=this._fullscreen.bottom;
 				this._fullscreen.node.style.zIndex=this._fullscreen.zIndex;
 				document.body.overflow=this._fullscreen.overflow;
-				this._fullscreen.node=0;				
+				this._fullscreen.node=0;
 				if (this._fullscreen.onchange) this._fullscreen.onchange();
 				if (this._fullscreen.onresize) this._fullscreen.onresize();
 			}
@@ -153,6 +153,17 @@ var Supports = (function(){
 	var elem = document.createElement('canvas');
   	ret.isCanvas=!!(elem.getContext && elem.getContext('2d'));
   	ret.isLocalStorage=!!window.localStorage;
+  	if ("getGamepads" in navigator) {
+  		ret.isGamepad=1;
+  		ret.getGamepads=function() { return navigator.getGamepads(); }
+  		ret.getGamepadButton=function(gamepad,pad,button) { return gamepad[pad]?gamepad[pad].buttons[button].value > 0 || gamepad[pad].buttons[button].pressed == true:false; }
+  		ret.getGamepadAxes=function(gamepad,pad)  { return gamepad[pad]?gamepad[pad].axes:[0,0]; }
+  	} else if (navigator.webkitGetGamepads) {
+  		ret.isGamepad=1;
+  		ret.getGamepads=function() { return navigator.webkitGetGamepads() }
+  		ret.getGamepadButton=function(gamepad,pad,button) { return gamepad[pad]?gamepad[pad].buttons[button] == 1:0; }
+  		ret.getGamepadAxes=function(gamepad,pad)  { return gamepad[pad]?gamepad[pad].axes:[0,0]; }
+  	} else ret.isGamepad=0;
   	if (ret.noSleepEnabled)
 	  	if (ret.oldIOS) ret.noSleepTimer = null
 		else {
@@ -298,6 +309,7 @@ var Controllers=function(controller,config,game,gameconfig){
 			data=JSON.parse(data.substr(data.indexOf("]")+1));
 			dategap=data.date-(new Date()).getTime();
 			this.gameconfig=data.gameconfig;
+			this.gameconfig.lockFullscreen=1;
 			this.gameconfig.gameContainer=config.node;	
 			this.gameconfig.controller={isScreen:1,controller:this};		
 			this.gameconfig.tapesRoot=config.tapesRoot;
@@ -305,7 +317,6 @@ var Controllers=function(controller,config,game,gameconfig){
 			storage={};
 			for (var a in data.storage) storage[a]=data.storage[a];
 			this.gameconfig.onReady=function() {
-				self.wright.getGame().node.gotoFullScreen();
 				controller.sendToSender(self,"R");	
 			}
 			this.wright=runSingleWright(this.game,this.gameconfig);
@@ -885,6 +896,7 @@ var DOMInator=function(useCanvas,aliasmode,controller,nosleep){
 			if (loading) {
 				renderer();
 				self.rawFrame();
+				updateControls();
 			} else {
 				if (skipFrames) skipFrames--;
 				gamecycle();
@@ -1082,7 +1094,7 @@ var DOMInator=function(useCanvas,aliasmode,controller,nosleep){
 	}
 
 	/* Fullscreen handler */
-	var touchCommandFullScreen,gameScreen=0,orgScalex=0,orgScaley=0,guidetimeout;
+	var lockFullscreen,isFullScreen,touchCommandFullScreen,gameScreen=0,orgScalex=0,orgScaley=0,guidetimeout;
 	function removeGuide() {
 		if (guidetimeout) {
 			root.removeChild(guide);
@@ -1110,20 +1122,21 @@ var DOMInator=function(useCanvas,aliasmode,controller,nosleep){
 			}
 		if (scaley<scalex) scalex=scaley;
 		if (useDom) scalex=Math.floor(scalex)||1;
-		gameScreen.setStyle("scalex",scalex);
-		gameScreen.setStyle("scaley",scalex);
+		gameScreen.setStyle("scalex",scalex,true);
+		gameScreen.setStyle("scaley",scalex,true);
 		screenContainer.style.left=Math.floor((width-(gameScreen.style.width*scalex))/2)+"px";
 		screenContainer.style.top=Math.floor((height-(gameScreen.style.height*scalex))/2)+"px";
 	}
 	function exitFullScreen(noexit) {
+		isFullScreen=0;
 		removeGuide();	
 		if (!noexit) Supports.exitFullScreen();
 		root.style.display="inline";
 		root.style.position="";
 		root.style.left=root.style.right=root.style.top=root.style.bottom="";
 		screenContainer.style.position="";
-		gameScreen.setStyle("scalex",orgScalex);
-		gameScreen.setStyle("scaley",orgScaley);
+		gameScreen.setStyle("scalex",orgScalex,true);
+		gameScreen.setStyle("scaley",orgScaley,true);
 		Supports.offFullScreenChange(fullScreenChange,fullScreenResizer);
 		Supports.offFullScreenError(fullScreenChange);
 		if (keys.keyFullScreen) {
@@ -1138,11 +1151,11 @@ var DOMInator=function(useCanvas,aliasmode,controller,nosleep){
 		if (!Supports.isFullScreen()) exitFullScreen(true);
 		else fullScreenResizer();
 	}
-	function gotoFullScreen() {
+	function gotoFullScreen(lock) {
 		if (!Supports.isFullScreen()) {
+			isFullScreen=1;
+			if (lock) lockFullscreen=true;
 			Supports.noSleep();
-			orgScalex=gameScreen.style.scalex;
-			orgScaley=gameScreen.style.scaley;
 			root.style.display="block";
 			root.style.position="absolute";
 			screenContainer.style.position="absolute";
@@ -1159,7 +1172,9 @@ var DOMInator=function(useCanvas,aliasmode,controller,nosleep){
 		}
 	}
 	function toggleFullScreen() {
-		if (Supports.isFullScreen()) exitFullScreen(); else gotoFullScreen();
+		if (Supports.isFullScreen()) {
+			if (!lockFullscreen) exitFullScreen();
+		} else gotoFullScreen();
 	}
 	function fullscreenTouchDetector(e) {
 		touchCommandFullScreen=e.touches.length>1;
@@ -1204,9 +1219,8 @@ var DOMInator=function(useCanvas,aliasmode,controller,nosleep){
 		}
 		if (model._node) {
 
-			// DOM Mode (or root canvas)
+			// DOM Mode
 			model.setStyle=function(k,v) {
-				var resize=0;
 				this.style[k]=v;
 				switch (k) {
 					case "backgroundImage":{
@@ -1229,8 +1243,7 @@ var DOMInator=function(useCanvas,aliasmode,controller,nosleep){
 					case "angle":
 					case "left":
 					case "top":{
-						if (useDom) this._node.style[transformProp]="translate("+this.style.left + "px," + this.style.top + "px) scale(" + this.style.scalex + "," + this.style.scaley + ") rotate(" + this.style.rotate + "deg)";
-						else resize=1;
+						this._node.style[transformProp]="translate("+this.style.left + "px," + this.style.top + "px) scale(" + this.style.scalex + "," + this.style.scaley + ") rotate(" + this.style.rotate + "deg)";
 						break;
 					}
 					case "originX":
@@ -1241,13 +1254,7 @@ var DOMInator=function(useCanvas,aliasmode,controller,nosleep){
 					case "outline":{
 						this._node.style.textShadow=v?"0px 1px 0 " + v + ", 1px 0px 0 " + v + ", -1px 0px 0 " + v + ", 0px -1px 0 " + v:"";
 						break;
-					}
-					case "width":
-					case "height":{
-						if (useDom) this._node.style[k]=v+"px";
-						else resize=1;
-						break;
-					}
+					}					
 					case "fontFamily":
 					case "lineHeight":{
 						this._node.style.lineHeight=lineHeightFixes(this.style.fontFamily,this.style.lineHeight)+"px";
@@ -1262,14 +1269,6 @@ var DOMInator=function(useCanvas,aliasmode,controller,nosleep){
 					default:{
 						this._node.style[k]=v;
 					}
-				}
-
-				/* Canvas scaling */
-				if (resize&&useCanvas) {
-					this._node.width=this.style.width;
-					this._node.height=this.style.height;
-					this._node.style.width=(this.style.width*this.style.scalex)+"px";
-					this._node.style.height=(this.style.height*this.style.scaley)+"px";
 				}
 			}
 			model.setAttribute=function(k,v) { this.attributes[k]=this._node[k]=v; }
@@ -1534,6 +1533,48 @@ var DOMInator=function(useCanvas,aliasmode,controller,nosleep){
   	}
 
   	gameScreen=this.createElement("div",this,createNode(useDom?"div":"canvas"));
+  	// Root element is always DOM node
+  	gameScreen.setStyle=function(k,v,core) {
+  		var resize=0;
+		this.style[k]=v;
+		switch (k) {
+			case "originX":
+			case "originY":{
+				this._node.style[transformOriginProp]=this.style.originX+" "+this.style.originY;
+				break;
+			}
+			case "width":
+			case "height":{
+				if (useDom) this._node.style[k]=v+"px";
+				else resize=1;
+				break;
+			}
+			case "scalex":
+			case "scaley":
+			case "angle":
+			case "left":
+			case "top":{
+				if (!core) {
+					if (k=="scalex") orgScalex=v;
+					if (k=="scaley") orgScaley=v;
+				}
+				if (useDom) {
+					this._node.style[transformProp]="translate("+this.style.left + "px," + this.style.top + "px) scale(" + this.style.scalex + "," + this.style.scaley + ") rotate(" + this.style.rotate + "deg)";
+				} else resize=1;
+				break;
+			}
+			default:{
+				this._node.style[k]=v;
+			}
+		}
+		if (resize) {
+			this._node.width=this.style.width;
+			this._node.height=this.style.height;
+			this._node.style.width=(this.style.width*this.style.scalex)+"px";
+			this._node.style.height=(this.style.height*this.style.scaley)+"px";
+		}
+		if (!core&&isFullScreen) fullScreenResizer();
+  	};
 	screenContainer.appendChild(gameScreen._node);
 	this.setStyle("position","relative");
 
@@ -1559,7 +1600,7 @@ var DOMInator=function(useCanvas,aliasmode,controller,nosleep){
 	/* Controls: keyboard/touch controller */
 	var key=this.key={};
 	var keys=this.keys={};
-	var hwkeys={},touchlayout=0,analogTouch=0,keyAtouch=0,keyBtouch=0;
+	var hwkeys={},touchlayout=0,analogTouch=0,keyAtouch=0,keyBtouch=0,keyState=0;
 	var analogMap=[
 		{keyLeft:1,keyRight:0,keyUp:1,keyDown:0},
 		{keyLeft:1,keyRight:0,keyUp:0,keyDown:0},
@@ -1570,12 +1611,14 @@ var DOMInator=function(useCanvas,aliasmode,controller,nosleep){
 		{keyLeft:0,keyRight:1,keyUp:1,keyDown:0},
 		{keyLeft:0,keyRight:0,keyUp:1,keyDown:0}
 	],analogIdle={keyLeft:0,keyRight:0,keyUp:0,keyDown:0},analogCurrent={keyLeft:0,keyRight:0,keyUp:0,keyDown:0};
-	function setAnalog(state) {
-		for (var a in analogCurrent)
-			if (analogCurrent[a]!=state[a]) {
+	function setAnalog(current,state) {
+		for (var a in current) {
+			keyState=!!state[a];
+			if (current[a]!=keyState) {
 				if (state[a]) keyDown(keys[a]); else keyUp(keys[a]);
-				analogCurrent[a]=state[a];
+				current[a]=keyState;
 			}
+		}
 	}
 	function touchcontrollerTouchStart(e) {
 		var touch,button;
@@ -1594,7 +1637,7 @@ var DOMInator=function(useCanvas,aliasmode,controller,nosleep){
 					switch (button.type) {
 						case 1:{
 							button.center={x:touch.clientX,y:touch.clientY};
-							setAnalog(analogIdle);
+							setAnalog(analogCurrent,analogIdle);
 							break;
 						}
 						default:{ keyDown(keys[button.button]); }
@@ -1614,7 +1657,7 @@ var DOMInator=function(useCanvas,aliasmode,controller,nosleep){
 					button.id=button.pressed=0;
 					switch (button.type) {
 						case 1:{
-							setAnalog(analogIdle);
+							setAnalog(analogCurrent,analogIdle);
 							button.status=0;
 							break;
 						}
@@ -1643,7 +1686,7 @@ var DOMInator=function(useCanvas,aliasmode,controller,nosleep){
 								if (ang < 0) ang = 360 + ang;
 								pos=analogMap[Math.floor(ang/45)];
 							}
-							setAnalog(pos);
+							setAnalog(analogCurrent,pos);
 							break;
 						}
 					}
@@ -1703,90 +1746,129 @@ var DOMInator=function(useCanvas,aliasmode,controller,nosleep){
 		}
 	}
 
+	// CONTROLS: PAD
+	var padEnabled=0,padButtons=0,padAxes=0,padAx;
+	function updatePad() {
+		var gps=Supports.getGamepads();
+		var pressed={};
+		if (padButtons)
+			for (var i=0;i<padButtons.length;i++)
+				if (Supports.getGamepadButton(gps,padButtons[i].pad,padButtons[i].button))
+					pressed[padButtons[i].key]=1;
+		if (padAxes)
+			for (var i=0;i<padAxes.length;i++) {
+				padAx=Supports.getGamepadAxes(gps,padAxes[i].pad,padAxes[i].axes)
+				dist=Math.sqrt(Math.pow(padAx[padAxes[i].axes[0]],2)+Math.pow(padAx[padAxes[i].axes[1]],2));
+				pos=padAxes[i].layout.idle;
+				if (dist>padAxes[i].deadzone) {
+					ang=(Math.atan2(padAx[padAxes[i].axes[0]],padAx[padAxes[i].axes[1]])  * 180 / Math.PI)-22;
+					if (ang < 0) ang = 360 + ang;
+					pos=padAxes[i].layout.map[Math.floor(ang/45)];
+				}
+				for (var a in pos) pressed[a]|=pos[a];
+			}
+		setAnalog(padState,pressed);
+	}
+
 	/* Controls: mouse/touch pointer */
 	var controls;
 	this.setControls=function(cont) {
-		controls=cont;
+		controls=cont;		
+		// KEYBOARD
 		if (controls.keyboard) {
 			for (var a in controls.keyboard) keys[a]=controls.keyboard[a];
-			gameScreen.addEventListener("keydown",onkeydown);
-			gameScreen.addEventListener("keyup",onkeyup);
-			if (keys.keyFullScreen) {
-				gameScreen.addEventListener("touchstart",fullscreenTouchDetector);
-				gameScreen.addEventListener("touchend",fullscreenTouchToggle);
+			if (!controller||!controller.isScreen) {
+				gameScreen.addEventListener("keydown",onkeydown);
+				gameScreen.addEventListener("keyup",onkeyup);
+				if (keys.keyFullScreen) {
+					gameScreen.addEventListener("touchstart",fullscreenTouchDetector);
+					gameScreen.addEventListener("touchend",fullscreenTouchToggle);
+				}
 			}
 		}
 		// POINTER CONTROLS
 		if (controls.pointer) {
 			keys.keyPointer=-1;
-			detectPositionInPage=1;
-			gameScreen.setStyle("cursor","none");
-			switch (controls.pointer.id) {
-				case "mouse":{
-					gameScreen.addEventListener("mousemove",function(e){
-						if (!positionInPage) positionInPage=getPositionInPage(gameScreen._node);
-						var posx = 0;
-						var posy = 0;
-						if (!e) { var e = window.event; }
-						if (e.pageX || e.pageY) {
-							posx = e.pageX;
-							posy = e.pageY;
-						}
-						else if (e.clientX || e.clientY) {
-							posx = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
-							posy = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
-						}
-						pointer.x=Math.floor((posx-positionInPage.x)/gameScreen.style.scalex);
-						pointer.y=Math.floor((posy-positionInPage.y)/gameScreen.style.scaley);
-					});
-					gameScreen.addEventListener("mousedown",function(e){
-						keyDown(-1);
-						if (document.activeElement==gameScreen._node) e.preventDefault();
-					});
-					gameScreen.addEventListener("mouseup",function(e){
-						keyUp(-1);
-						if (document.activeElement==gameScreen._node) e.preventDefault();
-					});
-					break;
-				}
-				case "touch":{
-					gameScreen.addEventListener("touchstart",touchHandler);
-					gameScreen.addEventListener("touchmove",touchHandler);
-					gameScreen.addEventListener("touchend",function(e){ keyUp(-1); });
-					break;
-				}
-				case "motion":{
-					Supports.getMotion(function(delta){
-						motion.alpha=delta[0]||0;
-						motion.beta=delta[1]||0;
-						motion.gamma=delta[2]||0;
-					});
+			if (!controller||!controller.isScreen) {
+				detectPositionInPage=1;
+				gameScreen.setStyle("cursor","none");
+				switch (controls.pointer.id) {
+					case "mouse":{
+						gameScreen.addEventListener("mousemove",function(e){
+							if (!positionInPage) positionInPage=getPositionInPage(gameScreen._node);
+							var posx = 0;
+							var posy = 0;
+							if (!e) { var e = window.event; }
+							if (e.pageX || e.pageY) {
+								posx = e.pageX;
+								posy = e.pageY;
+							}
+							else if (e.clientX || e.clientY) {
+								posx = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
+								posy = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
+							}
+							pointer.x=Math.floor((posx-positionInPage.x)/gameScreen.style.scalex);
+							pointer.y=Math.floor((posy-positionInPage.y)/gameScreen.style.scaley);
+						});
+						gameScreen.addEventListener("mousedown",function(e){
+							keyDown(-1);
+							if (document.activeElement==gameScreen._node) e.preventDefault();
+						});
+						gameScreen.addEventListener("mouseup",function(e){
+							keyUp(-1);
+							if (document.activeElement==gameScreen._node) e.preventDefault();
+						});
+						break;
+					}
+					case "touch":{
+						gameScreen.addEventListener("touchstart",touchHandler);
+						gameScreen.addEventListener("touchmove",touchHandler);
+						gameScreen.addEventListener("touchend",function(e){ keyUp(-1); });
+						break;
+					}
+					case "motion":{
+						Supports.getMotion(function(delta){
+							motion.alpha=delta[0]||0;
+							motion.beta=delta[1]||0;
+							motion.gamma=delta[2]||0;
+						});
+					}
 				}
 			}
 		}
 		// TOUCH CONTROLLER
-		if (controls.touchcontroller&&DOMInator.TOUCHLAYOUTS[controls.touchcontroller.layout]) {
-			touchlayout=Supports.clone(DOMInator.TOUCHLAYOUTS[controls.touchcontroller.layout].buttons);
-			for (var i=0;i<touchlayout.length;i++) {
-				var area=document.createElement("div");
-				area.style.textAlign="center";
-				area.style.position="absolute";
-				area.style.left=(touchlayout[i].x1*100)+"%";
-				area.style.top=(touchlayout[i].y1*100)+"%";
-				area.style.width=((touchlayout[i].x2-touchlayout[i].x1)*100)+"%";
-				area.style.height=((touchlayout[i].y2-touchlayout[i].y1)*100)+"%";
-				area.style.backgroundColor=touchlayout[i].bgcolor;
-				area.style.overflow="hidden";
-				area.style.fontSize="8vw";
-				area.style.fontFamily="sans-serif";
-				area.style.color=touchlayout[i].color;
-				area.style.borderRadius="10px";
-				area.innerHTML=touchlayout[i].label;
-				guide.appendChild(area);
+		if (!controller||!controller.isScreen)
+			if (controls.touchcontroller&&DOMInator.TOUCHLAYOUTS[controls.touchcontroller.layout]) {
+				touchlayout=Supports.clone(DOMInator.TOUCHLAYOUTS[controls.touchcontroller.layout].buttons);
+				for (var i=0;i<touchlayout.length;i++) {
+					var area=document.createElement("div");
+					area.style.textAlign="center";
+					area.style.position="absolute";
+					area.style.left=(touchlayout[i].x1*100)+"%";
+					area.style.top=(touchlayout[i].y1*100)+"%";
+					area.style.width=((touchlayout[i].x2-touchlayout[i].x1)*100)+"%";
+					area.style.height=((touchlayout[i].y2-touchlayout[i].y1)*100)+"%";
+					area.style.backgroundColor=touchlayout[i].bgcolor;
+					area.style.overflow="hidden";
+					area.style.fontSize="8vw";
+					area.style.fontFamily="sans-serif";
+					area.style.color=touchlayout[i].color;
+					area.style.borderRadius="10px";
+					area.innerHTML=touchlayout[i].label;
+					guide.appendChild(area);
+				}
 			}
-		}
+		// PAD CONTROLLER
+		if (!controller||!controller.isScreen)
+			if (Supports.isGamepad&&controls.padcontroller&&DOMInator.PADLAYOUTS[controls.padcontroller.layout]) {
+				padState=Supports.clone(DOMInator.PADLAYOUTS[controls.padcontroller.layout].idle);
+				padButtons=DOMInator.PADLAYOUTS[controls.padcontroller.layout].buttons;
+				padAxes=DOMInator.PADLAYOUTS[controls.padcontroller.layout].axes;
+				padEnabled=!!(padButtons||padAxes);
+			}
 	}
 	function updateControls() {
+		if (padEnabled) updatePad();
 		if (keys) {
 			var ckey;
 			for (var a in keys) {
@@ -1844,7 +1926,7 @@ var DOMInator=function(useCanvas,aliasmode,controller,nosleep){
 	// CONTROLLERS SUPPORT
 	this.keyUp=function(key) { keyUp(key)};
 	this.keyDown=function(key) { keyDown(key)};
-	this.gotoFullScreen=function(key) { gotoFullScreen()};
+	this.gotoFullScreen=function(lock) { gotoFullScreen(lock)};
 
 	// RENDERER SPECIFIC METHODS
 	if (useDom) {
@@ -2106,6 +2188,12 @@ DOMInator.CONTROLS={
 				allowed:["platformerpad","joypad","sidedpad","dancemat"],
 				default:"platformerpad"
 			}
+		},
+		padcontroller:{
+			layout:{
+				allowed:["disabled","joystick"],
+				default:"joystick"
+			}
 		}
 	},
 	arcade:{
@@ -2124,6 +2212,12 @@ DOMInator.CONTROLS={
 				allowed:["arcadepad"],
 				default:"arcadepad"
 			}
+		},
+		padcontroller:{
+			layout:{
+				allowed:["disabled","joystick3"],
+				default:"joystick3"
+			}
 		}
 	},	
 	paddles:{
@@ -2140,6 +2234,35 @@ DOMInator.CONTROLS={
 				allowed:["paddlespad"],
 				default:"paddlespad"
 			}
+		},
+		padcontroller:{
+			layout:{
+				allowed:["disabled","paddlespad","paddlespad3","paddlespad12"],
+				default:"paddlespad"
+			}
+		}
+	},
+	twoplayers:{
+		keyboard:{
+			keyUp1: {label:"1UP - Up",default:87},
+			keyDown1: {label:"1UP - Down",default:83},
+			keyLeft1: {label:"1UP - Left",default:65},
+			keyRight1: {label:"1UP - Right",default:68},
+			keyA1: {label:"1UP - A/Start",default:70},
+			keyB1: {label:"1UP - B/Select",default:71},
+			keyUp2: {label:"2UP - Up",default:38},
+			keyDown2: {label:"2UP - Down",default:40},
+			keyLeft2: {label:"2UP - Left",default:37},
+			keyRight2: {label:"2UP - Right",default:39},
+			keyA2: {label:"2UP - A/Start",default:78},
+			keyB2: {label:"2UP - B/Select",default:77},
+			keyFullScreen: {label:"Fullscreen",subLabel:"Touch with two fingers the game area to enable fullscreen and touch controls.",subLabelDisabled:!Supports.isTouch,default:48}
+		},
+		padcontroller:{
+			layout:{
+				allowed:["disabled","joystick21pl","joystick31pl","joystick2in1pl"],
+				default:"joystick21pl"
+			}
 		}
 	},
 	onebutton:{
@@ -2152,9 +2275,273 @@ DOMInator.CONTROLS={
 				allowed:["onebutton"],
 				default:"onebutton"
 			}
+		},
+		padcontroller:{
+			layout:{
+				allowed:["disabled","onebutton"],
+				default:"onebutton"
+			}
 		}
 	}
 };
+
+DOMInator.AXESLAYOUTS={
+	directions:{			
+		map:[
+			{keyLeft:0,keyRight:1,keyUp:0,keyDown:1},
+			{keyLeft:0,keyRight:1,keyUp:0,keyDown:0},
+			{keyLeft:0,keyRight:1,keyUp:1,keyDown:0},
+			{keyLeft:0,keyRight:0,keyUp:1,keyDown:0},
+			{keyLeft:1,keyRight:0,keyUp:1,keyDown:0},
+			{keyLeft:1,keyRight:0,keyUp:0,keyDown:0},
+			{keyLeft:1,keyRight:0,keyUp:0,keyDown:1},
+			{keyLeft:0,keyRight:0,keyUp:0,keyDown:1}
+		]
+	},
+	directions1:{
+		map:[
+			{keyLeft1:0,keyRight1:1,keyUp1:0,keyDown1:1},
+			{keyLeft1:0,keyRight1:1,keyUp1:0,keyDown1:0},
+			{keyLeft1:0,keyRight1:1,keyUp1:1,keyDown1:0},
+			{keyLeft1:0,keyRight1:0,keyUp1:1,keyDown1:0},
+			{keyLeft1:1,keyRight1:0,keyUp1:1,keyDown1:0},
+			{keyLeft1:1,keyRight1:0,keyUp1:0,keyDown1:0},
+			{keyLeft1:1,keyRight1:0,keyUp1:0,keyDown1:1},
+			{keyLeft1:0,keyRight1:0,keyUp1:0,keyDown1:1}
+		]
+	},
+	directions2:{
+		map:[
+			{keyLeft2:0,keyRight2:1,keyUp2:0,keyDown2:1},
+			{keyLeft2:0,keyRight2:1,keyUp2:0,keyDown2:0},
+			{keyLeft2:0,keyRight2:1,keyUp2:1,keyDown2:0},
+			{keyLeft2:0,keyRight2:0,keyUp2:1,keyDown2:0},
+			{keyLeft2:1,keyRight2:0,keyUp2:1,keyDown2:0},
+			{keyLeft2:1,keyRight2:0,keyUp2:0,keyDown2:0},
+			{keyLeft2:1,keyRight2:0,keyUp2:0,keyDown2:1},
+			{keyLeft2:0,keyRight2:0,keyUp2:0,keyDown2:1}
+		]
+	}
+};
+
+DOMInator.PADLAYOUTS={
+	disabled:{
+		label:"Disabled"
+	},
+	joystick:{
+		label:"Gamepad 1 - UP/DOWN/LEFT/RIGHT - A,B buttons",
+		idle:{keyUp:0,keyDown:0,keyLeft:0,keyRight:0,keyA:0,keyB:0},
+		axes:[
+			{
+				pad:0,
+				axes:[0,1],
+				deadzone:0.3,
+				layout:DOMInator.AXESLAYOUTS.directions
+			}
+		],
+		buttons:[
+			{pad:0,button:12,key:"keyUp"},
+			{pad:0,button:13,key:"keyDown"},
+			{pad:0,button:14,key:"keyLeft"},
+			{pad:0,button:15,key:"keyRight"},
+			{pad:0,button:0,key:"keyA"},
+			{pad:0,button:1,key:"keyB"}
+		]
+	},
+	joystick3:{
+		label:"Gamepad 1 - UP/DOWN/LEFT/RIGHT - A,B,C buttons",
+		idle:{keyUp:0,keyDown:0,keyLeft:0,keyRight:0,keyA:0,keyB:0,keyC:0},
+		axes:[
+			{
+				pad:0,
+				axes:[0,1],
+				deadzone:0.3,
+				layout:DOMInator.AXESLAYOUTS.directions
+			}
+		],
+		buttons:[
+			{pad:0,button:12,key:"keyUp"},
+			{pad:0,button:13,key:"keyDown"},
+			{pad:0,button:14,key:"keyLeft"},
+			{pad:0,button:15,key:"keyRight"},
+			{pad:0,button:0,key:"keyA"},
+			{pad:0,button:1,key:"keyB"},
+			{pad:0,button:2,key:"keyC"}
+		]
+	},
+	onebutton:{
+		label:"Gamepad 1 - A button",
+		idle:{keyA:0},
+		buttons:[
+			{pad:0,button:0,key:"keyA"}
+		]
+	},
+	paddlespad:{
+		label:"Gamepad 1+2 - UP/DOWN - A button",
+		idle:{keyUp1:0,keyDown1:0,keyUp2:0,keyDown2:0,keyA:0},
+		axes:[
+			{
+				pad:0,
+				axes:[0,1],
+				deadzone:0.3,
+				layout:DOMInator.AXESLAYOUTS.directions1
+			},
+			{
+				pad:1,
+				axes:[0,1],
+				deadzone:0.3,
+				layout:DOMInator.AXESLAYOUTS.directions2
+			}
+		],
+		buttons:[
+			{pad:0,button:12,key:"keyUp1"},
+			{pad:0,button:13,key:"keyDown1"},
+			{pad:0,button:0,key:"keyA"},
+			{pad:1,button:12,key:"keyUp2"},
+			{pad:1,button:13,key:"keyDown2"},
+			{pad:1,button:0,key:"keyA"}
+		]
+	},
+	paddlespad3:{
+		label:"Gamepad 1+3 - UP/DOWN - A button",
+		idle:{keyUp1:0,keyDown1:0,keyUp2:0,keyDown2:0,keyA:0},
+		axes:[
+			{
+				pad:0,
+				axes:[0,1],
+				deadzone:0.3,
+				layout:DOMInator.AXESLAYOUTS.directions1
+			},
+			{
+				pad:3,
+				axes:[0,1],
+				deadzone:0.3,
+				layout:DOMInator.AXESLAYOUTS.directions2
+			}
+		],
+		buttons:[
+			{pad:0,button:12,key:"keyUp1"},
+			{pad:0,button:13,key:"keyDown1"},
+			{pad:0,button:0,key:"keyA"},
+			{pad:3,button:12,key:"keyUp2"},
+			{pad:3,button:13,key:"keyDown2"},
+			{pad:3,button:0,key:"keyA"}
+		]
+	},
+	paddlespad12:{
+		label:"Gamepad 1 - AnalogR or up/down vs. AnalogL or A/Y - B button",
+		idle:{keyUp1:0,keyDown1:0,keyUp2:0,keyDown2:0,keyA:0},
+		axes:[
+			{
+				pad:0,
+				axes:[0,1],
+				deadzone:0.3,
+				layout:DOMInator.AXESLAYOUTS.directions1
+			},
+			{
+				pad:0,
+				axes:[2,3],
+				deadzone:0.3,
+				layout:DOMInator.AXESLAYOUTS.directions2
+			}
+		],
+		buttons:[
+			{pad:0,button:12,key:"keyUp1"},
+			{pad:0,button:13,key:"keyDown1"},
+			{pad:0,button:3,key:"keyUp2"},
+			{pad:0,button:0,key:"keyDown2"},
+			{pad:0,button:1,key:"keyA"}
+		]
+	},
+	joystick2in1pl:{
+		idle:{keyUp1:0,keyDown1:0,keyLeft1:0,keyRight1:0,keyA1:0,keyB1:0,keyUp2:0,keyDown2:0,keyLeft2:0,keyRight2:0,keyA2:0,keyB2:0},
+		axes:[
+			{
+				pad:0,
+				axes:[0,1],
+				deadzone:0.3,
+				layout:DOMInator.AXESLAYOUTS.directions1
+			},
+			{
+				pad:0,
+				axes:[2,3],
+				deadzone:0.3,
+				layout:DOMInator.AXESLAYOUTS.directions2
+			}
+		],
+		label:"Gamepad 2 in 1 - AnalogL vs. AnalogR - LB/LT+RB/RT buttons",
+		buttons:[
+			{pad:0,button:4,key:"keyA1"},
+			{pad:0,button:6,key:"keyB1"},
+			{pad:0,button:5,key:"keyA2"},
+			{pad:0,button:7,key:"keyB2"}
+		]
+	},
+	joystick21pl:{
+		idle:{keyUp1:0,keyDown1:0,keyLeft1:0,keyRight1:0,keyA1:0,keyB1:0,keyUp2:0,keyDown2:0,keyLeft2:0,keyRight2:0,keyA2:0,keyB2:0},
+		axes:[
+			{
+				pad:0,
+				axes:[0,1],
+				deadzone:0.3,
+				layout:DOMInator.AXESLAYOUTS.directions2
+			},
+			{
+				pad:1,
+				axes:[0,1],
+				deadzone:0.3,
+				layout:DOMInator.AXESLAYOUTS.directions1
+			}
+		],
+		label:"Gamepad 2+1 - UP/DOWN/LEFT/RIGHT - A,B button",
+		buttons:[
+			{pad:0,button:12,key:"keyUp2"},
+			{pad:0,button:13,key:"keyDown2"},
+			{pad:0,button:14,key:"keyLeft2"},
+			{pad:0,button:15,key:"keyRight2"},
+			{pad:0,button:0,key:"keyA2"},
+			{pad:0,button:1,key:"keyB2"},
+			{pad:1,button:12,key:"keyUp1"},
+			{pad:1,button:13,key:"keyDown1"},
+			{pad:1,button:14,key:"keyLeft1"},
+			{pad:1,button:15,key:"keyRight1"},
+			{pad:1,button:0,key:"keyA1"},
+			{pad:1,button:1,key:"keyB1"}
+		]
+	},
+	joystick31pl:{
+		label:"Gamepad 3+1 - UP/DOWN/LEFT/RIGHT - A,B button",
+		idle:{keyUp1:0,keyDown1:0,keyLeft1:0,keyRight1:0,keyA1:0,keyB1:0,keyUp2:0,keyDown2:0,keyLeft2:0,keyRight2:0,keyA2:0,keyB2:0},
+		axes:[
+			{
+				pad:0,
+				axes:[0,1],
+				deadzone:0.3,
+				layout:DOMInator.AXESLAYOUTS.directions2
+			},
+			{
+				pad:3,
+				axes:[0,1],
+				deadzone:0.3,
+				layout:DOMInator.AXESLAYOUTS.directions1
+			}
+		],
+		buttons:[
+			{pad:0,button:12,key:"keyUp2"},
+			{pad:0,button:13,key:"keyDown2"},
+			{pad:0,button:14,key:"keyLeft2"},
+			{pad:0,button:15,key:"keyRight2"},
+			{pad:0,button:0,key:"keyA2"},
+			{pad:0,button:1,key:"keyB2"},
+			{pad:3,button:12,key:"keyUp1"},
+			{pad:3,button:13,key:"keyDown1"},
+			{pad:3,button:14,key:"keyLeft1"},
+			{pad:3,button:15,key:"keyRight1"},
+			{pad:3,button:0,key:"keyA1"},
+			{pad:3,button:1,key:"keyB1"}
+		]
+	}
+}
 
 DOMInator.TOUCHLAYOUTS={
 	arcadepad:{
@@ -2620,6 +3007,9 @@ function Box(parent, type, sub, statemanager, useCanvas, aliasmode, controller) 
 		box.addResource = function(name, data) { return this.node.addResource(name, data); };		
 		box.loadResources = function(cb)  { return this.node.loadResources(cb); };	
 
+		// FULLSCREEN MANAGEMENT
+		box.gotoFullScreen = function(lock) { this.node.gotoFullScreen(lock) }
+
 		// SCREEN - UID generator
 		box.uids = { 0: box };
 		box.newUID = function(obj) {
@@ -3039,7 +3429,9 @@ function Box(parent, type, sub, statemanager, useCanvas, aliasmode, controller) 
 			if (b instanceof Array) {
 				for (var x=0;x<b.length;x++)
 					if (!b[x].removed&&(alias!==b[x])&&(col=Box.isColliding(a,b[x],getcollision,dx,dy,ignorehitbox)))
-						if (ret=cb(col,a,b[x],extra)) return ret;
+						if (ret=cb(col,a,b[x],extra))
+							if (extra&&extra.all) extra.all.push(ret);
+							else return ret;
 			} else if (b.typeId) {
 				this.updateGrid();
 				var cur,itm, cells = this.getCells(a,dx,dy,b.typeId), done = {};
@@ -5285,6 +5677,7 @@ function Wright(gameId,mods) {
 			game.setControls(controls).setColor("#fff").setBgcolor("#000").size(DEFAULTHARDWARE).setFps(DEFAULTHARDWARE.fps).setScale(1).setOriginX(0).setOriginY(0);
 			tv.style.width = (game.width * game.scale) + "px";
 			tv.style.height = (game.height * game.scale) + "px";
+			if (mods.fullscreen||mods.lockFullscreen) game.gotoFullScreen(mods.lockFullscreen);
 			mods.onReady();
 		} else {
 			this.game=game = Box(tv, "game", 0, 0, mode.renderer, hardware.aliasMode||"pixelated",mods.controller);
@@ -5302,6 +5695,7 @@ function Wright(gameId,mods) {
 				if (mods.onReady) mods.onReady();
 				plugTape(0, 0, "intro", gamedata);
 			});
+			if (mods.fullscreen||mods.lockFullscreen) game.gotoFullScreen(mods.lockFullscreen);
 		}
 	}
 
@@ -5428,6 +5822,19 @@ function Wright(gameId,mods) {
 					itm=node(touchcontrollerCombo,"option",0,DOMInator.TOUCHLAYOUTS[i].label);
 					itm.value=i;
 					if (usercontrols.touchcontroller.layout==i) itm.setAttribute("selected","selected");
+				}				
+			}
+
+			var padcontrollerCombo;
+			if (Supports.isGamepad&&controlsset.padcontroller) {
+				row=node(mods.settingsContainer,"div","row");
+				node(row,"span","label","Gamepad controls:");
+				padcontrollerCombo=node(node(row,"div","value"),"select","input");
+				for (var j=0;j<controlsset.padcontroller.layout.allowed.length;j++) {
+					var i=controlsset.padcontroller.layout.allowed[j];
+					itm=node(padcontrollerCombo,"option",0,DOMInator.PADLAYOUTS[i].label);
+					itm.value=i;
+					if (usercontrols.padcontroller.layout==i) itm.setAttribute("selected","selected");
 				}				
 			}
 
@@ -5568,6 +5975,7 @@ function Wright(gameId,mods) {
 			Supports.addEventListener(itm,"click",function(){
 				if (pointerCombo) usercontrols.pointer.id=pointerCombo.options[pointerCombo.selectedIndex].value;
 				if (touchcontrollerCombo) usercontrols.touchcontroller.layout=touchcontrollerCombo.options[touchcontrollerCombo.selectedIndex].value;
+				if (padcontrollerCombo) usercontrols.padcontroller.layout=padcontrollerCombo.options[padcontrollerCombo.selectedIndex].value;
 				Supports.setStorage("wrightControls_"+controlsmode,JSON.stringify(usercontrols));
 				Supports.removeEventListener(document,"keydown",waitKey);
 
