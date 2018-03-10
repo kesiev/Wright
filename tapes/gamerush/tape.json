@@ -793,7 +793,7 @@
               { "set":{ "playFrames":0 } },
               { "as":{ "_":[ "objectTyped", "gui-bomb" ] }, "set":{ "animation":"explode" } },
               { "executeAction":"freeze" },
-              { "when":{ "_":[ "scene", "lives" ] }, "set":{ "state":"lose" }, "elseExecute":{ "set":{ "state":"gameover" } } }
+              { "when":{ "_":[ "scene", "lives", "isGreaterThan", 0 ] }, "set":{ "state":"lose" }, "elseExecute":{ "set":{ "state":"gameover" } } }
             ]
           },
           { "name":"stopTimer", "execute":{ "set":{ "timing":0 } } }
@@ -1100,7 +1100,7 @@
                 "type":"game",
                 "width":2, "height":64,
                 "zIndex":5, "x":26, "y":88,
-                "originX":1, "originY":64,
+                "originX":"1px", "originY":"64px",
                 "bgcolor":"#fff",
                 "states":{
                   "name":"play",
