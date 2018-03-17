@@ -327,10 +327,12 @@ function WrightTools() {
 	} else if (stack[0]=="resources") { // Stencil are sorted with tiles at last
 	  mode.nodeWeight=function(key,obj) {
 		var cur=obj[key],pri=-10000;
-		if (cur.indexOf("/")===-1) pri=100;
+		if (typeof cur == "string") {
+			if (cur.indexOf("/")===-1) pri=100;
+		} else pri=-20000;
 		return getInheritance(cur,[pri,key]);
 	  };
-	  mode.skipsymbols=1;
+	  mode.skipsymbols=1;	  
 	} else if (stack[0]=="audioChannels") { // audioChannels are sorted by channel volume
 	 mode.nodeWeight=function(key,obj) {
 		if (obj[key].volume) return [obj[key].volume,key]; else return [1,key];
@@ -363,6 +365,8 @@ function WrightTools() {
 		mode.model=["_",0];
 		mode.sameline=1;
 	  }
+	} else if (stack[1]=="resources") {
+		mode.sameline=1;
 	} else if (stack[1]=="audioChannels") { // audioChannels attributes
 		mode.model=[
 			"volume",
