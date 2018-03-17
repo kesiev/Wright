@@ -85,7 +85,7 @@ ini_set('display_errors',1);
 			// Cache single shared/default resources
 			$tapedata=json_decode(file_get_contents($_CONFIG["wrightpath"]."tapes/".$tapeid."/tape.json"),true);
 			if (isset($tapedata["resources"]))
-				foreach ($tapedata["resources"] as $i => $file) {
+				foreach ($tapedata["resources"] as $i => $file) if (is_string($file)) {
 					if (substr($file,0,2)=="..") {
 						// Include common resources
 						$path=realpath($_CONFIG["wrightpath"]."tapes/".$tapeid."/".$file);

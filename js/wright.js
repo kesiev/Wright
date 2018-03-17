@@ -797,6 +797,60 @@ var DOMInator=function(useCanvas,aliasmode,controller,nosleep){
 			}
 		}
 	};
+	function generateNoise(parms) {
+
+		var sampleRate = audio.context.sampleRate,data={};
+		for (var a in DOMInator.NOISEDEFAULTS) data[a]=DOMInator.NOISEDEFAULTS[a];
+		for (var a in parms) if (parms[a]!==undefined) data[a]=parms[a];
+		for (var i=0;i<DOMInator.NOISETIMES.length;i++) data[DOMInator.NOISETIMES[i]]*=sampleRate;
+
+		var out,bits,steps,attackDecay=data.attack+data.decay,
+		attackSustain=attackDecay+data.sustain,
+		samplePitch = sampleRate/data.frequency,
+		sampleLength = attackSustain+data.release,	
+
+		tremolo = .9,
+		value = .9,
+		envelope = 0;    
+
+		var buffer = audio.context.createBuffer(2,sampleLength,sampleRate);
+
+		for(var i=0;i<2;i++) {
+			var channel = buffer.getChannelData(i),
+				jump1=sampleLength*data.frequencyJump1onset,
+			jump2=sampleLength*data.frequencyJump2onset;
+			for(var j=0; j<buffer.length; j++) {
+				// ADSR Generator
+				value = DOMInator.NOISEWAVES[data.wave](value,j,samplePitch);
+				if (j<=data.attack) envelope=j/data.attack;
+				else if (j<=attackDecay) envelope=-(j-attackDecay)/data.decay*(1-data.limit)+data.limit;
+				if (j>attackSustain) envelope=(-(j-attackSustain)/data.release+1)*data.limit;
+				// Tremolo
+				tremolo = DOMInator.NOISEWAVES.sine(value,j,sampleRate/data.tremoloFrequency)*data.tremoloDepth+(1-data.tremoloDepth);
+				out = value*tremolo*envelope*0.9;
+				// Bit crush
+				if (data.bitCrush||data.bitCrushSweep) {
+				    bits = Math.round(data.bitCrush + j / sampleLength * data.bitCrushSweep);
+				    if (bits<1) bits=1;
+				    if (bits>16) bits=16;
+				    steps=Math.pow(2,bits);
+				    out=-1 + 2 * Math.round((0.5 + 0.5 * out) * steps) / steps;
+				}
+				// Done!
+				if(out>1) out= 1;
+				if(out<-1) out = -1;
+				channel[j]=out;
+				// Frequency jump
+					if (j>=jump1) { samplePitch*=1-data.frequencyJump1amount; jump1=sampleLength }
+				if (j>=jump2) { samplePitch*=1-data.frequencyJump2amount; jump2=sampleLength }
+				// Pitch
+				samplePitch-= data.pitch;
+			}
+		}
+
+		return buffer;
+	
+	}
 
 	/* Custom HTML prompt */	
 	this.htmlPrompt=function(body,text,onok){
@@ -970,75 +1024,84 @@ var DOMInator=function(useCanvas,aliasmode,controller,nosleep){
 			var file;
 			resources.loadingProgress.setStyle("width",Math.ceil(100/resources.loader.length*resources.loading));
 			resources.current = resources.loader[resources.loading];
-			if (resources.current[1].substr(0,1)=="~") file = resources.systemroot+resources.current[1].substr(1);
-			else file = resources.root + resources.current[1];
-			var ext = file.substr(file.lastIndexOf(".") + 1).toLowerCase();
-			switch (ext) {
-				case "font":{
-					var fontFamily=resources.current[1];
-					var detector = document.createElement("div");
-					var span = document.createElement("span");
-					detector.style.position="absolute";
-					detector.style.overflow="hidden";
-					detector.style.left="-200px";
-					detector.style.top="-99999px";
-					detector.style.width = "99999px";
-					detector.style.height = "200px";
-					detector.style.fontSize = "100px";
-					detector.appendChild(span);
-					span.innerHTML="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-					span.style.fontFamily= "arial";
-					document.body.appendChild(detector);
-					var oh=span.offsetWidth;
-					span.style.fontFamily= "\""+fontFamily.substr(0,fontFamily.lastIndexOf("."))+"\", arial";
-					var int=setInterval(function() {
-						if (oh!=span.offsetWidth) {
-							document.body.removeChild(detector);
-							clearTimeout(int);
-							loadNextResource();
-						}
-					},100);
-					break;
-				}
-				case "png":{
-					var cache = document.createElement("img");
-					cache.style.visibility = "hidden";
-					cache.style.position = "absolute";
-					cache.style.left="-200px";
-					cache.style.top="-99999px";
-					cache.src = file;
-					cache.onload = function() {
-						document.body.removeChild(cache);
-						resources.items[resources.current[0]] = {url:file,img:cache};
-						if (resources) setTimeout(loadNextResource, 100);
-					};
-					document.body.appendChild(cache);
-					break;
-				}
-				case "json":{
-					Supports.getFile(file,function(text){
-						resources.items[resources.current[0]] = JSON.parse(text);
+			if (resources.current[1].wave) {
+				if (audio&&Supports.isAudio)
+					setTimeout(function(){
+						resources.items[resources.current[0]]=generateNoise(resources.current[1]);
 						loadNextResource();
-					});
-					break;
-				}
-				case "ogg":
-				case "mp3":{
-					if (audio&&Supports.isAudio) {
-					  var request = new XMLHttpRequest();
-					  request.open('GET', file, true);
-					  request.responseType = 'arraybuffer';
-					  request.onload = function() {
-						audio.context.decodeAudioData(request.response, function(buffer) {
-						  resources.items[resources.current[0]] = buffer;
-						  loadNextResource();
-						}, function(e){
-							console.warn("Audio error with "+file,e);
+					},1);
+				else loadNextResource();
+			} else {
+				if (resources.current[1].substr(0,1)=="~") file = resources.systemroot+resources.current[1].substr(1);
+				else file = resources.root + resources.current[1];
+				var ext = file.substr(file.lastIndexOf(".") + 1).toLowerCase();
+				switch (ext) {
+					case "font":{
+						var fontFamily=resources.current[1];
+						var detector = document.createElement("div");
+						var span = document.createElement("span");
+						detector.style.position="absolute";
+						detector.style.overflow="hidden";
+						detector.style.left="-200px";
+						detector.style.top="-99999px";
+						detector.style.width = "99999px";
+						detector.style.height = "200px";
+						detector.style.fontSize = "100px";
+						detector.appendChild(span);
+						span.innerHTML="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+						span.style.fontFamily= "arial";
+						document.body.appendChild(detector);
+						var oh=span.offsetWidth;
+						span.style.fontFamily= "\""+fontFamily.substr(0,fontFamily.lastIndexOf("."))+"\", arial";
+						var int=setInterval(function() {
+							if (oh!=span.offsetWidth) {
+								document.body.removeChild(detector);
+								clearTimeout(int);
+								loadNextResource();
+							}
+						},100);
+						break;
+					}
+					case "png":{
+						var cache = document.createElement("img");
+						cache.style.visibility = "hidden";
+						cache.style.position = "absolute";
+						cache.style.left="-200px";
+						cache.style.top="-99999px";
+						cache.src = file;
+						cache.onload = function() {
+							document.body.removeChild(cache);
+							resources.items[resources.current[0]] = {url:file,img:cache};
+							if (resources) setTimeout(loadNextResource, 100);
+						};
+						document.body.appendChild(cache);
+						break;
+					}
+					case "json":{
+						Supports.getFile(file,function(text){
+							resources.items[resources.current[0]] = JSON.parse(text);
+							loadNextResource();
 						});
-					  }
-					  request.send();
-					} else loadNextResource();
-				  break;
+						break;
+					}
+					case "ogg":
+					case "mp3":{
+						if (audio&&Supports.isAudio) {
+						  var request = new XMLHttpRequest();
+						  request.open('GET', file, true);
+						  request.responseType = 'arraybuffer';
+						  request.onload = function() {
+							audio.context.decodeAudioData(request.response, function(buffer) {
+							  resources.items[resources.current[0]] = buffer;
+							  loadNextResource();
+							}, function(e){
+								console.warn("Audio error with "+file,e);
+							});
+						  }
+						  request.send();
+						} else loadNextResource();
+					  break;
+					}
 				}
 			}
 		} else {
@@ -2119,6 +2182,43 @@ var DOMInator=function(useCanvas,aliasmode,controller,nosleep){
 
 }
 
+DOMInator.NOISEWAVES={
+  whitenoise:function(v,i,p) { return Math.floor((i-1)/(p/2))!=Math.floor(i/(p/2))?Math.random()*2-1:v },
+  square:function(v,i,p) { return ((Math.floor(i/(p/2))%-2)*-2)+1 },
+  sine:function(v,i,p) { return Math.sin(i*6.28/p) },
+  saw:function(v,i,p) { return ((v+1+(2/p)) % 2) - 1},
+  triangle:function(v,i,p) { return Math.abs((i % p - (p/2))/p*4)-1 },
+  tangent:function(v,i,p) { 
+  	v= 0.15*Math.tan(i/p*3.14);
+  	if (v<-1) v=-1;
+  	if (v>1) v=1;
+  	return v;
+  },
+  whistle:function(v,i,p) { return 0.75 * Math.sin(i/p*6.28) + 0.25 * Math.sin(40 *3.14 * i/p) },
+  breaker:function(v,i,p) {
+  	v=(i/p) + 0.8660;
+    v=v - Math.floor(v);
+    return -1 + 2 * Math.abs(1 - v*v*2);
+  }
+};
+DOMInator.NOISEDEFAULTS={
+  bitCrush:0, // 1-16
+  bitCrushSweep:0, // -16 16
+  attack:0, // 0-0.3
+  sustain:0, // 0-0.4
+  limit:0, // .2-.6
+  decay:0.1, // 0-0.3
+  release:0, // 0-0.4
+  frequency:850, // 100-1600
+  tremoloFrequency:0, // 0-50
+  tremoloDepth:0, // 0-1
+  frequencyJump1onset:0, // 0-1
+  frequencyJump1amount:0, // -1-1
+  frequencyJump2onset:0, // 0-1
+  frequencyJump2amount:0, // -1-1
+  pitch:0 // 0-.002
+};
+DOMInator.NOISETIMES=["attack","sustain","decay","release"];
 DOMInator.CONTROLS={
 	pointer:{
 		keyboard:{
@@ -4941,10 +5041,13 @@ function Wright(gameId,mods) {
 					case "-":{ ret = FIX(ret - get(from, tox, struct[++id])); break; }
 					case "*":{ ret = FIX(ret * get(from, tox, struct[++id])); break; }
 					case "/":{ ret = FIX(ret / get(from, tox, struct[++id])); break; }
-					case "^":{ ret = Math.pow(ret,get(from, tox, struct[++id])); break; }
+					case "^":{ ret = Math.pow(ret,get(from, tox, struct[++id])); break; }					
+					case "sqrt":{ ret = Math.sqrt(ret); break; }
 					case "sin":{ ret = Math.sin(ret); break; }
 					case "cos":{ ret = Math.cos(ret); break; }
+					case "acos":{ ret = Math.acos(ret); break; }
 					case "not":{ ret = !ret; break; }
+					case "atan2":{ ret = FIX(Math.atan2(ret, get(from, tox, struct[++id]))); break; }
 					case "and":{
 						id++;
 						ret = ret && get(from, tox, struct[id]);
@@ -4998,7 +5101,7 @@ function Wright(gameId,mods) {
 										list = list.sort(_Code.sort[args.sortby]); // @TODO: This touches a private list of Box. Could be better.
 									}
 								}
-								sub=game.iterateCollisions((!complex||p.notThis)&&from,rect,list,0,0,0,0,args,_Code.collision);
+								sub=game.iterateCollisions((!complex||p.notThis)&&ret,rect,list,0,0,0,0,args,_Code.collision);
 								if (args&&args.all) sub=args.all.length?args.all:0;
 							}
 						}
