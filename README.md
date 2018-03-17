@@ -94,10 +94,12 @@ Since I've decided to implement from scratch the nicest things I learnt, thought
 
 #### Audio
   
+  * Load external audio files
   * Per-channel and per-sample volume
   * Audio looping
   * Optional automatic fade-in/fade-out on scene changes
   * Audio sample playback position readable by games (i.e. for rhythm games)
+  * A tiny BFXR-like noise generator for sound effects generation
 
 #### Controls
 
