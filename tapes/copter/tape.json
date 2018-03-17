@@ -809,31 +809,33 @@
                 },
                 "into":{ "_":"scenehud" }
               },
-              { "wait":25 },
-              { "publishScore":{ "_":[ "variable", "score" ] } },
+              { "wait":25 },              
               {
                 "when":{ "_":[ "cheat", "unlimitedlives", "not" ] },
-                "execute":{
-                  "when":{ "_":[ "variable", "score", "isGreaterThan", { "_":[ "variable", "hiscore" ] } ] },
-                  "execute":[
-                    { "as":[ { "_":"storage" }, { "_":"variable" } ], "set":{ "hiscore":{ "_":[ "variable", "score" ] } } },
-                    {
-                      "subsequence":[
-                        {
-                          "object":{
-                            "type":"message",
-                            "width":256, "height":20,
-                            "x":0, "y":96,
-                            "bgcolor":"#000", "color":"#f00",
-                            "font":"spectrum", "textAlign":"center", "html":"NEW HIGH SCORE!"
+                "execute":[
+                  { "publishScore":{ "_":[ "variable", "score" ] } },
+                  {
+                    "when":{ "_":[ "variable", "score", "isGreaterThan", { "_":[ "variable", "hiscore" ] } ] },
+                    "execute":[
+                      { "as":[ { "_":"storage" }, { "_":"variable" } ], "set":{ "hiscore":{ "_":[ "variable", "score" ] } } },
+                      {
+                        "subsequence":[
+                          {
+                            "object":{
+                              "type":"message",
+                              "width":256, "height":20,
+                              "x":0, "y":96,
+                              "bgcolor":"#000", "color":"#f00",
+                              "font":"spectrum", "textAlign":"center", "html":"NEW HIGH SCORE!"
+                            },
+                            "into":{ "_":"scenehud" }
                           },
-                          "into":{ "_":"scenehud" }
-                        },
-                        { "wait":25 }
-                      ]
-                    }
-                  ]
-                }
+                          { "wait":25 }
+                        ]
+                      }
+                    ]
+                  }
+                ]
               },
               { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
               { "gotoScene":"intro", "withTransition":3 }
