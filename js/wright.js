@@ -841,7 +841,7 @@ var DOMInator=function(useCanvas,aliasmode,controller,nosleep){
 				if(out<-1) out = -1;
 				channel[j]=out;
 				// Frequency jump
-					if (j>=jump1) { samplePitch*=1-data.frequencyJump1amount; jump1=sampleLength }
+				if (j>=jump1) { samplePitch*=1-data.frequencyJump1amount; jump1=sampleLength }
 				if (j>=jump2) { samplePitch*=1-data.frequencyJump2amount; jump2=sampleLength }
 				// Pitch
 				samplePitch-= data.pitch;
@@ -2206,7 +2206,7 @@ DOMInator.NOISEDEFAULTS={
   bitCrushSweep:0, // -16 16
   attack:0, // 0-0.3
   sustain:0, // 0-0.4
-  limit:0, // .2-.6
+  limit:0.6, // .2-.6
   decay:0.1, // 0-0.3
   release:0, // 0-0.4
   frequency:850, // 100-1600
