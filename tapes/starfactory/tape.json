@@ -1,0 +1,1065 @@
+{
+  "name":"Starfactory",
+  "author":"KesieV",
+  "year":2017,
+  "genre":"Clicker",
+  "description":"<p>Humanity lived the <i>make it to the finish line no matter what</i> dream for ages, finding the best excuse for war and exploitation and then, all of the sudden and in an errand of mercy, the <i>journey became more important than destination</i>.</p><p>This <i>travel analogy</i> surely is getting a little stretched, especially when even the journey is becoming less relevant.</p><p>We talked about the <a href='rolly'>gamification</a> phenomena few years ago and how the <i>way of creating a journey to the destination</i> through game rules can make everything boring even appetizing.</p><p>But what happens we make a <i>boring</i> jourey instead? Everything should break down, <i>amarite</i>?</p><p>Okay. Let's take the so called <a href='https://en.wikipedia.org/wiki/Incremental_game'>incremental games</a>. Thank you Wikipedia for the nice definition: \"Incremental games are video games whose gameplay consists of the player performing simple actions such as <i>clicking on the screen repeatedly (\"grinding\") to earn currency.</i> In some games, even the clicking becomes unnecessary after a time, as <i>the game plays itself</i>, including in the player's absence, hence the moniker \"idle game\".\"</p><p>So, basically, our <i>journey to the destination</i> which is the game ending, is <i>just clicking a button</i> or <i>doing absolutely nothing</i>. So, if this journey was so boring, why <a href='https://en.wikipedia.org/wiki/Cookie_Clicker'>Cookie Clicker</a> (2013) had 1.5 million hits in one day around his launch window and IGN said <i>'you still can't wait until that next major milestone is finally within reach'</i>.</p><p>Is our beloved journey a little overrated? Is a purpose and some sense of progression just enough? Can human ambitions be reduced to just a fancy <a href='https://en.wikipedia.org/wiki/Progress_bar'>progress bar</a>?</p><p>Plot!</p><p>A new adventure awaits our hero Starcat! This time the stars have been stored in mysterious boxes and the only way to get them out is practicing the ancient art of... bumping! Click your mouse or touch the screen to jump, earn stars, get help from Starcat friends and became a star millionaire!</p><p>PS: The game can even progress without your help!</p>",
+  "screenshots":[ "starfactory-1.png", "starfactory-2.png" ],
+  "hardware":{
+    "width":256,
+    "height":192,
+    "filter":"retro",
+    "controls":"pointer"
+  },
+  "cheats":{},
+  "resources":{
+    "spectrum":"spectrum.font",
+    "sprites":"sprites.png"
+  },
+  "stencils":{
+    "codeAddNotification":{
+      "when":{ "_":[ "this", "notification" ] },
+      "execute":{
+        "when":{ "_":[ "this", "notificationId", "not", "or", { "_":[ "variable", "notificationsId", { "_":[ "this", "notificationId" ] }, "not" ] } ] },
+        "execute":[
+          { "when":{ "_":[ "this", "notificationId" ] }, "assign":1, "to":{ "_":[ "variable", "notificationsId", { "_":[ "this", "notificationId" ] } ] } },
+          { "as":{ "_":[ "this", "notification" ] }, "pushInto":{ "_":[ "variable", "notifications" ] } },
+          { "set":{ "notification":0, "notificationId":0 } }
+        ]
+      }
+    },
+    "codeClick":[ { "as":{ "_":[ "object", "clicker" ] }, "executeAction":"click" }, { "_":[ "stencil", "codeUpdateUi" ] } ],
+    "codeGiveStars":{
+      "when":{ "_":[ "this", "stars" ] },
+      "execute":[
+        { "sum":{ "_":[ "this", "stars" ] }, "to":{ "_":[ "variable", "stars" ] } },
+        { "when":{ "_":[ "randomNumber", [ 0, 100 ], "isLessThan", 25 ] }, "object":{ "_":[ "stencil", "star" ] } },
+        { "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "html":{ "_":[ "", ".", "+", ".", { "_":[ "that", "stars" ] } ] } } }
+      ]
+    },
+    "codeRedrawGrid":[
+      { "set":{ "generateSlot":0 } },
+      {
+        "times":90,
+        "execute":[
+          {
+            "when":{ "_":[ "variable", "grid", { "_":[ "this", "generateSlot" ] }, "isGreaterThan", 0 ] },
+            "object":{
+              "set":[ { "_":[ "stencil", "modelBlock" ] }, { "_":[ "stencil", "dataPalette", { "_":[ "variable", "grid", { "_":[ "that", "generateSlot" ] } ] } ] } ]
+            }
+          },
+          { "sum":1, "to":{ "_":[ "this", "generateSlot" ] } }
+        ]
+      }
+    ],
+    "codeSaveState":[
+      { "set":{ "counter":0, "saveGrid":{ "_":[ "new", [] ] } } },
+      {
+        "times":90,
+        "execute":[
+          {
+            "when":{ "_":[ "objectTyped", { "_":[ "onslot-", ".", { "_":[ "this", "counter" ] } ] } ] },
+            "as":{ "_":[ "that", "tileId" ] },
+            "pushInto":{ "_":[ "that", "saveGrid" ] },
+            "elseExecute":{ "as":-1, "pushInto":{ "_":[ "that", "saveGrid" ] } }
+          },
+          { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+        ]
+      },
+      {
+        "as":{ "_":"storage" },
+        "set":{
+          "grid":{ "_":[ "that", "saveGrid" ] },
+          "notifications":{ "_":[ "variable", "notifications" ] },
+          "notificationsId":{ "_":[ "variable", "notificationsId" ] },
+          "stars":{ "_":[ "variable", "stars" ] }
+        }
+      }
+    ],
+    "codeSwitchTab":[
+      { "as":{ "_":[ "object", "tablabel" ] }, "set":{ "bgcolor":"#000", "color":"#7f7f7f" } },
+      { "as":{ "_":[ "object", "tabitem" ] }, "set":{ "removeType":"clickable", "visible":0 } },
+      { "as":{ "_":[ "object", { "_":[ "tablabel-", ".", { "_":[ "variable", "tab" ] } ] } ] }, "set":{ "bgcolor":"#00007f", "color":"#fff" } },
+      { "as":{ "_":[ "object", { "_":[ "tabitem-", ".", { "_":[ "variable", "tab" ] } ] } ] }, "set":{ "type":"clickable", "visible":1 } }
+    ],
+    "codeUpdatePalette":[
+      { "as":{ "_":[ "object", "paletteitem" ] }, "remove":1 },
+      { "set":{ "counter":0 } },
+      {
+        "times":66,
+        "execute":[
+          { "set":{ "blockData":{ "_":[ "stencil", "dataPalette", { "_":[ "that", "counter", "+", 1 ] } ] }, "withSmoke":0 } },
+          { "set":{ "unlocked":{ "_":[ "variable", "notificationsId", { "_":[ "unblock-", ".", { "_":[ "this", "blockData", "tileId" ] } ] } ] } } },
+          {
+            "when":{ "_":[ "this", "unlocked", "not" ] },
+            "execute":{
+              "when":{ "_":[ "variable", "stars", "isGreaterEqualThan", { "_":[ "that", "blockData", "unlockAt" ] } ] },
+              "execute":[
+                {
+                  "set":{
+                    "notification":{ "_":[ "New block!<br>", ".", { "_":[ "that", "blockData", "icon", "tooltipTitle" ] } ] },
+                    "notificationId":{ "_":[ "unblock-", ".", { "_":[ "that", "blockData", "tileId" ] } ] },
+                    "unlocked":1,
+                    "withSmoke":1
+                  },
+                  "execute":{ "_":[ "stencil", "codeAddNotification" ] }
+                },
+                {
+                  "when":{ "_":[ "that", "blockData", "tileId", "isEqualTo", 1 ] },
+                  "execute":[
+                    { "as":{ "_":"variable" }, "set":{ "tab":0 } },
+                    { "_":[ "stencil", "codeSwitchTab" ] },
+                    {
+                      "set":{ "notification":"Add blocks to the grid to make stars faster!", "notificationId":"tutorial-end" },
+                      "execute":{ "_":[ "stencil", "codeAddNotification" ] }
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          {
+            "when":{ "_":[ "this", "unlocked" ] },
+            "execute":{
+              "when":{ "_":[ "objectTyped", { "_":[ "tool-", ".", { "_":[ "this", "blockData", "tileId" ] } ] }, "not" ] },
+              "execute":{
+                "object":{
+                  "type":[ "hastooltip", "clickable", "tabitem", "tabitem-0", { "_":[ "tool-", ".", { "_":[ "that", "blockData", "tileId" ] } ] } ],
+                  "data":{ "_":[ "that", "blockData" ] },
+                  "set":{ "_":[ "that", "blockData", "icon" ] },
+                  "image":"sprites", "width":16, "height":16,
+                  "zIndex":110, "x":{ "_":[ "that", "counter", "%", 6, "*", 16, "+", 160 ] }, "y":{ "_":[ "that", "counter", "/", 6, "floor", "*", 16, "+", 20 ] },
+                  "execute":{
+                    "when":{ "_":[ "that", "withSmoke" ] },
+                    "execute":{ "when":{ "_":[ "variable", "tab", "isEqualTo", 0 ] }, "execute":{ "_":[ "stencil", "cloud" ] } }
+                  },
+                  "states":{
+                    "actions":{
+                      "name":"click",
+                      "execute":[
+                        { "as":{ "_":[ "object", "pendingblock" ] }, "remove":1 },
+                        { "object":{ "data":{ "_":[ "that", "data" ] }, "set":[ { "_":[ "stencil", "modelPendingBlock" ] }, { "_":[ "that", "data", "pendingBlock" ] } ] } }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+        ]
+      }
+    ],
+    "codeUpdateUi":[
+      { "as":{ "_":[ "objectTyped", "headerbar" ] }, "set":{ "html":{ "_":[ "STARS: ", ".", { "_":[ "variable", "stars" ] } ] } } },
+      { "_":[ "stencil", "codeUpdatePalette" ] },
+      { "_":[ "stencil", "codeSwitchTab" ] }
+    ],
+    "modelBlock":{
+      "type":[ "clicker", "placedblocks", { "_":[ "onslot-", ".", { "_":[ "that", "generateSlot" ] } ] } ],
+      "image":"sprites", "width":16, "height":16,
+      "zIndex":{ "_":[ "that", "generateSlot", "+", 5 ] }, "at":{ "_":[ "objectTyped", { "_":[ "slot-", ".", { "_":[ "that", "generateSlot" ] } ] } ] },
+      "animations":{ "bump":{ "frames":[ 1, 0 ], "speed":3 }, "idle":{ "frame":0 } },
+      "animation":"idle",
+      "animMode":"bump",
+      "orgSlot":{ "_":[ "that", "generateSlot" ] },
+      "orgY":{ "_":[ "objectTyped", { "_":[ "slot-", ".", { "_":[ "that", "generateSlot" ] } ] }, "y" ] },
+      "stars":1,
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":{
+            "when":{ "_":[ "this", "animFrame" ] },
+            "execute":{
+              "when":{ "_":[ "this", "animMode", "isEqualTo", "bump" ] },
+              "execute":[ { "subtract":1, "to":{ "_":[ "this", "animFrame" ] } }, { "set":{ "y":{ "_":[ "this", "orgY", "-", { "_":[ "this", "animFrame" ] } ] } } } ]
+            }
+          }
+        },
+        "actions":{
+          "name":"click",
+          "execute":[
+            { "_":[ "stencil", "codeGiveStars" ] },
+            { "when":{ "_":[ "this", "animMode", "isEqualTo", "bump" ] }, "set":{ "y":{ "_":[ "this", "orgY" ] }, "animFrame":5, "changeAnimation":"bump" } }
+          ]
+        }
+      }
+    },
+    "modelPendingBlock":{
+      "type":"pendingblock",
+      "width":16, "height":16,
+      "zIndex":90,
+      "bgcolor":"#f00",
+      "placeable":0,
+      "states":{
+        "execute":[
+          { "set":{ "hitbox":{ "_":[ "new", { "x":5, "y":5 } ] } } },
+          { "as":{ "_":[ "this", "hitbox" ] }, "set":{ "width":{ "_":[ "that", "width", "-", 10 ] }, "height":{ "_":[ "that", "height", "-", 10 ] } } }
+        ],
+        "code":{
+          "name":"Execute",
+          "data":[
+            { "set":{ "placeable":0 } },
+            {
+              "when":{ "_":[ "objectTyped", "pointer", "collidesWith", { "_":[ "object", "slot" ] } ] },
+              "set":{ "at":{ "_":"that" }, "generateSlot":{ "_":[ "that", "slot" ] }, "placeable":1 }
+            },
+            {
+              "when":{ "_":[ "this", "placeable" ] },
+              "execute":{ "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "noplace" ] } ] }, "set":{ "placeable":0 } }
+            },
+            { "when":{ "_":[ "this", "placeable" ] }, "set":{ "visible":{ "_":[ "this", "visible", "not" ] } }, "elseExecute":{ "set":{ "visible":0 } } },
+            {
+              "when":{ "_":[ "this", "wait" ] },
+              "subtract":1,
+              "to":{ "_":[ "this", "wait" ] },
+              "elseExecute":{
+                "when":{ "_":[ "keyPointer", "isHit" ] },
+                "execute":[
+                  {
+                    "when":{ "_":[ "this", "placeable" ] },
+                    "execute":{
+                      "when":{ "_":[ "variable", "stars", "isGreaterEqualThan", { "_":[ "this", "data", "price" ] } ] },
+                      "execute":[
+                        { "when":{ "_":[ "this", "data", "blockClass" ] }, "as":{ "_":[ "object", { "_":[ "this", "data", "blockClass" ] } ] }, "remove":1 },
+                        { "subtract":{ "_":[ "this", "data", "price" ] }, "to":{ "_":[ "variable", "stars" ] } },
+                        { "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "html":{ "_":[ "", ".", "-", ".", { "_":[ "that", "data", "price" ] } ] } } },
+                        { "as":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "placedblocks" ] }, "all":1 } ] }, "execute":{ "remove":1 } },
+                        { "_":[ "stencil", "cloud" ] },
+                        {},
+                        { "object":{ "set":[ { "_":[ "stencil", "modelBlock" ] }, { "_":[ "that", "data" ] } ] } },
+                        { "_":[ "stencil", "codeUpdateUi" ] }
+                      ],
+                      "elseExecute":{ "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "color":"#f00", "html":"NEED STARS!" } }
+                    }
+                  },
+                  { "remove":1 }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      "wait":2
+    },
+    "modelPopupLabel":{
+      "width":100, "height":24,
+      "zIndex":250, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "that", "y", "-", 15 ] },
+      "font":"spectrum", "lineHeight":24, "outline":"#000", "textAlign":"center",
+      "speed":0.5,
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[ { "subtract":{ "_":[ "this", "speed" ] }, "to":{ "_":[ "this", "y" ] }, "wait":1, "loop":1, "cycles":15 }, { "remove":1 } ]
+        }
+      }
+    },
+    "cloud":{
+      "times":5,
+      "object":{ "_":[ "stencil", "smoke" ] },
+      "execute":[
+        { "sum":{ "_":[ "randomNumber", [ { "_":[ "this", "width", "/", -2 ] }, { "_":[ "this", "width", "/", 2 ] } ] ] }, "to":{ "_":[ "that", "x" ] } },
+        { "sum":{ "_":[ "randomNumber", [ { "_":[ "this", "height", "/", -2 ] }, { "_":[ "this", "height", "/", 2 ] } ] ] }, "to":{ "_":[ "that", "y" ] } }
+      ]
+    },
+    "dataPalette":[
+      0,
+      {
+        "tileX":0, "tileY":80, "width":32, "height":32,
+        "icon":{
+          "tileX":0, "tileY":16,
+          "tooltipBody":"COST: 30<br>You've to start from somewhere. Like, from this very block.",
+          "tooltipSubtitle":"+1/click",
+          "tooltipTitle":"Basic block"
+        },
+        "pendingBlock":{ "width":32, "height":32 },
+        "price":30,
+        "stars":1,
+        "tileId":1,
+        "unlockAt":30
+      },
+      {
+        "tileX":0, "tileY":112, "width":32, "height":16,
+        "icon":{
+          "tileX":16, "tileY":16,
+          "tooltipBody":"COST: 40<br>A slimmer version of the basic block, which seems to come from another game.",
+          "tooltipSubtitle":"+1/click",
+          "tooltipTitle":"Question block"
+        },
+        "pendingBlock":{ "width":32, "height":16 },
+        "price":40,
+        "stars":1,
+        "tileId":2,
+        "unlockAt":40
+      },
+      {
+        "tileX":0, "tileY":144, "width":16, "height":32,
+        "icon":{
+          "tileX":32, "tileY":16,
+          "tooltipBody":"COST: 240<br>Did you know that most of the blocks bumps just upward?",
+          "tooltipSubtitle":"+2/click",
+          "tooltipTitle":"Up block"
+        },
+        "pendingBlock":{ "width":16, "height":32 },
+        "price":240,
+        "stars":2,
+        "tileId":3,
+        "unlockAt":180
+      },
+      {
+        "tileX":0, "tileY":64, "width":16, "height":16,
+        "icon":{
+          "tileX":48, "tileY":16,
+          "tooltipBody":"COST: 550<br>We made our first block smaller and more powerful. The best ! block ever.",
+          "tooltipSubtitle":"+2/click",
+          "tooltipTitle":"Small block"
+        },
+        "pendingBlock":{ "width":16, "height":16 },
+        "price":550,
+        "stars":2,
+        "tileId":4,
+        "unlockAt":410
+      },
+      {
+        "tileX":32, "tileY":144, "width":16, "height":32,
+        "icon":{
+          "tileX":64, "tileY":16,
+          "tooltipBody":"COST: 1000<br>It is said that the dot on this block was once a lemon.",
+          "tooltipSubtitle":"+5/click",
+          "tooltipTitle":"Squeezing block"
+        },
+        "pendingBlock":{ "width":16, "height":32 },
+        "price":1000,
+        "stars":5,
+        "tileId":5,
+        "unlockAt":750
+      },
+      {
+        "tileX":64, "tileY":112, "width":32, "height":16,
+        "icon":{
+          "tileX":80, "tileY":16,
+          "tooltipBody":"COST: 1800<br>A memorial to the best hero of the Wright! games, Starcat.",
+          "tooltipSubtitle":"+6/click",
+          "tooltipTitle":"Starcat block"
+        },
+        "pendingBlock":{ "width":32, "height":16 },
+        "price":1800,
+        "stars":6,
+        "tileId":6,
+        "unlockAt":1300
+      },
+      {
+        "tileX":64, "tileY":80, "width":32, "height":32,
+        "icon":{
+          "tileX":96, "tileY":16,
+          "tooltipBody":"COST: 3000<br>A fine diagonal lines pattern that changes sides when bumping it.",
+          "tooltipSubtitle":"+13/click",
+          "tooltipTitle":"Striped big"
+        },
+        "pendingBlock":{ "width":32, "height":32 },
+        "price":3000,
+        "stars":13,
+        "tileId":7,
+        "unlockAt":2200
+      },
+      {
+        "tileX":128, "tileY":112, "width":32, "height":16,
+        "icon":{
+          "tileX":112, "tileY":16,
+          "tooltipBody":"COST: 5000<br>You can share this block with a friend, splitting it in two.",
+          "tooltipSubtitle":"+7/click",
+          "tooltipTitle":"Split block"
+        },
+        "pendingBlock":{ "width":32, "height":16 },
+        "price":5000,
+        "stars":7,
+        "tileId":8,
+        "unlockAt":3700
+      },
+      {
+        "tileX":64, "tileY":144, "width":16, "height":32,
+        "icon":{
+          "tileX":128, "tileY":16,
+          "tooltipBody":"COST: 7400<br>If you can curve this block without breaking it, you'll be very lucky.",
+          "tooltipSubtitle":"+8/click",
+          "tooltipTitle":"Strips luck"
+        },
+        "pendingBlock":{ "width":16, "height":32 },
+        "price":7400,
+        "stars":8,
+        "tileId":9,
+        "unlockAt":5500
+      },
+      {
+        "tileX":32, "tileY":64, "width":16, "height":16,
+        "icon":{
+          "tileX":144, "tileY":16,
+          "tooltipBody":"COST: 11000<br>It's wonderful how technology can miniaturize everything. Even striped blocks!",
+          "tooltipSubtitle":"+5/click",
+          "tooltipTitle":"Ministriped"
+        },
+        "pendingBlock":{ "width":16, "height":16 },
+        "price":11000,
+        "stars":5,
+        "tileId":10,
+        "unlockAt":8200
+      },
+      {
+        "tileX":96, "tileY":144, "width":16, "height":32,
+        "icon":{
+          "tileX":160, "tileY":16,
+          "tooltipBody":"COST: 16000<br>Some customers love to pay a little more for larger stripes. Whatever.",
+          "tooltipSubtitle":"+11/click",
+          "tooltipTitle":"Large stripes"
+        },
+        "pendingBlock":{ "width":16, "height":32 },
+        "price":16000,
+        "stars":11,
+        "tileId":11,
+        "unlockAt":12000
+      },
+      {
+        "tileX":192, "tileY":112, "width":32, "height":16,
+        "icon":{
+          "tileX":176, "tileY":16,
+          "tooltipBody":"COST: 21000<br>Did you know that all the stripes on these blocks are embossed?",
+          "tooltipSubtitle":"+12/click",
+          "tooltipTitle":"Wide stripes"
+        },
+        "pendingBlock":{ "width":32, "height":16 },
+        "price":21000,
+        "stars":12,
+        "tileId":12,
+        "unlockAt":15000
+      },
+      {
+        "tileX":128, "tileY":80, "width":32, "height":32,
+        "icon":{
+          "tileX":192, "tileY":16,
+          "tooltipBody":"COST: 27000<br>Let's try with a brand new thing. Smiling faces!",
+          "tooltipSubtitle":"+25/click",
+          "tooltipTitle":"Smiling face"
+        },
+        "pendingBlock":{ "width":32, "height":32 },
+        "price":27000,
+        "stars":25,
+        "tileId":13,
+        "unlockAt":20000
+      },
+      {
+        "tileX":256, "tileY":112, "width":32, "height":16,
+        "icon":{
+          "tileX":208, "tileY":16,
+          "tooltipBody":"COST: 36000<br>Nobody wants to be bumped by a cat. Neither this grumpy block.",
+          "tooltipSubtitle":"+13/click",
+          "tooltipTitle":"Grumpy face"
+        },
+        "pendingBlock":{ "width":32, "height":16 },
+        "price":36000,
+        "stars":13,
+        "tileId":14,
+        "unlockAt":27000
+      },
+      {
+        "tileX":128, "tileY":144, "width":16, "height":32,
+        "icon":{
+          "tileX":224, "tileY":16,
+          "tooltipBody":"COST: 49000<br>Often disguised as a priest, this block just likes to be elegant.",
+          "tooltipSubtitle":"+14/click",
+          "tooltipTitle":"Elegant face"
+        },
+        "pendingBlock":{ "width":16, "height":32 },
+        "price":49000,
+        "stars":14,
+        "tileId":15,
+        "unlockAt":36000
+      },
+      {
+        "tileX":64, "tileY":64, "width":16, "height":16,
+        "icon":{
+          "tileX":240, "tileY":16,
+          "tooltipBody":"COST: 70000<br>Do you know how face blocks reproduces? Neither do I.",
+          "tooltipSubtitle":"+8/click",
+          "tooltipTitle":"Baby face"
+        },
+        "pendingBlock":{ "width":16, "height":16 },
+        "price":70000,
+        "stars":8,
+        "tileId":16,
+        "unlockAt":52000
+      },
+      {
+        "tileX":160, "tileY":144, "width":16, "height":32,
+        "icon":{
+          "tileX":256, "tileY":16,
+          "tooltipBody":"COST: 84000<br>This block is pretty excited to be part of this game. Whatever makes it happy!",
+          "tooltipSubtitle":"+17/click",
+          "tooltipTitle":"Fanboy face"
+        },
+        "pendingBlock":{ "width":16, "height":32 },
+        "price":84000,
+        "stars":17,
+        "tileId":17,
+        "unlockAt":63000
+      },
+      {
+        "tileX":0, "tileY":128, "width":32, "height":16,
+        "icon":{
+          "tileX":272, "tileY":16,
+          "tooltipBody":"COST: 100000<br>This block likes to be very quiet... but it can be easily scared!",
+          "tooltipSubtitle":"+18/click",
+          "tooltipTitle":"Quiet face"
+        },
+        "pendingBlock":{ "width":32, "height":16 },
+        "price":100000,
+        "stars":18,
+        "tileId":18,
+        "unlockAt":75000
+      },
+      {
+        "tileX":192, "tileY":80, "width":32, "height":32,
+        "icon":{
+          "tileX":288, "tileY":16,
+          "tooltipBody":"COST: 120000<br>Okay. You're not very surprised by this bricks block but... I had to add it.",
+          "tooltipSubtitle":"+37/click",
+          "tooltipTitle":"Surprise block"
+        },
+        "pendingBlock":{ "width":32, "height":32 },
+        "price":120000,
+        "stars":37,
+        "tileId":19,
+        "unlockAt":90000
+      },
+      {
+        "tileX":64, "tileY":128, "width":32, "height":16,
+        "icon":{
+          "tileX":304, "tileY":16,
+          "tooltipBody":"COST: 160000<br>At least I'm trying to give a nice name to these blocks.",
+          "tooltipSubtitle":"+19/click",
+          "tooltipTitle":"NiceNamed block"
+        },
+        "pendingBlock":{ "width":32, "height":16 },
+        "price":160000,
+        "stars":19,
+        "tileId":20,
+        "unlockAt":120000
+      },
+      {
+        "tileX":192, "tileY":144, "width":16, "height":32,
+        "icon":{
+          "tileX":0, "tileY":32,
+          "tooltipBody":"COST: 200000<br>This block is absolutely the longest block ever. Just try to compare it to others!",
+          "tooltipSubtitle":"+20/click",
+          "tooltipTitle":"Very long block"
+        },
+        "pendingBlock":{ "width":16, "height":32 },
+        "price":200000,
+        "stars":20,
+        "tileId":21,
+        "unlockAt":150000
+      },
+      {
+        "tileX":96, "tileY":64, "width":16, "height":16,
+        "icon":{
+          "tileX":16, "tileY":32,
+          "tooltipBody":"COST: 230000<br>This block is surprisingly filled with tiny bricks. Unbelivable tiny bricks.",
+          "tooltipSubtitle":"+11/click",
+          "tooltipTitle":"Incrediblock"
+        },
+        "pendingBlock":{ "width":16, "height":16 },
+        "price":230000,
+        "stars":11,
+        "tileId":22,
+        "unlockAt":170000
+      },
+      {
+        "tileX":224, "tileY":144, "width":16, "height":32,
+        "icon":{
+          "tileX":32, "tileY":32,
+          "tooltipBody":"COST: 260000<br>See? This is so filled with bricks that can be considered a whole wall!",
+          "tooltipSubtitle":"+23/click",
+          "tooltipTitle":"Sturdy wall"
+        },
+        "pendingBlock":{ "width":16, "height":32 },
+        "price":260000,
+        "stars":23,
+        "tileId":23,
+        "unlockAt":190000
+      },
+      {
+        "tileX":128, "tileY":128, "width":32, "height":16,
+        "icon":{
+          "tileX":48, "tileY":32,
+          "tooltipBody":"COST: 300000<br>We made our sturdy wall sturdier and wallier. Is wallier a word? Whatever.",
+          "tooltipSubtitle":"+24/click",
+          "tooltipTitle":"Sturdy V2"
+        },
+        "pendingBlock":{ "width":32, "height":16 },
+        "price":300000,
+        "stars":24,
+        "tileId":24,
+        "unlockAt":220000
+      },
+      {
+        "tileX":256, "tileY":80, "width":32, "height":32,
+        "icon":{
+          "tileX":64, "tileY":32,
+          "tooltipBody":"COST: 360000<br>Time to wave the goal flag! We're almost arrived! Thank you for playing!",
+          "tooltipSubtitle":"+49/click",
+          "tooltipTitle":"Goal block"
+        },
+        "pendingBlock":{ "width":32, "height":32 },
+        "price":360000,
+        "stars":49,
+        "tileId":25,
+        "unlockAt":270000
+      },
+      {
+        "tileX":192, "tileY":128, "width":32, "height":16,
+        "icon":{
+          "tileX":80, "tileY":32,
+          "tooltipBody":"COST: 480000<br>Guessing fair block prices to bring you here wasn't easy... but here we are!",
+          "tooltipSubtitle":"+25/click",
+          "tooltipTitle":"Dot cage"
+        },
+        "pendingBlock":{ "width":32, "height":16 },
+        "price":480000,
+        "stars":25,
+        "tileId":26,
+        "unlockAt":360000
+      },
+      {
+        "tileX":256, "tileY":144, "width":16, "height":32,
+        "icon":{
+          "tileX":96, "tileY":32,
+          "tooltipBody":"COST: 550000<br>When I first played a clicker game like this one I became a little obsessed. I wondered...",
+          "tooltipSubtitle":"+26/click",
+          "tooltipTitle":"Stars spear"
+        },
+        "pendingBlock":{ "width":16, "height":32 },
+        "price":550000,
+        "stars":26,
+        "tileId":27,
+        "unlockAt":410000
+      },
+      {
+        "tileX":128, "tileY":64, "width":16, "height":16,
+        "icon":{
+          "tileX":112, "tileY":32,
+          "tooltipBody":"COST: 630000<br>Why a game with just growing numbers and a silly story can be so addicting? Wait, but...",
+          "tooltipSubtitle":"+14/click",
+          "tooltipTitle":"Dot house"
+        },
+        "pendingBlock":{ "width":16, "height":16 },
+        "price":630000,
+        "stars":14,
+        "tileId":28,
+        "unlockAt":470000
+      },
+      {
+        "tileX":288, "tileY":144, "width":16, "height":32,
+        "icon":{
+          "tileX":128, "tileY":32,
+          "tooltipBody":"COST: 730000<br>Is this related with human passion for gathering belongings and stories? So...",
+          "tooltipSubtitle":"+29/click",
+          "tooltipTitle":"Slim flag"
+        },
+        "pendingBlock":{ "width":16, "height":32 },
+        "price":730000,
+        "stars":29,
+        "tileId":29,
+        "unlockAt":540000
+      },
+      {
+        "tileX":256, "tileY":128, "width":32, "height":16,
+        "icon":{
+          "tileX":144, "tileY":32,
+          "tooltipBody":"COST: 840000<br>If your game is bad, just add a bunch of growing stats and a tiny story. Bye!<br>-- KesieV",
+          "tooltipSubtitle":"+30/click",
+          "tooltipTitle":"Flag strip"
+        },
+        "pendingBlock":{ "width":32, "height":16 },
+        "price":840000,
+        "stars":30,
+        "tileId":30,
+        "unlockAt":630000
+      },
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      {
+        "type":"jumper",
+        "tileX":0, "tileY":176, "width":32, "height":32,
+        "autoEvery":6,
+        "blockClass":"jumper",
+        "icon":{
+          "tileX":0, "tileY":48,
+          "tooltipBody":"COST: 60000<br>This kitty is one of the smallest Starcat friends. It's still learning how to jump!",
+          "tooltipSubtitle":"Click every 6s",
+          "tooltipTitle":"Tinycat"
+        },
+        "pendingBlock":{ "width":32, "height":32 },
+        "price":60000,
+        "tileId":37,
+        "unlockAt":45000
+      },
+      {
+        "type":"jumper",
+        "tileX":64, "tileY":176, "width":32, "height":32,
+        "autoEvery":4,
+        "blockClass":"jumper",
+        "icon":{
+          "tileX":16, "tileY":48,
+          "tooltipBody":"COST: 115000<br>This cat needs just a little more jumping before leaving home and going for adventures!",
+          "tooltipSubtitle":"Click every 4s",
+          "tooltipTitle":"Growingcat"
+        },
+        "pendingBlock":{ "width":32, "height":32 },
+        "price":115000,
+        "tileId":38,
+        "unlockAt":86250
+      },
+      {
+        "type":"jumper",
+        "tileX":128, "tileY":176, "width":32, "height":32,
+        "autoEvery":3,
+        "blockClass":"jumper",
+        "icon":{
+          "tileX":32, "tileY":48,
+          "tooltipBody":"COST: 180000<br>It is doing its best to become like Starcat. Sadly it's a little too short for the job.",
+          "tooltipSubtitle":"Click every 3s",
+          "tooltipTitle":"Shortcat"
+        },
+        "pendingBlock":{ "width":32, "height":32 },
+        "price":180000,
+        "tileId":39,
+        "unlockAt":135000
+      },
+      {
+        "type":"jumper",
+        "tileX":192, "tileY":176, "width":32, "height":32,
+        "autoEvery":2,
+        "blockClass":"jumper",
+        "icon":{
+          "tileX":48, "tileY":48,
+          "tooltipBody":"COST: 275000<br>Some cats are too long and can't fit into the spaceship. They patrol the cat village.",
+          "tooltipSubtitle":"Click every 2s",
+          "tooltipTitle":"Longcat"
+        },
+        "pendingBlock":{ "width":32, "height":32 },
+        "price":275000,
+        "tileId":40,
+        "unlockAt":206250
+      },
+      {
+        "type":"jumper",
+        "tileX":256, "tileY":176, "width":32, "height":32,
+        "autoEvery":1,
+        "blockClass":"jumper",
+        "icon":{
+          "tileX":64, "tileY":48,
+          "tooltipBody":"COST: 365000<br>Some cats are great jumpers and fits the spaceship... but don't like adventures.",
+          "tooltipSubtitle":"Click every 1s",
+          "tooltipTitle":"Widecat"
+        },
+        "pendingBlock":{ "width":32, "height":32 },
+        "price":365000,
+        "tileId":41,
+        "unlockAt":273750
+      }
+    ],
+    "pointer":{
+      "type":"pointer",
+      "image":"sprites", "width":16, "height":16,
+      "zIndex":100000,
+      "hitbox":{ "width":2, "height":2, "x":0, "y":0 },
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":[
+            { "set":{ "x":{ "_":[ "pointer", "x" ] }, "y":{ "_":[ "pointer", "y" ] }, "tooltip":0 } },
+            { "when":{ "_":[ "keyPointer", "isHit" ] }, "as":{ "_":[ "this", "collidesWith", { "_":[ "object", "clickable" ] } ] }, "executeAction":"click" },
+            { "when":{ "_":[ "objectTyped", "pendingblock" ] }, "set":{ "frame":1 }, "elseExecute":{ "set":{ "frame":0 } } },
+            {
+              "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "hastooltip" ] } ] },
+              "execute":{
+                "when":{ "_":[ "that", "visible" ] },
+                "execute":[
+                  { "set":{ "tooltip":{ "_":"that" } } },
+                  { "as":{ "_":[ "objectTyped", "tooltip-title" ] }, "set":{ "html":{ "_":[ "that", "tooltip", "tooltipTitle" ] } } },
+                  { "as":{ "_":[ "objectTyped", "tooltip-subtitle" ] }, "set":{ "html":{ "_":[ "that", "tooltip", "tooltipSubtitle" ] } } },
+                  { "as":{ "_":[ "objectTyped", "tooltip-body" ] }, "set":{ "html":{ "_":[ "that", "tooltip", "tooltipBody" ] } } }
+                ]
+              }
+            },
+            { "as":{ "_":[ "object", "tooltip" ] }, "set":{ "visible":{ "_":[ "that", "tooltip", "not", "not" ] } } }
+          ]
+        }
+      }
+    },
+    "slot":{ "type":"slot", "image":"sprites", "tileX":32, "width":16, "height":16 },
+    "smoke":{
+      "image":"sprites", "tileX":176, "width":16, "height":16,
+      "zIndex":200, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "animations":{ "idle":{ "frames":4, "speed":1 } },
+      "animation":"idle",
+      "states":{ "code":[ { "name":"Sequence", "data":[ { "wait":10 }, { "remove":1 } ] }, { "name":"Physics" } ] }
+    },
+    "star":{
+      "image":"sprites", "tileX":48, "width":16, "height":16,
+      "zIndex":100, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "forceX":{ "_":[ "randomNumber", [ -4, 4 ] ] }, "forceY":{ "_":[ "randomNumber", [ -10, -5 ] ] },
+      "spinSpeed":{ "_":[ "randomNumber", [ -30, 30 ] ] },
+      "states":{
+        "code":[
+          {
+            "name":"Execute",
+            "data":[ { "sum":{ "_":[ "this", "spinSpeed" ] }, "to":{ "_":[ "this", "angle" ] } }, { "when":{ "_":[ "this", "y", "isGreaterThan", 192 ] }, "remove":1 } ]
+          },
+          { "name":"Physics", "data":{ "gravityY":1 } }
+        ]
+      }
+    }
+  },
+  "execute":[
+    { "when":{ "_":[ "storage", "stars", "not" ] }, "as":{ "_":"storage" }, "set":{ "stars":0 } },
+    { "when":{ "_":[ "storage", "grid", "not" ] }, "as":{ "_":"storage" }, "set":{ "grid":0 } },
+    { "when":{ "_":[ "storage", "notificationsId", "not" ] }, "as":{ "_":"storage" }, "set":{ "notificationsId":{ "_":[ "new", {} ] } } },
+    { "when":{ "_":[ "storage", "notifications", "not" ] }, "as":{ "_":"storage" }, "set":{ "notifications":{ "_":[ "new", [] ] } } },
+    {
+      "as":{ "_":"variable" },
+      "set":{
+        "grid":{ "_":[ "storage", "grid" ] },
+        "notifications":{ "_":[ "storage", "notifications" ] },
+        "notificationsId":{ "_":[ "storage", "notificationsId" ] },
+        "stars":{ "_":[ "storage", "stars" ] }
+      }
+    }
+  ],
+  "scenes":{
+    "intro":{
+      "execute":[
+        {
+          "when":{ "_":[ "variable", "stars", "not" ] },
+          "execute":{ "as":{ "_":"variable" }, "set":{ "tab":1 } },
+          "elseExecute":{ "as":{ "_":"variable" }, "set":{ "tab":0 } }
+        },
+        {
+          "when":{ "_":[ "variable", "grid", "not" ] },
+          "execute":[ { "as":{ "_":"variable" }, "set":{ "grid":{ "_":[ "new", [] ] } } }, { "assign":1, "to":{ "_":[ "variable", "grid", 74 ] } } ]
+        },
+        {
+          "object":[
+            { "_":[ "stencil", "pointer" ] },
+            { "type":"noplace", "width":160, "height":2, "x":0, "y":154 },
+            { "type":"noplace", "width":2, "height":144, "x":160, "y":10 },
+            { "type":"tooltip", "width":144, "height":110, "zIndex":300, "x":8, "y":18, "visible":0, "bgcolor":"#000", "border":"#fff" },
+            {
+              "type":[ "tooltip", "tooltip-title" ],
+              "width":128, "height":10,
+              "zIndex":301, "x":16, "y":26,
+              "visible":0,
+              "bgcolor":"#ff0", "color":"#000",
+              "font":"spectrum", "lineHeight":10
+            },
+            {
+              "type":[ "tooltip", "tooltip-subtitle" ],
+              "width":128, "height":10,
+              "zIndex":301, "x":16, "y":36,
+              "visible":0,
+              "color":"#7f7f7f",
+              "font":"spectrum", "lineHeight":10
+            },
+            {
+              "type":[ "tooltip", "tooltip-body" ],
+              "width":128, "height":74,
+              "zIndex":301, "x":16, "y":46,
+              "visible":0,
+              "color":"#fff",
+              "font":"spectrum", "lineHeight":10
+            },
+            { "type":"headerbar", "width":256, "height":10, "zIndex":100, "x":0, "y":0, "bgcolor":"#7f7f7f", "color":"#000", "font":"spectrum", "lineHeight":10 },
+            {
+              "type":"clicker",
+              "image":"sprites", "tileX":80, "tileY":0, "width":16, "height":16,
+              "zIndex":5, "x":72, "y":168,
+              "animations":{ "fall":{ "frame":5 }, "idle":{ "frames":4, "loopTo":0 }, "jump":{ "frame":4 } },
+              "animation":"idle",
+              "states":{
+                "code":{
+                  "name":"Execute",
+                  "data":{
+                    "when":{ "_":[ "this", "animFrame" ] },
+                    "execute":[
+                      { "subtract":1, "to":{ "_":[ "this", "animFrame" ] } },
+                      {
+                        "when":{ "_":[ "this", "animFrame", "isGreaterThan", 5 ] },
+                        "set":{ "x":{ "_":[ "this", "animFrame", "%", 2, "+", 72 ] }, "y":152 },
+                        "elseExecute":{ "set":{ "y":{ "_":[ 168, "-", { "_":[ "this", "animFrame", "*", 3 ] } ] }, "animation":"fall" } }
+                      }
+                    ],
+                    "elseExecute":{ "set":{ "y":168, "animation":"idle" } }
+                  }
+                },
+                "actions":{ "name":"click", "execute":{ "set":{ "animFrame":10, "changeAnimation":"jump" } } }
+              }
+            },
+            {
+              "type":"clicker",
+              "width":11, "height":28,
+              "x":76, "y":156,
+              "bgcolor":"#ff0",
+              "states":{
+                "code":{
+                  "name":"Execute",
+                  "data":{ "when":{ "_":[ "this", "animFrame" ] }, "subtract":1, "to":{ "_":[ "this", "animFrame" ] }, "elseExecute":{ "set":{ "visible":0 } } }
+                },
+                "actions":{ "name":"click", "execute":{ "set":{ "visible":1, "animFrame":1 } } }
+              }
+            },
+            { "width":96, "height":182, "zIndex":100, "x":160, "y":10, "bgcolor":"#00007f" },
+            {
+              "type":[ "tablabel", "tablabel-0", "clickable" ],
+              "width":48, "height":10,
+              "zIndex":110, "x":160, "y":10,
+              "font":"spectrum", "lineHeight":10, "textAlign":"center", "html":"BLOCK",
+              "states":{ "actions":{ "name":"click", "execute":{ "as":{ "_":"variable" }, "set":{ "tab":0 }, "execute":{ "_":[ "stencil", "codeSwitchTab" ] } } } }
+            },
+            {
+              "type":[ "tablabel", "tablabel-1", "clickable" ],
+              "width":48, "height":10,
+              "zIndex":110, "x":208, "y":10,
+              "font":"spectrum", "lineHeight":10, "textAlign":"center", "html":"ABOUT",
+              "states":{ "actions":{ "name":"click", "execute":{ "as":{ "_":"variable" }, "set":{ "tab":1 }, "execute":{ "_":[ "stencil", "codeSwitchTab" ] } } } }
+            },
+            { "type":[ "tabitem", "tabitem-1" ], "image":"sprites", "tileY":208, "width":93, "height":31, "zIndex":110, "x":161, "y":30 },
+            {
+              "type":[ "tabitem", "tabitem-1" ],
+              "tileY":208, "width":93, "height":111,
+              "zIndex":110, "x":161, "y":71,
+              "font":"spectrum", "lineHeight":10, "textAlign":"center", "html":"Welcome!<br><br>Just click anywhere for jumping. Make as many stars as you can!"
+            }
+          ]
+        },
+        { "set":{ "counter":0 } },
+        {
+          "times":90,
+          "execute":[
+            {
+              "object":{
+                "type":{ "_":[ "slot-", ".", { "_":[ "that", "counter" ] } ] },
+                "set":{ "_":[ "stencil", "slot" ] },
+                "x":{ "_":[ "that", "counter", "%", 10, "*", 16 ] }, "y":{ "_":[ "that", "counter", "/", 10, "floor", "*", 16, "+", 10 ] },
+                "slot":{ "_":[ "that", "counter" ] }
+              }
+            },
+            { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+          ]
+        },
+        { "set":{ "counter":0 } },
+        {
+          "times":10,
+          "execute":[
+            { "object":{ "image":"sprites", "tileX":64, "width":16, "height":16, "x":{ "_":[ "that", "counter", "*", 16 ] }, "y":184 } },
+            { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+          ]
+        },
+        { "_":[ "stencil", "codeRedrawGrid" ] },
+        { "_":[ "stencil", "codeUpdateUi" ] }
+      ],
+      "lastSeconds":0,
+      "lastTime":0,
+      "states":{
+        "code":[
+          {
+            "name":"Execute",
+            "data":[
+              { "set":{ "doClick":0 } },
+              { "set":{ "newTime":{ "_":[ "date", "allMilliseconds" ] } } },
+              {
+                "when":{ "_":[ "this", "lastTime" ] },
+                "execute":[
+                  { "set":{ "timePast":{ "_":[ "this", "newTime", "-", { "_":[ "this", "lastTime" ] }, "/", 1000, "floor" ] } } },
+                  {
+                    "when":{ "_":[ "this", "timePast" ] },
+                    "execute":[
+                      { "set":{ "clickEvery":{ "_":[ "new", [] ] }, "clicks":0, "starsPerClick":0 } },
+                      {
+                        "as":{ "_":[ "object", "placedblocks" ] },
+                        "execute":[
+                          { "sum":{ "_":[ "this", "stars" ] }, "to":{ "_":[ "that", "starsPerClick" ] } },
+                          {
+                            "when":{ "_":[ "this", "autoEvery" ] },
+                            "execute":{
+                              "when":{ "_":[ "that", "clickEvery", "search", { "_":[ "this", "autoEvery" ] }, "not" ] },
+                              "execute":[
+                                { "sum":{ "_":[ "that", "timePast", "/", { "_":[ "this", "autoEvery" ] }, "floor" ] }, "to":{ "_":[ "that", "clicks" ] } },
+                                { "as":{ "_":[ "this", "autoEvery" ] }, "pushInto":{ "_":[ "scene", "clickEvery" ] } }
+                              ]
+                            }
+                          }
+                        ]
+                      },
+                      { "sum":{ "_":[ "this", "starsPerClick", "*", { "_":[ "this", "clicks" ] } ] }, "to":{ "_":[ "variable", "stars" ] } },
+                      { "_":[ "stencil", "codeUpdateUi" ] }
+                    ]
+                  }
+                ]
+              },
+              { "set":{ "lastTime":{ "_":[ "this", "newTime" ] } } },
+              { "set":{ "newSeconds":{ "_":[ "date", "allSeconds" ] } } },
+              {
+                "when":{ "_":[ "this", "newSeconds", "isNotEqualTo", { "_":[ "this", "lastSeconds" ] } ] },
+                "execute":[
+                  { "set":{ "lastSeconds":{ "_":[ "this", "newSeconds" ] } } },
+                  {
+                    "as":{ "_":[ "object", "placedblocks" ] },
+                    "execute":[
+                      { "sum":{ "_":[ "this", "stars" ] }, "to":{ "_":[ "that", "starsPerClick" ] } },
+                      {
+                        "when":{ "_":[ "this", "autoEvery" ] },
+                        "execute":{ "when":{ "_":[ "that", "lastSeconds", "%", { "_":[ "this", "autoEvery" ] }, "not" ] }, "as":{ "_":"that" }, "set":{ "doClick":1 } }
+                      }
+                    ]
+                  }
+                ]
+              },
+              { "when":{ "_":[ "this", "keyPointer", "isHit" ] }, "set":{ "doClick":1 } },
+              { "when":{ "_":[ "this", "doClick" ] }, "execute":[ { "_":[ "stencil", "codeClick" ] }, { "_":[ "stencil", "codeSaveState" ] } ] }
+            ]
+          },
+          {
+            "name":"Sequence",
+            "data":[
+              { "wait":1, "loop":1, "until":{ "_":[ "variable", "notifications", "count" ] } },
+              {
+                "when":{ "_":[ "variable", "notifications", "count" ] },
+                "execute":[
+                  {
+                    "object":[
+                      { "type":"notification", "width":144, "height":46, "zIndex":300, "x":8, "y":140, "bgcolor":"#00f", "border":"#fff" },
+                      {
+                        "type":"notification",
+                        "width":128, "height":30,
+                        "zIndex":301, "x":16, "y":148,
+                        "color":"#fff",
+                        "font":"spectrum", "lineHeight":10, "html":{ "_":[ "variable", "notifications", 0 ] }
+                      }
+                    ]
+                  },
+                  { "unpushAt":0, "from":{ "_":[ "variable", "notifications" ] } }
+                ]
+              },
+              { "wait":75 },
+              { "as":{ "_":[ "object", "notification" ] }, "remove":1 },
+              { "loopTo":0 }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}
