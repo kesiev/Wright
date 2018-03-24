@@ -951,17 +951,19 @@
         "x":0, "y":0,
         "font":"spectrum", "fontSize":20, "lineHeight":192, "outline":"#000", "textAlign":"center", "html":"GAME OVER"
       },
-      "execute":[
-        { "publishScore":{ "_":[ "variable", "score" ] } },
+      "execute":[        
         {
           "when":{ "_":[ "cheat", "unlimitedlives", "not" ] },
-          "execute":{
-            "when":{ "_":[ "variable", "score", "isGreaterThan", { "_":[ "variable", "hiscore" ] } ] },
-            "execute":[
-              { "as":{ "_":"variable" }, "set":{ "hiscore":{ "_":[ "variable", "score" ] } } },
-              { "as":{ "_":"storage" }, "set":{ "hiscore":{ "_":[ "variable", "score" ] } } }
-            ]
-          }
+          "execute":[
+              { "publishScore":{ "_":[ "variable", "score" ] } },
+              {
+              "when":{ "_":[ "variable", "score", "isGreaterThan", { "_":[ "variable", "hiscore" ] } ] },
+              "execute":[
+                { "as":{ "_":"variable" }, "set":{ "hiscore":{ "_":[ "variable", "score" ] } } },
+                { "as":{ "_":"storage" }, "set":{ "hiscore":{ "_":[ "variable", "score" ] } } }
+              ]
+            }
+          ]
         }
       ],
       "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"intro", "withTransition":3 } } }
