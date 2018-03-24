@@ -126,6 +126,7 @@ Since I've decided to implement from scratch the nicest things I learnt, thought
   * Disable device standby on fullscreen
   * Per-game fullscreen effects: scanlines, LCD and CRT effects etc.
   * Modular and scriptable stack-based fullscreen effects engine
+  * Per-game orientation lock
 
 #### Storage
 
