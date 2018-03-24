@@ -42,6 +42,10 @@ var Supports = (function(){
 			if (node.removeEventListener) node.removeEventListener(evt,cb,rt);
 			else node.detachEvent("on"+evt,cb)
 		},
+		lockOrientation:function(orientation) {
+			if (this.lockorientation) this.lockorientation(orientation);
+			else if (screen.orientation&&screen.orientation.lock) screen.orientation.lock(orientation);
+		},
 		setFullScreen:function(node) {
 			if (Supports.nativeFullscreen) node[Supports.nativeFullscreen.request]();
 			else if (!this._fullscreen.node) {
@@ -139,7 +143,8 @@ var Supports = (function(){
 	ret.isTouch=!!('ontouchstart' in window || navigator.maxTouchPoints);
 	ret.noSleepEnabled=!document.chrome;
 	ret.isOldIOS = typeof navigator !== 'undefined' && parseFloat(('' + (/CPU.*OS ([0-9_]{3,4})[0-9_]{0,1}|(CPU like).*AppleWebKit.*Mobile/i.exec(navigator.userAgent) || [0, ''])[1]).replace('undefined', '3_2').replace('_', '.').replace('_', '')) < 10 && !window.MSStream;
-	window.AudioContext=ret.isAudio=window.AudioContext||window.webkitAudioContext;
+	ret.audioContext=window.AudioContext||window.webkitAudioContext;
+	ret.isAudio=!!ret.audioContext;
 	ret.isSafari=navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1;
 	if (div.requestFullscreen) ret.nativeFullscreen={request:"requestFullscreen",exit:"exitFullscreen",is:"fullscreenEnabled",on:"fullscreenchange",error:"fullscreenerror"};
 	else if (div.webkitRequestFullscreen) ret.nativeFullscreen={request:"webkitRequestFullScreen",exit:"webkitExitFullscreen",is:"webkitIsFullScreen",on:"webkitfullscreenchange",error:"webkitfullscreenerror"};
@@ -149,6 +154,7 @@ var Supports = (function(){
 	if (window.DeviceOrientationEvent) ret.orientation={on:"deviceorientation",get:function(e){return[e.alpha,e.beta,e.gamma]}}
 	else ret.orientation=0;
 	if (ret.isSafari) ret.nativeFullscreen=false; // @FIXME: Safari mobile doesn't support fullscreen and desktop one doesn't support keyboard input... :\
+	ret.lockorientation=screen.lockOrientation||screen.mozLockOrientation||screen.msLockOrientation;
 	ret._fullscreen={};
 	var elem = document.createElement('canvas');
   	ret.isCanvas=!!(elem.getContext && elem.getContext('2d'));
@@ -704,7 +710,7 @@ var DOMInator=function(useCanvas,aliasmode,controller,nosleep){
 	this.enableAudio=function(volume) {
 		if (!audio&&Supports.isAudio) {
 			audio={
-				context: new AudioContext(),
+				context: new Supports.audioContext(),
 				channels:{},
 				defaults:{}
 			};
@@ -1157,7 +1163,7 @@ var DOMInator=function(useCanvas,aliasmode,controller,nosleep){
 	}
 
 	/* Fullscreen handler */
-	var lockFullscreen,isFullScreen,touchCommandFullScreen,gameScreen=0,orgScalex=0,orgScaley=0,guidetimeout;
+	var lockFullscreen,isFullScreen,orientation,touchCommandFullScreen,gameScreen=0,orgScalex=0,orgScaley=0,guidetimeout;
 	function removeGuide() {
 		if (guidetimeout) {
 			root.removeChild(guide);
@@ -1189,6 +1195,7 @@ var DOMInator=function(useCanvas,aliasmode,controller,nosleep){
 		gameScreen.setStyle("scaley",scalex,true);
 		screenContainer.style.left=Math.floor((width-(gameScreen.style.width*scalex))/2)+"px";
 		screenContainer.style.top=Math.floor((height-(gameScreen.style.height*scalex))/2)+"px";
+		if (orientation) Supports.lockOrientation(orientation);
 	}
 	function exitFullScreen(noexit) {
 		isFullScreen=0;
@@ -1248,6 +1255,8 @@ var DOMInator=function(useCanvas,aliasmode,controller,nosleep){
 			e.preventDefault();
 		}
 	}
+	this.setOrientation=function(setorientation) { orientation=setorientation; }
+
 	var root=document.createElement("div");
 	root.style.display="inline";
 	root.style.backgroundColor="#000";
@@ -3107,8 +3116,12 @@ function Box(parent, type, sub, statemanager, useCanvas, aliasmode, controller) 
 		box.addResource = function(name, data) { return this.node.addResource(name, data); };		
 		box.loadResources = function(cb)  { return this.node.loadResources(cb); };	
 
-		// FULLSCREEN MANAGEMENT
+		// SCREEN MANAGEMENT
 		box.gotoFullScreen = function(lock) { this.node.gotoFullScreen(lock) }
+		box.setOrientation = function(setorientation) {
+			this.node.setOrientation(setorientation);
+			return this;
+		}
 
 		// SCREEN - UID generator
 		box.uids = { 0: box };
@@ -5784,7 +5797,7 @@ function Wright(gameId,mods) {
 			mods.onReady();
 		} else {
 			this.game=game = Box(tv, "game", 0, 0, mode.renderer, hardware.aliasMode||"pixelated",mods.controller);
-			game.setGridSize(hardware.gridSize).setControls(controls).setColor("#fff").setBgcolor("#000").size(hardware).setFps(hardware.fps||25).setScale(mode.scale).setOriginX(0).setOriginY(0);
+			game.setGridSize(hardware.gridSize).setControls(controls).setColor("#fff").setBgcolor("#000").size(hardware).setOrientation(hardware.orientation).setFps(hardware.fps||25).setScale(mode.scale).setOriginX(0).setOriginY(0);
 			game.getState("default").do(Code.GameManager);
 			if (mode.volume&&gamedata.audioChannels) game.enableAudio(mode.volume/100);
 			tv.style.width = (game.width * game.scale) + "px";
