@@ -1,0 +1,1189 @@
+{
+  "name":"Boss Machine",
+  "author":"KesieV",
+  "year":2017,
+  "genre":"Shoot'em up",
+  "description":"<p><a href='http://www.firstpersonscholar.com/warning-forever/'>Warning Forever</a> (2003) is a <a href='http://www.firstpersonscholar.com/warning-forever/'>controversial game</a> for the SHMUP community: while it looks like a <a href='https://en.wikipedia.org/wiki/Shoot_%27em_up'>danmaku</a> game to the profane with its barrage of bullets on the screen, the game partial predictability and acceptable intensity sticks it to the <i>boss rush vertical shooter</i> category.</p><p>For me, Warning Forever has been <i>the game of the change</i>.</p><p>Around the 2000s I used to feverishly explore the <a href='https://en.wikipedia.org/wiki/Freeware'>freeware</a> scene looking for good games. I've found fascinating that someone decides to make software for free - even if its quality was often sub-par compared to the commercial ones. (poor me... during that time I was a Linux user and I didn't realise that I <i>already had</i> my answer).</p><p>Then I met Warning Forever: it was an arcade quality game, so much fun to play, original and completely free. I used to play SHMUPs at the local arcade, despite I never managed to play them well, and having a game I'd have paid to play it for free actually impacted my expenses, mood and mind.</p><p>For someone, making <i>software for free</i> wasn't just a pasttime. It wasn't <i>making software with no value or to practise bit</i>. It was <i>another way of feeling the value of software</i>.</p><p>And the rest is history.</p><p>Plot!</p><p>The Corrupted AI Core is trying to escape Virtual Reality and dominate our planet! Can you handle that? Fly with the Purple Fighter and take it down... again and again! Use UP/DOWN/LEFT/RIGHT for moving and the A BUTTON for firing.</p>",
+  "screenshots":[ "bossmachine-1.png", "bossmachine-2.png" ],
+  "hardware":{
+    "width":256,
+    "height":192,
+    "filter":"retro"
+  },
+  "audioChannels":{
+    "music":{ "volume":1, "looping":1, "samples":[ "bgm" ] },
+    "loudsfx":{ "volume":0.9, "samples":[ "blam", "open" ] },
+    "sfx":{ "volume":0.6, "samples":[ "fire", "beep2", "rampup", "rampdown", "beep3", "explode" ] }
+  },
+  "cheats":{},
+  "resources":{
+    "bgm":"artest2.ogg",
+    "ships":"ships.png",
+    "spectrum":"spectrum.font",
+    "sprites":"sprites.png",
+    "title":"title.png",
+    "beep2":"../default/zxsounds/beep2.ogg",
+    "beep3":"../default/zxsounds/beep3.ogg",
+    "blam":"../default/zxsounds/open.ogg",
+    "explode":"../default/zxsounds/explode.ogg",
+    "fire":"../default/zxsounds/fire.ogg",
+    "open":"../default/zxsounds/open.ogg",
+    "rampdown":"../default/zxsounds/rampdown.ogg",
+    "rampup":"../default/zxsounds/rampup.ogg"
+  },
+  "stencils":{
+    "codeDrawGrid":[
+      { "set":{ "counterY":0 } },
+      {
+        "times":6,
+        "execute":[
+          {
+            "object":{
+              "width":256, "height":1,
+              "zIndex":2, "x":0, "y":{ "_":[ "that", "counterY" ] },
+              "bgcolor":"#007f00",
+              "states":{
+                "code":{ "name":"Execute", "data":[ { "sum":1, "to":{ "_":[ "this", "y" ] } }, { "when":{ "_":[ "this", "y", "isGreaterThan", 192 ] }, "set":{ "y":0 } } ] }
+              }
+            }
+          },
+          { "sum":32, "to":{ "_":[ "this", "counterY" ] } }
+        ]
+      },
+      { "set":{ "counterY":0 } },
+      {
+        "times":8,
+        "execute":[
+          {
+            "object":{
+              "width":1, "height":192,
+              "zIndex":2, "x":{ "_":[ "that", "counterY" ] }, "y":0,
+              "bgcolor":"#007f00",
+              "states":{
+                "code":{
+                  "name":"Execute",
+                  "data":[ { "sum":0.5, "to":{ "_":[ "this", "x" ] } }, { "when":{ "_":[ "this", "x", "isGreaterThan", 256 ] }, "set":{ "x":0 } } ]
+                }
+              }
+            }
+          },
+          { "sum":32, "to":{ "_":[ "this", "counterY" ] } }
+        ]
+      }
+    ],
+    "codeUpdateShip":[
+      { "set":{ "dx":{ "_":[ "this", "x", "-", { "_":[ "this", "ox" ] } ] }, "dy":{ "_":[ "this", "y", "-", { "_":[ "this", "oy" ] } ] } } },
+      {
+        "as":{ "_":[ "object", "shippart" ] },
+        "execute":[ { "sum":{ "_":[ "that", "dy" ] }, "to":{ "_":[ "this", "y" ] } }, { "sum":{ "_":[ "that", "dx" ] }, "to":{ "_":[ "this", "x" ] } } ]
+      },
+      { "as":{ "_":[ "object", "shipbody" ] }, "executeAction":"update" },
+      { "set":{ "ox":{ "_":[ "this", "x" ] }, "oy":{ "_":[ "this", "y" ] } } }
+    ],
+    "spark":{
+      "image":"sprites", "tileY":80, "width":8, "height":8,
+      "zIndex":45, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "animations":{ "idle":{ "frames":3, "speed":1 } },
+      "animation":"idle",
+      "states":{ "code":[ { "name":"Sequence", "data":[ { "wait":8 }, { "remove":1 } ] }, { "name":"Physics" } ] }
+    },
+    "modelPopupLabel":{
+      "width":200, "height":20,
+      "zIndex":10000, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "that", "y", "-", 5 ] },
+      "color":"#fff",
+      "font":"spectrum", "lineHeight":12, "outline":"#000", "textAlign":"center",
+      "speed":0.5,
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[ { "subtract":{ "_":[ "this", "speed" ] }, "to":{ "_":[ "this", "y" ] }, "wait":1, "loop":1, "cycles":15 }, { "remove":1 } ]
+        }
+      }
+    },
+    "player":{
+      "type":"player",
+      "image":"sprites", "tileY":32, "width":16, "height":16,
+      "zIndex":40, "x":120, "y":160, "frame":2,
+      "hitbox":{ "width":2, "height":5, "x":7, "y":8 },
+      "execute":{
+        "object":{ "image":"sprites", "tileX":64, "tileY":64, "width":16, "height":16, "zIndex":39, "visible":0 },
+        "assign":{ "_":"that" },
+        "to":{ "_":[ "this", "spark" ] }
+      },
+      "invulnerability":0,
+      "states":[
+        {
+          "code":[
+            {
+              "name":"Execute",
+              "data":[
+                {
+                  "when":{ "_":[ "keyA", "isHit" ] },
+                  "execute":[
+                    { "object":{ "_":[ "stencil", "playerBullet" ] }, "playAudio":"fire" },
+                    {
+                      "as":{ "_":[ "this", "spark" ] },
+                      "set":{
+                        "x":{ "_":[ "that", "x" ] }, "y":{ "_":[ "that", "y", "-", 14 ] }, "frame":{ "_":[ "randomNumber", [ 0, 3 ] ] },
+                        "visible":1, "flipX":{ "_":[ "randomNumber", [ 0, 1 ] ] }
+                      }
+                    }
+                  ],
+                  "elseExecute":{ "as":{ "_":[ "this", "spark" ] }, "set":{ "visible":0 } }
+                },
+                {
+                  "when":{ "_":[ "this", "invulnerability" ] },
+                  "subtract":1,
+                  "to":{ "_":[ "this", "invulnerability" ] },
+                  "set":{ "visible":{ "_":[ "this", "invulnerability", "%", 2 ] } },
+                  "elseExecute":[ { "set":{ "visible":1 } }, { "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "killplayer" ] } ] }, "set":{ "state":"destroy" } } ]
+                },
+                {
+                  "when":{ "_":[ "scene", "bossvulnerable" ] },
+                  "execute":[ { "subtract":1, "to":{ "_":[ "scene", "time" ] } }, { "when":{ "_":[ "scene", "time", "isLessEqualThan", 0 ] }, "set":{ "state":"destroy" } } ]
+                }
+              ]
+            },
+            {
+              "name":"Sequence",
+              "data":[
+                {
+                  "when":{ "_":[ "this", "forceX", "isLessThan", 0 ] },
+                  "execute":{ "when":{ "_":[ "this", "frame", "isGreaterThan", 0 ] }, "subtract":1, "to":{ "_":[ "this", "frame" ] } },
+                  "elseExecute":{
+                    "when":{ "_":[ "this", "forceX", "isGreaterThan", 0 ] },
+                    "execute":{ "when":{ "_":[ "this", "frame", "isLessThan", 4 ] }, "sum":1, "to":{ "_":[ "this", "frame" ] } },
+                    "elseExecute":{
+                      "when":{ "_":[ "this", "frame", "isGreaterThan", 2 ] },
+                      "subtract":1,
+                      "to":{ "_":[ "this", "frame" ] },
+                      "elseExecute":{ "when":{ "_":[ "this", "frame", "isLessThan", 2 ] }, "sum":1, "to":{ "_":[ "this", "frame" ] } }
+                    }
+                  }
+                },
+                { "wait":3 },
+                { "loopTo":0 }
+              ]
+            },
+            { "name":"Player", "data":{ "horizontal":{ "control":1, "gotoZero":1 }, "vertical":{ "control":1, "gotoZero":1 } } },
+            {
+              "name":"Physics",
+              "data":{ "walls":{ "area":{ "width":256, "height":192, "x":0, "y":0 }, "restitution":0 }, "limitX":[ -3, 3 ], "limitY":[ -3, 3 ] }
+            }
+          ]
+        },
+        {
+          "name":"destroy",
+          "set":{ "visible":0, "playAudio":"open" },
+          "execute":[ { "as":{ "_":[ "this", "spark" ] }, "set":{ "visible":0 } }, { "as":{ "_":"scene" }, "set":{ "screenShake":10, "screenShakeStrength":4 } } ],
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "_":[ "stencil", "cloud" ] },
+              { "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "color":"#f0f", "html":"-20sec" } },
+              { "subtract":500, "to":{ "_":[ "scene", "time" ] } },
+              { "when":{ "_":[ "scene", "time", "isLessEqualThan", 0 ] }, "as":{ "_":"scene" }, "set":{ "time":0 } },
+              { "wait":25 },
+              {
+                "when":{ "_":[ "scene", "time" ] },
+                "set":{ "x":120, "y":160, "frame":2, "visible":1, "forceX":0, "forceY":0, "invulnerability":50, "state":"default" },
+                "elseExecute":{ "as":{ "_":"scene" }, "set":{ "state":"gameover" } }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "playerBullet":{
+      "image":"sprites", "tileY":48, "width":8, "height":8,
+      "zIndex":30, "x":{ "_":[ "that", "x", "+", 4 ] }, "y":{ "_":[ "that", "y" ] },
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":{
+            "when":{ "_":[ "this", "y", "isGreaterThan", -16 ] },
+            "execute":[
+              { "subtract":8, "to":{ "_":[ "this", "y" ] } },
+              {
+                "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "shipbody" ] } ] },
+                "execute":[ { "object":{ "_":[ "stencil", "spark" ] } }, { "remove":1 }, { "as":{ "_":"that" }, "executeAction":"hit" } ]
+              }
+            ],
+            "elseExecute":{ "remove":1 }
+          }
+        }
+      }
+    },
+    "enemyBulletModel":{
+      "type":[ "killplayer", "enemybullet" ],
+      "image":"sprites",
+      "zIndex":40, "frame":{ "_":[ "that", "bulletFrame" ] },
+      "execute":[
+        {
+          "applyVector":{
+            "angle":{ "_":[ "that", "angle", "+", { "_":[ "randomNumber", [ { "_":[ "that", "bulletSpread", "*", -1 ] }, { "_":[ "that", "bulletSpread" ] } ] ] } ] },
+            "length":{ "_":[ "this", "bulletSpeed" ] }
+          }
+        },
+        { "when":{ "_":[ "that", "bulletOrient" ] }, "set":{ "angle":{ "_":[ "that", "angle" ] } } }
+      ],
+      "bulletSmoke":{ "_":[ "that", "bulletSmoke" ] },
+      "bulletSpeed":{ "_":[ "that", "bulletSpeed", "+", { "_":[ "randomNumber", [ 0, 10 ], "/", 10, "*", { "_":[ "that", "bulletSpeedSpread" ] } ] } ] },
+      "homingSpeed":{ "_":[ "that", "bulletHomingSpeed" ] },
+      "life":125,
+      "smokeCounter":0,
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":[
+            { "sum":{ "_":[ "this", "forceX" ] }, "to":{ "_":[ "this", "x" ] } },
+            { "sum":{ "_":[ "this", "forceY" ] }, "to":{ "_":[ "this", "y" ] } },
+            {
+              "when":{ "_":[ "this", "homingSpeed" ] },
+              "execute":[
+                { "set":{ "aimDestination":{ "_":[ "this", "angleTo", { "_":[ "objectTyped", "player" ] } ] } } },
+                { "set":{ "aimDelta":{ "_":[ "this", "angle", "shortestAngleTo", { "_":[ "this", "aimDestination" ] } ] } } },
+                {
+                  "when":{ "_":[ "aimDelta", "abs", "isLessEqualThan", { "_":[ "this", "homingSpeed" ] } ] },
+                  "set":{ "angle":{ "_":[ "this", "aimDestination" ] } },
+                  "elseExecute":{
+                    "when":{ "_":[ "this", "aimDelta", "isLessThan", 0 ] },
+                    "subtract":{ "_":[ "this", "homingSpeed" ] },
+                    "to":{ "_":[ "this", "angle" ] },
+                    "elseExecute":{ "sum":{ "_":[ "this", "homingSpeed" ] }, "to":{ "_":[ "this", "angle" ] } }
+                  }
+                },
+                { "applyVector":{ "angle":{ "_":[ "this", "angle" ] }, "length":{ "_":[ "this", "bulletSpeed" ] } } }
+              ]
+            },
+            {
+              "when":{ "_":[ "this", "bulletSmoke" ] },
+              "execute":[
+                { "sum":1, "to":{ "_":[ "this", "smokeCounter" ] } },
+                {
+                  "when":{ "_":[ "this", "smokeCounter", "isGreaterEqualThan", { "_":[ "this", "bulletSmoke" ] } ] },
+                  "object":{ "_":[ "stencil", "spark" ] },
+                  "set":{ "smokeCounter":0 }
+                }
+              ]
+            },
+            {
+              "when":{ "_":[ "this", "life" ] },
+              "subtract":1,
+              "to":{ "_":[ "this", "life" ] },
+              "elseExecute":{ "object":{ "_":[ "stencil", "spark" ] }, "remove":1 }
+            },
+            {
+              "when":{
+                "_":[
+                  "this",
+                  "x",
+                  "isLessThan",
+                  -160,
+                  "or",
+                  { "_":[ "this", "x", "isGreaterThan", 416 ] },
+                  "or",
+                  { "_":[ "this", "y", "isLessThan", -160 ] },
+                  "or",
+                  { "_":[ "this", "y", "isGreaterThan", 352 ] }
+                ]
+              },
+              "remove":1
+            }
+          ]
+        }
+      }
+    },
+    "enemyLargeBullet":{
+      "set":{ "_":[ "stencil", "enemyBulletModel" ] },
+      "tileX":48, "tileY":48, "width":16, "height":16,
+      "at":{ "_":"that" },
+      "hitbox":{ "width":8, "height":8, "x":4, "y":4 }
+    },
+    "enemyNormalBullet":{
+      "set":{ "_":[ "stencil", "enemyBulletModel" ] },
+      "tileY":56, "width":8, "height":8,
+      "x":{ "_":[ "that", "x", "+", 4 ] }, "y":{ "_":[ "that", "y", "+", 4 ] }
+    },
+    "bombCannon":{
+      "set":{ "_":[ "stencil", "cannonModel" ] },
+      "frame":4,
+      "aimSpeed":3,
+      "bulletFrame":0,
+      "bulletOrient":0,
+      "bulletSmoke":3,
+      "bulletSpeed":8,
+      "bulletSpeedSpread":0,
+      "bulletSpread":0,
+      "bulletType":"enemyLargeBullet",
+      "burstBullets":1,
+      "burstHits":1,
+      "burstSpeed":1,
+      "fireEvery":20
+    },
+    "laserCannon":{
+      "set":{ "_":[ "stencil", "cannonModel" ] },
+      "frame":2,
+      "aimSpeed":1,
+      "bulletFrame":0,
+      "bulletOrient":1,
+      "bulletSpeed":3,
+      "bulletSpeedSpread":0,
+      "bulletSpread":0,
+      "bulletType":"enemyLargeBullet",
+      "burstBullets":1,
+      "burstHits":10,
+      "burstSpeed":0,
+      "fireEvery":10
+    },
+    "missileCannon":{
+      "set":{ "_":[ "stencil", "cannonModel" ] },
+      "frame":3,
+      "aimSpeed":0,
+      "bulletFrame":2,
+      "bulletHomingSpeed":2,
+      "bulletOrient":1,
+      "bulletSmoke":3,
+      "bulletSpeed":5,
+      "bulletSpeedSpread":0,
+      "bulletSpread":20,
+      "bulletType":"enemyNormalBullet",
+      "burstBullets":1,
+      "burstHits":1,
+      "burstSpeed":1,
+      "fireEvery":25
+    },
+    "cannonModel":{
+      "image":"sprites", "tileY":16, "width":16, "height":16,
+      "zIndex":45,
+      "visible":0, "angle":180,
+      "burstCount":0,
+      "fireMode":0,
+      "fireTimer":0,
+      "states":{
+        "actions":{
+          "name":"update",
+          "execute":[
+            {
+              "when":{ "_":[ "scene", "bossvulnerable" ] },
+              "execute":[
+                {
+                  "when":{ "_":[ "this", "aimSpeed" ] },
+                  "execute":[
+                    { "set":{ "aimDestination":{ "_":[ "this", "angleTo", { "_":[ "objectTyped", "player" ] } ] } } },
+                    { "set":{ "aimDelta":{ "_":[ "this", "angle", "shortestAngleTo", { "_":[ "this", "aimDestination" ] } ] } } },
+                    {
+                      "when":{ "_":[ "aimDelta", "abs", "isLessEqualThan", { "_":[ "this", "aimSpeed" ] } ] },
+                      "set":{ "angle":{ "_":[ "this", "aimDestination" ] } },
+                      "elseExecute":{
+                        "when":{ "_":[ "this", "aimDelta", "isLessThan", 0 ] },
+                        "subtract":{ "_":[ "this", "aimSpeed" ] },
+                        "to":{ "_":[ "this", "angle" ] },
+                        "elseExecute":{ "sum":{ "_":[ "this", "aimSpeed" ] }, "to":{ "_":[ "this", "angle" ] } }
+                      }
+                    }
+                  ]
+                },
+                {
+                  "when":{ "_":[ "this", "fireMode", "isEqualTo", 0 ] },
+                  "execute":[
+                    { "sum":1, "to":{ "_":[ "this", "fireTimer" ] } },
+                    { "when":{ "_":[ "this", "fireTimer", "isEqualTo", { "_":[ "this", "fireEvery" ] } ] }, "set":{ "burstCount":0, "fireMode":1, "fireTimer":0 } }
+                  ]
+                },
+                {
+                  "when":{ "_":[ "this", "fireMode", "isEqualTo", 1 ] },
+                  "execute":{
+                    "when":{ "_":[ "this", "fireTimer" ] },
+                    "execute":[
+                      { "sum":1, "to":{ "_":[ "this", "fireTimer" ] } },
+                      { "when":{ "_":[ "this", "fireTimer", "isGreaterEqualThan", { "_":[ "this", "burstSpeed" ] } ] }, "set":{ "fireTimer":0 } }
+                    ],
+                    "elseExecute":[
+                      { "sum":1, "to":{ "_":[ "this", "burstCount" ] } },
+                      { "times":{ "_":[ "this", "burstBullets" ] }, "object":{ "_":[ "stencil", { "_":[ "this", "bulletType" ] } ] } },
+                      {
+                        "when":{ "_":[ "this", "burstCount", "isGreaterEqualThan", { "_":[ "this", "burstHits" ] } ] },
+                        "set":{ "fireMode":0, "fireTimer":0 },
+                        "elseExecute":{ "set":{ "fireTimer":1 } }
+                      }
+                    ]
+                  }
+                }
+              ]
+            },
+            { "set":{ "at":{ "_":"that" }, "visible":1 } }
+          ]
+        }
+      }
+    },
+    "needleCannon":{
+      "set":{ "_":[ "stencil", "cannonModel" ] },
+      "frame":5,
+      "aimSpeed":5,
+      "bulletFrame":3,
+      "bulletOrient":1,
+      "bulletSpeed":5,
+      "bulletSpeedSpread":0,
+      "bulletSpread":0,
+      "bulletType":"enemyNormalBullet",
+      "burstBullets":1,
+      "burstHits":4,
+      "burstSpeed":5,
+      "fireEvery":20
+    },
+    "smashCannon":{
+      "set":{ "_":[ "stencil", "cannonModel" ] },
+      "frame":1,
+      "aimSpeed":0,
+      "bulletFrame":1,
+      "bulletOrient":1,
+      "bulletSpeed":3,
+      "bulletSpeedSpread":3,
+      "bulletSpread":10,
+      "bulletType":"enemyNormalBullet",
+      "burstBullets":5,
+      "burstHits":1,
+      "burstSpeed":3,
+      "fireEvery":20
+    },
+    "vulcanCannon":{
+      "set":{ "_":[ "stencil", "cannonModel" ] },
+      "aimSpeed":0,
+      "bulletFrame":0,
+      "bulletOrient":0,
+      "bulletSpeed":5,
+      "bulletSpeedSpread":0,
+      "bulletSpread":5,
+      "bulletType":"enemyNormalBullet",
+      "burstBullets":1,
+      "burstHits":10,
+      "burstSpeed":3,
+      "fireEvery":10
+    },
+    "cloud":{
+      "times":5,
+      "object":{ "set":{ "_":[ "stencil", "smoke" ] } },
+      "execute":[
+        { "sum":{ "_":[ "randomNumber", [ { "_":[ "this", "width", "/", -2 ] }, { "_":[ "this", "width", "/", 2 ] } ] ] }, "to":{ "_":[ "that", "x" ] } },
+        { "sum":{ "_":[ "randomNumber", [ { "_":[ "this", "height", "/", -2 ] }, { "_":[ "this", "height", "/", 2 ] } ] ] }, "to":{ "_":[ "that", "y" ] } }
+      ]
+    },
+    "dataShipColors":[ "#7f0000", "#007f00", "#00f", "#7f7f00", "#007f7f", "#7f007f" ],
+    "dataShipTilesets":[ { "tileY":0 }, { "tileY":16 } ],
+    "evolutioncore":{
+      "type":"core",
+      "image":"sprites", "width":16, "height":16,
+      "zIndex":5, "x":120, "y":-16,
+      "bgcolor":{ "_":[ "scene", "shipColor" ] },
+      "execute":[
+        { "sum":1, "to":{ "_":[ "scene", "stage" ] } },
+        {
+          "when":{ "_":[ "scene", "stage", "isEqualTo", 1 ] },
+          "set":{ "perks":{ "_":[ "new", [ { "popupMessage":"WELCOME!" }, { "popupMessage":"READY TO DIE?" } ] ] } },
+          "elseExecute":{
+            "when":{ "_":[ "scene", "stage", "isLessThan", 4 ] },
+            "set":{
+              "perks":{
+                "_":[
+                  "new",
+                  [
+                    {
+                      "execute":[
+                        { "sum":1, "to":{ "_":[ "scene", "wingWidth" ] } },
+                        { "sum":1, "to":{ "_":[ "scene", "wingHeight" ] } },
+                        { "sum":1, "to":{ "_":[ "scene", "cannonStage" ] } }
+                      ],
+                      "popupMessage":"I CAN'T LOSE!"
+                    }
+                  ]
+                ]
+              }
+            },
+            "elseExecute":[
+              { "set":{ "perks":{ "_":[ "new", [] ] } } },
+              {
+                "when":{ "_":[ "scene", "cannonStage", "isLessThan", { "_":[ "scene", "cannonSequence", "count" ] } ] },
+                "as":{ "sum":1, "to":{ "_":[ "scene", "cannonStage" ] }, "popupMessage":"NEW WEAPON" },
+                "pushInto":{ "_":[ "that", "perks" ] }
+              },
+              {
+                "when":{ "_":[ "scene", "wingWidth", "isLessThan", 9 ] },
+                "as":{ "sum":1, "to":{ "_":[ "scene", "wingWidth" ] }, "popupMessage":"SIZE UP" },
+                "pushInto":{ "_":[ "that", "perks" ] }
+              },
+              {
+                "when":{ "_":[ "scene", "wingHeight", "isLessThan", 8 ] },
+                "as":{ "sum":1, "to":{ "_":[ "scene", "wingHeight" ] }, "popupMessage":"SIZE UP" },
+                "pushInto":{ "_":[ "that", "perks" ] }
+              },
+              {
+                "when":{ "_":[ "scene", "cannonDensity", "isLessThan", 0.5 ] },
+                "as":{ "sum":0.02, "to":{ "_":[ "scene", "cannonDensity" ] }, "popupMessage":"MORE CANNONS" },
+                "pushInto":{ "_":[ "that", "perks" ] }
+              },
+              {
+                "when":{ "_":[ "scene", "coreDefense", "isGreaterThan", 0.1 ] },
+                "as":{ "subtract":0.1, "to":{ "_":[ "scene", "coreDefense" ] }, "popupMessage":"MOVING CORE" },
+                "pushInto":{ "_":[ "that", "perks" ] }
+              },
+              {
+                "when":{ "_":[ "scene", "strength", "isLessThan", 30 ] },
+                "as":{ "sum":1, "to":{ "_":[ "scene", "strength" ] }, "popupMessage":"STRENGTH UP" },
+                "pushInto":{ "_":[ "that", "perks" ] }
+              },
+              {
+                "when":{ "_":[ "scene", "generator" ] },
+                "as":{ "subtract":1, "to":{ "_":[ "scene", "generator" ] }, "popupMessage":"GENERATOR UP" },
+                "pushInto":{ "_":[ "that", "perks" ] }
+              },
+              { "shuffle":{ "_":[ "this", "perks" ] } }
+            ]
+          }
+        }
+      ],
+      "animations":{ "idle":{ "frames":[ 0, 0, 0, 1, 2, 3, 3, 3, 2, 1 ], "speed":0, "loopTo":0 } },
+      "animation":"idle",
+      "playAudio":"rampdown",
+      "bump":13,
+      "evolved":0,
+      "spawned":0,
+      "timer":0,
+      "states":{
+        "code":[
+          {
+            "name":"Sequence",
+            "data":[
+              { "sum":{ "_":[ "this", "bump" ] }, "to":{ "_":[ "this", "y" ] } },
+              { "subtract":1, "to":{ "_":[ "this", "bump" ] } },
+              { "wait":1, "loopTo":0, "until":{ "_":[ "this", "bump", "not" ] } },
+              { "set":{ "spawned":1 } },
+              { "set":{ "cx":{ "_":[ "this", "x" ] }, "cy":{ "_":[ "this", "y" ] } } },
+              { "sum":0.2, "to":{ "_":[ "this", "timer" ] } },
+              {
+                "set":{
+                  "x":{ "_":[ "this", "timer", "sin", "*", { "_":[ "this", "bump" ] }, "+", { "_":[ "this", "cx" ] } ] }, "y":{ "_":[ "this", "timer", "cos", "*", { "_":[ "this", "bump" ] }, "+", { "_":[ "this", "cy" ] } ] }
+                }
+              },
+              { "when":{ "_":[ "this", "bump", "isLessThan", 5 ] }, "sum":0.5, "to":{ "_":[ "this", "bump" ] } },
+              { "wait":1, "loopTo":-3, "until":{ "_":[ "this", "evolved" ] } },
+              { "set":{ "bump":4 }, "playAudio":"rampup" },
+              { "sum":{ "_":[ "this", "bump" ] }, "to":{ "_":[ "this", "y" ] } },
+              { "subtract":1, "to":{ "_":[ "this", "bump" ] } },
+              { "wait":1, "loopTo":-2, "until":{ "_":[ "this", "y", "isLessThan", -16 ] } },
+              { "remove":1 }
+            ]
+          },
+          {
+            "name":"Sequence",
+            "data":[
+              { "wait":1, "loop":1, "until":{ "_":[ "this", "spawned" ] } },
+              {
+                "when":{ "_":[ "this", "perks", 0 ] },
+                "execute":[
+                  {
+                    "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "color":"#f0f", "html":{ "_":[ "that", "perks", 0, "popupMessage" ] } },
+                    "playAudio":"beep2"
+                  },
+                  { "execute":{ "_":[ "this", "perks", 0 ] } },
+                  { "unpushAt":0, "from":{ "_":[ "this", "perks" ] } },
+                  { "subsequence":{ "wait":25 } }
+                ]
+              },
+              { "wait":1, "cycles":2, "loopTo":1 },
+              { "set":{ "evolved":1 } }
+            ]
+          }
+        ]
+      }
+    },
+    "screenEffectsBehaviour":{
+      "code":{
+        "name":"Execute",
+        "data":{
+          "when":{ "_":[ "this", "screenShake" ] },
+          "execute":[
+            { "subtract":1, "to":{ "_":[ "this", "screenShake" ] } },
+            {
+              "when":{ "_":[ "this", "screenShake", "%", 2 ] },
+              "set":{
+                "x":{ "_":[ "randomNumber", [ { "_":[ "this", "screenShakeStrength", "*", -1 ] }, { "_":[ "this", "screenShakeStrength" ] } ] ] }, "y":{ "_":[ "randomNumber", [ { "_":[ "this", "screenShakeStrength", "*", -1 ] }, { "_":[ "this", "screenShakeStrength" ] } ] ] }
+              },
+              "elseExecute":{ "set":{ "x":0, "y":0 } }
+            }
+          ]
+        }
+      }
+    },
+    "shipModel":{
+      "type":"killplayer",
+      "width":16, "height":16,
+      "zIndex":5,
+      "visible":0,
+      "health":3,
+      "states":{
+        "name":"play",
+        "code":{
+          "name":"Execute",
+          "data":{ "when":{ "_":[ "this", "blink" ] }, "set":{ "bgcolor":"#fff", "blink":0 }, "elseExecute":{ "set":{ "bgcolor":{ "_":[ "scene", "shipColor" ] } } } }
+        },
+        "actions":[
+          {
+            "name":"update",
+            "execute":[ { "set":{ "visible":1 } }, { "when":{ "_":[ "this", "linkedObject" ] }, "as":{ "_":[ "this", "linkedObject" ] }, "executeAction":"update" } ]
+          },
+          {
+            "name":"hit",
+            "execute":{
+              "when":{ "_":[ "scene", "bossvulnerable" ] },
+              "execute":[
+                { "subtract":1, "to":{ "_":[ "this", "health" ] } },
+                { "when":{ "_":[ "this", "health", "isLessEqualThan", 0 ] }, "executeAction":"destroy", "elseExecute":{ "set":{ "blink":1 } } }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    "core":{
+      "type":[ "core", "shipbody", "killplayer" ],
+      "set":{ "_":[ "stencil", "shipModel" ] },
+      "image":"sprites",
+      "animations":{ "destroy":{ "frames":[ 0, 3 ], "speed":1, "loopTo":0 }, "idle":{ "frames":[ 0, 0, 0, 1, 2, 3, 3, 3, 2, 1 ], "speed":2, "loopTo":0 } },
+      "animation":"idle",
+      "explodingTimer":0,
+      "finalExplosionTimer":75,
+      "spawnRange":{ "_":[ "scene", "wingHeight", "*", 16, "+", 36 ] },
+      "spawning":1,
+      "xTimer":0,
+      "xWaveSpeed":0.02,
+      "yTimer":0,
+      "yWaveSize":10,
+      "yWaveSpeed":0.05,
+      "states":[
+        {
+          "name":"play",
+          "execute":{
+            "set":{
+              "coreY":{ "_":[ "this", "y" ] },
+              "ox":{ "_":[ "this", "x" ] },
+              "oy":{ "_":[ "this", "y" ] },
+              "xWaveSize":{ "_":[ 240, "-", { "_":[ "this", "x" ] }, "/", 2, "limitValue", [ 0, 256 ] ] }
+            }
+          },
+          "code":{
+            "name":"Execute",
+            "data":[
+              {
+                "when":{ "_":[ "this", "spawning", "isGreaterThan", 0.01 ] },
+                "set":{ "spawning":{ "_":[ "this", "spawning", "*", 0.9 ] } },
+                "elseExecute":{ "set":{ "spawning":0 } }
+              },
+              { "sum":{ "_":[ "this", "xWaveSpeed" ] }, "to":{ "_":[ "this", "xTimer" ] } },
+              { "sum":{ "_":[ "this", "yWaveSpeed" ] }, "to":{ "_":[ "this", "yTimer" ] } },
+              {
+                "set":{
+                  "x":{ "_":[ 120, "+", { "_":[ "this", "xTimer", "sin", "*", { "_":[ "this", "xWaveSize" ] } ] } ] }, "y":{ "_":[ "this", "coreY", "-", { "_":[ "this", "spawnRange", "*", { "_":[ "this", "spawning" ] } ] }, "+", { "_":[ "this", "yTimer", "sin", "*", { "_":[ "this", "yWaveSize" ] } ] } ] }
+                }
+              },
+              { "_":[ "stencil", "codeUpdateShip" ] }
+            ]
+          },
+          "actions":[
+            { "name":"destroy", "execute":{ "set":{ "state":"destroy" } } },
+            {
+              "name":"hit",
+              "execute":{
+                "object":{
+                  "set":{ "_":[ "stencil", "smoke" ] },
+                  "execute":{ "applyVector":{ "angle":{ "_":[ "randomNumber", [ 0, 360 ] ] }, "length":{ "_":[ "randomNumber", [ 3, 6 ] ] } } }
+                },
+                "playAudio":"explode"
+              }
+            }
+          ]
+        },
+        {
+          "name":"destroy",
+          "set":{ "animation":"destroy" },
+          "execute":[ { "as":{ "_":"scene" }, "set":{ "bossvulnerable":0, "state":"completed" } }, { "as":{ "_":[ "object", "enemybullet" ] }, "remove":1 } ],
+          "code":{
+            "name":"Execute",
+            "data":[
+              { "subtract":0.4, "to":{ "_":[ "this", "y" ] } },
+              { "sum":1, "to":{ "_":[ "this", "explodingTimer" ] } },
+              {
+                "when":{ "_":[ "this", "explodingTimer", "isEqualTo", 2 ] },
+                "execute":[
+                  { "times":4, "execute":{ "as":{ "_":[ "randomObject", { "_":[ "object", "shipbody" ] } ] }, "execute":{ "_":[ "stencil", "cloud" ] } } },
+                  { "as":{ "_":"scene" }, "set":{ "playAudio":"blam", "screenShake":5, "screenShakeStrength":2 } },
+                  { "set":{ "explodingTimer":0 } }
+                ]
+              },
+              { "subtract":1, "to":{ "_":[ "this", "finalExplosionTimer" ] } },
+              { "when":{ "_":[ "this", "finalExplosionTimer", "not" ] }, "set":{ "state":"dead" } },
+              { "_":[ "stencil", "codeUpdateShip" ] }
+            ]
+          }
+        },
+        {
+          "name":"dead",
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "playAudio":"open" },
+              {
+                "as":{ "_":[ "object", "shippart" ] },
+                "execute":[
+                  {
+                    "object":{ "set":{ "_":[ "stencil", "smoke" ] } },
+                    "as":{ "_":"that" },
+                    "execute":{ "applyVector":{ "angle":{ "_":[ "objectTyped", "core", "angleTo", { "_":"this" } ] }, "length":4 } }
+                  },
+                  { "as":{ "_":[ "this", "linkedObject" ] }, "remove":1 },
+                  { "remove":1 }
+                ]
+              },
+              { "wait":5 },
+              { "as":{ "_":"scene" }, "set":{ "screenShake":10, "screenShakeStrength":6 } },
+              { "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "color":"#0ff", "html":{ "_":[ "that", "score", ".", "pts." ] } }, "playAudio":"beep3" },
+              { "sum":{ "_":[ "this", "score" ] }, "to":{ "_":[ "variable", "score" ] } },
+              { "set":{ "visible":0 } },
+              { "as":{ "_":"scene" }, "set":{ "playAudio":"open", "screenShake":10, "screenShakeStrength":6 } },
+              { "_":[ "stencil", "cloud" ] },
+              { "wait":25 },
+              {
+                "as":{ "_":[ "objectTyped", "player" ] },
+                "execute":{ "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "color":"#0ff", "html":"+30sec" } },
+                "playAudio":"beep3"
+              },
+              { "sum":750, "to":{ "_":[ "scene", "time" ] } },
+              { "wait":25 },
+              { "remove":1 }
+            ]
+          }
+        }
+      ]
+    },
+    "module":{
+      "set":{ "_":[ "stencil", "shipModel" ] },
+      "image":"ships",
+      "state":"play",
+      "states":{
+        "name":"play",
+        "actions":{
+          "name":"destroy",
+          "execute":[
+            { "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "color":"#0ff", "html":{ "_":[ "that", "score", ".", "pts." ] } } },
+            { "sum":{ "_":[ "this", "score" ] }, "to":{ "_":[ "variable", "score" ] } },
+            { "as":{ "_":"scene" }, "set":{ "playAudio":"blam", "screenShake":5, "screenShakeStrength":2 } },
+            { "object":{ "set":{ "_":[ "stencil", "smoke" ] }, "forceX":{ "_":[ "randomNumber", [ -2, 2 ] ] }, "forceY":-2 } },
+            { "when":{ "_":[ "this", "linkedObject" ] }, "as":{ "_":"that" }, "execute":[ { "_":[ "stencil", "cloud" ] }, { "remove":1 } ] },
+            { "remove":1 }
+          ]
+        }
+      }
+    },
+    "smoke":{
+      "image":"sprites", "tileY":64, "width":16, "height":16,
+      "zIndex":45, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "flipX":{ "_":[ "randomNumber", [ 0, 1 ] ] }, "flipY":{ "_":[ "randomNumber", [ 0, 1 ] ] }, "angle":{ "_":[ "randomValue", [ 0, 90, 180, 270 ] ] },
+      "animations":{ "idle":{ "frames":4, "speed":1 } },
+      "animation":"idle",
+      "states":{ "code":[ { "name":"Sequence", "data":[ { "wait":10 }, { "remove":1 } ] }, { "name":"Physics" } ] }
+    },
+    "titleLetterModel":{
+      "image":"title", "width":82, "height":81,
+      "zIndex":5,
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[
+            { "set":{ "cx":{ "_":[ "this", "x" ] }, "cy":{ "_":[ "this", "y" ] } } },
+            {
+              "set":{ "x":{ "_":[ "this", "cx", "+", { "_":[ "randomNumber", [ -2, 2 ] ] } ] }, "y":{ "_":[ "this", "cy", "+", { "_":[ "randomNumber", [ -2, 2 ] ] } ] } },
+              "wait":1, "loop":1, "cycles":10
+            },
+            { "set":{ "x":{ "_":[ "this", "cx" ] }, "y":{ "_":[ "this", "cy" ] } } }
+          ]
+        }
+      }
+    }
+  },
+  "execute":[
+    { "when":{ "_":[ "storage", "hiscore", "not" ] }, "as":{ "_":"storage" }, "set":{ "hiscore":0 } },
+    { "as":{ "_":"variable" }, "set":{ "hiscore":{ "_":[ "storage", "hiscore" ] } } }
+  ],
+  "scenes":{
+    "intro":{
+      "execute":{
+        "object":[
+          {
+            "box":"label", "width":256,
+            "zIndex":100, "x":0, "y":143,
+            "color":"#fff",
+            "font":"spectrum", "fontSize":20, "lineHeight":20, "outline":"#000", "textAlign":"center", "html":"PRESS START",
+            "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "visible":0 }, "wait":20 }, { "set":{ "visible":1 }, "wait":20, "loopTo":0 } ] } }
+          },
+          {
+            "box":"label", "width":256,
+            "zIndex":100, "x":0, "y":157,
+            "color":"#fff",
+            "font":"spectrum", "fontSize":20, "lineHeight":20, "outline":"#000", "textAlign":"center", "html":{ "_":[ "HI-SCORE: ", ".", { "_":[ "variable", "hiscore" ] } ] }
+          },
+          {
+            "box":"label", "width":256,
+            "zIndex":100, "x":0, "y":172,
+            "color":"#ff0",
+            "font":"spectrum", "fontSize":20, "lineHeight":20, "outline":"#000", "textAlign":"center", "html":"Music: ARTe ST.2 by KenoTron"
+          }
+        ]
+      },
+      "states":{
+        "code":[
+          {
+            "name":"Sequence",
+            "data":[
+              { "wait":25 },
+              { "object":{ "set":{ "_":[ "stencil", "titleLetterModel" ] }, "x":5, "y":55 }, "playAudio":"open" },
+              { "wait":25 },
+              { "object":{ "set":{ "_":[ "stencil", "titleLetterModel" ] }, "tileX":82, "x":87, "y":55, "playAudio":"open" } },
+              { "wait":25 },
+              { "object":{ "set":{ "_":[ "stencil", "titleLetterModel" ] }, "tileX":164, "x":169, "y":55, "playAudio":"open" } },
+              { "wait":25 },
+              {
+                "object":{
+                  "image":"title", "tileY":81, "width":256, "height":22,
+                  "zIndex":20, "x":-256, "y":85,
+                  "states":{
+                    "code":{
+                      "name":"Sequence",
+                      "data":[
+                        { "wait":1 },
+                        { "sum":40, "to":{ "_":[ "this", "x" ] } },
+                        { "loopTo":0, "until":{ "_":[ "this", "x", "isGreaterThan", 0 ] } },
+                        { "set":{ "x":0 } },
+                        { "_":[ "stencil", "codeDrawGrid" ] },
+                        {
+                          "object":{
+                            "width":256, "height":192,
+                            "x":0, "y":0,
+                            "states":{
+                              "code":{
+                                "name":"Sequence",
+                                "data":[
+                                  { "set":{ "bgcolor":"#7f7f7f" }, "playAudio":"explode", "wait":1 },
+                                  { "set":{ "bgcolor":"#000" }, "wait":1, "cycles":4, "loopTo":0 },
+                                  { "remove":1 }
+                                ]
+                              }
+                            }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                },
+                "playAudio":"rampup"
+              }
+            ]
+          },
+          { "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"play", "withTransition":3 } }
+        ]
+      }
+    },
+    "play":{
+      "execute":[
+        { "as":{ "_":"variable" }, "set":{ "score":0 } },
+        {
+          "set":{
+            "cannonDensity":0.1,
+            "cannonSequence":{ "_":[ "new", [ "vulcanCannon", "needleCannon", "bombCannon", "smashCannon", "laserCannon", "missileCannon" ] ] },
+            "cannonStage":1,
+            "coreDefense":0.8,
+            "generator":10,
+            "shipColor":{ "_":[ "randomValue", { "_":[ "stencil", "dataShipColors" ] } ] },
+            "stage":0,
+            "strength":15,
+            "tileSets":{ "_":[ "new", [] ] },
+            "wingHeight":3,
+            "wingWidth":3
+          }
+        },
+        { "times":19, "execute":{ "as":{ "_":[ "randomValue", { "_":[ "stencil", "dataShipTilesets" ] } ] }, "pushInto":{ "_":[ "that", "tileSets" ] } } },
+        { "shuffle":{ "_":[ "this", "cannonSequence" ] } },
+        {
+          "object":[
+            {
+              "type":"hud",
+              "hudType":"label", "label":"%number|variable.score|0|10% TIME:%numbe+r|scene.time./.1500.floor|0|2%'%number|scene.time.mod.1500./.25.floor|0|2%\"%number|scene.time.mod.25.*.4|0|2%",
+              "box":"label", "width":246, "height":16,
+              "zIndex":10000, "x":5, "y":3,
+              "color":"#fff",
+              "font":"spectrum", "lineHeight":10, "outline":"#000000", "textAlign":"center"
+            },
+            { "_":[ "stencil", "player" ] }
+          ]
+        },
+        { "_":[ "stencil", "codeDrawGrid" ] }
+      ],
+      "playAudio":"bgm",
+      "screenShake":0,
+      "screenShakeStrength":0,
+      "time":4500,
+      "state":"completed",
+      "states":[
+        {
+          "name":"play",
+          "like":{ "_":[ "stencil", "screenEffectsBehaviour" ] },
+          "execute":[
+            { "set":{ "bossvulnerable":0, "counterY":0, "longestDistance":0, "rightSide":{ "_":[ "this", "wingWidth", "*", 32 ] } } },
+            {
+              "times":{ "_":[ "this", "wingHeight" ] },
+              "execute":[
+                {
+                  "when":{ "_":[ "this", "counterY", "isEqualTo", { "_":[ "this", "wingHeight", "*", { "_":[ "this", "coreDefense" ] }, "floor" ] } ] },
+                  "object":{
+                    "set":{ "_":[ "stencil", "core" ] },
+                    "x":{ "_":[ "that", "wingWidth", "*", 16 ] }, "y":{ "_":[ "that", "counterY", "*", 16 ] },
+                    "health":{ "_":[ "that", "strength" ] },
+                    "score":{ "_":[ "that", "strength", "*", 150 ] }
+                  },
+                  "elseExecute":{
+                    "object":{
+                      "type":[ "body", "shippart", "shipbody" ],
+                      "set":{ "_":[ "stencil", "module" ] },
+                      "x":{ "_":[ "that", "wingWidth", "*", 16 ] }, "y":{ "_":[ "that", "counterY", "*", 16 ] },
+                      "health":{ "_":[ "that", "strength", "/", 2, "ceil" ] },
+                      "score":{ "_":[ "that", "strength", "*", 50 ] }
+                    }
+                  }
+                },
+                { "sum":1, "to":{ "_":[ "this", "counterY" ] } }
+              ]
+            },
+            { "set":{ "counterY":0 } },
+            {
+              "times":{ "_":[ "this", "wingHeight" ] },
+              "execute":[
+                { "set":{ "counterX":0 } },
+                {
+                  "times":{ "_":[ "this", "wingWidth" ] },
+                  "execute":[
+                    { "set":{ "blid":{ "_":[ "this", "counterX", ".", "-", ".", { "_":[ "this", "counterY" ] } ] } } },
+                    {
+                      "set":{
+                        "isBorder":{
+                          "_":[
+                            "this",
+                            "counterX",
+                            "isEqualTo",
+                            0,
+                            "or",
+                            { "_":[ "this", "counterY", "isEqualTo", 0 ] },
+                            "or",
+                            { "_":[ "this", "counterY", "isEqualTo", { "_":[ "this", "wingHeight", "-", 1 ] } ] }
+                          ]
+                        }
+                      }
+                    },
+                    { "when":{ "_":[ "this", "isBorder" ] }, "set":{ "wingType":"border" }, "elseExecute":{ "set":{ "wingType":"wing" } } },
+                    {
+                      "object":[
+                        {
+                          "type":[ { "_":[ "that", "blid" ] }, { "_":[ "that", "wingType" ] }, "cannonslot", "shippart", "shipbody" ],
+                          "set":{ "_":[ "stencil", "module" ] },
+                          "x":{ "_":[ "that", "counterX", "*", 16 ] }, "y":{ "_":[ "that", "counterY", "*", 16 ] },
+                          "blid":{ "_":[ "that", "blid" ] }
+                        },
+                        {
+                          "type":[ { "_":[ "that", "blid" ] }, { "_":[ "that", "blid", ".", "-r" ] }, "shippart", "shipbody" ],
+                          "set":{ "_":[ "stencil", "module" ] },
+                          "x":{ "_":[ "that", "rightSide", "-", { "_":[ "that", "counterX", "*", 16 ] } ] }, "y":{ "_":[ "that", "counterY", "*", 16 ] },
+                          "blid":{ "_":[ "that", "blid" ] }
+                        }
+                      ]
+                    },
+                    { "set":{ "distance":{ "_":[ "objectTyped", { "_":[ "this", "blid" ] }, "distanceTo", { "_":[ "objectTyped", "core" ] } ] } } },
+                    {
+                      "when":{ "_":[ "this", "distance", "isGreaterThan", { "_":[ "this", "longestDistance" ] } ] },
+                      "set":{ "longestDistance":{ "_":[ "this", "distance" ] } }
+                    },
+                    { "sum":1, "to":{ "_":[ "this", "counterX" ] } }
+                  ]
+                },
+                { "sum":1, "to":{ "_":[ "this", "counterY" ] } }
+              ]
+            },
+            {
+              "times":{ "_":[ "this", "wingWidth", "*", { "_":[ "this", "wingHeight" ] }, "*", 0.3, "ceil" ] },
+              "execute":{
+                "as":{ "_":[ "randomObject", { "_":[ "object", "border" ] } ] },
+                "execute":[
+                  {
+                    "as":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "wing" ] }, "all":1, "hitbox":{ "width":24, "height":24, "x":-4, "y":-4 } } ] },
+                    "execute":{ "set":{ "type":"border", "removeType":"body" } }
+                  },
+                  { "as":{ "_":[ "object", { "_":[ "this", "blid" ] } ] }, "remove":1 }
+                ]
+              }
+            },
+            {
+              "as":{ "_":[ "object", "cannonslot" ] },
+              "execute":[
+                {
+                  "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "cannonslot" ] }, "hitbox":{ "width":2, "height":2, "x":0, "y":-2 } } ] },
+                  "sum":1,
+                  "to":{ "_":[ "this", "frame" ] }
+                },
+                {
+                  "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "cannonslot" ] }, "hitbox":{ "width":2, "height":2, "x":16, "y":0 } } ] },
+                  "sum":2,
+                  "to":{ "_":[ "this", "frame" ] }
+                },
+                {
+                  "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "cannonslot" ] }, "hitbox":{ "width":2, "height":2, "x":0, "y":16 } } ] },
+                  "sum":4,
+                  "to":{ "_":[ "this", "frame" ] }
+                },
+                {
+                  "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "cannonslot" ] }, "hitbox":{ "width":2, "height":2, "x":-2, "y":0 } } ] },
+                  "sum":8,
+                  "to":{ "_":[ "this", "frame" ] }
+                },
+                {
+                  "when":{ "_":[ "this", "frame", "isEqualTo", 15, "and", { "_":[ "randomNumber", [ 0, 5 ], "isEqualTo", 0 ] } ] },
+                  "set":{ "frame":{ "_":[ "randomNumber", [ 16, 18 ] ] } }
+                },
+                {
+                  "set":{
+                    "set":{ "_":[ "that", "tileSets", { "_":[ "this", "frame" ] } ] },
+                    "health":{
+                      "_":[
+                        1,
+                        "-",
+                        { "_":[ "this", "distanceTo", { "_":[ "objectTyped", "core" ] }, "/", { "_":[ "scene", "longestDistance" ] } ] },
+                        "*",
+                        { "_":[ "that", "strength", "/", 2 ] },
+                        "ceil"
+                      ]
+                    }
+                  }
+                },
+                { "set":{ "score":{ "_":[ "this", "health", "*", 20 ] } } },
+                {
+                  "as":{ "_":[ "objectTyped", { "_":[ "this", "blid", ".", "-r" ] } ] },
+                  "set":{
+                    "tileY":{ "_":[ "that", "tileY" ] },
+                    "frame":{ "_":[ "that", "frame" ] },
+                    "flipX":1,
+                    "health":{ "_":[ "that", "health" ] },
+                    "score":{ "_":[ "that", "score" ] }
+                  }
+                }
+              ]
+            },
+            { "set":{ "counterX":0 } },
+            {
+              "times":{ "_":[ "object", "cannonslot", "count", "*", { "_":[ "this", "cannonDensity" ] }, "ceil" ] },
+              "execute":{
+                "as":{ "_":[ "randomObject", { "_":[ "object", "cannonslot" ] } ] },
+                "execute":[
+                  { "set":{ "placeCannon":{ "_":[ "that", "cannonSequence", { "_":[ "that", "counterX", "%", { "_":[ "that", "cannonStage" ] } ] } ] } } },
+                  { "sum":1, "to":{ "_":[ "that", "counterX" ] } },
+                  { "set":{ "fireEvery":{ "_":[ "stencil", { "_":[ "this", "placeCannon" ] }, "fireEvery", "+", { "_":[ "that", "generator" ] } ] } } },
+                  { "set":{ "fireTimer":{ "_":[ "randomNumber", [ { "_":[ "this", "fireEvery", "*", -1 ] }, 0 ] ] }, "score":{ "_":[ "this", "score", "*", 2 ] } } },
+                  {
+                    "object":{
+                      "set":{ "_":[ "stencil", { "_":[ "that", "placeCannon" ] } ] },
+                      "fireEvery":{ "_":[ "that", "fireEvery" ] },
+                      "fireTimer":{ "_":[ "that", "fireTimer" ] }
+                    },
+                    "assign":{ "_":"that" },
+                    "to":{ "_":[ "this", "linkedObject" ] }
+                  },
+                  {
+                    "as":{ "_":[ "objectTyped", { "_":[ "this", "blid", ".", "-r" ] } ] },
+                    "execute":[
+                      {
+                        "set":{
+                          "fireEvery":{ "_":[ "that", "fireEvery" ] },
+                          "fireTimer":{ "_":[ "that", "fireTimer" ] },
+                          "placeCannon":{ "_":[ "that", "placeCannon" ] },
+                          "score":{ "_":[ "that", "score" ] }
+                        }
+                      },
+                      {
+                        "object":{
+                          "set":{ "_":[ "stencil", { "_":[ "that", "placeCannon" ] } ] },
+                          "fireEvery":{ "_":[ "that", "fireEvery" ] },
+                          "fireTimer":{ "_":[ "that", "fireTimer" ] }
+                        },
+                        "assign":{ "_":"that" },
+                        "to":{ "_":[ "this", "linkedObject" ] }
+                      }
+                    ]
+                  }
+                ]
+              }
+            },
+            { "as":{ "_":[ "objectTyped", "core" ] }, "set":{ "state":"play" } }
+          ],
+          "code":{ "name":"Sequence", "data":[ { "wait":2 }, { "set":{ "bossvulnerable":1 } } ] }
+        },
+        {
+          "name":"completed",
+          "like":{ "_":[ "stencil", "screenEffectsBehaviour" ] },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "wait":1, "loop":1, "until":{ "_":[ "objectTyped", "core", "not" ] } },
+              { "wait":25 },
+              { "object":{ "_":[ "stencil", "evolutioncore" ] } },
+              { "wait":1, "loop":1, "until":{ "_":[ "objectTyped", "core", "not" ] } },
+              { "set":{ "state":"play" } }
+            ]
+          }
+        },
+        {
+          "name":"gameover",
+          "execute":{ "stopChannel":"music", "publishScore":{ "_":[ "variable", "score" ] } },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "wait":25 },
+              {
+                "object":{
+                  "width":256, "height":30,
+                  "zIndex":10000, "x":0, "y":81,
+                  "bgcolor":"#000",
+                  "font":"spectrum", "fontSize":40, "lineHeight":30, "outline":"#000", "textAlign":"center", "html":"GAME OVER",
+                  "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "color":"#f0f" }, "wait":1 }, { "set":{ "color":"#7f007f" }, "wait":1, "loopTo":0 } ] } }
+                }
+              },
+              { "wait":25 },
+              {
+                "when":{ "_":[ "variable", "score", "isGreaterThan", { "_":[ "variable", "hiscore" ] } ] },
+                "execute":[
+                  { "as":{ "_":"variable" }, "set":{ "hiscore":{ "_":[ "variable", "score" ] } } },
+                  { "as":{ "_":"storage" }, "set":{ "hiscore":{ "_":[ "variable", "score" ] } } },
+                  {
+                    "object":{
+                      "width":256, "height":10,
+                      "zIndex":10000, "x":0, "y":111,
+                      "bgcolor":"#000", "color":"#0ff",
+                      "font":"spectrum", "lineHeight":10, "textAlign":"center", "html":"NEW HIGH SCORE!"
+                    }
+                  }
+                ]
+              },
+              { "wait":25 },
+              { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+              { "gotoScene":"intro", "withTransition":3 }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}
