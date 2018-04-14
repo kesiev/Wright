@@ -285,8 +285,10 @@ function WrightTools() {
 	if (stack[1]=="<root>") { // Sort root elements
 	  mode.model=[
 		"name",
+		"edition",
 		"author",
 		"year",
+		"publishedYear",
   		"genre",
   		"description",
   		"screenshots",
@@ -380,6 +382,7 @@ function WrightTools() {
 		mode.skiparrays=1;
 	} else { // Object structure
 	  mode.model=[
+	  	["REM"], // Comments
 	  	["unoptimize"], // Engine/bound directives
 		["name","type"], // Generical
 		"log", // All
@@ -828,7 +831,7 @@ function WrightTools() {
 		for (var i in s.tileproperties) {
 		  t=s.tileproperties[i];
 		  tid=t["#stencil"];
-		  if (t["#stencil"]&&(t["#stencil"].length==1)) {
+		  if (!t["#heightmap"]&&t["#stencil"]&&(t["#stencil"].length==1)) {
 
 			var obj={};
 			liked=0;
@@ -1041,6 +1044,35 @@ function WrightTools() {
     if (startsWith(l.name,"scene")) {
       chunk={};
       if (l.properties) {
+      	if (l.properties["#heightmap"]) {
+      		var hmap=convertLayer(a,getLayer(a,l.properties["#heightmap"]));
+          chunk.heightmap=hmap.map;
+          if (l.properties["#actors"]) {
+          	console.log(hmap);
+	          var actors=convertLayer(a,getLayer(a,l.properties["#actors"]));
+	          if (!Array.isArray(actors)) actors=[actors];
+	          for (var al=0;al<actors.length;al++) {
+	          	if (actors[al].width!==undefined) {
+	          		actors[al].xPos=(actors[al].x/hmap.tileWidth);
+	          		actors[al].zPos=(actors[al].y/hmap.tileHeight);
+	          		actors[al].areaWidth=(actors[al].width/hmap.tileWidth);
+	          		actors[al].areaHeight=(actors[al].height/hmap.tileHeight);
+	          		delete actors[al].x;
+	          		delete actors[al].y;	
+	          		delete actors[al].width;
+	          		delete actors[al].height;
+	          	} else {
+	          		actors[al].xPos=(actors[al].x/hmap.tileWidth)+0.5;
+	          		actors[al].zPos=(actors[al].y/hmap.tileHeight)+0.5;
+	          		delete actors[al].x;
+	          		delete actors[al].y;	
+	          	}
+	          	
+	          }
+	        }
+	        chunk.actors=actors;
+        }
+
         if (l.properties["#tile"]) {
           var set=l.properties["#tile"].split(",");
           chunk.tilemap=[];
@@ -1219,6 +1251,7 @@ function WrightTools() {
 
           } else if (startsWith(l.name,"tile")) {
 
+          	var isHeightmap=l.properties&&l.properties["#heightmap"];
             var ch,line="",tw,th,sx=0,ex=l.width-1,sy=0,ey=l.height-1,x,y;
             chunk={ map:[]};
 
@@ -1231,21 +1264,27 @@ function WrightTools() {
             }
 
             for (y=sy;y<=ey;y++) {
-              line="";
+            	if (isHeightmap)
+              		line=[];
+              	else
+              		line="";
               for ( x=sx;x<=ex;x++) {
                 ch=l.data[(l.width*y)+x];
                 if (ch) {
                   tile=findTile(a,ch);
                   if (tile&&tile.properties["#stencil"]) {
-                    line+=tile.properties["#stencil"];
+                  	if (isHeightmap)
+                  		line.push(tile.properties["#stencil"]*1||0);
+                  	else
+                    	line+=tile.properties["#stencil"];
                     tw=tile.set.tilewidth;
                     th=tile.set.tileheight;
                   } else {
                     logLine("warn","Tile '"+ch+"' ("+x+","+y+") in "+l.name+" not mapped to stencil.");
-                    line+=" ";
+                    if (isHeightmap) line.push(0); else line+=" ";
                   }
                 } else
-                line+=" ";
+                if (isHeightmap) line.push(0); else line+=" ";
               }
               chunk.map.push(line);
             }
