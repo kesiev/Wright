@@ -1,29 +1,82 @@
 {
   "name":"Bullet Wing",
+  "edition":"Plus!",
   "author":"KesieV",
-  "year":2015,
+  "year":2018,
+  "publishedYear":2015,
   "genre":"Shoot'em up",
-  "description":"<p>There are game genres that I like but I objectively suck on that. One of them are japanese SHMUPs, which started for me with <a href='https://en.wikipedia.org/wiki/Truxton_(video_game)'>Truxton</a> (1988) at the arcades on the beach and still continues nowadays. Probably due to my incapability with this genre I'm not able to create a real 'bullet hell', so, I've probably created a 'bullet heaven' with Bullet Wing - like old shooters on ZX Spectrum or Commodore 64, which used to slow down a lot when there were few bullets on screen.</p><p>Story now!</p><p>Earth is in danger once again! Purple invaders are coming to conquer our planet... only Red Fighters can save the day! Move your ship with UP/DOWN/LEFT/RIGHT and shoot with the A BUTTON!</p>",
-  "screenshots":["bulletwing-1.png","bulletwing-2.png"],
+  "description":"<p>There are game genres that I like but I objectively suck on that. One of these genres are japanese SHMUPs, which started for me with <a href='https://en.wikipedia.org/wiki/Truxton_(video_game)'>Truxton</a> (1988) at the arcades on the beach and still continues nowadays. Probably due to my incapability with this genre I'm not able to create a real 'bullet hell', so I've probably created a 'bullet heaven' with Bullet Wing - like old shooters on ZX Spectrum or Commodore 64, which used to slow down a lot when there were few bullets on screen.</p><p>Story now!</p><p>Earth is in danger once again! Purple invaders are coming to conquer our planet... only Red Fighters can save the day! Move your ship with UP/DOWN/LEFT/RIGHT and shoot with the A BUTTON!</p><p><i>PS: After 3 years I've rediscovered this game. I wanted to mix some japanese SHMUP elements, like the ship design, the urban background and the metal panel transitions, with the pace of C64 <a href='https://en.wikipedia.org/wiki/Shoot-%27Em-Up_Construction_Kit'>SEUCK</a> style shooters. I've added some hiscores, music, sound effects and the iconic 'Warning' message the boss. Aw! Spoilers!</i></p>",
+  "screenshots":[ "bulletwing-1.png", "bulletwing-2.png" ],
   "hardware":{
     "width":256,
     "height":192,
     "filter":"retro"
-  }, 
+  },
+  "audioChannels":{
+    "music":{ "volume":1, "looping":1, "samples":[ "bgmboss", "bgm1" ] },
+    "sfx":{
+      "volume":0.4,
+      "samples":[
+        "open",
+        "close",
+        "firesingle",
+        "firefast",
+        "firetriple",
+        "explode1",
+        "explode2",
+        "explode3",
+        "hit",
+        "spawn",
+        "bonusspawn",
+        "bonuspick",
+        "enemyfire",
+        "siren",
+        "success"
+      ]
+    }
+  },
   "cheats":{
-    "unlimitedLives":"Unlimited lives"
+    "unlimitedLives":"Unlimited lives (no hi-score, sorry!)"
   },
   "resources":{
-    "spectrum":"spectrum.font",
-    "pixeldingbats":"pixeldingbats.font",
     "background":"bg.png",
+    "bgm1":"equinoxev.ogg",
+    "bgmboss":"diesirae.ogg",
     "doorssprites":"doors.png",
     "logo":"logo.png",
+    "pixeldingbats":"pixeldingbats.font",
     "smalllogo":"small-logo.png",
+    "spectrum":"spectrum.font",
     "defaultsprites":"../default/sprites.png",
-    "embossbox":"../default/embossbox.png"
+    "defaultstickers":"../default/stickers.png",
+    "embossbox":"../default/embossbox.png",
+    "bonuspick":{ "attack":0.009, "decay":0.3, "frequency":595, "frequencyJump1amount":0.06, "frequencyJump1onset":0.13, "pitch":0.0008, "release":0.044, "sustain":0.028, "wave":"square" },
+    "bonusspawn":{ "attack":0.009, "decay":0.3, "frequency":475, "frequencyJump1amount":0.06, "frequencyJump1onset":0.13, "pitch":0.0008, "release":0.044, "sustain":0.028, "wave":"triangle" },
+    "close":{ "attack":0.009, "decay":0.3, "frequency":520, "pitch":-0.002, "release":0.068, "wave":"whitenoise" },
+    "enemyfire":{ "attack":0.006, "decay":0.036, "pitch":-0.0014, "release":0.108, "tremoloDepth":1, "tremoloFrequency":50, "wave":"saw" },
+    "explode1":{ "decay":0.045, "frequency":505, "pitch":-0.0014, "release":0.2, "wave":"whitenoise" },
+    "explode2":{ "decay":0.045, "frequency":505, "pitch":-0.009, "release":0.2, "wave":"whitenoise" },
+    "explode3":{ "decay":0.045, "frequency":505, "pitch":-0.004, "release":0.2, "wave":"whitenoise" },
+    "firefast":{ "attack":0.009, "decay":0, "frequency":940, "pitch":-0.001, "release":0.256, "sustain":0.048, "wave":"tangent" },
+    "firesingle":{ "attack":0.009, "decay":0, "frequency":940, "pitch":-0.0019, "release":0.256, "sustain":0.048, "wave":"triangle" },
+    "firetriple":{ "attack":0.009, "decay":0, "frequency":940, "pitch":-0.001, "release":0.256, "sustain":0.048, "tremoloDepth":1, "tremoloFrequency":23, "wave":"sine" },
+    "hit":{ "decay":0.024, "limit":0.3, "pitch":0.0006, "release":0.192, "wave":"square" },
+    "open":{ "attack":0.009, "decay":0.3, "frequency":520, "pitch":0.002, "release":0.068, "wave":"whitenoise" },
+    "siren":{ "attack":0.006, "decay":0.15, "pitch":0.0005, "release":0.176, "sustain":0.4, "tremoloDepth":1, "tremoloFrequency":50, "wave":"saw" },
+    "spawn":{ "attack":0.012, "decay":0.042, "pitch":0.0008, "release":0.4, "sustain":0.244, "wave":"whitenoise" },
+    "success":{ "attack":0.15, "decay":0.15, "frequency":1075, "frequencyJump1amount":0.1, "frequencyJump1onset":0.2, "frequencyJump2amount":0.08, "frequencyJump2onset":0.37, "release":0.2, "sustain":0.2, "tremoloDepth":0.77, "tremoloFrequency":1, "wave":"square" }
   },
   "stencils":{
+    "codeFinalizeScore":{
+      "when":{ "_":[ "cheat", "unlimitedLives", "not" ] },
+      "execute":[
+        { "publishScore":{ "_":[ "variable", "score" ] } },
+        {
+          "when":{ "_":[ "variable", "score", "isGreaterThan", { "_":[ "variable", "hiscore" ] } ] },
+          "execute":{ "as":[ { "_":"storage" }, { "_":"variable" } ], "set":{ "hiscore":{ "_":[ "variable", "score" ] } } }
+        }
+      ]
+    },
     "spark":{
       "image":"defaultsprites", "tileX":80, "tileY":16, "width":16, "height":16,
       "zIndex":{ "_":[ "that", "zIndex", "+", 1 ] },
@@ -80,8 +133,9 @@
                 "width":160, "height":192,
                 "zIndex":20, "x":0, "y":0,
                 "color":"#f00",
-                "font":"spectrum", "fontSize":35, "lineHeight":192, "outline":"#000", "textAlign":"center", "html":"WELL DONE!"
+                "font":"spectrum", "fontSize":35, "lineHeight":192, "outline":"#000", "textAlign":"center", "html":"WELL DONE"
               },
+              "playAudio":"success",
               "wait":50
             },
             { "when":{ "_":[ "keyA", "isHit" ] }, "set":{ "nextScene":{ "_":[ "variable", "nextStage" ] } }, "executeAction":"gotoScene" },
@@ -89,7 +143,7 @@
           ]
         },
         "actions":[
-          { "name":"gameover", "execute":{ "set":{ "nextScene":"gameover" }, "executeAction":"gotoScene" } },
+          { "name":"gameover", "execute":{ "set":{ "nextScene":"gameover" }, "executeAction":"gotoScene", "stopChannel":"music" } },
           { "name":"endstage", "execute":{ "when":{ "_":[ "variable", "stageEnded", "isEqualTo", 0 ] }, "as":{ "_":"variable" }, "set":{ "stageEnded":1 } } }
         ]
       }
@@ -100,6 +154,7 @@
       "states":[
         {
           "set":{ "type":"player", "x":72, "y":192, "frame":2, "visible":1, "forceY":-12, "invulnerability":30, "weapon":"fireSingle" },
+          "execute":{ "playAudio":"spawn" },
           "code":[
             { "name":"Physics", "data":{ "gravityY":1 } },
             { "name":"Execute", "data":{ "when":{ "_":[ "this", "forceY", "isEqualTo", 5 ] }, "set":{ "state":"fly" } } }
@@ -116,6 +171,7 @@
                 "object":{ "_":[ "stencil", "playerBullet" ] },
                 "as":{ "_":"that" },
                 "set":{ "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] }, "forceY":-4 },
+                "playAudio":"firesingle",
                 "wait":7, "loop":1, "cycles":3
               },
               { "wait":10, "loopTo":0 }
@@ -132,6 +188,7 @@
                 "object":{ "_":[ "stencil", "playerBullet" ] },
                 "as":{ "_":"that" },
                 "set":{ "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] }, "forceY":-4 },
+                "playAudio":"firefast",
                 "wait":7, "loop":1, "cycles":5
               },
               { "wait":10, "loopTo":0 }
@@ -144,6 +201,7 @@
           "code":{
             "name":"Sequence",
             "data":[
+              { "playAudio":"firetriple" },
               {
                 "object":{ "_":[ "stencil", "playerBullet" ] },
                 "as":{ "_":"that" },
@@ -172,6 +230,7 @@
           "code":{
             "name":"Sequence",
             "data":[
+              { "playAudio":"close" },
               { "when":{ "_":[ "cheat", "unlimitedLives", "not" ] }, "subtract":1, "to":{ "_":[ "variable", "lives" ] } },
               {
                 "times":3,
@@ -265,44 +324,6 @@
         ]
       }
     },
-    "foeModel":{
-      "type":"foe",
-      "image":"defaultsprites", "tileX":256, "tileY":16, "width":16, "height":16,
-      "zIndex":10,
-      "flipY":1,
-      "health":0,
-      "states":{
-        "code":[
-          { "name":"Physics", "data":{ "walls":{ "area":{ "width":240, "height":272, "x":-40, "y":-40 }, "execute":{ "remove":1 } } } },
-          {
-            "name":"Execute",
-            "data":{ "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "player" ] } ] }, "execute":{ "as":{ "_":"that" }, "executeAction":"hit" } }
-          }
-        ],
-        "actions":[
-          {
-            "name":"hit",
-            "execute":[
-              { "subtract":1, "to":{ "_":[ "this", "health" ] } },
-              {
-                "when":{ "_":[ "this", "health", "isLessThan", 0 ] },
-                "execute":[
-                  {
-                    "when":{ "_":[ { "_":[ "randomValue", [ 0, 1 ] ] }, "and", { "_":[ "object", "bonus", "count", "isLessThan", 3 ] } ] },
-                    "object":{ "_":[ "stencil", "bonus" ] }
-                  },
-                  { "executeAction":"destroy" }
-                ]
-              }
-            ]
-          },
-          {
-            "name":"destroy",
-            "execute":[ { "sum":{ "_":[ "this", "score" ] }, "to":{ "_":[ "variable", "score" ] } }, { "_":[ "stencil", "removeWithSparks" ] } ]
-          }
-        ]
-      }
-    },
     "foeJet":{
       "set":{ "_":[ "stencil", "foeModel" ] },
       "y":-16, "frame":0,
@@ -331,6 +352,7 @@
       "set":{ "_":[ "stencil", "foeModel" ] },
       "tileX":320, "tileY":16, "width":32,
       "y":-16,
+      "playAudio":"spawn",
       "health":20,
       "score":500,
       "states":{
@@ -365,6 +387,48 @@
       "health":1,
       "score":50,
       "states":{ "code":{ "name":"Execute", "data":{ "applyVector":{ "angle":{ "_":[ "this", "angle" ] }, "length":{ "_":[ "this", "speed" ] } } } } }
+    },
+    "foeModel":{
+      "type":"foe",
+      "image":"defaultsprites", "tileX":256, "tileY":16, "width":16, "height":16,
+      "zIndex":10,
+      "flipY":1,
+      "health":0,
+      "states":{
+        "code":[
+          { "name":"Physics", "data":{ "walls":{ "area":{ "width":240, "height":272, "x":-40, "y":-40 }, "execute":{ "remove":1 } } } },
+          {
+            "name":"Execute",
+            "data":{ "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "player" ] } ] }, "execute":{ "as":{ "_":"that" }, "executeAction":"hit" } }
+          }
+        ],
+        "actions":[
+          {
+            "name":"hit",
+            "execute":[
+              { "subtract":1, "to":{ "_":[ "this", "health" ] }, "playAudio":"hit" },
+              {
+                "when":{ "_":[ "this", "health", "isLessThan", 0 ] },
+                "execute":[
+                  {
+                    "when":{ "_":[ { "_":[ "randomValue", [ 0, 1 ] ] }, "and", { "_":[ "object", "bonus", "count", "isLessThan", 3 ] } ] },
+                    "object":{ "_":[ "stencil", "bonus" ] }
+                  },
+                  { "executeAction":"destroy" }
+                ]
+              }
+            ]
+          },
+          {
+            "name":"destroy",
+            "execute":[
+              { "playAudio":{ "_":[ "randomValue", [ "explode1", "explode2", "explode3" ] ] } },
+              { "sum":{ "_":[ "this", "score" ] }, "to":{ "_":[ "variable", "score" ] } },
+              { "_":[ "stencil", "removeWithSparks" ] }
+            ]
+          }
+        ]
+      }
     },
     "animationRoll":{
       "name":"Sequence",
@@ -401,6 +465,7 @@
       ],
       "animations":{ "idle":{ "frames":4, "speed":2, "loopTo":0 } },
       "animation":"idle",
+      "playAudio":"bonusspawn",
       "bonusType":{ "_":[ "randomNumber", [ 0, 3 ] ] },
       "states":{
         "code":[
@@ -411,6 +476,7 @@
             "data":{
               "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "player" ] } ] },
               "execute":[
+                { "playAudio":"bonuspick" },
                 { "when":{ "_":[ "this", "bonusType", "isEqualTo", 0 ] }, "as":{ "_":[ "objectTyped", "player" ] }, "set":{ "weapon":"fireSingle", "state":"fly" } },
                 { "when":{ "_":[ "this", "bonusType", "isEqualTo", 1 ] }, "as":{ "_":[ "objectTyped", "player" ] }, "set":{ "weapon":"fireFast", "state":"fly" } },
                 { "when":{ "_":[ "this", "bonusType", "isEqualTo", 2 ] }, "as":{ "_":[ "objectTyped", "player" ] }, "set":{ "weapon":"fireTriple", "state":"fly" } },
@@ -432,7 +498,8 @@
         {
           "object":{ "_":[ "stencil", "foeBullet" ] },
           "as":{ "_":"that" },
-          "set":{ "x":{ "_":[ "this", "xCenteredWith", { "_":"that" }, "-", 15 ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" }, "+", 10 ] }, "forceY":2 }
+          "set":{ "x":{ "_":[ "this", "xCenteredWith", { "_":"that" }, "-", 15 ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" }, "+", 10 ] }, "forceY":2 },
+          "playAudio":"enemyfire"
         },
         {
           "object":{ "_":[ "stencil", "foeBullet" ] },
@@ -445,6 +512,7 @@
     "bossFiring2":{
       "name":"Sequence",
       "data":[
+        { "playAudio":"enemyfire" },
         {
           "times":2,
           "object":{ "_":[ "stencil", "foeBullet" ] },
@@ -467,11 +535,13 @@
         "execute":{
           "when":{ "_":[ "this", "invulnerability", "not" ] },
           "execute":[
+            { "playAudio":"hit" },
             { "subtract":1, "to":{ "_":[ "this", "health" ] } },
             {
               "when":{ "_":[ "this", "health", "isLessThan", 0 ] },
               "execute":[
                 { "object":{ "_":[ "stencil", "bonus" ] } },
+                { "playAudio":"close" },
                 {
                   "times":20,
                   "object":{ "_":[ "stencil", "spark" ] },
@@ -494,6 +564,7 @@
       "image":"defaultsprites", "tileX":352, "tileY":0, "width":48, "height":32,
       "zIndex":10, "x":56, "y":-32,
       "flipY":1,
+      "playAudio":"spawn",
       "phase":1,
       "states":[
         {
@@ -565,16 +636,20 @@
             { "_":[ "stencil", "bossFiring2" ] },
             {
               "name":"Sequence",
-              "data":{
-                "times":2,
-                "object":{ "_":[ "stencil", "spark" ] },
-                "execute":[
-                  { "sum":{ "_":[ "randomNumber", [ { "_":[ "this", "width", "/", -2 ] }, { "_":[ "this", "width", "/", 2 ] } ] ] }, "to":{ "_":[ "that", "x" ] } },
-                  { "sum":{ "_":[ "randomNumber", [ { "_":[ "this", "height", "/", -2 ] }, { "_":[ "this", "height", "/", 2 ] } ] ] }, "to":{ "_":[ "that", "y" ] } },
-                  { "as":{ "_":"that" }, "set":{ "forceY":{ "_":[ "randomNumber", [ 0, -4 ] ] } } }
-                ],
-                "wait":20, "loop":1
-              }
+              "data":[
+                { "playAudio":{ "_":[ "randomValue", [ "explode1", "explode2", "explode3" ] ] } },
+                {
+                  "times":2,
+                  "object":{ "_":[ "stencil", "spark" ] },
+                  "execute":[
+                    { "sum":{ "_":[ "randomNumber", [ { "_":[ "this", "width", "/", -2 ] }, { "_":[ "this", "width", "/", 2 ] } ] ] }, "to":{ "_":[ "that", "x" ] } },
+                    { "sum":{ "_":[ "randomNumber", [ { "_":[ "this", "height", "/", -2 ] }, { "_":[ "this", "height", "/", 2 ] } ] ] }, "to":{ "_":[ "that", "y" ] } },
+                    { "as":{ "_":"that" }, "set":{ "forceY":{ "_":[ "randomNumber", [ 0, -4 ] ] } } }
+                  ],
+                  "wait":10,
+                  "loopTo":0
+                }
+              ]
             },
             { "name":"Sequence", "data":[ { "wait":1, "until":{ "_":[ "this", "y", "isLessThan", 15 ] } }, { "set":{ "forceY":0 } } ] },
             {
@@ -593,10 +668,12 @@
         {
           "name":"4",
           "set":{ "removeType":"foe", "forceX":0, "forceY":0.5 },
+          "execute":{ "stopChannel":"music" },
           "code":[
             {
               "name":"Sequence",
               "data":[
+                { "playAudio":"close" },
                 {
                   "times":5,
                   "object":{ "_":[ "stencil", "spark" ] },
@@ -605,8 +682,10 @@
                     { "sum":{ "_":[ "randomNumber", [ { "_":[ "this", "height", "/", -2 ] }, { "_":[ "this", "height", "/", 2 ] } ] ] }, "to":{ "_":[ "that", "y" ] } },
                     { "as":{ "_":"that" }, "set":{ "forceY":{ "_":[ "randomNumber", [ 0, -4 ] ] } } }
                   ],
-                  "wait":10, "loop":1, "cycles":7
+                  "wait":10, "cycles":7,
+                  "loopTo":0
                 },
+                { "playAudio":"open" },
                 { "_":[ "stencil", "removeWithSparks" ] },
                 { "as":{ "_":"scene" }, "executeAction":"endstage" }
               ]
@@ -616,8 +695,17 @@
         }
       ]
     },
-    "bulletEmitter40":{ "name":"Sequence", "data":[ { "wait":40 }, { "executeAction":"fire1" }, { "loopTo":0 } ] },
-    "bulletEmitter4040":{ "name":"Sequence", "data":[ { "wait":40 }, { "executeAction":"fire1" }, { "wait":40 }, { "executeAction":"fire2" }, { "loopTo":0 } ] },
+    "bulletEmitter40":{ "name":"Sequence", "data":[ { "wait":40 }, { "executeAction":"fire1", "playAudio":"enemyfire" }, { "loopTo":0 } ] },
+    "bulletEmitter4040":{
+      "name":"Sequence",
+      "data":[
+        { "wait":40 },
+        { "executeAction":"fire1", "playAudio":"enemyfire" },
+        { "wait":40 },
+        { "executeAction":"fire2", "playAudio":"enemyfire" },
+        { "loopTo":0 }
+      ]
+    },
     "bulletRadial":[
       {
         "object":{ "_":[ "stencil", "foeBullet" ] },
@@ -637,6 +725,15 @@
       "as":{ "_":"that" },
       "set":{ "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] }, "forceY":2 }
     },
+    "panelCity":{ "set":{ "_":[ "stencil", "panelTypeStatic" ] }, "tileX":0, "tileY":144 },
+    "panelCity2":{ "set":{ "_":[ "stencil", "panelTypeStatic" ] }, "tileX":160, "tileY":144 },
+    "panelCity2Mirror":{ "set":{ "_":[ "stencil", "panelCity2" ] }, "flipX":1 },
+    "panelCityEmpty":{ "set":{ "_":[ "stencil", "panelTypeStatic" ] }, "tileX":320, "tileY":144 },
+    "panelCityEmptyMirror":{ "set":{ "_":[ "stencil", "panelCityEmpty" ] }, "flipX":1 },
+    "panelCoast":{ "set":{ "_":[ "stencil", "panelTypeStatic" ] }, "tileY":96 },
+    "panelOffroad":{ "set":{ "_":[ "stencil", "panelTypeStatic" ] }, "tileX":0, "tileY":192 },
+    "panelRawMirror":{ "set":{ "_":[ "stencil", "panelRaw" ] }, "flipX":1 },
+    "panelRaw":{ "set":{ "_":[ "stencil", "panelTypeStatic" ] }, "tileX":160, "tileY":192 },
     "panelTypeStatic":{
       "image":"background", "width":160, "height":48,
       "x":0, "y":-48,
@@ -647,15 +744,6 @@
         }
       }
     },
-    "panelCity":{ "set":{ "_":[ "stencil", "panelTypeStatic" ] }, "tileX":0, "tileY":144 },
-    "panelCity2":{ "set":{ "_":[ "stencil", "panelTypeStatic" ] }, "tileX":160, "tileY":144 },
-    "panelCity2Mirror":{ "set":{ "_":[ "stencil", "panelCity2" ] }, "flipX":1 },
-    "panelCityEmpty":{ "set":{ "_":[ "stencil", "panelTypeStatic" ] }, "tileX":320, "tileY":144 },
-    "panelCityEmptyMirror":{ "set":{ "_":[ "stencil", "panelCityEmpty" ] }, "flipX":1 },
-    "panelCoast":{ "set":{ "_":[ "stencil", "panelTypeStatic" ] }, "tileY":96 },
-    "panelOffroad":{ "set":{ "_":[ "stencil", "panelTypeStatic" ] }, "tileX":0, "tileY":192 },
-    "panelRaw":{ "set":{ "_":[ "stencil", "panelTypeStatic" ] }, "tileX":160, "tileY":192 },
-    "panelRawMirror":{ "set":{ "_":[ "stencil", "panelRaw" ] }, "flipX":1 },
     "panelRaw2":{ "set":{ "_":[ "stencil", "panelTypeStatic" ] }, "tileX":320, "tileY":192 },
     "panelRaw2Mirror":{ "set":{ "_":[ "stencil", "panelRaw2" ] }, "flipX":1 },
     "panelRoadside":{ "set":{ "_":[ "stencil", "panelTypeStatic" ] }, "tileX":320, "tileY":96 },
@@ -684,11 +772,33 @@
       "zIndex":100, "x":0, "y":0,
       "states":[
         {
-          "code":{ "name":"Physics", "data":{ "walls":{ "area":{ "width":168, "height":192, "x":-84, "y":0 }, "restitutionX":0.3, "restitutionY":0 }, "gravityX":-1 } }
+          "code":{
+            "name":"Physics",
+            "data":{
+              "walls":{
+                "area":{ "width":168, "height":192, "x":-84, "y":0 },
+                "restitutionX":0.3,
+                "restitutionY":0,
+                "execute":{ "when":{ "_":[ "this", "forceX", "isGreaterThan", 0.3 ] }, "playAudio":"open" }
+              },
+              "gravityX":-1
+            }
+          }
         },
         {
           "name":"close",
-          "code":{ "name":"Physics", "data":{ "walls":{ "area":{ "width":168, "height":192, "x":-84, "y":0 }, "restitutionX":0.3, "restitutionY":0 }, "gravityX":1 } }
+          "code":{
+            "name":"Physics",
+            "data":{
+              "walls":{
+                "area":{ "width":168, "height":192, "x":-84, "y":0 },
+                "restitutionX":0.3,
+                "restitutionY":0,
+                "execute":{ "when":{ "_":[ "this", "forceX", "isLessThan", -0.3 ] }, "playAudio":"close" }
+              },
+              "gravityX":1
+            }
+          }
         }
       ]
     },
@@ -705,65 +815,111 @@
           "code":{ "name":"Physics", "data":{ "walls":{ "area":{ "width":169, "height":192, "x":76, "y":0 }, "restitutionX":0.3, "restitutionY":0 }, "gravityX":-1 } }
         }
       ]
+    },
+    "warningSignal":{
+      "object":{
+        "width":160, "height":192,
+        "zIndex":20, "x":0, "y":0,
+        "color":"#f00",
+        "font":"spectrum", "fontSize":35, "lineHeight":192, "outline":"#000", "textAlign":"center", "html":"WARNING",
+        "states":{
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "set":{ "visible":{ "_":[ "this", "visible", "not" ] } } },
+              { "when":{ "_":[ "this", "visible" ] }, "playAudio":"siren" },
+              { "wait":5, "cycles":16, "loopTo":0 },
+              { "remove":1, "playAudio":"bgmboss" }
+            ]
+          }
+        }
+      },
+      "stopChannel":"music",
+      "wait":100
     }
   },
-  "execute":{
-    "object":[
-      { "image":"embossbox", "width":96, "height":208, "x":160, "y":0, "bgcolor":"#00ffff" },
-      { "image":"smalllogo", "width":64, "height":20, "zIndex":1, "x":177, "y":24 },
-      {
-        "box":"label", "width":74, "height":30,
-        "zIndex":1, "x":171, "y":70,
-        "bgcolor":"#000000", "color":"#ffffff",
-        "font":"spectrum", "fontSize":20, "lineHeight":15, "html":"SCORE"
-      },
-      {
-        "type":"hud",
-        "hudType":"label", "label":"%number|variable.score%",
-        "box":"label", "width":60,
-        "zIndex":2, "x":179, "y":84,
-        "color":"#ffffff",
-        "font":"spectrum", "fontSize":20, "lineHeight":15
-      },
-      {
-        "box":"label", "width":74, "height":30,
-        "zIndex":1, "x":171, "y":120,
-        "bgcolor":"#000000", "color":"#ffffff",
-        "font":"spectrum", "fontSize":20, "lineHeight":15, "html":"LIVES"
-      },
-      {
-        "type":"hud",
-        "hudType":"label", "label":"%repeat|variable.lives|&#94;%",
-        "box":"label", "width":60,
-        "zIndex":2, "x":179, "y":134,
-        "color":"#ffffff",
-        "font":"pixeldingbats", "fontSize":8, "lineHeight":15
-      }
-    ],
-    "into":{ "_":"hud" }
-  },
+  "execute":[
+    { "when":{ "_":[ "storage", "hiscore", "not" ] }, "as":{ "_":"storage" }, "set":{ "hiscore":0 } },
+    { "as":{ "_":"variable" }, "set":{ "hiscore":{ "_":[ "storage", "hiscore" ] } } },
+    {
+      "object":[
+        { "image":"embossbox", "width":96, "height":208, "x":160, "y":0, "bgcolor":"#00ffff" },
+        { "image":"smalllogo", "width":64, "height":20, "zIndex":1, "x":177, "y":24 },
+        {
+          "box":"label", "width":74, "height":30,
+          "zIndex":1, "x":171, "y":70,
+          "bgcolor":"#000000", "color":"#ffffff",
+          "font":"spectrum", "fontSize":20, "lineHeight":15, "html":"SCORE"
+        },
+        {
+          "type":"hud",
+          "hudType":"label", "label":"%number|variable.score%",
+          "box":"label", "width":60,
+          "zIndex":2, "x":179, "y":84,
+          "color":"#ffffff",
+          "font":"spectrum", "fontSize":20, "lineHeight":15
+        },
+        {
+          "box":"label", "width":74, "height":30,
+          "zIndex":1, "x":171, "y":120,
+          "bgcolor":"#000000", "color":"#ffffff",
+          "font":"spectrum", "fontSize":20, "lineHeight":15, "html":"LIVES"
+        },
+        {
+          "type":"hud",
+          "hudType":"label", "label":"%repeat|variable.lives|&#94;%",
+          "box":"label", "width":60,
+          "zIndex":2, "x":179, "y":134,
+          "color":"#ffffff",
+          "font":"pixeldingbats", "fontSize":8, "lineHeight":15
+        }
+      ],
+      "into":{ "_":"hud" }
+    }
+  ],
   "scenes":{
     "intro":{
       "object":[
-        { "image":"logo", "width":104, "height":56, "zIndex":2, "x":28, "y":40 },
+        { "image":"logo", "width":104, "height":56, "zIndex":2, "x":28, "y":30 },
         { "set":{ "_":[ "stencil", "panelSea" ] }, "y":-1 },
         { "set":{ "_":[ "stencil", "panelSea" ] }, "y":47 },
         { "set":{ "_":[ "stencil", "panelSea" ] }, "y":95 },
         { "set":{ "_":[ "stencil", "panelSea" ] }, "y":143 },
         {
+          "width":612, "height":12,
+          "zIndex":2, "x":160, "y":180,
+          "color":"#000",
+          "font":"spectrum", "lineHeight":12, "html":"Music: 'Dies irae intro' by Agent-X / 'Equinoxe V' by Frantisek Fuka",
+          "states":{
+            "code":{
+              "name":"Execute",
+              "data":[ { "subtract":1, "to":{ "_":[ "this", "x" ] } }, { "when":{ "_":[ "this", "x", "isLessThan", -650 ] }, "set":{ "x":160 } } ]
+            }
+          }
+        },
+        {
           "box":"label", "width":160,
-          "zIndex":2, "x":0, "y":90,
+          "zIndex":2, "x":0, "y":100,
           "color":"#ff0000",
           "font":"spectrum", "outline":"#000000", "textAlign":"center", "html":"PRESS START",
           "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "visible":0 }, "wait":10 }, { "set":{ "visible":1 }, "wait":10, "loopTo":0 } ] } }
-        }
+        },
+        {
+          "type":"hud",
+          "hudType":"label", "label":"HI: %number|variable.hiscore|0|9%",
+          "box":"label", "width":160,
+          "zIndex":2, "x":0, "y":160,
+          "bgcolor":"#000", "color":"#fff",
+          "font":"spectrum", "textAlign":"center"
+        },
+        { "image":"defaultstickers", "width":35, "height":8, "zIndex":3, "x":105, "y":80 }
       ],
       "set":{ "_":[ "stencil", "modelTransition" ] },
       "execute":{ "as":{ "_":"variable" }, "set":{ "lives":3, "score":0 } },
       "states":{
         "code":[
           { "name":"Sequence", "data":{ "object":{ "set":{ "_":[ "stencil", "panelSea" ] } }, "wait":48, "loop":1 } },
-          { "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "set":{ "nextScene":"1" }, "executeAction":"gotoScene" } }
+          { "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "set":{ "nextScene":"1" }, "executeAction":"gotoScene", "playAudio":"firesingle" } }
         ]
       }
     },
@@ -774,8 +930,8 @@
         "color":"#0ff",
         "font":"spectrum", "fontSize":35, "lineHeight":192, "textAlign":"center", "html":"GAME OVER"
       },
-      "execute":{ "publishScore":{ "_":[ "variable", "score" ] } },
       "set":{ "_":[ "stencil", "modelTransition" ] },
+      "execute":{ "_":[ "stencil", "codeFinalizeScore" ] },
       "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "set":{ "nextScene":"intro" }, "executeAction":"gotoScene" } } }
     },
     "1":{
@@ -787,6 +943,7 @@
       ],
       "set":{ "_":[ "stencil", "modelStage" ] },
       "execute":{ "as":{ "_":"variable" }, "set":{ "nextStage":"gameover" } },
+      "playAudio":"bgm1",
       "states":{
         "code":[
           {
@@ -921,7 +1078,7 @@
               { "wait":150 },
               { "object":{ "_":[ "stencil", "foeJetFiring" ] }, "as":{ "_":"that" }, "set":{ "x":134, "steerSide":-2 }, "wait":10, "loop":1, "cycles":5 },
               { "wait":150 },
-              { "wait":200 },
+              { "subsequence":{ "_":[ "stencil", "warningSignal" ] } },
               { "object":{ "_":[ "stencil", "bossStage1" ] } }
             ]
           }
