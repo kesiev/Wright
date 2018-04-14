@@ -1,22 +1,37 @@
 {
   "name":"Invasion",
+  "edition":"Plus!",
   "author":"KesieV",
-  "year":2015,
+  "year":2018,
+  "publishedYear":2015,
   "genre":"Shoot'em up",
-  "description":"<p>Once the hammer become the pneumatic drill, it's harder to pin a nail with it. It's some kind of obvious observation that works in software too: when a simple tool starts becoming more complex, nothing is harder than doing something simple again. For instance: BASIC is designed for solving relatively simple problems and its 'Hello World' is mostly one single line of code.</p><p>The same 'Hello World' in Java, C# or Obj-C, which are more complete and structured, requires a number of wrappings, inclusions and sometime tools before being able to actually write something on screen. So something easy become cluttered - but it's a common trade off.</p><p>Enough talk, I decided to go back to <a href='https://en.wikipedia.org/wiki/Space_Invaders'>Space Invaders</a> (1978) as a check: Wright! handles individual elements while invaders are moving as a group, which is an interesting difference. Time to use event broadcasts!</p><p>Plot!</p><p>Obviously aliens are invading our earth once again, so we decided to use our Yellow Orbital Cannon and the Green Orbital Walls to fight them back. Use LEFT/RIGHT for moving the cannon and the A BUTTON for shooting.</p>",
-  "screenshots":["invasion-1.png","invasion-2.png"],
+  "description":"<p>Once an hammer becames a pneumatic drill, it's harder to pin a nail with it. It's some kind of obvious sentence that works in software too: when a simple tool starts becoming more complex, nothing is harder than doing something simple again. For instance: BASIC is designed for solving relatively simple problems and its 'Hello World' is mostly one single line of code.</p><p>The same 'Hello World' in Java, C# or Obj-C, which are more complete and structured, requires a number of wrappings, inclusions and sometime tools before being able to actually write something on screen. So something easy become cluttered - but it's a common trade off.</p><p>Enough talk, I decided to go back to <a href='https://en.wikipedia.org/wiki/Space_Invaders'>Space Invaders</a> (1978) as a check: Wright! handles individual elements while invaders are moving as a group, which is an interesting difference. Time to use event broadcasts!</p><p>Plot!</p><p>Aliens are invading our Earth once again, so we decided to use our Yellow Orbital Cannon and the Green Orbital Walls to fight them back. Use LEFT/RIGHT for moving the cannon and the A BUTTON for shooting.</p><p><i>PS: This game was clearly missing its distinctive sounds, so working on a Plus! version was urgent. 3 years later I've found this implementation surprisingly incomplete, so I've added hiscores to the game and aliens can now break the walls and reach the bottom of the screen.</i></p>",
+  "screenshots":[ "invasion-1.png", "invasion-2.png" ],
   "hardware":{
     "width":256,
     "height":192,
     "filter":"retro"
   },
+  "audioChannels":{
+    "beeps":{ "volume":0.4, "samples":[ "beep0", "beep1", "beep2", "beep3" ] },
+    "sfx":{ "volume":0.4, "samples":[ "explode", "fire", "dead", "wallbreak", "disc" ] }
+  },
   "cheats":{
-    "unlimitedLives":"Unlimited lives"
+    "unlimitedLives":"Unlimited lives (no hi-score, sorry!)"
   },
   "resources":{
-    "spectrum":"spectrum.font",
     "pixeldingbats":"pixeldingbats.font",
-    "defaultsprites":"../default/sprites.png"
+    "spectrum":"spectrum.font",
+    "defaultsprites":"../default/sprites.png",
+    "beep0":{ "decay":0.186, "frequency":100, "wave":"square" },
+    "beep1":{ "decay":0.186, "frequency":90, "wave":"square" },
+    "beep2":{ "decay":0.186, "frequency":80, "wave":"square" },
+    "beep3":{ "decay":0.186, "frequency":75, "wave":"square" },
+    "dead":{ "decay":0.123, "frequency":835, "pitch":-0.0003, "release":0.196, "wave":"square" },
+    "disc":{ "attack":0.15, "decay":0.15, "frequency":745, "pitch":-0.0018, "release":0.2, "sustain":0.2, "wave":"square" },
+    "explode":{ "decay":0.3, "frequency":1600, "release":0.4, "sustain":0.4, "wave":"whitenoise" },
+    "fire":{ "decay":0.15, "pitch":-0.001, "release":0.2, "sustain":0.2, "wave":"saw" },
+    "wallbreak":{ "decay":0.012, "pitch":-0.002, "release":0.072, "wave":"whitenoise" }
   },
   "stencils":{
     "spark":{
@@ -32,24 +47,38 @@
       "image":"defaultsprites", "width":16, "height":8,
       "zIndex":10,
       "states":{
+        "code":{
+          "name":"Execute",
+          "data":[
+            {
+              "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "cannon" ] } ] },
+              "execute":[ { "as":{ "_":"that" }, "executeAction":"hit" }, { "remove":1 } ]
+            },
+            { "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "wall" ] } ] }, "as":{ "_":"that" }, "remove":1 }
+          ]
+        },
         "actions":[
           { "name":"animate", "execute":{ "when":{ "_":[ "this", "frame" ] }, "set":{ "frame":0 }, "elseExecute":{ "set":{ "frame":1 } } } },
           { "name":"moveDown", "execute":{ "sum":4, "to":{ "_":[ "this", "y" ] } } },
+          { "name":"moveUp", "execute":{ "subtract":40, "to":{ "_":[ "this", "y" ] } } },
           { "name":"moveRight", "execute":{ "sum":2, "to":{ "_":[ "this", "x" ] } } },
           { "name":"moveLeft", "execute":{ "sum":-2, "to":{ "_":[ "this", "x" ] } } },
-          { "name":"hit", "execute":[ { "sum":{ "_":[ "this", "score" ] }, "to":{ "_":[ "variable", "score" ] } }, { "_":[ "stencil", "removeWithSpark" ] } ] }
+          {
+            "name":"hit",
+            "execute":[ { "sum":{ "_":[ "this", "score" ] }, "to":{ "_":[ "variable", "score" ] }, "playAudio":"dead" }, { "_":[ "stencil", "removeWithSpark" ] } ]
+          }
         ]
       }
     },
     "modelWall":{
-      "type":[ "foe", "player" ],
+      "type":[ "foe", "player", "wall" ],
       "image":"defaultsprites", "width":8, "height":8,
       "health":2,
       "states":{
         "actions":{
           "name":"hit",
           "execute":[
-            { "subtract":1, "to":{ "_":[ "this", "health" ] } },
+            { "subtract":1, "to":{ "_":[ "this", "health" ] }, "playAudio":"wallbreak" },
             { "sum":1, "to":{ "_":[ "this", "frame" ] } },
             { "when":{ "_":[ "this", "health", "not" ] }, "remove":1 }
           ]
@@ -57,7 +86,7 @@
       }
     },
     "player":{
-      "type":"player",
+      "type":[ "player", "cannon" ],
       "image":"defaultsprites", "tileX":96, "tileY":272, "width":24, "height":8,
       "zIndex":10, "x":116, "y":176,
       "states":{
@@ -66,12 +95,17 @@
           { "name":"Physics", "data":{ "walls":{ "area":{ "width":256, "height":192, "x":0, "y":0 } }, "limitX":[ -2, 2 ] } },
           {
             "name":"Execute",
-            "data":{ "when":{ "_":[ "keyA", "isHit", "and", { "_":[ "object", "playerBullet", "not" ] } ] }, "object":{ "_":[ "stencil", "playerBullet" ] } }
+            "data":{
+              "when":{ "_":[ "keyA", "isHit", "and", { "_":[ "object", "playerBullet", "not" ] } ] },
+              "object":{ "_":[ "stencil", "playerBullet" ] },
+              "playAudio":"fire"
+            }
           }
         ],
         "actions":{
           "name":"hit",
           "execute":[
+            { "playAudio":"explode" },
             { "when":{ "_":[ "cheat", "unlimitedLives", "not" ] }, "subtract":1, "to":{ "_":[ "variable", "lives" ] } },
             { "_":[ "stencil", "removeWithSpark" ] },
             { "as":{ "_":"scene" }, "set":{ "state":"playerKilled" } }
@@ -121,14 +155,17 @@
       "y":24,
       "execute":{ "set":{ "_":[ "randomValue", [ { "x":-24, "speed":3 }, { "x":256, "speed":-3 } ] ] } },
       "states":{
-        "code":{
-          "name":"Execute",
-          "data":[
-            { "sum":{ "_":[ "this", "speed" ] }, "to":{ "_":[ "this", "x" ] } },
-            { "when":{ "_":[ "this", "x", "isGreaterThan", 256 ] }, "remove":1 },
-            { "when":{ "_":[ "this", "x", "isLessThan", -24 ] }, "remove":1 }
-          ]
-        },
+        "code":[
+          {
+            "name":"Execute",
+            "data":[
+              { "sum":{ "_":[ "this", "speed" ] }, "to":{ "_":[ "this", "x" ] } },
+              { "when":{ "_":[ "this", "x", "isGreaterThan", 256 ] }, "remove":1 },
+              { "when":{ "_":[ "this", "x", "isLessThan", -24 ] }, "remove":1 }
+            ]
+          },
+          { "name":"Sequence", "data":{ "playAudio":"disc", "stopAudio":"disc", "wait":10, "loop":1 } }
+        ],
         "actions":{
           "name":"hit",
           "execute":[ { "_":[ "stencil", "removeWithSpark" ] }, { "sum":{ "_":[ "randomValue", [ 50, 100, 150, 300 ] ] }, "to":{ "_":[ "variable", "score" ] } } ]
@@ -142,25 +179,25 @@
     ",":{ "set":{ "_":[ "stencil", "modelWall" ] }, "tileX":160, "tileY":272 },
     ".":{ "set":{ "_":[ "stencil", "," ] }, "flipX":1 }
   },
-  "execute":{
-    "object":[
-      { "type":"hud", "hudType":"label", "label":"SCORE %number|variable.score%", "box":"label", "width":100, "x":5, "y":5, "font":"spectrum" },
-      {
-        "html":"LIVES",
-        "box":"label", "width":100,
-        "x":110, "y":5,
-        "font":"spectrum"
-      },
-      {
-        "type":"hud",
-        "hudType":"label", "label":"%repeat|variable.lives|&#339;%",
-        "box":"label", "width":100,
-        "x":158, "y":5, "fontSize":8, "color":"#ff0",
-        "font":"pixeldingbats"
-      }
-    ],
-    "into":{ "_":"hud" }
-  },
+  "execute":[
+    { "when":{ "_":[ "storage", "hiscore", "not" ] }, "as":{ "_":"storage" }, "set":{ "hiscore":0 } },
+    { "as":{ "_":"variable" }, "set":{ "hiscore":{ "_":[ "storage", "hiscore" ] } } },
+    {
+      "object":[
+        { "type":"hud", "hudType":"label", "label":"SCORE %number|variable.score%", "box":"label", "width":100, "x":5, "y":5, "font":"spectrum" },
+        { "box":"label", "width":100, "x":110, "y":5, "font":"spectrum", "html":"LIVES" },
+        {
+          "type":"hud",
+          "hudType":"label", "label":"%repeat|variable.lives|&#339;%",
+          "box":"label", "width":100,
+          "x":158, "y":5,
+          "color":"#ff0",
+          "font":"pixeldingbats", "fontSize":8
+        }
+      ],
+      "into":{ "_":"hud" }
+    }
+  ],
   "scenes":{
     "intro":{
       "execute":{ "as":{ "_":"variable" }, "set":{ "fireSpeedHigh":100, "fireSpeedLow":80, "lives":3, "score":0, "stage":0 } },
@@ -170,7 +207,7 @@
             "name":"Sequence",
             "data":[
               { "wait":10 },
-              { "object":{ "box":"label", "width":256, "x":0, "y":40, "font":"spectrum", "textAlign":"center", "html":"INVASION" } },
+              { "object":{ "box":"label", "width":256, "x":0, "y":40, "font":"spectrum", "textAlign":"center", "html":"INVASION PLUS!" } },
               { "wait":10 },
               { "object":{ "box":"label", "width":90, "x":120, "y":64, "font":"spectrum", "html":"40 pts." } },
               { "object":{ "set":{ "_":[ "stencil", "A" ] }, "x":90, "y":70 } },
@@ -184,16 +221,33 @@
               { "object":{ "box":"label", "width":90, "x":120, "y":124, "font":"spectrum", "html":"??? pts." } },
               { "object":{ "image":"defaultsprites", "tileX":120, "tileY":272, "width":24, "height":8, "x":86, "y":130 } },
               { "wait":10 },
-              { "object":{ "box":"label", "width":256, "x":0, "y":150, "font":"spectrum", "textAlign":"center", "html":"PRESS START" } }
+              { "object":{ "box":"label", "width":256, "x":0, "y":148, "font":"spectrum", "textAlign":"center", "html":"PRESS START" } },
+              { "wait":10 },
+              {
+                "object":{
+                  "box":"label", "width":256,
+                  "x":0, "y":172,
+                  "font":"spectrum", "textAlign":"center", "html":{ "_":[ "HI-SCORE: ", ".", { "_":[ "variable", "hiscore" ] } ] }
+                }
+              }
             ]
           },
-          { "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"stage", "withTransition":2 } }
+          { "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"stage", "withTransition":2, "playAudio":"dead" } }
         ]
       }
     },
     "gameover":{
       "execute":[
-        { "publishScore":{ "_":[ "variable", "score" ] } },
+        {
+          "when":{ "_":[ "cheat", "unlimitedLives", "not" ] },
+          "execute":[
+            { "publishScore":{ "_":[ "variable", "score" ] } },
+            {
+              "when":{ "_":[ "variable", "score", "isGreaterThan", { "_":[ "variable", "hiscore" ] } ] },
+              "execute":{ "as":[ { "_":"storage" }, { "_":"variable" } ], "set":{ "hiscore":{ "_":[ "variable", "score" ] } } }
+            }
+          ]
+        },
         {
           "object":{
             "type":"info",
@@ -212,11 +266,12 @@
     },
     "stage":{
       "execute":[
-        { "as":{ "_":"variable" }, "set":{ "posx":5, "posy":0, "side":1 } },
+        { "as":{ "_":"variable" }, "set":{ "posx":5, "side":1 } },
         { "sum":1, "to":{ "_":[ "variable", "stage" ] } },
         { "when":{ "_":[ "variable", "fireSpeedHigh", "isGreaterThan", 20 ] }, "subtract":5, "to":{ "_":[ "variable", "fireSpeedHigh" ] } },
         { "when":{ "_":[ "variable", "fireSpeedLow", "isGreaterThan", 30 ] }, "subtract":5, "to":{ "_":[ "variable", "moveSpeed" ] } }
       ],
+      "soundCounter":0,
       "states":[
         {
           "code":{
@@ -244,13 +299,16 @@
               "name":"Sequence",
               "data":[
                 { "wait":{ "_":[ "object", "invader", "count" ] } },
+                { "playAudio":{ "_":[ "beep", ".", { "_":[ "this", "soundCounter" ] } ] }, "stopChannel":"beeps" },
+                { "set":{ "soundCounter":{ "_":[ "this", "soundCounter", "+", 1, "%", 4 ] } } },
                 { "as":{ "_":[ "object", "foe" ] }, "executeAction":"animate" },
                 {
                   "when":{ "_":[ "variable", "posx", "isEqualTo", 10 ] },
                   "execute":[
                     {
-                      "when":{ "_":[ "variable", "posy", "isLessThan", 5 ] },
-                      "execute":[ { "sum":1, "to":{ "_":[ "variable", "posy" ] } }, { "as":{ "_":[ "object", "foe" ] }, "executeAction":"moveDown" } ]
+                      "when":{ "_":[ { "width":256, "height":8, "x":0, "y":176 }, "collidesWith", { "_":[ "object", "invader" ] }, "not" ] },
+                      "as":{ "_":[ "object", "invader" ] },
+                      "executeAction":"moveDown"
                     },
                     { "multiply":-1, "to":{ "_":[ "variable", "side" ] } },
                     { "assign":0, "to":{ "_":[ "variable", "posx" ] } }
@@ -261,7 +319,7 @@
                     { "when":{ "_":[ "variable", "side", "isEqualTo", -1 ] }, "as":{ "_":[ "object", "foe" ] }, "executeAction":"moveLeft" }
                   ]
                 },
-                { "loopTo":0 }
+                { "loopTo":0, "until":{ "_":[ "objectTyped", "invader", "not" ] } }
               ]
             },
             {
@@ -282,6 +340,11 @@
             "name":"Sequence",
             "data":[
               { "wait":50 },
+              {
+                "when":{ "_":[ { "width":256, "height":8, "x":0, "y":176 }, "collidesWith", { "_":[ "object", "invader" ] } ] },
+                "as":{ "_":[ "object", "invader" ] },
+                "executeAction":"moveUp"
+              },
               { "when":{ "_":[ "variable", "lives", "isEqualTo", 0 ] }, "gotoScene":"gameover", "withTransition":2, "elseExecute":{ "set":{ "state":"play" } } }
             ]
           }
