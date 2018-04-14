@@ -162,7 +162,7 @@ var Supports = (function(){
   	if ("getGamepads" in navigator) {
   		ret.isGamepad=1;
   		ret.getGamepads=function() { return navigator.getGamepads(); }
-  		ret.getGamepadButton=function(gamepad,pad,button) { return gamepad[pad]?gamepad[pad].buttons[button].value > 0 || gamepad[pad].buttons[button].pressed == true:false; }
+  		ret.getGamepadButton=function(gamepad,pad,button) { return gamepad[pad]&&gamepad[pad].buttons[button]?gamepad[pad].buttons[button].value > 0 || gamepad[pad].buttons[button].pressed == true:false; }
   		ret.getGamepadAxes=function(gamepad,pad)  { return gamepad[pad]?gamepad[pad].axes:[0,0]; }
   	} else if (navigator.webkitGetGamepads) {
   		ret.isGamepad=1;
@@ -1107,6 +1107,19 @@ var DOMInator=function(useCanvas,aliasmode,controller,nosleep){
 						  request.send();
 						} else loadNextResource();
 					  break;
+					}
+					default:{
+					  var request = new XMLHttpRequest();
+					  request.open('GET', file, true);
+					  request.responseType = 'arraybuffer';
+					  request.onload = function() {
+					  	var pre=new Uint8Array(request.response);
+					  	var out=[];
+					  	for (var i=0;i<pre.length;i++) out.push(pre[i]);
+						resources.items[resources.current[0]]=out;
+						loadNextResource();
+					  }
+					  request.send();						
 					}
 				}
 			}
@@ -2331,8 +2344,8 @@ DOMInator.CONTROLS={
 	},	
 	paddles:{
 		keyboard:{
-			keyUp1: {label:"Player 1 up",default:87},
-			keyDown1: {label:"Player 1 down",default:83},
+			keyUp: {label:"Player 1 up",default:87},
+			keyDown: {label:"Player 1 down",default:83},
 			keyUp2: {label:"Player 2 up",default:38},
 			keyDown2: {label:"Player 2 down",default:40},
 			keyA: {label:"Start",default:32},
@@ -2353,12 +2366,12 @@ DOMInator.CONTROLS={
 	},
 	twoplayers:{
 		keyboard:{
-			keyUp1: {label:"1UP - Up",default:87},
-			keyDown1: {label:"1UP - Down",default:83},
-			keyLeft1: {label:"1UP - Left",default:65},
-			keyRight1: {label:"1UP - Right",default:68},
-			keyA1: {label:"1UP - A/Start",default:70},
-			keyB1: {label:"1UP - B/Select",default:71},
+			keyUp: {label:"1UP - Up",default:87},
+			keyDown: {label:"1UP - Down",default:83},
+			keyLeft: {label:"1UP - Left",default:65},
+			keyRight: {label:"1UP - Right",default:68},
+			keyA: {label:"1UP - A/Start",default:70},
+			keyB: {label:"1UP - B/Select",default:71},
 			keyUp2: {label:"2UP - Up",default:38},
 			keyDown2: {label:"2UP - Down",default:40},
 			keyLeft2: {label:"2UP - Left",default:37},
@@ -2367,9 +2380,15 @@ DOMInator.CONTROLS={
 			keyB2: {label:"2UP - B/Select",default:77},
 			keyFullScreen: {label:"Fullscreen",subLabel:"Touch with two fingers the game area to enable fullscreen and touch controls.",subLabelDisabled:!Supports.isTouch,default:48}
 		},
+		touchcontroller:{
+			layout:{
+				allowed:["platformerpad","joypad","sidedpad","dancemat"],
+				default:"platformerpad"
+			}
+		},
 		padcontroller:{
 			layout:{
-				allowed:["disabled","joystick21pl","joystick31pl","joystick2in1pl"],
+				allowed:["disabled","joystick12pl","joystick21pl","joystick31pl","joystick2in1pl"],
 				default:"joystick21pl"
 			}
 		}
@@ -2394,8 +2413,8 @@ DOMInator.CONTROLS={
 	}
 };
 
-DOMInator.AXESLAYOUTS={
-	directions:{			
+DOMInator.AXESLAYOUTS={	
+	directions1:{
 		map:[
 			{keyLeft:0,keyRight:1,keyUp:0,keyDown:1},
 			{keyLeft:0,keyRight:1,keyUp:0,keyDown:0},
@@ -2405,18 +2424,6 @@ DOMInator.AXESLAYOUTS={
 			{keyLeft:1,keyRight:0,keyUp:0,keyDown:0},
 			{keyLeft:1,keyRight:0,keyUp:0,keyDown:1},
 			{keyLeft:0,keyRight:0,keyUp:0,keyDown:1}
-		]
-	},
-	directions1:{
-		map:[
-			{keyLeft1:0,keyRight1:1,keyUp1:0,keyDown1:1},
-			{keyLeft1:0,keyRight1:1,keyUp1:0,keyDown1:0},
-			{keyLeft1:0,keyRight1:1,keyUp1:1,keyDown1:0},
-			{keyLeft1:0,keyRight1:0,keyUp1:1,keyDown1:0},
-			{keyLeft1:1,keyRight1:0,keyUp1:1,keyDown1:0},
-			{keyLeft1:1,keyRight1:0,keyUp1:0,keyDown1:0},
-			{keyLeft1:1,keyRight1:0,keyUp1:0,keyDown1:1},
-			{keyLeft1:0,keyRight1:0,keyUp1:0,keyDown1:1}
 		]
 	},
 	directions2:{
@@ -2445,7 +2452,7 @@ DOMInator.PADLAYOUTS={
 				pad:0,
 				axes:[0,1],
 				deadzone:0.3,
-				layout:DOMInator.AXESLAYOUTS.directions
+				layout:DOMInator.AXESLAYOUTS.directions1
 			}
 		],
 		buttons:[
@@ -2465,7 +2472,7 @@ DOMInator.PADLAYOUTS={
 				pad:0,
 				axes:[0,1],
 				deadzone:0.3,
-				layout:DOMInator.AXESLAYOUTS.directions
+				layout:DOMInator.AXESLAYOUTS.directions1
 			}
 		],
 		buttons:[
@@ -2487,7 +2494,7 @@ DOMInator.PADLAYOUTS={
 	},
 	paddlespad:{
 		label:"Gamepad 1+2 - UP/DOWN - A button",
-		idle:{keyUp1:0,keyDown1:0,keyUp2:0,keyDown2:0,keyA:0},
+		idle:{keyUp:0,keyDown:0,keyUp2:0,keyDown2:0,keyA:0},
 		axes:[
 			{
 				pad:0,
@@ -2503,8 +2510,8 @@ DOMInator.PADLAYOUTS={
 			}
 		],
 		buttons:[
-			{pad:0,button:12,key:"keyUp1"},
-			{pad:0,button:13,key:"keyDown1"},
+			{pad:0,button:12,key:"keyUp"},
+			{pad:0,button:13,key:"keyDown"},
 			{pad:0,button:0,key:"keyA"},
 			{pad:1,button:12,key:"keyUp2"},
 			{pad:1,button:13,key:"keyDown2"},
@@ -2513,7 +2520,7 @@ DOMInator.PADLAYOUTS={
 	},
 	paddlespad3:{
 		label:"Gamepad 1+3 - UP/DOWN - A button",
-		idle:{keyUp1:0,keyDown1:0,keyUp2:0,keyDown2:0,keyA:0},
+		idle:{keyUp:0,keyDown:0,keyUp2:0,keyDown2:0,keyA:0},
 		axes:[
 			{
 				pad:0,
@@ -2529,8 +2536,8 @@ DOMInator.PADLAYOUTS={
 			}
 		],
 		buttons:[
-			{pad:0,button:12,key:"keyUp1"},
-			{pad:0,button:13,key:"keyDown1"},
+			{pad:0,button:12,key:"keyUp"},
+			{pad:0,button:13,key:"keyDown"},
 			{pad:0,button:0,key:"keyA"},
 			{pad:3,button:12,key:"keyUp2"},
 			{pad:3,button:13,key:"keyDown2"},
@@ -2539,7 +2546,7 @@ DOMInator.PADLAYOUTS={
 	},
 	paddlespad12:{
 		label:"Gamepad 1 - AnalogR or up/down vs. AnalogL or A/Y - B button",
-		idle:{keyUp1:0,keyDown1:0,keyUp2:0,keyDown2:0,keyA:0},
+		idle:{keyUp:0,keyDown:0,keyUp2:0,keyDown2:0,keyA:0},
 		axes:[
 			{
 				pad:0,
@@ -2555,15 +2562,15 @@ DOMInator.PADLAYOUTS={
 			}
 		],
 		buttons:[
-			{pad:0,button:12,key:"keyUp1"},
-			{pad:0,button:13,key:"keyDown1"},
+			{pad:0,button:12,key:"keyUp"},
+			{pad:0,button:13,key:"keyDown"},
 			{pad:0,button:3,key:"keyUp2"},
 			{pad:0,button:0,key:"keyDown2"},
 			{pad:0,button:1,key:"keyA"}
 		]
 	},
 	joystick2in1pl:{
-		idle:{keyUp1:0,keyDown1:0,keyLeft1:0,keyRight1:0,keyA1:0,keyB1:0,keyUp2:0,keyDown2:0,keyLeft2:0,keyRight2:0,keyA2:0,keyB2:0},
+		idle:{keyUp:0,keyDown:0,keyLeft:0,keyRight:0,keyA:0,keyB:0,keyUp2:0,keyDown2:0,keyLeft2:0,keyRight2:0,keyA2:0,keyB2:0},
 		axes:[
 			{
 				pad:0,
@@ -2580,14 +2587,46 @@ DOMInator.PADLAYOUTS={
 		],
 		label:"Gamepad 2 in 1 - AnalogL vs. AnalogR - LB/LT+RB/RT buttons",
 		buttons:[
-			{pad:0,button:4,key:"keyA1"},
-			{pad:0,button:6,key:"keyB1"},
+			{pad:0,button:4,key:"keyA"},
+			{pad:0,button:6,key:"keyB"},
 			{pad:0,button:5,key:"keyA2"},
 			{pad:0,button:7,key:"keyB2"}
 		]
 	},
+	joystick12pl:{
+		idle:{keyUp:0,keyDown:0,keyLeft:0,keyRight:0,keyA:0,keyB:0,keyUp2:0,keyDown2:0,keyLeft2:0,keyRight2:0,keyA2:0,keyB2:0},
+		axes:[
+			{
+				pad:0,
+				axes:[0,1],
+				deadzone:0.3,
+				layout:DOMInator.AXESLAYOUTS.directions1
+			},
+			{
+				pad:1,
+				axes:[0,1],
+				deadzone:0.3,
+				layout:DOMInator.AXESLAYOUTS.directions2
+			}
+		],
+		label:"Gamepad 1+2 - UP/DOWN/LEFT/RIGHT - A,B button",
+		buttons:[
+			{pad:0,button:12,key:"keyUp"},
+			{pad:0,button:13,key:"keyDown"},
+			{pad:0,button:14,key:"keyLeft"},
+			{pad:0,button:15,key:"keyRight"},
+			{pad:0,button:0,key:"keyA"},
+			{pad:0,button:1,key:"keyB"},
+			{pad:1,button:12,key:"keyUp2"},
+			{pad:1,button:13,key:"keyDown2"},
+			{pad:1,button:14,key:"keyLeft2"},
+			{pad:1,button:15,key:"keyRight2"},
+			{pad:1,button:0,key:"keyA2"},
+			{pad:1,button:1,key:"keyB2"}
+		]
+	},
 	joystick21pl:{
-		idle:{keyUp1:0,keyDown1:0,keyLeft1:0,keyRight1:0,keyA1:0,keyB1:0,keyUp2:0,keyDown2:0,keyLeft2:0,keyRight2:0,keyA2:0,keyB2:0},
+		idle:{keyUp:0,keyDown:0,keyLeft:0,keyRight:0,keyA:0,keyB:0,keyUp2:0,keyDown2:0,keyLeft2:0,keyRight2:0,keyA2:0,keyB2:0},
 		axes:[
 			{
 				pad:0,
@@ -2610,17 +2649,17 @@ DOMInator.PADLAYOUTS={
 			{pad:0,button:15,key:"keyRight2"},
 			{pad:0,button:0,key:"keyA2"},
 			{pad:0,button:1,key:"keyB2"},
-			{pad:1,button:12,key:"keyUp1"},
-			{pad:1,button:13,key:"keyDown1"},
-			{pad:1,button:14,key:"keyLeft1"},
-			{pad:1,button:15,key:"keyRight1"},
-			{pad:1,button:0,key:"keyA1"},
-			{pad:1,button:1,key:"keyB1"}
+			{pad:1,button:12,key:"keyUp"},
+			{pad:1,button:13,key:"keyDown"},
+			{pad:1,button:14,key:"keyLeft"},
+			{pad:1,button:15,key:"keyRight"},
+			{pad:1,button:0,key:"keyA"},
+			{pad:1,button:1,key:"keyB"}
 		]
 	},
 	joystick31pl:{
 		label:"Gamepad 3+1 - UP/DOWN/LEFT/RIGHT - A,B button",
-		idle:{keyUp1:0,keyDown1:0,keyLeft1:0,keyRight1:0,keyA1:0,keyB1:0,keyUp2:0,keyDown2:0,keyLeft2:0,keyRight2:0,keyA2:0,keyB2:0},
+		idle:{keyUp:0,keyDown:0,keyLeft:0,keyRight:0,keyA:0,keyB:0,keyUp2:0,keyDown2:0,keyLeft2:0,keyRight2:0,keyA2:0,keyB2:0},
 		axes:[
 			{
 				pad:0,
@@ -2642,12 +2681,12 @@ DOMInator.PADLAYOUTS={
 			{pad:0,button:15,key:"keyRight2"},
 			{pad:0,button:0,key:"keyA2"},
 			{pad:0,button:1,key:"keyB2"},
-			{pad:3,button:12,key:"keyUp1"},
-			{pad:3,button:13,key:"keyDown1"},
-			{pad:3,button:14,key:"keyLeft1"},
-			{pad:3,button:15,key:"keyRight1"},
-			{pad:3,button:0,key:"keyA1"},
-			{pad:3,button:1,key:"keyB1"}
+			{pad:3,button:12,key:"keyUp"},
+			{pad:3,button:13,key:"keyDown"},
+			{pad:3,button:14,key:"keyLeft"},
+			{pad:3,button:15,key:"keyRight"},
+			{pad:3,button:0,key:"keyA"},
+			{pad:3,button:1,key:"keyB"}
 		]
 	}
 }
@@ -2701,8 +2740,8 @@ DOMInator.TOUCHLAYOUTS={
 	paddlespad:{
 		label:"Player 1 up/down buttons on left, Player 2 on right",
 		buttons:[
-			{x1:0,y1:0,x2:0.4,y2:0.5,button:"keyUp1",bgcolor:"#f00",color:"#000",label:"Up 1"},
-			{x1:0,y1:0.5,x2:0.4,y2:1,button:"keyDown1",bgcolor:"#ff0",color:"#000",label:"Down 1"},
+			{x1:0,y1:0,x2:0.4,y2:0.5,button:"keyUp",bgcolor:"#f00",color:"#000",label:"Up 1"},
+			{x1:0,y1:0.5,x2:0.4,y2:1,button:"keyDown",bgcolor:"#ff0",color:"#000",label:"Down 1"},
 			{x1:0.6,y1:0,x2:1,y2:0.5,button:"keyUp2",bgcolor:"#00f",color:"#000",label:"Up 2"},
 			{x1:0.6,y1:0.5,x2:1,y2:1,button:"keyDown2",bgcolor:"#f0f",color:"#000",label:"Down 2"},
 			{x1:0.4,y1:0,x2:0.6,y2:1,button:"keyA",bgcolor:"#fff",color:"#000",label:"Start"},
@@ -4279,39 +4318,43 @@ function Wright(gameId,mods) {
 					vertical = get(this, this, data.vertical),
 					jump = get(this, this, data.jump),
 					controlsEnabled = !get(this, this, data.controlsDisabledWhen);
+					keyUp = get(this,this,data.keyUp)||"keyUp",
+					keyDown = get(this,this,data.keyDown)||"keyDown",
+					keyLeft = get(this,this,data.keyLeft)||"keyLeft",
+					keyRight = get(this,this,data.keyRight)||"keyRight";
 				if (horizontal)
 					if (typeof horizontal == "object") {
 						var control = get(this, this, horizontal.control),
 							speed = get(this, this, horizontal.speed),
 							gotoZero = get(this, this, horizontal.gotoZero),
 							zeroValue = get(this, this, horizontal.zeroValue) || 0;
-						if (controlsEnabled&&control) d = _Code.pad("keyLeft", "keyRight") * (speed === undefined ? 1 : speed);
+						if (controlsEnabled&&control) d = _Code.pad(keyLeft,keyRight) * (speed === undefined ? 1 : speed);
 						else d = 0;
 						if (gotoZero && !d)
 							if (Math.abs(zeroValue-this.forceX) < gotoZero) d = zeroValue-this.forceX;
 							else d = gotoZero * (this.forceX-zeroValue > 0 ? -1 : 1);
 						this.forceX += d;
-					} else this.forceX += controlsEnabled?_Code.pad("keyLeft", "keyRight"):0;
+					} else this.forceX += controlsEnabled?_Code.pad(keyLeft,keyRight):0;
 				if (vertical)
 					if (typeof vertical == "object") {
 						var control = get(this, this, vertical.control),
 							speed = get(this, this, vertical.speed),
 							gotoZero = get(this, this, vertical.gotoZero),
 							zeroValue = get(this, this, vertical.zeroValue) || 0;
-						if (controlsEnabled&&control) d = _Code.pad("keyUp", "keyDown") * (speed === undefined ? 1 : speed);
+						if (controlsEnabled&&control) d = _Code.pad(keyUp,keyDown) * (speed === undefined ? 1 : speed);
 						else d = 0;
 						if (gotoZero && !d)
 							if (Math.abs(zeroValue-this.forceY) < gotoZero) d = zeroValue-this.forceY;
 							else d = gotoZero * (this.forceY-zeroValue > 0 ? -1 : 1);
 						this.forceY += d;
-					} else this.forceY += controlsEnabled?_Code.pad("keyUp", "keyDown"):0;
+					} else this.forceY += controlsEnabled?_Code.pad(keyUp,keyDown):0;
 				if (jump) {
 					var forceY = get(this, this, jump.forceY),
 						cut = get(this, this, jump.cut),
 						count = get(this, this, jump.count),
 						audio = get(this, this, jump.playAudio);
 					if (this.touchDown) {
-						if (controlsEnabled&&(game.key.keyUp == 1)) {
+						if (controlsEnabled&&(game.key[keyUp] == 1)) {
 							this.forceY = forceY;
 							if (audio) game.playAudio(audio);
 							this.currentJump = {
@@ -4320,11 +4363,11 @@ function Wright(gameId,mods) {
 							};
 						} else if (this.currentJump) delete this.currentJump;
 					} else if (this.currentJump) {
-						if ((cut !== undefined) && !this.currentJump.cut && (this.forceY * forceY > 0) && (game.key.keyUp == -1)) {
+						if ((cut !== undefined) && !this.currentJump.cut && (this.forceY * forceY > 0) && (game.key[keyUp] == -1)) {
 							this.forceY *= cut;
 							this.currentJump.cut = 1;
 						}
-						if (count && (this.currentJump.count < count) && (controlsEnabled&&(game.key.keyUp == 1))) {
+						if (count && (this.currentJump.count < count) && (controlsEnabled&&(game.key[keyUp] == 1))) {
 							this.forceY = forceY;
 							this.currentJump.count++;
 						}
@@ -5047,6 +5090,11 @@ function Wright(gameId,mods) {
 						ret= {x:ret.x+get(from, tox, p&&p.x?p.x:0),y:ret.y+get(from, tox, p&&p.y?p.y:0),width:1,height:1};
 						break;
 					}
+					case "bitShiftRight":{ ret = ret >> get(from, tox, struct[++id]); break; }
+					case "bitShiftLeft":{ ret = ret << get(from, tox, struct[++id]); break; }
+					case "bitAnd":{ ret = ret & get(from, tox, struct[++id]); break; }
+					case "bitOr":{ ret = ret | get(from, tox, struct[++id]); break; }
+					case "bitXor":{ ret = ret ^ get(from, tox, struct[++id]); break; }
 					case ".":{ ret = ret + get(from, tox, struct[++id]); break; }
 					case "+":{ ret = FIX(ret + get(from, tox, struct[++id])); break; }
 					case "mod":
@@ -5600,6 +5648,7 @@ function Wright(gameId,mods) {
 	// TAPE COMPILER (for now, just solves constants)
 
 	function compile(tape) {
+		if (tape["REM"]) delete tape["REM"];
 		for (var a in tape)
 			if ((typeof tape[a] == "object")&&(tape[a]._ instanceof Array)&&(tape[a]._[0]=="constant")&&(tape[a]._.length==2))
 				tape[a]=constants[tape[a]._[1]];
