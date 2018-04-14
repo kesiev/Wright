@@ -77,6 +77,8 @@ if (isset($_GET)) {
 				if (is_file($gamefile)) {
 					$loadeddata=json_decode(file_get_contents($gamefile),true);
 					foreach ($data as $key => $value) $loadeddata[$key]=$value;
+					if (isset($loadeddata["publishedYear"])) $loadeddata["year"]=$loadeddata["publishedYear"]."-".$loadeddata["year"];
+					if (isset($loadeddata["edition"])) $loadeddata["edition"]='<span class="edition">'.$loadeddata["edition"]."</span>";
 					$loadeddata["gameroot"]=$gameroot;
 					$loadeddata["issueid"]=$issueid;
 					echo fillTemplate(file_get_contents("templates/issue.html"),$loadeddata);
