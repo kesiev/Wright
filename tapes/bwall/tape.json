@@ -1,27 +1,52 @@
 {
   "name":"Bwall",
+  "edition":"Plus!",
   "author":"KesieV",
-  "year":2015,
+  "year":2018,
+  "publishedYear":2015,
   "genre":"Wall breaker",
-  "description":"<p>There is a crucial difference between the original <a href='https://en.wikipedia.org/wiki/Breakout_(video_game)'>Breakout</a> (1976) and modern wall breakers like <a href='https://en.wikipedia.org/wiki/Arkanoid'>Arkanoid</a> (1986). It's ball control: modern wall breakers allow to change the ball bounce angle hitting it with different parts of the bat.</p><p>So, hitting the ball from the middle part will bounce it vertically and from the right or left sides will change the angle accordingly.</p><p>When I tried making a wall breaker clone, inspired by the great <a href='http://www.worldofspectrum.org/infoseekid.cgi?id=0000472'>Batty</a> (1987) for ZX Spectrum, I knew that I was going to add better physics to Wright!, make it more complex than I wanted and leave its platformer-only purpose but... can you really say you can make a retro game without putting together a wall breaker?</p><p>Plot!</p><p>I've always thought that the original Arkanoid plot and all the Doh thing sucked a lot but I never imagined that thinking a good plot of a wall breaker game was so hard. So. No plot for you. Use LEFT/RIGHT to move the bat. That's all.</p>",
-  "screenshots":["bwall-1.png","bwall-2.png"],
+  "description":"<p>There is a crucial difference between the original <a href='https://en.wikipedia.org/wiki/Breakout_(video_game)'>Breakout</a> (1976) and modern wall breakers like <a href='https://en.wikipedia.org/wiki/Arkanoid'>Arkanoid</a> (1986). It's ball control: modern wall breakers allows to change the ball bounce angle hitting it on different parts of the bat.</p><p>So, hitting the ball from the middle part will bounce it vertically and from the right or left sides will change the angle accordingly.</p><p>When I tried making a wall breaker clone, inspired by the great <a href='http://www.worldofspectrum.org/infoseekid.cgi?id=0000472'>Batty</a> (1987) for ZX Spectrum, I knew that I was going to add better physics to Wright!, making it more complex than I wanted and leaving its platformer-only purpose but... can you really say you can make a retro game without putting together a wall breaker?</p><p>Plot!</p><p>I've always thought that the original Arkanoid plot and all the Doh thing sucked a lot but I never imagined that thinking a good plot of a wall breaker game was so hard. So. No plot for you. Use LEFT/RIGHT to move the bat. That's all.</p><p><i>PS: 3 years later I've added the unmissable bing-bong sounds and hiscores. Just what this game needed. I've fixed the article too and I wish I could've seen my face after seeing <a href='woom'>the future Wright! FPS</a>.</i></p>",
+  "screenshots":[ "bwall-1.png", "bwall-2.png" ],
   "hardware":{
     "width":256,
     "height":192,
     "filter":"retro"
   },
+  "audioChannels":{
+    "bouncesounds":{ "volume":1, "samples":[ "bing", "bong" ] },
+    "sfx":{ "volume":0.4, "samples":[ "explode", "spawn", "gameover", "clear", "enemyspawn", "enemydead" ] }
+  },
   "cheats":{
-    "unlimitedLives":"Unlimited lives"
+    "unlimitedLives":"Unlimited lives (no hi-score, sorry!)"
   },
   "resources":{
-    "spectrum":"spectrum.font",
-    "pixeldingbats":"pixeldingbats.font",
     "logo":"logo.png",
+    "pixeldingbats":"pixeldingbats.font",
     "smalllogo":"small-logo.png",
+    "spectrum":"spectrum.font",
     "defaultsprites":"../default/sprites.png",
-    "embossbox":"../default/embossbox.png"
+    "defaultstickers":"../default/stickers.png",
+    "embossbox":"../default/embossbox.png",
+    "bing":{ "decay":0.3, "release":0.4, "wave":"sine" },
+    "bong":{ "decay":0.3, "frequency":400, "release":0.4, "wave":"sine" },
+    "clear":{ "attack":0.015, "decay":0.3, "frequency":430, "frequencyJump1amount":0.24, "frequencyJump1onset":0.29, "frequencyJump2amount":-0.08, "frequencyJump2onset":0.42, "release":0.4, "sustain":0.4, "wave":"square" },
+    "enemydead":{ "attack":0.015, "decay":0.138, "frequency":685, "pitch":-0.0004, "release":0.216, "sustain":0.024, "wave":"tangent" },
+    "enemyspawn":{ "attack":0.015, "decay":0.138, "frequency":685, "pitch":0.0004, "release":0.216, "sustain":0.024, "wave":"tangent" },
+    "explode":{ "decay":0.282, "frequency":820, "frequencyJump1amount":0.3, "frequencyJump1onset":0.29, "pitch":-0.0008, "release":0.2, "sustain":0.2, "wave":"whitenoise" },
+    "gameover":{ "attack":0.015, "decay":0.3, "frequency":100, "frequencyJump1amount":0.08, "frequencyJump1onset":0.37, "frequencyJump2amount":-0.7, "frequencyJump2onset":0.99, "release":0.4, "sustain":0.4, "wave":"square" },
+    "spawn":{ "attack":0.015, "decay":0.3, "frequency":190, "frequencyJump1amount":0.44, "frequencyJump1onset":0.48, "frequencyJump2amount":-0.18, "frequencyJump2onset":0.37, "release":0.4, "sustain":0.252, "wave":"square" }
   },
   "stencils":{
+    "codeFinalizeScore":{
+      "when":{ "_":[ "cheat", "unlimitedLives", "not" ] },
+      "execute":[
+        { "publishScore":{ "_":[ "variable", "score" ] } },
+        {
+          "when":{ "_":[ "variable", "score", "isGreaterThan", { "_":[ "variable", "hiscore" ] } ] },
+          "execute":{ "as":[ { "_":"storage" }, { "_":"variable" } ], "set":{ "hiscore":{ "_":[ "variable", "score" ] } } }
+        }
+      ]
+    },
     "modelStage":{
       "object":{ "set":{ "_":[ "stencil", "bat" ] } },
       "x":-8, "y":-8,
@@ -78,7 +103,8 @@
           "set":{
             "x":{ "_":[ "randomNumber", [ 24, 136 ] ] }, "y":{ "_":[ "randomNumber", [ 24, 120 ] ] },
             "visible":1, "scale":0,
-            "forceX":{ "_":[ "randomValue", [ -1, 1 ] ] }, "forceY":{ "_":[ "randomValue", [ -1, 1 ] ] }
+            "forceX":{ "_":[ "randomValue", [ -1, 1 ] ] }, "forceY":{ "_":[ "randomValue", [ -1, 1 ] ] },
+            "playAudio":"enemyspawn"
           },
           "code":{ "name":"Sequence", "data":[ { "sum":0.1, "to":{ "_":[ "this", "scale" ] }, "wait":1, "loop":1, "cycles":10 }, { "set":{ "state":"roam" } } ] }
         },
@@ -90,7 +116,7 @@
         },
         {
           "name":"remove",
-          "set":{ "removeType":"enemy", "forceX":0, "forceY":0 },
+          "set":{ "removeType":"enemy", "forceX":0, "forceY":0, "playAudio":"enemydead" },
           "code":{
             "name":"Sequence",
             "data":[ { "subtract":0.1, "to":{ "_":[ "this", "scale" ] }, "wait":1, "loop":1, "cycles":10 }, { "set":{ "state":"default" } } ]
@@ -104,21 +130,28 @@
       "zIndex":1, "x":78, "y":160,
       "forceX":0, "forceY":1,
       "speed":4,
+      "doPlayAudio":1,
       "states":{
         "code":[
           {
             "name":"Physics",
             "data":{
               "walls":[
-                { "type":"wall", "restitution":1 },
-                { "type":"hitable", "restitution":1, "execute":{ "as":{ "_":"that" }, "executeAction":"hit" } },
+                { "type":"wall", "restitution":1, "execute":{ "when":{ "_":[ "this", "doPlayAudio" ] }, "playAudio":"bong", "stopChannel":"bouncesounds" } },
+                {
+                  "type":"hitable",
+                  "restitution":1,
+                  "execute":[ { "when":{ "_":[ "this", "doPlayAudio" ] }, "playAudio":"bong", "stopChannel":"bouncesounds" }, { "as":{ "_":"that" }, "executeAction":"hit" } ]
+                },
                 {
                   "type":"bat",
                   "execute":{
                     "applyVector":{
                       "angle":{ "_":[ "proportionalValue", { "proportion":[ { "_":[ "that", "x" ] }, { "_":[ "that", "x", "+", { "_":[ "that", "width" ] } ] }, -60, 60 ], "value":{ "_":[ "this", "x" ] } } ] },
                       "length":{ "_":[ "this", "speed" ] }
-                    }
+                    },
+                    "playAudio":"bing",
+                    "stopChannel":"bouncesounds"
                   }
                 }
               ]
@@ -132,8 +165,15 @@
                 "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "enemy" ] } ] },
                 "execute":[
                   { "as":{ "_":"that" }, "executeAction":"hit" },
-                  { "multiply":{ "_":[ "randomValue", [ -1, 1 ] ] }, "to":{ "_":[ "this", "forceX" ] } },
-                  { "multiply":{ "_":[ "randomValue", [ -1, 1 ] ] }, "to":{ "_":[ "this", "forceY" ] } }
+                  {
+                    "decide":{
+                      "options":[
+                        { "multiply":-1, "to":{ "_":[ "this", "forceX" ] } },
+                        { "multiply":-1, "to":{ "_":[ "this", "forceY" ] } },
+                        [ { "multiply":-1, "to":{ "_":[ "this", "forceX" ] } }, { "multiply":-1, "to":{ "_":[ "this", "forceY" ] } } ]
+                      ]
+                    }
+                  }
                 ]
               }
             ]
@@ -144,7 +184,8 @@
     "randomBall":{
       "set":{ "_":[ "stencil", "ball" ] },
       "x":{ "_":[ "randomNumber", [ 24, 120 ] ] }, "y":{ "_":[ "randomNumber", [ 24, 120 ] ] },
-      "execute":{ "applyVector":{ "angle":{ "_":[ "randomNumber", [ 0, 360 ] ] }, "length":4 } }
+      "execute":{ "applyVector":{ "angle":{ "_":[ "randomNumber", [ 0, 360 ] ] }, "length":4 } },
+      "doPlayAudio":0
     },
     "bat":{
       "image":"defaultsprites", "tileX":144, "tileY":0, "width":24, "height":8,
@@ -153,17 +194,15 @@
       "states":[
         {
           "set":{ "removeType":"bat", "x":68, "y":210, "angle":0, "forceY":-10, "animation":"idle" },
+          "execute":{ "playAudio":"spawn" },
           "code":[
             { "name":"Physics", "data":{ "gravityY":1 } },
             {
-              "name":"Sequence",
-              "data":[
-                {
-                  "when":{ "_":[ "this", "forceY", "isEqualTo", 6 ] },
-                  "execute":[ { "object":{ "set":{ "_":[ "stencil", "ball" ] } } }, { "set":{ "state":"active" } } ]
-                },
-                { "goto":0, "wait":1 }
-              ]
+              "name":"Execute",
+              "data":{
+                "when":{ "_":[ "this", "forceY", "isEqualTo", 6 ] },
+                "execute":[ { "object":{ "set":{ "_":[ "stencil", "ball" ] } } }, { "set":{ "state":"active" } } ]
+              }
             }
           ]
         },
@@ -180,6 +219,7 @@
         {
           "name":"killed",
           "set":{ "removeType":"bat", "forceX":0, "forceY":-1, "animation":"dead", "spinSide":{ "_":[ "randomNumber", [ -5, 5 ] ] } },
+          "execute":{ "playAudio":"explode" },
           "code":[
             { "name":"Physics" },
             { "name":"Execute", "data":{ "set":{ "angle":{ "_":[ "this", "angle", "+", { "_":[ "this", "spinSide" ] }, "%", 360 ] } } } },
@@ -216,41 +256,45 @@
     "L":{ "set":{ "_":[ "stencil", "T" ] }, "flipY":1 },
     "x":{ "type":"killBall" }
   },
-  "execute":{
-    "object":[
-      { "image":"embossbox", "width":96, "height":208, "x":160, "y":0, "bgcolor":"#00ffff" },
-      { "image":"smalllogo", "width":64, "height":20, "zIndex":1, "x":177, "y":24 },
-      {
-        "box":"label", "width":74, "height":30,
-        "zIndex":1, "x":171, "y":70,
-        "bgcolor":"#000000", "color":"#ffffff",
-        "font":"spectrum", "fontSize":20, "lineHeight":15, "html":"SCORE"
-      },
-      {
-        "type":"hud",
-        "hudType":"label", "label":"%number|variable.score%",
-        "box":"label", "width":60,
-        "zIndex":2, "x":179, "y":84,
-        "color":"#ffffff",
-        "font":"spectrum", "fontSize":20, "lineHeight":15
-      },
-      {
-        "box":"label", "width":74, "height":30,
-        "zIndex":1, "x":171, "y":120,
-        "bgcolor":"#000000", "color":"#ffffff",
-        "font":"spectrum", "fontSize":20, "lineHeight":15, "html":"LIVES"
-      },
-      {
-        "type":"hud",
-        "hudType":"label", "label":"%repeat|variable.lives|Â%",
-        "box":"label", "width":60,
-        "zIndex":2, "x":179, "y":134,
-        "color":"#ffffff",
-        "font":"pixeldingbats", "fontSize":8, "lineHeight":15
-      }
-    ],
-    "into":{ "_":"hud" }
-  },
+  "execute":[
+    { "when":{ "_":[ "storage", "hiscore", "not" ] }, "as":{ "_":"storage" }, "set":{ "hiscore":0 } },
+    { "as":{ "_":"variable" }, "set":{ "hiscore":{ "_":[ "storage", "hiscore" ] } } },
+    {
+      "object":[
+        { "image":"embossbox", "width":96, "height":208, "x":160, "y":0, "bgcolor":"#00ffff" },
+        { "image":"smalllogo", "width":64, "height":20, "zIndex":1, "x":177, "y":24 },
+        {
+          "box":"label", "width":74, "height":30,
+          "zIndex":1, "x":171, "y":70,
+          "bgcolor":"#000000", "color":"#ffffff",
+          "font":"spectrum", "fontSize":20, "lineHeight":15, "html":"SCORE"
+        },
+        {
+          "type":"hud",
+          "hudType":"label", "label":"%number|variable.score%",
+          "box":"label", "width":60,
+          "zIndex":2, "x":179, "y":84,
+          "color":"#ffffff",
+          "font":"spectrum", "fontSize":20, "lineHeight":15
+        },
+        {
+          "box":"label", "width":74, "height":30,
+          "zIndex":1, "x":171, "y":120,
+          "bgcolor":"#000000", "color":"#ffffff",
+          "font":"spectrum", "fontSize":20, "lineHeight":15, "html":"LIVES"
+        },
+        {
+          "type":"hud",
+          "hudType":"label", "label":"%repeat|variable.lives|Â%",
+          "box":"label", "width":60,
+          "zIndex":2, "x":179, "y":134,
+          "color":"#ffffff",
+          "font":"pixeldingbats", "fontSize":8, "lineHeight":15
+        }
+      ],
+      "into":{ "_":"hud" }
+    }
+  ],
   "scenes":{
     "intro":{
       "object":[
@@ -262,6 +306,15 @@
           "font":"spectrum", "outline":"#000000", "textAlign":"center", "html":"PRESS START",
           "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "visible":0 }, "wait":10 }, { "set":{ "visible":1 }, "wait":10, "loopTo":0 } ] } }
         },
+        {
+          "type":"hud",
+          "hudType":"label", "label":"HI: %number|variable.hiscore|0|6%",
+          "box":"label", "width":160,
+          "zIndex":2, "x":8, "y":168,
+          "bgcolor":"#000", "color":"#fff",
+          "font":"spectrum", "textAlign":"center"
+        },
+        { "image":"defaultstickers", "width":35, "height":8, "zIndex":3, "x":105, "y":79 },
         { "_":[ "stencil", "randomBall" ] },
         { "_":[ "stencil", "randomBall" ] },
         { "_":[ "stencil", "randomBall" ] },
@@ -270,7 +323,7 @@
       ],
       "x":-8, "y":-8,
       "execute":{ "as":{ "_":"variable" }, "set":{ "lives":3, "nextStage":1, "score":0 } },
-      "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":{ "_":[ "variable", "nextStage" ] } } } },
+      "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":{ "_":[ "variable", "nextStage" ] }, "playAudio":"bing" } } },
       "tilemap":{
         "map":[
           "T=========,",
@@ -310,7 +363,11 @@
         }
       ],
       "x":-8, "y":-8,
-      "execute":{ "sum":{ "_":[ 1000, "*", { "_":[ "variable", "lives" ] } ] }, "to":{ "_":[ "variable", "score" ] } },
+      "execute":[
+        { "sum":{ "_":[ 1000, "*", { "_":[ "variable", "lives" ] } ] }, "to":{ "_":[ "variable", "score" ] } },
+        { "_":[ "stencil", "codeFinalizeScore" ] },
+        { "playAudio":"clear" }
+      ],
       "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"intro" } } },
       "tilemap":{
         "map":[
@@ -332,8 +389,8 @@
     },
     "gameover":{
       "y":8,
+      "execute":[ { "playAudio":"gameover" }, { "_":[ "stencil", "codeFinalizeScore" ] } ],
       "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"intro" } } },
-      "execute":{ "publishScore":{ "_":[ "variable", "score" ] } },
       "tilemap":{
         "map":[
           "T,T=,T=,T, ",
