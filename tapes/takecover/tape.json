@@ -1,25 +1,38 @@
 {
   "name":"Take Cover",
+  "edition":"Plus!",
   "author":"KesieV",
-  "year":2015,
+  "year":2018,
+  "publishedYear":2015,
   "genre":"Shoot'em up",
-  "description":"<p>You thought that third person cover shooters with destructable environments were from modern age!</p><p>Have a look to <a href='https://en.wikipedia.org/wiki/Cabal_(video_game)'>Cabal</a> (1988), that was a great game I used to play with my father on Commodore 64. This game is a shorter version, based on the fabulous ZX Spectrum conversion.</p><p>Well. Time to improve collision detection, evaluate the objects z-index and officially leave the 'retro platformer only' role of Wright! to... something else I still didn't know.</p><p>Plot now.</p><p>You're the classic soldier hero stereotype that is coming back home after winning the war probably alone. But... there's one last outpost to take down! Fire, destroy everything and take cover behind the walls! Move your soldier with LEFT/RIGHT and the reticle with UP/DOWN/LEFT/RIGHT. Fire with the A button.</p>",
-  "screenshots":["takecover-1.png","takecover-2.png"],
+  "description":"<p>Do you think that third person cover shooters with destructable environments are modern gaming? Think again!</p><p>Have a look to <a href='https://en.wikipedia.org/wiki/Cabal_(video_game)'>Cabal</a> (1988), that was a great game I used to play with my father on Commodore 64. This game is a shorter version, based on the fabulous ZX Spectrum conversion.</p><p>Well. Time to improve collision detection, evaluate the objects z-index and officially leave the 'retro platformer only' role of Wright! to... something else I still don't know.</p><p>Plot now.</p><p>You're the classic soldier hero stereotype that is coming back home after winning the war probably by himself. But... there's one last outpost to take down! Fire, destroy everything and take cover behind the walls! Move your soldier with LEFT/RIGHT and the reticle with UP/DOWN/LEFT/RIGHT. Fire with the A button.</p><p><i>PS: 3 years later I've added sounds, hiscores and tuned the scoring system a bit. I'm still surprised how this game is one of the first games I've made for Wright! Magazine.</i></p>",
+  "screenshots":[ "takecover-1.png", "takecover-2.png" ],
   "hardware":{
     "width":256,
     "height":192,
     "filter":"retro"
   },
+  "audioChannels":{
+    "sfx":{ "volume":0.4, "samples":[ "fire", "dead", "hitwall", "destroy", "enemyhit", "enemydead", "enemyfire" ] }
+  },
   "cheats":{
-    "undestructableCovers":"Undestructable covers",
-    "unlimitedLives":"Unlimited lives"
+    "undestructableCovers":"Undestructable covers (no hi-score, sorry!)",
+    "unlimitedLives":"Unlimited lives (no hi-score, sorry!)"
   },
   "resources":{
-    "spectrum":"spectrum.font",
-    "pixeldingbats":"pixeldingbats.font",
     "logoimage":"logo.png",
+    "pixeldingbats":"pixeldingbats.font",
+    "spectrum":"spectrum.font",
     "stage1":"stage1.png",
-    "defaultsprites":"../default/sprites.png"
+    "defaultsprites":"../default/sprites.png",
+    "defaultstickers":"../default/stickers.png",
+    "dead":{ "attack":0.15, "decay":0.15, "pitch":-0.002, "release":0.2, "sustain":0.2, "wave":"saw" },
+    "destroy":{ "decay":0.171, "pitch":-0.002, "release":0.02, "sustain":0.396, "wave":"whitenoise" },
+    "enemydead":{ "attack":0.015, "decay":0.156, "frequency":445, "pitch":-0.002, "release":0.4, "sustain":0.4, "wave":"saw" },
+    "enemyfire":{ "decay":0.021, "frequency":100, "wave":"square" },
+    "enemyhit":{ "attack":0.015, "decay":0, "frequency":445, "pitch":-0.002, "sustain":0.304, "wave":"saw" },
+    "fire":{ "attack":0.003, "decay":0.009, "frequency":160, "pitch":-0.002, "release":0.04, "wave":"square" },
+    "hitwall":{ "decay":0.03, "pitch":-0.002, "release":0.02, "wave":"square" }
   },
   "stencils":{
     "spark":{
@@ -62,8 +75,14 @@
           "code":{
             "name":"Sequence",
             "data":[
-              { "as":{ "_":[ "objectTyped", "destroyable" ] }, "execute":{ "_":[ "stencil", "sparksRemove" ] } },
-              { "sum":10, "to":{ "_":[ "variable", "score" ] } },
+              {
+                "as":{ "_":[ "objectTyped", "destroyable" ] },
+                "execute":[
+                  { "sum":{ "_":[ "this", "score", "*", 2 ] }, "to":{ "_":[ "variable", "score" ] } },
+                  { "_":[ "stencil", "sparksRemove" ] },
+                  { "playAudio":"destroy" }
+                ]
+              },
               { "wait":10 },
               { "when":{ "_":[ "object", "destroyable", "count", "isEqualTo", 0 ] }, "set":{ "state":"endLevel" } },
               { "wait":1, "loopTo":0 }
@@ -76,7 +95,7 @@
             "object":{
               "box":"label", "width":256, "height":175,
               "zIndex":3000, "x":0, "y":57,
-              "font":"spectrum", "fontSize":40, "lineHeight":40, "outline":"#ff0000", "textAlign":"center", "html":"STAGE CLEARED!",
+              "font":"spectrum", "fontSize":40, "lineHeight":40, "outline":"#ff0000", "textAlign":"center", "html":"STAGE CLEARED",
               "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "visible":0 }, "wait":10 }, { "set":{ "visible":1 }, "wait":10, "loopTo":0 } ] } }
             }
           },
@@ -152,7 +171,7 @@
             {
               "name":"fire",
               "execute":{
-                "object":{ "set":{ "_":[ "stencil", "spark" ] } },
+                "object":{ "set":{ "_":[ "stencil", "spark" ] }, "playAudio":"fire" },
                 "execute":[
                   { "subtract":5, "to":{ "_":[ "that", "y" ] } },
                   { "as":{ "_":"that" }, "set":{ "forceY":-2 } },
@@ -164,7 +183,7 @@
         },
         {
           "name":"hit",
-          "set":{ "visible":1, "animation":"hit" },
+          "set":{ "visible":1, "animation":"hit", "playAudio":"dead" },
           "code":{
             "name":"Sequence",
             "data":[
@@ -214,11 +233,12 @@
           {
             "name":"hit",
             "execute":[
+              { "playAudio":"hitwall" },
               { "when":{ "_":[ "cheat", "undestructableCovers", "not" ] }, "subtract":{ "_":[ "that", "damage" ] }, "to":{ "_":[ "this", "health" ] } },
               { "when":{ "_":[ "this", "health", "isLessThan", 0 ] }, "executeAction":"destroy" }
             ]
           },
-          { "name":"destroy", "execute":{ "_":[ "stencil", "sparksRemove" ] } }
+          { "name":"destroy", "execute":[ { "playAudio":"destroy" }, { "_":[ "stencil", "sparksRemove" ] } ] }
         ]
       }
     },
@@ -286,7 +306,7 @@
         },
         {
           "name":"hit",
-          "set":{ "forceX":0, "animation":"hit", "invulnerability":5 },
+          "set":{ "forceX":0, "animation":"hit", "playAudio":"enemyhit", "invulnerability":5 },
           "code":{
             "name":"Sequence",
             "data":[
@@ -302,7 +322,7 @@
               {
                 "when":{ "_":[ "this", "health", "isGreaterThan", 0 ] },
                 "set":{ "state":"walk" },
-                "elseExecute":[ { "_":[ "stencil", "givePoints" ] }, { "set":{ "state":"default" } } ]
+                "elseExecute":[ { "_":[ "stencil", "givePoints" ] }, { "set":{ "state":"default" } }, { "playAudio":"enemydead" } ]
               }
             ]
           }
@@ -321,7 +341,8 @@
                   "as":{ "_":"that" },
                   "set":{ "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] } },
                   "applyVector":{ "toward":{ "_":[ "objectTyped", "playerBody" ] }, "length":3 }
-                }
+                },
+                "playAudio":"enemyfire"
               },
               { "set":{ "state":"walk" } }
             ]
@@ -351,7 +372,7 @@
             }
           }
         ],
-        "actions":{ "name":"hit", "execute":[ { "_":[ "stencil", "givePoints" ] }, { "_":[ "stencil", "sparkRemove" ] } ] }
+        "actions":{ "name":"hit", "execute":[ { "playAudio":"hitwall" }, { "_":[ "stencil", "givePoints" ] }, { "_":[ "stencil", "sparkRemove" ] } ] }
       }
     },
     "givePoints":[
@@ -370,50 +391,50 @@
             "name":"hit",
             "execute":[ { "subtract":1, "to":{ "_":[ "this", "health" ] } }, { "when":{ "_":[ "this", "health", "isLessThan", 1 ] }, "executeAction":"destroy" } ]
           },
-          { "name":"destroy", "execute":[ { "_":[ "stencil", "givePoints" ] }, { "_":[ "stencil", "sparksRemove" ] } ] }
+          { "name":"destroy", "execute":[ { "playAudio":"destroy" }, { "_":[ "stencil", "givePoints" ] }, { "_":[ "stencil", "sparksRemove" ] } ] }
         ]
       }
     }
   },
-  "execute":{
-    "object":[
-      {
-        "html":"FOE",
-        "box":"label", "width":246,
-        "x":5, "y":174,
-        "font":"spectrum", "outline":"#000000"
-      },
-      {
-        "type":"hud",
-        "hudType":"label", "label":"%repeatPercent|variable.foeValue|variable.foeLimit|30|h| %",
-        "box":"label", "width":246,
-        "x":37, "y":174, "color":"#f00", "fontSize":6, "zIndex":10,
-        "font":"pixeldingbats", "outline":"#000000"
-      },
-      {
-        "html":"hhhhhhhhhhhhhhhhhhhhhhhhhhhhhh",
-        "box":"label", "width":246,
-        "x":37, "y":174, "color":"#7f7f7f", "fontSize":6,
-        "font":"pixeldingbats", "outline":"#000000"
-      },
-      {
-        "type":"hud",
-        "hudType":"label", "label":"%repeat|variable.lives|[%",
-        "box":"label", "width":45,
-        "x":5, "y":5,
-        "color":"#ff0000",
-        "font":"pixeldingbats", "fontSize":7, "lineHeight":20, "outline":"#000000"
-      },
-      {
-        "type":"hud",
-        "hudType":"label", "label":"1UP %number|variable.score%",
-        "box":"label", "width":190,
-        "x":50, "y":5,
-        "font":"spectrum", "outline":"#000000"
-      }
-    ],
-    "into":{ "_":"hud" }
-  },
+  "execute":[
+    { "when":{ "_":[ "storage", "hiscore", "not" ] }, "as":{ "_":"storage" }, "set":{ "hiscore":0 } },
+    { "as":{ "_":"variable" }, "set":{ "hiscore":{ "_":[ "storage", "hiscore" ] } } },
+    {
+      "object":[
+        { "box":"label", "width":246, "x":5, "y":174, "font":"spectrum", "outline":"#000000", "html":"FOE" },
+        {
+          "type":"hud",
+          "hudType":"label", "label":"%repeatPercent|variable.foeValue|variable.foeLimit|30|h| %",
+          "box":"label", "width":246,
+          "zIndex":10, "x":37, "y":174,
+          "color":"#f00",
+          "font":"pixeldingbats", "fontSize":6, "outline":"#000000"
+        },
+        {
+          "box":"label", "width":246,
+          "x":37, "y":174,
+          "color":"#7f7f7f",
+          "font":"pixeldingbats", "fontSize":6, "outline":"#000000", "html":"hhhhhhhhhhhhhhhhhhhhhhhhhhhhhh"
+        },
+        {
+          "type":"hud",
+          "hudType":"label", "label":"%repeat|variable.lives|[%",
+          "box":"label", "width":45,
+          "x":5, "y":5,
+          "color":"#ff0000",
+          "font":"pixeldingbats", "fontSize":7, "lineHeight":20, "outline":"#000000"
+        },
+        {
+          "type":"hud",
+          "hudType":"label", "label":"1UP %number|variable.score%",
+          "box":"label", "width":190,
+          "x":50, "y":5,
+          "font":"spectrum", "outline":"#000000"
+        }
+      ],
+      "into":{ "_":"hud" }
+    }
+  ],
   "scenes":{
     "intro":{
       "object":[
@@ -421,17 +442,40 @@
           "image":"logoimage", "width":180, "height":80,
           "x":-180, "y":40,
           "forceX":5,
-          "states":{ "code":{ "name":"Physics", "data":{ "walls":{ "area":{ "width":425, "height":192, "x":-200, "y":0 }, "restitution":0.3 }, "gravityX":1 } } }
+          "states":{
+            "code":{
+              "name":"Physics",
+              "data":{
+                "walls":{
+                  "area":{ "width":425, "height":192, "x":-200, "y":0 },
+                  "restitution":0.3,
+                  "execute":{ "when":{ "_":[ "this", "forceX", "isLessThan", -1 ] }, "playAudio":"destroy" }
+                },
+                "gravityX":1
+              }
+            }
+          }
         },
         {
           "box":"label", "width":256,
-          "zIndex":3000, "x":0, "y":130,
+          "zIndex":3000, "x":0, "y":138,
           "font":"spectrum", "fontSize":20, "lineHeight":20, "outline":"#ff0000", "textAlign":"center", "html":"PRESS START",
           "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "visible":0 }, "wait":10 }, { "set":{ "visible":1 }, "wait":10, "loopTo":0 } ] } }
+        },
+        {
+          "box":"label", "width":256,
+          "x":0, "y":162,
+          "font":"spectrum", "textAlign":"center", "html":{ "_":[ "HI-SCORE: ", ".", { "_":[ "variable", "hiscore" ] } ] }
+        },
+        {
+          "image":"defaultstickers", "width":35, "height":8,
+          "zIndex":3, "x":170, "y":120,
+          "visible":0,
+          "states":{ "code":{ "name":"Sequence", "data":[ { "wait":75 }, { "set":{ "visible":1 } } ] } }
         }
       ],
       "execute":{ "as":{ "_":"variable" }, "set":{ "lives":5, "nextStage":1, "score":0 } },
-      "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":{ "_":[ "variable", "nextStage" ] } } } }
+      "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":{ "_":[ "variable", "nextStage" ] }, "playAudio":"hitwall" } } }
     },
     "gameover":{
       "object":{
@@ -439,9 +483,20 @@
         "zIndex":3000, "x":0, "y":192,
         "font":"spectrum", "fontSize":40, "lineHeight":40, "outline":"#ff0000", "textAlign":"center", "html":"GAME OVER",
         "forceY":-2,
-        "states":{ "code":{ "name":"Physics", "data":{ "walls":{ "area":{ "width":256, "height":200, "x":0, "y":76 }, "restitution":0 } } } }
+        "states":{
+          "code":{ "name":"Physics", "data":{ "walls":{ "area":{ "width":256, "height":200, "x":0, "y":76 }, "restitution":0, "execute":{ "playAudio":"destroy" } } } }
+        }
       },
-      "execute":{ "publishScore":{ "_":[ "variable", "score" ] } },
+      "execute":{
+        "when":{ "_":[ "cheat", "unlimitedLives", "not", "and", { "_":[ "cheat", "undestructableCovers", "not" ] } ] },
+        "execute":[
+          { "publishScore":{ "_":[ "variable", "score" ] } },
+          {
+            "when":{ "_":[ "variable", "score", "isGreaterThan", { "_":[ "variable", "hiscore" ] } ] },
+            "execute":{ "as":[ { "_":"storage" }, { "_":"variable" } ], "set":{ "hiscore":{ "_":[ "variable", "score" ] } } }
+          }
+        ]
+      },
       "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"intro" } } }
     },
     "1":{
