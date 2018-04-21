@@ -1,31 +1,61 @@
 {
   "name":"Starcat Bolle",
+  "edition":"Plus!",
   "author":"KesieV",
-  "year":2015,
+  "year":2018,
+  "publishedYear":2015,
   "genre":"Platformer",
-  "description":"<p>How ironic.</p><p>Porting arcade games on home computers and consoles was a pretty common, hard and appreciated practice during 80's and 90's. Every port was a labour of love: since most of the arcade machines were may much more powerful than most of the home entertainment systems, coders and designers studied where and how to cut and adapt games in order to fit screens, memories and tapes, keeping the gameplay as faithful as they could.</p><p>Playing a good arcade port on a home computer gives you a bittersweet feeling: the game plays the same but it feels brand new in some ways. My favourite one is <a href='https://en.wikipedia.org/wiki/Bubble_Bobble'>Bubble Bobble</a> (1996) to the Commodre 64, ported one year later after its original release. It played really the same but, while the original one had sparkling joyful colors, the dimmed one of the C64 version were more relaxing and warm, reflecting the chilling environment of the living room where I used to play.</p><p>What is ironic? Despite the hard work needed by porting Bubble Bobble for Commodore 64, I played its pirated version, called '<a href='http://www.specialprogramsipe.altervista.org/gioco.php?collana=special_games&console=c64&codice=bolle_bolle&id_rivista=17'>Bolle Bolle</a>' ('Bubble Bubble' in italian) and distributed by a magazine called 'Special Program', which used to publish translated versions of original games. These magazines were so popular that most of the Commodore 64 gamers of the 90's still call 'Bubble Bobble' 'Bolle Bolle'... or don't know the original name at all!</p><p>That's quite unbelivable nowdays, isn't it?</p><p>Plot!</p><p>'Starcat Bolle' (partially translated in italian as extra tribute) is the new adventure of our hero Starcat! One last star is missing from the sky and... it's into the Purple Blobs headquarter! Use your handy new ability, trap any menace inside bubbles, scatter them around, eat fruit and find the last star! Use LEFT/RIGHT for moving, UP for jumping and the A BUTTON for firing bubbles. You can jump over bubbles keeping holding UP!</p>",
+  "description":"<p>How ironic.</p><p>Porting arcade games on home computers and consoles was a pretty common, hard and appreciated practice during 80's and 90's. Every port was a labour of love: since most of the arcade machines were may much more powerful than most of the home entertainment systems, coders and designers studied where and how to cut and adapt games in order to fit screens, memories and tapes, keeping the gameplay as faithful as they could.</p><p>Playing a good arcade port on a home computer gives you a bittersweet feeling: the game plays the same but it feels brand new in some ways. My favourite one is <a href='https://en.wikipedia.org/wiki/Bubble_Bobble'>Bubble Bobble</a> (1996) to the Commodre 64, ported one year later after its original release. It played really the same but, while the original one had sparkling joyful colors, the dimmed one of the C64 version were more relaxing and warm, reflecting the chilling environment of the living room where I used to play.</p><p>What is ironic? Despite the hard work needed by porting Bubble Bobble for Commodore 64, I played its pirated version, called '<a href='http://www.specialprogramsipe.altervista.org/gioco.php?collana=special_games&console=c64&codice=bolle_bolle&id_rivista=17'>Bolle Bolle</a>' ('Bubble Bubble' in italian) and distributed by a magazine called 'Special Program', which used to publish italian translated versions of original games. These magazines were so popular that most of the Commodore 64 gamers of the 90's still call 'Bubble Bobble' 'Bolle Bolle'... or don't know its original name at all!</p><p>That's quite unbelivable nowdays, isn't it?</p><p>Plot!</p><p>'Starcat Bolle' (partially translated in italian as extra tribute) is the new adventure of our hero Starcat! One last star is missing from the sky and... it's into the Purple Blobs headquarter! Use your handy new ability, trap any menace inside the bubbles, scatter them around, eat fruit and find the last star! Use LEFT/RIGHT for moving, UP for jumping and the A BUTTON for firing bubbles. You can jump over bubbles holding the UP button!</p><p><i>PS: 3 years later I've added hiscores, music, sound effects and - more importantly - that 2 players co-op that helped ending that hard as nails game, mainly splitting the price in arcade coins. And losing your friend in the process.</i></p>",
   "screenshots":[ "starcatbolle-1.png", "starcatbolle-2.png" ],
   "hardware":{
     "width":320,
     "height":200,
-    "filter":"retro"
+    "filter":"retro",
+    "controls":"twoplayers"
+  },
+  "audioChannels":{
+    "music":{ "volume":1, "looping":1, "samples":[ "bgm1" ] },
+    "sfx":{ "volume":0.4, "samples":[ "jump", "dead", "pop", "bubble", "kill", "bonus", "success" ] }
   },
   "cheats":{
-    "unlimitedLives":"Unlimited lives"
+    "unlimitedLives":"Unlimited lives (no hi-score, sorry!)"
   },
   "resources":{
+    "bgm1":"positive.ogg",
     "commodore":"commodore.font",
     "fader":"fader.png",
     "logo":"logo.png",
     "tiles":"tiles.png",
     "defaultsprites":"../default/sprites64.png",
-    "gameover":"../default/gameover.png"
+    "gameover":"../default/gameover.png",
+    "bonus":{ "attack":0.012, "decay":0.057, "frequency":310, "pitch":0.0012, "release":0.136, "sustain":0.132, "wave":"square" },
+    "bubble":{ "attack":0.009, "decay":0.018, "frequency":760, "pitch":-0.0017, "release":0.092, "wave":"triangle" },
+    "dead":{ "attack":0.006, "decay":0.123, "frequency":370, "pitch":0.0011, "release":0.2, "sustain":0.2, "tremoloDepth":1, "tremoloFrequency":50, "wave":"saw" },
+    "jump":{ "attack":0.006, "decay":0.123, "pitch":0.0005, "release":0.2, "sustain":0.2, "wave":"sine" },
+    "kill":{ "attack":0.15, "decay":0.15, "pitch":0.0006, "release":0.2, "sustain":0.2, "tremoloDepth":1, "tremoloFrequency":50, "wave":"triangle" },
+    "pop":{ "decay":0.018, "release":0.108, "wave":"whitenoise" },
+    "success":{ "attack":0.15, "decay":0.15, "frequency":1075, "frequencyJump1amount":0.1, "frequencyJump1onset":0.2, "frequencyJump2amount":0.08, "frequencyJump2onset":0.37, "release":0.2, "sustain":0.2, "tremoloDepth":0.77, "tremoloFrequency":1, "wave":"square" }
   },
   "stencils":{
+    "codeFinalizeScore":{
+      "when":{ "_":[ "cheat", "unlimitedLives", "not" ] },
+      "execute":[
+        {
+          "when":{ "_":[ "variable", "scorePlayer1", "isGreaterThan", { "_":[ "variable", "scorePlayer2" ] } ] },
+          "set":{ "score":{ "_":[ "variable", "scorePlayer1" ] } },
+          "elseExecute":{ "set":{ "score":{ "_":[ "variable", "scorePlayer2" ] } } }
+        },
+        { "publishScore":{ "_":[ "this", "score" ] } },
+        {
+          "when":{ "_":[ "this", "score", "isGreaterThan", { "_":[ "variable", "hiscore" ] } ] },
+          "execute":{ "as":[ { "_":"storage" }, { "_":"variable" } ], "set":{ "hiscore":{ "_":[ "that", "score" ] } } }
+        }
+      ]
+    },
     "codeHitableHit":{
       "code":{
         "name":"Execute",
-        "data":{ "when":{ "_":[ "this", "collidesWith", { "_":[ "objectTyped", "hitable" ] } ] }, "as":{ "_":"that" }, "executeAction":"hit" }
+        "data":{ "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "hitable" ] } ] }, "as":{ "_":"that" }, "executeAction":"hit" }
       }
     },
     "codeInFade":{
@@ -73,22 +103,39 @@
             }
           },
           { "as":{ "_":[ "object", "tile" ] }, "set":{ "tileY":{ "_":[ "variable", "level", "*", 16 ] } } },
-          { "object":{ "_":[ "stencil", "player" ] } }
+          { "when":{ "_":[ "variable", "livesPlayer1" ] }, "object":{ "_":[ "stencil", "player1" ] } },
+          { "when":{ "_":[ "variable", "livesPlayer2" ] }, "object":{ "_":[ "stencil", "player2" ] } },
+          { "when":{ "_":[ "variable", "playMusic" ] }, "as":{ "_":"variable" }, "set":{ "playMusic":0 }, "playAudio":"bgm1" }
         ],
         "code":[
           {
             "name":"Execute",
-            "data":{
-              "when":{ "_":[ "objectTyped", "player", "not" ] },
-              "execute":[
-                { "when":{ "_":[ "cheat", "unlimitedLives", "not" ] }, "subtract":1, "to":{ "_":[ "variable", "lives" ] } },
-                {
-                  "when":{ "_":[ "variable", "lives", "isGreaterThan", 0 ] },
-                  "object":{ "_":[ "stencil", "player" ] },
-                  "elseExecute":[ { "set":{ "state":"idle" } }, { "as":{ "_":"variable" }, "set":{ "nextScene":"gameover" } }, { "_":[ "stencil", "codeOutFade" ] } ]
+            "data":[
+              {
+                "when":{ "_":[ "objectTyped", "player1", "not" ] },
+                "execute":{
+                  "when":{ "_":[ "variable", "livesPlayer1" ] },
+                  "execute":[
+                    { "when":{ "_":[ "cheat", "unlimitedLives", "not" ] }, "subtract":1, "to":{ "_":[ "variable", "livesPlayer1" ] } },
+                    { "when":{ "_":[ "variable", "livesPlayer1" ] }, "object":{ "_":[ "stencil", "player1" ] } }
+                  ]
                 }
-              ]
-            }
+              },
+              {
+                "when":{ "_":[ "objectTyped", "player2", "not" ] },
+                "execute":{
+                  "when":{ "_":[ "variable", "livesPlayer2" ] },
+                  "execute":[
+                    { "when":{ "_":[ "cheat", "unlimitedLives", "not" ] }, "subtract":1, "to":{ "_":[ "variable", "livesPlayer2" ] } },
+                    { "when":{ "_":[ "variable", "livesPlayer2" ] }, "object":{ "_":[ "stencil", "player2" ] } }
+                  ]
+                }
+              },
+              {
+                "when":{ "_":[ "variable", "livesPlayer1", "not", "and", { "_":[ "variable", "livesPlayer2", "not" ] } ] },
+                "execute":[ { "set":{ "state":"idle" } }, { "as":{ "_":"variable" }, "set":{ "nextScene":"gameover" } }, { "_":[ "stencil", "codeOutFade" ] } ]
+              }
+            ]
           },
           {
             "name":"Sequence",
@@ -116,12 +163,13 @@
                   "color":"#fff",
                   "font":"commodore", "fontSize":8, "lineHeight":16, "outline":"#000", "textAlign":"center", "html":"CLEARED!"
                 },
-                "into":{ "_":"scenehud" }
+                "into":{ "_":"scenehud" },
+                "playAudio":"success"
               },
               { "wait":80 },
               { "as":{ "_":[ "objectTyped", "endinglabel" ] }, "remove":1 },
               { "wait":80 },
-              { "as":{ "_":[ "objectTyped", "player" ] }, "set":{ "state":"endlevel" } },
+              { "as":{ "_":[ "object", "player" ] }, "set":{ "state":"endlevel" } },
               { "sum":1, "to":{ "_":[ "variable", "level" ] } },
               { "as":{ "_":"variable" }, "set":{ "nextScene":{ "_":[ "variable", "level" ] } } },
               { "_":[ "stencil", "codeOutFade" ] }
@@ -184,8 +232,8 @@
               "name":"Execute",
               "data":[
                 {
-                  "when":{ "_":[ "this", "bubbling", "not", "and", { "_":[ "keyA", "isHit" ] } ] },
-                  "execute":[ { "set":{ "bubbling":10 } }, { "object":{ "_":[ "stencil", "bubble" ] } } ]
+                  "when":{ "_":[ "this", "bubbling", "not", "and", { "_":[ { "_":[ "this", "kA" ] }, "isHit" ] } ] },
+                  "execute":[ { "set":{ "playAudio":"bubble", "bubbling":10 } }, { "object":{ "_":[ "stencil", "bubble" ] } } ]
                 },
                 {
                   "when":{ "_":[ "this", "invulnerability" ] },
@@ -196,22 +244,28 @@
                 {
                   "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "poppable" ] } ] },
                   "execute":{
-                    "when":{ "_":[ "keyUp", "isDown", "and", { "_":[ "this", "isOver", { "_":"that" } ] }, "and", { "_":[ "this", "forceY", "isGreaterThan", 0 ] } ] },
+                    "when":{
+                      "_":[ { "_":[ "this", "kUp" ] }, "isDown", "and", { "_":[ "this", "isOver", { "_":"that" } ] }, "and", { "_":[ "this", "forceY", "isGreaterThan", 0 ] } ]
+                    },
                     "set":{ "forceY":-10 },
-                    "elseExecute":{ "as":{ "_":"that" }, "executeAction":"pop" }
+                    "elseExecute":{ "as":{ "_":"that" }, "executeAction":"pop" },
+                    "playAudio":"jump"
                   }
                 },
-                { "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "pickable" ] } ] }, "as":{ "_":"that" }, "executeAction":"pick" },
-                {
-                  "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "bonus" ] } ] },
-                  "as":{ "_":"that" },
-                  "sum":10,
-                  "to":{ "_":[ "variable", "score" ] },
-                  "remove":1
-                }
+                { "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "pickable" ] } ] }, "as":{ "_":"that" }, "executeAction":"pick" }
               ]
             },
-            { "name":"Player", "data":{ "horizontal":{ "control":1, "gotoZero":1 }, "jump":{ "forceY":-10 } } },
+            {
+              "name":"Player",
+              "data":{
+                "horizontal":{ "control":1, "gotoZero":1 },
+                "jump":{ "forceY":-10, "playAudio":"jump" },
+                "keyDown":{ "_":[ "this", "kDown" ] },
+                "keyLeft":{ "_":[ "this", "kLeft" ] },
+                "keyRight":{ "_":[ "this", "kRight" ] },
+                "keyUp":{ "_":[ "this", "kUp" ] }
+              }
+            },
             {
               "name":"Physics",
               "data":{
@@ -252,7 +306,7 @@
         },
         {
           "name":"dead",
-          "set":{ "removeType":"hitable", "frame":0, "visible":"true", "flipX":0, "animation":"none" },
+          "set":{ "removeType":"hitable", "frame":0, "visible":"true", "flipX":0, "animation":"none", "playAudio":"dead" },
           "code":{
             "name":"Sequence",
             "data":[
@@ -266,13 +320,28 @@
         },
         {
           "name":"endlevel",
-          "set":{ "forceX":0, "forceY":-5, "animation":"fall" },
+          "set":{ "forceX":0, "forceY":-5, "animation":"fall", "playAudio":"jump" },
           "code":[
             { "name":"Execute", "data":{ "_":[ "when", "this", "y", "isGreaterThan", 200 ] }, "set":{ "state":"idle" } },
             { "name":"Physics", "data":{ "gravityY":1 } }
           ]
         }
       ]
+    },
+    "player1":{ "type":"player1", "set":{ "_":[ "stencil", "player" ] }, "kA":"keyA", "kUp":"keyUp", "livesId":"livesPlayer1", "scoreId":"scorePlayer1" },
+    "player2":{
+      "type":"player2",
+      "set":{ "_":[ "stencil", "player" ] },
+      "tileX":160,
+      "x":215, "y":176,
+      "flipX":1,
+      "kA":"keyA2",
+      "kDown":"keyDown2",
+      "kLeft":"keyLeft2",
+      "kRight":"keyRight2",
+      "kUp":"keyUp2",
+      "livesId":"livesPlayer2",
+      "scoreId":"scorePlayer2"
     },
     "foeBlob":{
       "type":[ "foe", "bubbleable", "foecount" ],
@@ -363,7 +432,7 @@
         "actions":{
           "name":"pick",
           "execute":[
-            { "sum":150, "to":{ "_":[ "variable", "score" ] } },
+            { "sum":150, "to":{ "_":[ "variable", { "_":[ "that", "scoreId" ] } ] }, "playAudio":"bonus" },
             { "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "color":"#a3e599", "html":"150pts.", "speed":1 } },
             { "remove":1 }
           ]
@@ -439,11 +508,12 @@
           "actions":{
             "name":"pop",
             "execute":[
+              { "set":{ "scoreId":{ "_":[ "that", "scoreId" ] } } },
               {
                 "when":{ "_":[ "this", "content" ] },
                 "execute":[
                   { "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "color":"#a3e599", "html":"15pts.", "speed":1 } },
-                  { "sum":15, "to":{ "_":[ "variable", "score" ] } },
+                  { "sum":15, "to":{ "_":[ "variable", { "_":[ "this", "scoreId" ] } ] }, "playAudio":"kill" },
                   {
                     "object":{
                       "set":{ "_":[ "stencil", "killedEnemy" ] },
@@ -451,7 +521,7 @@
                     }
                   }
                 ],
-                "elseExecute":{ "sum":10, "to":{ "_":[ "variable", "score" ] } }
+                "elseExecute":{ "sum":10, "to":{ "_":[ "variable", { "_":[ "this", "scoreId" ] } ] }, "playAudio":"pop" }
               },
               { "_":[ "stencil", "removeWithSpark" ] }
             ]
@@ -484,7 +554,10 @@
           "like":[ { "_":[ "stencil", "codeWarp" ] }, { "_":[ "stencil", "codeSpin" ] } ],
           "code":[
             { "name":"Sequence", "data":[ { "wait":50 }, { "set":{ "state":"fall" } } ] },
-            { "name":"Physics", "data":{ "walls":{ "area":{ "width":224, "height":280, "x":16, "y":-40 }, "restitution":1 }, "gravityY":1 } }
+            {
+              "name":"Physics",
+              "data":{ "walls":{ "area":{ "width":224, "height":280, "x":16, "y":-40 }, "restitution":1 }, "gravityY":1, "limitY":[ -15, 15 ] }
+            }
           ]
         },
         {
@@ -528,43 +601,69 @@
     "~":{ "type":[ "shadowed", "block", "tile", "blockbubble" ], "image":"tiles", "tileX":16, "width":8, "height":8, "zIndex":5 },
     "#":{ "type":"wall", "set":{ "_":[ "stencil", "~" ] } }
   },
-  "execute":{
-    "object":[
-      { "box":"label", "width":48, "height":1, "x":264, "y":16, "bgcolor":"#984b43" },
-      { "box":"label", "width":48, "height":1, "x":264, "y":21, "bgcolor":"#984b43" },
-      { "box":"label", "width":48, "height":1, "x":264, "y":64, "bgcolor":"#984b43" },
-      { "box":"label", "width":48, "height":1, "x":264, "y":69, "bgcolor":"#984b43" },
-      { "box":"label", "width":48, "height":30, "x":264, "y":32, "color":"#ffffff", "font":"commodore", "fontSize":8, "lineHeight":15, "html":"1UP" },
-      {
-        "type":"hud",
-        "hudType":"label", "label":"STARCAT<br>%number|variable.lives%",
-        "box":"label", "width":63, "height":30,
-        "x":256, "y":176,
-        "color":"#79c1c8",
-        "font":"commodore", "fontSize":8, "lineHeight":8, "textAlign":"center"
-      },
-      {
-        "type":"hud",
-        "hudType":"label", "label":"%number|variable.score|0|2%",
-        "box":"label", "width":48, "height":30,
-        "x":260, "y":40,
-        "color":"#68ae5c",
-        "font":"commodore", "fontSize":8, "lineHeight":15, "textAlign":"right"
-      }
-    ],
-    "into":{ "_":"hud" }
-  },
+  "execute":[
+    { "when":{ "_":[ "storage", "hiscore", "not" ] }, "as":{ "_":"storage" }, "set":{ "hiscore":0 } },
+    { "as":{ "_":"variable" }, "set":{ "hiscore":{ "_":[ "storage", "hiscore" ] } } },
+    {
+      "object":[
+        { "box":"label", "width":48, "height":1, "x":264, "y":16, "bgcolor":"#984b43" },
+        { "box":"label", "width":48, "height":1, "x":264, "y":21, "bgcolor":"#984b43" },
+        { "box":"label", "width":48, "height":30, "x":264, "y":30, "color":"#ffffff", "font":"commodore", "fontSize":8, "lineHeight":15, "html":"1UP" },
+        {
+          "type":"hud",
+          "hudType":"label", "label":"%number|variable.scorePlayer1|0|2%",
+          "box":"label", "width":48, "height":30,
+          "x":260, "y":40,
+          "color":"#c9d684",
+          "font":"commodore", "fontSize":8, "lineHeight":15, "textAlign":"right"
+        },
+        {
+          "type":"hud",
+          "hudType":"label", "label":"%repeat|variable.livesPlayer1|&#183;%",
+          "box":"label", "width":48, "height":30,
+          "x":260, "y":50,
+          "color":"#c9d684",
+          "font":"commodore", "fontSize":8, "lineHeight":15, "textAlign":"right"
+        },
+        { "box":"label", "width":32, "height":1, "x":272, "y":69, "bgcolor":"#984b43" },
+        { "box":"label", "width":32, "height":1, "x":272, "y":74, "bgcolor":"#984b43" },
+        { "box":"label", "width":48, "height":30, "x":264, "y":84, "color":"#ffffff", "font":"commodore", "fontSize":8, "lineHeight":15, "html":"2UP" },
+        {
+          "type":"hud",
+          "hudType":"label", "label":"%number|variable.scorePlayer2|0|2%",
+          "box":"label", "width":48, "height":30,
+          "x":260, "y":94,
+          "color":"#79c1c8",
+          "font":"commodore", "fontSize":8, "lineHeight":15, "textAlign":"right"
+        },
+        {
+          "type":"hud",
+          "hudType":"label", "label":"%repeat|variable.livesPlayer2|&#183;%",
+          "box":"label", "width":48, "height":30,
+          "x":260, "y":104,
+          "color":"#79c1c8",
+          "font":"commodore", "fontSize":8, "lineHeight":15, "textAlign":"right"
+        },
+        { "box":"label", "width":48, "height":1, "x":264, "y":125, "bgcolor":"#984b43" },
+        { "box":"label", "width":48, "height":1, "x":264, "y":130, "bgcolor":"#984b43" },
+        { "box":"label", "width":48, "height":30, "x":264, "y":139, "color":"#c9d684", "font":"commodore", "fontSize":8, "lineHeight":15, "html":"TOP" },
+        {
+          "type":"hud",
+          "hudType":"label", "label":"%number|variable.hiscore|0|2%",
+          "box":"label", "width":48, "height":30,
+          "x":260, "y":149,
+          "color":"#fff",
+          "font":"commodore", "fontSize":8, "lineHeight":15, "textAlign":"right"
+        }
+      ],
+      "into":{ "_":"hud" }
+    }
+  ],
   "scenes":{
     "intro":{
       "object":[
         { "image":"logo", "width":230, "height":125, "x":12, "y":20 },
-        {
-          "box":"label", "width":255,
-          "zIndex":2, "x":0, "y":160,
-          "color":"#fff",
-          "font":"commodore", "fontSize":8, "textAlign":"center", "html":"PRESS START",
-          "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "visible":0 }, "wait":10 }, { "set":{ "visible":1 }, "wait":10, "loopTo":0 } ] } }
-        }
+        { "width":50, "height":16, "zIndex":5, "x":184, "y":117, "font":"commodore", "fontSize":8, "lineHeight":16, "outline":"#000", "html":"PLUS!" }
       ],
       "states":{
         "code":{
@@ -572,15 +671,61 @@
           "data":[
             { "_":[ "stencil", "codeInFade" ] },
             { "wait":10 },
-            { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
-            { "as":{ "_":"variable" }, "set":{ "level":0, "lives":3, "nextScene":0, "score":0 } },
+            {
+              "object":{
+                "type":"presstart",
+                "box":"label", "width":255,
+                "zIndex":2, "x":0, "y":160,
+                "color":"#fff",
+                "font":"commodore", "fontSize":8, "textAlign":"center", "html":"PRESS START",
+                "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "visible":0 }, "wait":10 }, { "set":{ "visible":1 }, "wait":10, "loopTo":0 } ] } }
+              }
+            },
+            { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit", "or", { "_":[ "keyA2", "isHit" ] } ] } },
+            {
+              "when":{ "_":[ "cheat", "singlePlayerOnly", "not" ] },
+              "subsequence":[
+                { "as":{ "_":[ "object", "presstart" ] }, "remove":1, "playAudio":"bonus" },
+                {
+                  "object":[
+                    {
+                      "type":[ "startmenu", "startmenu1" ],
+                      "box":"label", "width":144, "height":16,
+                      "zIndex":2, "x":56, "y":158,
+                      "border":"#000", "color":"#000",
+                      "font":"commodore", "fontSize":8, "lineHeight":14, "textAlign":"center", "html":"1 PLAYER"
+                    },
+                    {
+                      "type":[ "startmenu", "startmenu2" ],
+                      "box":"label", "width":144, "height":16,
+                      "zIndex":2, "x":56, "y":174,
+                      "border":"#000", "color":"#000",
+                      "font":"commodore", "fontSize":8, "lineHeight":14, "textAlign":"center", "html":"2 PLAYERS"
+                    }
+                  ]
+                },
+                { "as":{ "_":[ "object", "startmenu" ] }, "set":{ "bgcolor":"#636363" } },
+                {
+                  "when":{ "_":[ "variable", "twoplayers" ] },
+                  "as":{ "_":[ "objectTyped", "startmenu2" ] },
+                  "set":{ "bgcolor":"#c9d684" },
+                  "elseExecute":{ "as":{ "_":[ "objectTyped", "startmenu1" ] }, "set":{ "bgcolor":"#c9d684" } }
+                },
+                { "when":{ "_":[ "keyUp", "isHit", "or", { "_":[ "keyUp2", "isHit" ] } ] }, "as":{ "_":"variable" }, "set":{ "twoplayers":0 }, "playAudio":"pop" },
+                { "when":{ "_":[ "keyDown", "isHit", "or", { "_":[ "keyDown2", "isHit" ] } ] }, "as":{ "_":"variable" }, "set":{ "twoplayers":1 }, "playAudio":"pop" },
+                { "wait":1, "loopTo":-4, "until":{ "_":[ "keyA", "isHit", "or", { "_":[ "keyA2", "isHit" ] } ] } }
+              ]
+            },
+            { "playAudio":"bonus" },
+            { "as":{ "_":"variable" }, "set":{ "level":0, "livesPlayer1":3, "livesPlayer2":0, "nextScene":0, "playMusic":1, "scorePlayer1":0, "scorePlayer2":0 } },
+            { "when":{ "_":[ "variable", "twoplayers" ] }, "as":{ "_":"variable" }, "set":{ "livesPlayer2":3 } },
             { "_":[ "stencil", "codeOutFade" ] }
           ]
         }
       }
     },
     "gameover":{
-      "execute":{ "publishScore":{ "_":[ "variable", "score" ] } },
+      "execute":[ { "stopChannel":"music" }, { "_":[ "stencil", "codeFinalizeScore" ] } ],
       "states":{
         "code":{
           "name":"Sequence",
@@ -597,7 +742,7 @@
               "into":{ "_":"scenehud" }
             },
             { "wait":10 },
-            { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+            { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit", "or", { "_":[ "keyA2", "isHit" ] } ] } },
             { "as":{ "_":"variable" }, "set":{ "nextScene":"intro" } },
             { "_":[ "stencil", "codeOutFade" ] }
           ]
@@ -673,44 +818,71 @@
       }
     },
     "10":{
+      "execute":{ "stopChannel":"music" },
+      "playAudio":"success",
       "states":{
         "code":{
           "name":"Sequence",
           "data":[
             { "_":[ "stencil", "codeInFade" ] },
             {
-              "object":{
-                "type":"introlabel",
-                "width":256, "height":40,
-                "zIndex":1, "x":0, "y":80,
-                "color":"#fff",
-                "font":"commodore", "fontSize":8, "lineHeight":16, "outline":"#000", "textAlign":"center", "html":"YOU'VE FOUND THE STAR!<br>GOOD JOB!"
-              },
+              "object":[
+                {
+                  "type":"introlabel",
+                  "width":256, "height":40,
+                  "zIndex":1, "x":0, "y":70,
+                  "color":"#fff",
+                  "font":"commodore", "fontSize":8, "lineHeight":16, "outline":"#000", "textAlign":"center", "html":"YOU'VE FOUND THE STAR!<br>GOOD JOB!"
+                },
+                {
+                  "width":255, "height":10,
+                  "x":0, "y":190,
+                  "color":"#636363",
+                  "font":"commodore", "fontSize":8, "lineHeight":10, "textAlign":"center", "html":"Music: Positive Karma / Linus"
+                }
+              ],
               "into":{ "_":"scenehud" }
             },
             {
+              "when":{ "_":[ "variable", "livesPlayer1" ] },
               "object":{
                 "image":"defaultsprites", "tileX":0, "tileY":0, "width":16, "height":16,
-                "x":-16, "y":168,
+                "x":-16, "y":158,
                 "forceX":2,
                 "animations":{ "move":{ "frames":4, "loopTo":0 } },
                 "animation":"move",
                 "states":{
                   "code":[
                     { "name":"Sequence", "data":[ { "wait":70 }, { "set":{ "forceX":0, "forceY":-8 } } ] },
-                    { "name":"Physics", "data":{ "walls":{ "area":{ "width":255, "height":184, "x":-16, "y":0 }, "restitutionY":1 }, "gravityY":1 } }
+                    { "name":"Physics", "data":{ "walls":{ "area":{ "width":255, "height":184, "x":-16, "y":-10 }, "restitutionY":1 }, "gravityY":1 } }
+                  ]
+                }
+              }
+            },
+            {
+              "when":{ "_":[ "variable", "livesPlayer2" ] },
+              "object":{
+                "image":"defaultsprites", "tileX":160, "tileY":0, "width":16, "height":16,
+                "x":-40, "y":158,
+                "forceX":2,
+                "animations":{ "move":{ "frames":4, "loopTo":0 } },
+                "animation":"move",
+                "states":{
+                  "code":[
+                    { "name":"Sequence", "data":[ { "wait":70 }, { "set":{ "forceX":0, "forceY":-8 } } ] },
+                    { "name":"Physics", "data":{ "walls":{ "area":{ "width":255, "height":184, "x":-40, "y":-10 }, "restitutionY":1 }, "gravityY":1 } }
                   ]
                 }
               }
             },
             { "wait":10 },
-            { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+            { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit", "or", { "_":[ "keyA2", "isHit" ] } ] } },
             { "as":{ "_":"variable" }, "set":{ "nextScene":"gameover" } },
             { "_":[ "stencil", "codeOutFade" ] }
           ]
         }
       },
-      "tilemap":{ "y":152, "map":[
+      "tilemap":{ "y":142, "map":[
           "          *     ",
           "          T     ",
           "EEEEEEEEEEEEEEEE"
