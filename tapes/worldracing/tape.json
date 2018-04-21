@@ -1,24 +1,54 @@
 {
   "name":"World Racing",
+  "edition":"Plus!",
   "author":"KesieV",
-  "year":2015,
+  "year":2018,
+  "publishedYear":2015,
   "genre":"Racing",
-  "description":"<p>Despite most of the pages of the Wright! Magazine depicts me as a frustrated sport-hater, I always had a catch for racing games, from the great <a href='https://en.wikipedia.org/wiki/Pitstop_II'>Pitstop II</a> (1984), the top-down racers around the 90's and the modern arcades, like Ridge Racer and <a href='https://en.wikipedia.org/wiki/R4:_Ridge_Racer_Type_4'>its fourth excellent chapter</a> (1998).</p><p>So why not including a classic to my collection, test how I can check laps and position on a circuit using Wright! and bring tons of nostalgia?</p><p>Plot!</p><p>You're the legendary driver of the Aquamarine car, challenging the Red Team for the first place on the World Racing Championship! Use LEFT/RIGHT for steering left or right and A BUTTON for accelerating. And I don't like racing as a real sport. Obviously.</p>",
-  "screenshots":["worldracing-1.png","worldracing-2.png"],
+  "description":"<p>Despite most of the pages of the Wright! Magazine depicts me as a frustrated sports-hater, I always had a catch for racing games, from the great <a href='https://en.wikipedia.org/wiki/Pitstop_II'>Pitstop II</a> (1984) to the top-down racers of the 90's and the modern arcade racers, like Ridge Racer and <a href='https://en.wikipedia.org/wiki/R4:_Ridge_Racer_Type_4'>its fourth excellent chapter</a> (1998).</p><p>So why not including a classic to my collection, test how I can check laps and car position on a circuit using Wright! and bring tons of nostalgia?</p><p>Plot!</p><p>You're the legendary driver of the Aquamarine car, challenging the Red Team for the first place on the World Racing Championship! Use LEFT/RIGHT for steering left or right and A BUTTON for accelerating. And I don't like racing as a real sport. Obviously.</p><p><i>PS: 3 years later I've added the annoying sound effects this game deserved. Working again on this game has been quite fun: I've made the engine noise by looping some generated samples - in Wright! for the first time - and the drifting, offroad and bump noises needed that bit of code I decided to skip in the previous version. Oh, I've added a retro drifting visual effect in the process.</i></p>",
+  "screenshots":[ "worldracing-1.png", "worldracing-2.png" ],
   "hardware":{
     "width":256,
     "height":192,
     "filter":"retro"
   },
+  "audioChannels":{
+    "sfx":{ "volume":0.4, "samples":[ "success", "ready", "go", "lap", "crowdlong", "crash", "sand", "fail", "drift" ] },
+    "engine":{
+      "volume":0.08,
+      "looping":1,
+      "samples":[ "engine0", "engine1", "engine2", "engine3", "engine4", "engine5", "engine6", "engine7", "engine8", "engine9" ]
+    }
+  },
   "cheats":{
     "slowCars":"Slow CPU cars"
   },
   "resources":{
-    "spectrum":"spectrum.font",
     "ending":"ending.png",
+    "spectrum":"spectrum.font",
     "tiles":"tiles.png",
     "title":"title.png",
-    "defaultsprites":"../default/sprites.png"
+    "defaultsprites":"../default/sprites.png",
+    "defaultstickers":"../default/stickers.png",
+    "crash":{ "attack":0.015, "decay":0.048, "release":0.4, "sustain":0.056, "wave":"whitenoise" },
+    "crowdlong":{ "attack":0.3, "decay":0.3, "release":0.4, "sustain":7, "wave":"whitenoise" },
+    "drift":{ "attack":0.006, "decay":0.003, "frequency":1210, "pitch":-0.0006, "release":0.048, "wave":"square" },
+    "engine0":{ "decay":0.3, "frequency":100, "limit":1, "wave":"square" },
+    "engine1":{ "decay":0.3, "frequency":110, "limit":1, "wave":"square" },
+    "engine2":{ "decay":0.3, "frequency":120, "limit":1, "wave":"square" },
+    "engine3":{ "decay":0.3, "frequency":130, "limit":1, "wave":"square" },
+    "engine4":{ "decay":0.3, "frequency":140, "limit":1, "wave":"square" },
+    "engine5":{ "decay":0.3, "frequency":150, "limit":1, "wave":"square" },
+    "engine6":{ "decay":0.3, "frequency":160, "limit":1, "wave":"square" },
+    "engine7":{ "decay":0.3, "frequency":170, "limit":1, "wave":"square" },
+    "engine8":{ "decay":0.3, "frequency":180, "limit":1, "wave":"square" },
+    "engine9":{ "decay":0.3, "frequency":190, "limit":1, "wave":"square" },
+    "fail":{ "attack":0.012, "decay":0.15, "frequency":385, "pitch":-0.0016, "release":0.2, "sustain":0.2, "wave":"saw" },
+    "go":{ "attack":0.15, "decay":0.15, "frequency":1505, "release":0.2, "sustain":0.2, "wave":"breaker" },
+    "lap":{ "attack":0.003, "decay":0.087, "frequencyJump1amount":0.06, "frequencyJump1onset":0.1, "frequencyJump2amount":0.1, "frequencyJump2onset":0.24, "release":0.2, "sustain":0.15, "wave":"square" },
+    "ready":{ "attack":0.15, "decay":0.15, "release":0.2, "sustain":0.2, "wave":"breaker" },
+    "sand":{ "decay":0.009, "frequency":1600, "pitch":-0.002, "release":0.044, "wave":"whitenoise" },
+    "success":{ "attack":0.15, "decay":0.15, "frequency":1075, "frequencyJump1amount":0.1, "frequencyJump1onset":0.2, "frequencyJump2amount":0.08, "frequencyJump2onset":0.37, "release":0.2, "sustain":0.2, "tremoloDepth":0.77, "tremoloFrequency":1, "wave":"saw" }
   },
   "stencils":{
     "codeCarPositon":{
@@ -112,7 +142,8 @@
                       { "_":[ "this", "movingSpeed", "isGreaterThan", { "_":[ "this", "maxSpeed", "-", 2 ] } ] }
                     ]
                   },
-                  "set":{ "movingSpeed":{ "_":[ "this", "maxSpeed", "-", 2 ] } }
+                  "set":{ "movingSpeed":{ "_":[ "this", "maxSpeed", "-", 2 ] }, "onsand":1 },
+                  "elseExecute":{ "set":{ "onsand":0 } }
                 },
                 {
                   "when":{ "_":[ "this", "invulnerability" ] },
@@ -120,14 +151,17 @@
                   "to":{ "_":[ "this", "invulnerability" ] },
                   "elseExecute":{
                     "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "car" ] } ] },
-                    "execute":{
-                      "foreach":{ "_":"that" },
-                      "execute":{
+                    "execute":[
+                      {
+                        "when":{ "_":[ "this", "isTyped", "player", "or", { "_":[ "that", "isTyped", "player" ] } ] },
+                        "execute":{ "when":{ "_":[ "this", "movingSpeed", "isGreaterThan", 2, "or", { "_":[ "that", "movingSpeed", "isGreaterThan", 2 ] } ] }, "playAudio":"crash" }
+                      },
+                      {
                         "when":{ "_":[ "that", "score", "isGreaterThan", { "_":[ "this", "score" ] } ] },
                         "set":{ "invulnerability":10, "movingSpeed":0 },
                         "elseExecute":{ "as":{ "_":"that" }, "set":{ "invulnerability":10, "movingSpeed":0 } }
                       }
-                    }
+                    ]
                   }
                 },
                 {
@@ -219,7 +253,8 @@
                   }
                 }
               ],
-              "into":{ "_":"scenehud" }
+              "into":{ "_":"scenehud" },
+              "playAudio":"success"
             }
           ]
         },
@@ -244,11 +279,11 @@
                     "name":"Sequence",
                     "data":[
                       { "wait":25 },
-                      { "as":{ "_":[ "object", "line1" ] }, "set":{ "bgcolor":"#f00" } },
+                      { "as":{ "_":[ "object", "line1" ] }, "set":{ "bgcolor":"#f00" }, "playAudio":"ready" },
                       { "wait":25 },
-                      { "as":{ "_":[ "object", "line2" ] }, "set":{ "bgcolor":"#ff0" } },
+                      { "as":{ "_":[ "object", "line2" ] }, "set":{ "bgcolor":"#ff0" }, "playAudio":"ready" },
                       { "wait":25 },
-                      { "as":{ "_":[ "object", "line3" ] }, "set":{ "bgcolor":"#0f0" } },
+                      { "as":{ "_":[ "object", "line3" ] }, "set":{ "bgcolor":"#0f0" }, "playAudio":"go" },
                       { "as":{ "_":"scene" }, "set":{ "state":"go" } },
                       { "wait":50 },
                       { "as":{ "_":[ "object", "semaphore" ] }, "remove":1 }
@@ -298,6 +333,7 @@
                 }
               },
               { "as":{ "_":"variable" }, "set":{ "csec":0, "min":0, "sec":0, "time":0 } },
+              { "playAudio":"lap" },
               {
                 "when":{ "_":[ "objectTyped", "player", "laps", "isGreaterThan", { "_":[ "scene", "lapsCount" ] } ] },
                 "execute":[
@@ -315,7 +351,7 @@
         {
           "name":"timeup",
           "execute":[
-            { "as":{ "_":[ "object", "car" ] }, "set":{ "state":"default" } },
+            { "as":{ "_":[ "object", "car" ] }, "set":{ "state":"ended" } },
             {
               "object":{
                 "width":256, "height":30,
@@ -329,7 +365,9 @@
                   }
                 }
               },
-              "into":{ "_":"scenehud" }
+              "into":{ "_":"scenehud" },
+              "playAudio":"fail",
+              "stopChannel":"engine"
             }
           ],
           "code":{ "name":"Sequence", "data":[ { "wait":125 }, { "gotoScene":"gameover" } ] }
@@ -337,7 +375,7 @@
         {
           "name":"playerlose",
           "execute":[
-            { "as":{ "_":[ "object", "car" ] }, "set":{ "state":"default" } },
+            { "as":{ "_":[ "object", "car" ] }, "set":{ "state":"ended" } },
             {
               "object":{
                 "width":256, "height":30,
@@ -351,7 +389,9 @@
                   }
                 }
               },
-              "into":{ "_":"scenehud" }
+              "into":{ "_":"scenehud" },
+              "playAudio":"fail",
+              "stopChannel":"engine"
             }
           ],
           "code":{ "name":"Sequence", "data":[ { "wait":125 }, { "gotoScene":"gameover" } ] }
@@ -359,7 +399,7 @@
         {
           "name":"playerwin",
           "execute":[
-            { "as":{ "_":[ "object", "car" ] }, "set":{ "state":"default" } },
+            { "as":{ "_":[ "object", "car" ] }, "set":{ "state":"ended" } },
             {
               "object":{
                 "width":256, "height":30,
@@ -373,7 +413,9 @@
                   }
                 }
               },
-              "into":{ "_":"scenehud" }
+              "into":{ "_":"scenehud" },
+              "playAudio":"crowdlong",
+              "stopChannel":"engine"
             }
           ],
           "code":{
@@ -396,22 +438,54 @@
       "follow":1,
       "set":{ "_":[ "stencil", "modelCar" ] },
       "tileX":32, "tileY":480,
-      "states":{
-        "name":"go",
-        "code":{
-          "name":"Execute",
-          "data":[
-            {
-              "when":{ "_":[ "keyRight", "isDown" ] },
-              "set":{ "steer":"right" },
-              "elseExecute":{ "when":{ "_":[ "keyLeft", "isDown" ] }, "set":{ "steer":"left" }, "elseExecute":{ "set":{ "steer":"none" } } }
-            },
-            { "when":{ "_":[ "keyUp", "isDown" ] }, "set":{ "accelerator":"down" }, "elseExecute":{ "set":{ "accelerator":"up" } } },
-            { "when":{ "_":[ "keyDown", "isDown" ] }, "set":{ "brake":"down" }, "elseExecute":{ "set":{ "brake":"up" } } }
-          ]
+      "driftTimer":0,
+      "noiseId":0,
+      "sandTimer":0,
+      "states":[
+        { "code":{ "name":"Execute", "data":[ { "_":[ "stencil", "carNoiseCode" ] } ] } },
+        {
+          "name":"go",
+          "code":{
+            "name":"Execute",
+            "data":[
+              { "_":[ "stencil", "carNoiseCode" ] },
+              {
+                "when":{ "_":[ "keyRight", "isDown" ] },
+                "subtract":{ "_":[ "this", "movingSpeed" ] },
+                "to":{ "_":[ "this", "driftTimer" ] },
+                "set":{ "steer":"right" },
+                "elseExecute":{
+                  "when":{ "_":[ "keyLeft", "isDown" ] },
+                  "subtract":{ "_":[ "this", "movingSpeed" ] },
+                  "to":{ "_":[ "this", "driftTimer" ] },
+                  "set":{ "steer":"left" },
+                  "elseExecute":{ "set":{ "driftTimer":30, "steer":"none" } }
+                }
+              },
+              { "when":{ "_":[ "this", "driftTimer", "isLessThan", 0 ] }, "object":{ "_":[ "stencil", "smoke" ] }, "set":{ "driftTimer":5 }, "playAudio":"drift" },
+              { "when":{ "_":[ "keyUp", "isDown" ] }, "set":{ "accelerator":"down" }, "elseExecute":{ "set":{ "accelerator":"up" } } },
+              { "when":{ "_":[ "keyDown", "isDown" ] }, "set":{ "brake":"down" }, "elseExecute":{ "set":{ "brake":"up" } } }
+            ]
+          }
         }
-      }
+      ]
     },
+    "carNoiseCode":[
+      {
+        "when":{ "_":[ "this", "onsand" ] },
+        "execute":[
+          { "sum":{ "_":[ "this", "movingSpeed" ] }, "to":{ "_":[ "this", "sandTimer" ] } },
+          { "when":{ "_":[ "this", "sandTimer", "isGreaterThan", 6 ] }, "set":{ "sandTimer":0 }, "playAudio":"sand" }
+        ]
+      },
+      { "set":{ "engineNoise":{ "_":[ "this", "movingSpeed", "/", { "_":[ "this", "maxSpeed" ] }, "*", 9, "floor" ] } } },
+      {
+        "when":{ "_":[ "this", "engineNoise", "isNotEqualTo", { "_":[ "this", "currentEngineNoise" ] } ] },
+        "set":{ "currentEngineNoise":{ "_":[ "this", "engineNoise" ] } },
+        "playAudio":{ "_":[ "engine", ".", { "_":[ "this", "currentEngineNoise" ] } ] },
+        "stopChannel":"engine"
+      }
+    ],
     "cpuCar":{
       "set":{ "_":[ "stencil", "modelCar" ] },
       "tileX":0, "tileY":480,
@@ -519,6 +593,13 @@
       }
     },
     "semaphore":{ "type":"semaphore", "image":"defaultsprites", "tileX":0, "tileY":496, "width":16, "height":16, "bgcolor":"#7f7f7f" },
+    "smoke":{
+      "image":"defaultsprites", "tileX":80, "tileY":16, "width":16, "height":16,
+      "zIndex":8, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "animations":{ "spark":{ "frames":4, "speed":1 } },
+      "animation":"spark",
+      "states":{ "code":[ { "name":"Physics" }, { "name":"Sequence", "data":[ { "wait":8 }, { "remove":1 } ] } ] }
+    },
     "target":{ "type":"target", "width":8, "height":8, "zIndex":30, "bgcolor":"#0f0" },
     "#":{ "image":"tiles", "tileX":0, "tileY":48, "width":16, "height":16 },
     "'":{ "image":"tiles", "tileX":0, "tileY":16, "width":16, "height":16 },
@@ -554,9 +635,10 @@
         {
           "object":[
             { "image":"title", "width":182, "height":55, "x":37, "y":13 },
+            { "image":"defaultstickers", "width":35, "height":8, "zIndex":30, "x":110, "y":69 },
             {
               "box":"label", "width":256,
-              "zIndex":30, "x":0, "y":73,
+              "zIndex":30, "x":0, "y":78,
               "color":"#fff",
               "font":"spectrum", "fontSize":20, "lineHeight":20, "outline":"#000", "textAlign":"center", "html":"PRESS START",
               "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "visible":0 }, "wait":10 }, { "set":{ "visible":1 }, "wait":10, "loopTo":0 } ] } }
@@ -587,7 +669,7 @@
           ]
         }
       ],
-      "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":{ "_":[ "variable", "nextStage" ] } } } },
+      "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":{ "_":[ "variable", "nextStage" ] }, "playAudio":"lap" } } },
       "tilemap":{
         "height":192,
         "y":80,
@@ -606,6 +688,8 @@
     },
     "ending":{
       "execute":[
+        { "playAudio":"success" },
+        { "playAudio":"crowdlong" },
         {
           "object":[
             {
