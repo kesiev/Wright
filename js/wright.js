@@ -531,9 +531,9 @@ var DOMInator=function(useCanvas,aliasmode,controller,nosleep){
 		if (font=="spectrum") return size-1;
 		return size;
 	}
-	function topFixes(font,pos){
+	function topFixes(font,size,pos){
 		if (Supports.isFirefox) {
-			if (font=="spectrum") return pos-1;
+			if (font=="spectrum") return pos-(size*0.1245);
 			if (font=="small") return pos+1;
 		}
 		return pos;
@@ -663,10 +663,10 @@ var DOMInator=function(useCanvas,aliasmode,controller,nosleep){
 		var prints;
 		if (octx) {
 			prints={f:node.style.fontSize+"px "+node.style.fontFamily,a:node.style.textAlign,l:[]};
-			var lh=lineHeightFixes(node.style.fontFamily,node.style.lineHeight);
+			var lh=node.style.lineHeight;
 			var ow=node.style.padding+(node.style.outline?1:0);
-			var px=node.style.padding+ow;
-			var y=topFixes(node.style.fontFamily,lh/2);
+			var px=ow;
+			var y=topFixes(node.style.fontFamily,node.style.fontSize,Math.floor(lh/2));
 			var c=node.style.color||"#fff";
 			var maxWidth=node.style.width-(ow*2);
 			octx.font=prints.f;
@@ -1404,6 +1404,10 @@ var DOMInator=function(useCanvas,aliasmode,controller,nosleep){
 						this.style[k]=v;
 						break;
 					}
+					case "backgroundColor":{
+						this.style[k]=v=="transparent"?0:v;
+						break;
+					}
 					default:{
 						this.style[k]=v;
 					}
@@ -1643,9 +1647,7 @@ var DOMInator=function(useCanvas,aliasmode,controller,nosleep){
 					if (k=="scalex") orgScalex=v;
 					if (k=="scaley") orgScaley=v;
 				}
-				if (useDom) {
-					this._node.style[transformProp]="translate("+this.style.left + "px," + this.style.top + "px) scale(" + this.style.scalex + "," + this.style.scaley + ") rotate(" + this.style.rotate + "deg)";
-				} else resize=1;
+				this._node.style[transformProp]="translate("+this.style.left + "px," + this.style.top + "px) scale(" + this.style.scalex + "," + this.style.scaley + ") rotate(" + this.style.rotate + "deg)";
 				break;
 			}
 			default:{
@@ -1655,8 +1657,6 @@ var DOMInator=function(useCanvas,aliasmode,controller,nosleep){
 		if (resize) {
 			this._node.width=this.style.width;
 			this._node.height=this.style.height;
-			this._node.style.width=(this.style.width*this.style.scalex)+"px";
-			this._node.style.height=(this.style.height*this.style.scaley)+"px";
 		}
 		if (!core&&isFullScreen) fullScreenResizer();
   	};
