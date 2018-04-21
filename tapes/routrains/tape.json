@@ -1,9 +1,11 @@
 {
   "name":"Routrains",
+  "edition":"Plus!",
   "author":"KesieV",
-  "year":2016,
+  "publishedYear":2016,
+  "year":2018,
   "genre":"Simulation",
-  "description":"<p>My father pushed a coin into a <a href='https://en.wikipedia.org/wiki/Space_Invaders'>Space Invaders</a> arcade cabinet.</p><p>Deeper, into the same ferry-boat sliding in the middle of the strait of Messina, my mother was keeping me in her belly, sitting in a dark cabin of the Palermo-Milano train.</p><p>I kept traveling 24 hours twice a year in the same train and every summer, even once out of my mother, for meeting the relatives my parents left in Sicily. I ate, slept, played crosswords and videogames, lived my parents and sisters in that train cabin.</p><p>There I started asking about my own life: summers were the most intense part of the year for me and I used to ask myself how I'll change once there and how much I really changed on the way back home. Then, from high school, I used to spend one hour a day by train for going (and even not going) to school, along the Canzo-Asso line.</p><p>I started that weird hobby of traveling by train without any destination in my spare time, with just my notebook, my pencil and my drawings, hoping that someone will notice and talk to me one day. And the single time it happened I discovered that life doesn't work like that: she never noticed me for real. I realized that life is looking for your own luck, crying in front of a coffee in a bar along the railroad.</p><p>That's why, this time, I started using the train twice of the time for going at work, the one I ever wanted to do that was so different than I dreamed, moving till the last stop - Milan. After my parents' divorce, I used to meet my father by train - and, on the same line, I gave the engagement ring to the girl I want to keep with myself forever.</p><p>Life is a train, indeed.</p><p>Plot! Ready to be a true conductor? Run, slow down at curves and switch turnouts till you reach the right station! Use DOWN for accelerating, UP for slowing down and the A BUTTON for switching the turnouts!</p>",
+  "description":"<p>My father pushed a coin into a <a href='https://en.wikipedia.org/wiki/Space_Invaders'>Space Invaders</a> arcade cabinet.</p><p>Deeper, into the same ferry-boat sliding in the middle of the strait of Messina, my mother was keeping me in her belly, sitting in a dark cabin of the Palermo-Milano train.</p><p>I kept traveling 24 hours twice a year in the same train and every summer, even <i>once out of my mother</i>, to meet the relatives my parents left in Sicily. I ate, slept, played crosswords and videogames, lived my parents and sisters in that train cabin.</p><p>There I started asking about my own life: summers were the most intense part of the year for me and I used to ask myself how I'll change once there and how much I really changed on the way back home. Then, from high school, I used to spend one hour a day by train for going (and even not going) to school, along the Canzo-Asso line.</p><p>I started that weird hobby of traveling by train without any destination in my spare time, with just my notebook, my pencil and my drawings, hoping that someone will notice me and talk to me one day. And the single time it happened I discovered that life doesn't work like that: she never noticed me for real. I realized that life is looking for your own luck, crying in front of a coffee in a bar along the railroad.</p><p>That's why, this time, I started using the train twice of the time for going to work, the one I ever wanted to do that was so different than I dreamed, moving till the last stop - Milan. After my parents' divorce, I used to meet my father by train - and, on the same line, I gave the engagement ring to the girl I want to keep with myself forever.</p><p>Life is a train, indeed.</p><p>Plot! Ready to be a true conductor? Run, slow down at curves and switch turnouts till you reach the right station! Use DOWN for accelerating, UP for slowing down and the A BUTTON for switching the turnouts!</p><p><i>PS: There are two main reasons I decided to give a Plus! edition to this simple game 2 years later. The first one is that this was the first game a stranger I met on a train suggested to me for the Wright! project - by that Marsicano you'll often see on staff rolls - and the second one is... that working on train on a game about trains is too much meta to resist! I've added sound effects (with whistles and rail noises) and hiscores.</i></p>",
   "screenshots":[ "routrains-1.png", "routrains-2.png" ],
   "hardware":{
     "width":256,
@@ -11,18 +13,40 @@
     "filter":"retro"
   },
   "cheats":{
-    "autobrake":"Auto-stop train at stations",
-    "unlimitedfault":"Unlimited fault",
-    "unlimitedtime":"Unlimited time"
+    "autoBrake":"Auto-stop train at stations",
+    "unlimitedFault":"Unlimited fault",
+    "unlimitedTime":"Unlimited time"
+  },
+    "audioChannels":{
+    "sfx":{ "volume":0.4, "samples":[ "noise","whistle","fail","bonus","message","warning","point","success" ] }
   },
   "resources":{
     "spectrum":"spectrum.font",
     "pixeldingbats":"pixeldingbats.font",
     "intro":"intro.png",
     "landscape":"landscape.png",
-    "sprites":"sprites.png"
+    "sprites":"sprites.png",
+    "defaultstickers":"../default/stickers.png",
+    "noise":{"wave":"whitenoise","attack":0.006,"sustain":0.02,"decay":0.024,"release":0.2},
+    "whistle":{ "attack":0.006, "decay":0.051, "frequency":1420, "release":0.032, "sustain":0.62, "tremoloDepth":0.31, "tremoloFrequency":41.5, "wave":"sine" },
+    "message":{"wave":"square","attack":0.009,"sustain":0.276,"decay":0.051,"release":0.2,"tremoloFrequency":26,"tremoloDepth":1,"pitch":0.0004},
+    "fail":{"wave":"square","attack":0.009,"sustain":0.276,"decay":0.051,"release":0.2,"tremoloFrequency":26,"tremoloDepth":1,"pitch":0.0004,"frequencyJump1onset":0.14,"frequencyJump1amount":-1},
+    "bonus":{"wave":"square","attack":0.012,"sustain":0.02,"decay":0.051,"release":0.2,"tremoloFrequency":50,"tremoloDepth":1,"pitch":0.0009},
+    "warning":{"wave":"tangent","attack":0.009,"sustain":0.016,"decay":0.027,"release":0.2,"tremoloFrequency":50,"tremoloDepth":1,"pitch":0.0008},
+    "point":{"wave":"whitenoise","attack":0.015,"decay":0.066,"release":0.176,"frequency":1600,"frequencyJump1onset":0.37,"frequencyJump1amount":0.42},
+    "success":{ "attack":0.15, "decay":0.15, "frequency":1075, "frequencyJump1amount":0.1, "frequencyJump1onset":0.2, "frequencyJump2amount":0.08, "frequencyJump2onset":0.37, "release":0.2, "sustain":0.2, "tremoloDepth":0.77, "tremoloFrequency":1, "wave":"square" }
   },
   "stencils":{
+    "codeFinalizeScore":{
+      "when":{ "_":[ "cheat", "autoBrake", "not", "and",{"_":["cheat","unlimitedFault","not"]},"and",{"_":["cheat","unlimitedTime","not"]} ] },
+      "execute":[
+        { "publishScore":{ "_":[ "variable", "score" ] } },
+        {
+          "when":{ "_":[ "variable", "score", "isGreaterThan", { "_":[ "variable", "hiscore" ] } ] },
+          "execute":{ "as":[ { "_":"storage" }, { "_":"variable" } ], "set":{ "hiscore":{ "_":[ "variable", "score" ] } } }
+        }
+      ]
+    },
     "codeNextStage":[
       { "sum":1, "to":{ "_":[ "variable", "stage" ] } },
       {
@@ -54,7 +78,10 @@
         }
       }
     },
+    "dataNoisePattern":[20,5,10,5],
     "modelGameScene":{
+      "noiseTimer":0,
+      "noisePosition":0,
       "execute":[
         { "as":{ "_":"variable" }, "set":{ "faultGauge":0, "movingSpeed":1, "timeLeft":0 } },
         {
@@ -138,6 +165,7 @@
               { "as":{ "_":"variable" }, "set":{ "movingSpeed":0, "nextStation":"station1", "nextStationId":1, "pointState":0 } },
               { "as":{ "_":[ "object", "point" ] }, "executeAction":"update" },
               {
+                "playAudio":"message",
                 "object":[
                   {
                     "type":"label",
@@ -187,6 +215,7 @@
             "data":[
               { "as":{ "_":[ "objectTyped", { "_":[ "variable", "nextStation" ] } ] }, "set":{ "type":"nextStation", "follow":1, "animation":"blinking" } },
               {
+                "playAudio":"message",
                 "object":[
                   {
                     "type":"label",
@@ -221,10 +250,10 @@
               "name":"Sequence",
               "data":[
                 { "wait":12 },
-                { "as":{ "_":[ "objectTyped", "train" ] }, "execute":{ "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "html":"Go!" } } },
+                { "as":{ "_":[ "objectTyped", "train" ] }, "execute":{ "playAudio":"whistle","object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "html":"Go!" } } },
                 { "wait":1, "loop":1, "until":{ "_":[ "objectTyped", "train", "distanceTo", { "_":[ "objectTyped", "nextStation" ] }, "isLessThan", 20 ] } },
-                { "as":{ "_":[ "objectTyped", "train" ] }, "execute":{ "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "html":"Stop!" } } },
-                { "when":{ "_":[ "cheat", "autobrake" ] }, "as":{ "_":"variable" }, "set":{ "movingSpeed":0 } },
+                {  "as":{ "_":[ "objectTyped", "train" ] }, "execute":{ "playAudio":"warning","object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "html":"Stop!" } } },
+                { "when":{ "_":[ "cheat", "autoBrake" ] }, "as":{ "_":"variable" }, "set":{ "movingSpeed":0 } },
                 {
                   "when":{ "_":[ "variable", "movingSpeed", "isEqualTo", 0 ] },
                   "set":{ "state":"arrived" },
@@ -240,7 +269,7 @@
               "name":"Sequence",
               "data":[
                 { "wait":25 },
-                { "when":{ "_":[ "cheat", "unlimitedtime", "not" ] }, "subtract":1, "to":{ "_":[ "variable", "timeLeft" ] } },
+                { "when":{ "_":[ "cheat", "unlimitedTime", "not" ] }, "subtract":1, "to":{ "_":[ "variable", "timeLeft" ] } },
                 { "loopTo":0, "until":{ "_":[ "variable", "timeLeft", "not" ] } },
                 { "set":{ "overMessage":"TIME OVER", "state":"over" } }
               ]
@@ -255,11 +284,12 @@
                   "elseExecute":{
                     "when":{ "_":[ "keyA", "isHit" ] },
                     "execute":[
+                      {"playAudio":"point"},
                       {
                         "when":{ "_":[ "variable", "pointState" ] },
                         "as":{ "_":"variable" },
                         "set":{ "pointState":0 },
-                        "elseExecute":{ "as":{ "_":"variable" }, "set":{ "pointState":1 } }
+                        "elseExecute":  { "as":{ "_":"variable" }, "set":{ "pointState":1 } }
                       },
                       { "as":{ "_":[ "object", "point" ] }, "executeAction":"update" }
                     ]
@@ -275,6 +305,10 @@
                     "to":{ "_":[ "variable", "movingSpeed" ] }
                   }
                 },
+                {"sum":{"_":["variable","movingSpeed"]},"to":{"_":["this","noiseTimer"]}},
+                {"when":{"_":["this","noiseTimer","isGreaterThan",{"_":["stencil","dataNoisePattern",{"_":["this","noisePosition"]}]}]},"execute":
+                  {"playAudio":"noise","set":{"noiseTimer":0,"noisePosition":{"_":["this","noisePosition","+",1,"%",{"_":["stencil","dataNoisePattern","count"]}]}}}}
+                ,
                 { "when":{ "_":[ "variable", "faultGauge", "isGreaterThan", 25 ] }, "set":{ "overMessage":"SORRY, BAD CONDUCTING.", "state":"over" } }
               ]
             }
@@ -282,7 +316,7 @@
         },
         {
           "name":"over",
-          "execute":{ "as":{ "_":"variable" }, "set":{ "movingSpeed":0 } },
+          "execute":{ "as":{ "_":"variable" }, "set":{ "movingSpeed":0 }, "playAudio":"fail" },
           "code":{
             "name":"Sequence",
             "data":[
@@ -326,6 +360,7 @@
                 }
               },
               {
+                "playAudio":"bonus",
                 "object":[
                   { "type":"label", "width":256, "height":50, "zIndex":90, "x":0, "y":76, "bgcolor":"#000" },
                   {
@@ -340,6 +375,7 @@
               },
               { "wait":25 },
               {
+                "playAudio":"bonus",
                 "object":{
                   "type":"label",
                   "width":256, "height":40,
@@ -369,6 +405,7 @@
             { "as":{ "_":[ "objectTyped", "train" ] }, "set":{ "follow":1 } },
             { "as":{ "_":"variable" }, "set":{ "movingSpeed":1, "timeLeft":0 } },
             {
+              "playAudio":"success",
               "object":[
                 {
                   "type":"label",
@@ -453,7 +490,7 @@
             {
               "when":{ "_":[ "variable", "movingSpeed", "isGreaterThan", { "_":[ "this", "movingSpeedLimit" ] } ] },
               "execute":{
-                "when":{ "_":[ "cheat", "unlimitedfault", "not" ] },
+                "when":{ "_":[ "cheat", "unlimitedFault", "not" ] },
                 "sum":{ "_":[ "variable", "movingSpeed", "-", { "_":[ "this", "movingSpeedLimit" ] } ] },
                 "to":{ "_":[ "variable", "faultGauge" ] }
               }
@@ -604,6 +641,10 @@
     "~":{ "image":"landscape", "tileX":48, "tileY":16, "width":16, "height":16 },
     "°":{ "image":"landscape", "tileX":16, "tileY":16, "width":16, "height":16 }
   },
+  "execute":[
+      { "when":{ "_":[ "storage", "hiscore", "not" ] }, "as":{ "_":"storage" }, "set":{ "hiscore":0 } },
+    { "as":{ "_":"variable" }, "set":{ "hiscore":{ "_":[ "storage", "hiscore" ] } } }
+],
   "scenes":{
     "intro":{
       "object":[
@@ -616,7 +657,14 @@
         {
           "image":"intro", "tileY":193, "width":232, "height":40,
           "zIndex":2, "x":12, "y":-58,
-          "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "this", "y", "isLessThan", 40 ] }, "sum":0.5, "to":{ "_":[ "this", "y" ] } } } }
+          "states":[{ "code":[
+            { "name":"Execute", "data":{ "when":{ "_":[ "this", "y", "isLessThan", 40 ] }, "sum":0.5, "to":{ "_":[ "this", "y" ] }, "elseExecute":{"set":{"state":"sticker"}} } }            
+            ] },{
+              "name":"sticker",
+              "execute":{
+                "object":{ "image":"defaultstickers", "width":35, "height":8, "zIndex":3, "x":209, "y":81,"zIndex":30 }
+              }
+            }]
         },
         {
           "box":"label", "width":256,
@@ -624,12 +672,21 @@
           "color":"#fff",
           "font":"spectrum", "fontSize":20, "lineHeight":20, "outline":"#000", "textAlign":"center", "html":"PRESS START",
           "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "visible":0 }, "wait":10 }, { "set":{ "visible":1 }, "wait":10, "loopTo":0 } ] } }
+        },
+                {
+          "box":"label", "width":256,
+          "zIndex":5, "x":0, "y":172,
+          "bgcolor":"#000",
+          "font":"spectrum", "fontSize":20, "lineHeight":20, "outline":"#000", "textAlign":"center", "html":{ "_":[ "HI-SCORE: ", ".", { "_":[ "variable", "hiscore" ] } ] }
         }
       ],
       "execute":{ "as":{ "_":"variable" }, "set":{ "score":0, "stage":0 } },
-      "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "execute":{ "_":[ "stencil", "codeNextStage" ] } } } }
+      "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "playAudio":"whistle","execute":{ "_":[ "stencil", "codeNextStage" ] } } } }
     },
     "ending":{
+      "noiseTimer":0,
+      "noisePosition":0,
+      "playAudio":"success",
       "object":[
         { "width":256, "height":192, "x":0, "y":0, "bgcolor":"#0ff" },
         {
@@ -674,7 +731,6 @@
           "font":"spectrum", "outline":"#000", "textAlign":"center", "html":{ "_":[ "Final score: ", ".", { "_":[ "variable", "score" ] }, ".", "pts." ] }
         }
       ],
-      "execute": { "publishScore":{ "_":[ "variable", "score" ] } },
       "states":{
         "code":[
           {
@@ -684,7 +740,15 @@
               { "as":{ "_":[ "objectTyped", "background" ] }, "set":{ "x":1 }, "loopTo":0 }
             ]
           },
-          { "name":"Sequence", "data":[ { "wait":50 }, { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } }, { "gotoScene":"intro" } ] }
+          {
+            "name":"Execute",
+            "data":[
+              {"sum":1,"to":{"_":["this","noiseTimer"]}},
+              {"when":{"_":["this","noiseTimer","isGreaterThan",{"_":["stencil","dataNoisePattern",{"_":["this","noisePosition"]}]}]},"execute":
+              {"playAudio":"noise","set":{"noiseTimer":0,"noisePosition":{"_":["this","noisePosition","+",1,"%",{"_":["stencil","dataNoisePattern","count"]}]}}}}
+            ]
+          },
+          { "name":"Sequence", "data":[ { "wait":50 }, { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } }, { "gotoScene":"gameover" } ] }
         ]
       }
     },
@@ -694,7 +758,7 @@
         "x":0, "y":0,
         "font":"spectrum", "fontSize":20, "lineHeight":192, "outline":"#000", "textAlign":"center", "html":"GAME OVER"
       },
-      "execute": { "publishScore":{ "_":[ "variable", "score" ] } },
+      "execute": {"_":["stencil","codeFinalizeScore"]},
       "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"intro" } } }
     },
     "stage1":{
