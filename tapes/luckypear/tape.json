@@ -1,0 +1,668 @@
+{
+  "name":"Lucky Pear",
+  "author":"KesieV",
+  "year":2017,
+  "genre":"Gambling",
+  "description":"<p>Ciao pap&agrave;,</p><p>Ero piccolissimo, ricordi? Il piano era quello di costruire insieme una slot machine per lo <a href='https://en.wikipedia.org/wiki/ZX_Spectrum'>ZX Spectrum</a>, dove diversi frutti si sarebbero alternati sullo schermo e lo scopo era quello di vincere un mucchio di soldi.</p><p>Mi avevi disegnato un'enorme pera su un foglio a quadretti, l'avevi divisa in quadrati 8x8 e, dopo avermi insegnato le basi del <a href='https://en.wikipedia.org/wiki/Binary_number'>sistema binario</a>, mi avevi assegnato il compito di calcolare il valore decimale di tutte le parti della figura, per poi farla <a href='https://en.wikipedia.org/wiki/ZX_Spectrum_character_set'>apparire sullo schermo</a>.</p><p>Per me, sarebbe stata la migliore slot machine di <i>sempre</i>, pap&agrave;.</p><p>Qualche anno dopo, davanti al nostro primo PC, mi avevi mostrato pieno d'orgoglio dei bottoni personalizzati dall'aspetto <i>retr&ograve;</i> che avevi costruito tu stesso e che avremmo usato nei nostri <a href='https://en.wikipedia.org/wiki/Visual_Basic'>programmi</a>, chi per lavoro e chi per diletto. I nostri <i>utenti</i> li avrebbero trovati irresistibili.</p><p>Sai, pap&agrave. Ho percorso anche io la vita avvolto in quel freddo manto di solitudine che ci ha sempre difeso dalle sue furiose tempeste e alla fine, anche se non abbiamo condiviso pi&ugrave; molto da quei giorni, mi ritrovo a calcare un'orma vicino alla tua. E lo faccio con quel tuo sorriso sul viso.</p><p>La strada tra il valore che noi percepiamo e quello che &egrave; importante per gli altri &egrave; lunghissima e, di fatto, imperscrutabile ai nostri occhi e impercorribile dai nostri piedi. L'insopportabile autostima che non ci fa mollare mai e la paterna autocritica che non ci concede alcun traguardo ci hanno resi corridori instancabili ma non hanno portato i nostri bottoni da nessuna parte e non hanno convinto nessuno a schiacciarli.</p><p>Ma se ho deciso di tenere l'amore per ci&ograve; che faccio e abbandonare l'orgoglio, che mi ha solo procurato guai, mi interrogo su quale sia il fine di quello che faccio e che costruisco. E trascrivo per te la mia risposta.</p><p>Non abbiamo mai finito quella slot machine, che si &egrave; limitata a mostrare quella stessa pera, ripetuta tre volte e in diversi colori. Ma quando &egrave; apparsa <i>quella pera</i> sullo schermo ricordo di aver provato una gioia immensa. Mi avevi insegnato qualcosa ed ora era mia, l&igrave;, <i>dentro la televisione</i>.</p><p>Noi riversiamo maree di gettoni nella slot machine della vita, pap&agrave;, e le sue ruote girano all'infinito nella vita degli altri. Avrei potuto non provare nulla per quella pera sgranata sullo schermo, aborto di un progetto modesto, ed invece eccomi qui, con una passione, uno scopo e una identit&agrave; sulle mie tre ruote.</p><p>Per questo continuo ad andare avanti. Lo faccio perch&egrave;, nel bene e nel male, giri qualche ruota anche negli altri ed un pezzettino di noi continui a vivere, come hai fatto tu con me. Magari non lo sapremo mai... ma dopo tutto siamo gente solitaria, no?</p><p>Nel frattempo ho ultimato la nostra slot machine e te la dedico. Ho tenuto lo stile ed i suoni che avevano i giochi dello Spectrum e tutti possono vedere come l'ho realizzata, senza chiedere nulla in cambio. E si, pap&agrave;, c'&egrave; anche la nostra pera e, credimi, vale un mucchio di soldi!</p><p>Un abbraccio,<br>Francesco</p><p>Plot!</p><p>Are you ready to be the King of the Slots? Bet, test your luck and WIN! Buy new grades with your well earned cash, climb to the top and become the best of the best! Bad luck? Don't worry... tomorrow will be your lucky day!</p><p>Use DOWN for betting a coin and UP for cancelling it. Use RIGHT for betting to the max and LEFT for taking all the bet back. Press A for starting the slot machine. When you've enough money, use B for buying you a new grade. Good luck!</p>",
+  "screenshots":[ "luckypear-1.png", "luckypear-2.png" ],
+  "hardware":{
+    "width":256,
+    "height":192,
+    "filter":"retro"
+  },
+  "audioChannels":{
+    "sfx":{ "volume":1, "samples":[ "fire", "blam", "beep2", "beep", "rampup", "rampdown", "shut", "open" ] }
+  },
+  "cheats":{},
+  "resources":{
+    "background":"background.png",
+    "grades":"grades.png",
+    "spectrum":"spectrum.font",
+    "sprites":"sprites.png",
+    "beep":"../default/zxsounds/beep.ogg",
+    "beep2":"../default/zxsounds/beep2.ogg",
+    "blam":"../default/zxsounds/blam.ogg",
+    "fire":"../default/zxsounds/fire.ogg",
+    "open":"../default/zxsounds/open.ogg",
+    "rampdown":"../default/zxsounds/rampdown.ogg",
+    "rampup":"../default/zxsounds/rampup.ogg",
+    "shut":"../default/zxsounds/shut.ogg"
+  },
+  "stencils":{
+    "codeDistributeWild":[
+      { "set":{ "counter":1 } },
+      {
+        "times":8,
+        "execute":[
+          {
+            "when":{ "_":[ "this", "route", { "_":[ "this", "counter" ] } ] },
+            "execute":{
+              "when":{ "_":[ "this", "route", 0, "count", "isGreaterEqualThan", { "_":[ "this", "distriuteGive" ] } ] },
+              "execute":{
+                "when":{ "_":[ "this", "route", { "_":[ "this", "counter" ] }, "count", "isEqualTo", { "_":[ "this", "distriuteLimit" ] } ] },
+                "execute":{
+                  "times":{ "_":[ "this", "distriuteGive" ] },
+                  "execute":[
+                    { "as":{ "_":[ "this", "route", 0, 0 ] }, "pushInto":{ "_":[ "that", "route", { "_":[ "that", "counter" ] } ] } },
+                    { "unpushAt":0, "from":{ "_":[ "this", "route", 0 ] } }
+                  ]
+                }
+              }
+            }
+          },
+          { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+        ]
+      }
+    ],
+    "codeGetNextWheelImage":[
+      { "sum":1, "to":{ "_":[ "this", "bagId" ] } },
+      {
+        "when":{ "_":[ "this", "bagId", "isGreaterEqualThan", { "_":[ "this", "bag", "count" ] } ] },
+        "shuffle":{ "_":[ "this", "bag" ] },
+        "set":{ "bagId":0 }
+      },
+      { "set":{ "wheelImage":{ "_":[ "this", "bag", { "_":[ "this", "bagId" ] } ] } } }
+    ],
+    "codeMoveWheel":[
+      {
+        "as":{ "_":[ "object", { "_":[ "this", "wheelType" ] } ] },
+        "execute":[ { "sum":{ "_":[ "that", "moveSpeed" ] }, "to":{ "_":[ "this", "y" ] } }, { "when":{ "_":[ "this", "y", "isGreaterThan", 160 ] }, "remove":1 } ]
+      },
+      { "subtract":{ "_":[ "this", "moveSpeed" ] }, "to":{ "_":[ "this", "wheelPosition" ] } },
+      {
+        "when":{ "_":[ "this", "wheelPosition", "isLessEqualThan", 0 ] },
+        "execute":[
+          { "_":[ "stencil", "codeGetNextWheelImage" ] },
+          {
+            "object":{
+              "type":{ "_":[ "that", "wheelType" ] },
+              "set":{ "_":[ "stencil", "wheelImageModel" ] },
+              "y":{ "_":[ "that", "wheelPosition", "-", 32 ] }, "frame":{ "_":[ "that", "wheelImage" ] }
+            },
+            "into":{ "_":"this" }
+          },
+          { "sum":32, "to":{ "_":[ "this", "wheelPosition" ] } }
+        ]
+      }
+    ],
+    "codeSaveGame":{ "as":{ "_":"storage" }, "set":{ "grade":{ "_":[ "variable", "grade" ] }, "money":{ "_":[ "variable", "money" ] } } },
+    "codeUpdateGrade":{
+      "when":{ "_":[ "variable", "grade", "isLessThan", 19 ] },
+      "execute":[
+        { "set":{ "nextGradePrice":{ "_":[ "variable", "grade", "+", 3, "*", 10 ] } } },
+        { "as":{ "_":[ "objectTyped", "nextgradelabel" ] }, "set":{ "html":{ "_":[ "that", "nextGradePrice", ".", "G" ] } } },
+        {
+          "when":{ "_":[ "variable", "money", "isGreaterEqualThan", { "_":[ "this", "nextGradePrice" ] } ] },
+          "as":{ "_":[ "objectTyped", "buygrade" ] },
+          "set":{ "type":"blink" },
+          "elseExecute":{ "as":{ "_":[ "objectTyped", "buygrade" ] }, "set":{ "removeType":"blink", "visible":0 } }
+        }
+      ],
+      "elseExecute":[
+        { "set":{ "nextGradePrice":0 } },
+        { "as":{ "_":[ "objectTyped", "nextgradelabel" ] }, "set":{ "html":"MAXED!" } },
+        { "as":{ "_":[ "objectTyped", "buygrade" ] }, "set":{ "removeType":"blink", "visible":0 } }
+      ]
+    },
+    "dataMessages":[
+      [],
+      [],
+      [],
+      [ { "html":"GOOD!", "color1":"#0ff", "color2":"#007f7f", "noiser":"ok" }, { "html":"NICE!", "color1":"#0ff", "color2":"#007f7f", "noiser":"ok" } ],
+      [
+        { "html":"VERY GOOD!", "color1":"#0f0", "color2":"#007f00", "noiser":"win" },
+        { "html":"VERY NICE!", "color1":"#0f0", "color2":"#007f00", "noiser":"win" }
+      ],
+      [
+        { "html":"INCREDIBLE!", "color1":"#f00", "color2":"#fff", "noiser":"jackpot" },
+        { "html":"JACKPOT!", "color1":"#f00", "color2":"#fff", "noiser":"jackpot" }
+      ]
+    ],
+    "dataPrizes":[
+      [ 0, 0, 0, 0, 0, 100 ],
+      [ 0, 0, 0, 3, 7, 50 ],
+      [ 0, 0, 0, 3, 7, 50 ],
+      [ 0, 0, 0, 3, 7, 50 ],
+      [ 0, 0, 0, 3, 7, 50 ],
+      [ 0, 0, 0, 3, 7, 50 ],
+      [ 0, 0, 0, 3, 7, 50 ],
+      [ 0, 0, 0, 3, 7, 50 ],
+      [ 0, 0, 0, 3, 7, 50 ]
+    ],
+    "dataRoutes":[
+      [
+        { "width":8, "height":8, "x":16, "y":80 },
+        { "width":8, "height":8, "x":48, "y":80 },
+        { "width":8, "height":8, "x":80, "y":80 },
+        { "width":8, "height":8, "x":112, "y":80 },
+        { "width":8, "height":8, "x":144, "y":80 }
+      ],
+      [
+        { "width":8, "height":8, "x":16, "y":48 },
+        { "width":8, "height":8, "x":48, "y":48 },
+        { "width":8, "height":8, "x":80, "y":48 },
+        { "width":8, "height":8, "x":112, "y":48 },
+        { "width":8, "height":8, "x":144, "y":48 }
+      ],
+      [
+        { "width":8, "height":8, "x":16, "y":112 },
+        { "width":8, "height":8, "x":48, "y":112 },
+        { "width":8, "height":8, "x":80, "y":112 },
+        { "width":8, "height":8, "x":112, "y":112 },
+        { "width":8, "height":8, "x":144, "y":112 }
+      ],
+      [
+        { "width":8, "height":8, "x":16, "y":16 },
+        { "width":8, "height":8, "x":48, "y":16 },
+        { "width":8, "height":8, "x":80, "y":16 },
+        { "width":8, "height":8, "x":112, "y":16 },
+        { "width":8, "height":8, "x":144, "y":16 }
+      ],
+      [
+        { "width":8, "height":8, "x":16, "y":144 },
+        { "width":8, "height":8, "x":48, "y":144 },
+        { "width":8, "height":8, "x":80, "y":144 },
+        { "width":8, "height":8, "x":112, "y":144 },
+        { "width":8, "height":8, "x":144, "y":144 }
+      ],
+      [
+        { "width":8, "height":8, "x":16, "y":16 },
+        { "width":8, "height":8, "x":48, "y":48 },
+        { "width":8, "height":8, "x":80, "y":80 },
+        { "width":8, "height":8, "x":112, "y":112 },
+        { "width":8, "height":8, "x":144, "y":144 }
+      ],
+      [
+        { "width":8, "height":8, "x":16, "y":144 },
+        { "width":8, "height":8, "x":48, "y":112 },
+        { "width":8, "height":8, "x":80, "y":80 },
+        { "width":8, "height":8, "x":112, "y":48 },
+        { "width":8, "height":8, "x":144, "y":16 }
+      ]
+    ],
+    "shoutModel":{
+      "type":"message",
+      "width":192, "height":40,
+      "zIndex":100, "x":0, "y":76,
+      "scale":0,
+      "font":"spectrum", "fontSize":40, "lineHeight":40, "outline":"#000", "textAlign":"center",
+      "timer":0,
+      "states":[
+        {
+          "code":[
+            {
+              "name":"Sequence",
+              "data":[
+                { "sum":0.2, "to":{ "_":[ "this", "scale" ] }, "wait":1, "loop":1, "cycles":5 },
+                { "set":{ "x":1 }, "wait":1 },
+                { "set":{ "x":-1 }, "wait":1, "cycles":5, "loopTo":-1 },
+                { "set":{ "x":0 }, "wait":1 }
+              ]
+            },
+            { "name":"Execute", "data":[ { "sum":0.2, "to":{ "_":[ "this", "timer" ] } }, { "set":{ "angle":{ "_":[ "this", "timer", "sin", "*", 10 ] } } } ] },
+            {
+              "name":"Sequence",
+              "data":[ { "set":{ "color":{ "_":[ "this", "color1" ] } }, "wait":1 }, { "set":{ "color":{ "_":[ "this", "color2" ] } }, "wait":1, "loopTo":0 } ]
+            }
+          ]
+        },
+        {
+          "name":"leave",
+          "code":{ "name":"Sequence", "data":[ { "subtract":0.2, "to":{ "_":[ "this", "scale" ] }, "wait":1, "loop":1, "cycles":5 }, { "remove":1 } ] }
+        }
+      ]
+    },
+    "slotWheel":{
+      "image":"sprites", "tileY":32, "width":32, "height":160,
+      "zIndex":30,
+      "bgcolor":"#fff",
+      "bag":{ "_":[ "new", [ 0, 1, 2, 3, 4, 5, 6, 7, 8 ] ] },
+      "bagId":999,
+      "spin":0,
+      "spinSpeed":16,
+      "wheelPosition":32,
+      "states":{
+        "execute":[
+          {
+            "set":{
+              "type":{ "_":[ "wheel-", ".", { "_":[ "this", "wheelId" ] } ] },
+              "counter":-32,
+              "wheelType":{ "_":[ "wheelimage-", ".", { "_":[ "this", "wheelId" ] } ] }
+            }
+          },
+          {
+            "times":6,
+            "execute":[
+              { "_":[ "stencil", "codeGetNextWheelImage" ] },
+              {
+                "object":{
+                  "type":{ "_":[ "that", "wheelType" ] },
+                  "set":{ "_":[ "stencil", "wheelImageModel" ] },
+                  "y":{ "_":[ "that", "counter" ] }, "frame":{ "_":[ "that", "wheelImage" ] }
+                },
+                "into":{ "_":"this" }
+              },
+              { "sum":32, "to":{ "_":[ "this", "counter" ] } }
+            ]
+          },
+          {
+            "when":{ "_":[ "scene", "luckyNumbers", { "_":[ "this", "wheelId" ] }, "isGreaterEqualThan", 0 ] },
+            "assign":{ "_":[ "scene", "luckyNumbers", { "_":[ "this", "wheelId" ] } ] },
+            "to":{ "_":[ "this", "bag", 9 ] }
+          }
+        ],
+        "code":{
+          "name":"Execute",
+          "data":{
+            "when":{ "_":[ "this", "moving" ] },
+            "execute":{
+              "when":{ "_":[ "this", "spin" ] },
+              "execute":{ "set":{ "moveSpeed":{ "_":[ "this", "spinSpeed" ] } }, "execute":{ "_":[ "stencil", "codeMoveWheel" ] } },
+              "elseExecute":{
+                "when":{ "_":[ "this", "wheelPosition", "isNotEqualTo", 32 ] },
+                "execute":[
+                  {
+                    "when":{ "_":[ "this", "wheelPosition", "isLessThan", 1 ] },
+                    "set":{ "moveSpeed":{ "_":[ "this", "wheelPosition" ] } },
+                    "elseExecute":{ "set":{ "moveSpeed":{ "_":[ "this", "wheelPosition", "/", 2 ] } } }
+                  },
+                  { "execute":{ "_":[ "stencil", "codeMoveWheel" ] } }
+                ],
+                "elseExecute":{ "set":{ "removeType":"moving", "moving":0 }, "playAudio":"blam" }
+              }
+            }
+          }
+        }
+      }
+    },
+    "wheelImageModel":{ "type":"wheelimage", "image":"sprites", "width":32, "height":32 },
+    "winIndicatorModel":{
+      "image":"sprites",
+      "zIndex":40,
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":{
+            "when":{ "_":[ "scene", "indicatorLevel", "isGreaterThan", { "_":[ "this", "id" ] } ] },
+            "set":{ "type":"blink" },
+            "elseExecute":{ "set":{ "removeType":"blink", "visible":0 } }
+          }
+        }
+      }
+    }
+  },
+  "execute":[
+    { "when":{ "_":[ "storage", "money", "not" ] }, "as":{ "_":"storage" }, "set":{ "money":20 } },
+    { "when":{ "_":[ "storage", "grade", "not" ] }, "as":{ "_":"storage" }, "set":{ "grade":0 } },
+    { "as":{ "_":"variable" }, "set":{ "grade":{ "_":[ "storage", "grade" ] }, "money":{ "_":[ "storage", "money" ] } } }
+  ],
+  "scenes":{
+    "intro":{
+      "execute":[
+        { "set":{ "backupSeed":{ "_":[ "variable", "randomSeed" ] }, "counter":0 } },
+        { "as":{ "_":"variable" }, "set":{ "randomSeed":{ "_":[ "date", "allMilliseconds", "/", 86400000, "ceil" ] } } },
+        { "set":{ "counter":0 } },
+        {
+          "times":5,
+          "execute":[
+            {
+              "when":{ "_":[ "randomNumber", [ 0, 1 ] ] },
+              "assign":{ "_":[ "randomNumber", [ 0, 8 ] ] },
+              "to":{ "_":[ "this", "luckyNumbers", { "_":[ "this", "counter" ] } ] },
+              "elseExecute":{ "assign":-1, "to":{ "_":[ "this", "luckyNumbers", { "_":[ "this", "counter" ] } ] } }
+            },
+            { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+          ]
+        },
+        { "as":{ "_":"variable" }, "set":{ "randomSeed":{ "_":[ "that", "backupSeed" ] } } },
+        { "set":{ "counter":0 } },
+        {
+          "times":10,
+          "execute":[
+            {
+              "object":{
+                "type":[ "blinker", { "_":[ "blinker-", ".", { "_":[ "that", "counter" ] } ] } ],
+                "width":16, "height":16,
+                "x":{ "_":[ "that", "counter", "+", 1, "*", 16 ] }, "y":0,
+                "bgcolor":"#7f7f7f"
+              }
+            },
+            { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+          ]
+        },
+        {
+          "object":[
+            {
+              "image":"grades", "width":56, "height":480,
+              "x":192, "y":192,
+              "position":-456,
+              "states":{
+                "code":{
+                  "name":"Execute",
+                  "data":[
+                    { "set":{ "destination":{ "_":[ "variable", "grade", "*", 24, "-", 456 ] } } },
+                    { "set":{ "distance":{ "_":[ "this", "destination", "-", { "_":[ "this", "position" ] } ] } } },
+                    {
+                      "when":{ "_":[ "this", "distance", "abs", "isLessThan", 1 ] },
+                      "set":{ "position":{ "_":[ "this", "destination" ] } },
+                      "elseExecute":{ "sum":{ "_":[ "this", "distance", "/", 4 ] }, "to":{ "_":[ "this", "position" ] } }
+                    },
+                    { "set":{ "y":{ "_":[ 122, "+", { "_":[ "this", "position" ] } ] } } }
+                  ]
+                }
+              }
+            },
+            { "set":{ "_":[ "stencil", "winIndicatorModel" ] }, "tileX":32, "tileY":32, "width":165, "height":4, "x":12, "y":94, "id":0 },
+            { "set":{ "_":[ "stencil", "winIndicatorModel" ] }, "tileX":32, "tileY":32, "width":165, "height":4, "x":12, "y":62, "id":1 },
+            { "set":{ "_":[ "stencil", "winIndicatorModel" ] }, "tileX":32, "tileY":32, "width":165, "height":4, "x":12, "y":126, "id":2 },
+            { "set":{ "_":[ "stencil", "winIndicatorModel" ] }, "tileX":32, "tileY":32, "width":165, "height":4, "x":12, "y":30, "id":3 },
+            { "set":{ "_":[ "stencil", "winIndicatorModel" ] }, "tileX":32, "tileY":32, "width":165, "height":4, "x":12, "y":158, "id":4 },
+            {
+              "set":{ "_":[ "stencil", "winIndicatorModel" ] },
+              "tileX":32, "tileY":36, "width":168, "height":167,
+              "zIndex":45, "x":10, "y":10,
+              "flipY":1,
+              "id":5
+            },
+            { "set":{ "_":[ "stencil", "winIndicatorModel" ] }, "tileX":32, "tileY":36, "width":168, "height":167, "zIndex":46, "x":9, "y":15, "id":6 },
+            { "image":"background", "width":256, "height":192, "zIndex":5, "x":0, "y":0 },
+            { "set":{ "_":[ "stencil", "slotWheel" ] }, "x":16, "y":16, "wheelId":0 },
+            { "set":{ "_":[ "stencil", "slotWheel" ] }, "x":48, "y":16, "wheelId":1 },
+            { "set":{ "_":[ "stencil", "slotWheel" ] }, "x":80, "y":16, "wheelId":2 },
+            { "set":{ "_":[ "stencil", "slotWheel" ] }, "x":112, "y":16, "wheelId":3 },
+            { "set":{ "_":[ "stencil", "slotWheel" ] }, "x":144, "y":16, "wheelId":4 },
+            {
+              "type":"hud",
+              "hudType":"label", "label":"%number|variable.money%G",
+              "width":56, "height":10,
+              "zIndex":2, "x":192, "y":22,
+              "bgcolor":"#000",
+              "font":"spectrum", "lineHeight":10, "textAlign":"center"
+            },
+            {
+              "type":"hud",
+              "hudType":"label", "label":"%number|scene.coins%G",
+              "width":56, "height":10,
+              "zIndex":2, "x":192, "y":54,
+              "bgcolor":"#000",
+              "font":"spectrum", "lineHeight":10, "textAlign":"center"
+            },
+            {
+              "type":"nextgradelabel",
+              "width":56, "height":10,
+              "zIndex":2, "x":192, "y":168,
+              "bgcolor":"#000", "color":"#f00",
+              "font":"spectrum", "lineHeight":10, "textAlign":"center"
+            },
+            {
+              "type":"buygrade",
+              "width":56, "height":24,
+              "zIndex":10, "x":192, "y":122,
+              "bgcolor":"#0f0", "border":"#000", "color":"#000",
+              "font":"spectrum", "lineHeight":11, "textAlign":"center", "html":"BUY!<br>HIT B!"
+            },
+            {
+              "type":"noiser",
+              "states":[
+                { "name":"wheels", "code":{ "name":"Sequence", "data":{ "playAudio":"fire", "wait":2, "loop":1 } } },
+                { "name":"win", "code":{ "name":"Sequence", "data":{ "playAudio":"rampup", "wait":10, "loop":1, "cycles":3 } } },
+                { "name":"ok", "code":{ "name":"Sequence", "data":{ "playAudio":"beep2", "wait":5, "loop":1, "cycles":3 } } },
+                {
+                  "name":"jackpot",
+                  "code":{ "name":"Sequence", "data":[ { "playAudio":"rampup", "wait":5 }, { "playAudio":"rampdown", "wait":5 }, { "cycles":5, "loopTo":0 } ] }
+                }
+              ]
+            },
+            {
+              "states":{
+                "code":{
+                  "name":"Sequence",
+                  "data":[
+                    { "as":{ "_":[ "object", "blinker" ] }, "set":{ "bgcolor":"#fff" }, "wait":10 },
+                    { "as":{ "_":[ "object", "blinker" ] }, "set":{ "bgcolor":"#7f7f7f" }, "wait":10, "cycles":5, "loopTo":0 },
+                    { "set":{ "counter":-1 } },
+                    { "sum":1, "to":{ "_":[ "this", "counter" ] } },
+                    { "as":{ "_":[ "object", "blinker" ] }, "set":{ "bgcolor":"#7f7f7f" } },
+                    { "as":{ "_":[ "objectTyped", { "_":[ "blinker-", ".", { "_":[ "that", "counter" ] } ] } ] }, "set":{ "bgcolor":"#fff" } },
+                    { "wait":2, "cycles":10, "loopTo":-3 },
+                    { "subtract":1, "to":{ "_":[ "this", "counter" ] } },
+                    { "as":{ "_":[ "object", "blinker" ] }, "set":{ "bgcolor":"#7f7f7f" } },
+                    { "as":{ "_":[ "objectTyped", { "_":[ "blinker-", ".", { "_":[ "that", "counter" ] } ] } ] }, "set":{ "bgcolor":"#fff" } },
+                    { "wait":2, "cycles":8, "loopTo":-3 },
+                    { "cycles":4, "loopTo":-9 },
+                    { "set":{ "cycle":0 } },
+                    { "set":{ "counter":{ "_":[ "this", "cycle", "%", 2 ] } } },
+                    { "as":{ "_":[ "object", "blinker" ] }, "set":{ "bgcolor":"#7f7f7f" } },
+                    {
+                      "times":5,
+                      "execute":[
+                        { "as":{ "_":[ "objectTyped", { "_":[ "blinker-", ".", { "_":[ "that", "counter" ] } ] } ] }, "set":{ "bgcolor":"#fff" } },
+                        { "sum":2, "to":{ "_":[ "this", "counter" ] } }
+                      ]
+                    },
+                    { "sum":1, "to":{ "_":[ "this", "cycle" ] } },
+                    { "wait":5, "cycles":10, "loopTo":-4 },
+                    { "set":{ "timer":0 } },
+                    { "set":{ "light":{ "_":[ "this", "timer", "cos", "+", 1, "*", 5, "floor" ] } } },
+                    { "as":{ "_":[ "object", "blinker" ] }, "set":{ "bgcolor":"#7f7f7f" } },
+                    { "as":{ "_":[ "object", { "_":[ "blinker-", ".", { "_":[ "this", "light" ] } ] } ] }, "set":{ "bgcolor":"#fff" } },
+                    { "as":{ "_":[ "object", { "_":[ "blinker-", ".", { "_":[ 9, "-", { "_":[ "this", "light" ] } ] } ] } ] }, "set":{ "bgcolor":"#fff" } },
+                    { "sum":0.2, "to":{ "_":[ "this", "timer" ] } },
+                    { "wait":1, "cycles":150, "loopTo":-5 },
+                    { "loopTo":0 }
+                  ]
+                }
+              }
+            }
+          ]
+        },
+        { "set":{ "counter":0 } }
+      ],
+      "animCounter":0,
+      "coins":0,
+      "indicatorLevel":0,
+      "luckyNumbers":{ "_":[ "new", [] ] },
+      "states":{
+        "code":[
+          {
+            "name":"Sequence",
+            "data":[
+              { "_":[ "stencil", "codeUpdateGrade" ] },
+              {
+                "when":{ "_":[ "keyDown", "isHit" ] },
+                "execute":{
+                  "when":{ "_":[ "variable", "money", "and", { "_":[ "this", "coins", "isLessThan", 7 ] } ] },
+                  "execute":[ { "sum":1, "to":{ "_":[ "this", "coins" ] } }, { "subtract":1, "to":{ "_":[ "variable", "money" ] }, "playAudio":"beep2" } ]
+                }
+              },
+              {
+                "when":{ "_":[ "keyUp", "isHit" ] },
+                "execute":{
+                  "when":{ "_":[ "this", "coins" ] },
+                  "execute":[ { "subtract":1, "to":{ "_":[ "this", "coins" ] } }, { "sum":1, "to":{ "_":[ "variable", "money" ] }, "playAudio":"beep" } ]
+                }
+              },
+              {
+                "when":{ "_":[ "keyRight", "isHit" ] },
+                "execute":[
+                  { "set":{ "neededCoins":{ "_":[ 7, "-", { "_":[ "this", "coins" ] } ] } } },
+                  {
+                    "when":{ "_":[ "this", "neededCoins", "isGreaterThan", { "_":[ "variable", "money" ] } ] },
+                    "set":{ "neededCoins":{ "_":[ "variable", "money" ] } }
+                  },
+                  { "sum":{ "_":[ "this", "neededCoins" ] }, "to":{ "_":[ "this", "coins" ] } },
+                  { "subtract":{ "_":[ "this", "neededCoins" ] }, "to":{ "_":[ "variable", "money" ] }, "playAudio":"beep2" }
+                ]
+              },
+              {
+                "when":{ "_":[ "keyLeft", "isHit" ] },
+                "execute":[ { "sum":{ "_":[ "this", "coins" ] }, "to":{ "_":[ "variable", "money" ] } }, { "set":{ "coins":0 }, "playAudio":"beep" } ]
+              },
+              {
+                "when":{ "_":[ "keyB", "isHit" ] },
+                "execute":{
+                  "when":{ "_":[ "this", "nextGradePrice" ] },
+                  "execute":{
+                    "when":{ "_":[ "variable", "money", "isGreaterEqualThan", { "_":[ "this", "nextGradePrice" ] } ] },
+                    "elseExecute":{
+                      "subsequence":[
+                        { "object":{ "set":{ "_":[ "stencil", "shoutModel" ] }, "html":"WIN MORE!", "color1":"#fff", "color2":"#7f7f7f" }, "playAudio":"rampdown" },
+                        { "wait":50 },
+                        { "as":{ "_":[ "object", "message" ] }, "set":{ "state":"leave" } }
+                      ]
+                    },
+                    "subsequence":[
+                      { "subtract":{ "_":[ "this", "nextGradePrice" ] }, "to":{ "_":[ "variable", "money" ] } },
+                      { "sum":1, "to":{ "_":[ "variable", "grade" ] } },
+                      { "when":{ "_":[ "variable", "money", "isLessThan", 20 ] }, "as":{ "_":"variable" }, "set":{ "money":20 } },
+                      { "_":[ "stencil", "codeUpdateGrade" ] },
+                      { "_":[ "stencil", "codeSaveGame" ] },
+                      { "object":{ "set":{ "_":[ "stencil", "shoutModel" ] }, "html":"PROMOTED!", "color1":"#ff0", "color2":"#7f7f00" }, "playAudio":"open" },
+                      { "wait":50 },
+                      { "as":{ "_":[ "object", "message" ] }, "set":{ "state":"leave" } }
+                    ]
+                  },
+                  "elseExecute":{
+                    "subsequence":[
+                      { "object":{ "set":{ "_":[ "stencil", "shoutModel" ] }, "html":"GAME CLEAR!", "color1":"#f0f", "color2":"#7f007f" }, "playAudio":"rampup" },
+                      { "wait":50 },
+                      { "as":{ "_":[ "object", "message" ] }, "set":{ "state":"leave" } }
+                    ]
+                  }
+                }
+              },
+              { "set":{ "indicatorLevel":{ "_":[ "this", "coins" ] } } },
+              { "wait":1, "loopTo":1, "until":{ "_":[ "keyA", "isHit", "and", { "_":[ "this", "coins" ] } ] } },
+              { "set":{ "counter":0, "indicatorLevel":0 }, "playAudio":"rampup" },
+              { "as":{ "_":[ "objectTyped", "noiser" ] }, "set":{ "state":"wheels" } },
+              { "as":{ "_":[ "objectTyped", { "_":[ "wheel-", ".", { "_":[ "this", "counter" ] } ] } ] }, "set":{ "type":"moving", "moving":1, "spin":1 } },
+              { "sum":1, "to":{ "_":[ "this", "counter" ] } },
+              { "wait":{ "_":[ "randomNumber", [ 2, 5 ] ] }, "cycles":5, "loopTo":-2 },
+              { "set":{ "counter":0 } },
+              { "wait":{ "_":[ "randomNumber", [ 25, 30 ] ] } },
+              { "wait":{ "_":[ "randomNumber", [ 5, 10 ] ] } },
+              { "as":{ "_":[ "objectTyped", { "_":[ "wheel-", ".", { "_":[ "this", "counter" ] } ] } ] }, "set":{ "spin":0 } },
+              { "sum":1, "to":{ "_":[ "this", "counter" ] } },
+              { "cycles":5, "loopTo":-3 },
+              { "wait":1, "loop":1, "until":{ "_":[ "objectTyped", "moving", "not" ] } },
+              { "as":{ "_":[ "objectTyped", "noiser" ] }, "set":{ "state":"none" } },
+              { "set":{ "routeId":0, "win":0, "winMessage":0 } },
+              {
+                "times":{ "_":[ "this", "coins" ] },
+                "execute":[
+                  { "set":{ "counter":0, "route":{ "_":[ "new", [ [], [], [], [], [], [], [], [], [] ] ] } } },
+                  {
+                    "times":5,
+                    "execute":[
+                      {
+                        "as":{ "_":[ "stencil", "dataRoutes", { "_":[ "this", "routeId" ] }, { "_":[ "this", "counter" ] }, "collidesWith", { "_":[ "object", "wheelimage" ] } ] },
+                        "pushInto":{ "_":[ "that", "route", { "_":[ "this", "frame" ] } ] }
+                      },
+                      { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+                    ]
+                  },
+                  { "set":{ "distriuteGive":2, "distriuteLimit":1 }, "execute":{ "_":[ "stencil", "codeDistributeWild" ] } },
+                  { "set":{ "distriuteGive":1, "distriuteLimit":2 }, "execute":{ "_":[ "stencil", "codeDistributeWild" ] } },
+                  { "set":{ "distriuteGive":1, "distriuteLimit":3 }, "execute":{ "_":[ "stencil", "codeDistributeWild" ] } },
+                  { "set":{ "distriuteGive":1, "distriuteLimit":4 }, "execute":{ "_":[ "stencil", "codeDistributeWild" ] } },
+                  { "set":{ "counter":0 } },
+                  {
+                    "times":9,
+                    "execute":[
+                      { "set":{ "imagesCount":{ "_":[ "this", "route", { "_":[ "this", "counter" ] }, "count" ] } } },
+                      { "set":{ "currentWin":{ "_":[ "stencil", "dataPrizes", { "_":[ "this", "counter" ] }, { "_":[ "this", "imagesCount" ] } ] } } },
+                      {
+                        "when":{ "_":[ "this", "imagesCount", "isGreaterThan", { "_":[ "this", "winMessage" ] } ] },
+                        "set":{ "winMessage":{ "_":[ "this", "imagesCount" ] } }
+                      },
+                      {
+                        "when":{ "_":[ "this", "currentWin" ] },
+                        "execute":[
+                          { "as":{ "_":[ "this", "route", { "_":[ "this", "counter" ] } ] }, "set":{ "type":"blink" } },
+                          { "sum":{ "_":[ "this", "currentWin" ] }, "to":{ "_":[ "this", "win" ] } }
+                        ]
+                      },
+                      { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+                    ]
+                  },
+                  { "sum":1, "to":{ "_":[ "this", "routeId" ] } }
+                ]
+              },
+              {
+                "when":{ "_":[ "stencil", "dataMessages", { "_":[ "this", "winMessage" ] }, "count" ] },
+                "execute":[
+                  { "set":{ "winMessageData":{ "_":[ "randomValue", { "_":[ "stencil", "dataMessages", { "_":[ "that", "winMessage" ] } ] } ] } } },
+                  { "as":{ "_":[ "objectTyped", "noiser" ] }, "set":{ "state":{ "_":[ "that", "winMessageData", "noiser" ] } } },
+                  { "object":{ "set":[ { "_":[ "stencil", "shoutModel" ] }, { "_":[ "that", "winMessageData" ] } ] } }
+                ]
+              },
+              {
+                "when":{ "_":[ "this", "win" ] },
+                "execute":{
+                  "object":{
+                    "type":"victorymessage",
+                    "width":192, "height":40,
+                    "zIndex":150, "x":0, "y":192,
+                    "color":"#ff0",
+                    "font":"spectrum", "fontSize":40, "lineHeight":40, "outline":"#000", "textAlign":"center", "html":{ "_":[ "", ".", "+", ".", { "_":[ "that", "win" ] }, ".", "G" ] },
+                    "push":30,
+                    "states":{
+                      "code":[
+                        {
+                          "name":"Sequence",
+                          "data":[
+                            { "subtract":{ "_":[ "this", "push" ] }, "to":{ "_":[ "this", "y" ] } },
+                            { "set":{ "push":{ "_":[ "this", "push", "/", 2 ] } }, "wait":1, "loopTo":-1, "until":{ "_":[ "this", "push", "isLessThan", 1 ] } },
+                            { "set":{ "gap":{ "_":[ "scene", "win", "/", 5, "ceil" ] } } },
+                            {
+                              "when":{ "_":[ "this", "gap", "not" ] },
+                              "execute":[ { "sum":{ "_":[ "scene", "win" ] }, "to":{ "_":[ "variable", "money" ] } }, { "as":{ "_":"scene" }, "set":{ "win":0 } } ],
+                              "elseExecute":[
+                                { "sum":{ "_":[ "this", "gap" ] }, "to":{ "_":[ "variable", "money" ] } },
+                                { "subtract":{ "_":[ "this", "gap" ] }, "to":{ "_":[ "scene", "win" ] } }
+                              ]
+                            },
+                            { "wait":1, "loopTo":-2, "until":{ "_":[ "scene", "win", "not" ] } },
+                            { "_":[ "stencil", "codeSaveGame" ] },
+                            { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+                            { "remove":1 }
+                          ]
+                        },
+                        { "name":"Sequence", "data":[ { "set":{ "color":"#ff0" }, "wait":1 }, { "set":{ "color":"#7f7f00" }, "wait":1, "loopTo":0 } ] }
+                      ]
+                    }
+                  }
+                }
+              },
+              { "wait":1, "loop":1, "until":{ "_":[ "objectTyped", "victorymessage", "not" ] } },
+              { "as":{ "_":[ "object", "message" ] }, "set":{ "state":"leave" } },
+              { "as":{ "_":[ "object", "wheelimage" ] }, "set":{ "removeType":"blink", "visible":1 } },
+              {
+                "when":{ "_":[ "variable", "money", "isLessEqualThan", 0 ] },
+                "subsequence":[
+                  { "when":{ "_":[ "variable", "grade" ] }, "subtract":1, "to":{ "_":[ "variable", "grade" ] } },
+                  { "as":{ "_":"variable" }, "set":{ "money":20 } },
+                  { "_":[ "stencil", "codeSaveGame" ] },
+                  { "_":[ "stencil", "codeUpdateGrade" ] },
+                  { "object":{ "set":{ "_":[ "stencil", "shoutModel" ] }, "html":"GRADE LOST!", "color1":"#f0f", "color2":"#7f007f" }, "playAudio":"shut" },
+                  { "wait":50 },
+                  { "as":{ "_":[ "object", "message" ] }, "set":{ "state":"leave" } }
+                ]
+              },
+              { "set":{ "coins":0 } },
+              { "_":[ "stencil", "codeSaveGame" ] },
+              { "loopTo":0 }
+            ]
+          },
+          {
+            "name":"Sequence",
+            "data":[
+              { "as":{ "_":[ "object", "blink" ] }, "set":{ "visible":0 }, "wait":10 },
+              { "as":{ "_":[ "object", "blink" ] }, "set":{ "visible":1 }, "wait":10, "loopTo":-1 }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}
