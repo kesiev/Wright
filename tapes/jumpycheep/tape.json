@@ -1,20 +1,27 @@
 {
   "name":"Jumpy Cheep",
   "author":"KesieV",
-  "year":2015,
+  "year":2018,
+  "publishedYear":2015,
   "genre":"Casual game",
-  "description":"<p>Have you seen the category of this game? Casual game. That's harsh.</p><p>The nearest word with the same effect in the non-nerd-land is probably 'migrant', expecially here in Italy. You can use that word for a plethora of meanings, ranging from adjective to insult but, in most cases, this difference is determined by discrimation only.</p><p><a href='https://en.wikipedia.org/wiki/Flappy_Bird'>Flappy Bird</a> (2013) had a huge success, despite and thanks to its simple design. We started calling games like that 'casual games', mostly because they're very accessable, but the 'hardcore gamers' (i.e. experienced gamers) used the same term as insult, for indicating 'stupid games for stupid people'.</p><p>As every form of discrimation, it's based on ignorance: long time players were forged by Tetris, Puzzle Bobble and Pang, which rules are fairly simple and could be labeled 'casual games' nowadays. And - telling the truth - I don't think that real 'hardcore gamers' can really use the 'casual game' as insult.</p><p>Anyway, I've found Flappy Bird quite boring and simple but nothing is better than implementing a stripped-down version to better understand that success in gaming is not measured in lines of code.</p><p>Plot!</p><p>You're a bird that's too fat for flying: all you can do is flap your wings and in order to pass through... suspiciously familiar pipes. Press the A BUTTON for flapping. That's all. I've ripped graphics form Super Paolo Rossi for increased rip-ception.</p>",
-  "screenshots":["jumpycheep-1.png","jumpycheep-2.png"],
+  "description":"<p>Have you seen the category of this game? Casual game. That's harsh.</p><p>The nearest word with the same effect in the non-nerd-land is probably 'migrant', expecially here in Italy. You can use that word for a plethora of meanings, ranging from adjective to insult but, in most cases, this difference is determined by discrimation only.</p><p><a href='https://en.wikipedia.org/wiki/Flappy_Bird'>Flappy Bird</a> (2013) had a huge success, despite and thanks to its simple design. We started calling games like that 'casual games', mostly because of their accessablity, but the 'hardcore gamers' (i.e. experienced gamers) used the same term as insult, to indicate 'stupid games for stupid people'.</p><p>As every form of discrimation, it's based on ignorance: long time players were forged by Tetris, Puzzle Bobble and Pang, which rules are fairly simple and could be labeled 'casual games' nowadays. And - telling the truth - I don't think that real 'hardcore gamers' can really use the 'casual game' as insult.</p><p>Anyway, I've found Flappy Bird quite boring and simple but nothing is better than implementing a stripped-down version to better understand that success in gaming is not measured in lines of code.</p><p>Plot!</p><p>You're a bird that's too fat for flying: all you can do is flap your wings and in order to pass through... suspiciously familiar pipes. Press the A BUTTON for flapping. That's all. I've ripped graphics form <a href='superpaolo'>Super Paolo Rossi</a> for increased rip-ception.</p><p><i>PS: Even if I've added few sound effects and saved hiscores to this game 3 years later, I can't really call it a Plus! version. Adding features to a game that owes its success to its simplicity is simply wrong!</i></p>",
+  "screenshots":[ "jumpycheep-1.png", "jumpycheep-2.png" ],
   "hardware":{
     "width":256,
     "height":192,
-    "controls":"onebutton",
-    "filter":"retro"
+    "filter":"retro",
+    "controls":"onebutton"
+  },
+  "audioChannels":{
+    "sfx":{ "volume":0.4, "samples":[ "jump", "bump", "point" ] }
   },
   "resources":{
     "spectrum":"spectrum.font",
     "sprites":"sprites.png",
-    "defaultsprites":"../default/sprites.png"
+    "defaultsprites":"../default/sprites.png",
+    "bump":{ "attack":0.009, "decay":0.024, "frequency":1600, "pitch":-0.0011, "release":0.2, "sustain":0.104, "wave":"whitenoise" },
+    "jump":{ "attack":0.006, "decay":0.033, "pitch":0.0004, "release":0.156, "sustain":0.1, "wave":"sine" },
+    "point":{ "attack":0.006, "decay":0.081, "frequency":1360, "frequencyJump1amount":0.14, "frequencyJump1onset":0.19, "release":0.196, "sustain":0.004, "wave":"saw" }
   },
   "stencils":{
     "bird":{
@@ -29,7 +36,7 @@
             "data":{
               "when":{ "_":[ "keyA", "isHit" ] },
               "execute":[
-                { "set":{ "forceY":-7, "state":"play" } },
+                { "set":{ "forceY":-7, "playAudio":"jump", "state":"play" } },
                 { "as":{ "_":[ "object", "tutorial" ] }, "remove":1 },
                 { "as":{ "_":"scene" }, "set":{ "state":"play" } }
               ]
@@ -41,7 +48,7 @@
           "code":[
             {
               "name":"Execute",
-              "data":[ { "when":{ "_":[ "keyA", "isHit" ] }, "set":{ "forceY":-7 } }, { "set":{ "angle":{ "_":[ "this", "forceY", "*", 6 ] } } } ]
+              "data":[ { "when":{ "_":[ "keyA", "isHit" ] }, "set":{ "forceY":-7, "playAudio":"jump" } }, { "set":{ "angle":{ "_":[ "this", "forceY", "*", 6 ] } } } ]
             },
             {
               "name":"Physics",
@@ -64,6 +71,7 @@
         },
         {
           "name":"dead",
+          "execute":{ "playAudio":"bump" },
           "code":[
             { "name":"Execute", "data":{ "set":{ "angle":{ "_":[ "this", "forceY", "*", 6 ] } } } },
             { "name":"Physics", "data":{ "walls":{ "type":"obstacle", "restitution":0 }, "gravityY":1 } }
@@ -99,17 +107,22 @@
           "name":"Execute",
           "data":[
             { "subtract":2, "to":{ "_":[ "this", "x" ] } },
-            { "when":{ "_":[ "this", "flipY", "and", { "_":[ "this", "x", "isEqualTo", 30 ] } ] }, "sum":1, "to":{ "_":[ "variable", "score" ] } },
+            {
+              "when":{ "_":[ "this", "flipY", "and", { "_":[ "this", "x", "isEqualTo", 30 ] } ] },
+              "sum":1,
+              "to":{ "_":[ "variable", "score" ] },
+              "playAudio":"point"
+            },
             { "when":{ "_":[ "this", "x", "isLessThan", -27 ] }, "remove":1 }
           ]
         }
       }
     }
   },
-  "execute":{
-    "as":{ "_":"variable" },
-    "set":{ "highScore":0, "score":0 }
-  },
+  "execute":[
+    { "when":{ "_":[ "storage", "hiscore", "not" ] }, "as":{ "_":"storage" }, "set":{ "hiscore":0 } },
+    { "as":{ "_":"variable" }, "set":{ "hiscore":{ "_":[ "storage", "hiscore" ] } } }
+  ],
   "scenes":{
     "intro":{
       "object":[
@@ -125,7 +138,7 @@
         },
         {
           "type":"hud",
-          "hudType":"label", "label":"HIGH SCORE<br>%number|variable.highScore%",
+          "hudType":"label", "label":"HIGH SCORE<br>%number|variable.hiscore%",
           "width":256, "height":30,
           "zIndex":100, "y":110,
           "font":"spectrum", "lineHeight":12, "outline":"#000", "textAlign":"center"
@@ -140,7 +153,7 @@
       "states":{
         "code":{
           "name":"Execute",
-          "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "execute":[ { "as":{ "_":"variable" }, "set":{ "score":0 } }, { "gotoScene":"game" } ] }
+          "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "execute":[ { "as":{ "_":"variable" }, "set":{ "score":0 } }, { "gotoScene":"game", "playAudio":"jump" } ] }
         }
       }
     },
@@ -189,20 +202,23 @@
               }
             },
             {
-              "when":{ "_":[ "variable", "score", "isGreaterThan", { "_":[ "variable", "highScore" ] } ] },
+              "when":{ "_":[ "variable", "score", "isGreaterThan", { "_":[ "variable", "hiscore" ] } ] },
               "execute":[
-                { "as":{ "_":"variable" }, "set":{ "highScore":{ "_":[ "variable", "score" ] } } },
                 {
                   "object":{
                     "width":256, "height":15,
                     "zIndex":100, "y":75,
                     "font":"spectrum", "lineHeight":13, "outline":"#000", "textAlign":"center", "html":"NEW HIGH SCORE!"
                   }
-                }
+                },
+                { "as":[ { "_":"storage" }, { "_":"variable" } ], "set":{ "hiscore":{ "_":[ "variable", "score" ] } } }
               ]
             }
           ],
-          "code":{ "name":"Sequence", "data":[ { "wait":20 }, { "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"intro" }, { "wait":1, "loopTo":-1 } ] }
+          "code":{
+            "name":"Sequence",
+            "data":[ { "wait":20 }, { "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"intro", "playAudio":"jump" }, { "wait":1, "loopTo":-1 } ]
+          }
         }
       ]
     }
