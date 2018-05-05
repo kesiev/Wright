@@ -1,0 +1,1305 @@
+{
+  "name":"Tetrafighter",
+  "author":"KesieV",
+  "year":2017,
+  "genre":"Trading Card Game",
+  "description":"<p>The recent lack of new interesting videogames (at least for me, I hope) gave me a little more time to spend to the other side of gaming... that I don't know at all but still I've ever found interesting: <a href='https://en.wikipedia.org/wiki/Board_game'>board games</a>.</p><p>From the players and the makers point of view I think that board games are now what videogames will probably be in the future. They are both interactive entertainment heavily based on cleverly crafted mechanics but, despite their <i>analog limits</i>, board games have a <i>long</i> history behind. And we're not talking about the <i>Space Invaders to Virtual Reality</i> range of <i>decades</i>. We're talking about the <i>thousand of years</i> between the earliest Egyptian board games from 3500 BC and <a href='https://boardgamegeek.com/'>right now</a>.</p><p>Board games like the <a href='https://en.wikipedia.org/wiki/Game_of_the_Goose'>Game of the Goose</a> (1574) are so old and seminal that the original version and its creator identity has been lost in time and still anybody played at least a round on know its basic rules nowadays. <a href='https://en.wikipedia.org/wiki/Monopoly_(game)'>Monopoly</a> (1935) is even an <i>adult game</i> about buying and trading properties that we mostly played when we were kids.</p><p>Modern card games are part of the board games family - and the only ones I know are the classic (and never played) <a href='https://en.wikipedia.org/wiki/Magic:_The_Gathering'>Magic: The Gathering</a> (1993) and <a href='https://en.wikipedia.org/wiki/Android:_Netrunner'>Android: Netrunner</a> (2012) - but the <a href='https://en.wikipedia.org/wiki/Poker'>Poker</a> game (~1800) in US and the ubiquitous <a href='https://en.wikipedia.org/wiki/Scopa'>Scopa</a> (~1700) here in Italy are <i>still board games</i>, but knowing the rules and playing the game is so deeply interwined with our modern culture that's not needed to include them into the distinctive (i.e. nerdy) <i>board game players</i> category.</p><p>Yeah. Okay. Quit philosophizing.</p><p>What truly fascinates me about board games is how some compelling, engaging and clever gameplay mechanics are implemented with just cardboard, card decks and dices - and how this is implemented <i>in whole different ways</i> from game to game. Let's take something common in many games, like <i>keeping the flow of time</i> and how it's obtained in the few board games I own.</p><p>In <a href='https://en.wikipedia.org/wiki/Dungeonquest'>Dragonquest</a> (1985) the players have to explore a dungen within a day and a sun-shaped piece is moved on a timeline from day to night every round. That's a quite obvious turn counter and <i>turn-based strategy</i> videogames works quite the same.</p><p>But in <a href='https://boardgamegeek.com/boardgame/124708/mice-and-mystics'>Mice &amp; Mystics</a> (2012), a story-based cooperative RPG, the flow of the time is decided by the attack or defense dice rolls of the enemies. So it randomly but inexorably flows every battle, so you've to <i>manage the flow of time planning your moves</i> in the most efficient way possible. In a quite stretched comparison, it's a little like the strategies you've to apply in the videogame <a href='https://en.wikipedia.org/wiki/Superhot'>Superhot</a> (2013).</p><p>And in <a href='https://boardgamegeek.com/boardgame/195043/welcome-back-dungeon'>Welcome Back to the Dungeon</a> (2016) the time is <i>still</i> until all the players except one <i>give up on exploring the dungeon the same players secretely filled with monsters</i>. Awesome!</p><p>See? Board games are truly a whole world to explore.</p><p>Plot!</p><p>Tetrafighter is a (<a href='https://en.wikipedia.org/wiki/Final_Fantasy_VIII'>quite unoriginal</a>) card game in which two players, red and blue, fight each other trying to own most of the cards on the table.<br>Every card has a different attack value on each side, explained by the crossing numbers on the top left of every card. Players alternately places one of the hand cards on the grid: when an opponent's adjacent card has a lower attack value on the matching side, the opponent card is considered owned.<br>Once the grid is filled the player who owns the most wins.<br>This version of the game supports game elements effects (on the top right of some cards) and randomly picks a difficulty level and a set of home rules every match. If you win, you can add one of the opponent cards to your own collection! Gotta catch... all the cards!</p><p>On the deck building use UP/DOWN/LEFT/RIGHT for moving the cursor and move it out of the grid with for switching page. Press the B BUTTON for moving the card selector and the A BUTTON for swapping the cards from your collection to your next hand. Press the A BUTTON when the card selector is on the PLAY! card for starting a new match.<br>On the match screen use UP/DOWN/LEFT/RIGHT for moving the cursor, the B BUTTON for moving the card selector and the A BUTTON to play a card.<br>On the reward screen use UP/DOWN/LEFT/RIGHT for moving the cursor and the A BUTTON for selecting your new card. Select the SKIP card for giving up your reward!</p>",
+  "screenshots":[ "tetrafighter-1.png", "tetrafighter-2.png" ],
+  "hardware":{
+    "width":256,
+    "height":192,
+    "filter":"retro"
+  },
+  "audioChannels":{
+    "sfx":{ "volume":1, "samples":[ "fire", "beep2", "blam", "beep3", "rampup", "rampdown" ] },
+    "music":{ "volume":0.5, "looping":1, "samples":[ "bgm1", "bgm2" ] }
+  },
+  "cheats":{},
+  "resources":{
+    "background":"background.png",
+    "bgm1":"itscomefromthedark.ogg",
+    "bgm2":"noigytat.ogg",
+    "cardData":"cards.json",
+    "cards":"cards.png",
+    "logo":"logo.png",
+    "spectrum":"spectrum.font",
+    "sprites":"sprites.png",
+    "beep2":"../default/zxsounds/beep2.ogg",
+    "beep3":"../default/zxsounds/beep3.ogg",
+    "blam":"../default/zxsounds/blam.ogg",
+    "fire":"../default/zxsounds/fire.ogg",
+    "rampdown":"../default/zxsounds/rampdown.ogg",
+    "rampup":"../default/zxsounds/rampup.ogg"
+  },
+  "stencils":{
+    "codeAddToConqueredList":{
+      "when":{ "_":[ "this", "conqueredList", "search", { "_":[ "this", "conquered" ] }, "not" ] },
+      "as":{ "_":[ "this", "conquered" ] },
+      "pushInto":{ "_":[ "that", "conqueredList" ] }
+    },
+    "codeApplyRules":[
+      {
+        "when":{ "_":[ "this", "sideValue", "isGreaterThan", { "_":[ "this", "oppositeValue" ] } ] },
+        "execute":[
+          { "as":{ "_":[ "this", "applyOnCard" ] }, "set":{ "conquerReason":"CONQUER" } },
+          { "set":{ "conquered":{ "_":[ "this", "applyOnCard" ] } }, "execute":{ "_":[ "stencil", "codeAddToConqueredList" ] } }
+        ]
+      },
+      {
+        "when":{ "_":[ "variable", "useSame" ] },
+        "execute":{
+          "when":{ "_":[ "this", "sideValue", "isEqualTo", { "_":[ "this", "oppositeValue" ] } ] },
+          "execute":{
+            "when":{ "_":[ "this", "sameConquerPlace", "not" ] },
+            "assign":{ "_":[ "this", "applyOnCard" ] },
+            "to":{ "_":[ "this", "sameConquerPlace" ] },
+            "elseExecute":[
+              { "as":{ "_":[ "this", "sameConquerPlace" ] }, "set":{ "conquerReason":"SAME" } },
+              { "as":{ "_":[ "this", "applyOnCard" ] }, "set":{ "conquerReason":"SAME" } },
+              { "set":{ "conquered":{ "_":[ "this", "sameConquerPlace" ] } }, "execute":{ "_":[ "stencil", "codeAddToConqueredList" ] } },
+              { "set":{ "conquered":{ "_":[ "this", "applyOnCard" ] } }, "execute":{ "_":[ "stencil", "codeAddToConqueredList" ] } }
+            ]
+          }
+        }
+      },
+      {
+        "when":{ "_":[ "variable", "usePlus" ] },
+        "execute":[
+          { "set":{ "index":{ "_":[ "this", "sideValue", "+", { "_":[ "this", "oppositeValue" ] } ] } } },
+          {
+            "when":{ "_":[ "this", "plusConquerMap", { "_":[ "this", "index" ] }, "not" ] },
+            "assign":{ "_":[ "this", "applyOnCard" ] },
+            "to":{ "_":[ "this", "plusConquerMap", { "_":[ "this", "index" ] } ] },
+            "elseExecute":[
+              { "as":{ "_":[ "this", "plusConquerMap", { "_":[ "this", "index" ] } ] }, "set":{ "conquerReason":"PLUS" } },
+              { "as":{ "_":[ "this", "applyOnCard" ] }, "set":{ "conquerReason":"PLUS" } },
+              { "set":{ "conquered":{ "_":[ "this", "plusConquerMap", { "_":[ "this", "index" ] } ] } }, "execute":{ "_":[ "stencil", "codeAddToConqueredList" ] } },
+              { "set":{ "conquered":{ "_":[ "this", "applyOnCard" ] } }, "execute":{ "_":[ "stencil", "codeAddToConqueredList" ] } }
+            ]
+          }
+        ]
+      }
+    ],
+    "codeInitializeRules":{ "set":{ "conqueredList":{ "_":[ "new", [] ] }, "plusConquerMap":{ "_":[ "new", {} ] }, "sameConquerPlace":0 } },
+    "codePlayCard":[
+      {
+        "as":{ "_":[ "scene", "playedCard" ] },
+        "set":{
+          "type":[ { "_":[ "scene", "playedBy" ] }, "onboard" ],
+          "zIndex":{ "_":[ 50, "+", { "_":[ "scene", "turnCount" ] } ] },
+          "tox":{ "_":[ "scene", "destinationSlot", "x" ] },
+          "toy":{ "_":[ "scene", "destinationSlot", "y" ] },
+          "state":"front"
+        }
+      },
+      { "as":{ "_":"scene" }, "set":{ "turnDone":1 } }
+    ],
+    "modelPopupLabel":{
+      "width":10000, "height":24,
+      "zIndex":250, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "color":"#fff",
+      "font":"spectrum", "lineHeight":24, "outline":"#000", "textAlign":"center",
+      "speed":0.5,
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[ { "subtract":{ "_":[ "this", "speed" ] }, "to":{ "_":[ "this", "y" ] }, "wait":1, "loop":1, "cycles":15 }, { "remove":1 } ]
+        }
+      }
+    },
+    "briefingModel":{
+      "type":"message",
+      "image":"sprites", "tileX":0, "tileY":168, "width":256, "height":20,
+      "zIndex":1000, "x":0,
+      "bgcolor":"#7f7f7f", "color":"#000",
+      "font":"spectrum", "lineHeight":20, "textAlign":"center"
+    },
+    "cardBehaviour":{
+      "code":{
+        "name":"Execute",
+        "data":[
+          { "set":{ "dx":{ "_":[ "this", "tox", "-", { "_":[ "this", "x" ] } ] }, "dy":{ "_":[ "this", "toy", "-", { "_":[ "this", "y" ] } ] } } },
+          {
+            "when":{ "_":[ "this", "dx", "abs", "isLessThan", 1 ] },
+            "set":{ "x":{ "_":[ "this", "tox" ] } },
+            "elseExecute":{ "sum":{ "_":[ "this", "dx", "/", 2 ] }, "to":{ "_":[ "this", "x" ] } }
+          },
+          {
+            "when":{ "_":[ "this", "dy", "abs", "isLessThan", 1 ] },
+            "set":{ "y":{ "_":[ "this", "toy" ] } },
+            "elseExecute":{ "sum":{ "_":[ "this", "dy", "/", 2 ] }, "to":{ "_":[ "this", "y" ] } }
+          }
+        ]
+      }
+    },
+    "cardCursor":{
+      "type":[ "cardcursor", "cursor" ],
+      "image":"sprites", "tileX":64, "tileY":8, "width":16, "height":16,
+      "zIndex":100, "x":224,
+      "states":{
+        "code":[
+          {
+            "name":"Execute",
+            "data":[
+              { "set":{ "y":{ "_":[ "scene", "cardCursor", "*", 20, "+", 26 ] } } },
+              { "when":{ "_":[ "variable", "canSelectCard" ] }, "execute":{ "when":{ "_":[ "keyB", "isHit" ] }, "executeAction":"selectNextCard" } }
+            ]
+          },
+          {
+            "name":"Sequence",
+            "data":[ { "sum":1, "to":{ "_":[ "this", "x" ] }, "wait":10 }, { "subtract":1, "to":{ "_":[ "this", "x" ] }, "wait":10, "loopTo":0 } ]
+          }
+        ],
+        "actions":{
+          "name":"selectNextCard",
+          "execute":[
+            { "set":{ "toscroll":1 }, "playAudio":"fire" },
+            {
+              "times":5,
+              "execute":{
+                "when":{ "_":[ "this", "toscroll" ] },
+                "execute":[
+                  { "as":{ "_":"scene" }, "set":{ "cardCursor":{ "_":[ "scene", "cardCursor", "+", 1, "%", 5 ] } } },
+                  { "when":{ "_":[ "scene", "playerHand", { "_":[ "scene", "cardCursor" ] } ] }, "set":{ "toscroll":0 } }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    "cardModel":{
+      "image":"cards", "width":48, "height":48,
+      "zIndex":10,
+      "symbols":{ "_":[ "new", [] ] },
+      "states":[
+        {
+          "name":"front",
+          "execute":{ "executeAction":"updateSymbols" },
+          "actions":{
+            "name":"updateSymbols",
+            "execute":[
+              { "as":{ "_":[ "this", "symbols" ] }, "remove":1 },
+              {
+                "when":{ "_":[ "this", "values" ] },
+                "execute":[
+                  { "set":{ "image":"cards", "tileX":{ "_":[ "this", "frontTileX" ] }, "tileY":{ "_":[ "this", "frontTileY" ] } } },
+                  {
+                    "object":{ "image":"sprites", "width":10, "height":8, "x":2, "y":6, "frame":{ "_":[ "that", "values", 3 ] } },
+                    "as":{ "_":"that" },
+                    "pushInto":{ "_":[ "that", "symbols" ] },
+                    "into":{ "_":"this" }
+                  },
+                  {
+                    "object":{ "image":"sprites", "width":10, "height":8, "x":12, "y":2, "frame":{ "_":[ "that", "values", 0 ] } },
+                    "as":{ "_":"that" },
+                    "pushInto":{ "_":[ "that", "symbols" ] },
+                    "into":{ "_":"this" }
+                  },
+                  {
+                    "object":{ "image":"sprites", "width":10, "height":8, "x":22, "y":6, "frame":{ "_":[ "that", "values", 1 ] } },
+                    "as":{ "_":"that" },
+                    "pushInto":{ "_":[ "that", "symbols" ] },
+                    "into":{ "_":"this" }
+                  },
+                  {
+                    "object":{ "image":"sprites", "width":10, "height":8, "x":12, "y":10, "frame":{ "_":[ "that", "values", 2 ] } },
+                    "as":{ "_":"that" },
+                    "pushInto":{ "_":[ "that", "symbols" ] },
+                    "into":{ "_":"this" }
+                  },
+                  {
+                    "object":{ "image":"sprites", "tileX":80, "tileY":8, "width":8, "height":8, "x":38, "y":2, "frame":{ "_":[ "that", "element" ] } },
+                    "as":{ "_":"that" },
+                    "pushInto":{ "_":[ "that", "symbols" ] },
+                    "into":{ "_":"this" }
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        { "name":"back", "execute":[ { "set":{ "image":"sprites", "tileX":0, "tileY":24 } }, { "as":{ "_":[ "this", "symbols" ] }, "remove":1 } ] }
+      ]
+    },
+    "animatedCard":{
+      "set":{ "_":[ "stencil", "cardModel" ] },
+      "states":[
+        { "like":{ "_":[ "stencil", "cardBehaviour" ] } },
+        { "name":"front", "like":{ "_":[ "stencil", "cardBehaviour" ] } },
+        { "name":"back", "like":{ "_":[ "stencil", "cardBehaviour" ] } }
+      ]
+    },
+    "cardSlot":{
+      "type":"cardslot",
+      "image":"sprites", "tileY":72, "width":48, "height":48,
+      "zIndex":5,
+      "element":0,
+      "states":{
+        "execute":{
+          "when":{ "_":[ "this", "element" ] },
+          "execute":{
+            "object":{ "image":"sprites", "tileX":80, "tileY":8, "width":8, "height":8, "x":20, "y":20, "frame":{ "_":[ "that", "element" ] } },
+            "into":{ "_":"this" }
+          }
+        }
+      }
+    },
+    "catalogueCursor":{
+      "type":"cursor",
+      "image":"sprites", "tileY":120, "width":48, "height":48,
+      "zIndex":100, "x":0, "y":0,
+      "animations":{ "blink":{ "frames":2, "loopTo":0 }, "deny":{ "frames":2, "speed":0, "loopTo":0 } },
+      "playAudio":"bgm1",
+      "states":[
+        {
+          "set":{ "animation":"blink" },
+          "code":{
+            "name":"Execute",
+            "data":[
+              { "when":{ "_":[ "keyRight", "isHit" ] }, "sum":48, "to":{ "_":[ "this", "x" ] }, "playAudio":"fire" },
+              { "when":{ "_":[ "keyLeft", "isHit" ] }, "subtract":48, "to":{ "_":[ "this", "x" ] }, "playAudio":"fire" },
+              { "when":{ "_":[ "keyDown", "isHit" ] }, "sum":48, "to":{ "_":[ "this", "y" ] }, "playAudio":"fire" },
+              { "when":{ "_":[ "keyUp", "isHit" ] }, "subtract":48, "to":{ "_":[ "this", "y" ] }, "playAudio":"fire" },
+              { "when":{ "_":[ "this", "x", "isGreaterThan", 144 ] }, "execute":[ { "set":{ "x":0 } }, { "as":{ "_":"scene" }, "executeAction":"nextPage" } ] },
+              { "when":{ "_":[ "this", "x", "isLessThan", 0 ] }, "execute":[ { "set":{ "x":144 } }, { "as":{ "_":"scene" }, "executeAction":"prevPage" } ] },
+              { "when":{ "_":[ "this", "y", "isGreaterThan", 144 ] }, "set":{ "y":0 } },
+              { "when":{ "_":[ "this", "y", "isLessThan", 0 ] }, "set":{ "y":144 } },
+              {
+                "when":{ "_":[ "keyA", "isHit" ] },
+                "execute":{
+                  "when":{ "_":[ "scene", "cardCursor", "isEqualTo", 5 ] },
+                  "as":{ "_":"scene" },
+                  "executeAction":"play",
+                  "elseExecute":{
+                    "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "selectable" ] } ] },
+                    "execute":[
+                      { "as":{ "_":"that" }, "execute":{ "_":[ "stencil", "cloud" ] } },
+                      { "assign":{ "_":[ "that", "cardId" ] }, "to":{ "_":[ "variable", "preferredHand", { "_":[ "scene", "cardCursor" ] } ] } },
+                      { "as":{ "_":"storage" }, "set":{ "preferredHand":{ "_":[ "variable", "preferredHand" ] } } },
+                      { "as":{ "_":"scene" }, "executeAction":"showPage" },
+                      { "as":{ "_":"scene" }, "executeAction":"showHand" }
+                    ],
+                    "elseExecute":{ "set":{ "state":"deny" } }
+                  },
+                  "playAudio":"beep2",
+                  "stopChannel":"music"
+                }
+              }
+            ]
+          }
+        },
+        { "name":"deny", "set":{ "animation":"deny" }, "code":{ "name":"Sequence", "data":[ { "wait":10 }, { "set":{ "state":"default" } } ] } }
+      ]
+    },
+    "cloud":{
+      "times":10,
+      "object":{ "set":{ "_":[ "stencil", "smoke" ] }, "zIndex":400 },
+      "execute":[
+        { "sum":{ "_":[ "randomNumber", [ { "_":[ "this", "width", "/", -2 ] }, { "_":[ "this", "width", "/", 2 ] } ] ] }, "to":{ "_":[ "that", "x" ] } },
+        { "sum":{ "_":[ "randomNumber", [ { "_":[ "this", "height", "/", -2 ] }, { "_":[ "this", "height", "/", 2 ] } ] ] }, "to":{ "_":[ "that", "y" ] } }
+      ],
+      "playAudio":"blam"
+    },
+    "dataConquerSides":[
+      { "hitbox":{ "width":8, "height":8, "x":0, "y":-8 }, "opposite":2 },
+      { "hitbox":{ "width":8, "height":8, "x":48, "y":0 }, "opposite":3 },
+      { "hitbox":{ "width":8, "height":8, "x":0, "y":48 }, "opposite":0 },
+      { "hitbox":{ "width":8, "height":8, "x":-8, "y":0 }, "opposite":1 }
+    ],
+    "gridCursor":{
+      "type":"cursor",
+      "image":"sprites", "tileY":120, "width":48, "height":48,
+      "zIndex":100, "x":8, "y":8,
+      "animations":{ "blink":{ "frames":2, "loopTo":0 }, "deny":{ "frames":2, "speed":0, "loopTo":0 } },
+      "states":[
+        {
+          "set":{ "animation":"blink" },
+          "code":{
+            "name":"Execute",
+            "data":[
+              { "when":{ "_":[ "keyRight", "isHit" ] }, "sum":48, "to":{ "_":[ "this", "x" ] }, "playAudio":"fire" },
+              { "when":{ "_":[ "keyLeft", "isHit" ] }, "subtract":48, "to":{ "_":[ "this", "x" ] }, "playAudio":"fire" },
+              { "when":{ "_":[ "keyDown", "isHit" ] }, "sum":48, "to":{ "_":[ "this", "y" ] }, "playAudio":"fire" },
+              { "when":{ "_":[ "keyUp", "isHit" ] }, "subtract":48, "to":{ "_":[ "this", "y" ] }, "playAudio":"fire" },
+              { "when":{ "_":[ "this", "x", "isGreaterThan", 104 ] }, "set":{ "x":8 } },
+              { "when":{ "_":[ "this", "x", "isLessThan", 8 ] }, "set":{ "x":104 } },
+              { "when":{ "_":[ "this", "y", "isGreaterThan", 104 ] }, "set":{ "y":8 } },
+              { "when":{ "_":[ "this", "y", "isLessThan", 8 ] }, "set":{ "y":104 } },
+              {
+                "when":{ "_":[ "scene", "turn", "isEqualTo", 1, "and", { "_":[ "scene", "turnDone", "not" ] } ] },
+                "execute":{
+                  "when":{ "_":[ "keyA", "isHit" ] },
+                  "execute":{
+                    "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "cardslot" ] } ] },
+                    "execute":[
+                      { "set":{ "destinationSlot":{ "_":"that" } } },
+                      { "assign":0, "to":{ "_":[ "scene", "playerHand", { "_":[ "scene", "cardCursor" ] } ] } },
+                      {
+                        "as":{ "_":"scene" },
+                        "set":{
+                          "destinationSlot":{ "_":[ "that", "destinationSlot" ] },
+                          "playedBy":"player",
+                          "playedCard":{ "_":[ "objectTyped", { "_":[ "playercard-", ".", { "_":[ "scene", "cardCursor" ] } ] } ] }
+                        }
+                      },
+                      { "_":[ "stencil", "codePlayCard" ] },
+                      { "as":{ "_":[ "objectTyped", "cardcursor" ] }, "executeAction":"selectNextCard" }
+                    ],
+                    "elseExecute":{ "set":{ "state":"deny" } }
+                  }
+                }
+              }
+            ]
+          }
+        },
+        { "name":"deny", "set":{ "animation":"deny" }, "code":{ "name":"Sequence", "data":[ { "wait":10 }, { "set":{ "state":"default" } } ] } }
+      ]
+    },
+    "handCursor":{
+      "type":[ "cardcursor", "cursor" ],
+      "image":"sprites", "tileX":64, "tileY":8, "width":16, "height":16,
+      "zIndex":100, "x":239,
+      "states":{
+        "code":[
+          {
+            "name":"Execute",
+            "data":[
+              { "set":{ "y":{ "_":[ "scene", "cardCursor", "*", 20, "+", 32 ] } } },
+              {
+                "when":{ "_":[ "keyB", "isHit" ] },
+                "execute":{ "as":{ "_":"scene" }, "set":{ "cardCursor":{ "_":[ "scene", "cardCursor", "+", 1, "%", 6 ] } }, "playAudio":"fire" }
+              }
+            ]
+          },
+          {
+            "name":"Sequence",
+            "data":[ { "sum":1, "to":{ "_":[ "this", "x" ] }, "wait":10 }, { "subtract":1, "to":{ "_":[ "this", "x" ] }, "wait":10, "loopTo":0 } ]
+          }
+        ]
+      }
+    },
+    "lootCursor":{
+      "type":"cursor",
+      "image":"sprites", "tileY":120, "width":48, "height":48,
+      "zIndex":100, "x":8, "y":8,
+      "animations":{ "blink":{ "frames":2, "loopTo":0 } },
+      "animation":"blink",
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":[
+            { "when":{ "_":[ "keyRight", "isHit" ] }, "sum":48, "to":{ "_":[ "this", "x" ] }, "playAudio":"fire" },
+            { "when":{ "_":[ "keyLeft", "isHit" ] }, "subtract":48, "to":{ "_":[ "this", "x" ] }, "playAudio":"fire" },
+            { "when":{ "_":[ "keyDown", "isHit" ] }, "sum":48, "to":{ "_":[ "this", "y" ] }, "playAudio":"fire" },
+            { "when":{ "_":[ "keyUp", "isHit" ] }, "subtract":48, "to":{ "_":[ "this", "y" ] }, "playAudio":"fire" },
+            { "when":{ "_":[ "this", "x", "isGreaterThan", 104 ] }, "set":{ "x":8 } },
+            { "when":{ "_":[ "this", "x", "isLessThan", 8 ] }, "set":{ "x":104 } },
+            { "when":{ "_":[ "this", "y", "isGreaterThan", 56 ] }, "set":{ "y":8 } },
+            { "when":{ "_":[ "this", "y", "isLessThan", 8 ] }, "set":{ "y":56 } },
+            {
+              "when":{ "_":[ "keyA", "isHit" ] },
+              "execute":{
+                "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "loot" ] } ] },
+                "execute":[ { "set":{ "picked":{ "_":"that" } } }, { "as":{ "_":"scene" }, "set":{ "picked":{ "_":[ "that", "picked" ] } } }, { "remove":1 } ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    "smoke":{
+      "image":"sprites", "tileY":8, "width":16, "height":16,
+      "zIndex":200, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "this", "yCenteredWith", { "_":"that" } ] },
+      "animations":{ "idle":{ "frames":4, "speed":1 } },
+      "animation":"idle",
+      "states":{ "code":[ { "name":"Sequence", "data":[ { "wait":10 }, { "remove":1 } ] }, { "name":"Physics" } ] }
+    }
+  },
+  "execute":[
+    {
+      "when":{ "_":[ "storage", "ownedCards", "not" ] },
+      "as":{ "_":"storage" },
+      "set":{ "ownedCards":{ "_":[ "new", { "1":1, "2":1, "3":1, "4":1, "5":1 } ] } }
+    },
+    { "when":{ "_":[ "storage", "preferredHand", "not" ] }, "as":{ "_":"storage" }, "set":{ "preferredHand":[ 1, 2, 3, 4, 5 ] } },
+    { "as":{ "_":"variable" }, "set":{ "ownedCards":{ "_":[ "storage", "ownedCards" ] }, "preferredHand":{ "_":[ "storage", "preferredHand" ] } } }
+  ],
+  "scenes":{
+    "intro":{
+      "object":[
+        { "width":256, "height":192, "x":0, "y":0, "bgcolor":"#007f7f" },
+        {
+          "image":"logo", "width":256, "height":88,
+          "zIndex":10, "x":0, "y":136,
+          "bgcolor":"#007f7f",
+          "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "this", "y", "isGreaterThan", 30 ] }, "subtract":1, "to":{ "_":[ "this", "y" ] } } } }
+        },
+        { "image":"logo", "tileY":88, "width":256, "height":4, "zIndex":30, "x":0, "y":132 },
+        { "width":256, "height":56, "zIndex":30, "x":0, "y":136, "bgcolor":"#007f7f" },
+        { "set":{ "_":[ "stencil", "briefingModel" ] }, "y":142, "bgcolor":"#ff0", "html":"PRESS START" },
+        {
+          "width":256, "height":20,
+          "zIndex":100, "x":0, "y":172,
+          "color":"#000",
+          "font":"spectrum", "lineHeight":10, "textAlign":"center", "html":"MUSIC: ORSON/Noigy Tat<br>DJURANUS/Its Come From The Dark"
+        }
+      ],
+      "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"catalogue", "withTransition":3, "playAudio":"beep2" } } }
+    },
+    "catalogue":{
+      "cardCursor":5,
+      "page":0,
+      "pagesCount":{ "_":[ "resource", "cardData", "cards", "count", "-", 1, "/", 16, "ceil" ] },
+      "states":{
+        "execute":[
+          {
+            "object":[
+              { "width":256, "height":192, "x":0, "y":0, "bgcolor":"#0ff" },
+              { "image":"sprites", "tileX":48, "tileY":72, "width":40, "height":27, "zIndex":10, "x":204, "y":3 },
+              {
+                "image":"sprites", "tileX":0, "tileY":168, "width":256, "height":20,
+                "zIndex":100, "x":0, "y":0,
+                "bgcolor":"#007f7f", "color":"#000",
+                "font":"spectrum", "lineHeight":20, "textAlign":"center",
+                "states":{
+                  "code":{
+                    "name":"Execute",
+                    "data":[
+                      { "when":{ "_":[ "objectTyped", "cursor", "y", "isLessThan", 96 ] }, "set":{ "y":172 }, "elseExecute":{ "set":{ "y":0 } } },
+                      {
+                        "when":{ "_":[ "objectTyped", "cursor", "collidesWith", { "_":[ "object", "catalogue" ] } ] },
+                        "execute":{
+                          "when":{ "_":[ "that", "cardId" ] },
+                          "set":{
+                            "bgcolor":"#ff0",
+                            "html":{ "_":[ "PG:", ".", { "_":[ "scene", "page", "+", 1 ] }, ".", " LV.", ".", { "_":[ "that", "rarity" ] }, ".", " ", ".", { "_":[ "that", "name" ] } ] }
+                          },
+                          "elseExecute":{
+                            "set":{
+                              "bgcolor":"#7f7f7f",
+                              "html":{ "_":[ "PG:", ".", { "_":[ "scene", "page", "+", 1 ] }, ".", " LV.", ".", { "_":[ "that", "rarity" ] }, ".", " ???" ] }
+                            }
+                          }
+                        },
+                        "elseExecute":{ "set":{ "bgcolor":"#7f7f7f", "html":"" } }
+                      }
+                    ]
+                  }
+                }
+              },
+              {
+                "set":{ "_":[ "stencil", "cardModel" ] },
+                "image":"sprites", "tileX":96, "tileY":24,
+                "zIndex":70, "x":200, "y":132,
+                "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "bgcolor":"#f00" }, "wait":10 }, { "set":{ "bgcolor":"#fff" }, "wait":10, "loopTo":0 } ] } }
+              },
+              { "_":[ "stencil", "catalogueCursor" ] },
+              { "_":[ "stencil", "handCursor" ] }
+            ]
+          },
+          { "executeAction":"showHand" },
+          { "executeAction":"showPage" }
+        ],
+        "actions":[
+          {
+            "name":"play",
+            "execute":[
+              {
+                "as":{ "_":"variable" },
+                "set":{
+                  "canSelectCard":{ "_":[ "randomValue", [ 0, 1, 1, 1 ] ] },
+                  "difficulty":{ "_":[ "randomNumber", [ 0, 3 ] ] },
+                  "randomCards":{ "_":[ "randomNumber", [ 0, 1 ] ] },
+                  "seeCards":{ "_":[ "randomValue", [ 0, 3, 5 ] ] },
+                  "useElements":{ "_":[ "randomNumber", [ 0, 1 ] ] },
+                  "usePlus":{ "_":[ "randomNumber", [ 0, 1 ] ] },
+                  "useSame":{ "_":[ "randomNumber", [ 0, 1 ] ] }
+                }
+              },
+              { "gotoScene":"play", "withTransition":3 }
+            ]
+          },
+          {
+            "name":"showPage",
+            "execute":[
+              { "as":{ "_":[ "object", "catalogue" ] }, "remove":1 },
+              { "set":{ "counter":0, "firstCard":{ "_":[ "this", "page", "*", 16, "+", 1 ] } } },
+              {
+                "times":16,
+                "execute":[
+                  { "set":{ "currentCard":{ "_":[ "this", "counter", "+", { "_":[ "this", "firstCard" ] } ] } } },
+                  {
+                    "when":{ "_":[ "resource", "cardData", "cards", { "_":[ "this", "currentCard" ] } ] },
+                    "execute":{
+                      "when":{ "_":[ "variable", "ownedCards", { "_":[ "this", "currentCard" ] } ] },
+                      "execute":{
+                        "object":{
+                          "type":"catalogue",
+                          "set":[ { "_":[ "stencil", "cardModel" ] }, { "_":[ "resource", "cardData", "cards", { "_":[ "that", "currentCard" ] } ] } ],
+                          "x":{ "_":[ "that", "counter", "%", 4, "*", 48 ] }, "y":{ "_":[ "that", "counter", "/", 4, "floor", "*", 48 ] },
+                          "execute":[
+                            { "set":{ "values":{ "_":[ "this", "originalValues" ] } } },
+                            {
+                              "when":{ "_":[ "variable", "preferredHand", "search", { "_":[ "this", "cardId" ] } ] },
+                              "set":{ "bgcolor":"#00f" },
+                              "elseExecute":{ "set":{ "type":"selectable", "bgcolor":"#fff" } }
+                            }
+                          ],
+                          "state":"front"
+                        }
+                      },
+                      "elseExecute":{
+                        "object":{
+                          "type":"catalogue",
+                          "set":{ "_":[ "stencil", "cardModel" ] },
+                          "x":{ "_":[ "that", "counter", "%", 4, "*", 48 ] }, "y":{ "_":[ "that", "counter", "/", 4, "floor", "*", 48 ] },
+                          "bgcolor":"#7f7f7f",
+                          "rarity":{ "_":[ "resource", "cardData", "cards", { "_":[ "that", "currentCard" ] }, "rarity" ] },
+                          "state":"back"
+                        }
+                      }
+                    }
+                  },
+                  { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+                ]
+              }
+            ]
+          },
+          {
+            "name":"nextPage",
+            "execute":[
+              { "set":{ "page":{ "_":[ "this", "page", "+", 1, "%", { "_":[ "this", "pagesCount" ] } ] } }, "playAudio":"beep2" },
+              { "executeAction":"showPage" }
+            ]
+          },
+          {
+            "name":"prevPage",
+            "execute":[
+              { "subtract":1, "to":{ "_":[ "this", "page" ] }, "playAudio":"beep2" },
+              { "when":{ "_":[ "this", "page", "isLessThan", 0 ] }, "set":{ "page":{ "_":[ "this", "pagesCount", "-", 1 ] } } },
+              { "executeAction":"showPage" }
+            ]
+          },
+          {
+            "name":"showHand",
+            "execute":[
+              { "as":{ "_":[ "object", "hand" ] }, "remove":1 },
+              { "set":{ "counter":0 } },
+              {
+                "times":5,
+                "execute":[
+                  {
+                    "object":{
+                      "type":"hand",
+                      "set":[
+                        { "_":[ "stencil", "cardModel" ] },
+                        { "_":[ "resource", "cardData", "cards", { "_":[ "variable", "preferredHand", { "_":[ "that", "counter" ] } ] } ] }
+                      ],
+                      "zIndex":{ "_":[ "that", "counter", "+", 10 ] }, "x":200, "y":{ "_":[ "that", "counter", "*", 20, "+", 32 ] },
+                      "bgcolor":"#00f",
+                      "state":"front"
+                    },
+                    "as":{ "_":"that" },
+                    "execute":{ "set":{ "values":{ "_":[ "this", "originalValues" ] } } }
+                  },
+                  { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "play":{
+      "execute":[
+        { "set":{ "turn":{ "_":[ "randomNumber", [ 0, 1 ] ] } } },
+        {
+          "when":{ "_":[ "variable", "randomCards" ] },
+          "execute":[
+            { "set":{ "counter":0, "ownedCardsList":{ "_":[ "new", [] ] }, "playerHand":{ "_":[ "new", [] ] } } },
+            {
+              "times":{ "_":[ "resource", "cardData", "cards", "count" ] },
+              "execute":[
+                {
+                  "when":{ "_":[ "variable", "ownedCards", { "_":[ "this", "counter" ] } ] },
+                  "as":{ "_":[ "this", "counter" ] },
+                  "pushInto":{ "_":[ "that", "ownedCardsList" ] }
+                },
+                { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+              ]
+            },
+            { "shuffle":{ "_":[ "this", "ownedCardsList" ] } },
+            { "set":{ "counter":0 } },
+            {
+              "times":5,
+              "execute":[
+                { "as":{ "_":[ "this", "ownedCardsList", { "_":[ "this", "counter" ] } ] }, "pushInto":{ "_":[ "that", "playerHand" ] } },
+                { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+              ]
+            }
+          ],
+          "elseExecute":{ "set":{ "playerHand":{ "_":[ "new", { "_":[ "variable", "preferredHand" ] } ] } } }
+        },
+        { "set":{ "counter":0, "cpuHand":{ "_":[ "new", [] ] }, "rarityList":{ "_":[ "new", [] ] } } },
+        {
+          "times":5,
+          "execute":[
+            {
+              "as":{ "_":[ "resource", "cardData", "cards", { "_":[ "this", "playerHand", { "_":[ "this", "counter" ] } ] }, "rarity" ] },
+              "pushInto":{ "_":[ "that", "rarityList" ] }
+            },
+            { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+          ]
+        },
+        { "shuffle":{ "_":[ "this", "rarityList" ] } },
+        { "set":{ "counter":0, "difficultyPoints":{ "_":[ "variable", "difficulty" ] } } },
+        {
+          "times":5,
+          "execute":[
+            { "set":{ "currentRarity":{ "_":[ "this", "rarityList", { "_":[ "this", "counter" ] } ] } } },
+            {
+              "when":{
+                "_":[
+                  "this",
+                  "difficultyPoints",
+                  "and",
+                  { "_":[ "this", "currentRarity", "isLessThan", { "_":[ "resource", "cardData", "rarity", "count", "-", 1 ] } ] }
+                ]
+              },
+              "execute":[ { "sum":1, "to":{ "_":[ "this", "rarityList", { "_":[ "this", "counter" ] } ] } }, { "subtract":1, "to":{ "_":[ "this", "difficultyPoints" ] } } ]
+            },
+            { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+          ]
+        },
+        { "set":{ "counter":0 } },
+        {
+          "times":{ "_":[ "resource", "cardData", "rarity", "count" ] },
+          "execute":[ { "shuffle":{ "_":[ "this", "rarity", { "_":[ "this", "counter" ] } ] } }, { "sum":1, "to":{ "_":[ "this", "counter" ] } } ]
+        },
+        { "set":{ "counter":0 } },
+        {
+          "times":5,
+          "execute":[
+            {
+              "as":{ "_":[ "this", "rarity", { "_":[ "this", "rarityList", { "_":[ "this", "counter" ] } ] }, { "_":[ "this", "counter" ] } ] },
+              "pushInto":{ "_":[ "that", "cpuHand" ] }
+            },
+            { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+          ]
+        },
+        {
+          "object":[
+            { "image":"background", "width":256, "height":192, "zIndex":2, "x":0, "y":0 },
+            {
+              "type":[ "cpulabel", "turnlabel" ],
+              "width":256, "height":18,
+              "x":0, "y":155,
+              "states":[
+                { "set":{ "bgcolor":"#f00" } },
+                {
+                  "name":"blink",
+                  "code":{ "name":"Sequence", "data":[ { "set":{ "bgcolor":"#7f7f7f" }, "wait":10 }, { "set":{ "bgcolor":"#f00" }, "wait":10, "loopTo":0 } ] }
+                }
+              ]
+            },
+            {
+              "type":"hud",
+              "hudType":"label", "label":"CPU:%number|scene.cpuScore%pts",
+              "width":256, "height":20,
+              "zIndex":10, "x":12, "y":155,
+              "font":"spectrum", "lineHeight":20
+            },
+            {
+              "type":[ "playerlabel", "turnlabel" ],
+              "width":102, "height":18,
+              "zIndex":1, "x":155, "y":5,
+              "states":[
+                { "set":{ "bgcolor":"#00f" } },
+                {
+                  "name":"blink",
+                  "code":{ "name":"Sequence", "data":[ { "set":{ "bgcolor":"#7f7f7f" }, "wait":10 }, { "set":{ "bgcolor":"#00f" }, "wait":10, "loopTo":0 } ] }
+                }
+              ]
+            },
+            {
+              "type":"hud",
+              "hudType":"label", "label":"YOU:%number|scene.playerScore%pts",
+              "width":87, "height":20,
+              "zIndex":10, "x":168, "y":5,
+              "font":"spectrum", "lineHeight":20
+            }
+          ]
+        },
+        { "set":{ "counter":0 } },
+        {
+          "times":9,
+          "execute":[
+            { "set":{ "cx":{ "_":[ "that", "counter", "%", 3 ] }, "cy":{ "_":[ "that", "counter", "/", 3, "floor" ] } } },
+            {
+              "object":{
+                "type":{ "_":[ "slot-", ".", { "_":[ "that", "cx" ] }, ".", "-", ".", { "_":[ "that", "cy" ] } ] },
+                "set":{ "_":[ "stencil", "cardSlot" ] },
+                "x":{ "_":[ "that", "cx", "*", 48, "+", 8 ] }, "y":{ "_":[ "that", "cy", "*", 48, "+", 8 ] }
+              }
+            },
+            { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+          ]
+        },
+        {
+          "when":{ "_":[ "variable", "useElements" ] },
+          "execute":{
+            "times":{ "_":[ "randomNumber", [ 1, 3 ] ] },
+            "execute":{ "as":{ "_":[ "randomObject", { "_":[ "object", "cardslot" ] } ] }, "set":{ "element":{ "_":[ "randomNumber", [ 1, 8 ] ] } } }
+          }
+        }
+      ],
+      "playAudio":"bgm2",
+      "cardCursor":0,
+      "cpuScore":0,
+      "picked":0,
+      "playerScore":0,
+      "rarity":{ "_":[ "resource", "cardData", "rarity" ] },
+      "turnCount":0,
+      "states":[
+        {
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "object":{ "set":{ "_":[ "stencil", "briefingModel" ] }, "y":16, "bgcolor":"#f00", "html":"MATCH RULES" }, "playAudio":"beep3", "wait":10 },
+              {
+                "object":{
+                  "set":{ "_":[ "stencil", "briefingModel" ] },
+                  "y":36,
+                  "execute":{ "set":{ "_":[ "this", "difficulties", { "_":[ "variable", "difficulty" ] } ] } },
+                  "difficulties":[
+                    { "bgcolor":"#0f0", "html":"Easy opponent" },
+                    { "bgcolor":"#ff0", "html":"Normal opponent" },
+                    { "bgcolor":"#00f", "color":"#fff", "html":"Hard opponent" },
+                    { "bgcolor":"#f00", "color":"#ff0", "html":"Very hard opponent" }
+                  ]
+                },
+                "playAudio":"beep3",
+                "wait":10
+              },
+              {
+                "object":{
+                  "set":{ "_":[ "stencil", "briefingModel" ] },
+                  "y":56,
+                  "execute":{
+                    "when":{ "_":[ "variable", "useSame" ] },
+                    "set":{ "bgcolor":"#ff0", "html":"Same rule enabled" },
+                    "elseExecute":{ "set":{ "html":"Same rule disabled" } }
+                  }
+                },
+                "playAudio":"beep3",
+                "wait":10
+              },
+              {
+                "object":{
+                  "set":{ "_":[ "stencil", "briefingModel" ] },
+                  "y":76,
+                  "execute":{
+                    "when":{ "_":[ "variable", "usePlus" ] },
+                    "set":{ "bgcolor":"#ff0", "html":"Plus rule enabled" },
+                    "elseExecute":{ "set":{ "html":"Plus rule disabled" } }
+                  }
+                },
+                "playAudio":"beep3",
+                "wait":10
+              },
+              {
+                "object":{
+                  "set":{ "_":[ "stencil", "briefingModel" ] },
+                  "y":96,
+                  "execute":{
+                    "when":{ "_":[ "variable", "seeCards" ] },
+                    "set":{ "bgcolor":"#ff0", "html":{ "_":[ "variable", "seeCards", ".", " card(s) are up" ] } },
+                    "elseExecute":{ "set":{ "html":"Cards are covered" } }
+                  }
+                },
+                "playAudio":"beep3",
+                "wait":10
+              },
+              {
+                "object":{
+                  "set":{ "_":[ "stencil", "briefingModel" ] },
+                  "y":116,
+                  "execute":{
+                    "when":{ "_":[ "variable", "useElements" ] },
+                    "set":{ "bgcolor":"#ff0", "html":"Elements are on grid" },
+                    "elseExecute":{ "set":{ "html":"No elements" } }
+                  }
+                },
+                "playAudio":"beep3",
+                "wait":10
+              },
+              {
+                "object":{
+                  "set":{ "_":[ "stencil", "briefingModel" ] },
+                  "y":136,
+                  "execute":{
+                    "when":{ "_":[ "variable", "randomCards" ] },
+                    "set":{ "bgcolor":"#ff0", "html":"Random cards hand" },
+                    "elseExecute":{ "set":{ "html":"Preferred cards hand" } }
+                  }
+                },
+                "playAudio":"beep3",
+                "wait":10
+              },
+              {
+                "object":{
+                  "set":{ "_":[ "stencil", "briefingModel" ] },
+                  "y":156,
+                  "execute":{
+                    "when":{ "_":[ "variable", "canSelectCard" ] },
+                    "set":{ "html":"Play with any order" },
+                    "elseExecute":{ "set":{ "bgcolor":"#ff0", "html":"Force sequential order" } }
+                  }
+                },
+                "playAudio":"beep3",
+                "wait":10
+              },
+              { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+              { "as":{ "_":[ "object", "message" ] }, "remove":1 },
+              { "wait":5 },
+              { "set":{ "state":"prepareTable" } }
+            ]
+          }
+        },
+        {
+          "name":"prepareTable",
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "set":{ "counter":0 } },
+              {
+                "times":5,
+                "execute":[
+                  {
+                    "object":[
+                      {
+                        "type":[ { "_":[ "playercard-", ".", { "_":[ "that", "counter" ] } ] }, "wasplayer" ],
+                        "set":[
+                          { "_":[ "stencil", "animatedCard" ] },
+                          { "_":[ "resource", "cardData", "cards", { "_":[ "scene", "playerHand", { "_":[ "that", "counter" ] } ] } ] }
+                        ],
+                        "zIndex":{ "_":[ "that", "counter", "+", 10 ] }, "x":184, "y":20,
+                        "bgcolor":"#00f",
+                        "isPlayer":1,
+                        "tox":184,
+                        "toy":{ "_":[ "that", "counter", "*", 20, "+", 26 ] },
+                        "state":"front"
+                      },
+                      {
+                        "type":[ { "_":[ "cpucard-", ".", { "_":[ "that", "counter" ] } ] }, "wascpu" ],
+                        "set":[ { "_":[ "stencil", "animatedCard" ] }, { "_":[ "resource", "cardData", "cards", { "_":[ "scene", "cpuHand", { "_":[ "that", "counter" ] } ] } ] } ],
+                        "zIndex":{ "_":[ "that", "counter", "+", 10 ] }, "x":8, "y":173,
+                        "bgcolor":"#f00",
+                        "execute":{
+                          "when":{ "_":[ "that", "counter", "isLessThan", { "_":[ "variable", "seeCards" ] } ] },
+                          "set":{ "state":"front" },
+                          "elseExecute":{ "set":{ "state":"back" } }
+                        },
+                        "isCpu":1,
+                        "tox":{ "_":[ "that", "counter", "*", 48, "+", 8 ] },
+                        "toy":173
+                      }
+                    ],
+                    "as":{ "_":"that" },
+                    "execute":{ "set":{ "values":{ "_":[ "new", { "_":[ "this", "originalValues" ] } ] } } }
+                  },
+                  { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+                ]
+              },
+              { "wait":10 },
+              { "object":[ { "_":[ "stencil", "gridCursor" ] }, { "_":[ "stencil", "cardCursor" ] } ] },
+              { "set":{ "state":"play" } }
+            ]
+          }
+        },
+        {
+          "name":"play",
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "set":{ "turnDone":0 } },
+              {
+                "when":{ "_":[ "scene", "turn", "isEqualTo", 0 ] },
+                "execute":[
+                  { "as":{ "_":[ "objectTyped", "cpulabel" ] }, "set":{ "state":"blink" } },
+                  { "as":{ "_":[ "objectTyped", "playerlabel" ] }, "set":{ "state":"default" } }
+                ],
+                "elseExecute":[
+                  { "as":{ "_":[ "objectTyped", "cpulabel" ] }, "set":{ "state":"default" } },
+                  { "as":{ "_":[ "objectTyped", "playerlabel" ] }, "set":{ "state":"blink" } }
+                ]
+              },
+              {
+                "when":{ "_":[ "this", "turn" ] },
+                "elseExecute":{
+                  "subsequence":[
+                    { "set":{ "hypotesis":{ "_":[ "new", [] ] } } },
+                    {
+                      "as":{ "_":[ "object", "cardslot" ] },
+                      "execute":[
+                        { "set":{ "counter":0 } },
+                        { "when":{ "_":[ "variable", "canSelectCard" ] }, "set":{ "processLeft":5 }, "elseExecute":{ "set":{ "processLeft":1 } } },
+                        {
+                          "times":5,
+                          "execute":[
+                            {
+                              "when":{ "_":[ "scene", "cpuHand", { "_":[ "this", "counter" ] } ] },
+                              "execute":{
+                                "when":{ "_":[ "this", "processLeft" ] },
+                                "execute":[
+                                  { "subtract":1, "to":{ "_":[ "this", "processLeft" ] } },
+                                  { "_":[ "stencil", "codeInitializeRules" ] },
+                                  {
+                                    "set":{
+                                      "counter2":0,
+                                      "move":{ "_":[ "new", { "score":1000 } ] },
+                                      "playedCard":{ "_":[ "objectTyped", { "_":[ "cpucard-", ".", { "_":[ "this", "counter" ] } ] } ] }
+                                    }
+                                  },
+                                  {
+                                    "when":{ "_":[ "this", "playedCard", "element", "and", { "_":[ "this", "element" ] } ] },
+                                    "execute":{
+                                      "when":{ "_":[ "this", "element", "isEqualTo", { "_":[ "this", "playedCard", "element" ] } ] },
+                                      "set":{ "bonus":1 },
+                                      "elseExecute":{ "set":{ "bonus":-1 } }
+                                    },
+                                    "elseExecute":{ "set":{ "bonus":0 } }
+                                  },
+                                  {
+                                    "as":{ "_":[ "this", "move" ] },
+                                    "set":{ "cardSelected":{ "_":[ "that", "counter" ] }, "destinationSlot":{ "_":"that" }, "playedCard":{ "_":[ "that", "playedCard" ] } }
+                                  },
+                                  {
+                                    "times":4,
+                                    "execute":[
+                                      { "set":{ "checkSide":{ "_":[ "stencil", "dataConquerSides", { "_":[ "this", "counter2" ] } ] } } },
+                                      {
+                                        "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "onboard" ] }, "hitbox":{ "_":[ "this", "checkSide", "hitbox" ] } } ] },
+                                        "execute":{
+                                          "set":{
+                                            "applyOnCard":{ "_":"that" },
+                                            "oppositeValue":{ "_":[ "that", "values", { "_":[ "this", "checkSide", "opposite" ] } ] },
+                                            "sideValue":{ "_":[ "this", "playedCard", "values", { "_":[ "this", "counter2" ] }, "+", { "_":[ "this", "bonus" ] } ] }
+                                          },
+                                          "execute":{ "_":[ "stencil", "codeApplyRules" ] }
+                                        },
+                                        "elseExecute":{
+                                          "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "cardslot" ] }, "hitbox":{ "_":[ "this", "checkSide", "hitbox" ] } } ] },
+                                          "execute":[
+                                            { "set":{ "sideValue":{ "_":[ "this", "playedCard", "values", { "_":[ "this", "counter2" ] }, "+", { "_":[ "this", "bonus" ] } ] } } },
+                                            { "sum":{ "_":[ "this", "sideValue", "*", 2 ] }, "to":{ "_":[ "this", "move", "score" ] } }
+                                          ]
+                                        }
+                                      },
+                                      { "sum":1, "to":{ "_":[ "this", "counter2" ] } }
+                                    ]
+                                  },
+                                  { "set":{ "counter2":0 } },
+                                  {
+                                    "times":4,
+                                    "execute":[
+                                      {
+                                        "when":{ "_":[ "this", "conqueredList", { "_":[ "this", "counter2" ] } ] },
+                                        "execute":{ "when":{ "_":[ "this", "conqueredList", { "_":[ "this", "counter2" ] }, "isPlayer" ] }, "sum":100, "to":{ "_":[ "this", "move", "score" ] } }
+                                      },
+                                      { "sum":1, "to":{ "_":[ "this", "counter2" ] } }
+                                    ]
+                                  },
+                                  { "as":{ "_":[ "this", "move" ] }, "pushInto":{ "_":[ "scene", "hypotesis" ] } }
+                                ]
+                              }
+                            },
+                            { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+                          ]
+                        }
+                      ]
+                    },
+                    { "set":{ "counter":0 } },
+                    {
+                      "times":{ "_":[ "this", "hypotesis", "count" ] },
+                      "execute":[
+                        { "set":{ "currentHypotesis":{ "_":[ "this", "hypotesis", { "_":[ "this", "counter" ] } ] } } },
+                        {
+                          "as":{
+                            "_":[
+                              "this",
+                              "currentHypotesis",
+                              "destinationSlot",
+                              "complexCollidesWith",
+                              { "subject":{ "_":[ "object", "cardslot" ] }, "hitbox":{ "width":64, "height":64, "x":-8, "y":-8 }, "notThis":1 }
+                            ]
+                          },
+                          "execute":[
+                            { "when":{ "_":[ "this", "x", "isLessThan", { "_":[ "that", "currentHypotesis", "destinationSlot", "x" ] } ] }, "set":{ "attackSide":1 } },
+                            { "when":{ "_":[ "this", "x", "isGreaterThan", { "_":[ "that", "currentHypotesis", "destinationSlot", "x" ] } ] }, "set":{ "attackSide":3 } },
+                            { "when":{ "_":[ "this", "y", "isLessThan", { "_":[ "that", "currentHypotesis", "destinationSlot", "y" ] } ] }, "set":{ "attackSide":2 } },
+                            { "when":{ "_":[ "this", "y", "isGreaterThan", { "_":[ "that", "currentHypotesis", "destinationSlot", "y" ] } ] }, "set":{ "attackSide":0 } },
+                            { "set":{ "checkSide":{ "_":[ "stencil", "dataConquerSides", { "_":[ "this", "attackSide" ] } ] }, "counter2":0 } },
+                            {
+                              "times":5,
+                              "execute":[
+                                {
+                                  "when":{ "_":[ "this", "counter2", "isLessThan", { "_":[ "variable", "seeCards" ] } ] },
+                                  "execute":{
+                                    "when":{ "_":[ "scene", "playerHand", { "_":[ "this", "counter2" ] }, "not" ] },
+                                    "elseExecute":[
+                                      { "_":[ "stencil", "codeInitializeRules" ] },
+                                      { "set":{ "playedCard":{ "_":[ "objectTyped", { "_":[ "playercard-", ".", { "_":[ "this", "counter2" ] } ] } ] } } },
+                                      {
+                                        "when":{ "_":[ "this", "playedCard", "element", "and", { "_":[ "this", "element" ] } ] },
+                                        "execute":{
+                                          "when":{ "_":[ "this", "element", "isEqualTo", { "_":[ "this", "playedCard", "element" ] } ] },
+                                          "set":{ "bonus":1 },
+                                          "elseExecute":{ "set":{ "bonus":-1 } }
+                                        },
+                                        "elseExecute":{ "set":{ "bonus":0 } }
+                                      },
+                                      {
+                                        "set":{
+                                          "applyOnCard":{ "_":[ "scene", "currentHypotesis", "playedCard" ] },
+                                          "oppositeValue":{ "_":[ "scene", "currentHypotesis", "playedCard", "values", { "_":[ "this", "checkSide", "opposite" ] } ] },
+                                          "sideValue":{ "_":[ "this", "playedCard", "values", { "_":[ "this", "attackSide" ] }, "+", { "_":[ "this", "bonus" ] } ] }
+                                        },
+                                        "execute":{ "_":[ "stencil", "codeApplyRules" ] }
+                                      },
+                                      { "subtract":{ "_":[ "this", "conqueredList", "count", "*", 50 ] }, "to":{ "_":[ "this", "currentHypotesis", "score" ] } }
+                                    ]
+                                  }
+                                },
+                                { "sum":1, "to":{ "_":[ "this", "counter2" ] } }
+                              ]
+                            }
+                          ]
+                        },
+                        { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+                      ]
+                    },
+                    { "shuffle":{ "_":[ "this", "hypotesis" ] } },
+                    { "reversed":1, "sort":{ "_":[ "this", "hypotesis" ] }, "by":"score" },
+                    {
+                      "set":{ "cardSelected":{ "_":[ "this", "hypotesis", 0, "cardSelected" ] }, "destinationSlot":{ "_":[ "this", "hypotesis", 0, "destinationSlot" ] } }
+                    },
+                    { "assign":0, "to":{ "_":[ "scene", "cpuHand", { "_":[ "scene", "cardSelected" ] } ] } },
+                    {
+                      "set":{ "playedBy":"cpu", "playedCard":{ "_":[ "objectTyped", { "_":[ "cpucard-", ".", { "_":[ "scene", "cardSelected" ] } ] } ] } },
+                      "playAudio":"fire"
+                    },
+                    { "_":[ "stencil", "codePlayCard" ] }
+                  ]
+                },
+                "subsequence":{ "wait":1, "loop":1, "until":{ "_":[ "scene", "turnDone" ] } }
+              },
+              { "wait":25 },
+              {
+                "when":{ "_":[ "this", "playedCard", "element", "and", { "_":[ "this", "destinationSlot", "element" ] } ] },
+                "execute":[
+                  {
+                    "when":{ "_":[ "this", "destinationSlot", "element", "isEqualTo", { "_":[ "this", "playedCard", "element" ] } ] },
+                    "set":{ "bonus":1, "bonusLabel":"POWER UP" },
+                    "elseExecute":{ "set":{ "bonus":-1, "bonusLabel":"POWER DOWN" }, "playAudio":"rampdown" },
+                    "playAudio":"rampup"
+                  },
+                  {
+                    "subsequence":[
+                      { "sum":{ "_":[ "this", "bonus" ] }, "to":{ "_":[ "this", "playedCard", "values", 0 ] } },
+                      { "sum":{ "_":[ "this", "bonus" ] }, "to":{ "_":[ "this", "playedCard", "values", 1 ] } },
+                      { "sum":{ "_":[ "this", "bonus" ] }, "to":{ "_":[ "this", "playedCard", "values", 2 ] } },
+                      { "sum":{ "_":[ "this", "bonus" ] }, "to":{ "_":[ "this", "playedCard", "values", 3 ] } },
+                      { "execute":{"object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "html":{ "_":[ "scene", "bonusLabel" ] } }}, "as":{ "_":[ "this", "playedCard" ] } },
+                      { "as":{ "_":[ "this", "playedCard" ] }, "execute":{ "_":[ "stencil", "cloud" ] }, "executeAction":"updateSymbols" },
+                      { "subsequence":{ "wait":10 } }
+                    ]
+                  }
+                ]
+              },
+              { "as":{ "_":[ "this", "destinationSlot" ] }, "remove":1 },
+              {
+                "when":{ "_":[ "this", "playedCard", "isPlayer" ] },
+                "set":{ "conquerData":{ "type":"player", "removeType":"cpu", "bgcolor":"#00f", "isCpu":0, "isPlayer":1 } },
+                "elseExecute":{ "set":{ "conquerData":{ "type":"cpu", "removeType":"player", "bgcolor":"#f00", "isCpu":1, "isPlayer":0 } } }
+              },
+              { "set":{ "counter":0 }, "execute":{ "_":[ "stencil", "codeInitializeRules" ] } },
+              {
+                "times":4,
+                "execute":[
+                  { "set":{ "checkSide":{ "_":[ "stencil", "dataConquerSides", { "_":[ "this", "counter" ] } ] } } },
+                  {
+                    "when":{
+                      "_":[ "this", "playedCard", "complexCollidesWith", { "subject":{ "_":[ "object", "onboard" ] }, "hitbox":{ "_":[ "this", "checkSide", "hitbox" ] } } ]
+                    },
+                    "set":{
+                      "applyOnCard":{ "_":"that" },
+                      "oppositeValue":{ "_":[ "that", "values", { "_":[ "this", "checkSide", "opposite" ] } ] },
+                      "sideValue":{ "_":[ "this", "playedCard", "values", { "_":[ "this", "counter" ] } ] }
+                    },
+                    "execute":{ "_":[ "stencil", "codeApplyRules" ] }
+                  },
+                  { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+                ]
+              },
+              {
+                "when":{ "_":[ "this", "conqueredList", "count" ] },
+                "subsequence":[
+                  { "set":{ "counter":0 } },
+                  {
+                    "as":{ "_":[ "this", "conqueredList", { "_":[ "this", "counter" ] } ] },
+                    "execute":[
+                      { "_":[ "stencil", "cloud" ] },
+                      { "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "html":{ "_":[ "that", "conquerReason" ] } } },
+                      { "set":{ "_":[ "scene", "conquerData" ] } },
+                      { "wait":10 }
+                    ]
+                  },
+                  { "sum":1, "to":{ "_":[ "this", "counter" ] } },
+                  { "wait":10 },
+                  { "loopTo":-3, "until":{ "_":[ "this", "conqueredList", { "_":[ "this", "counter" ] }, "not" ] } }
+                ]
+              },
+              { "sum":1, "to":{ "_":[ "this", "turnCount" ] } },
+              {
+                "set":{ "cpuScore":{ "_":[ "object", "cpu", "count" ] }, "playerScore":{ "_":[ "object", "player", "count" ] }, "turn":{ "_":[ "this", "turn", "not" ] } }
+              },
+              { "cycles":9, "loopTo":0 },
+              { "as":{ "_":[ "object", "cursor" ] }, "remove":1 },
+              { "as":{ "_":[ "object", "turnlabel" ] }, "set":{ "state":"default" } },
+              {
+                "when":{ "_":[ "this", "playerScore", "isGreaterThan", { "_":[ "this", "cpuScore" ] } ] },
+                "elseExecute":{
+                  "subsequence":[
+                    {
+                      "object":{
+                        "type":"message",
+                        "width":256, "height":50,
+                        "zIndex":1000, "x":0, "y":71,
+                        "bgcolor":"#000",
+                        "font":"spectrum", "fontSize":60, "lineHeight":50, "textAlign":"center", "html":"YOU LOSE",
+                        "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "color":"#f00" } }, { "wait":2 }, { "set":{ "color":"#fff" } }, { "wait":2 }, { "loopTo":0 } ] } }
+                      },
+                      "playAudio":"rampdown",
+                      "stopChannel":"music"
+                    },
+                    { "wait":25 },
+                    { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+                    { "gotoScene":"catalogue", "withTransition":3 }
+                  ]
+                },
+                "subsequence":[
+                  {
+                    "object":{
+                      "type":"message",
+                      "width":256, "height":50,
+                      "zIndex":1000, "x":0, "y":71,
+                      "bgcolor":"#000",
+                      "font":"spectrum", "fontSize":60, "lineHeight":50, "textAlign":"center", "html":"YOU WIN!",
+                      "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "color":"#00f" } }, { "wait":2 }, { "set":{ "color":"#fff" } }, { "wait":2 }, { "loopTo":0 } ] } }
+                    },
+                    "playAudio":"rampup"
+                  },
+                  { "wait":25 },
+                  { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+                  { "as":{ "_":[ "object", "message" ] }, "remove":1 },
+                  { "as":{ "_":[ "object", "cardslot" ] }, "remove":1 },
+                  {
+                    "object":{
+                      "type":"cputalk",
+                      "image":"sprites", "tileY":168, "width":256, "height":20,
+                      "zIndex":10, "x":0, "y":172,
+                      "bgcolor":"#0ff", "color":"#000",
+                      "font":"spectrum", "lineHeight":20, "textAlign":"center", "html":"You won one of my cards!"
+                    }
+                  },
+                  { "as":{ "_":[ "object", "wasplayer" ] }, "set":{ "bgcolor":"#00f", "tox":184, "toy":26 } },
+                  { "set":{ "counter":0 } },
+                  {
+                    "as":{ "_":[ "object", "wascpu" ] },
+                    "execute":[
+                      {
+                        "set":{
+                          "type":"loot",
+                          "execute":[
+                            {
+                              "when":{ "_":[ "variable", "ownedCards", { "_":[ "this", "cardId" ] } ] },
+                              "set":{ "bgcolor":"#7f7f7f" },
+                              "elseExecute":{ "set":{ "bgcolor":"#fff" } }
+                            },
+                            { "set":{ "values":{ "_":[ "this", "originalValues" ] } } },
+                            { "executeAction":"updateSymbols" }
+                          ],
+                          "tox":{ "_":[ "that", "counter", "%", 3, "*", 48, "+", 8 ] },
+                          "toy":{ "_":[ "that", "counter", "/", 3, "floor", "*", 48, "+", 8 ] },
+                          "state":"front"
+                        }
+                      },
+                      { "sum":1, "to":{ "_":[ "that", "counter" ] } }
+                    ]
+                  },
+                  {
+                    "object":[
+                      {
+                        "type":"loot",
+                        "set":{ "_":[ "stencil", "animatedCard" ] },
+                        "image":"sprites", "tileX":48, "tileY":24,
+                        "x":104, "y":192,
+                        "bgcolor":"#7f7f7f",
+                        "tox":104,
+                        "toy":56
+                      },
+                      {
+                        "width":256, "height":10,
+                        "zIndex":100, "x":0, "y":145,
+                        "bgcolor":"#000", "color":"#fff",
+                        "font":"spectrum", "lineHeight":10,
+                        "states":{
+                          "code":{
+                            "name":"Execute",
+                            "data":{
+                              "when":{ "_":[ "objectTyped", "cursor", "collidesWith", { "_":[ "object", "loot" ] } ] },
+                              "execute":{
+                                "when":{ "_":[ "that", "cardId" ] },
+                                "set":{ "color":"#fff", "html":{ "_":[ "LV.", ".", { "_":[ "that", "rarity" ] }, ".", " ", ".", { "_":[ "that", "name" ] } ] } },
+                                "elseExecute":{ "set":{ "html":"" } }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  },
+                  { "wait":25 },
+                  { "object":{ "_":[ "stencil", "lootCursor" ] } },
+                  { "wait":1, "loop":1, "until":{ "_":[ "this", "picked" ] } },
+                  {
+                    "when":{ "_":[ "this", "picked", "cardId" ] },
+                    "elseExecute":{
+                      "subsequence":[
+                        { "as":{ "_":[ "objectTyped", "cputalk" ] }, "set":{ "html":"No looting? Good for me!" }, "playAudio":"fire" },
+                        { "wait":25 },
+                        { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+                        { "gotoScene":"catalogue", "withTransition":3, "stopChannel":"music" }
+                      ]
+                    },
+                    "subsequence":[
+                      { "assign":1, "to":{ "_":[ "variable", "ownedCards", { "_":[ "this", "picked", "cardId" ] } ] } },
+                      { "as":{ "_":"storage" }, "set":{ "ownedCards":{ "_":[ "variable", "ownedCards" ] } } },
+                      { "as":{ "_":[ "objectTyped", "cputalk" ] }, "set":{ "html":"Here you are! You deserve it!" }, "playAudio":"beep2" },
+                      { "as":{ "_":[ "this", "picked" ] }, "set":{ "bgcolor":"#00f", "tox":184, "toy":76 } },
+                      { "wait":25 },
+                      { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+                      { "gotoScene":"catalogue", "withTransition":3, "stopChannel":"music" }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}
