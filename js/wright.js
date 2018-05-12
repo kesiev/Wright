@@ -925,7 +925,7 @@ var DOMInator=function(useCanvas,aliasmode,controller,nosleep){
 
 
 	/* Game cycle and frameskip throttle */
-	var skipFrames=0,timeout=0,fps=0,mspf=0,frameTimestamp=0,gamecycle=0,renderer=0,self=this;
+	var skipFrames=0,timeout=0,fps=0,recorder=0,mspf=0,frameTimestamp=0,gamecycle=0,renderer=0,self=this;
 	var frameDone=1,benchTimeout,nextCycleAt=0,frameskipped=0,frameskip=0,frameskipScore=0,frameskipThresholdMin=-100,frameskipThresholdMax=3,maxFrameskip=5;
 
 	function scheduleNextFrame(ts) {
@@ -988,6 +988,7 @@ var DOMInator=function(useCanvas,aliasmode,controller,nosleep){
 					}
 				} else frameskipped++;
 			}
+			if (recorder) recorder(sources.out.node);
 			scheduleNextFrame();
 		}
 	}
@@ -999,6 +1000,7 @@ var DOMInator=function(useCanvas,aliasmode,controller,nosleep){
 		fps=cfps;
 		mspf = 1000 / fps;
 	};
+	this.setRecorder = function(callback) { recorder = callback; }
 	this.getFps = function() { return fps }
 	this.getMspf = function() { return mspf }
 	this.abort=function() {
@@ -2188,7 +2190,7 @@ var DOMInator=function(useCanvas,aliasmode,controller,nosleep){
 								            ctx.restore();
 								        }
 										break;
-									}
+									}									
 									default:{
 										source.ctx.drawImage(sources[filter.blit].node,filter.left||0,filter.top||0);
 										break;
@@ -3647,6 +3649,10 @@ function Box(parent, type, sub, statemanager, useCanvas, aliasmode, controller) 
 		// SCREEN - Frames manager
 		box.setFps=function(fps) {
 			this.node.setFps(fps);
+			return this;
+		}
+		box.setRecorder = function(recorder) {
+			this.node.setRecorder(recorder);
 			return this;
 		}
 		box.addSkipFrames=function(frames) { return this.node.addSkipFrames(frames); }
@@ -5846,7 +5852,7 @@ function Wright(gameId,mods) {
 			mods.onReady();
 		} else {
 			this.game=game = Box(tv, "game", 0, 0, mode.renderer, hardware.aliasMode||"pixelated",mods.controller);
-			game.setGridSize(hardware.gridSize).setControls(controls).setColor("#fff").setBgcolor("#000").size(hardware).setOrientation(hardware.orientation).setFps(hardware.fps||25).setScale(mode.scale).setOriginX(0).setOriginY(0);
+			game.setGridSize(hardware.gridSize).setControls(controls).setColor("#fff").setBgcolor("#000").size(hardware).setOrientation(hardware.orientation).setFps(hardware.fps||25).setScale(mode.scale).setOriginX(0).setOriginY(0).setRecorder(mode.recorder);
 			game.getState("default").do(Code.GameManager);
 			if (mode.volume&&gamedata.audioChannels) game.enableAudio(mode.volume/100);
 			tv.style.width = (game.width * game.scale) + "px";
@@ -6182,7 +6188,8 @@ function Wright(gameId,mods) {
 						scale:scale,
 						volume:volume,
 						renderer:renderer,
-						filter:filterset||DOMInator.FILTERS.none[0].filter
+						filter:filterset||DOMInator.FILTERS.none[0].filter,
+						recorder:mods.recorder
 					});
 				}
 				mods.settingsContainer.innerHTML=sublabels?"<ul>"+sublabels+"</ul>":"";
@@ -6192,7 +6199,7 @@ function Wright(gameId,mods) {
 			var filterset;
 			for (var i=0;i<filters.length;i++)
 				if (filters[i].label==filter) filterset=filters[i].filter;
-			runGame({scale:scale,volume:hasAudio?volume:0,renderer:renderer,filter:filterset||DOMInator.FILTERS.none[0].filter});
+			runGame({scale:scale,volume:hasAudio?volume:0,renderer:renderer,filter:filterset||DOMInator.FILTERS.none[0].filter,recorder:mods.recorder});
 		}
 	});
 
