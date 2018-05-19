@@ -1,0 +1,1169 @@
+{
+  "name":"Planet Runner",
+  "author":"KesieV",
+  "year":2017,
+  "genre":"Shoot'em Up",
+  "description":"<p><a href='https://en.wikipedia.org/wiki/Yu_Suzuki'>Yu Suzuki</a>, the legendary game designer of SEGA and father of the best pseudo-3D games of the past, said that his design \"were always 3D from the beginning. All the calculations in the system were 3D, even from Hang-On. I calculated the position, scale, and zoom rate in 3D and converted it backwards to 2D. So I was always thinking in 3D.\"</p><p>But <i>why</i>?</p><p><a href='https://en.wikipedia.org/wiki/Space_Harrier'>Space Harrier</a> (1985) is probably the most representative game of this way of thinking games. And, despite the game abstract artistic style, inspired by <a href='https://en.wikipedia.org/wiki/Roger_Dean_(artist)'>Roger Dean</a>, and the sci-fi anime inspiration, everything was for the sake of realism - or, better, for the player <i>immersion</i>: Sega didn't want to make a cockpit-style rolling cabinet version of the game due to high construction costs but Suzuki was ready to <i>offer his salary</i> as compensation if the game failed. But the game did great instead.</p><p>Suzuki is the same that, one year later, added an interactive car radio and non linear gameplay to his racer <a href='https://en.wikipedia.org/wiki/Out_Run'>Out Run</a> (1986) (we <a href='seasiderun'>already covered that before</a>), giving the player a way to make his gameplay experience more personal, and his pursue to the true 3D culminated with his <a href='https://en.wikipedia.org/wiki/Virtua_Racing'>Virtua Racing</a> (1992) which outperformed his rival 3D racers adding multiple camera angles, which allowed the player to choose his own most immersive view, and 3D human NPCs, boosting the authenticity of the experience.</p><p>In Suzuki games there's been a steady growing of <i>immersive elements</i>, from the invisible 3D math behind his early games to the innovative soundtrack and camera angle selectors. With his obsession of dragging the player into the the videogame experience, obtained mixing realism and customization, Suzuki defined many key guidelines of modern videogames and deserves his role of one of the most important fathers of videogames.</p><p>I wonder if <a href='https://en.wikipedia.org/wiki/Virtual_reality'>virtual reality</a> is the <i>ultimate weapon</i> of immersive videogames, giving the player the most subjective view ever... or forcing the point of view to the first person is a step back in the player experience customization. Now is the <i>moment of truth</i>!</p><p>Anyway, <i>thank you so much, Yu Suzuki!</i></p><p>Plot!</p><p>The evil dragons invaded the Fantasy Planet! You, the Planet Runner, are the planet only hope: fly with your jetpack across the planet, dodge the obstacles in your path, shoot the enemies down and drive the dragons away!</p><p>Use UP/DOWN/LEFT/RIGHT for moving and the A BUTTON for firing. And that's all!</p>",
+  "screenshots":[ "planetrunner-1.png", "planetrunner-2.png" ],
+  "hardware":{
+    "width":256,
+    "height":192,
+    "filter":"retro"
+  },
+  "audioChannels":{
+    "sfx":{ "volume":1, "samples":[ "fire", "blam", "explode2", "open", "explode", "rampup" ] },
+    "music":{ "volume":0.9, "looping":1, "samples":[ "bgm1", "bgm2" ] }
+  },
+  "cheats":{
+    "unlimitedlives":"Unlimited lives (no hi-score, sorry!)"
+  },
+  "resources":{
+    "backgrounds":"backgrounds.png",
+    "bgm1":"equinoxev.ogg",
+    "bgm2":"stdocs.ogg",
+    "logo":"logo.png",
+    "spectrum":"spectrum.font",
+    "sprites":"sprites.png",
+    "blam":"../default/zxsounds/blam.ogg",
+    "explode":"../default/zxsounds/explode.ogg",
+    "explode2":"../default/zxsounds/explode2.ogg",
+    "fire":"../default/zxsounds/fire.ogg",
+    "open":"../default/zxsounds/open.ogg",
+    "rampup":"../default/zxsounds/rampup.ogg"
+  },
+  "stencils":{
+    "codeApplyThreeDee":[
+      {
+        "set":{
+          "zIndex":{ "_":[ 500, "-", { "_":[ "this", "pz" ] } ] },
+          "scale":{ "_":[ 1, "-", { "_":[ "this", "pz", "*", { "_":[ "constant", "depthRatioScale" ] } ] } ] }
+        }
+      },
+      {
+        "set":{
+          "x":{ "_":[ { "_":[ "constant", "rFrontX" ] }, "+", { "_":[ "this", "pz", "*", { "_":[ "constant", "depthRatioX" ] } ] }, "+", { "_":[ "this", "px", "*", { "_":[ "this", "scale" ] } ] } ] }, "y":{ "_":[ { "_":[ "constant", "rFrontY" ] }, "+", { "_":[ "this", "pz", "*", { "_":[ "constant", "depthRatioY" ] } ] }, "+", { "_":[ "this", "py", "*", { "_":[ "this", "scale" ] } ] } ] }
+        }
+      },
+      {
+        "as":{ "_":[ "this", "hitbox" ] },
+        "set":{
+          "width":{ "_":[ "that", "hitboxWidth", "*", { "_":[ "that", "scale" ] } ] }, "height":{ "_":[ "that", "hitboxHeight", "*", { "_":[ "that", "scale" ] } ] },
+          "x":{ "_":[ "that", "hitboxX", "*", { "_":[ "that", "scale" ] } ] }, "y":{ "_":[ "that", "hitboxY", "*", { "_":[ "that", "scale" ] } ] }
+        }
+      },
+      { "as":{ "_":[ "this", "shadow" ] }, "executeAction":"update" }
+    ],
+    "codeBgCheckers":[
+      { "set":{ "counter":0 } },
+      {
+        "times":10,
+        "execute":[
+          { "set":{ "counter2":{ "_":[ "this", "counter", "%", 2, "*", 32, "-", 16 ] } } },
+          {
+            "times":5,
+            "execute":[
+              {
+                "object":{ "set":{ "_":[ "stencil", "floorPanel" ] }, "width":32, "x":{ "_":[ "that", "counter2" ] }, "position":{ "_":[ "that", "counter", "*", 0.18 ] } }
+              },
+              { "sum":64, "to":{ "_":[ "this", "counter2" ] } }
+            ]
+          },
+          { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+        ]
+      }
+    ],
+    "codeBgLines":[
+      { "set":{ "counter":0 } },
+      {
+        "times":5,
+        "execute":[
+          { "object":{ "set":{ "_":[ "stencil", "floorPanel" ] }, "position":{ "_":[ "that", "counter" ] } } },
+          { "sum":0.35, "to":{ "_":[ "this", "counter" ] } }
+        ]
+      }
+    ],
+    "codeGameOver":[
+      { "as":{ "_":[ "object", "message" ] }, "remove":1 },
+      { "stopChannel":"music" },
+      { "wait":25 },
+      {
+        "object":{
+          "type":"message",
+          "width":256, "height":30,
+          "zIndex":150000, "x":0, "y":81,
+          "bgcolor":"#000", "color":"#f0f",
+          "font":"spectrum", "fontSize":40, "lineHeight":30, "textAlign":"center", "html":"GAME OVER"
+        }
+      },
+      { "wait":10 },
+      {
+        "when":{ "_":[ "cheat", "unlimitedlives", "not" ] },
+        "execute":[
+          { "publishScore":{ "_":[ "variable", "score" ] } },
+          {
+            "when":{ "_":[ "variable", "score", "isGreaterThan", { "_":[ "variable", "hiscore" ] } ] },
+            "execute":[
+              {
+                "object":{
+                  "type":"message",
+                  "width":256, "height":12,
+                  "zIndex":100000, "x":0, "y":111,
+                  "bgcolor":"#000", "color":"#0ff",
+                  "font":"spectrum", "lineHeight":12, "textAlign":"center", "html":"NEW HI SCORE!",
+                  "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "color":"#f00" }, "wait":10 }, { "set":{ "color":"#0ff" }, "wait":10, "loopTo":0 } ] } }
+                }
+              },
+              { "as":{ "_":"variable" }, "set":{ "hiscore":{ "_":[ "variable", "score" ] } } },
+              { "as":{ "_":"storage" }, "set":{ "hiscore":{ "_":[ "variable", "score" ] } } }
+            ]
+          }
+        ]
+      },
+      { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+      { "as":{ "_":[ "object", "message" ] }, "remove":1 }
+    ],
+    "codeMakeArc":[
+      { "set":{ "arcTop":{ "_":[ "randomNumber", [ 0, 128 ] ] }, "arcWidth":{ "_":[ "randomNumber", [ 96, 128 ] ] } } },
+      { "set":{ "arcX":{ "_":[ "randomNumber", [ 0, { "_":[ 192, "-", { "_":[ "this", "arcWidth" ] } ] } ] ] } } },
+      {
+        "object":[
+          {
+            "set":{ "_":[ "stencil", "groundObjectModel" ] },
+            "image":"sprites", "tileY":144, "width":32, "height":160,
+            "hitboxHeight":160,
+            "hitboxWidth":32,
+            "px":{ "_":[ "that", "arcX" ] },
+            "py":0
+          },
+          {
+            "set":{ "_":[ "stencil", "groundObjectModel" ] },
+            "image":"sprites", "tileY":144, "width":32, "height":160,
+            "hitboxHeight":160,
+            "hitboxWidth":32,
+            "px":{ "_":[ "that", "arcX", "+", { "_":[ "that", "arcWidth" ] }, "+", 32 ] },
+            "py":0
+          },
+          {
+            "set":[ { "_":[ "stencil", "groundObjectModel" ] }, { "_":[ "stencil", "withShadowModel" ] } ],
+            "image":"sprites", "tileY":336, "width":{ "_":[ "that", "arcWidth", "+", 4 ] }, "height":32,
+            "execute":{ "set":{ "hitboxWidth":{ "_":[ "this", "width" ] } } },
+            "hitboxHeight":32,
+            "px":{ "_":[ "that", "arcX", "+", 30 ] },
+            "py":{ "_":[ "that", "arcTop" ] },
+            "pz":99
+          }
+        ]
+      }
+    ],
+    "codeNextSegment":[
+      { "sum":1, "to":{ "_":[ "this", "segmentId" ] } },
+      {
+        "set":{
+          "bossIntroTimer":100,
+          "bossSpawnParts":0,
+          "bossSpawnTimer":0,
+          "segment":{ "_":[ "this", "stage", "segments", { "_":[ "this", "segmentId" ] } ] },
+          "segmentPosition":0
+        }
+      }
+    ],
+    "codeRemoveThreeDee":[ { "as":{ "_":[ "this", "shadow" ] }, "remove":1 }, { "remove":1 } ],
+    "player":{
+      "set":[ { "_":[ "stencil", "threeDeeModel" ] }, { "_":[ "stencil", "withShadowModel" ] } ],
+      "image":"sprites", "tileY":16, "width":32, "height":32,
+      "animations":{
+        "fall":{ "frame":5 },
+        "flyCenter":{ "frame":1 },
+        "flyLeft":{ "frame":0 },
+        "flyRight":{ "frame":2 },
+        "ground":{ "frame":6 },
+        "walk":{ "frames":[ 3, 4 ], "speed":3, "loopTo":0 }
+      },
+      "hitboxHeight":16,
+      "hitboxWidth":16,
+      "hitboxX":8,
+      "hitboxY":8,
+      "invulnerability":0,
+      "px":112,
+      "py":112,
+      "pz":0,
+      "stunned":0,
+      "states":[
+        {
+          "set":{ "pz":0, "stunned":0 },
+          "execute":{ "as":{ "_":"scene" }, "set":{ "moving":1 } },
+          "code":{
+            "name":"Execute",
+            "data":[
+              {
+                "when":{ "_":[ "this", "stunned" ] },
+                "execute":[
+                  { "subtract":1, "to":{ "_":[ "this", "stunned" ] } },
+                  { "set":{ "forceX":0, "forceY":0 } },
+                  {
+                    "when":{ "_":[ "this", "stunned", "%", 2 ] },
+                    "sum":1,
+                    "to":{ "_":[ "this", "px" ] },
+                    "elseExecute":{ "subtract":1, "to":{ "_":[ "this", "px" ] } }
+                  }
+                ],
+                "elseExecute":[
+                  {
+                    "when":{ "_":[ "keyRight", "isDown" ] },
+                    "sum":1,
+                    "to":{ "_":[ "this", "forceX" ] },
+                    "elseExecute":{
+                      "when":{ "_":[ "keyLeft", "isDown" ] },
+                      "subtract":1,
+                      "to":{ "_":[ "this", "forceX" ] },
+                      "elseExecute":{ "multiply":0.5, "to":{ "_":[ "this", "forceX" ] } }
+                    }
+                  },
+                  {
+                    "when":{ "_":[ "keyDown", "isDown" ] },
+                    "sum":1,
+                    "to":{ "_":[ "this", "forceY" ] },
+                    "elseExecute":{
+                      "when":{ "_":[ "keyUp", "isDown" ] },
+                      "subtract":1,
+                      "to":{ "_":[ "this", "forceY" ] },
+                      "elseExecute":{ "multiply":0.5, "to":{ "_":[ "this", "forceY" ] } }
+                    }
+                  },
+                  { "when":{ "_":[ "keyA", "isHit" ] }, "object":{ "_":[ "stencil", "playerBullet" ] }, "playAudio":"fire" }
+                ]
+              },
+              { "set":{ "forceX":{ "_":[ "this", "forceX", "limitValue", [ -6, 6 ] ] }, "forceY":{ "_":[ "this", "forceY", "limitValue", [ -6, 6 ] ] } } },
+              { "sum":{ "_":[ "this", "forceX" ] }, "to":{ "_":[ "this", "px" ] } },
+              { "sum":{ "_":[ "this", "forceY" ] }, "to":{ "_":[ "this", "py" ] } },
+              { "when":{ "_":[ "this", "px", "isLessThan", 0 ] }, "set":{ "forceX":0, "px":0 } },
+              { "when":{ "_":[ "this", "py", "isLessThan", 0 ] }, "set":{ "forceY":0, "py":0 } },
+              { "when":{ "_":[ "this", "px", "isGreaterThan", 224 ] }, "set":{ "forceX":0, "px":224 } },
+              { "when":{ "_":[ "this", "py", "isGreaterThan", 128 ] }, "set":{ "forceY":0, "py":128 } },
+              {
+                "when":{ "_":[ "this", "invulnerability" ] },
+                "execute":[ { "subtract":1, "to":{ "_":[ "this", "invulnerability" ] } }, { "set":{ "visible":{ "_":[ "this", "visible", "not" ] } } } ],
+                "elseExecute":[
+                  { "set":{ "visible":1 } },
+                  {
+                    "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "hitplayer" ] }, "all":1 } ] },
+                    "as":{ "_":"that" },
+                    "execute":{
+                      "when":{ "_":[ "this", "zIndex", "-", { "_":[ "that", "zIndex" ] }, "abs", "isLessThan", 5 ] },
+                      "execute":[ { "executeAction":"hasHit" }, { "as":{ "_":"that" }, "executeAction":"hit" } ]
+                    }
+                  }
+                ]
+              },
+              {
+                "when":{ "_":[ "this", "py", "isEqualTo", 128 ] },
+                "set":{ "animation":"walk" },
+                "elseExecute":{
+                  "when":{ "_":[ "this", "px", "isLessThan", 53 ] },
+                  "set":{ "animation":"flyLeft" },
+                  "elseExecute":{ "when":{ "_":[ "this", "px", "isLessThan", 138 ] }, "set":{ "animation":"flyCenter" }, "elseExecute":{ "set":{ "animation":"flyRight" } } }
+                }
+              }
+            ]
+          },
+          "actions":{
+            "name":"hit",
+            "execute":[
+              { "playAudio":"open" },
+              {
+                "when":{ "_":[ "that", "stunPlayer" ] },
+                "execute":{ "set":{ "stunned":25 } },
+                "elseExecute":[
+                  { "when":{ "_":[ "cheat", "unlimitedlives", "not" ] }, "subtract":1, "to":{ "_":[ "scene", "lives" ] } },
+                  { "_":[ "stencil", "cloud" ] },
+                  { "set":{ "pz":{ "_":[ "that", "pz", "-", 5 ] }, "state":"bump" } }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name":"bump",
+          "set":{ "visible":1, "forceY":-5 },
+          "execute":{ "as":{ "_":"scene" }, "set":{ "moving":0 } },
+          "code":{
+            "name":"Execute",
+            "data":[
+              { "sum":1, "to":{ "_":[ "this", "forceY" ] } },
+              {
+                "when":{ "_":[ "this", "py", "isGreaterThan", 128 ] },
+                "execute":[
+                  { "set":{ "animation":"ground", "py":128 } },
+                  {
+                    "when":{ "_":[ "this", "forceY", "abs", "isLessThan", 3 ] },
+                    "execute":{
+                      "when":{ "_":[ "scene", "lives" ] },
+                      "set":{ "state":"prepare" },
+                      "elseExecute":[ { "set":{ "state":"dead" } }, { "as":{ "_":"scene" }, "set":{ "state":"gameover" } } ]
+                    },
+                    "elseExecute":{ "set":{ "forceY":{ "_":[ "this", "forceY", "*", -0.3 ] } }, "playAudio":"open" }
+                  }
+                ],
+                "elseExecute":{ "set":{ "animation":"fall" } }
+              },
+              { "sum":{ "_":[ "this", "forceY" ] }, "to":{ "_":[ "this", "py" ] } },
+              { "_":[ "stencil", "codeApplyThreeDee" ] }
+            ]
+          }
+        },
+        { "name":"prepare", "code":{ "name":"Sequence", "data":[ { "wait":25 }, { "set":{ "invulnerability":75, "state":"default" } } ] } }
+      ]
+    },
+    "playerBullet":{ "type":"hitenemy", "set":{ "_":[ "stencil", "bulletModel" ] }, "tileX":48, "forceZ":5 },
+    "enemyModel":{
+      "type":[ "hitplayer", "enemy" ],
+      "set":[ { "_":[ "stencil", "threeDeeModel" ] }, { "_":[ "stencil", "withShadowModel" ] } ],
+      "width":32, "height":32,
+      "health":2,
+      "hitboxHeight":32,
+      "hitboxWidth":32,
+      "invulnerability":0,
+      "pz":100,
+      "vulnerable":1,
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":{
+            "when":{ "_":[ "this", "invulnerability" ] },
+            "execute":[ { "subtract":1, "to":{ "_":[ "this", "invulnerability" ] } }, { "set":{ "visible":{ "_":[ "this", "visible", "not" ] } } } ],
+            "elseExecute":[
+              { "set":{ "visible":1 } },
+              {
+                "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "hitenemy" ] }, "all":1 } ] },
+                "as":{ "_":"that" },
+                "execute":{
+                  "when":{ "_":[ "this", "zIndex", "-", { "_":[ "that", "zIndex" ] }, "abs", "isLessThan", 5 ] },
+                  "execute":[ { "execute":{ "executeAction":"hasHit" } }, { "when":{ "_":[ "that", "vulnerable" ] }, "as":{ "_":"that" }, "executeAction":"hit" } ]
+                }
+              }
+            ]
+          }
+        },
+        "actions":{
+          "name":"hit",
+          "execute":[
+            { "subtract":1, "to":{ "_":[ "this", "health" ] } },
+            {
+              "when":{ "_":[ "this", "health", "isLessEqualThan", 0 ] },
+              "execute":[
+                { "playAudio":"explode2" },
+                { "sum":{ "_":[ "this", "score" ] }, "to":{ "_":[ "variable", "score" ] } },
+                { "_":[ "stencil", "cloud" ] },
+                { "_":[ "stencil", "codeRemoveThreeDee" ] }
+              ],
+              "elseExecute":{ "set":{ "invulnerability":25 } }
+            }
+          ]
+        }
+      }
+    },
+    "enemyBullet":{ "type":"hitplayer", "set":{ "_":[ "stencil", "bulletModel" ] }, "tileX":112, "forceZ":-5 },
+    "cloud":{
+      "times":5,
+      "object":{ "set":{ "_":[ "stencil", "smoke" ] } },
+      "execute":[
+        { "sum":{ "_":[ "randomNumber", [ { "_":[ "this", "width", "/", -2 ] }, { "_":[ "this", "width", "/", 2 ] } ] ] }, "to":{ "_":[ "that", "px" ] } },
+        { "sum":{ "_":[ "randomNumber", [ { "_":[ "this", "height", "/", -2 ] }, { "_":[ "this", "height", "/", 2 ] } ] ] }, "to":{ "_":[ "that", "py" ] } },
+        { "sum":{ "_":[ "randomNumber", [ -5, 0 ] ] }, "to":{ "_":[ "that", "pz" ] } }
+      ]
+    },
+    "dataStages":[
+      {
+        "colorGround1":"#7f0000",
+        "colorGround2":"#f00",
+        "groundModel":"codeBgLines",
+        "segments":[
+          {
+            "enemies":[ { "set":{ "_":[ "stencil", "plantEnemy" ] } } ],
+            "enemyIntensity":1,
+            "obstacleIntensity":[ 50, 100 ],
+            "obstacles":[ { "object":{ "set":{ "_":[ "stencil", "smallObstacle" ] } } } ],
+            "segmentLength":250
+          },
+          {
+            "enemies":[ { "set":{ "_":[ "stencil", "plantEnemy" ] } } ],
+            "enemyIntensity":2,
+            "obstacleIntensity":[ 50, 75 ],
+            "obstacles":[ { "object":{ "set":{ "_":[ "stencil", "smallObstacle" ] } } } ],
+            "segmentLength":500
+          },
+          {
+            "enemies":[ { "set":{ "_":[ "stencil", "plantEnemy" ] } }, { "set":{ "_":[ "stencil", "birdEnemy" ] } } ],
+            "enemyIntensity":3,
+            "obstacleIntensity":[ 25, 50 ],
+            "obstacles":[ { "object":{ "set":{ "_":[ "stencil", "smallObstacle" ] } } } ],
+            "segmentLength":1000
+          },
+          {
+            "dragonBody":[ { "set":{ "_":[ "stencil", "dragonBody" ] }, "frame":0 } ],
+            "dragonBodyDistance":1,
+            "dragonHead":[ { "set":{ "_":[ "stencil", "dragonHead" ] }, "backFrame":2, "frontFrame":1 } ],
+            "dragonLength":10
+          }
+        ],
+        "skyImage":0
+      },
+      {
+        "colorGround1":"#7f7f7f",
+        "colorGround2":"#007f7f",
+        "groundModel":"codeBgCheckers",
+        "segments":[
+          {
+            "enemies":[ { "set":{ "_":[ "stencil", "birdEnemy" ] } } ],
+            "enemyIntensity":1,
+            "obstacleIntensity":[ 100, 150 ],
+            "obstacles":[ { "object":{ "set":{ "_":[ "stencil", "longObstacle" ] }, "height":{ "_":[ "randomNumber", [ 32, 64 ] ] } } } ],
+            "segmentLength":250
+          },
+          {
+            "enemies":[ { "set":{ "_":[ "stencil", "birdEnemy" ] } } ],
+            "enemyIntensity":2,
+            "obstacleIntensity":[ 50, 75 ],
+            "obstacles":[ { "object":{ "set":{ "_":[ "stencil", "longObstacle" ] }, "height":{ "_":[ "randomNumber", [ 80, 144 ] ] } } } ],
+            "segmentLength":500
+          },
+          {
+            "enemies":[ { "set":{ "_":[ "stencil", "birdEnemy" ] } }, { "set":{ "_":[ "stencil", "botEnemy" ] } } ],
+            "enemyIntensity":3,
+            "obstacleIntensity":[ 25, 50 ],
+            "obstacles":[ { "object":{ "set":{ "_":[ "stencil", "longObstacle" ] } } } ],
+            "segmentLength":1000
+          },
+          {
+            "dragonBody":[
+              {
+                "set":{ "_":[ "stencil", "dragonBody" ] },
+                "frame":3,
+                "enemyWaveSpeedX":0.6,
+                "enemyWaveSpeedY":0.3,
+                "enemyWaveX":10,
+                "enemyWaveY":10,
+                "fireEvery":10,
+                "zWall":20
+              }
+            ],
+            "dragonBodyDistance":1,
+            "dragonHead":[
+              {
+                "set":{ "_":[ "stencil", "dragonHead" ] },
+                "backFrame":5,
+                "enemyWaveSpeedX":0.6,
+                "enemyWaveSpeedY":0.3,
+                "enemyWaveX":10,
+                "enemyWaveY":10,
+                "frontFrame":4,
+                "zWall":20
+              }
+            ],
+            "dragonLength":15
+          }
+        ],
+        "skyImage":128
+      },
+      {
+        "colorGround1":"#f0f",
+        "colorGround2":"#7f007f",
+        "groundModel":"codeBgLines",
+        "segments":[
+          {
+            "enemies":[ { "set":{ "_":[ "stencil", "plantEnemy" ] } } ],
+            "enemyIntensity":3,
+            "obstacleIntensity":[ 25, 50 ],
+            "obstacles":[ { "object":{ "set":{ "_":[ "stencil", "smallObstacle" ] } } } ],
+            "segmentLength":500
+          },
+          {
+            "dragonBody":[ { "set":{ "_":[ "stencil", "dragonBody" ] }, "frame":0, "health":2, "score":200 } ],
+            "dragonBodyDistance":1,
+            "dragonHead":[ { "set":{ "_":[ "stencil", "dragonHead" ] }, "backFrame":2, "frontFrame":1, "health":2, "score":100 } ],
+            "dragonLength":10,
+            "obstacleIntensity":[ 25, 50 ],
+            "obstacles":[ { "object":{ "set":{ "_":[ "stencil", "smallObstacle" ] } } } ]
+          },
+          { "segmentLength":25 },
+          {
+            "enemies":[ { "set":{ "_":[ "stencil", "birdEnemy" ] } } ],
+            "enemyIntensity":3,
+            "obstacleIntensity":[ 25, 50 ],
+            "obstacles":[ { "object":{ "set":{ "_":[ "stencil", "longObstacle" ] } } } ],
+            "segmentLength":500
+          },
+          {
+            "dragonBody":[
+              {
+                "set":{ "_":[ "stencil", "dragonBody" ] },
+                "frame":3,
+                "enemyWaveSpeedX":0.6,
+                "enemyWaveSpeedY":0.3,
+                "enemyWaveX":10,
+                "enemyWaveY":10,
+                "fireEvery":10,
+                "health":2,
+                "score":200,
+                "zWall":20
+              }
+            ],
+            "dragonBodyDistance":1,
+            "dragonHead":[
+              {
+                "set":{ "_":[ "stencil", "dragonHead" ] },
+                "backFrame":5,
+                "enemyWaveSpeedX":0.6,
+                "enemyWaveSpeedY":0.3,
+                "enemyWaveX":10,
+                "enemyWaveY":10,
+                "frontFrame":4,
+                "health":2,
+                "score":100,
+                "zWall":20
+              }
+            ],
+            "dragonLength":15,
+            "obstacleIntensity":[ 50, 75 ],
+            "obstacles":[ { "object":{ "set":{ "_":[ "stencil", "longObstacle" ] } } } ]
+          },
+          { "segmentLength":25 },
+          {
+            "enemies":[ { "set":{ "_":[ "stencil", "spiderEnemy" ] } }, { "set":{ "_":[ "stencil", "plantEnemy" ] } } ],
+            "enemyIntensity":3,
+            "obstacleIntensity":[ 50, 100 ],
+            "obstacles":[ { "execute":{ "_":[ "stencil", "codeMakeArc" ] } } ],
+            "segmentLength":500
+          },
+          {
+            "enemies":[ { "set":{ "_":[ "stencil", "botEnemy" ] } } ],
+            "enemyIntensity":2,
+            "obstacleIntensity":[ 150, 200 ],
+            "obstacles":[ { "execute":{ "_":[ "stencil", "codeMakeArc" ] } } ],
+            "segmentLength":500
+          },
+          {
+            "dragonBody":[
+              {
+                "set":{ "_":[ "stencil", "dragonBody" ] },
+                "frame":6,
+                "enemyWaveSpeedX":0.3,
+                "enemyWaveSpeedY":0.6,
+                "enemyWaveX":20,
+                "enemyWaveY":20,
+                "fireEvery":10,
+                "firePrecision":[ -3, 3 ],
+                "zWall":-5
+              }
+            ],
+            "dragonBodyDistance":1,
+            "dragonHead":[
+              {
+                "set":{ "_":[ "stencil", "dragonHead" ] },
+                "backFrame":8,
+                "enemyWaveSpeedX":0.3,
+                "enemyWaveSpeedY":0.6,
+                "enemyWaveX":20,
+                "enemyWaveY":20,
+                "frontFrame":7,
+                "zWall":-5
+              }
+            ],
+            "dragonLength":15
+          }
+        ],
+        "skyImage":256
+      }
+    ],
+    "dragonBodyPart":{
+      "set":{ "_":[ "stencil", "enemyModel" ] },
+      "image":"sprites", "tileY":112,
+      "forceX":5, "forceY":5, "forceZ":1,
+      "playAudio":"fire",
+      "centerX":112,
+      "centerY":64,
+      "centerZ":100,
+      "enemyWaveSpeedX":0.5,
+      "enemyWaveSpeedY":0.5,
+      "enemyWaveX":5,
+      "enemyWaveY":5,
+      "timerX":0,
+      "timerY":0,
+      "zWall":30,
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":[
+            { "sum":{ "_":[ "this", "enemyWaveSpeedX" ] }, "to":{ "_":[ "this", "timerX" ] } },
+            { "sum":{ "_":[ "this", "enemyWaveSpeedY" ] }, "to":{ "_":[ "this", "timerY" ] } },
+            { "sum":{ "_":[ "this", "forceX" ] }, "to":{ "_":[ "this", "centerX" ] } },
+            { "sum":{ "_":[ "this", "forceY" ] }, "to":{ "_":[ "this", "centerY" ] } },
+            { "sum":{ "_":[ "this", "forceZ" ] }, "to":{ "_":[ "this", "centerZ" ] } },
+            { "when":{ "_":[ "this", "centerY", "isGreaterThan", 128 ] }, "set":{ "forceY":{ "_":[ "this", "forceY", "*", -1 ] }, "centerY":128 } },
+            { "when":{ "_":[ "this", "centerX", "isGreaterThan", 224 ] }, "set":{ "forceX":{ "_":[ "this", "forceX", "*", -1 ] }, "centerX":224 } },
+            { "when":{ "_":[ "this", "centerZ", "isGreaterThan", 100 ] }, "set":{ "forceZ":{ "_":[ "this", "forceZ", "*", -1 ] }, "centerZ":100 } },
+            { "when":{ "_":[ "this", "centerX", "isLessThan", 0 ] }, "set":{ "forceX":{ "_":[ "this", "forceX", "*", -1 ] }, "centerX":0 } },
+            { "when":{ "_":[ "this", "centerY", "isLessThan", 0 ] }, "set":{ "forceY":{ "_":[ "this", "forceY", "*", -1 ] }, "centerY":0 } },
+            {
+              "when":{ "_":[ "this", "centerZ", "isLessThan", { "_":[ "this", "zWall" ] } ] },
+              "set":{ "forceZ":{ "_":[ "this", "forceZ", "*", -1 ] }, "centerZ":{ "_":[ "this", "zWall" ] } }
+            },
+            {
+              "set":{
+                "px":{ "_":[ "this", "centerX", "+", { "_":[ "this", "timerX", "sin", "*", { "_":[ "this", "enemyWaveX" ] } ] }, "limitValue", [ 0, 224 ] ] },
+                "py":{ "_":[ "this", "centerY", "+", { "_":[ "this", "timerY", "cos", "*", { "_":[ "this", "enemyWaveY" ] } ] }, "limitValue", [ 0, 128 ] ] },
+                "pz":{ "_":[ "this", "centerZ" ] }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "dragonBody":{ "type":"bodypart", "set":{ "_":[ "stencil", "dragonBodyPart" ] }, "health":5, "score":250 },
+    "dragonHead":{
+      "set":{ "_":[ "stencil", "dragonBodyPart" ] },
+      "fireEvery":25,
+      "firePrecision":[ 0, 0 ],
+      "health":5,
+      "score":1000,
+      "timerFire":25,
+      "vulnerable":0,
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":[
+            { "set":{ "vulnerable":{ "_":[ "objectTyped", "bodypart", "not" ] } } },
+            {
+              "when":{ "_":[ "this", "forceZ", "isGreaterThan", 0 ] },
+              "set":{ "frame":{ "_":[ "this", "backFrame" ] } },
+              "elseExecute":{ "set":{ "frame":{ "_":[ "this", "frontFrame" ] } } }
+            },
+            {
+              "when":{ "_":[ "this", "timerFire" ] },
+              "subtract":1,
+              "to":{ "_":[ "this", "timerFire" ] },
+              "elseExecute":[
+                {
+                  "object":{
+                    "set":{ "_":[ "stencil", "enemyBullet" ] },
+                    "forceX":{ "_":[ "randomNumber", { "_":[ "that", "firePrecision" ] } ] }, "forceY":{ "_":[ "randomNumber", { "_":[ "that", "firePrecision" ] } ] }
+                  },
+                  "playAudio":"explode"
+                },
+                { "set":{ "timerFire":{ "_":[ "this", "fireEvery" ] } } }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "birdEnemy":{ "set":{ "_":[ "stencil", "floatingEnemyModel" ] }, "frame":1, "enemyWaveX":40, "enemyWaveY":20, "enemyWaveZ":10, "score":150 },
+    "botEnemy":{
+      "set":{ "_":[ "stencil", "floatingEnemyModel" ] },
+      "frame":2,
+      "enemyCenter":30,
+      "enemyWaveSpeedX":0.1,
+      "enemyWaveSpeedY":0.15,
+      "enemyWaveX":60,
+      "enemyWaveY":40,
+      "enemyWaveZ":20,
+      "score":150
+    },
+    "plantEnemy":{ "set":{ "_":[ "stencil", "floatingEnemyModel" ] } },
+    "floatingEnemyModel":{
+      "set":{ "_":[ "stencil", "enemyModel" ] },
+      "image":"sprites", "tileY":80,
+      "centerX":{ "_":[ "randomNumber", [ 0, 224 ] ] },
+      "centerY":{ "_":[ "randomNumber", [ 0, 128 ] ] },
+      "centerZ":100,
+      "enemyCenter":50,
+      "enemyCenterSpeed":0.1,
+      "enemyLife":125,
+      "enemyWaveSpeedX":0.1,
+      "enemyWaveSpeedY":0.1,
+      "enemyWaveSpeedZ":0.1,
+      "enemyWaveX":10,
+      "enemyWaveY":10,
+      "enemyWaveZ":5,
+      "fireEvery":25,
+      "firePrecision":[ 0, 0 ],
+      "score":100,
+      "timerFire":25,
+      "timerX":0,
+      "timerY":0,
+      "timerZ":0,
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":[
+            { "sum":{ "_":[ "this", "enemyWaveSpeedX" ] }, "to":{ "_":[ "this", "timerX" ] } },
+            { "sum":{ "_":[ "this", "enemyWaveSpeedY" ] }, "to":{ "_":[ "this", "timerY" ] } },
+            { "sum":{ "_":[ "this", "enemyWaveSpeedZ" ] }, "to":{ "_":[ "this", "timerZ" ] } },
+            {
+              "when":{ "_":[ "this", "timerFire" ] },
+              "subtract":1,
+              "to":{ "_":[ "this", "timerFire" ] },
+              "elseExecute":[
+                {
+                  "object":{
+                    "set":{ "_":[ "stencil", "enemyBullet" ] },
+                    "forceX":{ "_":[ "randomNumber", { "_":[ "that", "firePrecision" ] } ] }, "forceY":{ "_":[ "randomNumber", { "_":[ "that", "firePrecision" ] } ] }
+                  }
+                },
+                { "set":{ "timerFire":{ "_":[ "this", "fireEvery" ] } } }
+              ]
+            },
+            {
+              "when":{ "_":[ "this", "enemyLife" ] },
+              "execute":[
+                { "subtract":1, "to":{ "_":[ "this", "enemyLife" ] } },
+                {
+                  "subtract":{ "_":[ "this", "centerZ", "-", { "_":[ "this", "enemyCenter" ] }, "*", { "_":[ "this", "enemyCenterSpeed" ] } ] },
+                  "to":{ "_":[ "this", "centerZ" ] }
+                }
+              ],
+              "elseExecute":[
+                { "sum":1, "to":{ "_":[ "this", "centerZ" ] } },
+                { "when":{ "_":[ "this", "pz", "isEqualTo", 100 ] }, "execute":{ "_":[ "stencil", "codeRemoveThreeDee" ] } }
+              ]
+            },
+            {
+              "set":{
+                "px":{ "_":[ "this", "centerX", "+", { "_":[ "this", "timerX", "sin", "*", { "_":[ "this", "enemyWaveX" ] } ] }, "limitValue", [ 0, 224 ] ] },
+                "py":{ "_":[ "this", "centerY", "+", { "_":[ "this", "timerY", "cos", "*", { "_":[ "this", "enemyWaveY" ] } ] }, "limitValue", [ 0, 128 ] ] },
+                "pz":{ "_":[ "this", "centerZ", "+", { "_":[ "this", "timerZ", "sin", "*", { "_":[ "this", "enemyWaveZ" ] } ] }, "limitValue", [ -80, 100 ] ] }
+              }
+            }
+          ]
+        }
+      }
+    },
+    "spiderEnemy":{
+      "set":{ "_":[ "stencil", "floatingEnemyModel" ] },
+      "frame":3,
+      "enemyCenter":20,
+      "enemyWaveSpeedX":0.2,
+      "enemyWaveSpeedY":0.15,
+      "enemyWaveSpeedZ":0.3,
+      "enemyWaveX":60,
+      "enemyWaveY":20,
+      "enemyWaveZ":15,
+      "fireEvery":10,
+      "score":250
+    },
+    "floorPanel":{
+      "type":"floorpanel",
+      "width":256,
+      "zIndex":1,
+      "bgcolor":{ "_":[ "scene", "stage", "colorGround1" ] },
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":[
+            { "set":{ "cy":{ "_":[ "this", "position", "cos" ] }, "dy":{ "_":[ "this", "position", "+", 0.18, "cos" ] } } },
+            { "set":{ "height":{ "_":[ "this", "cy", "-", { "_":[ "this", "dy" ] }, "*", 64 ] }, "y":{ "_":[ 192, "-", { "_":[ "this", "cy", "*", 64 ] } ] } } }
+          ]
+        },
+        "actions":{
+          "name":"scroll",
+          "execute":[ { "sum":0.02, "to":{ "_":[ "this", "position" ] } }, { "when":{ "_":[ "this", "position", "isGreaterThan", 1.75 ] }, "set":{ "position":0 } } ]
+        }
+      }
+    },
+    "longObstacle":{
+      "set":[ { "_":[ "stencil", "groundObjectModel" ] }, { "_":[ "stencil", "withShadowModel" ] } ],
+      "image":"sprites", "tileX":32, "tileY":144, "width":32, "height":{ "_":[ "randomNumber", [ 32, 144 ] ] },
+      "hitboxWidth":32,
+      "px":{ "_":[ "randomNumber", [ 0, 224 ] ] },
+      "states":{ "execute":{ "set":{ "hitboxHeight":{ "_":[ "this", "height" ] }, "py":{ "_":[ 160, "-", { "_":[ "this", "height" ] } ] } } } }
+    },
+    "threeDeeModel":{
+      "hitbox":{ "_":[ "new", { "width":0, "height":0, "x":0, "y":0 } ] },
+      "originX":0, "originY":0,
+      "forceZ":0,
+      "hitboxX":0,
+      "hitboxY":0,
+      "px":0,
+      "py":0,
+      "pz":0,
+      "states":{ "code":{ "name":"Execute", "data":{ "execute":{ "_":[ "stencil", "codeApplyThreeDee" ] } } } }
+    },
+    "bulletModel":{
+      "set":{ "_":[ "stencil", "threeDeeModel" ] },
+      "image":"sprites", "width":16, "height":16,
+      "animations":{ "idle":{ "frames":4, "speed":1, "loopTo":0 } },
+      "animation":"idle",
+      "hitboxHeight":16,
+      "hitboxWidth":16,
+      "px":{ "_":[ "that", "width", "-", 16, "/", 2, "+", { "_":[ "that", "px" ] } ] },
+      "py":{ "_":[ "that", "width", "-", 16, "/", 2, "+", { "_":[ "that", "py" ] } ] },
+      "pz":{ "_":[ "that", "pz" ] },
+      "states":{
+        "execute":{ "sum":{ "_":[ "this", "forceZ" ] }, "to":{ "_":[ "this", "pz" ] } },
+        "code":{
+          "name":"Execute",
+          "data":[
+            { "sum":{ "_":[ "this", "forceX" ] }, "to":{ "_":[ "this", "px" ] } },
+            { "sum":{ "_":[ "this", "forceY" ] }, "to":{ "_":[ "this", "py" ] } },
+            { "sum":{ "_":[ "this", "forceZ" ] }, "to":{ "_":[ "this", "pz" ] } },
+            { "when":{ "_":[ "this", "pz", "isLessThan", -80 ] }, "execute":{ "_":[ "stencil", "codeRemoveThreeDee" ] } },
+            { "when":{ "_":[ "this", "pz", "isGreaterThan", 100 ] }, "execute":{ "_":[ "stencil", "codeRemoveThreeDee" ] } }
+          ]
+        },
+        "actions":{
+          "name":"hasHit",
+          "execute":[ { "object":{ "_":[ "stencil", "smoke" ] }, "playAudio":"blam" }, { "execute":{ "_":[ "stencil", "codeRemoveThreeDee" ] } } ]
+        }
+      }
+    },
+    "groundObjectModel":{
+      "type":[ "floorpanel", "hitplayer" ],
+      "set":{ "_":[ "stencil", "threeDeeModel" ] },
+      "pz":100,
+      "states":{
+        "actions":{
+          "name":"scroll",
+          "execute":[
+            { "subtract":2.5, "to":{ "_":[ "this", "pz" ] } },
+            { "when":{ "_":[ "this", "pz", "isLessThan", -80 ] }, "execute":{ "_":[ "stencil", "codeRemoveThreeDee" ] } },
+            {
+              "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "hitenemy" ] }, "all":1 } ] },
+              "as":{ "_":"that" },
+              "execute":{ "when":{ "_":[ "this", "zIndex", "-", { "_":[ "that", "zIndex" ] }, "abs", "isLessThan", 5 ] }, "execute":{ "executeAction":"hasHit" } }
+            }
+          ]
+        }
+      }
+    },
+    "smallObstacle":{
+      "set":{ "_":[ "stencil", "groundObjectModel" ] },
+      "image":"sprites", "tileX":128, "tileY":48, "width":32, "height":32,
+      "hitboxHeight":32,
+      "hitboxWidth":32,
+      "px":{ "_":[ "randomNumber", [ 0, 224 ] ] },
+      "py":128,
+      "stunPlayer":1
+    },
+    "smoke":{
+      "set":{ "_":[ "stencil", "threeDeeModel" ] },
+      "image":"sprites", "tileY":48, "width":32, "height":32,
+      "animations":{ "spark":{ "frames":4, "speed":1 } },
+      "animation":"spark",
+      "px":{ "_":[ "that", "px", "+", { "_":[ "that", "width", "-", 32, "/", 2 ] } ] },
+      "py":{ "_":[ "that", "py", "+", { "_":[ "that", "height", "-", 32, "/", 2 ] } ] },
+      "pz":{ "_":[ "that", "pz", "-", 10 ] },
+      "states":{ "code":[ { "name":"Physics" }, { "name":"Sequence", "data":[ { "wait":8 }, { "execute":{ "_":[ "stencil", "codeRemoveThreeDee" ] } } ] } ] }
+    },
+    "threeDeeShadow":{
+      "image":"sprites", "tileY":368,
+      "states":{
+        "actions":{
+          "name":"update",
+          "execute":{
+            "set":{
+              "width":{ "_":[ "that", "width", "*", { "_":[ "that", "scale" ] } ] }, "height":{ "_":[ 5, "*", { "_":[ "that", "scale" ] }, "floor" ] },
+              "zIndex":{ "_":[ "that", "zIndex", "-", 200 ] }, "x":{ "_":[ "that", "x", "/", 2, "floor", "*", 2 ] }, "y":{ "_":[ { "_":[ "constant", "rFrontY" ] }, "+", { "_":[ "that", "pz", "*", { "_":[ "constant", "depthRatioY" ] } ] }, "+", { "_":[ 157, "*", { "_":[ "that", "scale" ] } ] }, "/", 2, "floor", "*", 2 ] }
+            }
+          }
+        }
+      }
+    },
+    "withShadowModel":{ "execute":{ "object":{ "_":[ "stencil", "threeDeeShadow" ] }, "assign":{ "_":"that" }, "to":{ "_":[ "this", "shadow" ] } } }
+  },
+  "execute":[
+    { "when":{ "_":[ "storage", "hiscore", "not" ] }, "as":{ "_":"storage" }, "set":{ "hiscore":0 } },
+    { "as":{ "_":"variable" }, "set":{ "hiscore":{ "_":[ "storage", "hiscore" ] } } },
+    {
+      "as":{ "_":"constant" },
+      "set":{ "rBackY":34, "rDepth":100, "rDepthFront":20, "rFrontH":160, "rFrontW":256, "rFrontX":0, "rFrontY":10, "rScale":0.05 }
+    },
+    {
+      "as":{ "_":"constant" },
+      "set":{
+        "depthRatioScale":{ "_":[ 1, "-", { "_":[ "this", "rScale" ] }, "/", { "_":[ "this", "rDepth" ] } ] },
+        "depthRatioX":{ "_":[ "this", "rFrontW", "*", { "_":[ 1, "-", { "_":[ "this", "rScale" ] } ] }, "/", { "_":[ "this", "rDepth", "*", 2 ] } ] },
+        "depthRatioY":{
+          "_":[
+            "this",
+            "rFrontH",
+            "*",
+            { "_":[ 1, "-", { "_":[ "this", "rScale" ] } ] },
+            "/",
+            2,
+            "+",
+            { "_":[ "this", "rBackY" ] },
+            "/",
+            { "_":[ "this", "rDepth" ] }
+          ]
+        }
+      }
+    },
+    {
+      "object":[
+        {
+          "type":"hud",
+          "hudType":"label", "label":"TOP-%number|variable.hiscore|0|8%",
+          "width":240, "height":12,
+          "x":8, "y":0,
+          "font":"spectrum", "lineHeight":12, "outline":"#000"
+        },
+        {
+          "type":"hud",
+          "hudType":"label", "label":"SCORE-%number|variable.score|0|8%",
+          "width":240, "height":12,
+          "x":8, "y":0,
+          "font":"spectrum", "lineHeight":12, "outline":"#000", "textAlign":"right"
+        },
+        {
+          "image":"sprites", "width":240, "height":8,
+          "x":8, "y":182,
+          "states":{ "code":{ "name":"Execute", "data":{ "set":{ "width":{ "_":[ "scene", "lives", "*", 8 ] } } } } }
+        },
+        {
+          "type":"hud",
+          "hudType":"label", "label":"STAGE %text|scene.stageLabel%",
+          "width":240, "height":12,
+          "x":8, "y":180,
+          "font":"spectrum", "lineHeight":12, "outline":"#000", "textAlign":"right"
+        }
+      ],
+      "into":{ "_":"hud" }
+    }
+  ],
+  "scenes":{
+    "intro":{
+      "object":[
+        { "width":256, "height":64, "x":0, "y":128, "bgcolor":{ "_":[ "scene", "stage", "colorGround2" ] } },
+        { "image":"backgrounds", "width":256, "height":128, "x":0, "y":0 },
+        { "image":"logo", "width":208, "height":67, "zIndex":100000, "x":24, "y":44 },
+        {
+          "box":"label", "width":256,
+          "zIndex":100000, "x":0, "y":142,
+          "bgcolor":"#000", "color":"#fff",
+          "font":"spectrum", "fontSize":20, "lineHeight":20, "textAlign":"center", "html":"PRESS START",
+          "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "color":"#fff" }, "wait":10 }, { "set":{ "color":"#000" }, "wait":10, "loopTo":0 } ] } }
+        }
+      ],
+      "execute":{ "_":[ "stencil", "codeBgLines" ] },
+      "stage":{ "colorGround1":"#7f0000", "colorGround2":"#f00" },
+      "stageLabel":1,
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":[
+            { "as":{ "_":[ "object", "floorpanel" ] }, "executeAction":"scroll" },
+            {
+              "when":{ "_":[ "keyA", "isHit" ] },
+              "execute":[ { "as":{ "_":"variable" }, "set":{ "score":0, "stage":0 }, "playAudio":"rampup" }, { "gotoScene":"stage", "withTransition":3 } ]
+            }
+          ]
+        }
+      }
+    },
+    "ending":{
+      "stageLabel":"END",
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[
+            { "subsequence":{ "_":[ "stencil", "codeGameOver" ] } },
+            {
+              "object":{
+                "width":256, "height":1000,
+                "zIndex":10, "x":0, "y":192,
+                "color":"#0ff",
+                "font":"spectrum", "outline":"#000", "textAlign":"center", "html":"PLANET RUNNER<br>(c) 2017<br>A tiny tribute to<br>Space Harrier<br><br><br>Graphics by:<br>KesieV Norimaki<br><br><br>Code by:<br>KesieV Norimaki<br><br><br>Music:<br><br>Equinoxe V<br>by Frantisek Fuka<br><br>StDocs<br>by LaesQ<br><br><br>Big thanks to:<br>Bianca<br>Il Marsicano<br>The JTTA Team<br>Stefano \"Il Kusagari\" Fioretto<br>Romolo Camplani<br>All Akihabara age friends<br><br><br><br><br>Find dragons.<br>Chase dragons.",
+                "forceY":-0.5,
+                "states":{ "code":{ "name":"Physics" } }
+              },
+              "playAudio":"bgm1"
+            },
+            { "wait":1790 },
+            { "gotoScene":"intro", "withTransition":3, "stopChannel":"music" }
+          ]
+        }
+      }
+    },
+    "stage":{
+      "execute":[
+        { "set":{ "stage":{ "_":[ "stencil", "dataStages", { "_":[ "variable", "stage" ] } ] }, "stageLabel":{ "_":[ "variable", "stage", "+", 1 ] } } },
+        { "set":{ "segment":{ "_":[ "this", "stage", "segments", 0 ] }, "segmentId":0, "segmentPosition":0 } },
+        {
+          "object":[
+            { "width":256, "height":64, "x":0, "y":128, "bgcolor":{ "_":[ "scene", "stage", "colorGround2" ] } },
+            { "image":"backgrounds", "tileY":{ "_":[ "scene", "stage", "skyImage" ] }, "width":256, "height":128, "x":0, "y":0 },
+            { "_":[ "stencil", "player" ] }
+          ]
+        },
+        { "execute":{ "_":[ "stencil", { "_":[ "this", "stage", "groundModel" ] } ] } }
+      ],
+      "playAudio":"bgm1",
+      "enemyTimer":25,
+      "introTimer":75,
+      "lives":6,
+      "moving":0,
+      "obstacleTimer":0,
+      "stageClearTimer":50,
+      "states":[
+        {
+          "code":{
+            "name":"Execute",
+            "data":{
+              "when":{ "_":[ "this", "introTimer" ] },
+              "execute":[
+                { "as":{ "_":[ "object", "floorpanel" ] }, "executeAction":"scroll" },
+                { "subtract":1, "to":{ "_":[ "this", "introTimer" ] } },
+                {
+                  "when":{ "_":[ "this", "introTimer", "isEqualTo", 50 ] },
+                  "object":{
+                    "type":"message",
+                    "width":256, "height":30,
+                    "zIndex":100000, "x":0, "y":81,
+                    "bgcolor":"#000", "color":"#0ff",
+                    "font":"spectrum", "fontSize":40, "lineHeight":30, "textAlign":"center", "html":{ "_":[ "STAGE ", ".", { "_":[ "variable", "stage", "+", 1 ] } ] },
+                    "states":{ "code":{ "name":"Sequence", "data":[ { "wait":25 }, { "remove":1 } ] } }
+                  }
+                }
+              ],
+              "elseExecute":{
+                "when":{ "_":[ "this", "segment" ] },
+                "execute":[
+                  {
+                    "when":{ "_":[ "this", "moving" ] },
+                    "execute":[
+                      { "as":{ "_":[ "object", "floorpanel" ] }, "executeAction":"scroll" },
+                      {
+                        "when":{ "_":[ "this", "segment", "segmentLength" ] },
+                        "execute":[
+                          { "sum":1, "to":{ "_":[ "this", "segmentPosition" ] } },
+                          {
+                            "when":{ "_":[ "this", "segmentPosition", "isGreaterThan", { "_":[ "this", "segment", "segmentLength" ] } ] },
+                            "execute":{ "_":[ "stencil", "codeNextSegment" ] }
+                          }
+                        ]
+                      },
+                      {
+                        "when":{ "_":[ "this", "segment", "obstacles" ] },
+                        "execute":{
+                          "when":{ "_":[ "this", "obstacleTimer" ] },
+                          "subtract":1,
+                          "to":{ "_":[ "this", "obstacleTimer" ] },
+                          "elseExecute":[
+                            { "execute":{ "_":[ "randomValue", { "_":[ "scene", "segment", "obstacles" ] } ] } },
+                            { "set":{ "obstacleTimer":{ "_":[ "randomValue", { "_":[ "this", "segment", "obstacleIntensity" ] } ] } } }
+                          ]
+                        }
+                      },
+                      {
+                        "when":{ "_":[ "this", "segment", "enemies" ] },
+                        "execute":{
+                          "when":{ "_":[ "this", "enemyTimer" ] },
+                          "subtract":1,
+                          "to":{ "_":[ "this", "enemyTimer" ] },
+                          "elseExecute":[
+                            {
+                              "when":{ "_":[ "object", "enemy", "count", "isLessThan", { "_":[ "this", "segment", "enemyIntensity" ] } ] },
+                              "object":[ "randomValue", { "_":[ "scene", "segment", "enemies" ] } ]
+                            },
+                            { "set":{ "enemyTimer":25 } }
+                          ]
+                        }
+                      }
+                    ]
+                  },
+                  {
+                    "when":{ "_":[ "this", "segment", "dragonBody" ] },
+                    "execute":{
+                      "when":{ "_":[ "this", "bossIntroTimer" ] },
+                      "execute":[
+                        { "subtract":1, "to":{ "_":[ "this", "bossIntroTimer" ] } },
+                        {
+                          "when":{ "_":[ "this", "bossIntroTimer", "isEqualTo", 75 ] },
+                          "object":{
+                            "type":"message",
+                            "width":256, "height":30,
+                            "zIndex":100000, "x":0, "y":81,
+                            "color":"#f00",
+                            "font":"spectrum", "fontSize":40, "lineHeight":30, "outline":"#000", "textAlign":"center", "html":"WARNING!",
+                            "states":{
+                              "code":{ "name":"Sequence", "data":[ { "set":{ "visible":1 }, "playAudio":"rampup", "wait":2 }, { "set":{ "visible":0 }, "wait":2, "loopTo":0 } ] }
+                            }
+                          },
+                          "stopChannel":"music"
+                        },
+                        { "when":{ "_":[ "this", "bossIntroTimer", "isEqualTo", 25 ] }, "as":{ "_":[ "object", "message" ] }, "remove":1 },
+                        { "when":{ "_":[ "this", "bossIntroTimer", "not" ] }, "playAudio":"bgm2" }
+                      ],
+                      "elseExecute":{
+                        "when":{ "_":[ "this", "bossSpawnParts", "isLessThan", { "_":[ "this", "segment", "dragonLength" ] } ] },
+                        "execute":{
+                          "when":{ "_":[ "this", "bossSpawnTimer" ] },
+                          "subtract":1,
+                          "to":{ "_":[ "this", "bossSpawnTimer" ] },
+                          "elseExecute":[
+                            {
+                              "when":{ "_":[ "this", "bossSpawnParts" ] },
+                              "object":{ "_":[ "this", "segment", "dragonBody", { "_":[ "this", "bossSpawnParts", "%", { "_":[ "this", "segment", "dragonBody", "count" ] } ] } ] },
+                              "elseExecute":{ "object":{ "_":[ "randomValue", { "_":[ "this", "segment", "dragonHead" ] } ] } }
+                            },
+                            { "sum":1, "to":{ "_":[ "this", "bossSpawnParts" ] } },
+                            { "set":{ "bossSpawnTimer":{ "_":[ "this", "segment", "dragonBodyDistance" ] } } }
+                          ]
+                        },
+                        "elseExecute":{
+                          "when":{ "_":[ "objectTyped", "enemy", "not" ] },
+                          "execute":[ { "playAudio":"bgm1", "stopChannel":"music" }, { "_":[ "stencil", "codeNextSegment" ] } ]
+                        }
+                      }
+                    }
+                  }
+                ],
+                "elseExecute":[
+                  { "as":{ "_":[ "object", "floorpanel" ] }, "executeAction":"scroll" },
+                  {
+                    "when":{ "_":[ "this", "stageClearTimer" ] },
+                    "execute":[
+                      { "subtract":1, "to":{ "_":[ "this", "stageClearTimer" ] } },
+                      {
+                        "when":{ "_":[ "this", "stageClearTimer", "isEqualTo", 25 ] },
+                        "execute":[
+                          {
+                            "object":{
+                              "width":256, "height":30,
+                              "zIndex":100000, "x":0, "y":81,
+                              "bgcolor":"#000", "color":"#fff",
+                              "font":"spectrum", "fontSize":40, "lineHeight":30, "textAlign":"center", "html":"STAGE CLEAR",
+                              "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "color":"#000" }, "wait":10 }, { "set":{ "color":"#fff" }, "wait":10, "loopTo":0 } ] } }
+                            }
+                          },
+                          { "sum":{ "_":[ "scene", "lives", "*", 500 ] }, "to":{ "_":[ "variable", "score" ] } }
+                        ]
+                      }
+                    ],
+                    "elseExecute":{
+                      "when":{ "_":[ "keyA", "isHit" ] },
+                      "execute":[
+                        { "sum":1, "to":{ "_":[ "variable", "stage" ] } },
+                        { "stopChannel":"music" },
+                        {
+                          "when":{ "_":[ "stencil", "dataStages", { "_":[ "variable", "stage" ] } ] },
+                          "gotoScene":"stage",
+                          "withTransition":3,
+                          "elseExecute":{ "gotoScene":"ending", "withTransition":3 }
+                        }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "name":"gameover",
+          "code":{ "name":"Sequence", "data":[ { "subsequence":{ "_":[ "stencil", "codeGameOver" ] } }, { "gotoScene":"intro", "withTransition":3 } ] }
+        }
+      ]
+    }
+  }
+}
