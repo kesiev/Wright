@@ -28,6 +28,7 @@ $_CONFIG=Array(
     "cantUnderstand"=>"Uhm. \xF0\x9F\x98\x85 I can't understand your command... Can I suggest a random game for you?",  
     "cantFind"=>"\xF0\x9F\x98\x92 I can't find the specified game. Can I suggest a random game for you?",
     "cantPlay"=>"\xF0\x9F\x98\x85 Sorry, *{gameLabel}* can't be played on Telegram right now. But... Hey! You can still play it \xF0\x9F\x8E\xAE [with your web browser]({gameUrl})!",
+    "groupNotify"=>"Hey! I can help you challenge your friends on some retrogames! Chat directly with @WrightMagBot, choose a game and *Share* it with this group. See you there!",
     "newGameEmoji"=>"\xF0\x9F\x92\xA5",
     "playEmoji"=>"\xF0\x9F\x8E\xAE"
 );
@@ -86,6 +87,7 @@ function telegramGet($botId) {
             "botId"=>$botId,
             "chatId"=>$data["message"]?$data["message"]["chat"]["id"]:"",
             "text"=>$data["message"]?$data["message"]["text"]:"",
+            "fromGroup"=>$data["message"]&&isset($data["message"]["chat"])?$data["message"]["chat"]["type"]=="group":"",
             "inline_query"=>$data["inline_query"]?$data["inline_query"]["query"]:"",
             "inline_query_id"=>$data["inline_query"]?$data["inline_query"]["id"]:"",
             "callback_query_message_id"=>$data["callback_query"]?$data["callback_query"]["message"]["message_id"]:"",
@@ -118,7 +120,11 @@ function sendText($t,$text,$buttons=0,$onetime=true) {
         "parse_mode"=>"markdown",
         "text"=>$text
     );
-    if ($buttons) {
+    if ($buttons=="clear") {
+         $reply["reply_markup"]=json_encode(Array(
+            'hide_keyboard' => true
+        ));
+    } else if ($buttons) {
         $keyboard=Array();
         for ($i=0;$i<count($buttons);$i++)
             array_push($keyboard,Array($buttons[$i]));
@@ -140,7 +146,7 @@ function sendGame($t,$game) {
             "inline_keyboard"=>Array(
                 Array(
                     Array("text"=>"Play solo","callback_game"=>json_encode(Array("game_short_name"=>$game["onTelegram"]))),
-                    Array("text"=>"With friends","url"=>"https://telegram.me/".$_CONFIG["botName"]."?game=".$game["onTelegram"])
+                    Array("text"=>"Share","url"=>"https://telegram.me/".$_CONFIG["botName"]."?game=".$game["onTelegram"])
                 ),
                 Array(
                     Array("text"=>"Read article","url"=>$_CONFIG["siteRoot"].$game["id"])
@@ -219,7 +225,9 @@ if ($t["score_user_id"]) {
         ));    
     } else if ($t["text"]) {
         // Chatbot
-        if (substr($line,0,5)=="play ") {
+        if ($t["fromGroup"])
+            sendText($t,$_CONFIG["groupNotify"],"clear");
+        else if (substr($line,0,5)=="play ") {
             $label=trim(substr($line,5));
             $found=false;
             if (isset($database["byLabel"][$label]))
