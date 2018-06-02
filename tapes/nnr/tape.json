@@ -1,0 +1,933 @@
+{
+  "name":"Nori Nori Revolution Open Mix",
+  "author":"KesieV",
+  "year":2018,
+  "genre":"Music",
+  "description":"<p>Is there anything more random than <a href='https://en.wikipedia.org/wiki/Rhythm_game'>rhythm game history</a>?</p><p>Legend has it that the grandparents of the first true rhythm game were an obscure and apparently successful <a href='http://shmuplations.com/kasco/'>japanese skirt lifting simulator</a> - in which the player had to <i>lift girls skirts in time to some rhythm</i> - and one of the most boring games you that you could find in early 70s arcades: Atari's <a href='https://en.wikipedia.org/wiki/Touch_Me_(arcade_game)'>Touch Me</a>, in which the player had just to repeat a growing sequence of blinking lights hitting buttons.</p><p>Yeah, Touch Me mechanics sounds <i>a little</i> like the more famous and beloved Ralph H. Baer and Howard J. Morrison <a href='https://en.wikipedia.org/wiki/Simon_(game)'>Simon</a> game. And, in fact, they almost <i>cloned it</i> on purpose.</p><p>Baer said about Touch Me that it had <i>\"Nice gameplay. Terrible execution. Visually boring. Miserable, rasping sounds\"</i>. That's why they <i>added colored buttons and musical sound effects</i>, turning a failed game in an eternal classic.</p><p>And looks like that Baer's mantra driven the rhythm game genre from the first excellent attempts, from the standard gamepad of the 1996 rapping dog game <a href='https://en.wikipedia.org/wiki/PaRappa_the_Rapper'>PaRappa The Rapper</a> by NanaOn-Sha, now considered the first true entry of the whole genre, to the full fledged DJ set 7-buttons-and-turntable of the Bemani <a href='https://en.wikipedia.org/wiki/Beatmania'>Beatmania</a> series. And then more colors and button layouts with the frets, whammy bar and motion control of Harmonix's series <a htef='https://en.wikipedia.org/wiki/Guitar_Hero'>Guitar Hero</a> plastic guitars to even <i>whole sets of controllers for a single game</i>, with the plastic drum kit, microphone, keyboard and an even more complex guitar/bass of <a href='https://en.wikipedia.org/wiki/Rock_Band'>Rock Band</a>.</p><p>More colors. And more buttons. And layouts. Colors. Buttons. Layouts. Colors. Buttons. Layouts... till the collapse of 2009, in which a saturated market started rejecting another <i>more of the same</i>.</p><p>Meanwhile, from the late 90s, the Bemani music series splitted from the <i>making</i> paradigm of Beatmania to the more friendly <i>dancing</i> one with the <a href='https://en.wikipedia.org/wiki/Dance_Dance_Revolution'>Dance Dance Revolution</a> series, which managed to both create a strong hardcore fanbase like the precursor and becoming widespread to the worldwide casual audience.</p><p>DDR games are the most recognized rhythm games and are still featured in movies and pop culture in general as <i>cool game for cool people</i> well past the genre market collapse.</p><p>The most straightforward and widespread reason of this <i>cultural overtake</i> is the one that tries to distance it from the <i>gaming</i> experience: dancing is more sexy, less <i>nerdy</i> and more immersive than hitting few buttons.</p><p>But, in my humble opinion, the reason is that Simon was already just perfect as it was: humans are sensory inputs and challenge seekers... and the basic <i>4-buttons learn and repeat</i> gameplay of Touch Me with the the Baer's <i>music and blinking lights</i> disco/concert spice was already the perfect formula!</p><p>Plot!</p><p>Are you ready to rule the dance floor? Welcome to Nori Nori Revolution Open Mix! Start the game, select one of the three available songs and bust the arrows to the rhythm!</p><p>On the song selection screen, use UP/DOWN for selecting a song and the A BUTTON for confirming. While playing, use UP/DOWN/LEFT/RIGHT for hitting an arrow: hit the right direction button just when an arrow reaches the top of the screen! Good luck!</p><p><i>PS: This game has been heavily inspired by the great opensource project <a href='https://www.stepmania.com'>StepMania</a>. I've ported some of the original game data files to something more Wright! readable and written part of the game mechanics from scratch... and it's *very far* from being complete, making few tracks played in the wrong way due to missing features. Feel free to suggest some other opensource song as replacement!</i></p>",
+  "screenshots":[ "nnr-1.png", "nnr-2.png" ],
+  "hardware":{
+    "width":320,
+    "height":200,
+    "filter":"retro",
+    "fps":60
+  },
+  "audioChannels":{
+    "sfx":{ "volume":1, "samples":[ "petals", "heal", "hit", "read", "transport" ] },
+    "tracks":{ "volume":1, "samples":[ "bgm1", "bgm2", "bgm3" ] }
+  },
+  "cheats":{
+    "unlimitedlife":"Unlimited life (no hi-score, sorry!)"
+  },
+  "resources":{
+    "commodore":"commodore.font",
+    "data":"data.json",
+    "logo":"logo.png",
+    "sprites":"sprites.png",
+    "bgm1":"songs/mta.ogg",
+    "bgm2":"songs/st.ogg",
+    "bgm3":"songs/gu.ogg",
+    "heal":"../default/c64sounds/heal.ogg",
+    "hit":"../default/c64sounds/hit.ogg",
+    "petals":"../default/c64sounds/petals.ogg",
+    "read":"../default/c64sounds/read.ogg",
+    "transport":"../default/c64sounds/transport.ogg",
+    "wallpaper1":"songs/mta.png",
+    "wallpaper2":"songs/st.png",
+    "wallpaper3":"songs/gu.png"
+  },
+  "stencils":{
+    "codeAcceptCommand":[
+      { "assign":0, "to":{ "_":[ "scene", "command", { "_":[ "this", "track" ] } ] } },
+      {
+        "when":{ "_":[ "this", "noteType" ] },
+        "execute":{ "_":[ "stencil", "codeRemoveNote" ] },
+        "elseExecute":{ "when":{ "_":[ "this", "noteEnd" ] }, "set":{ "noteType":1 }, "elseExecute":{ "_":[ "stencil", "codeRemoveNote" ] } }
+      }
+    ],
+    "codeBad":[
+      { "_":[ "stencil", "codeGoodCombo" ] },
+      { "subtract":2, "to":{ "_":[ "scene", "life" ] } },
+      { "_":[ "stencil", "codeCheckCounters" ] },
+      { "set":{ "notifyColor":"#9b51a5", "notifyLabel":"BAD" }, "execute":{ "_":[ "stencil", "codeNotify" ] } }
+    ],
+    "codeBadCombo":[
+      { "when":{ "_":[ "scene", "badcombo", "not" ] }, "as":{ "_":"scene" }, "set":{ "badcombo":1, "combo":0 } },
+      { "sum":1, "to":{ "_":[ "scene", "combo" ] } }
+    ],
+    "codeCheckCounters":[
+      { "when":{ "_":[ "scene", "life", "isGreaterEqualThan", 100 ] }, "as":{ "_":"scene" }, "set":{ "life":100 } },
+      {
+        "when":{ "_":[ "scene", "life", "isLessThan", 0 ] },
+        "execute":[
+          { "as":{ "_":"scene" }, "set":{ "life":0 } },
+          { "when":{ "_":[ "cheat", "unlimitedlife", "not" ] }, "as":{ "_":"scene" }, "set":{ "state":"failed" } }
+        ]
+      }
+    ],
+    "codeDisableNote":[
+      { "set":{ "enabled":0, "noteHit":0 } },
+      { "set":{ "tileY":42 } },
+      { "as":{ "_":[ "this", "guiEnd" ] }, "set":{ "tileY":42 } },
+      { "as":{ "_":[ "this", "guiTail" ] }, "set":{ "bgcolor":"#6a5400" } }
+    ],
+    "codeGood":[
+      { "_":[ "stencil", "codeGoodCombo" ] },
+      { "_":[ "stencil", "codeCheckCounters" ] },
+      { "sum":{ "_":[ "scene", "combo" ] }, "to":{ "_":[ "scene", "score" ] } },
+      { "set":{ "notifyColor":"#52429d", "notifyLabel":"GOOD" }, "execute":{ "_":[ "stencil", "codeNotify" ] } }
+    ],
+    "codeGoodCombo":[
+      { "when":{ "_":[ "scene", "badcombo" ] }, "as":{ "_":"scene" }, "set":{ "badcombo":0, "combo":0 } },
+      { "sum":1, "to":{ "_":[ "scene", "combo" ] } }
+    ],
+    "codeMarvelous":[
+      { "_":[ "stencil", "codeGoodCombo" ] },
+      { "sum":2, "to":{ "_":[ "scene", "life" ] } },
+      { "_":[ "stencil", "codeCheckCounters" ] },
+      { "sum":{ "_":[ "scene", "combo", "*", 4 ] }, "to":{ "_":[ "scene", "score" ] } },
+      { "set":{ "notifyColor":"#8a7bce", "notifyLabel":"MARVELOUS", "notifyState":"sine" }, "execute":{ "_":[ "stencil", "codeNotify" ] } }
+    ],
+    "codeMine":[
+      { "_":[ "stencil", "codeBadCombo" ] },
+      { "_":[ "stencil", "codeCheckCounters" ] },
+      { "subtract":8, "to":{ "_":[ "scene", "life" ] } },
+      { "set":{ "notifyColor":"#984b43", "notifyLabel":"BOOM!", "notifyState":"rumble" }, "execute":{ "_":[ "stencil", "codeNotify" ] } }
+    ],
+    "codeMiss":[
+      { "_":[ "stencil", "codeBadCombo" ] },
+      { "subtract":8, "to":{ "_":[ "scene", "life" ] } },
+      { "_":[ "stencil", "codeCheckCounters" ] },
+      { "set":{ "notifyColor":"#984b43", "notifyLabel":"MISS", "notifyState":"shake" }, "execute":{ "_":[ "stencil", "codeNotify" ] } }
+    ],
+    "codeNoteMissed":[
+      { "_":[ "stencil", "codeDisableNote" ] },
+      { "_":[ "stencil", "codeBadCombo" ] },
+      { "subtract":8, "to":{ "_":[ "scene", "life" ] } },
+      { "as":{ "_":"scene" }, "set":{ "miss":1 } },
+      { "_":[ "stencil", "codeCheckCounters" ] },
+      { "set":{ "notifyColor":"#984b43", "notifyLabel":"POOR", "notifyState":"shake" }, "execute":{ "_":[ "stencil", "codeNotify" ] } }
+    ],
+    "codeNotify":[
+      { "as":{ "_":[ "object", "notify" ] }, "remove":1 },
+      {
+        "object":[
+          {
+            "type":"notify",
+            "width":102, "height":10,
+            "zIndex":1000, "x":109, "y":130,
+            "color":{ "_":[ "that", "notifyColor" ] },
+            "font":"commodore", "fontSize":8, "lineHeight":10, "outline":"#000", "textAlign":"center", "html":{ "_":[ "that", "notifyLabel" ] },
+            "timer":0,
+            "state":{ "_":[ "that", "notifyState" ] },
+            "states":[
+              { "name":"shake", "code":{ "name":"Sequence", "data":[ { "set":{ "x":109 }, "wait":2 }, { "set":{ "x":110 }, "wait":2, "loopTo":0 } ] } },
+              { "name":"rumble", "code":{ "name":"Sequence", "data":[ { "set":{ "x":108 }, "wait":1 }, { "set":{ "x":110 }, "wait":1, "loopTo":0 } ] } },
+              {
+                "name":"sine",
+                "code":{
+                  "name":"Execute",
+                  "data":[ { "sum":0.2, "to":{ "_":[ "this", "timer" ] } }, { "set":{ "x":{ "_":[ "this", "timer", "sin", "*", 2, "+", 109 ] } } } ]
+                }
+              }
+            ]
+          },
+          { "type":"notify", "states":{ "code":{ "name":"Sequence", "data":[ { "wait":50 }, { "as":{ "_":[ "object", "notify" ] }, "remove":1 } ] } } }
+        ]
+      },
+      {
+        "when":{ "_":[ "scene", "combo", "isGreaterThan", 1 ] },
+        "execute":{
+          "object":{
+            "type":"notify",
+            "width":102, "height":10,
+            "zIndex":1000, "x":109, "y":140,
+            "font":"commodore", "fontSize":8, "lineHeight":10, "outline":"#000", "textAlign":"center", "html":{ "_":[ "scene", "combo", ".", " COMBO" ] },
+            "execute":{ "when":{ "_":[ "scene", "badcombo" ] }, "set":{ "color":"#c37b75" }, "elseExecute":{ "set":{ "color":"#a3e599" } } }
+          }
+        }
+      }
+    ],
+    "codePerfect":[
+      { "_":[ "stencil", "codeGoodCombo" ] },
+      { "sum":2, "to":{ "_":[ "scene", "life" ] } },
+      { "_":[ "stencil", "codeCheckCounters" ] },
+      { "sum":{ "_":[ "scene", "combo", "*", 2 ] }, "to":{ "_":[ "scene", "score" ] } },
+      { "set":{ "notifyColor":"#c9d684", "notifyLabel":"PERFECT", "notifyState":"sine" }, "execute":{ "_":[ "stencil", "codeNotify" ] } }
+    ],
+    "codeRemoveNote":[ { "as":{ "_":[ "this", "guiEnd" ] }, "remove":1 }, { "as":{ "_":[ "this", "guiTail" ] }, "remove":1 }, { "remove":1 } ],
+    "modelIntroStrip":{
+      "type":"message",
+      "width":320,
+      "zIndex":100001, "x":-320,
+      "font":"commodore", "textAlign":"center",
+      "stripWait":60,
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[
+            { "set":{ "x":{ "_":[ "this", "x", "/", 2 ] } }, "wait":1, "loop":1, "until":{ "_":[ "this", "x", "isLessThan", 1 ] } },
+            { "set":{ "x":0 }, "wait":{ "_":[ "this", "stripWait" ] } },
+            { "set":{ "x":1 } },
+            { "set":{ "x":{ "_":[ "this", "x", "*", 2 ] } }, "wait":1, "loop":1, "until":{ "_":[ "this", "x", "isGreaterThan", 320 ] } },
+            { "remove":1 }
+          ]
+        }
+      }
+    },
+    "dataNoteColors":[ "#984b43", "#52429d", "#9b51a5", "#c9d684", "#8a7bce", "#9b6739", "#79c1c8", "#8a8a8a" ],
+    "stripPanel":{
+      "type":"message",
+      "width":330,
+      "zIndex":100000, "x":-5, "y":100,
+      "border":"#000",
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":{
+            "when":{ "_":[ "this", "height", "isLessThan", 28 ] },
+            "execute":[ { "subtract":1, "to":{ "_":[ "this", "y" ] } }, { "sum":2, "to":{ "_":[ "this", "height" ] } } ]
+          }
+        }
+      }
+    },
+    "trackElementModel":{
+      "type":"musicsync",
+      "width":{ "_":[ "constant", "noteWidth" ] },
+      "zIndex":20,
+      "visible":0,
+      "yGap":0,
+      "states":{
+        "actions":{
+          "name":"update",
+          "execute":[
+            {
+              "set":{
+                "y":{ "_":[ "this", "time", "-", { "_":[ "scene", "time" ] }, "*", { "_":[ "scene", "noteRatio" ] }, "+", { "_":[ "constant", "headPosition" ] }, "+", { "_":[ "this", "yGap" ] } ] },
+                "visible":1
+              }
+            },
+            {
+              "when":{ "_":[ "this", "enabled", "not" ] },
+              "execute":{ "when":{ "_":[ "this", "y", "isLessThan", { "_":[ "this", "height", "*", -1 ] } ] }, "remove":1 }
+            }
+          ]
+        }
+      }
+    },
+    "fakeNote":{ "set":{ "_":[ "stencil", "trackElementModel" ] }, "image":"sprites", "height":{ "_":[ "constant", "noteHeight" ] } },
+    "note":{
+      "set":{ "_":[ "stencil", "trackElementModel" ] },
+      "image":"sprites", "height":{ "_":[ "constant", "noteHeight" ] },
+      "enabled":1,
+      "toInitialize":1,
+      "states":{
+        "actions":{
+          "name":"update",
+          "execute":[
+            {
+              "when":{ "_":[ "this", "toInitialize" ] },
+              "execute":[
+                {
+                  "set":{
+                    "tileY":{ "_":[ "this", "noteColor", "*", 21, "+", 63 ] },
+                    "x":{ "_":[ "this", "track", "*", { "_":[ "constant", "noteGap" ] }, "+", { "_":[ "constant", "notesX" ] } ] }, "frame":{ "_":[ "this", "track" ] },
+                    "toInitialize":0
+                  }
+                },
+                {
+                  "when":{ "_":[ "this", "noteEnd" ] },
+                  "execute":[
+                    {
+                      "object":{
+                        "set":{ "_":[ "stencil", "noteTail" ] },
+                        "height":{ "_":[ "that", "noteEnd", "-", { "_":[ "that", "time" ] }, "*", { "_":[ "scene", "noteRatio" ] } ] },
+                        "x":{ "_":[ "that", "x" ] },
+                        "bgcolor":{ "_":[ "stencil", "dataNoteColors", { "_":[ "that", "noteColor" ] } ] },
+                        "time":{ "_":[ "that", "time" ] }
+                      },
+                      "assign":{ "_":"that" },
+                      "to":{ "_":[ "this", "guiTail" ] }
+                    },
+                    {
+                      "object":{
+                        "set":{ "_":[ "stencil", "fakeNote" ] },
+                        "tileY":{ "_":[ "that", "tileY" ] },
+                        "x":{ "_":[ "that", "x" ] }, "frame":{ "_":[ "that", "frame" ] },
+                        "time":{ "_":[ "that", "noteEnd" ] }
+                      },
+                      "assign":{ "_":"that" },
+                      "to":{ "_":[ "this", "guiEnd" ] }
+                    }
+                  ]
+                },
+                { "when":{ "_":[ "this", "noteType", "isEqualTo", 2 ] }, "set":{ "tileY":21 } }
+              ]
+            },
+            {
+              "when":{ "_":[ "this", "enabled" ] },
+              "execute":{
+                "when":{ "_":[ "this", "noteType", "isEqualTo", 2 ] },
+                "execute":[
+                  { "when":{ "_":[ "scene", "beat" ] }, "set":{ "frame":1 }, "elseExecute":{ "set":{ "frame":0 } } },
+                  {
+                    "set":{
+                      "gap":{ "_":[ "this", "time", "-", { "_":[ "scene", "time" ] } ] },
+                      "noteHit":{ "_":[ "scene", "command", { "_":[ "this", "track" ] }, "isNotEqualTo", 0 ] }
+                    }
+                  },
+                  {
+                    "when":{ "_":[ "this", "gap", "isLessThan", -0.09 ] },
+                    "set":{ "enabled":0 },
+                    "elseExecute":{
+                      "when":{ "_":[ "this", "noteHit" ] },
+                      "execute":{
+                        "when":{ "_":[ "this", "gap", "isLessEqualThan", 0.09 ] },
+                        "execute":[ { "_":[ "stencil", "codeAcceptCommand" ] }, { "_":[ "stencil", "codeMine" ] } ]
+                      }
+                    }
+                  }
+                ],
+                "elseExecute":[
+                  {
+                    "when":{ "_":[ "this", "noteType", "isEqualTo", 0 ] },
+                    "set":{
+                      "gap":{ "_":[ "this", "time", "-", { "_":[ "scene", "time" ] } ] },
+                      "noteHit":{ "_":[ "scene", "command", { "_":[ "this", "track" ] }, "isEqualTo", 1 ] },
+                      "onFarMiss":0
+                    }
+                  },
+                  {
+                    "when":{ "_":[ "this", "noteType", "isEqualTo", 1 ] },
+                    "execute":{
+                      "set":{
+                        "gap":{ "_":[ "this", "noteEnd", "-", { "_":[ "scene", "time" ] } ] },
+                        "noteHit":{ "_":[ "scene", "command", { "_":[ "this", "track" ] }, "isEqualTo", -1 ] },
+                        "onFarMiss":1
+                      }
+                    }
+                  },
+                  {
+                    "when":{ "_":[ "this", "gap", "isLessThan", -0.1 ] },
+                    "execute":{ "_":[ "stencil", "codeNoteMissed" ] },
+                    "elseExecute":[
+                      { "set":{ "gap":{ "_":[ "this", "gap", "abs" ] } } },
+                      {
+                        "when":{ "_":[ "this", "noteHit" ] },
+                        "execute":{
+                          "when":{ "_":[ "this", "gap", "isLessEqualThan", 0.0225 ] },
+                          "execute":[ { "_":[ "stencil", "codeAcceptCommand" ] }, { "_":[ "stencil", "codeMarvelous" ] } ],
+                          "elseExecute":{
+                            "when":{ "_":[ "this", "gap", "isLessEqualThan", 0.045 ] },
+                            "execute":[ { "_":[ "stencil", "codeAcceptCommand" ] }, { "_":[ "stencil", "codePerfect" ] } ],
+                            "elseExecute":{
+                              "when":{ "_":[ "this", "gap", "isLessEqualThan", 0.135 ] },
+                              "execute":[ { "_":[ "stencil", "codeAcceptCommand" ] }, { "_":[ "stencil", "codeGood" ] } ],
+                              "elseExecute":{
+                                "when":{ "_":[ "this", "gap", "isLessEqualThan", 0.1 ] },
+                                "execute":[ { "_":[ "stencil", "codeAcceptCommand" ] }, { "_":[ "stencil", "codeBad" ] } ],
+                                "elseExecute":{ "when":{ "_":[ "this", "onFarMiss" ] }, "execute":{ "_":[ "stencil", "codeNoteMissed" ] } }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    ]
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      }
+    },
+    "noteTail":{ "set":{ "_":[ "stencil", "trackElementModel" ] }, "zIndex":9, "yGap":{ "_":[ { "_":[ "constant", "noteHeight" ] }, "/", 2 ] } },
+    "warningScreen":{
+      "states":{
+        "execute":{
+          "object":[
+            { "width":320, "height":200, "x":0, "y":0, "bgcolor":"#c9d684" },
+            { "image":"sprites", "tileX":254, "width":172, "height":150, "zIndex":5, "x":74, "y":25 },
+            {
+              "width":320, "height":40,
+              "zIndex":10, "x":0, "y":20,
+              "color":"#9b6739",
+              "font":"commodore", "fontSize":16, "lineHeight":40, "outline":"#000", "textAlign":"center", "html":"CAUTION"
+            },
+            {
+              "width":288, "height":200,
+              "zIndex":10, "x":16, "y":80,
+              "color":"#fff",
+              "font":"commodore", "fontSize":8, "lineHeight":10, "outline":"#000", "textAlign":"center", "html":{ "_":[ "scene", "text" ] }
+            }
+          ]
+        }
+      }
+    }
+  },
+  "execute":[
+    { "as":{ "_":"constant" }, "set":{ "headPosition":29, "noteGap":26, "noteHeight":21, "noteWidth":24, "notesX":109 } },
+    { "when":{ "_":[ "storage", "hiscores", "not" ] }, "as":{ "_":"storage" }, "set":{ "hiscores":{ "_":[ "new", {} ] } } },
+    { "as":{ "_":"variable" }, "set":{ "hiscores":{ "_":[ "storage", "hiscores" ] } } }
+  ],
+  "scenes":{
+    "intro":{
+      "object":[
+        { "image":"logo", "width":290, "height":138, "zIndex":10, "x":15, "y":10 },
+        { "width":320, "height":200, "x":0, "y":0, "bgcolor":"#c9d684" },
+        {
+          "width":320, "height":10,
+          "zIndex":10, "x":0, "y":190,
+          "bgcolor":"#000", "color":"#fff",
+          "font":"commodore", "fontSize":8, "lineHeight":10, "textAlign":"center", "html":"Inspired by https://www.stepmania.com"
+        },
+        {
+          "box":"label", "width":320,
+          "zIndex":3000, "x":0, "y":160,
+          "color":"#000",
+          "font":"commodore", "fontSize":8, "lineHeight":20, "textAlign":"center", "html":"PRESS START",
+          "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "visible":0 }, "wait":20 }, { "set":{ "visible":1 }, "wait":20, "loopTo":0 } ] } }
+        }
+      ],
+      "execute":[
+        { "set":{ "counter":0 } },
+        {
+          "times":137,
+          "execute":[
+            {
+              "object":{
+                "width":16, "height":16,
+                "zIndex":1, "x":{ "_":[ "that", "counter", "%", 21, "-", 1, "*", 16 ] }, "y":{ "_":[ "that", "counter", "/", 21, "floor", "-", 1, "*", 16 ] },
+                "bgcolor":"#a3e599",
+                "states":{
+                  "code":{
+                    "name":"Sequence",
+                    "data":[
+                      { "sum":1, "to":{ "_":[ "this", "x" ] } },
+                      { "sum":1, "to":{ "_":[ "this", "y" ] } },
+                      { "wait":2, "cycles":15, "loopTo":0 },
+                      { "subtract":15, "to":{ "_":[ "this", "x" ] } },
+                      { "subtract":15, "to":{ "_":[ "this", "y" ] } },
+                      { "wait":2, "loopTo":0 }
+                    ]
+                  }
+                }
+              }
+            },
+            { "sum":2, "to":{ "_":[ "this", "counter" ] } }
+          ]
+        }
+      ],
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":{
+            "when":{ "_":[ "keyA", "isHit" ] },
+            "execute":[
+              { "as":{ "_":"variable" }, "set":{ "currentTrack":0 }, "playAudio":"transport" },
+              { "when":{ "_":"audioEnabled" }, "gotoScene":"warning", "withTransition":3, "elseExecute":{ "gotoScene":"noaudio", "withTransition":3 } }
+            ]
+          }
+        }
+      }
+    },
+    "noaudio":{
+      "set":{ "_":[ "stencil", "warningScreen" ] },
+      "text":"Looks like that audio is not available or disabled.<br><br>Please make sure that everything is OK and try restarting this game again.",
+      "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"intro", "withTransition":3 } } }
+    },
+    "song":{
+      "badcombo":0,
+      "beat":0,
+      "combo":0,
+      "command":{ "_":[ "new", [] ] },
+      "life":50,
+      "score":0,
+      "trackPosition":0,
+      "states":[
+        {
+          "execute":[
+            { "_":[ "stencil", "codeNotify" ] },
+            { "set":{ "track":{ "_":[ "resource", "data", "songs", { "_":[ "variable", "currentTrack" ] } ] } } },
+            { "set":{ "beatEvery":{ "_":[ 60, "/", { "_":[ "this", "track", "bpm" ] } ] }, "notes":{ "_":[ "this", "track", "notes" ] } } },
+            {
+              "set":{
+                "nextBeat":{ "_":[ "this", "track", "offset", "+", { "_":[ "this", "beatEvery" ] } ] },
+                "noteRatio":{ "_":[ { "_":[ "constant", "noteHeight" ] }, "/", { "_":[ "this", "beatEvery" ] }, "*", { "_":[ "this", "track", "notesSpeed" ] } ] }
+              }
+            },
+            { "object":{ "image":{ "_":[ "scene", "track", "wallpaper" ] }, "width":320, "height":200, "x":0, "y":0 } }
+          ],
+          "code":[
+            {
+              "name":"Sequence",
+              "data":[
+                { "object":{ "set":{ "_":[ "stencil", "stripPanel" ] }, "bgcolor":"#fff" } },
+                { "wait":20 },
+                {
+                  "object":{
+                    "set":{ "_":[ "stencil", "modelIntroStrip" ] },
+                    "height":10,
+                    "y":90,
+                    "color":"#000",
+                    "fontSize":8, "lineHeight":10, "html":{ "_":[ "that", "track", "songName" ] },
+                    "stripWait":120
+                  }
+                },
+                { "wait":10 },
+                {
+                  "object":{
+                    "set":{ "_":[ "stencil", "modelIntroStrip" ] },
+                    "height":10,
+                    "y":100,
+                    "color":"#8a8a8a",
+                    "fontSize":8, "lineHeight":10, "html":{ "_":[ "by ", ".", { "_":[ "that", "track", "artist" ] } ] },
+                    "stripWait":120
+                  }
+                },
+                { "wait":150 },
+                {
+                  "object":[
+                    { "image":"sprites", "tileX":96, "tileY":43, "width":8, "height":197, "zIndex":5, "x":{ "_":[ { "_":[ "constant", "notesX" ] }, "-", 18 ] }, "y":1 },
+                    {
+                      "width":4,
+                      "zIndex":6, "x":{ "_":[ { "_":[ "constant", "notesX" ] }, "-", 16 ] },
+                      "bgcolor":"#c37b75",
+                      "states":{
+                        "code":{
+                          "name":"Execute",
+                          "data":{
+                            "when":{ "_":[ "scene", "time" ] },
+                            "execute":[
+                              { "set":{ "height":{ "_":[ "scene", "time", "/", { "_":[ "scene", "songlength" ] }, "*", 194 ] } } },
+                              { "set":{ "y":{ "_":[ 198, "-", { "_":[ "this", "height" ] } ] } } }
+                            ]
+                          }
+                        }
+                      }
+                    },
+                    {
+                      "width":84, "height":10,
+                      "zIndex":5, "x":4, "y":180,
+                      "color":"#fff",
+                      "font":"commodore", "fontSize":8, "lineHeight":10, "outline":"#000", "html":{ "_":[ "scene", "track", "difficulty" ] }
+                    },
+                    {
+                      "width":97, "height":10,
+                      "zIndex":5, "x":219, "y":180,
+                      "color":"#fff",
+                      "font":"commodore", "fontSize":8, "lineHeight":10, "outline":"#000", "html":{ "_":[ "scene", "track", "bpm", "round", ".", " bpm." ] }
+                    },
+                    {
+                      "width":97, "height":10,
+                      "zIndex":5, "x":219, "y":166,
+                      "color":"#adadad",
+                      "font":"commodore", "fontSize":8, "lineHeight":10, "outline":"#000", "html":{ "_":[ "scene", "track", "artist" ] }
+                    },
+                    {
+                      "width":97, "height":20,
+                      "zIndex":5, "x":219, "y":142,
+                      "color":"#fff",
+                      "font":"commodore", "fontSize":8, "lineHeight":10, "outline":"#000", "html":{ "_":[ "scene", "track", "songName" ] }
+                    },
+                    { "image":"sprites", "tileX":96, "tileY":21, "width":102, "height":23, "zIndex":100, "x":{ "_":[ "constant", "notesX" ] }, "y":2 },
+                    {
+                      "height":16,
+                      "zIndex":99, "x":{ "_":[ { "_":[ "constant", "notesX" ] }, "+", 6 ] }, "y":6,
+                      "bgcolor":"#68ae5c",
+                      "position":0,
+                      "states":{
+                        "code":{
+                          "name":"Execute",
+                          "data":[
+                            { "sum":{ "_":[ "scene", "life", "-", { "_":[ "this", "position" ] }, "/", 2 ] }, "to":{ "_":[ "this", "position" ] } },
+                            { "set":{ "width":{ "_":[ "this", "position", "*", 0.9, "+", { "_":[ "scene", "beat", "/", 2 ] } ] } } }
+                          ]
+                        }
+                      }
+                    },
+                    { "width":98, "height":23, "zIndex":98, "x":{ "_":[ { "_":[ "constant", "notesX" ] }, "+", 2 ] }, "y":2, "bgcolor":"#000" },
+                    {
+                      "type":"hud",
+                      "hudType":"label", "label":"%number|scene.score|0|9%",
+                      "width":74, "height":10,
+                      "zIndex":100, "x":123, "y":180,
+                      "color":"#adadad",
+                      "font":"commodore", "fontSize":8, "lineHeight":10, "outline":"#000", "textAlign":"right"
+                    },
+                    {
+                      "type":"hud",
+                      "hudType":"label", "label":"%number|scene.score%",
+                      "width":74, "height":10,
+                      "zIndex":110, "x":123, "y":180,
+                      "color":"#fff",
+                      "font":"commodore", "fontSize":8, "lineHeight":10, "outline":"#000", "textAlign":"right"
+                    },
+                    {
+                      "type":"musicsync",
+                      "image":"sprites", "width":102, "height":{ "_":[ "constant", "noteHeight" ] },
+                      "zIndex":10, "x":{ "_":[ "constant", "notesX" ] }, "y":{ "_":[ "constant", "headPosition" ] },
+                      "states":{ "actions":{ "name":"update", "execute":{ "when":{ "_":[ "scene", "beat" ] }, "set":{ "frame":1 }, "elseExecute":{ "set":{ "frame":0 } } } } }
+                    },
+                    { "width":110, "height":200, "zIndex":5, "x":105, "y":0, "bgcolor":"#adadad" },
+                    {
+                      "set":{ "_":[ "stencil", "modelIntroStrip" ] },
+                      "height":20,
+                      "y":91,
+                      "color":"#c9d684",
+                      "fontSize":16, "lineHeight":20, "outline":"#000", "html":"READY...",
+                      "stripWait":50
+                    }
+                  ]
+                },
+                { "wait":60 },
+                {
+                  "object":{
+                    "set":{ "_":[ "stencil", "modelIntroStrip" ] },
+                    "height":20,
+                    "y":91,
+                    "color":"#8a7bce",
+                    "fontSize":16, "lineHeight":20, "outline":"#000", "html":"GO!",
+                    "stripWait":1000
+                  },
+                  "playAudio":{ "_":[ "this", "track", "bgm" ] }
+                },
+                { "wait":60 },
+                { "as":{ "_":[ "object", "message" ] }, "remove":1 }
+              ]
+            },
+            {
+              "name":"Execute",
+              "data":{
+                "when":{ "_":[ "audio", { "_":[ "this", "track", "bgm" ] } ] },
+                "execute":[
+                  {
+                    "set":{
+                      "showtime":{ "_":[ "audio", { "_":[ "this", "track", "bgm" ] }, "position", "+", 10 ] },
+                      "songlength":{ "_":[ "audio", { "_":[ "this", "track", "bgm" ] }, "length" ] },
+                      "time":{ "_":[ "audio", { "_":[ "this", "track", "bgm" ] }, "position" ] }
+                    }
+                  },
+                  {
+                    "when":{ "_":[ "this", "time", "isGreaterEqualThan", { "_":[ "this", "nextBeat" ] } ] },
+                    "execute":{
+                      "set":{
+                        "beat":5,
+                        "nextBeat":{
+                          "_":[
+                            "this",
+                            "time",
+                            "+",
+                            { "_":[ "this", "track", "offset" ] },
+                            "+",
+                            { "_":[ "this", "beatEvery", "/", 2 ] },
+                            "/",
+                            { "_":[ "this", "beatEvery" ] },
+                            "ceil",
+                            "*",
+                            { "_":[ "this", "beatEvery" ] }
+                          ]
+                        }
+                      }
+                    },
+                    "elseExecute":{ "when":{ "_":[ "this", "beat" ] }, "subtract":1, "to":{ "_":[ "this", "beat" ] } }
+                  },
+                  {
+                    "times":10,
+                    "execute":[
+                      { "set":{ "nextNote":{ "_":[ "this", "notes", { "_":[ "this", "trackPosition" ] } ] } } },
+                      {
+                        "when":{ "_":[ "this", "showtime", "isGreaterEqualThan", { "_":[ "this", "nextNote", "time" ] } ] },
+                        "execute":[ { "object":{ "set":[ { "_":[ "stencil", "note" ] }, { "_":[ "that", "nextNote" ] } ] } }, { "sum":1, "to":{ "_":[ "this", "trackPosition" ] } } ]
+                      }
+                    ]
+                  },
+                  { "set":{ "miss":0 } },
+                  { "assign":{ "_":"keyLeft" }, "to":{ "_":[ "this", "command", 0 ] } },
+                  { "assign":{ "_":"keyDown" }, "to":{ "_":[ "this", "command", 1 ] } },
+                  { "assign":{ "_":"keyUp" }, "to":{ "_":[ "this", "command", 2 ] } },
+                  { "assign":{ "_":"keyRight" }, "to":{ "_":[ "this", "command", 3 ] } },
+                  { "as":{ "_":[ "object", "musicsync" ] }, "executeAction":"update" },
+                  {
+                    "when":{ "_":[ "this", "miss", "not" ] },
+                    "execute":[
+                      { "when":{ "_":[ "this", "command", 0, "isEqualTo", 1 ] }, "set":{ "miss":1 } },
+                      { "when":{ "_":[ "this", "command", 1, "isEqualTo", 1 ] }, "set":{ "miss":1 } },
+                      { "when":{ "_":[ "this", "command", 2, "isEqualTo", 1 ] }, "set":{ "miss":1 } },
+                      { "when":{ "_":[ "this", "command", 3, "isEqualTo", 1 ] }, "set":{ "miss":1 } },
+                      { "when":{ "_":[ "this", "miss" ] }, "execute":{ "_":[ "stencil", "codeMiss" ] } }
+                    ]
+                  },
+                  { "when":{ "_":[ "this", "time", "isGreaterEqualThan", { "_":[ "this", "songlength" ] } ] }, "set":{ "state":"clear" } }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name":"failed",
+          "execute":[ { "stopChannel":"tracks" }, { "as":{ "_":[ "object", "notify" ] }, "remove":1 } ],
+          "code":{
+            "name":"Sequence",
+            "data":[
+              {
+                "object":[
+                  { "set":{ "_":[ "stencil", "stripPanel" ] }, "bgcolor":"#984b43" },
+                  {
+                    "set":{ "_":[ "stencil", "modelIntroStrip" ] },
+                    "height":20,
+                    "y":91,
+                    "color":"#c37b75",
+                    "fontSize":16, "lineHeight":20, "outline":"#000", "html":"DISQUALIFIED",
+                    "stripWait":1000
+                  }
+                ],
+                "playAudio":"petals"
+              },
+              { "wait":60 },
+              { "as":{ "_":[ "object", "message" ] }, "set":{ "state":"freeze" } },
+              { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+              { "gotoScene":"songselect", "withTransition":3 }
+            ]
+          }
+        },
+        {
+          "name":"clear",
+          "execute":[ { "stopChannel":"tracks" }, { "as":{ "_":[ "object", "notify" ] }, "remove":1 } ],
+          "code":{
+            "name":"Sequence",
+            "data":[
+              {
+                "object":[
+                  { "set":{ "_":[ "stencil", "stripPanel" ] }, "bgcolor":"#68ae5c" },
+                  {
+                    "set":{ "_":[ "stencil", "modelIntroStrip" ] },
+                    "height":20,
+                    "y":91,
+                    "color":"#a3e599",
+                    "fontSize":16, "lineHeight":20, "outline":"#000", "html":"CLEAR",
+                    "stripWait":1000
+                  }
+                ],
+                "playAudio":"heal"
+              },
+              { "wait":60 },
+              {
+                "when":{ "_":[ "cheat", "unlimitedlife", "not" ] },
+                "execute":[
+                  {
+                    "when":{ "_":[ "variable", "hiscores", { "_":[ "this", "track", "hiscoreId" ] }, "not" ] },
+                    "assign":0,
+                    "to":{ "_":[ "variable", "hiscores", { "_":[ "this", "track", "hiscoreId" ] } ] }
+                  },
+                  {
+                    "when":{ "_":[ "scene", "score", "isGreaterThan", { "_":[ "variable", "hiscores", { "_":[ "this", "track", "hiscoreId" ] } ] } ] },
+                    "subsequence":[
+                      {
+                        "object":{
+                          "set":{ "_":[ "stencil", "modelIntroStrip" ] },
+                          "height":20,
+                          "y":115,
+                          "bgcolor":"#000", "color":"#c9d684",
+                          "fontSize":8, "lineHeight":20, "html":"NEW HIGH SCORE!",
+                          "stripWait":1000
+                        },
+                        "playAudio":"hit"
+                      },
+                      { "assign":{ "_":[ "scene", "score" ] }, "to":{ "_":[ "variable", "hiscores", { "_":[ "this", "track", "hiscoreId" ] } ] } },
+                      { "as":{ "_":"storage" }, "set":{ "hiscores":{ "_":[ "variable", "hiscores" ] } } },
+                      { "wait":60 }
+                    ]
+                  }
+                ]
+              },
+              { "as":{ "_":[ "object", "message" ] }, "set":{ "state":"freeze" } },
+              { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+              { "gotoScene":"songselect", "withTransition":3 }
+            ]
+          }
+        }
+      ]
+    },
+    "songselect":{
+      "object":[
+        { "width":320, "height":200, "x":0, "y":0, "bgcolor":"#c9d684" },
+        { "width":320, "height":25, "zIndex":20, "x":0, "y":0, "bgcolor":"#000" },
+        { "width":304, "height":25, "zIndex":25, "x":8, "y":0, "color":"#c9d684", "font":"commodore", "fontSize":8, "lineHeight":25, "html":"Select Music" },
+        { "image":"sprites", "tileX":104, "tileY":94, "width":130, "height":48, "zIndex":10, "x":8, "y":33 },
+        {
+          "tileX":100, "width":130, "height":48,
+          "zIndex":9, "x":8, "y":33,
+          "states":{ "code":{ "name":"Execute", "data":{ "set":{ "image":{ "_":[ "scene", "track", "wallpaper" ] } } } } }
+        },
+        {
+          "type":"hud",
+          "hudType":"label", "label":"%text|scene.track.songName%",
+          "width":122, "height":40,
+          "zIndex":15, "x":12, "y":37,
+          "font":"commodore", "fontSize":8, "lineHeight":20, "outline":"#000", "textAlign":"center"
+        },
+        {
+          "type":"hud",
+          "hudType":"label", "label":"by %text|scene.track.artist%",
+          "width":130, "height":20,
+          "zIndex":15, "x":8, "y":85,
+          "color":"#000",
+          "font":"commodore", "fontSize":8, "lineHeight":10, "textAlign":"center"
+        },
+        {
+          "type":"hud",
+          "hudType":"label", "label":"BPM %number|scene.track.bpm.round%",
+          "width":130, "height":10,
+          "zIndex":15, "x":8, "y":110,
+          "bgcolor":"#000", "color":"#fff",
+          "font":"commodore", "fontSize":8, "lineHeight":10, "textAlign":"center"
+        },
+        {
+          "type":"hud",
+          "hudType":"label", "label":"%text|scene.track.difficulty%",
+          "width":130, "height":10,
+          "zIndex":15, "x":8, "y":125,
+          "bgcolor":"#000", "color":"#fff",
+          "font":"commodore", "fontSize":8, "lineHeight":10, "textAlign":"center"
+        },
+        {
+          "type":"hud",
+          "hudType":"label", "label":"%number|scene.hiscore|0|9%",
+          "width":130, "height":10,
+          "zIndex":15, "x":8, "y":170,
+          "color":"#000",
+          "font":"commodore", "fontSize":8, "lineHeight":10, "textAlign":"center"
+        },
+        {
+          "width":130, "height":10,
+          "zIndex":15, "x":8, "y":155,
+          "bgcolor":"#000", "color":"#fff",
+          "font":"commodore", "fontSize":8, "lineHeight":10, "textAlign":"center", "html":"HI-SCORE"
+        },
+        {
+          "type":"hud",
+          "hudType":"label", "label":"Notes: %text|scene.track.credit%",
+          "width":130, "height":10,
+          "zIndex":15, "x":8, "y":185,
+          "color":"#9b6739",
+          "font":"commodore", "fontSize":8, "lineHeight":10, "textAlign":"center"
+        }
+      ],
+      "execute":[
+        { "set":{ "counter":0 } },
+        {
+          "times":8,
+          "execute":[
+            {
+              "set":{
+                "gap":{ "_":[ "this", "counter", "-", 3 ] },
+                "xpos":{ "_":[ "this", "counter", "*", 0.9, "cos", "*", 20, "+", 180 ] },
+                "ypos":{ "_":[ "this", "counter", "*", 25, "+", 12 ] }
+              }
+            },
+            {
+              "object":[
+                {
+                  "type":{ "_":[ "block", ".", { "_":[ "that", "gap" ] } ] },
+                  "image":"sprites", "tileX":104, "tileY":69, "width":150, "height":25,
+                  "zIndex":10, "x":{ "_":[ "that", "xpos" ] }, "y":{ "_":[ "that", "ypos" ] },
+                  "execute":{ "when":{ "_":[ "that", "gap" ] }, "set":{ "tileY":44 } }
+                },
+                {
+                  "width":142, "height":8,
+                  "zIndex":15, "x":{ "_":[ "that", "xpos", "+", 6 ] }, "y":{ "_":[ "that", "ypos", "+", 4 ] },
+                  "color":"#fff",
+                  "font":"commodore", "fontSize":8, "lineHeight":8,
+                  "gap":{ "_":[ "that", "gap" ] },
+                  "states":{
+                    "code":{
+                      "name":"Execute",
+                      "data":[
+                        { "set":{ "track":{ "_":[ "scene", "songs", { "_":[ "variable", "currentTrack", "+", { "_":[ "this", "gap" ] } ] } ] } } },
+                        { "when":{ "_":[ "this", "track" ] }, "set":{ "visible":1, "html":{ "_":[ "this", "track", "songName" ] } }, "elseExecute":{ "set":{ "visible":0 } } }
+                      ]
+                    }
+                  }
+                },
+                {
+                  "width":142, "height":8,
+                  "zIndex":15, "x":{ "_":[ "that", "xpos", "+", 6 ] }, "y":{ "_":[ "that", "ypos", "+", 12 ] },
+                  "color":"#984b43",
+                  "font":"commodore", "fontSize":8, "lineHeight":8,
+                  "gap":{ "_":[ "that", "gap" ] },
+                  "states":{
+                    "code":{
+                      "name":"Execute",
+                      "data":[
+                        { "set":{ "track":{ "_":[ "scene", "songs", { "_":[ "variable", "currentTrack", "+", { "_":[ "this", "gap" ] } ] } ] } } },
+                        {
+                          "when":{ "_":[ "this", "track" ] },
+                          "set":{ "visible":1, "html":{ "_":[ "this", "track", "difficulty" ] } },
+                          "elseExecute":{ "set":{ "visible":0 } }
+                        }
+                      ]
+                    }
+                  }
+                }
+              ]
+            },
+            { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+          ]
+        }
+      ],
+      "songs":{ "_":[ "resource", "data", "songs" ] },
+      "states":[
+        {
+          "set":{ "trackChanged":1 },
+          "code":{
+            "name":"Execute",
+            "data":[
+              { "when":{ "_":[ "keyUp", "isHit" ] }, "subtract":1, "to":{ "_":[ "variable", "currentTrack" ] }, "set":{ "trackChanged":1 }, "playAudio":"read" },
+              { "when":{ "_":[ "keyDown", "isHit" ] }, "sum":1, "to":{ "_":[ "variable", "currentTrack" ] }, "set":{ "trackChanged":1 }, "playAudio":"read" },
+              { "when":{ "_":[ "keyA", "isHit" ] }, "set":{ "state":"selected" }, "playAudio":"transport" },
+              { "when":{ "_":[ "keyB", "isHit" ] }, "gotoScene":"intro", "withTransition":3, "playAudio":"transport", "stopChannel":"tracks" },
+              {
+                "when":{ "_":[ "variable", "currentTrack", "isLessThan", 0 ] },
+                "as":{ "_":"variable" },
+                "set":{ "currentTrack":{ "_":[ "scene", "songs", "count", "-", 1 ] } }
+              },
+              {
+                "when":{ "_":[ "variable", "currentTrack", "isGreaterEqualThan", { "_":[ "scene", "songs", "count" ] } ] },
+                "as":{ "_":"variable" },
+                "set":{ "currentTrack":0 }
+              },
+              {
+                "when":{ "_":[ "this", "trackChanged" ] },
+                "execute":[
+                  { "set":{ "track":{ "_":[ "scene", "songs", { "_":[ "variable", "currentTrack" ] } ] }, "trackChanged":0 }, "stopChannel":"tracks" },
+                  { "set":{ "hiscore":{ "_":[ "variable", "hiscores", { "_":[ "this", "track", "hiscoreId" ] } ] } } },
+                  { "as":{ "_":[ "object", "songpreview" ] }, "remove":1 },
+                  {
+                    "object":{ "type":"songpreview", "states":{ "code":{ "name":"Sequence", "data":[ { "wait":60 }, { "playAudio":{ "_":[ "scene", "track", "bgm" ] } } ] } } }
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "name":"selected",
+          "execute":{ "as":{ "_":[ "object", "songpreview" ] }, "remove":1, "stopChannel":"tracks" },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "as":{ "_":[ "object", "block0" ] }, "set":{ "visible":0 }, "wait":2 },
+              { "as":{ "_":[ "object", "block0" ] }, "set":{ "visible":1 }, "wait":2, "cycles":15, "loopTo":0 },
+              { "gotoScene":"song", "withTransition":3 }
+            ]
+          }
+        }
+      ]
+    },
+    "warning":{
+      "set":{ "_":[ "stencil", "warningScreen" ] },
+      "text":"Keep the dance platform a safe distance from your C64 and furniture.<br><br>Be careful that you do not injure pets, children, or spectators while dancing.",
+      "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"songselect", "withTransition":3, "playAudio":"transport" } } }
+    }
+  }
+}

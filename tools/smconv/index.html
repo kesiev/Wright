@@ -1,0 +1,172 @@
+<html>
+	<body onload="onl()">
+		<textarea id="out"></textarea>
+		</body>
+</html>
+<script>
+function ajax(data){
+
+  var senddata="";
+  var processing;
+  var http=(window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP") ? new ActiveXObject("Msxml2.XMLHTTP") : null;
+
+  if (http) {
+    if (data.data) for(var a in data.data)
+      senddata += a + "=" + (data.data[a] === undefined ? "" : encodeURIComponent(data.data[a]) ) + "&";
+      senddata=senddata.substr(0,senddata.length-1);
+      http.open(data.method=="POST"?"POST":"GET", data.url+(senddata&&(data.method!="POST")?(data.url.indexOf("?")>=0?"&":"?")+senddata:""), true);
+      if(data.method == "POST") http.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+      http.onreadystatechange = function() {
+        if(http.readyState == 4)
+          if (((http.status == 200) && http.getAllResponseHeaders().length) || (http.status == 0))
+            data.callback(data.isJson?JSON.parse(this.responseText):this.responseText,http.status);
+            else data.callback(false,http.status);
+      }
+        try {
+          http.send(senddata&&(data.method=="POST")?senddata:null);
+        } catch(err) {
+          data.callback(false,-1);
+        }
+ } else data.callback(false,-1);
+};
+
+function convert(song,songid,out,callback) {
+	ajax({
+		url:song,
+		callback:function(data) {
+			var meta=0;
+			var tracks=[];
+			data=("#NOTEDATA:;"+data).replace(/\r/g,"").replace(/\/\/[^\n]*\n/g,"").replace(/\n/g,"").split(";");
+			for (var i=0;i<data.length;i++) {
+				var line=data[i].trim();
+				if (line=="#NOTEDATA:") {
+					if (meta) {
+						tracks.push(meta);
+					}
+					var meta={};
+				} else if (line.substr(0,1)=="#") {
+					var attr=line.substr(1).split(":");
+					meta[attr[0]]=attr[1];
+					if (attr[0]=="NOTES")
+						meta["_notes"]=[];
+				}
+			}
+
+			console.log(tracks);
+			var notecolors=[
+				1/4,
+				1/8,
+				1/12,
+				1/16,
+				1/24,
+				1/32,
+				1/48];
+			var bpms=tracks[0].BPMS.split("=");
+			for (var i=0;i<tracks.length;i++) {
+				if (tracks[i].STEPSTYPE=="dance-single") {
+					var track=tracks[i];
+					var dump={
+						songName:tracks[0].TITLE,
+						artist:tracks[0].ARTIST,
+						credit:tracks[i].CREDIT||"N/A",
+						difficulty:tracks[i].DIFFICULTY,
+						notes:[],
+						offset:tracks[0].OFFSET*1,
+						bpm:bpms[1]*1,
+						bgm:"bgm"+songid,
+						wallpaper:"wallpaper"+songid,
+						hiscoreId:"hiscore-"+songid+"-"+out.length,
+						notesSpeed:
+							tracks[i].METER*1<6?1:
+							(
+								tracks[i].METER*1<7?2:
+								3
+							), // TODO: Better way for determinig notes speed :)
+						_METER:tracks[i].METER*1
+					};
+					var step=60/(bpms[1]*1)*4;
+					var segments=track.NOTES.split(",");
+					var lastnotes=[];
+					var dolog=tracks[i].METER==2;
+					for (var j=0;j<segments.length;j++) {
+						var b=0;
+						var bc=0;
+						var notemeasure=1/(segments[j].length/4);
+						var noteratio=step/(segments[j].length/4);
+						var segmentmeasure=0;
+						while (b<segments[j].length) {
+							var notecolor=7;
+							for (var nc=0;nc<notecolors.length;nc++) {
+								if (segmentmeasure%notecolors[nc]==0) {
+									notecolor=nc;
+									break;
+								}
+							}
+							var time=(j*step)+(bc*noteratio)+(tracks[0].OFFSET*1);
+							var part=segments[j].substr(b,4);
+							for (var c=0;c<4;c++) {
+								switch (part.substr(c,1)) {
+									case "2":
+									case "1":{
+										lastnotes[c]=dump.notes.length;
+										dump.notes.push({time:time,track:c,noteType:0,noteColor:notecolor});
+										break;
+									}
+									case "3":{
+										dump.notes[lastnotes[c]].noteEnd=time;
+										//dump.notes.push({time:time,track:c,noteType:1});
+										break;
+									}
+									case "M":{
+										dump.notes.push({time:time,track:c,noteType:2});
+										break;
+									}
+									case "0":{break;}
+									default:{
+										//console.log(c,part[0],part.substr(c,1));
+									}
+								}
+							}
+							b+=4;
+							bc++;
+							time+=noteratio;
+							segmentmeasure+=notemeasure;
+						}
+					}
+					console.log(dump);
+					out.push(dump);
+				}
+			}
+			callback(out);
+		}
+
+	})
+}
+
+function onl() {
+	var out=[];
+	convert("Mecha-Tribe Assault.ssc",1,out,function(){
+		convert("Springtime.ssc",2,out,function(){
+			convert("Goin' Under.ssc",3,out,function(){
+				out.sort(function(a,b){
+					if (a._METER>b._METER) return 1;
+					else if (a._METER<b._METER) return -1;
+					else if (a.songName>b.songName) return 1;
+					else if (a.songName<b.songName) return -1;
+					else return 0;
+				});
+				for (var i=0;i<out.length;i++) {
+					console.log(out[i].songName,out[i].difficulty,out[i]._METER,out[i].notesSpeed);
+					delete out[i]._METER;
+				}
+				document.getElementById("out").value=JSON.stringify({"songs":out});
+			})	
+		});	
+		
+	});
+	
+				
+
+}
+
+</script>
