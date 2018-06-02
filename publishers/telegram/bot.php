@@ -83,11 +83,13 @@ function telegramGet($botId) {
     } else {
         $data = file_get_contents("php://input");
         $data=json_decode($data, true);
+        $text=$data["message"]?$data["message"]["text"]:"";
         $ret=Array(
             "botId"=>$botId,
             "chatId"=>$data["message"]?$data["message"]["chat"]["id"]:"",
-            "text"=>$data["message"]?$data["message"]["text"]:"",
-            "fromGroup"=>$data["message"]&&isset($data["message"]["chat"])?$data["message"]["chat"]["type"]=="group":"",
+            "text"=>$text,
+            "isCommand"=>substr($text,0,1)=="/",
+            "fromGroup"=>$data["message"]&&isset($data["message"]["chat"])?($data["message"]["chat"]["type"]=="group")||($data["message"]["chat"]["type"]=="supergroup"):"",
             "inline_query"=>$data["inline_query"]?$data["inline_query"]["query"]:"",
             "inline_query_id"=>$data["inline_query"]?$data["inline_query"]["id"]:"",
             "callback_query_message_id"=>$data["callback_query"]?$data["callback_query"]["message"]["message_id"]:"",
@@ -193,7 +195,7 @@ if ($t["score_user_id"]) {
         "callback_query_id"=>$t["callback_query_id"],
         "url"=>$_CONFIG["gamesRoot"].$t["callback_query_game_short_name"]."&scoredata=".urlencode(telegramGenerateScoreData($t))
     ));    
-} else {
+} else if (!$t["isCommand"]) {
     // Load database
     $line=strtolower(cleanText($t["text"]));
     $alldatabase=json_decode(file_get_contents($_CONFIG["database"]),true);
