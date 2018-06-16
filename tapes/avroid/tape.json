@@ -1,0 +1,399 @@
+{
+  "name":"Avroid",
+  "author":"KesieV",
+  "year":2018,
+  "genre":"Endless run - VR",
+  "description":"<p>The <a href='https://en.wikipedia.org/wiki/Vaporwave'>vaporwave</a> is a music microgenre born in the early 2010s. Its style is a mix of 80s and 90s mood music, like smooth jazz, elevator music, R&B and lounge music and it's mostly made with samples or chopped and screwed tracks, together with other effects.</p><p>The term <a href='https://benheelsmusic.wordpress.com/2015/10/01/history-of-vaporwave/'>was first used</a> by Will Burnett, a music producer from Texas, mixing the term <i>vaporware</i>, which describes a known product which has never seen the light (a quite hot topic in <a href='https://en.wikipedia.org/wiki/List_of_vaporware#Video_games'>gaming</a>), and the Marx's passage of the Communist Manifesto <i>\"All that is solid melts into air.\"</i></p><p>Michelle Lhooq of Vice wrote that <i>\"according to commenters in various music forums, it's 'chillwave for Marxists\".</i> Which is deliciously contradictory.</p><p>Social meanings apart, vaporwave has been defined as a <i>glorification of stealing other people's art and marketing it under something else with foreign languages</i> by the producer Wolfenstein OS X, alongside the <a href='https://en.wikipedia.org/wiki/Punk_subculture'>punk</a> movement.</p><p>Vaporwave visual art incorporates early Internet imagery, late 90s web design, glitch art, anime, 3D-rendered objects, and cyberpunk tropes in its cover artwork and music videos, attempting on an ambiguous or satirical take on consumer capitalism and popular culture.</p><p>That late 90s digital imagery, filled with <a href='https://it.wikipedia.org/wiki/Vaporwave#/media/File:Vaporwave_art_example.png'>3D checkerboards</a> and <a href='https://www.reddit.com/r/wallpapers/comments/6c14n7/4k_vaporwave/'>vector landscapes</a>, has been probably influenced by the <a href='https://en.wikipedia.org/wiki/Virtual_reality#1970%E2%80%931990'>virtual reality</a> hype that started in the consumer market in the same years.</p><p>In 1991 Sega announced the <a href='https://en.wikipedia.org/wiki/Sega_VR'>Sega VR</a> headset for arcade games and the Mega Drive console and Nintendo published its controversial gaming console <a href='https://en.wikipedia.org/wiki/Virtual_Boy'>Virtual Boy</a> in 1995: both of them failed, missing the market or vanishing just a year later.</p><p>Despite it was living its <i>vaporware</i> age, 90s virtual reality left us its imagery also thanks to the <a href='https://www.huffingtonpost.com/playboycom/movies-virtual-reality_b_9301620.html'>many VR-themed sci-fi movies</a> that were produced, like the cringey classic <a href='https://en.wikipedia.org/wiki/The_Lawnmower_Man_(film)'>The Lawnmover Man</a> (1992), an action-horror film about a intellectual disability cure experiment using VR gone terribly wrong.</p><p>But VR is a thing nowadays, despite the immersion, interaction and dangers is way far than the ones promised by <i>The Lawnmover Man</i>. And that's why, in my opinion, vaporwave is the best description of how virtual reality is <i>perceived</i> today: a celebration of the <i>market of failures</i> of the 80s and the 90s, which found a more tangible home in the last years but isn't as good as we <i>falsely remember</i>.</p><p>And strange as it may seem, all this <i>dreaming past dreams</i> is cozy and very pleasant. By analogy with my own way of thinking about the past, in my opinion the vaporwave movement had one of the most pleasant music genre and one of the most provoking art style of the last few years.</p><p>But don't forget that the present is <i>never</i> the past long-term promise of a future - because everyone plans and changes its own future every day.</p><p>Plot!</p><p>The year is 2092. This is a virtual reality program for A E S T H E T I C soldiers training. You have to turn your head left and right to dodge the columns and get the Sunset Coins in order to increase your grade. The higher is your grade, the faster you'll run. Good luck, soldier.</p><div class='box'><p>This is a <a href='https://vr.google.com/cardboard/'>Cardboard-compatible</a> virtual reality videogame you can play on your mobile phone!</p><p>This time I strongly suggest you to play usings the <b>canvas renderer</b> instead of the DOM one, since it's more flexible on full screen mode. If you're using a mobile device, <b>tap the game area with two fingers</b> for going fullscreen, <b>flip your device to landscape mode</b> and then try to <b>align the vertical white line</b> in the middle of the screen <b>with the center of your VR visor</b>. Tap the screen for calibrating controls just before putting your goggles on - if you're using a Cardboard V2 compatible visor, you can still calibrate controls hitting the button anytime.</p></div><p>Turn your head left and right for moving... and that's all! On the title screen turn your head left or right until you hear a sound or see a message, then look back ahead again.</p>",
+  "screenshots":[ "avroid-1.png", "avroid-2.png" ],
+  "hardware":{
+    "width":960,
+    "height":540,
+    "controls":"motion",
+    "fps":30,
+    "orientation":"landscape"
+  },
+  "audioChannels":{
+    "sfx":{ "volume":1, "samples":[ "shut", "beep2", "rampup" ] },
+    "music":{ "volume":0.8, "looping":1, "samples":[ "bgm" ] }
+  },
+  "cheats":{},
+  "resources":{
+    "bgm":"laserdance.ogg",
+    "bonus":"bonus.png",
+    "column":"column.png",
+    "logo":"logo.png",
+    "pollen":"pollen.png",
+    "spectrum":"spectrum.font",
+    "beep2":"../default/zxsounds/beep2.ogg",
+    "rampup":"../default/zxsounds/rampup.ogg",
+    "shut":"../default/zxsounds/shut.ogg"
+  },
+  "stencils":{
+    "codeApplyThreeDee":[
+      {
+        "set":{
+          "zIndex":{ "_":[ 500, "-", { "_":[ "this", "pz" ] } ] },
+          "scale":{ "_":[ 1, "-", { "_":[ "this", "pz", "*", { "_":[ "constant", "depthRatioScale" ] } ] } ] },
+          "cpx":{ "_":[ "this", "px", "+", { "_":[ "this", "followSight", "*", { "_":[ "scene", "sightX" ] } ] } ] },
+          "zGap":{ "_":[ { "_":[ "constant", "xdistanceRatio" ] }, "*", { "_":[ 100, "-", { "_":[ "this", "pz" ] } ] } ] }
+        }
+      },
+      {
+        "set":{
+          "x":{ "_":[ { "_":[ "constant", "rFrontX" ] }, "+", { "_":[ "this", "pz", "*", { "_":[ "constant", "depthRatioX" ] } ] }, "+", { "_":[ "this", "cpx", "*", { "_":[ "this", "scale" ] } ] } ] }, "y":{ "_":[ { "_":[ "constant", "rFrontY" ] }, "+", { "_":[ "this", "pz", "*", { "_":[ "constant", "depthRatioY" ] } ] }, "+", { "_":[ "this", "py", "*", { "_":[ "this", "scale" ] } ] } ] }
+        }
+      },
+      {
+        "as":{ "_":[ "this", "reye" ] },
+        "set":{
+          "image":{ "_":[ "that", "image" ] }, "width":{ "_":[ "that", "width" ] }, "height":{ "_":[ "that", "height" ] },
+          "zIndex":{ "_":[ "that", "zIndex" ] }, "x":{ "_":[ "that", "x", "-", { "_":[ "that", "zGap" ] } ] }, "y":{ "_":[ "that", "y" ] },
+          "scale":{ "_":[ "that", "scale" ] },
+          "bgcolor":{ "_":[ "that", "bgcolor" ] }, "border":{ "_":[ "that", "border" ] }, "color":{ "_":[ "that", "color" ] },
+          "font":{ "_":[ "that", "font" ] }, "fontSize":{ "_":[ "that", "fontSize" ] }, "lineHeight":{ "_":[ "that", "lineHeight" ] }, "outline":{ "_":[ "that", "outline" ] }, "textAlign":{ "_":[ "that", "textAlign" ] }, "html":{ "_":[ "that", "html" ] }
+        }
+      },
+      { "sum":{ "_":[ "this", "zGap" ] }, "to":{ "_":[ "this", "x" ] } }
+    ],
+    "codeRemoveThreeDee":[ { "as":{ "_":[ "this", "reye" ] }, "remove":1 }, { "remove":1 } ],
+    "modelOnTrack":{
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":[
+            { "subtract":{ "_":[ "scene", "scrollSpeed" ] }, "to":{ "_":[ "this", "pz" ] } },
+            { "when":{ "_":[ "this", "pz", "isLessThan", -20 ] }, "execute":{ "_":[ "stencil", "codeRemoveThreeDee" ] } },
+            { "when":{ "_":[ "this", "pz", "isGreaterThan", { "_":[ "constant", "rDepth" ] } ] }, "execute":{ "_":[ "stencil", "codeRemoveThreeDee" ] } }
+          ]
+        }
+      }
+    },
+    "pickableModel":{
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":{
+            "when":{ "_":[ "scene", "gameRunning" ] },
+            "execute":{
+              "when":{ "_":[ "this", "pz", "isLessThan", 10, "and", { "_":[ "this", "pz", "isGreaterThan", 0 ] } ] },
+              "execute":[
+                { "set":{ "gap":{ "_":[ { "_":[ "this", "px" ] }, "+", { "_":[ "constant", "centerDelta" ] }, "+", { "_":[ "scene", "sightX" ] }, "floor" ] } } },
+                { "when":{ "_":[ "this", "gap", "abs", "isLessThan", 80 ] }, "executeAction":"pick" }
+              ]
+            }
+          }
+        }
+      }
+    },
+    "threeDeeModel":{
+      "originX":0, "originY":0,
+      "execute":{ "object":{ "originX":0, "originY":0 }, "assign":{ "_":"that" }, "to":{ "_":[ "this", "reye" ] }, "into":{ "_":[ "objectTyped", "reye" ] } },
+      "followSight":1,
+      "px":0,
+      "py":0,
+      "pz":0,
+      "states":{ "code":{ "name":"Execute", "data":{ "execute":{ "_":[ "stencil", "codeApplyThreeDee" ] } } } }
+    }
+  },
+  "execute":[
+    {
+      "as":{ "_":"constant" },
+      "set":{ "objectSize":120, "rBackY":0, "rDepth":100, "rFrontH":540, "rFrontW":2880, "rFrontX":-1200, "rFrontY":0, "rScale":0.05, "xDistance":30 }
+    },
+    {
+      "as":{ "_":"constant" },
+      "set":{
+        "centerDelta":{ "_":[ "constant", "objectSize", "/", 2, "-", { "_":[ "this", "rFrontW", "/", 2 ] } ] },
+        "depthRatioScale":{ "_":[ 1, "-", { "_":[ "this", "rScale" ] }, "/", { "_":[ "this", "rDepth" ] } ] },
+        "depthRatioX":{ "_":[ "this", "rFrontW", "*", { "_":[ 1, "-", { "_":[ "this", "rScale" ] } ] }, "/", { "_":[ "this", "rDepth", "*", 2 ] } ] },
+        "depthRatioY":{
+          "_":[
+            "this",
+            "rFrontH",
+            "*",
+            { "_":[ 1, "-", { "_":[ "this", "rScale" ] } ] },
+            "/",
+            2,
+            "+",
+            { "_":[ "this", "rBackY" ] },
+            "/",
+            { "_":[ "this", "rDepth" ] }
+          ]
+        },
+        "hrFrontW":{ "_":[ "this", "rFrontW", "/", 2 ] },
+        "objectSpawnRange":{ "_":[ "constant", "rFrontW", "-", { "_":[ "constant", "objectSize" ] } ] },
+        "xdistanceRatio":{ "_":[ "this", "xDistance", "/", 100 ] }
+      }
+    },
+    { "when":{ "_":[ "storage", "hiscore", "not" ] }, "as":{ "_":"storage" }, "set":{ "hiscore":0 } },
+    { "as":{ "_":"variable" }, "set":{ "hiscore":{ "_":[ "storage", "hiscore" ] } } }
+  ],
+  "scenes":{
+    "intro":{
+      "object":[
+        { "type":"leye", "width":480, "height":540, "x":0, "y":0 },
+        { "type":"reye", "width":480, "height":540, "x":480, "y":0 },
+        { "width":2, "height":540, "zIndex":10, "x":478, "y":0, "bgcolor":"#fff" }
+      ],
+      "execute":[
+        { "object":{ "width":480, "height":295, "x":0, "y":285, "bgcolor":"#b967ff" }, "into":{ "_":[ "objectTyped", "reye" ] } },
+        {
+          "object":[
+            { "width":480, "height":295, "x":0, "y":285, "bgcolor":"#b967ff" },
+            {
+              "type":"hud",
+              "set":{ "_":[ "stencil", "threeDeeModel" ] },
+              "hudType":"label", "label":"%number|scene.score%",
+              "width":{ "_":[ "constant", "rFrontW" ] }, "height":{ "_":[ "constant", "rFrontH" ] },
+              "font":"spectrum", "fontSize":1000, "lineHeight":{ "_":[ "constant", "rFrontH" ] }, "textAlign":"center",
+              "followSight":1,
+              "px":0,
+              "py":0,
+              "pz":99
+            }
+          ],
+          "into":{ "_":[ "objectTyped", "leye" ] }
+        }
+      ],
+      "alphaOrg":0,
+      "alphaCalc":0,
+      "gameRunning":0,
+      "scrollSpeed":1,
+      "sightX":0,
+      "toInitialize":1,
+      "states":{
+        "code":[
+          {
+            "name":"Execute",
+            "data":[
+               {
+                "when":{"_":["motion","gamma","isLessThan",0]},
+                "set":{"alphaCalc":{"_":["motion","alpha","-",180]}},
+                "elseExecute":{"set":{"alphaCalc":{"_":["motion","alpha"]}}}
+              },
+              { "when":{ "_":[ "keyA", "isHit" ] }, "set":{ "toInitialize": 1 } },
+              { "when":{ "_":[ "this", "toInitialize" ] }, "set":{ "alphaOrg":{ "_":[ "this", "alphaCalc" ] }, "toInitialize":0 } },
+              { "set":{ "alphaDelta":{ "_":[ "this", "alphaOrg", "shortestAngleTo", { "_":[ "this", "alphaCalc" ] } ] } } },
+              { "set":{ "sightX":{ "_":[ "this", "alphaDelta", "*", 40, "limitValue", [ -1400, 1400 ] ] } } }
+            ]
+          },
+          {
+            "name":"Sequence",
+            "data":[
+              { "set":{ "scrollSpeed":1 } },
+              {
+                "object":[
+                  {
+                    "type":"gameelement",
+                    "set":{ "_":[ "stencil", "threeDeeModel" ] },
+                    "image":"logo", "width":600, "height":149,
+                    "px":1140,
+                    "py":165,
+                    "pz":{ "_":[ "constant", "rDepth" ] },
+                    "timer":0,
+                    "states":{
+                      "code":{
+                        "name":"Execute",
+                        "data":[
+                          { "sum":0.2, "to":{ "_":[ "this", "timer" ] } },
+                          { "set":{ "py":{ "_":[ 140, "+", { "_":[ "this", "timer", "sin", "*", 20 ] } ] } } },
+                          { "when":{ "_":[ "this", "pz", "isGreaterThan", 80 ] }, "subtract":1, "to":{ "_":[ "this", "pz" ] } }
+                        ]
+                      }
+                    }
+                  },
+                  {
+                    "type":"gameelement",
+                    "set":{ "_":[ "stencil", "threeDeeModel" ] },
+                    "width":2000, "height":100,
+                    "color":"#fff",
+                    "font":"spectrum", "fontSize":140, "lineHeight":100, "outline":"#000", "textAlign":"center", "html":"Music: Laser Dance 3 by KSA",
+                    "px":440,
+                    "py":340,
+                    "pz":{ "_":[ "constant", "rDepth" ] },
+                    "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "this", "pz", "isGreaterThan", 80 ] }, "subtract":1, "to":{ "_":[ "this", "pz" ] } } } }
+                  },
+                  {
+                    "type":"gameelement",
+                    "set":{ "_":[ "stencil", "threeDeeModel" ] },
+                    "width":800, "height":100,
+                    "color":"#fff",
+                    "font":"spectrum", "fontSize":140, "lineHeight":100, "outline":"#000", "textAlign":"center", "html":{ "_":[ "HI: ", ".", { "_":[ "variable", "hiscore" ] } ] },
+                    "followSight":0,
+                    "px":1040,
+                    "py":40,
+                    "pz":{ "_":[ "constant", "rDepth" ] },
+                    "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "this", "pz", "isGreaterThan", 70 ] }, "subtract":1, "to":{ "_":[ "this", "pz" ] } } } }
+                  },
+                  {
+                    "type":[ "gameelement", "instructions" ],
+                    "set":{ "_":[ "stencil", "threeDeeModel" ] },
+                    "width":800, "height":100,
+                    "color":"#fff",
+                    "font":"spectrum", "fontSize":93, "lineHeight":100, "outline":"#000", "textAlign":"center", "html":"Look sides to start",
+                    "followSight":0,
+                    "px":1040,
+                    "py":440,
+                    "pz":{ "_":[ "constant", "rDepth" ] },
+                    "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "this", "pz", "isGreaterThan", 70 ] }, "subtract":1, "to":{ "_":[ "this", "pz" ] } } } }
+                  }
+                ],
+                "into":{ "_":[ "objectTyped", "leye" ] }
+              },
+              { "wait":1, "loop":1, "until":{ "_":[ "this", "sightX", "abs", "isEqualTo", 1400 ] } },
+              { "as":{ "_":[ "objectTyped", "instructions" ] }, "set":{ "color":"#05ffa1", "html":"Look center to start" }, "playAudio":"rampup" },
+              { "wait":1, "loop":1, "until":{ "_":[ "this", "sightX", "abs", "isLessThan", 100 ] } },
+              { "as":{ "_":[ "object", "gameelement" ] }, "set":{ "_":[ "stencil", "modelOnTrack" ] } },
+              { "playAudio":"rampup" },
+              { "set":{ "scrollSpeed":3 }, "playAudio":"bgm" },
+              { "wait":1, "loop":1, "until":{ "_":[ "objectTyped", "gameelement", "not" ] } },
+              { "set":{ "columnCount":1, "columnSpeed":30, "gameRunning":1, "score":0, "scrollSpeed":1 } },
+              {
+                "set":{
+                  "columnCount":{ "_":[ "this", "score", "/", 20, "ceil", "limitValue", [ 0, 3 ] ] },
+                  "columnSpeed":{ "_":[ 30, "-", { "_":[ "this", "score", "/", 5 ] }, "floor", "limitValue", [ 10, 100 ] ] },
+                  "scrollSpeed":{ "_":[ "this", "score", "/", 10, "+", 1, "floor", "limitValue", [ 0, 10 ] ] }
+                },
+                "wait":1, "loop":1,
+                "until":{ "_":[ "this", "gameRunning", "not" ] }
+              },
+              { "playAudio":"shut", "stopChannel":"music" },
+              { "publishScore":{ "_":[ "scene", "score" ] } },
+              {
+                "when":{ "_":[ "scene", "score", "isGreaterThan", { "_":[ "variable", "hiscore" ] } ] },
+                "execute":[
+                  { "set":{ "gameoverColor":"#05ffa1", "gameoverText":"HI SCORE!" } },
+                  { "as":{ "_":"variable" }, "set":{ "hiscore":{ "_":[ "scene", "score" ] } } },
+                  { "as":{ "_":"storage" }, "set":{ "hiscore":{ "_":[ "scene", "score" ] } } }
+                ],
+                "elseExecute":{ "set":{ "gameoverColor":"#fff", "gameoverText":"GAME OVER" } }
+              },
+              {
+                "object":{
+                  "type":"gameelement",
+                  "set":[ { "_":[ "stencil", "threeDeeModel" ] }, { "_":[ "stencil", "modelOnTrack" ] } ],
+                  "width":{ "_":[ "constant", "rFrontW" ] }, "height":{ "_":[ "constant", "rFrontH" ] },
+                  "color":{ "_":[ "that", "gameoverColor" ] },
+                  "font":"spectrum", "fontSize":140, "lineHeight":{ "_":[ "constant", "rFrontH" ] }, "outline":"#000", "textAlign":"center", "html":{ "_":[ "that", "gameoverText" ] },
+                  "followSight":0,
+                  "px":0,
+                  "py":0,
+                  "pz":-19
+                }
+              },
+              { "set":{ "scrollSpeed":-3 } },
+              { "wait":1, "loop":1, "until":{ "_":[ "objectTyped", "gameelement", "not" ] } },
+              { "loopTo":0 }
+            ]
+          },
+          {
+            "name":"Sequence",
+            "data":[
+              { "set":{ "rail":{ "_":[ "randomNumber", [ 0, { "_":[ "constant", "objectSpawnRange" ] } ] ] } } },
+              {
+                "when":{ "_":[ "this", "gameRunning" ] },
+                "object":{
+                  "type":"gameelement",
+                  "set":[ { "_":[ "stencil", "threeDeeModel" ] }, { "_":[ "stencil", "pickableModel" ] }, { "_":[ "stencil", "modelOnTrack" ] } ],
+                  "image":"bonus", "width":{ "_":[ "constant", "objectSize" ] }, "height":{ "_":[ "constant", "objectSize" ] },
+                  "px":{ "_":[ "that", "rail" ] },
+                  "py":0,
+                  "pz":100,
+                  "timer":0,
+                  "states":{
+                    "code":{
+                      "name":"Execute",
+                      "data":[
+                        { "sum":0.2, "to":{ "_":[ "this", "timer" ] } },
+                        { "set":{ "py":{ "_":[ { "_":[ "constant", "rFrontH" ] }, "-", 200, "+", { "_":[ "this", "timer", "sin", "*", 20 ] } ] } } }
+                      ]
+                    },
+                    "actions":{
+                      "name":"pick",
+                      "execute":[ { "sum":1, "to":{ "_":[ "scene", "score" ] }, "playAudio":"beep2" }, { "execute":{ "_":[ "stencil", "codeRemoveThreeDee" ] } } ]
+                    }
+                  }
+                },
+                "into":{ "_":[ "objectTyped", "leye" ] }
+              },
+              { "wait":10, "cycles":{ "_":[ "randomNumber", [ 3, 6 ] ] }, "loopTo":-1 },
+              { "wait":{ "_":[ "randomNumber", [ 25, 75 ] ] }, "loopTo":0 }
+            ]
+          },
+          {
+            "name":"Sequence",
+            "data":[
+              {
+                "times":{ "_":[ "this", "columnCount" ] },
+                "when":{ "_":[ "this", "gameRunning" ] },
+                "object":{
+                  "type":"gameelement",
+                  "set":[ { "_":[ "stencil", "threeDeeModel" ] }, { "_":[ "stencil", "modelOnTrack" ] }, { "_":[ "stencil", "pickableModel" ] } ],
+                  "image":"column", "width":{ "_":[ "constant", "objectSize" ] }, "height":{ "_":[ "constant", "rFrontH" ] },
+                  "px":{ "_":[ "randomNumber", [ 0, { "_":[ "constant", "objectSpawnRange" ] } ] ] },
+                  "py":0,
+                  "pz":100,
+                  "states":{ "actions":{ "name":"pick", "execute":{ "as":{ "_":"scene" }, "set":{ "gameRunning":0 } } } }
+                },
+                "into":{ "_":[ "objectTyped", "leye" ] }
+              },
+              { "wait":{ "_":[ "randomNumber", [ 10, { "_":[ "this", "columnSpeed" ] } ] ] }, "loopTo":0 }
+            ]
+          },
+          {
+            "name":"Sequence",
+            "data":[
+              {
+                "times":2,
+                "object":{
+                  "set":[ { "_":[ "stencil", "threeDeeModel" ] }, { "_":[ "stencil", "modelOnTrack" ] } ],
+                  "width":40, "height":10,
+                  "bgcolor":"#ff71ce",
+                  "px":{ "_":[ "randomNumber", [ 0, { "_":[ "constant", "rFrontW" ] } ] ] },
+                  "py":{ "_":[ { "_":[ "constant", "rFrontH" ] }, "-", { "_":[ "randomValue", [ 0, 10 ] ] } ] },
+                  "pz":100
+                },
+                "into":{ "_":[ "objectTyped", "leye" ] }
+              },
+              { "wait":{ "_":[ "randomNumber", [ 5, 20 ] ] }, "loopTo":0 }
+            ]
+          },
+          {
+            "name":"Sequence",
+            "data":[
+              {
+                "times":2,
+                "object":{
+                  "set":[ { "_":[ "stencil", "threeDeeModel" ] }, { "_":[ "stencil", "modelOnTrack" ] } ],
+                  "image":"pollen", "width":20, "height":20,
+                  "floatRadius":{ "_":[ "randomNumber", [ 0, 20 ] ] },
+                  "ox":{ "_":[ "randomNumber", [ 0, { "_":[ "constant", "rFrontW" ] } ] ] },
+                  "oy":{ "_":[ "randomNumber", [ 0, { "_":[ "constant", "rFrontH" ] } ] ] },
+                  "pz":100,
+                  "timer":0,
+                  "timerSpeed":{ "_":[ "randomNumber", [ 0, 3 ], "/", 10 ] },
+                  "states":{
+                    "code":{
+                      "name":"Execute",
+                      "data":[
+                        { "sum":{ "_":[ "this", "timerSpeed" ] }, "to":{ "_":[ "this", "timer" ] } },
+                        {
+                          "set":{
+                            "px":{ "_":[ "this", "timer", "sin", "*", { "_":[ "this", "floatRadius" ] }, "+", { "_":[ "this", "ox" ] } ] },
+                            "py":{ "_":[ "this", "timer", "cos", "*", { "_":[ "this", "floatRadius" ] }, "+", { "_":[ "this", "oy" ] } ] }
+                          }
+                        }
+                      ]
+                    }
+                  }
+                },
+                "into":{ "_":[ "objectTyped", "leye" ] }
+              },
+              { "wait":{ "_":[ "randomNumber", [ 5, 20 ] ] }, "loopTo":0 }
+            ]
+          }
+        ]
+      }
+    }
+  }
+}
