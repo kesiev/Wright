@@ -1,0 +1,1700 @@
+{
+  "name":"Funemathica vol.3",
+  "author":"KesieV",
+  "year":2018,
+  "genre":"Educational",
+  "description":"<p><i>Failure</i> has always relative consequences, especially in videogames.</p><p>The oldest and most common consequence of failure in games comes from the <i>common sense</i>. After a failure there is a <i>punishment</i>: in classic videogames, when the player makes a mistake, he's punished by depleting a life from his stock and, in most of the cases, it requires him to start over part of his play. The ultimate failure happens when the player loses <i>all</i> of his lifes and the punishment is losing player progress, his hard-earned score and, during the arcade age, his right to play.</p><p>Right after the homecoming of videogames, this punishment became more and more mild: since the player can't be denied of another run, failure now just depletes a generous health bar and player progress is saved very often so losing a life just means losing few minutes of gameplay.</p><p>Failure generates an <i>exhortation</i> more than a <i>punishment</i>. That's a slight tinge of meaning with huge consequences: while the immediate punishment of the player also suggests him to get better, starting from scratch every time can be frustrating for beginners and repetitive for veterans. So games decided to hit the player <i>self-esteem</i> instead of his time: despite dying in modern games is not a great deal, nobody wants to die multiple time in a row. The player is just noticed with red bloody borders and frequent checkpoints reload which requires him to perform the same actions over and over again that he's <i>brute forcing</i> the game thru the ending.</p><p>Nowadays <i>failing</i> in videogames even gained a <i>positive</i> meaning out of necessity: with inflation of the death and respawn and the impossibility to predict the average length of a gameplay session and the players skills due to the increased size of the market, failing in modern videogames is just another way to <i>explore</i> its content. Yeah: <i>failure</i> is even <i>rewarded</i>.</p><p>Messing up a heist in <a href='https://en.wikipedia.org/wiki/Grand_Theft_Auto'>Grand Theft Auto</a> (2001) is the easiest way to <i>raise</i> the game difficulty: the more chaotic the player is, hitting pedestrian during an escape due to bad driving or shooting (<i>or intentionally</i>), the more aggressive the cops will be, making the game both more challenging and rewarding in term of fun and in-game currency and weapons.</p><p>In some games, GTA included, the story requires the player <i>to fail</i> in order to proceed. Moral choices in modern games even let the player decide what failing means and literally <i>select</i> the consequences. In <a href='https://en.wikipedia.org/wiki/Roguelike'>roguelike</a> procedural videogames a small random part of its contents library is playable in each run, so the only way to see what the whole game has to offer is <i>failing to death</i> multiple times.</p><p>A softer approach to <i>failure</i> allow the player to accept his limits, that ironically can overtake just playing and explore more games and having more fun, fueling some sort of  <i>virtuous circle</i> instead of cutting out newbie players.</p><p><a href='https://en.wikipedia.org/wiki/Educational_video_game'>Educational videogames</a> figured it out ages ago: despite their boring pace, questionable quality and random design, games are always gentle on player failure, guiding him to the end of the exercise despite his streak of errors. But answering correctly to the questions without hearing that irritating error jingle a single time can be a good incentive to get better on multiplications.</p><p>Speaking of that... plot!</p><p>Are you ready to learn how to do multiplications, kids? Follow the professor Chippy to the third chapter of the (fictional) educational videogame series Funemathica and meet Jasmine the chicken at his aunt farm!</p><p>First you've to input your name: select the letters from the keyboard on the screen, then press DELETE to clear the last letter or DONE! when done. Then you can choose to follow the Chippy lesson on multiplication or test your skills with the easy exercises or the multiplication table exercises! Have fun!</p>",
+  "screenshots":[ "funemathica-1.png", "funemathica-2.png" ],
+  "hardware":{
+    "width":320,
+    "height":200,
+    "controls":"pointer",
+    "filter":"retro"
+  },
+  "audioChannels":{
+    "sfx":{ "volume":1, "samples":[ "song1", "noise1", "noise2", "noise3" ] }
+  },
+  "cheats":{},
+  "resources":{
+    "cga":"cga.font",
+    "song1":"song1.ogg",
+    "sprites":"sprites.png",
+    "title":"title.png",
+    "noise1":"../default/pcsounds/noise-1.ogg",
+    "noise2":"../default/pcsounds/noise-2.ogg",
+    "noise3":"../default/pcsounds/noise-3.ogg"
+  },
+  "stencils":{
+    "codeDialogue":[
+      { "as":{ "_":[ "object", "text" ] }, "remove":1 },
+      { "wait":2 },
+      {
+        "when":{ "_":[ "this", "leye", "isNotEqualTo", { "_":[ "objectTyped", "leye", "animation" ] } ] },
+        "subsequence":[
+          { "as":{ "_":[ "objectTyped", "leye" ] }, "set":{ "visible":0 }, "wait":1 },
+          { "as":{ "_":[ "objectTyped", "leye" ] }, "set":{ "visible":1, "animation":{ "_":[ "that", "leye" ] } }, "wait":1 }
+        ]
+      },
+      {
+        "when":{ "_":[ "this", "reye", "isNotEqualTo", { "_":[ "objectTyped", "reye", "animation" ] } ] },
+        "subsequence":[
+          { "as":{ "_":[ "objectTyped", "reye" ] }, "set":{ "visible":0 }, "wait":1 },
+          { "as":{ "_":[ "objectTyped", "reye" ] }, "set":{ "visible":1, "animation":{ "_":[ "that", "reye" ] } }, "wait":1 }
+        ]
+      },
+      {
+        "when":{ "_":[ "this", "rhand", "isNotEqualTo", { "_":[ "objectTyped", "rhand", "animation" ] } ] },
+        "subsequence":[
+          { "as":{ "_":[ "objectTyped", "rhand" ] }, "set":{ "visible":0 }, "wait":1 },
+          { "as":{ "_":[ "objectTyped", "rhand" ] }, "set":{ "visible":1, "animation":{ "_":[ "that", "rhand" ] } }, "wait":1 }
+        ]
+      },
+      {
+        "when":{ "_":[ "this", "lhand", "isNotEqualTo", { "_":[ "objectTyped", "lhand", "animation" ] } ] },
+        "subsequence":[
+          { "as":{ "_":[ "objectTyped", "lhand" ] }, "set":{ "visible":0 }, "wait":1 },
+          { "as":{ "_":[ "objectTyped", "lhand" ] }, "set":{ "visible":1, "animation":{ "_":[ "that", "lhand" ] } }, "wait":1 }
+        ]
+      },
+      {
+        "when":{ "_":[ "this", "mouth", "isNotEqualTo", { "_":[ "objectTyped", "mouth", "animation" ] } ] },
+        "subsequence":[
+          { "as":{ "_":[ "objectTyped", "mouth" ] }, "set":{ "visible":0 }, "wait":1 },
+          { "as":{ "_":[ "objectTyped", "mouth" ] }, "set":{ "visible":1, "animation":{ "_":[ "that", "mouth" ] } }, "wait":1 }
+        ]
+      },
+      { "playAudio":"noise3" },
+      {
+        "object":{
+          "type":[ "text", "drawing" ],
+          "width":194,
+          "zIndex":100002, "x":11, "y":132,
+          "color":"#000",
+          "font":"cga", "fontSize":8, "lineHeight":8, "html":{ "_":[ "that", "sentence" ] },
+          "states":{
+            "code":{ "name":"Sequence", "data":[ { "sum":8, "to":{ "_":[ "this", "height" ] }, "wait":1, "loop":1, "cycles":7 }, { "set":{ "removeType":"drawing" } } ] }
+          }
+        }
+      },
+      { "wait":1, "loop":1, "until":{ "_":[ "objectTyped", "drawing", "not" ] } },
+      {
+        "when":{ "_":[ "this", "waitButton" ] },
+        "subsequence":[
+          { "wait":25 },
+          { "object":{ "_":[ "stencil", "waitButton" ] } },
+          { "wait":1, "loop":1, "until":{ "_":[ "keyPointer", "isHit" ] } },
+          { "playAudio":"noise1" },
+          { "as":{ "_":[ "object", "waitbutton" ] }, "remove":1 },
+          { "as":{ "_":[ "objectTyped", "mouth" ] }, "set":{ "visible":0 }, "wait":1 },
+          { "as":{ "_":[ "objectTyped", "mouth" ] }, "set":{ "visible":1, "animation":"silent" }, "wait":1 }
+        ]
+      },
+      { "wait":10 },
+      { "set":{ "sentence":"", "waitButton":0, "mouth":"silent" } }
+    ],
+    "codeMakeQuiz":[
+      { "set":{ "counter5":0, "options":{ "_":[ "new", [] ] } } },
+      { "shuffle":{ "_":[ "this", "quizRange" ] } },
+      { "as":{ "_":[ "this", "rightAnswer" ] }, "pushInto":{ "_":[ "that", "options" ] } },
+      {
+        "times":{ "_":[ "this", "quizRange", "count" ] },
+        "execute":{
+          "when":{ "_":[ "this", "options", "count", "isLessThan", 3 ] },
+          "execute":[
+            { "set":{ "number":{ "_":[ "this", "rightAnswer", "+", { "_":[ "this", "quizRange", { "_":[ "this", "counter5" ] } ] } ] } } },
+            { "when":{ "_":[ "this", "number", "isGreaterThan", 0 ] }, "as":{ "_":[ "this", "number" ] }, "pushInto":{ "_":[ "that", "options" ] } },
+            { "sum":1, "to":{ "_":[ "this", "counter5" ] } }
+          ]
+        }
+      },
+      { "shuffle":{ "_":[ "this", "options" ] } }
+    ],
+    "codeRemove":[ { "as":{ "_":[ "this", "shadow" ] }, "remove":1 }, { "remove":1 } ],
+    "codeUpdateShadow":[
+      { "set":{ "shadowy":{ "_":[ "this", "y", "+", 50, "floor" ] } } },
+      {
+        "as":{ "_":[ "this", "shadow" ] },
+        "set":{ "zIndex":{ "_":[ "that", "shadowy" ] }, "x":{ "_":[ "that", "x", "+", 5 ] }, "y":{ "_":[ "that", "shadowy" ] } }
+      }
+    ],
+    "buttonModel":{
+      "type":"button",
+      "width":70, "height":40,
+      "zIndex":100100,
+      "border":"#000", "color":"#000",
+      "font":"cga", "fontSize":15, "lineHeight":40, "textAlign":"center",
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":{
+            "when":{ "_":[ "this", "collidesWith", { "_":[ "objectTyped", "pointer" ] } ] },
+            "execute":[
+              { "set":{ "bgcolor":"#ff55ff" } },
+              {
+                "when":{ "_":[ "keyPointer", "isHit" ] },
+                "execute":[
+                  { "as":{ "_":"scene" }, "set":{ "answer":{ "_":[ "that", "answer" ] } }, "playAudio":"noise1" },
+                  { "as":{ "_":[ "object", "button" ] }, "set":{ "state":"frozen" } }
+                ]
+              }
+            ],
+            "elseExecute":{ "set":{ "bgcolor":"#fff" } }
+          }
+        }
+      }
+    },
+    "chicken":{
+      "type":"chicken",
+      "image":"sprites", "width":51, "height":55,
+      "x":-60,
+      "execute":{ "object":{ "image":"sprites", "tileX":255, "width":41, "height":12 }, "assign":{ "_":"that" }, "to":{ "_":[ "this", "shadow" ] } },
+      "animations":{ "still":{ "frame":0 }, "walking":{ "frames":2, "loopTo":0 } },
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":[
+            { "set":{ "walking":0 } },
+            { "when":{ "_":[ "this", "x", "isLessThan", { "_":[ "this", "dx" ] } ] }, "sum":1, "to":{ "_":[ "this", "x" ] }, "set":{ "flipX":0, "walking":1 } },
+            {
+              "when":{ "_":[ "this", "x", "isGreaterThan", { "_":[ "this", "dx" ] } ] },
+              "subtract":1,
+              "to":{ "_":[ "this", "x" ] },
+              "set":{ "flipX":1, "walking":1 }
+            },
+            { "when":{ "_":[ "this", "y", "isLessThan", { "_":[ "this", "dy" ] } ] }, "sum":1, "to":{ "_":[ "this", "y" ] }, "set":{ "flipX":0, "walking":1 } },
+            {
+              "when":{ "_":[ "this", "y", "isGreaterThan", { "_":[ "this", "dy" ] } ] },
+              "subtract":1,
+              "to":{ "_":[ "this", "y" ] },
+              "set":{ "flipX":1, "walking":1 }
+            },
+            {
+              "when":{ "_":[ "this", "walking" ] },
+              "set":{ "type":"walking", "animation":"walking" },
+              "elseExecute":{ "set":{ "removeType":"walking", "animation":"still" } }
+            },
+            { "set":{ "zIndex":{ "_":[ "this", "y", "+", 400, "floor" ] } } },
+            { "_":[ "stencil", "codeUpdateShadow" ] }
+          ]
+        },
+        "actions":{
+          "name":"doEgg",
+          "execute":{
+            "object":{
+              "type":{ "_":[ "egg", ".", { "_":[ "that", "eggId" ] } ] },
+              "set":{ "_":[ "stencil", "egg" ] },
+              "x":{ "_":[ "that", "x" ] }, "y":{ "_":[ "that", "y" ] }
+            },
+            "playAudio":"noise1"
+          }
+        }
+      }
+    },
+    "countEggsSequence":[
+      { "set":{ "counter4":0 } },
+      { "sum":1, "to":{ "_":[ "this", "counter4" ] } },
+      {
+        "as":{ "_":[ "objectTyped", { "_":[ "egg", ".", { "_":[ "that", "counter4" ] } ] } ] },
+        "set":{ "html":{ "_":[ "that", "counter4" ] } },
+        "playAudio":"noise1",
+        "wait":25
+      },
+      { "cycles":{ "_":[ "this", "multiplyThis", "*", { "_":[ "this", "multiplyFor" ] } ] }, "loopTo":-2 }
+    ],
+    "dataKeyboardLayout":[ "QWERTYUIOP", "ASDFGHJKL", "ZXCVBNM" ],
+    "egg":{
+      "type":"egg",
+      "image":"sprites", "tileX":102, "width":51, "height":55,
+      "color":"#000",
+      "font":"cga", "fontSize":8, "lineHeight":70, "textAlign":"center",
+      "execute":{ "object":{ "image":"sprites", "tileX":255, "width":41, "height":12 }, "assign":{ "_":"that" }, "to":{ "_":[ "this", "shadow" ] } },
+      "animations":{ "still":{ "frame":0 }, "walking":{ "frames":2, "loopTo":0 } },
+      "states":[
+        {
+          "code":{
+            "name":"Execute",
+            "data":[
+              {
+                "when":{ "_":[ "this", "walking" ] },
+                "set":{ "type":"walking", "animation":"walking" },
+                "elseExecute":{ "set":{ "removeType":"walking", "animation":"still" } }
+              },
+              { "set":{ "zIndex":{ "_":[ "this", "y", "+", 200, "floor" ] } } },
+              { "_":[ "stencil", "codeUpdateShadow" ] }
+            ]
+          },
+          "actions":{ "name":"hatch", "set":{ "type":"hatching", "state":"hatch" } }
+        },
+        {
+          "name":"hatch",
+          "set":{ "html":"" },
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "playAudio":"noise1" },
+              { "sum":1, "to":{ "_":[ "this", "x" ] }, "wait":1 },
+              { "subtract":1, "to":{ "_":[ "this", "x" ] }, "wait":1, "cycles":10, "loopTo":-1 },
+              { "wait":25 },
+              { "sum":1, "to":{ "_":[ "this", "frame" ] }, "cycles":3, "loopTo":0 },
+              { "object":{ "set":{ "_":[ "stencil", "chicken" ] }, "x":{ "_":[ "that", "x" ] }, "y":{ "_":[ "that", "y" ] } } },
+              { "execute":{ "_":[ "stencil", "codeRemove" ] }, "playAudio":"noise2" }
+            ]
+          }
+        }
+      ]
+    },
+    "eyeModel":{
+      "image":"sprites", "tileX":74, "tileY":127, "width":22, "height":22,
+      "zIndex":100001, "frame":0,
+      "animations":{ "closed":{ "frame":1 }, "open":{ "frame":0 } }
+    },
+    "handModel":{
+      "image":"sprites", "tileX":74, "tileY":149, "width":36, "height":36,
+      "zIndex":100002,
+      "animations":{ "down":{ "frame":0 }, "open":{ "frame":1 }, "point":{ "frame":2 } }
+    },
+    "key":{
+      "width":30, "height":30,
+      "zIndex":100,
+      "bgcolor":"#fff", "border":"#000", "color":"#000",
+      "font":"cga", "fontSize":8, "lineHeight":30, "textAlign":"center",
+      "digits":0,
+      "sound":"noise1",
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":{
+            "when":{ "_":[ "this", "collidesWith", { "_":[ "objectTyped", "pointer" ] } ] },
+            "execute":[
+              { "set":{ "bgcolor":"#ff55ff" } },
+              { "when":{ "_":[ "keyPointer", "isHit" ] }, "execute":{ "as":{ "_":[ "objectTyped", "keyboard" ] }, "executeAction":"keypress" } }
+            ],
+            "elseExecute":{ "set":{ "bgcolor":"#fff" } }
+          }
+        }
+      }
+    },
+    "keyboard":{
+      "type":"keyboard",
+      "width":320, "height":150,
+      "zIndex":100, "y":50,
+      "execute":[
+        {
+          "object":[
+            {
+              "width":320, "height":20,
+              "zIndex":10, "x":0, "y":30,
+              "font":"cga", "fontSize":16, "lineHeight":20, "outline":"#000", "textAlign":"center",
+              "blink":0,
+              "states":{
+                "code":{
+                  "name":"Execute",
+                  "data":[
+                    { "set":{ "blink":{ "_":[ "this", "blink", "+", 1, "%", 20 ] } } },
+                    {
+                      "when":{ "_":[ "this", "blink", "isLessThan", 10 ] },
+                      "set":{ "html":{ "_":[ "objectTyped", "keyboard", "inputed", ".", "-" ] } },
+                      "elseExecute":{ "set":{ "html":{ "_":[ "objectTyped", "keyboard", "inputed", ".", "|" ] } } }
+                    }
+                  ]
+                }
+              }
+            },
+            { "set":{ "_":[ "stencil", "key" ] }, "width":60, "x":5, "y":162, "html":"DELETE", "digits":1, "sound":"noise2" },
+            { "set":{ "_":[ "stencil", "key" ] }, "width":185, "x":66, "y":162, "html":"SPACE", "digits":" ", "sound":"noise1" },
+            { "set":{ "_":[ "stencil", "key" ] }, "width":60, "x":252, "y":162, "html":"DONE!", "digits":2 }
+          ]
+        },
+        { "set":{ "counter":0 } },
+        {
+          "times":{ "_":[ "stencil", "dataKeyboardLayout", 0, "count" ] },
+          "execute":[
+            {
+              "object":{
+                "set":{ "_":[ "stencil", "key" ] },
+                "x":{ "_":[ "that", "counter", "*", 31, "+", 5 ] }, "y":16,
+                "html":{ "_":[ "stencil", "dataKeyboardLayout", 0, { "_":[ "that", "counter" ] } ] }
+              },
+              "into":{ "_":"this" }
+            },
+            { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+          ]
+        },
+        { "set":{ "counter":0 } },
+        {
+          "times":{ "_":[ "stencil", "dataKeyboardLayout", 1, "count" ] },
+          "execute":[
+            {
+              "object":{
+                "set":{ "_":[ "stencil", "key" ] },
+                "x":{ "_":[ "that", "counter", "*", 31, "+", 20 ] }, "y":48,
+                "html":{ "_":[ "stencil", "dataKeyboardLayout", 1, { "_":[ "that", "counter" ] } ] }
+              },
+              "into":{ "_":"this" }
+            },
+            { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+          ]
+        },
+        { "set":{ "counter":0 } },
+        {
+          "times":{ "_":[ "stencil", "dataKeyboardLayout", 2, "count" ] },
+          "execute":[
+            {
+              "object":{
+                "set":{ "_":[ "stencil", "key" ] },
+                "x":{ "_":[ "that", "counter", "*", 31, "+", 35 ] }, "y":80,
+                "html":{ "_":[ "stencil", "dataKeyboardLayout", 2, { "_":[ "that", "counter" ] } ] }
+              },
+              "into":{ "_":"this" }
+            },
+            { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+          ]
+        }
+      ],
+      "inputed":"",
+      "states":{
+        "actions":{
+          "name":"keypress",
+          "execute":[
+            { "playAudio":{ "_":[ "that", "sound" ] } },
+            {
+              "when":{ "_":[ "that", "digits", "isEqualTo", 1 ] },
+              "execute":{
+                "when":{ "_":[ "this", "inputed", "count", "isGreaterThan", 0 ] },
+                "execute":{ "set":{ "inputed":{ "_":[ "this", "inputed", "subString", [ 0, { "_":[ "this", "inputed", "count", "-", 1 ] } ] ] } } }
+              },
+              "elseExecute":{
+                "when":{ "_":[ "that", "digits", "isEqualTo", 2 ] },
+                "execute":{ "as":{ "_":"scene" }, "set":{ "inputed":{ "_":[ "that", "inputed" ] } }, "executeAction":"process" },
+                "elseExecute":{
+                  "when":{ "_":[ "that", "digits" ] },
+                  "set":{ "inputed":{ "_":[ "this", "inputed", ".", { "_":[ "that", "digits" ] } ] } },
+                  "elseExecute":{ "set":{ "inputed":{ "_":[ "this", "inputed", ".", { "_":[ "that", "html" ] } ] } } }
+                }
+              }
+            },
+            { "set":{ "inputed":{ "_":[ "this", "inputed", "subString", [ 0, 6 ] ] } } }
+          ]
+        }
+      }
+    },
+    "lessonModel":{
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[
+            { "subsequence":{ "_":[ "stencil", "showBackground" ] } },
+            {
+              "object":{
+                "type":"drawing",
+                "image":"sprites", "tileY":55, "width":229,
+                "zIndex":100000, "x":3, "y":124,
+                "states":{
+                  "code":{ "name":"Sequence", "data":[ { "sum":8, "to":{ "_":[ "this", "height" ] }, "wait":1, "loop":1, "cycles":9 }, { "set":{ "removeType":"drawing" } } ] }
+                }
+              }
+            },
+            { "wait":1, "loop":1, "until":{ "_":[ "objectTyped", "drawing", "not" ] } },
+            {
+              "object":{
+                "type":"drawing",
+                "image":"sprites", "tileY":127, "width":74,
+                "zIndex":100000, "x":229, "y":104,
+                "states":{
+                  "code":{
+                    "name":"Sequence",
+                    "data":[ { "sum":8, "to":{ "_":[ "this", "height" ] }, "wait":1, "loop":1, "cycles":12 }, { "set":{ "removeType":"drawing" } } ]
+                  }
+                }
+              }
+            },
+            { "wait":1, "loop":1, "until":{ "_":[ "objectTyped", "drawing", "not" ] } },
+            { "object":{ "type":"reye", "set":{ "_":[ "stencil", "eyeModel" ] }, "x":243, "y":136 } },
+            { "wait":2 },
+            { "object":{ "type":"leye", "set":{ "_":[ "stencil", "eyeModel" ] }, "x":267, "y":136, "flipX":1 } },
+            { "wait":2 },
+            {
+              "object":{
+                "type":"mouth",
+                "image":"sprites", "tileX":74, "tileY":185, "width":24, "height":24,
+                "zIndex":100001, "x":254, "y":153,
+                "flipX":1,
+                "animations":{ "silent":{ "frame":0 }, "surprise":{ "frame":1 }, "talk":{ "frames":2, "loopTo":0 } }
+              }
+            },
+            { "wait":2 },
+            { "object":{ "type":"rhand", "set":{ "_":[ "stencil", "handModel" ] }, "x":218, "y":164 } },
+            { "wait":2 },
+            { "object":{ "type":"lhand", "set":{ "_":[ "stencil", "handModel" ] }, "x":278, "y":164, "flipX":1 } },
+            { "playAudio":"song1" },
+            { "wait":150 },
+            { "set":{ "state":"run" } }
+          ]
+        }
+      }
+    },
+    "medalSequence":[
+      {
+        "object":{
+          "type":"drawing",
+          "image":"sprites", "tileY":423, "width":116,
+          "zIndex":100000, "x":101, "y":2,
+          "states":{
+            "code":{
+              "name":"Sequence",
+              "data":[ { "sum":8, "to":{ "_":[ "this", "height" ] }, "wait":1, "loop":1, "cycles":15 }, { "set":{ "removeType":"drawing" } } ]
+            }
+          }
+        },
+        "playAudio":"noise1"
+      },
+      { "wait":1, "loop":1, "until":{ "_":[ "objectTyped", "drawing", "not" ] } },
+      {
+        "object":{
+          "width":116, "height":40,
+          "zIndex":100001, "x":101, "y":20,
+          "color":"#000",
+          "font":"cga", "fontSize":8, "lineHeight":10, "textAlign":"center", "html":{ "_":[ "scene", "medalLabel" ] }
+        }
+      },
+      { "wait":10 },
+      {
+        "object":{
+          "width":116, "height":30,
+          "zIndex":100001, "x":101, "y":45,
+          "color":"#fff",
+          "font":"cga", "fontSize":16, "lineHeight":30, "textAlign":"center", "html":{ "_":[ "variable", "studentName" ] }
+        }
+      },
+      { "wait":10 },
+      {
+        "object":{
+          "width":116, "height":10,
+          "zIndex":100001, "x":101, "y":69,
+          "color":"#000",
+          "font":"cga", "fontSize":8, "lineHeight":10, "textAlign":"center", "html":"By teacher"
+        }
+      },
+      { "wait":10 }
+    ],
+    "multiplySequence1":[
+      { "set":{ "counter":{ "_":[ 100, "-", { "_":[ 25, "*", { "_":[ "this", "multiplyThis" ] } ] }, "/", 2 ] }, "counter2":1, "counter3":0 } },
+      {
+        "times":{ "_":[ "this", "multiplyThis" ] },
+        "execute":[
+          {
+            "object":{
+              "set":{ "_":[ "stencil", "chicken" ] },
+              "y":{ "_":[ "that", "counter" ] },
+              "chickenId":{ "_":[ "that", "counter2" ] },
+              "dx":{ "_":[ 320, "-", { "_":[ 60, "*", { "_":[ "that", "multiplyFor" ] } ] }, "/", 2 ] }
+            }
+          },
+          { "sum":{ "_":[ "this", "multiplyFor" ] }, "to":{ "_":[ "this", "counter2" ] } },
+          { "sum":25, "to":{ "_":[ "this", "counter" ] } }
+        ]
+      },
+      { "wait":1, "loop":1, "until":{ "_":[ "objectTyped", "walking", "not" ] } }
+    ],
+    "multiplySequence2":[
+      { "wait":50 },
+      {
+        "as":{ "_":[ "object", "chicken" ] },
+        "set":{ "eggId":{ "_":[ "this", "chickenId", "+", { "_":[ "that", "counter3" ] } ] } },
+        "executeAction":"doEgg"
+      },
+      { "sum":1, "to":{ "_":[ "this", "counter3" ] } },
+      { "as":{ "_":[ "object", "chicken" ] }, "execute":{ "sum":60, "to":{ "_":[ "this", "dx" ] } } },
+      { "wait":1, "loop":1, "until":{ "_":[ "objectTyped", "walking", "not" ] } },
+      { "cycles":{ "_":[ "this", "multiplyFor" ] }, "loopTo":0 }
+    ],
+    "multiplySequence3":[
+      { "as":{ "_":[ "object", "chicken" ] }, "set":{ "dx":320 } },
+      { "wait":1 },
+      { "wait":1, "loop":1, "until":{ "_":[ "objectTyped", "walking", "not" ] } },
+      { "as":{ "_":[ "object", "chicken" ] }, "execute":{ "_":[ "stencil", "codeRemove" ] } },
+      { "wait":50 }
+    ],
+    "multiplySequence4":[
+      { "as":{ "_":[ "object", "egg" ] }, "executeAction":"hatch" },
+      { "wait":1, "loop":1, "until":{ "_":[ "objectTyped", "hatching", "not" ] } },
+      { "wait":50 }
+    ],
+    "pointer":{
+      "type":"pointer",
+      "image":"sprites", "tileX":229, "tileY":76, "width":15, "height":19,
+      "zIndex":1000,
+      "hitbox":{ "width":1, "height":1, "x":0, "y":0 },
+      "states":{ "code":{ "name":"Execute", "data":{ "set":{ "x":{ "_":[ "pointer", "x" ] }, "y":{ "_":[ "pointer", "y" ] } } } } }
+    },
+    "showBackground":[
+      {
+        "object":{
+          "type":"drawing",
+          "image":"sprites", "tileY":223, "width":320,
+          "x":0, "y":0,
+          "states":{
+            "code":{
+              "name":"Sequence",
+              "data":[ { "sum":8, "to":{ "_":[ "this", "height" ] }, "wait":1, "loop":1, "cycles":25 }, { "set":{ "removeType":"drawing" } } ]
+            }
+          }
+        }
+      },
+      { "wait":1, "loop":1, "until":{ "_":[ "objectTyped", "drawing", "not" ] } }
+    ],
+    "waitAnswer":[
+      { "set":{ "answer":0 } },
+      { "wait":1, "loop":1, "until":{ "_":[ "this", "answer" ] } },
+      { "wait":10 },
+      { "as":{ "_":[ "object", "button" ] }, "remove":1 }
+    ],
+    "waitButton":{
+      "type":"waitbutton",
+      "image":"sprites", "tileX":229, "tileY":55, "width":20, "height":21,
+      "zIndex":100003, "x":200, "y":178,
+      "animations":{ "blink":{ "frames":2, "loopTo":0 } },
+      "animation":"blink"
+    }
+  },
+  "execute":{
+    "object":{ "_":[ "stencil", "pointer" ] },
+    "into":{ "_":"hud" }
+  },
+  "scenes":{
+    "intro":{
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[
+            {
+              "object":{
+                "type":"drawing",
+                "image":"title", "width":320,
+                "x":0, "y":0,
+                "states":{
+                  "code":{
+                    "name":"Sequence",
+                    "data":[ { "sum":8, "to":{ "_":[ "this", "height" ] }, "wait":1, "loop":1, "cycles":25 }, { "set":{ "removeType":"drawing" } } ]
+                  }
+                }
+              }
+            },
+            { "wait":1, "loop":1, "until":{ "_":[ "objectTyped", "drawing", "not" ] } },
+            { "playAudio":"song1" },
+            { "wait":150 },
+            {
+              "object":{
+                "width":320, "height":10,
+                "zIndex":100, "x":0, "y":175,
+                "bgcolor":"#000", "color":"#fff",
+                "font":"cga", "fontSize":8, "lineHeight":10, "textAlign":"center", "html":"Click anywhere to start!"
+              }
+            },
+            { "wait":1, "loop":1, "until":{ "_":[ "keyPointer", "isHit" ] } },
+            { "as":{ "_":"variable" }, "set":{ "studentName":"YOU" }, "gotoScene":"nameinput", "withTransition":3 }
+          ]
+        }
+      }
+    },
+    "exercise1":{
+      "set":{ "_":[ "stencil", "lessonModel" ] },
+      "states":{
+        "name":"run",
+        "code":{
+          "name":"Sequence",
+          "data":[
+            { "set":{ "problem":0 } },
+            {
+              "set":{
+                "leye":"closed",
+                "mouth":"talk",
+                "reye":"closed",
+                "sentence":{ "_":[ "Hi, ", ".", { "_":[ "variable", "studentName" ] }, ".", "! Are you ready for your exercises?" ] },
+                "waitButton":1
+              },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            {
+              "set":{
+                "leye":"closed",
+                "mouth":"talk",
+                "reye":"open",
+                "sentence":"Don't worry! These exercises aren't so hard and I'm going to help you a little. And...",
+                "waitButton":1
+              },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            {
+              "set":{
+                "leye":"closed",
+                "mouth":"talk",
+                "reye":"open",
+                "rhand":"point",
+                "sentence":"...there is a nice badge waiting for you at the end, so give your best!",
+                "waitButton":1
+              },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            { "sum":1, "to":{ "_":[ "this", "problem" ] } },
+            { "set":{ "multiplyFor":{ "_":[ "randomNumber", [ 1, 5 ] ] }, "multiplyThis":{ "_":[ "randomNumber", [ 1, 4 ] ] } } },
+            {
+              "set":{ "quizRange":{ "_":[ "new", [ -1, -2, 1, 2 ] ] }, "rightAnswer":{ "_":[ "this", "multiplyThis" ] } },
+              "execute":{ "_":[ "stencil", "codeMakeQuiz" ] }
+            },
+            {
+              "set":{
+                "leye":"open",
+                "mouth":"talk",
+                "reye":"open",
+                "rhand":"open",
+                "sentence":{ "_":[ "Are you ready for problem ", ".", { "_":[ "that", "problem" ] }, ".", "?" ] },
+                "waitButton":1
+              },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            {
+              "set":{
+                "leye":"open",
+                "reye":"open",
+                "rhand":"down",
+                "sentence":{ "_":[ "that", "multiplyThis", ".", " X ", ".", { "_":[ "that", "multiplyFor" ] }, ".", "<br>How many chickens I've to call for you?" ] }
+              },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            {
+              "object":[
+                { "set":{ "_":[ "stencil", "buttonModel" ] }, "x":3, "y":160, "html":{ "_":[ "that", "options", 0 ] }, "answer":{ "_":[ "that", "options", 0 ] } },
+                { "set":{ "_":[ "stencil", "buttonModel" ] }, "x":73, "y":160, "html":{ "_":[ "that", "options", 1 ] }, "answer":{ "_":[ "that", "options", 1 ] } },
+                { "set":{ "_":[ "stencil", "buttonModel" ] }, "x":143, "y":160, "html":{ "_":[ "that", "options", 2 ] }, "answer":{ "_":[ "that", "options", 2 ] } }
+              ]
+            },
+            { "subsequence":{ "_":[ "stencil", "waitAnswer" ] } },
+            {
+              "when":{ "_":[ "this", "answer", "isNotEqualTo", { "_":[ "this", "rightAnswer" ] } ] },
+              "subsequence":[
+                {
+                  "set":{
+                    "leye":"closed",
+                    "lhand":"down",
+                    "mouth":"talk",
+                    "reye":"closed",
+                    "rhand":"down",
+                    "sentence":{
+                      "_":[
+                        "You said ",
+                        ".",
+                        { "_":[ "that", "answer" ] },
+                        ".",
+                        "? That's not the right answer, ",
+                        ".",
+                        { "_":[ "variable", "studentName" ] },
+                        ".",
+                        "! Sorry!"
+                      ]
+                    },
+                    "waitButton":1
+                  },
+                  "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+                },
+                {
+                  "set":{
+                    "leye":"open",
+                    "lhand":"open",
+                    "mouth":"talk",
+                    "reye":"open",
+                    "rhand":"open",
+                    "sentence":"The right answer is the first number of our problem. Try again!",
+                    "waitButton":1
+                  },
+                  "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+                }
+              ]
+            },
+            { "loopTo":-4, "until":{ "_":[ "this", "answer", "isEqualTo", { "_":[ "this", "rightAnswer" ] } ] } },
+            {
+              "set":{
+                "leye":"closed",
+                "lhand":"point",
+                "mouth":"talk",
+                "reye":"open",
+                "rhand":"point",
+                "sentence":{ "_":[ "Very good! The right answer is ", ".", { "_":[ "that", "answer" ] }, ".", "!" ] },
+                "waitButton":1
+              },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            { "subsequence":{ "_":[ "stencil", "multiplySequence1" ] } },
+            {
+              "set":{ "quizRange":{ "_":[ "new", [ -1, -2, 1, 2 ] ] }, "rightAnswer":{ "_":[ "this", "multiplyFor" ] } },
+              "execute":{ "_":[ "stencil", "codeMakeQuiz" ] }
+            },
+            {
+              "set":{
+                "leye":"open",
+                "reye":"open",
+                "rhand":"down",
+                "sentence":{ "_":[ "that", "multiplyThis", ".", " X ", ".", { "_":[ "that", "multiplyFor" ] }, ".", "<br>How many eggs each chicken have to make?" ] }
+              },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            {
+              "object":[
+                { "set":{ "_":[ "stencil", "buttonModel" ] }, "x":3, "y":160, "html":{ "_":[ "that", "options", 0 ] }, "answer":{ "_":[ "that", "options", 0 ] } },
+                { "set":{ "_":[ "stencil", "buttonModel" ] }, "x":73, "y":160, "html":{ "_":[ "that", "options", 1 ] }, "answer":{ "_":[ "that", "options", 1 ] } },
+                { "set":{ "_":[ "stencil", "buttonModel" ] }, "x":143, "y":160, "html":{ "_":[ "that", "options", 2 ] }, "answer":{ "_":[ "that", "options", 2 ] } }
+              ]
+            },
+            { "subsequence":{ "_":[ "stencil", "waitAnswer" ] } },
+            {
+              "when":{ "_":[ "this", "answer", "isNotEqualTo", { "_":[ "this", "rightAnswer" ] } ] },
+              "subsequence":[
+                {
+                  "set":{
+                    "leye":"closed",
+                    "lhand":"down",
+                    "mouth":"talk",
+                    "reye":"closed",
+                    "rhand":"down",
+                    "sentence":{
+                      "_":[
+                        "You said ",
+                        ".",
+                        { "_":[ "that", "answer" ] },
+                        ".",
+                        "? That's not the right answer, ",
+                        ".",
+                        { "_":[ "variable", "studentName" ] },
+                        ".",
+                        "! Sorry!"
+                      ]
+                    },
+                    "waitButton":1
+                  },
+                  "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+                },
+                {
+                  "set":{
+                    "leye":"open",
+                    "lhand":"open",
+                    "mouth":"talk",
+                    "reye":"open",
+                    "rhand":"open",
+                    "sentence":"This time the right answer is the second number of our problem. Try again!",
+                    "waitButton":1
+                  },
+                  "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+                }
+              ]
+            },
+            { "loopTo":-4, "until":{ "_":[ "this", "answer", "isEqualTo", { "_":[ "this", "rightAnswer" ] } ] } },
+            {
+              "set":{
+                "leye":"closed",
+                "lhand":"point",
+                "mouth":"talk",
+                "reye":"open",
+                "rhand":"point",
+                "sentence":{ "_":[ "Very good! The right answer is ", ".", { "_":[ "that", "answer" ] }, ".", "!" ] },
+                "waitButton":1
+              },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            { "subsequence":{ "_":[ "stencil", "multiplySequence2" ] } },
+            { "subsequence":{ "_":[ "stencil", "multiplySequence3" ] } },
+            {
+              "set":{
+                "quizRange":{ "_":[ "new", [ -3, -4, -1, -2, 1, 2, 3, 4 ] ] },
+                "rightAnswer":{ "_":[ "this", "multiplyFor", "*", { "_":[ "this", "multiplyThis" ] } ] }
+              },
+              "execute":{ "_":[ "stencil", "codeMakeQuiz" ] }
+            },
+            {
+              "set":{
+                "leye":"open",
+                "reye":"open",
+                "rhand":"down",
+                "sentence":{ "_":[ "that", "multiplyThis", ".", " X ", ".", { "_":[ "that", "multiplyFor" ] }, ".", "<br>Finally, what is the result of this problem?" ] }
+              },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            {
+              "object":[
+                { "set":{ "_":[ "stencil", "buttonModel" ] }, "x":3, "y":160, "html":{ "_":[ "that", "options", 0 ] }, "answer":{ "_":[ "that", "options", 0 ] } },
+                { "set":{ "_":[ "stencil", "buttonModel" ] }, "x":73, "y":160, "html":{ "_":[ "that", "options", 1 ] }, "answer":{ "_":[ "that", "options", 1 ] } },
+                { "set":{ "_":[ "stencil", "buttonModel" ] }, "x":143, "y":160, "html":{ "_":[ "that", "options", 2 ] }, "answer":{ "_":[ "that", "options", 2 ] } }
+              ]
+            },
+            { "subsequence":{ "_":[ "stencil", "waitAnswer" ] } },
+            {
+              "when":{ "_":[ "this", "answer", "isNotEqualTo", { "_":[ "this", "rightAnswer" ] } ] },
+              "subsequence":[
+                {
+                  "set":{
+                    "leye":"closed",
+                    "lhand":"down",
+                    "mouth":"talk",
+                    "reye":"closed",
+                    "rhand":"down",
+                    "sentence":{
+                      "_":[
+                        "You said ",
+                        ".",
+                        { "_":[ "that", "answer" ] },
+                        ".",
+                        "? That's not the right answer, ",
+                        ".",
+                        { "_":[ "variable", "studentName" ] },
+                        ".",
+                        "! Sorry!"
+                      ]
+                    },
+                    "waitButton":1
+                  },
+                  "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+                },
+                {
+                  "set":{
+                    "leye":"open",
+                    "lhand":"open",
+                    "mouth":"talk",
+                    "reye":"open",
+                    "rhand":"open",
+                    "sentence":"You have to count how many eggs the chicken made! Try again!",
+                    "waitButton":1
+                  },
+                  "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+                }
+              ]
+            },
+            { "loopTo":-4, "until":{ "_":[ "this", "answer", "isEqualTo", { "_":[ "this", "rightAnswer" ] } ] } },
+            {
+              "set":{
+                "leye":"closed",
+                "lhand":"point",
+                "mouth":"talk",
+                "reye":"open",
+                "rhand":"point",
+                "sentence":{ "_":[ "Very good! The right answer is ", ".", { "_":[ "that", "answer" ] }, ".", "!" ] },
+                "waitButton":1
+              },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            { "subsequence":{ "_":[ "stencil", "countEggsSequence" ] } },
+            {
+              "set":{
+                "leye":"closed",
+                "lhand":"open",
+                "mouth":"talk",
+                "reye":"open",
+                "rhand":"open",
+                "sentence":{
+                  "_":[
+                    "that",
+                    "multiplyThis",
+                    ".",
+                    " X ",
+                    ".",
+                    { "_":[ "that", "multiplyFor" ] },
+                    ".",
+                    " = ",
+                    ".",
+                    { "_":[ "that", "rightAnswer" ] },
+                    ".",
+                    "<br>Your answer is right! Good job, ",
+                    ".",
+                    { "_":[ "variable", "studentName" ] },
+                    ".",
+                    "!"
+                  ]
+                },
+                "waitButton":1
+              },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            { "subsequence":{ "_":[ "stencil", "multiplySequence4" ] } },
+            { "subsequence":{ "_":[ "stencil", "multiplySequence3" ] } },
+            { "cycles":3, "loopTo":-31 },
+            { "playAudio":"song1" },
+            { "wait":150 },
+            {
+              "set":{
+                "leye":"open",
+                "lhand":"down",
+                "mouth":"talk",
+                "reye":"open",
+                "rhand":"down",
+                "sentence":"We completed three exercises together... and you did very well! You deserve your...",
+                "waitButton":1
+              },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            {
+              "set":{ "leye":"closed", "lhand":"point", "mouth":"talk", "reye":"closed", "rhand":"point", "sentence":"...badge of KNIGHT OF MATH!", "waitButton":1 },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            { "set":{ "medalLabel":"To the<br>knight of<br>math" }, "subsequence":{ "_":[ "stencil", "medalSequence" ] } },
+            {
+              "set":{
+                "leye":"closed",
+                "lhand":"down",
+                "mouth":"talk",
+                "reye":"open",
+                "rhand":"point",
+                "sentence":"A true knight of math have to very good with multiplication... and you surely are!",
+                "waitButton":1
+              },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            {
+              "set":{
+                "leye":"open",
+                "lhand":"down",
+                "mouth":"talk",
+                "reye":"open",
+                "rhand":"open",
+                "sentence":"Do you want to review my lesson about multiplication? Select it from the main menu!",
+                "waitButton":1
+              },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            {
+              "set":{ "sentence":"Do you want to win another KNIGHT OF MATH medal? Select 'Easy exercises' exercise again!", "waitButton":1 },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            {
+              "set":{ "lhand":"point", "rhand":"open", "sentence":"But if you want to be the KING OF MATH... try the 'Multiplication table exercises'!", "waitButton":1 },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            {
+              "set":{ "leye":"closed", "sentence":"It's a challenge for true math lovers... but I'm sure you can do it!", "waitButton":1 },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            {
+              "set":{
+                "leye":"open",
+                "lhand":"down",
+                "rhand":"down",
+                "sentence":{ "_":[ "That's all for now, ", ".", { "_":[ "variable", "studentName" ] }, ".", "! You did very well and I can't wait to see you again!" ] },
+                "waitButton":1
+              },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            { "set":{ "leye":"closed", "rhand":"closed", "sentence":"Bye bye!", "waitButton":1 }, "subsequence":{ "_":[ "stencil", "codeDialogue" ] } },
+            { "playAudio":"song1" },
+            { "wait":150 },
+            { "gotoScene":"menu", "withTransition":3 }
+          ]
+        }
+      }
+    },
+    "exercise2":{
+      "set":{ "_":[ "stencil", "lessonModel" ] },
+      "states":{
+        "name":"run",
+        "code":{
+          "name":"Sequence",
+          "data":[
+            { "set":{ "problem":0 } },
+            {
+              "set":{
+                "leye":"closed",
+                "mouth":"talk",
+                "reye":"closed",
+                "sentence":{
+                  "_":[
+                    "Hello, ",
+                    ".",
+                    { "_":[ "variable", "studentName" ] },
+                    ".",
+                    "! Are you ready for some exercises? We are going to use the multiplication table this time."
+                  ]
+                },
+                "waitButton":1
+              },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            {
+              "set":{
+                "leye":"open",
+                "mouth":"talk",
+                "reye":"open",
+                "rhand":"point",
+                "sentence":"The multiplication table is that little paper with numbers you've found in this videogame box.",
+                "waitButton":1
+              },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            {
+              "set":{
+                "mouth":"talk",
+                "rhand":"open",
+                "sentence":"If you can't find it anywhere, don't worry! You can find another one on your math schoolbook or draw your own with the help of your parents.",
+                "waitButton":1
+              },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            {
+              "set":{
+                "leye":"closed",
+                "lhand":"open",
+                "mouth":"talk",
+                "sentence":"...and if you can solve these problems without the multiplication table... you are a TRUE champion!",
+                "waitButton":1
+              },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            {
+              "set":{ "leye":"open", "lhand":"down", "mouth":"talk", "rhand":"down", "sentence":"Click anywhere when you are ready to start!", "waitButton":1 },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            { "sum":1, "to":{ "_":[ "this", "problem" ] } },
+            { "set":{ "multiplyFor":{ "_":[ "randomNumber", [ 1, 9 ] ] }, "multiplyThis":{ "_":[ "randomNumber", [ 1, 9 ] ] } } },
+            {
+              "set":{
+                "quizRange":{ "_":[ "new", [ -1, -2, -3, -4, -5, -6, -7, -8, 1, 2, 3, 4, 5, 6, 7, 8 ] ] },
+                "rightAnswer":{ "_":[ "this", "multiplyFor", "*", { "_":[ "this", "multiplyThis" ] } ] }
+              },
+              "execute":{ "_":[ "stencil", "codeMakeQuiz" ] }
+            },
+            {
+              "set":{
+                "leye":"open",
+                "lhand":"down",
+                "mouth":"talk",
+                "reye":"open",
+                "rhand":"open",
+                "sentence":{ "_":[ "Get ready for problem ", ".", { "_":[ "that", "problem" ] }, ".", "!" ] },
+                "waitButton":1
+              },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            {
+              "set":{
+                "leye":"open",
+                "reye":"open",
+                "rhand":"down",
+                "sentence":{ "_":[ "that", "multiplyThis", ".", " X ", ".", { "_":[ "that", "multiplyFor" ] }, ".", "<br>Which one is the right answer?" ] }
+              },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            {
+              "object":[
+                { "set":{ "_":[ "stencil", "buttonModel" ] }, "x":50, "y":50, "html":{ "_":[ "that", "options", 0 ] }, "answer":{ "_":[ "that", "options", 0 ] } },
+                { "set":{ "_":[ "stencil", "buttonModel" ] }, "x":125, "y":50, "html":{ "_":[ "that", "options", 1 ] }, "answer":{ "_":[ "that", "options", 1 ] } },
+                { "set":{ "_":[ "stencil", "buttonModel" ] }, "x":200, "y":50, "html":{ "_":[ "that", "options", 2 ] }, "answer":{ "_":[ "that", "options", 2 ] } }
+              ]
+            },
+            { "subsequence":{ "_":[ "stencil", "waitAnswer" ] } },
+            {
+              "when":{ "_":[ "this", "answer", "isNotEqualTo", { "_":[ "this", "rightAnswer" ] } ] },
+              "subsequence":[
+                {
+                  "set":{
+                    "leye":"closed",
+                    "lhand":"down",
+                    "mouth":"talk",
+                    "reye":"closed",
+                    "rhand":"down",
+                    "sentence":{
+                      "_":[
+                        "You said ",
+                        ".",
+                        { "_":[ "that", "answer" ] },
+                        ".",
+                        "? That's not the right answer, ",
+                        ".",
+                        { "_":[ "variable", "studentName" ] },
+                        ".",
+                        "! Sorry!"
+                      ]
+                    },
+                    "waitButton":1
+                  },
+                  "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+                },
+                {
+                  "set":{
+                    "leye":"open",
+                    "lhand":"open",
+                    "mouth":"talk",
+                    "reye":"open",
+                    "rhand":"open",
+                    "sentence":"Check the multiplication table and try again!",
+                    "waitButton":1
+                  },
+                  "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+                }
+              ]
+            },
+            { "loopTo":-4, "until":{ "_":[ "this", "answer", "isEqualTo", { "_":[ "this", "rightAnswer" ] } ] } },
+            {
+              "set":{
+                "leye":"closed",
+                "mouth":"talk",
+                "reye":"open",
+                "sentence":{ "_":[ "Very good! The right answer is ", ".", { "_":[ "that", "answer" ] }, ".", "!" ] },
+                "waitButton":1
+              },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            { "cycles":5, "loopTo":-10 },
+            { "playAudio":"song1" },
+            { "wait":150 },
+            {
+              "set":{
+                "leye":"closed",
+                "lhand":"down",
+                "mouth":"talk",
+                "reye":"closed",
+                "rhand":"down",
+                "sentence":{ "_":[ "Hey ", ".", { "_":[ "variable", "studentName" ] }, ".", "! You did it! You solved all the problems by your own! I proclaim you..." ] },
+                "waitButton":1
+              },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            {
+              "set":{ "mouth":"talk", "rhand":"point", "sentence":"...the new KING OF MATH!", "waitButton":1 },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            { "set":{ "medalLabel":"To the<br>KING of<br>math!" }, "subsequence":{ "_":[ "stencil", "medalSequence" ] } },
+            {
+              "set":{
+                "lhand":"down",
+                "mouth":"talk",
+                "reye":"open",
+                "rhand":"down",
+                "sentence":"Multiplication have no secrets now for you! Now that you are the king, you can help your friends becoming your math knights...",
+                "waitButton":1
+              },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            {
+              "set":{ "mouth":"talk", "rhand":"point", "sentence":"...and even math king friends!", "waitButton":1 },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            {
+              "set":{
+                "leye":"open",
+                "lhand":"down",
+                "mouth":"talk",
+                "reye":"open",
+                "rhand":"open",
+                "sentence":"Do you want to review my lesson about multiplication? Select it from the main menu!",
+                "waitButton":1
+              },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            {
+              "set":{ "sentence":"Do you prefer to train a little more? Select the 'Multiplication table exercises' again!", "waitButton":1 },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            {
+              "set":{ "sentence":"If these problems were a little too hard for you, try the 'Easy exercises' instead. You can find them in the menu!", "waitButton":1 },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            {
+              "set":{
+                "lhand":"down",
+                "rhand":"down",
+                "sentence":{ "_":[ "You did well, ", ".", { "_":[ "variable", "studentName" ] }, ".", "! See you next time by me, Chippy, and..." ] },
+                "waitButton":1
+              },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            { "set":{ "multiplyFor":5, "multiplyThis":1 } },
+            { "subsequence":{ "_":[ "stencil", "multiplySequence1" ] } },
+            {
+              "set":{ "leye":"closed", "reye":"closed", "sentence":"...by Jasmine too! Bye bye!", "waitButton":1 },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            { "playAudio":"song1" },
+            { "wait":150 },
+            { "gotoScene":"menu", "withTransition":3 }
+          ]
+        }
+      }
+    },
+    "lesson":{
+      "set":{ "_":[ "stencil", "lessonModel" ] },
+      "states":{
+        "name":"run",
+        "code":{
+          "name":"Sequence",
+          "data":[
+            {
+              "set":{
+                "leye":"closed",
+                "mouth":"talk",
+                "reye":"closed",
+                "sentence":{ "_":[ "Hello ", ".", { "_":[ "variable", "studentName" ] }, ".", "! Welcome back to Funemathica! I'm Chippy, your computer math teacher!" ] },
+                "waitButton":1
+              },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            {
+              "set":{
+                "leye":"open",
+                "mouth":"talk",
+                "reye":"open",
+                "rhand":"open",
+                "sentence":"In our first lesson we have learned what numbers are and how to count our toys...",
+                "waitButton":1
+              },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            {
+              "set":{
+                "mouth":"talk",
+                "reye":"open",
+                "sentence":"...and in lesson two we have met Mrs. Plus and Mr. Minus and we have learned how to sum and subtract numbers.",
+                "waitButton":1
+              },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            {
+              "set":{
+                "mouth":"talk",
+                "reye":"closed",
+                "rhand":"down",
+                "sentence":"For today's lesson we've moved to my aunt farm. It is nice to go out from time to time!",
+                "waitButton":1
+              },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            {
+              "set":{
+                "leye":"closed",
+                "mouth":"talk",
+                "rhand":"point",
+                "sentence":"I like petting Leslie, my aunt horse. It is a very nice horse, with white and black dots all over the places!",
+                "waitButton":1
+              },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            {
+              "set":{
+                "leye":"open",
+                "mouth":"talk",
+                "reye":"open",
+                "rhand":"open",
+                "sentence":"But there are many many other animals here... There is Pinky the pig, Max the dog, Lilly the cow and...",
+                "waitButton":1
+              },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            { "set":{ "multiplyFor":3, "multiplyThis":1 } },
+            { "subsequence":{ "_":[ "stencil", "multiplySequence1" ] } },
+            {
+              "set":{
+                "leye":"closed",
+                "lhand":"open",
+                "mouth":"talk",
+                "reye":"closed",
+                "rhand":"open",
+                "sentence":"Oh. Good morning Jasmine! Jasmine is my aunt beloved chicken.",
+                "waitButton":1
+              },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            {
+              "set":{
+                "leye":"open",
+                "lhand":"down",
+                "mouth":"talk",
+                "reye":"open",
+                "rhand":"down",
+                "sentence":"Jasmine loves my aunt so much! I remember that, one night, Jasmine snuck in my aunt bedroom while she was asleep and...",
+                "waitButton":1
+              },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            { "set":{ "mouth":"surprise", "sentence":"...Oh! What is happening?" }, "subsequence":{ "_":[ "stencil", "codeDialogue" ] } },
+            { "wait":25 },
+            { "subsequence":{ "_":[ "stencil", "multiplySequence2" ] } },
+            {
+              "set":{
+                "lhand":"point",
+                "mouth":"talk",
+                "rhand":"point",
+                "sentence":{ "_":[ "Look ", ".", { "_":[ "variable", "studentName" ] }, ".", "! Jasmine made a lot of eggs!" ] },
+                "waitButton":1
+              },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            {
+              "set":{
+                "leye":"closed",
+                "lhand":"down",
+                "mouth":"talk",
+                "reye":"closed",
+                "rhand":"down",
+                "sentence":"I love talking about my animal friends so much that I got distracted. Sorry, Jasmine!",
+                "waitButton":1
+              },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            { "subsequence":{ "_":[ "stencil", "multiplySequence3" ] } },
+            {
+              "set":{ "leye":"open", "mouth":"talk", "reye":"open", "sentence":"So, how many eggs Jasmine made? Let's count them!", "waitButton":1 },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            { "as":{ "_":[ "objectTyped", "egg1" ] }, "set":{ "html":"1" }, "playAudio":"noise1", "wait":25 },
+            { "set":{ "mouth":"talk", "rhand":"point", "sentence":"One...", "waitButton":1 }, "subsequence":{ "_":[ "stencil", "codeDialogue" ] } },
+            { "as":{ "_":[ "objectTyped", "egg2" ] }, "set":{ "html":"2" }, "playAudio":"noise1", "wait":25 },
+            { "set":{ "mouth":"talk", "sentence":"Two...", "waitButton":1 }, "subsequence":{ "_":[ "stencil", "codeDialogue" ] } },
+            { "as":{ "_":[ "objectTyped", "egg3" ] }, "set":{ "html":"3" }, "playAudio":"noise1", "wait":25 },
+            { "set":{ "mouth":"talk", "sentence":"...and three!", "waitButton":1 }, "subsequence":{ "_":[ "stencil", "codeDialogue" ] } },
+            {
+              "set":{ "mouth":"talk", "rhand":"dowm", "sentence":"Jasmine made three eggs. That's a lot of them, isn't it?", "waitButton":1 },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            {
+              "set":{ "leye":"closed", "mouth":"talk", "reye":"closed", "sentence":"And... now look what happens if we wait a little bit more!", "waitButton":1 },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            { "subsequence":{ "_":[ "stencil", "multiplySequence4" ] } },
+            {
+              "set":{
+                "leye":"closed",
+                "lhand":"point",
+                "mouth":"talk",
+                "reye":"closed",
+                "rhand":"point",
+                "sentence":"The eggs have hatched! Now we have three little chickens! How nice!",
+                "waitButton":1
+              },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            {
+              "set":{
+                "leye":"open",
+                "mouth":"talk",
+                "reye":"open",
+                "rhand":"open",
+                "sentence":{ "_":[ "Jasmine reminded me today's lesson! Are you ready to learn something new, ", ".", { "_":[ "variable", "studentName" ] }, ".", "?" ] },
+                "waitButton":1
+              },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            { "subsequence":{ "_":[ "stencil", "multiplySequence3" ] } },
+            { "set":{ "multiplyFor":3, "multiplyThis":2 } },
+            { "subsequence":{ "_":[ "stencil", "multiplySequence1" ] } },
+            { "set":{ "mouth":"talk", "sentence":"When these two chickens...", "waitButton":1 }, "subsequence":{ "_":[ "stencil", "codeDialogue" ] } },
+            { "set":{ "mouth":"talk", "sentence":"...make three eggs each...", "waitButton":1 }, "subsequence":{ "_":[ "stencil", "codeDialogue" ] } },
+            { "subsequence":{ "_":[ "stencil", "multiplySequence2" ] } },
+            { "set":{ "mouth":"talk", "sentence":"How many eggs we will have?", "waitButton":1 }, "subsequence":{ "_":[ "stencil", "codeDialogue" ] } },
+            { "set":{ "mouth":"talk", "sentence":"Help me to count them!", "waitButton":1 }, "subsequence":{ "_":[ "stencil", "codeDialogue" ] } },
+            { "subsequence":{ "_":[ "stencil", "countEggsSequence" ] } },
+            { "subsequence":{ "_":[ "stencil", "multiplySequence3" ] } },
+            {
+              "set":{ "mouth":"talk", "sentence":"Six eggs! So two chickens making three eggs each leave six brand new eggs!", "waitButton":1 },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            { "set":{ "mouth":"talk", "sentence":"In math, we say...", "waitButton":1 }, "subsequence":{ "_":[ "stencil", "codeDialogue" ] } },
+            {
+              "set":{ "mouth":"talk", "sentence":"2 X 3 = 6<br><br>The X is read 'times' so, this is:<br>'Two times three equals six'.", "waitButton":1 },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            { "subsequence":{ "_":[ "stencil", "multiplySequence4" ] } },
+            {
+              "set":{ "leye":"closed", "lhand":"down", "mouth":"talk", "reye":"closed", "sentence":"Bye bye six new chickens! Say hello to aunt for me!", "waitButton":1 },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            { "subsequence":{ "_":[ "stencil", "multiplySequence3" ] } },
+            {
+              "set":{
+                "leye":"open",
+                "mouth":"silent",
+                "reye":"open",
+                "sentence":{
+                  "_":[ "Tell me, ", ".", { "_":[ "variable", "studentName" ] }, ".", ". Do you want me to repeat this lesson again? Click the answer with your mouse." ]
+                }
+              },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            {
+              "object":[
+                { "set":{ "_":[ "stencil", "buttonModel" ] }, "x":85, "y":40, "html":"Yes", "answer":"yes" },
+                { "set":{ "_":[ "stencil", "buttonModel" ] }, "x":166, "y":40, "html":"No", "answer":"no" }
+              ]
+            },
+            { "subsequence":{ "_":[ "stencil", "waitAnswer" ] } },
+            {
+              "set":{
+                "leye":"open",
+                "lhand":"down",
+                "mouth":"talk",
+                "reye":"open",
+                "rhand":"down",
+                "sentence":{ "_":[ "Okay, ", ".", { "_":[ "variable", "studentName" ] }, ".", "!" ] },
+                "waitButton":1
+              },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            { "loopTo":-19, "until":{ "_":[ "this", "answer", "isEqualTo", "no" ] } },
+            {
+              "set":{ "leye":"open", "mouth":"talk", "reye":"open", "sentence":"What about a little exercise before ending today's lesson?", "waitButton":1 },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            {
+              "set":{
+                "leye":"closed",
+                "reye":"closed",
+                "sentence":{ "_":[ "We are going to solve it together, so don't worry ", ".", { "_":[ "variable", "studentName" ] }, ".", "!" ] },
+                "waitButton":1
+              },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            {
+              "set":{ "leye":"open", "reye":"open", "rhand":"open", "sentence":"Let's try solving this problem, okay? Ready?", "waitButton":1 },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            {
+              "set":{ "sentence":"What is the result of<br>3 X 4?<br><br>Read it like this: 'three times four'.", "waitButton":1 },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            {
+              "set":{ "rhand":1, "sentence":"3 X 4<br>^<br><br>The first number is a three, so we have to call three chickens...", "waitButton":1 },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            { "set":{ "multiplyFor":4, "multiplyThis":3 } },
+            { "subsequence":{ "_":[ "stencil", "multiplySequence1" ] } },
+            {
+              "set":{
+                "lhand":2,
+                "sentence":"3 X 4<br>&nbsp;&nbsp;&nbsp;&nbsp;^<br><br>Very good! Now they have to make four eggs each, so... can you help us little chickens?",
+                "waitButton":1
+              },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            { "subsequence":{ "_":[ "stencil", "multiplySequence2" ] } },
+            {
+              "set":{ "lhand":"closed", "rhand":"open", "sentence":"There are a lot of eggs! Can you count them?", "waitButton":1 },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            { "subsequence":{ "_":[ "stencil", "countEggsSequence" ] } },
+            { "subsequence":{ "_":[ "stencil", "multiplySequence3" ] } },
+            {
+              "set":{ "lhand":"open", "rhand":"open", "sentence":"There are twelve eggs! And 'twelve' is the right answer to our problem!", "waitButton":1 },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            {
+              "set":{ "sentence":"3 X 4 = 12<br><br>Read it like this: 'three times four equals twelve'. Well done!", "waitButton":1 },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            { "subsequence":{ "_":[ "stencil", "multiplySequence4" ] } },
+            { "subsequence":{ "_":[ "stencil", "multiplySequence3" ] } },
+            {
+              "set":{
+                "leye":"open",
+                "lhand":"down",
+                "mouth":"silent",
+                "reye":"open",
+                "rhand":"down",
+                "sentence":{
+                  "_":[ "Tell me, ", ".", { "_":[ "variable", "studentName" ] }, ".", ". Do you want me to repeat this exercise again? Click the answer with your mouse." ]
+                }
+              },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            {
+              "object":[
+                { "set":{ "_":[ "stencil", "buttonModel" ] }, "x":85, "y":40, "html":"Yes", "answer":"yes" },
+                { "set":{ "_":[ "stencil", "buttonModel" ] }, "x":166, "y":40, "html":"No", "answer":"no" }
+              ]
+            },
+            { "subsequence":{ "_":[ "stencil", "waitAnswer" ] } },
+            {
+              "set":{
+                "leye":"open",
+                "lhand":"down",
+                "mouth":"talk",
+                "reye":"open",
+                "rhand":"down",
+                "sentence":{ "_":[ "Okay, ", ".", { "_":[ "variable", "studentName" ] }, ".", "!" ] },
+                "waitButton":1
+              },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            { "loopTo":-18, "until":{ "_":[ "this", "answer", "isEqualTo", "no" ] } },
+            {
+              "set":{
+                "leye":"closed",
+                "mouth":"talk",
+                "reye":"closed",
+                "sentence":"That's all for today! We deserve a nice slice of cake and a glass of milk!",
+                "waitButton":1
+              },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            {
+              "set":{
+                "leye":"open",
+                "mouth":"talk",
+                "reye":"open",
+                "rhand":"point",
+                "sentence":"I hope you enjoyed today's lesson. Select it again from the main menu to see it as many times as you want...",
+                "waitButton":1
+              },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            {
+              "set":{
+                "leye":"closed",
+                "mouth":"talk",
+                "rhand":"open",
+                "sentence":"...and if you want a little challenge, try the exercises I've prepared for you!",
+                "waitButton":1
+              },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            {
+              "set":{
+                "leye":"open",
+                "mouth":"talk",
+                "rhand":"point",
+                "sentence":"You can select them from the main menu too! I can't wait to give you a brand new shiny badge!",
+                "waitButton":1
+              },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            { "set":{ "mouth":"surprise", "sentence":"...Oh! It's Jasmine!" }, "subsequence":{ "_":[ "stencil", "codeDialogue" ] } },
+            { "set":{ "multiplyFor":1, "multiplyThis":1 } },
+            { "subsequence":{ "_":[ "stencil", "multiplySequence1" ] } },
+            {
+              "set":{
+                "leye":"closed",
+                "lhand":"point",
+                "mouth":"talk",
+                "reye":"closed",
+                "rhand":"point",
+                "sentence":"She want to say goodbye to you too!",
+                "waitButton":1
+              },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            {
+              "set":{
+                "leye":"closed",
+                "lhand":"down",
+                "mouth":"talk",
+                "rhand":"down",
+                "sentence":{ "_":[ "See you soon, ", ".", { "_":[ "variable", "studentName" ] }, ".", "! Good bye and have a nice cake!" ] },
+                "waitButton":1
+              },
+              "subsequence":{ "_":[ "stencil", "codeDialogue" ] }
+            },
+            { "playAudio":"song1" },
+            { "wait":150 },
+            { "gotoScene":"menu", "withTransition":3 }
+          ]
+        }
+      }
+    },
+    "menu":{
+      "playAudio":"noise3",
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[
+            { "subsequence":{ "_":[ "stencil", "showBackground" ] } },
+            {
+              "object":{
+                "width":320, "height":10,
+                "zIndex":100, "x":0, "y":5,
+                "bgcolor":"#000", "color":"#fff",
+                "font":"cga", "fontSize":8, "lineHeight":10, "textAlign":"center", "html":"FUNEMATHICA vol.3"
+              }
+            },
+            { "wait":5 },
+            {
+              "object":{
+                "type":"drawing",
+                "width":320,
+                "zIndex":100, "x":0, "y":5,
+                "color":"#ff55ff",
+                "font":"cga", "fontSize":16, "lineHeight":48, "outline":"#000", "textAlign":"center", "html":"MULTIPLICATION",
+                "states":{
+                  "code":{ "name":"Sequence", "data":[ { "sum":8, "to":{ "_":[ "this", "height" ] }, "wait":1, "loop":1, "cycles":6 }, { "set":{ "removeType":"drawing" } } ] }
+                }
+              }
+            },
+            { "wait":1, "loop":1, "until":{ "_":[ "objectTyped", "drawing", "not" ] } },
+            {
+              "object":{
+                "width":304, "height":20,
+                "zIndex":100, "x":8, "y":50,
+                "color":"#fff",
+                "font":"cga", "fontSize":8, "lineHeight":10, "outline":"#000", "textAlign":"center", "html":{ "_":[ "Hello ", ".", { "_":[ "variable", "studentName" ] }, ".", "! Select one of the<br>following activites to begin!" ] }
+              }
+            },
+            {
+              "object":[
+                {
+                  "set":{ "_":[ "stencil", "buttonModel" ] },
+                  "width":300, "height":20,
+                  "x":10, "y":80,
+                  "fontSize":8, "lineHeight":20, "html":"Follow Chippy's lesson",
+                  "answer":"lesson"
+                },
+                {
+                  "set":{ "_":[ "stencil", "buttonModel" ] },
+                  "width":300, "height":20,
+                  "x":10, "y":110,
+                  "fontSize":8, "lineHeight":20, "html":"Easy exercises",
+                  "answer":"exercise1"
+                },
+                {
+                  "set":{ "_":[ "stencil", "buttonModel" ] },
+                  "width":300, "height":20,
+                  "x":10, "y":140,
+                  "fontSize":8, "lineHeight":20, "html":"Multiplication table exercises",
+                  "answer":"exercise2"
+                },
+                {
+                  "set":{ "_":[ "stencil", "buttonModel" ] },
+                  "width":300, "height":20,
+                  "x":10, "y":170,
+                  "fontSize":8, "lineHeight":20, "html":"Change your name",
+                  "answer":"nameinput"
+                }
+              ]
+            },
+            { "wait":1, "loop":1, "until":{ "_":[ "this", "answer" ] } },
+            { "wait":10 },
+            { "gotoScene":{ "_":[ "this", "answer" ] }, "withTransition":3 }
+          ]
+        }
+      }
+    },
+    "nameinput":{
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[
+            { "subsequence":{ "_":[ "stencil", "showBackground" ] } },
+            {
+              "object":[
+                { "_":[ "stencil", "keyboard" ] },
+                {
+                  "width":320, "height":10,
+                  "zIndex":100, "x":0, "y":5,
+                  "bgcolor":"#000", "color":"#fff",
+                  "font":"cga", "fontSize":8, "lineHeight":10, "textAlign":"center", "html":"What is your name?"
+                }
+              ]
+            }
+          ]
+        },
+        "actions":{
+          "name":"process",
+          "execute":{
+            "when":{ "_":[ "this", "inputed" ] },
+            "execute":{ "as":{ "_":"variable" }, "set":{ "studentName":{ "_":[ "that", "inputed" ] } }, "gotoScene":"menu", "withTransition":3 }
+          }
+        }
+      }
+    }
+  }
+}
