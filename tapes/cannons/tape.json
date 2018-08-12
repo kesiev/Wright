@@ -1,0 +1,684 @@
+{
+  "name":"Cannons",
+  "author":"KesieV",
+  "year":2018,
+  "genre":"Strategy",
+  "description":"<p>One of the first games I've made once the Wright! Magazine project derailed from his platformer-only purpose was <a href='soccer'>Almost Soccer</a>, a simple soccer game I've made 3 years ago. In his tiny article I said that it was <i>\"the only game that caught [my colleagues] interest and that is... bittersweet funny\"</i>.</p><p>Probably I was right on mentioning the stereotypical connection with the national sport as the main reason, but the bond soccer/videogames might be even deeper in Italy: soccer players has been heroes for entire generations and they have been testimonials for not soccer-related videogame advertisements during the 80s, like in the <a href='https://en.wikipedia.org/wiki/Walter_Zenga'>Walter Zenga</a>'s <a href='https://www.youtube.com/watch?v=Gi-Y0mfAcsg'>Sega Master System II</a> spot. Since videogames were basically toys in Italy, many kids have learned about and started loving videogames from soccer players in TV - so soccer may have been a crucial videogame catalyst here.</p><p>I knew that there was an even more attractive feature I could add to games in order to hook them: the infamous competitive local multiplayer. The first game I've made that offered that kind of gameplay was <a href='sdong'>a Pong clone</a>, mostly because most Wright! game controls were limited to directional buttons and two action keys and a Pong clone just needed 4 of them - no game engine changes needed for multiplayer. And it was a <i>sport game</i> after all. Sadly it has been ignored due to its basic gameplay and the reputation of <i>ancient form of entertainment</i>.</p><p>But the unexpected attention this <a href='https://en.wikipedia.org/wiki/Artillery_game'>Artillery</a> (1976) inspired game gained in my office testified that there were a lot more to learn and that I've missed a crucial point of the previous lesson.</p><p>First: multiplayer doesn't have to happen in real-time, and the huge success of the <a href='https://en.wikipedia.org/wiki/Worms_(1995_video_game)'>Worms</a> (1995) series, known even by not videogame player colleagues, testified. While the simultaneous interacton is more immersive and zeroes downtime for players, if turns are short and intense enough, it's ok.</p><p>Second: anything that's not known is <i>brand new</i> - even the <i>old</i>. It's an old trick played by politicians, fake news publishers, videogame designers and speakers in general.</p><p>Soccer is a renown game and, since it's still played today, my version could rely on its <i>nostalgia effect</i> given by the retro-style I gave. Pong, instead, isn't played as-is anymore: it gave its basis to videogames and then it disappeared, dissolved in more interesting games. Despite my remake was quite faithful to the original, everybody knows Pong as the game that <i>has had its day</i> and it's not interesting anymore. But predecessor titles of a consolidated videogame genres lives in a golden limbo: since they still contains elements of a more recent and relatively successful game but they are buried in the past, they might be perceived as <i>simplified but still fun versions of a new game</i>. And so this Cannons has been described and lived by my colleagues: a simplified version of Worms that fits lunch breaks.</p><p>Putting it simply, <i>every precursor is a nice demake</i> and I think that there is a whole niche of gamers that are living retrogaming like that.</p><p>A key example is the recent evolution of the <a href='https://en.wikipedia.org/wiki/Doom_(1993_video_game)'>Doom</a> (1993) series. The first person shooter genre evolved in slower and more strategic gameplay, intense narrative with in-game cutscenes and quick time events arranged in order to enhance the immersivity of cinematic events.</p><p>The Doom brand had to evolve in order to be accepted by the current generation of gamers and it tried following the same path traced by other FPSs: in my humble opinion, as a single player gamer, the slow and narrative 2004 <a href='https://en.wikipedia.org/wiki/Doom_3'>Doom 3</a> <a href='http://www.metacritic.com/game/pc/doom-3'>failed</a> on being the <i>king of shooters</i> once again.</p><p>It doesn't mean that the developers <i>made a mistake</i>: it just followed the right path in the wrong way. For me, Doom 3 was just <i>an average modern shooter</i>. While the next step looks granted - fixing what's broken - the <i>unknown old</i> concept opened a new alternative: the rebooted <a href='https://en.wikipedia.org/wiki/Doom_(2016_video_game)'>Doom</a> (2016) features a cleverly evolved version of the raw action mechanics of the original Doom, heading down a path far from modern shooters. And I <i>deeply loved</i> it.</p><p>It was a relative breath of fresh air for younger gamers and the absolute return to the die-hard action for older gamers. Everybody <i>wins</i>. Good luck for the sequel <a href='https://en.wikipedia.org/wiki/Doom_(franchise)'>Doom Eternal</a>... will the trick work <i>twice</i>?</p><p>Plot!</p><p>Soldier! You're the gunner of our latest outpost. If you destroy the last enemy outpost, the victory will be ours! Every shoot counts: feel the wind, take aim, charge your shoot and win!</p><p>Use LEFT/RIGHT for changing the cannon aim. Hold down the A BUTTON to charge your shot and release it to fire. You can enable two modifiers using the cheats menu: the Warp Mode, suggested by my colleagues, that allow the bullets to warp from a side of the screen to the other one, and the Kebab Mode, played during the Wright! project closing event, that makes the game playable using the A BUTTON only.</p>",
+  "screenshots":[ "cannons-1.png", "cannons-2.png" ],
+  "hardware":{
+    "width":256,
+    "height":192,
+    "gridSize":{ "width":15, "height":15 },
+    "filter":"retro",
+    "fps":40
+  },
+  "audioChannels":{
+    "sfx":{ "volume":1, "samples":[ "beep", "beep2", "explode2", "rampup", "open", "blam", "fire", "bigfire" ] }
+  },
+  "cheats":{
+    "kebabMode":"Kebab Mode: play with A BUTTON only",
+    "warpMode":"Warp mode: bullet warps on sides"
+  },
+  "resources":{
+    "spectrum":"spectrum.font",
+    "sprites":"sprites.png",
+    "beep":"../default/zxsounds/beep.ogg",
+    "beep2":"../default/zxsounds/beep2.ogg",
+    "bigfire":"../default/zxsounds/bigfire.ogg",
+    "blam":"../default/zxsounds/blam.ogg",
+    "explode2":"../default/zxsounds/explode2.ogg",
+    "fire":"../default/zxsounds/fire.ogg",
+    "open":"../default/zxsounds/open.ogg",
+    "rampup":"../default/zxsounds/rampup.ogg"
+  },
+  "stencils":{
+    "codeRemoveCannon":[
+      { "as":{ "_":[ "this", "aimAngleLabel" ] }, "remove":1 },
+      { "as":{ "_":[ "this", "powerGauge" ] }, "remove":1 },
+      { "as":{ "_":[ "this", "powerBorder" ] }, "remove":1 },
+      { "as":{ "_":[ "this", "aim" ] }, "remove":1 }
+    ],
+    "codeTickSound":{
+      "when":{ "_":[ "this", "chargeSound" ] },
+      "subtract":1,
+      "to":{ "_":[ "this", "chargeSound" ] },
+      "elseExecute":{ "set":{ "chargeSound":2 }, "playAudio":"fire" }
+    },
+    "modelPopupLabel":{
+      "width":200, "height":20,
+      "zIndex":10000, "x":{ "_":[ "this", "xCenteredWith", { "_":"that" } ] }, "y":{ "_":[ "that", "y", "-", 5 ] },
+      "color":"#fff",
+      "font":"spectrum", "lineHeight":12, "outline":"#000", "textAlign":"center",
+      "speed":0.5,
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[ { "subtract":{ "_":[ "this", "speed" ] }, "to":{ "_":[ "this", "y" ] }, "wait":1, "loop":1, "cycles":15 }, { "remove":1 } ]
+        }
+      }
+    },
+    "bomb":{
+      "type":"turnbusy",
+      "width":3, "height":3,
+      "zIndex":10, "at":{ "_":"that" },
+      "bgcolor":"#fff",
+      "forceX":1, "forceY":-3,
+      "playAudio":"open",
+      "active":25,
+      "radius":9,
+      "states":[
+        {
+          "code":[
+            {
+              "name":"Physics",
+              "data":{ "walls":{ "type":{ "_":[ "object", "wall" ] }, "execute":{ "set":{ "state":"explode" } } }, "gravityY":0.1, "limitX":[ -5, 5 ], "limitY":[ -5, 5 ] }
+            },
+            {
+              "name":"Execute",
+              "data":[
+                { "sum":{ "_":[ "scene", "wind", "*", 0.0005 ] }, "to":{ "_":[ "this", "forceX" ] } },
+                { "sum":{ "_":[ "this", "forceX", "*", 10 ] }, "to":{ "_":[ "this", "angle" ] } },
+                {
+                  "when":{ "_":[ "this", "active" ] },
+                  "subtract":1,
+                  "to":{ "_":[ "this", "active" ] },
+                  "elseExecute":{
+                    "when":{ "_":[ "this", "collidesWith", { "_":[ "object", "cannon" ] } ] },
+                    "execute":[ { "as":{ "_":"that" }, "executeAction":"explode" }, { "set":{ "state":"explode" } } ]
+                  }
+                },
+                {
+                  "when":{ "_":[ "cheat", "warpMode" ] },
+                  "execute":[
+                    { "when":{ "_":[ "this", "x", "isGreaterThan", 262 ] }, "set":{ "x":-6 } },
+                    { "when":{ "_":[ "this", "x", "isLessThan", -6 ] }, "set":{ "x":262 } },
+                    { "when":{ "_":[ "this", "y", "isGreaterThan", 198 ] }, "remove":1 }
+                  ],
+                  "elseExecute":{
+                    "when":{
+                      "_":[
+                        { "_":[ "this", "x", "isGreaterThan", 262 ] },
+                        "or",
+                        { "_":[ "this", "x", "isLessThan", -6 ] },
+                        "or",
+                        { "_":[ "this", "y", "isGreaterThan", 198 ] }
+                      ]
+                    },
+                    "remove":1
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "name":"explode",
+          "execute":[
+            {
+              "when":{ "_":[ "this", "hits" ] },
+              "execute":[
+                { "set":{ "bonus":{ "_":[ 300, "-", { "_":[ "this", "distanceTo", { "_":[ "objectTyped", { "_":[ "this", "hits" ] } ] } ] }, "floor" ] } } },
+                { "when":{ "_":[ "this", "bonus", "isLessThan", 0 ] }, "set":{ "bonus":0 } },
+                { "sum":{ "_":[ "this", "bonus" ] }, "to":{ "_":[ "scene", { "_":[ "this", "giveTo" ] } ] } },
+                { "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "html":{ "_":[ "", ".", "+", ".", { "_":[ "that", "bonus" ] } ] } } }
+              ]
+            },
+            {
+              "as":{
+                "_":[
+                  "this",
+                  "complexCollidesWith",
+                  {
+                    "subject":{ "_":[ "object", "wall" ] },
+                    "all":1,
+                    "hitbox":{ "width":{ "_":[ "this", "radius", "*", 2, "+", 3 ] }, "height":{ "_":[ "this", "radius", "*", 2, "+", 3 ] }, "x":{ "_":[ "this", "radius", "*", -1 ] }, "y":{ "_":[ "this", "radius", "*", -1 ] } }
+                  }
+                ]
+              },
+              "execute":{ "when":{ "_":[ "this", "distanceTo", { "_":"that" }, "isLessEqualThan", { "_":[ "that", "radius" ] } ] }, "executeAction":"break" }
+            },
+            {
+              "as":{
+                "_":[
+                  "this",
+                  "complexCollidesWith",
+                  {
+                    "subject":{ "_":[ "object", "wall" ] },
+                    "all":1,
+                    "hitbox":{ "width":{ "_":[ "this", "radius", "*", 2, "+", 9 ] }, "height":{ "_":[ "this", "radius", "*", 2, "+", 9 ] }, "x":{ "_":[ "this", "radius", "*", -1, "-", 3 ] }, "y":{ "_":[ "this", "radius", "*", -1, "-", 3 ] } }
+                  }
+                ]
+              },
+              "executeAction":"update"
+            },
+            { "remove":1, "playAudio":"blam" }
+          ]
+        }
+      ]
+    },
+    "cannon":{
+      "type":[ "turnbusy", "cannon" ],
+      "image":"sprites", "width":6, "height":6,
+      "aim":0,
+      "aimAngle":0,
+      "aimDirection":{ "_":[ "randomValue", [ -1, 1 ] ] },
+      "chargeSound":0,
+      "states":{
+        "execute":[
+          {
+            "object":{ "image":"sprites", "tileX":{ "_":[ "that", "aimTileX" ] }, "width":4, "height":6, "zIndex":5, "originX":"2px", "originY":"6px" },
+            "assign":{ "_":"that" },
+            "to":{ "_":[ "this", "aim" ] }
+          },
+          {
+            "object":{ "width":40, "height":10, "zIndex":5, "color":"#fff", "font":"spectrum", "lineHeight":10, "outline":"#000", "textAlign":"center" },
+            "assign":{ "_":"that" },
+            "to":{ "_":[ "this", "aimAngleLabel" ] }
+          },
+          {
+            "object":{ "width":6, "height":24, "zIndex":5, "bgcolor":"#000", "border":"#fff" },
+            "assign":{ "_":"that" },
+            "to":{ "_":[ "this", "powerBorder" ] }
+          },
+          { "object":{ "width":2, "zIndex":6, "bgcolor":"#ff0" }, "assign":{ "_":"that" }, "to":{ "_":[ "this", "powerGauge" ] } }
+        ],
+        "code":[
+          {
+            "name":"Physics",
+            "data":{ "walls":{ "type":{ "_":[ "object", "solid" ] }, "restitutionX":0, "restitutionY":0.5 }, "gravityY":1, "limitY":[ -3, 3 ] }
+          },
+          {
+            "name":"Execute",
+            "data":[
+              {
+                "when":{ "_":[ "this", "turn" ] },
+                "execute":{
+                  "when":{ "_":[ "keyA", "isDown" ] },
+                  "execute":[
+                    { "when":{ "_":[ "this", "power", "not" ] }, "playAudio":"bigfire" },
+                    { "_":[ "stencil", "codeTickSound" ] },
+                    { "set":{ "power":{ "_":[ "this", "power", "+", 0.1, "limitValue", [ 0, 5 ] ] } } },
+                    { "as":{ "_":[ "this", "aimAngleLabel" ] }, "set":{ "visible":0 } },
+                    { "as":{ "_":[ "this", "powerBorder" ] }, "set":{ "x":{ "_":[ "that", "x" ] }, "y":{ "_":[ "that", "y", "-", 30 ] }, "visible":1 } },
+                    {
+                      "as":{ "_":[ "this", "powerGauge" ] },
+                      "set":{
+                        "height":{ "_":[ "that", "power", "*", 4 ] },
+                        "x":{ "_":[ "that", "x", "+", 2 ] }, "y":{ "_":[ "that", "y", "-", 8, "-", { "_":[ "that", "power", "*", 4 ] } ] },
+                        "visible":1
+                      }
+                    }
+                  ],
+                  "elseExecute":{
+                    "when":{ "_":[ "this", "power" ] },
+                    "execute":[
+                      {
+                        "object":{
+                          "set":{ "_":[ "stencil", "bomb" ] },
+                          "execute":{ "applyVector":{ "angle":{ "_":[ "that", "aimAngle" ] }, "length":{ "_":[ "that", "power" ] } } },
+                          "giveTo":{ "_":[ "that", "giveTo" ] },
+                          "hits":{ "_":[ "that", "hits" ] }
+                        }
+                      },
+                      { "set":{ "turn":0 } }
+                    ],
+                    "elseExecute":[
+                      {
+                        "when":{ "_":[ "cheat", "kebabMode" ] },
+                        "sum":{ "_":[ "this", "aimDirection" ] },
+                        "to":{ "_":[ "this", "aimAngle" ] },
+                        "set":{ "moved":1 },
+                        "elseExecute":[
+                          { "when":{ "_":[ "keyLeft", "isDown" ] }, "subtract":1, "to":{ "_":[ "this", "aimAngle" ] }, "set":{ "moved":1 } },
+                          { "when":{ "_":[ "keyRight", "isDown" ] }, "sum":1, "to":{ "_":[ "this", "aimAngle" ] }, "set":{ "moved":1 } }
+                        ]
+                      },
+                      { "when":{ "_":[ "keyLeft", "isDown" ] }, "subtract":1, "to":{ "_":[ "this", "aimAngle" ] }, "set":{ "moved":1 } },
+                      { "when":{ "_":[ "keyRight", "isDown" ] }, "sum":1, "to":{ "_":[ "this", "aimAngle" ] }, "set":{ "moved":1 } },
+                      {
+                        "when":{ "_":[ "this", "moved" ] },
+                        "set":{ "moved":0 },
+                        "execute":{ "when":{ "_":[ "cheat", "kebabMode", "not" ] }, "execute":{ "_":[ "stencil", "codeTickSound" ] } }
+                      },
+                      { "set":{ "aimAngle":{ "_":[ "this", "aimAngle", "limitValue", [ -120, 120 ] ] } } },
+                      {
+                        "when":{ "_":[ "cheat", "kebabMode" ] },
+                        "execute":{
+                          "when":{ "_":[ "this", "aimAngle", "isEqualTo", -120 ] },
+                          "set":{ "playAudio":"beep2", "aimDirection":{ "_":[ "randomNumber", [ 10, 60 ], "/", 10 ] } },
+                          "elseExecute":{
+                            "when":{ "_":[ "this", "aimAngle", "isEqualTo", 120 ] },
+                            "set":{ "playAudio":"beep2", "aimDirection":{ "_":[ "randomNumber", [ 10, 60 ], "/", -10 ] } }
+                          }
+                        }
+                      },
+                      {
+                        "as":{ "_":[ "this", "aimAngleLabel" ] },
+                        "set":{ "x":{ "_":[ "that", "x", "-", 17 ] }, "y":{ "_":[ "that", "y", "-", 16 ] }, "visible":1, "html":{ "_":[ "that", "aimAngle", "abs", "floor" ] } }
+                      }
+                    ]
+                  }
+                },
+                "elseExecute":[
+                  { "as":{ "_":[ "this", "aimAngleLabel" ] }, "set":{ "visible":0 } },
+                  { "as":{ "_":[ "this", "powerGauge" ] }, "set":{ "visible":0 } },
+                  { "as":{ "_":[ "this", "powerBorder" ] }, "set":{ "visible":0 } },
+                  { "when":{ "_":[ "this", "touchDown" ] }, "set":{ "removeType":"turnbusy" } }
+                ]
+              },
+              { "when":{ "_":[ "this", "y", "isGreaterThan", 198 ] }, "executeAction":"explode" },
+              {
+                "as":{ "_":[ "this", "aim" ] },
+                "set":{ "x":{ "_":[ "that", "x", "+", 1 ] }, "y":{ "_":[ "that", "y", "-", 3 ] }, "angle":{ "_":[ "that", "aimAngle" ] } }
+              }
+            ]
+          }
+        ],
+        "actions":[
+          { "name":"turn", "set":{ "set":{ "type":"turnbusy" }, "power":0, "turn":1 } },
+          {
+            "name":"explode",
+            "execute":[
+              { "sum":10000, "to":{ "_":[ "scene", { "_":[ "this", "hits" ] } ] } },
+              { "object":{ "set":{ "_":[ "stencil", "modelPopupLabel" ] }, "zIndex":10001, "color":"#0ff", "fontSize":40, "html":"10K" } },
+              {
+                "times":10,
+                "object":{
+                  "type":"turnbusy",
+                  "set":{ "_":[ "stencil", "#" ] },
+                  "tileX":{ "_":[ "that", "tileX" ] },
+                  "x":{ "_":[ "that", "x", "+", 2 ] }, "y":{ "_":[ "that", "y" ] },
+                  "state":"break"
+                },
+                "playAudio":"explode2"
+              },
+              { "_":[ "stencil", "codeRemoveCannon" ] },
+              { "set":{ "removeType":"cannon", "visible":0, "state":"frozen" } }
+            ]
+          }
+        ]
+      }
+    },
+    "endMessageModel":{
+      "type":"message",
+      "width":256, "height":20,
+      "zIndex":1000, "x":0, "y":-20,
+      "font":"spectrum", "fontSize":40, "lineHeight":20, "outline":"#000", "textAlign":"center",
+      "timer":3.1,
+      "states":{
+        "code":[
+          {
+            "name":"Sequence",
+            "data":[
+              { "subtract":0.1, "to":{ "_":[ "this", "timer" ] } },
+              { "set":{ "y":{ "_":[ "that", "timer", "cos", "*", 86 ] } } },
+              { "wait":1, "loopTo":-2, "until":{ "_":[ "this", "timer", "not" ] } },
+              { "subtract":0.1, "to":{ "_":[ "this", "timer" ] } },
+              { "set":{ "y":{ "_":[ "that", "timer", "sin", "*", 8, "+", 86 ] } } },
+              { "wait":1, "loopTo":-2 }
+            ]
+          },
+          {
+            "name":"Sequence",
+            "data":[ { "set":{ "color":{ "_":[ "this", "color1" ] } }, "wait":5 }, { "set":{ "color":{ "_":[ "this", "color2" ] } }, "wait":5, "loopTo":0 } ]
+          }
+        ]
+      }
+    },
+    "generateMapSequence":[
+      {
+        "object":[
+          {
+            "type":"message",
+            "width":256, "height":10,
+            "x":0, "y":83,
+            "color":"#fff",
+            "font":"spectrum", "lineHeight":10, "textAlign":"center", "html":"GENERATING MAP..."
+          },
+          { "type":[ "gauge", "message" ], "height":2, "x":0, "y":95, "bgcolor":"#ff0" }
+        ]
+      },
+      { "wait":1 },
+      { "set":{ "cycle":0, "ly":{ "_":[ "randomNumber", [ 20, 60 ] ] }, "px":-3 } },
+      {
+        "subsequence":[
+          { "set":{ "dx":{ "_":[ "randomNumber", [ 5, 20 ] ] }, "hy":{ "_":[ "randomNumber", [ 20, 60 ] ] } } },
+          { "set":{ "delta":{ "_":[ "this", "hy", "-", { "_":[ "this", "ly" ] } ] }, "step":{ "_":[ 1.57, "/", { "_":[ "this", "dx" ] } ] } } },
+          {
+            "when":{ "_":[ "randomNumber", [ 0, 1 ] ] },
+            "set":{ "curve":4.71, "oy":{ "_":[ "this", "hy" ] } },
+            "elseExecute":{ "set":{ "curve":0, "oy":{ "_":[ "this", "ly" ] } } }
+          },
+          {
+            "times":{ "_":[ "this", "dx" ] },
+            "execute":{
+              "when":{ "_":[ "this", "px", "isLessThan", 87 ] },
+              "execute":[
+                { "set":{ "dy":{ "_":[ "that", "curve", "sin", "*", { "_":[ "that", "delta" ] }, "+", { "_":[ "that", "oy" ] }, "floor" ] } } },
+                {
+                  "times":{ "_":[ 65, "-", { "_":[ "this", "dy" ] } ] },
+                  "execute":[
+                    { "object":{ "set":{ "_":[ "stencil", "#" ] }, "x":{ "_":[ "that", "px", "*", 3 ] }, "y":{ "_":[ "that", "dy", "*", 3 ] } } },
+                    { "sum":1, "to":{ "_":[ "this", "dy" ] } }
+                  ]
+                },
+                { "sum":{ "_":[ "this", "step" ] }, "to":{ "_":[ "this", "curve" ] } },
+                { "sum":1, "to":{ "_":[ "this", "px" ] } }
+              ]
+            }
+          },
+          { "set":{ "ly":{ "_":[ "this", "hy" ] } } },
+          { "sum":1, "to":{ "_":[ "this", "cycle" ] } },
+          { "as":{ "_":[ "objectTyped", "gauge" ] }, "set":{ "width":{ "_":[ "that", "cycle", "*", 12.8 ] } } }
+        ],
+        "wait":1, "loop":1, "cycles":20
+      },
+      { "as":{ "_":[ "object", "wall" ] }, "executeAction":"update" },
+      { "as":{ "_":[ "object", "message" ] }, "remove":1 }
+    ],
+    "messageModel":{
+      "type":"message",
+      "width":256, "height":20,
+      "zIndex":1000, "x":0, "y":-20,
+      "font":"spectrum", "fontSize":40, "lineHeight":20, "outline":"#000", "textAlign":"center",
+      "timer":3.1,
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[
+            { "subtract":0.1, "to":{ "_":[ "this", "timer" ] } },
+            { "set":{ "y":{ "_":[ "that", "timer", "cos", "*", 86 ] } } },
+            { "wait":1, "loopTo":-2, "until":{ "_":[ "this", "timer", "not" ] } },
+            { "wait":25 },
+            { "subtract":0.1, "to":{ "_":[ "this", "timer" ] } },
+            { "set":{ "y":{ "_":[ "that", "timer", "cos", "*", 86 ] } } },
+            { "wait":1, "loopTo":-2, "until":{ "_":[ "this", "timer", "isEqualTo", -3.1 ] } },
+            { "remove":1 }
+          ]
+        }
+      }
+    },
+    "sea":{
+      "image":"sprites", "tileY":12, "width":273, "height":12,
+      "zIndex":100,
+      "timer":0,
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":[
+            { "sum":0.05, "to":{ "_":[ "this", "timer" ] } },
+            { "set":{ "x":{ "_":[ "this", "timer", "sin", "*", 5, "-", 5 ] }, "y":{ "_":[ "this", "timer", "cos", "*", 2, "+", 180 ] } } }
+          ]
+        }
+      }
+    },
+    "#":{
+      "type":"wall",
+      "image":"sprites", "width":3, "height":3,
+      "visible":0,
+      "states":[
+        {
+          "execute":{ "set":{ "tileY":{ "_":[ "this", "x", "+", { "_":[ "this", "y" ] }, "%", 2, "*", 3, "+", 6 ] } } },
+          "actions":[
+            {
+              "name":"update",
+              "execute":[
+                { "set":{ "frame":0 } },
+                {
+                  "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "wall" ] }, "hitbox":{ "width":1, "height":1, "x":0, "y":-1 } } ] },
+                  "sum":1,
+                  "to":{ "_":[ "this", "frame" ] }
+                },
+                {
+                  "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "wall" ] }, "hitbox":{ "width":1, "height":1, "x":3, "y":0 } } ] },
+                  "sum":2,
+                  "to":{ "_":[ "this", "frame" ] }
+                },
+                {
+                  "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "wall" ] }, "hitbox":{ "width":1, "height":1, "x":0, "y":3 } } ] },
+                  "sum":4,
+                  "to":{ "_":[ "this", "frame" ] }
+                },
+                {
+                  "when":{ "_":[ "this", "complexCollidesWith", { "subject":{ "_":[ "object", "wall" ] }, "hitbox":{ "width":1, "height":1, "x":-1, "y":0 } } ] },
+                  "sum":8,
+                  "to":{ "_":[ "this", "frame" ] }
+                },
+                {
+                  "when":{ "_":[ "this", "frame", "isEqualTo", 15 ] },
+                  "set":{ "removeType":"solid", "visible":0 },
+                  "elseExecute":{ "set":{ "type":"solid", "visible":1 } }
+                }
+              ]
+            },
+            { "name":"break", "execute":{ "set":{ "type":"turnbusy", "removeType":[ "wall", "solid" ], "state":"break" } } }
+          ]
+        },
+        {
+          "name":"break",
+          "set":{ "frame":0, "visible":1, "forceX":{ "_":[ "randomNumber", [ -20, 20 ], "/", 10 ] }, "forceY":{ "_":[ "randomNumber", [ -40, -10 ], "/", 10 ] } },
+          "code":[
+            {
+              "name":"Physics",
+              "data":{
+                "walls":{
+                  "type":{ "_":[ "object", "solid" ] },
+                  "restitutionX":0.8,
+                  "restitutionY":0.8,
+                  "firstExecute":{ "when":{ "_":[ "this", "forceX", "abs", "isGreaterThan", 1, "or", { "_":[ "this", "forceY", "abs", "isGreaterThan", 1 ] } ] }, "playAudio":"fire" }
+                },
+                "gravityY":0.1,
+                "limitX":[ -4.9, 4.9 ],
+                "limitY":[ -4.9, 4.9 ]
+              }
+            },
+            {
+              "name":"Sequence",
+              "data":[ { "wait":50 }, { "set":{ "visible":{ "_":[ "this", "visible", "not" ] } }, "wait":1, "loop":1, "cycles":10 }, { "remove":1 } ]
+            },
+            { "name":"Execute", "data":{ "sum":{ "_":[ "this", "forceX", "*", 10 ] }, "to":{ "_":[ "this", "angle" ] } } }
+          ]
+        }
+      ]
+    }
+  },
+  "execute":{},
+  "scenes":{
+    "intro":{
+      "object":[
+        {
+          "box":"label", "width":256,
+          "zIndex":30, "x":0, "y":110,
+          "color":"#fff",
+          "font":"spectrum", "fontSize":20, "lineHeight":20, "outline":"#000", "textAlign":"center", "html":"PRESS START",
+          "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "visible":0 }, "wait":20 }, { "set":{ "visible":1 }, "wait":20, "loopTo":0 } ] } }
+        },
+        { "_":[ "stencil", "sea" ] }
+      ],
+      "execute":{
+        "when":{ "_":[ "cheat", "kebabMode" ] },
+        "object":{
+          "box":"label", "width":256,
+          "zIndex":30, "x":0, "y":85,
+          "color":"#fff",
+          "font":"spectrum", "fontSize":20, "lineHeight":20, "outline":"#000", "textAlign":"center", "html":"- KEBAB MODE -"
+        }
+      },
+      "wind":0,
+      "states":{
+        "code":[
+          {
+            "name":"Sequence",
+            "data":[
+              {
+                "set":{
+                  "tilemap":{
+                    "y":30,
+                    "tileWidth":3,
+                    "tileHeight":3,
+                    "map":[
+                      "         ######     ##     ###    ### ###    ###   ######   ###    ###   ########",
+                      "        #######    ####    ####   ### ####   ###  ########  ####   ###  #########",
+                      "       ########   ######   #####  ### #####  ### ########## #####  ### ##########",
+                      "      #####      ########  ###### ### ###### ### ###    ### ###### ### ####",
+                      "     #####      ########## ########## ########## ###    ### ########## ###",
+                      "     ####       ####  #### ### ###### ### ###### ###    ### ### ###### ####",
+                      "     ###        ###    ### ###  ##### ###  ##### ###    ### ###  ##### #####",
+                      "     ###        ###    ### ###   #### ###   #### ###    ### ###   ####  #####",
+                      "     ###        ########## ###    ### ###    ### ###    ### ###    ###   #####",
+                      "     ###        ########## ###    ### ###    ### ###    ### ###    ###    #####",
+                      "     ###        ########## ###    ### ###    ### ###    ### ###    ###     #####",
+                      "     ####       ###    ### ###    ### ###    ### ###    ### ###    ###      #####",
+                      "     #####      ###    ### ###    ### ###    ### ###    ### ###    ###       ####",
+                      "      #####     ###    ### ###    ### ###    ### ###    ### ###    ###       ####",
+                      "       ######## ###    ### ###    ### ###    ### ########## ###    ### ##########",
+                      "        ####### ###    ### ###    ### ###    ###  ########  ###    ### ######### ",
+                      "         ###### ###    ### ###    ### ###    ###   ######   ###    ### ########  "
+                    ]
+                  }
+                }
+              },
+              { "set":{ "counter":-3 } },
+              {
+                "times":88,
+                "execute":[ { "object":{ "set":{ "_":[ "stencil", "#" ] }, "x":{ "_":[ "that", "counter" ] }, "y":168 } }, { "sum":3, "to":{ "_":[ "this", "counter" ] } } ]
+              },
+              { "set":{ "width":256, "height":192 } },
+              { "wait":1 },
+              { "as":{ "_":[ "object", "wall" ] }, "executeAction":"update" },
+              { "wait":250 },
+              { "object":{ "type":"cannon", "set":{ "_":[ "stencil", "cannon" ] }, "x":123, "y":90, "aimTileX":13 } },
+              { "wait":1, "loop":1, "until":{ "_":[ "objectTyped", "turnbusy", "not" ] } },
+              { "wait":10 },
+              { "set":{ "aimAngle":{ "_":[ "randomNumber", [ -20, 20 ] ] } } },
+              {
+                "sum":{ "_":[ "this", "aimAngle", "-", { "_":[ "objectTyped", "cannon", "aimAngle" ] }, "*", 0.1 ] },
+                "to":{ "_":[ "objectTyped", "cannon", "aimAngle" ] }
+              },
+              { "wait":1, "loopTo":-1, "until":{ "_":[ "objectTyped", "cannon", "aimAngle", "-", { "_":[ "this", "aimAngle" ] }, "abs", "isLessThan", 0.3 ] } },
+              {
+                "as":{ "_":[ "objectTyped", "cannon" ] },
+                "execute":{ "object":{ "set":{ "_":[ "stencil", "bomb" ] }, "execute":{ "applyVector":{ "angle":{ "_":[ "that", "aimAngle" ] }, "length":10 } } } }
+              },
+              { "wait":1, "loop":1, "until":{ "_":[ "objectTyped", "turnbusy", "not" ] } },
+              { "wait":1, "cycles":10, "loopTo":-6 },
+              { "wait":250 },
+              { "as":{ "_":[ "object", "wall" ] }, "remove":1 },
+              { "as":{ "_":[ "object", "cannon" ] }, "execute":[ { "_":[ "stencil", "codeRemoveCannon" ] }, { "remove":1 } ] },
+              { "wait":1 },
+              { "loopTo":0 }
+            ]
+          },
+          { "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"play", "withTransition":3 } }
+        ]
+      }
+    },
+    "play":{
+      "ended":0,
+      "player1":0,
+      "player2":0,
+      "turn":0,
+      "turns":30,
+      "wind":0,
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[
+            { "subsequence":{ "_":[ "stencil", "generateMapSequence" ] } },
+            {
+              "object":[
+                {
+                  "width":256, "height":10,
+                  "zIndex":1000, "x":0, "y":3,
+                  "color":"#fff",
+                  "font":"spectrum", "lineHeight":10, "outline":"#000", "textAlign":"center", "html":"WIND"
+                },
+                {
+                  "type":"hud",
+                  "hudType":"label", "label":"TURNS LEFT: %number|scene.turns|0|2%",
+                  "width":256, "height":10,
+                  "zIndex":1000, "x":0, "y":23,
+                  "color":"#fff",
+                  "font":"spectrum", "lineHeight":10, "outline":"#000", "textAlign":"center"
+                },
+                {
+                  "type":"hud",
+                  "hudType":"label", "label":"%number|scene.player1|0|10%",
+                  "width":240, "height":10,
+                  "zIndex":1000, "x":8, "y":3,
+                  "color":"#f00",
+                  "font":"spectrum", "lineHeight":10, "outline":"#000"
+                },
+                {
+                  "type":"hud",
+                  "hudType":"label", "label":"%number|scene.player2|0|10%",
+                  "width":240, "height":10,
+                  "zIndex":1000, "x":8, "y":3,
+                  "color":"#00f",
+                  "font":"spectrum", "lineHeight":10, "outline":"#000", "textAlign":"right"
+                },
+                { "width":205, "height":6, "zIndex":1000, "x":26, "y":15, "bgcolor":"#000", "border":"#fff" },
+                {
+                  "height":2,
+                  "zIndex":1001, "y":17,
+                  "wind":0,
+                  "states":{
+                    "code":{
+                      "name":"Execute",
+                      "data":[
+                        {
+                          "when":{ "_":[ "this", "wind", "-", { "_":[ "scene", "wind" ] }, "abs", "isLessThan", 0.3 ] },
+                          "set":{ "wind":{ "_":[ "scene", "wind" ] } },
+                          "elseExecute":{ "sum":{ "_":[ "scene", "wind", "-", { "_":[ "this", "wind" ] }, "*", 0.1 ] }, "to":{ "_":[ "this", "wind" ] } }
+                        },
+                        {
+                          "when":{ "_":[ "this", "wind", "isGreaterThan", 0 ] },
+                          "set":{ "width":{ "_":[ "this", "wind" ] }, "x":128, "bgcolor":"#00f" },
+                          "elseExecute":{ "set":{ "width":{ "_":[ "this", "wind", "*", -1 ] }, "x":{ "_":[ 128, "+", { "_":[ "this", "wind" ] } ] }, "bgcolor":"#f00" } }
+                        }
+                      ]
+                    }
+                  }
+                }
+              ]
+            },
+            {
+              "object":[
+                { "type":"player1", "set":{ "_":[ "stencil", "cannon" ] }, "x":10, "y":0, "aimTileX":13, "giveTo":"player1", "hits":"player2" },
+                { "type":"player2", "set":{ "_":[ "stencil", "cannon" ] }, "tileX":6, "x":240, "y":0, "aimTileX":17, "giveTo":"player2", "hits":"player1" },
+                { "_":[ "stencil", "sea" ] }
+              ]
+            },
+            { "wait":1, "loop":1, "until":{ "_":[ "objectTyped", "turnbusy", "not" ] } },
+            { "set":{ "wind":{ "_":[ "randomNumber", [ -100, 100 ] ] } } },
+            {
+              "when":{ "_":[ "this", "turn" ] },
+              "set":{ "playAudio":"beep2", "turnColor":"#00f", "turnEnable":"player2", "turnLabel":"PLAYER 2" },
+              "elseExecute":{ "set":{ "playAudio":"beep", "turnColor":"#f00", "turnEnable":"player1", "turnLabel":"PLAYER 1" } }
+            },
+            { "object":{ "set":{ "_":[ "stencil", "messageModel" ] }, "color":{ "_":[ "that", "turnColor" ] }, "html":{ "_":[ "that", "turnLabel" ] } } },
+            { "wait":1, "loop":1, "until":{ "_":[ "objectTyped", "message", "not" ] } },
+            { "as":{ "_":[ "objectTyped", { "_":[ "this", "turnEnable" ] } ] }, "executeAction":"turn" },
+            { "wait":1, "loop":1, "until":{ "_":[ "objectTyped", "turnbusy", "not" ] } },
+            { "set":{ "ended":{ "_":[ "object", "cannon", "count", "isLessThan", 2 ] } } },
+            { "set":{ "turn":{ "_":[ "this", "turn", "not" ] } } },
+            { "subtract":1, "to":{ "_":[ "this", "turns" ] } },
+            { "loopTo":-9, "until":{ "_":[ "this", "ended", "or", { "_":[ "this", "turns", "not" ] } ] } },
+            {
+              "when":{ "_":[ "scene", "player1", "isGreaterThan", { "_":[ "scene", "player2" ] } ] },
+              "set":{ "ended":1, "winColor":"#f00", "winLabel":"PLAYER 1 WON!" },
+              "elseExecute":{ "set":{ "ended":1, "winColor":"#00f", "winLabel":"PLAYER 2 WON!" } }
+            },
+            {
+              "object":{ "set":{ "_":[ "stencil", "endMessageModel" ] }, "html":{ "_":[ "that", "winLabel" ] }, "color1":{ "_":[ "that", "winColor" ] }, "color2":"#ff0" },
+              "playAudio":"rampup"
+            },
+            { "wait":25 },
+            { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+            { "gotoScene":"intro", "withTransition":3 }
+          ]
+        }
+      }
+    }
+  }
+}
