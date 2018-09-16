@@ -1,0 +1,557 @@
+{
+  "name":"Almost Love",
+  "author":"KesieV",
+  "year":2018,
+  "genre":"Dating Sim",
+  "description":"<p>Well.</p><p>In seduction you've to guess the right answers. In love you've to guess the right questions.</p><p>This time I don't have any Wikipedia link for you... so I decided to prove it to you in another way. After 13 years of practice, my script writer, player 2, partner in crime and worst enemy in an argue Bianca is now my wife.</p><p class='photobox'><img src='/wright/tapes/almostlove/15sep2018.png'><span>The cheese sticks served at the restaurant were excellent. Not eating them causes true pain, trust me.</span></p><p>Plot!</p><p>Do you remember the first school trips in middle school? Those times when you met that girl who made your heart beat faster for the first time? Now you can experience these days... forever! Almost Love is a <i>roguelike dating sim</i> in which the same magic day repeats again and again... and every time you'll met a new girl! Will you try to find the right answer to each question? Or will you'll give your own answers hoping to discover the right girl for you? It's up to you!</p><p>Press the A BUTTON for speeding up the dialogues and the A BUTTON again for reading the next dialogue. When a question appeares, use UP/DOWN for selecting the your answer and the A BUTTON for confirming it.</p>",
+  "screenshots":[ "almostlove-1.png", "almostlove-2.png" ],
+  "hardware":{
+    "width":256,
+    "height":192,
+    "filter":"retro"
+  },
+  "audioChannels":{
+    "music":{ "volume":1, "looping":1, "samples":[ "bgm1", "bgm2" ] },
+    "sfx":{ "volume":0.8, "samples":[ "rampup", "rampdown", "fire", "beep", "bigfire" ] }
+  },
+  "cheats":{
+    "showAnswer":"Show the right answer (but no Kisu and ending for you!)"
+  },
+  "resources":{
+    "bgm1":"feelinggroovy.ogg",
+    "bgm2":"saylove.ogg",
+    "body":"body.png",
+    "dialogue":"dialogue.json",
+    "dress":"dress.png",
+    "eyes":"eyes.png",
+    "hairback":"hairback.png",
+    "hairtop":"hairtop.png",
+    "logo":"logo.png",
+    "mouth":"mouth.png",
+    "spectrum":"spectrum.font",
+    "sprites":"sprites.png",
+    "wallpapers":"wallpapers.png",
+    "beep":"../default/zxsounds/beep.ogg",
+    "bigfire":"../default/zxsounds/bigfire.ogg",
+    "fire":"../default/zxsounds/fire.ogg",
+    "rampdown":"../default/zxsounds/rampdown.ogg",
+    "rampup":"../default/zxsounds/rampup.ogg"
+  },
+  "stencils":{
+    "bgpanel":{
+      "type":"bgpanel",
+      "image":"sprites", "tileX":200, "width":16, "height":16,
+      "zIndex":5,
+      "visible":0,
+      "states":{
+        "code":{
+          "name":"Sequence",
+          "data":[
+            { "when":{ "_":[ "this", "doWait" ] }, "subsequence":{ "wait":125 } },
+            { "set":{ "frame":0, "visible":1 } },
+            { "wait":1 },
+            { "sum":1, "to":{ "_":[ "this", "frame" ] }, "cycles":2, "loopTo":-1 },
+            { "wait":125 },
+            { "subtract":1, "to":{ "_":[ "this", "frame" ] }, "wait":1, "loop":1, "cycles":2 },
+            { "set":{ "visible":0 } },
+            { "wait":125, "loopTo":1 }
+          ]
+        }
+      }
+    },
+    "bodyModel":{
+      "type":"char",
+      "width":192, "height":192,
+      "zIndex":2, "x":-90, "y":0,
+      "states":[
+        {
+          "execute":{ "executeAction":"update" },
+          "code":{
+            "name":"Execute",
+            "data":[
+              { "set":{ "delta":{ "_":[ 32, "-", { "_":[ "this", "x" ] }, "/", 6 ] } } },
+              {
+                "when":{ "_":[ "this", "delta", "isLessThan", 0.1 ] },
+                "set":{ "x":32 },
+                "elseExecute":{ "sum":{ "_":[ "this", "delta" ] }, "to":{ "_":[ "this", "x" ] } }
+              }
+            ]
+          },
+          "actions":{ "name":"leave", "set":{ "removeType":"char", "state":"leave" } }
+        },
+        {
+          "name":"leave",
+          "code":{
+            "name":"Execute",
+            "data":[
+              { "set":{ "delta":{ "_":[ 256, "-", { "_":[ "this", "x" ] }, "/", 3 ] } } },
+              {
+                "when":{ "_":[ "this", "delta", "isLessThan", 0.1 ] },
+                "remove":1,
+                "elseExecute":{ "sum":{ "_":[ "this", "delta" ] }, "to":{ "_":[ "this", "x" ] } }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "bodyMouth":{
+      "image":"mouth", "tileY":{ "_":[ "scene", "bodydata", "mouth", "*", 28 ] }, "width":61, "height":28,
+      "zIndex":5, "x":65, "y":67,
+      "states":[
+        {
+          "name":"B",
+          "code":{
+            "name":"Sequence",
+            "data":[ { "set":{ "frame":{ "_":[ "randomValue", [ 0, 1, 2 ] ] } } }, { "wait":{ "_":[ "randomNumber", [ 5, 10 ] ] }, "loopTo":0 } ]
+          }
+        },
+        {
+          "name":"D",
+          "code":{
+            "name":"Sequence",
+            "data":[ { "set":{ "frame":{ "_":[ "randomValue", [ 2, 5, 4 ] ] } } }, { "wait":{ "_":[ "randomNumber", [ 5, 10 ] ] }, "loopTo":0 } ]
+          }
+        },
+        {
+          "name":"#",
+          "code":{
+            "name":"Sequence",
+            "data":[ { "set":{ "frame":{ "_":[ "randomValue", [ 0, 2, 3 ] ] } } }, { "wait":{ "_":[ "randomNumber", [ 2, 4 ] ] }, "loopTo":0 } ]
+          }
+        },
+        { "name":"o", "set":{ "frame":1 } },
+        { "name":"(", "set":{ "frame":6 } },
+        { "name":"O", "set":{ "frame":3 } },
+        { "name":"|", "set":{ "frame":2 } },
+        { "name":")", "set":{ "frame":4 } }
+      ]
+    },
+    "sequencKissEffect":[
+      { "set":{ "counter":0 }, "playAudio":"bigfire" },
+      {
+        "times":10,
+        "execute":[
+          {
+            "object":{
+              "type":"kiss",
+              "image":"sprites", "tileX":200, "tileY":116, "width":9, "height":9,
+              "zIndex":15, "y":180,
+              "radius":0,
+              "timer":{ "_":[ "that", "counter" ] },
+              "states":{
+                "code":{
+                  "name":"Execute",
+                  "data":{
+                    "when":{ "_":[ "this", "radius", "isLessThan", 256 ] },
+                    "execute":[
+                      { "sum":5, "to":{ "_":[ "this", "radius" ] } },
+                      { "sum":0.2, "to":{ "_":[ "this", "timer" ] } },
+                      {
+                        "set":{
+                          "x":{ "_":[ "this", "timer", "cos", "*", { "_":[ "this", "radius" ] }, "+", 123 ] }, "y":{ "_":[ "this", "timer", "sin", "*", { "_":[ "this", "radius" ] }, "+", 78 ] }
+                        }
+                      }
+                    ],
+                    "elseExecute":{ "remove":1 }
+                  }
+                }
+              }
+            }
+          },
+          { "sum":0.62, "to":{ "_":[ "this", "counter" ] } }
+        ]
+      },
+      { "wait":1, "loop":1, "until":{ "_":[ "objectTyped", "kiss", "not" ] } }
+    ],
+    "sequenceBackground":[
+      { "as":{ "_":[ "objectTyped", "text" ] }, "set":{ "html":"" } },
+      { "as":{ "_":[ "objectTyped", "person" ] }, "set":{ "html":"" } },
+      { "as":{ "_":[ "objectTyped", "char" ] }, "executeAction":"leave" },
+      { "set":{ "oldbody":0 } },
+      {
+        "when":{ "_":[ "objectTyped", "wallpaper" ] },
+        "subsequence":[
+          { "playAudio":"rampdown" },
+          {
+            "as":{ "_":[ "objectTyped", "wallpaper" ] },
+            "execute":[
+              { "set":{ "height":{ "_":[ "this", "height", "-", 16 ] } } },
+              { "sum":8, "to":{ "_":[ "this", "y" ] } },
+              { "set":{ "tileY":{ "_":[ "this", "y" ] } } }
+            ],
+            "wait":1, "loop":1, "cycles":12
+          },
+          { "as":{ "_":[ "objectTyped", "wallpaper" ] }, "remove":1 },
+          { "wait":20 }
+        ]
+      },
+      {
+        "object":{ "type":"wallpaper", "image":"wallpapers", "width":256, "height":0, "x":0, "y":96, "frame":{ "_":[ "that", "background" ] } },
+        "playAudio":"rampup"
+      },
+      {
+        "as":{ "_":[ "objectTyped", "wallpaper" ] },
+        "execute":[ { "sum":16, "to":{ "_":[ "this", "height" ] } }, { "subtract":8, "to":{ "_":[ "this", "y" ] } }, { "set":{ "tileY":{ "_":[ "this", "y" ] } } } ],
+        "wait":1, "loop":1, "cycles":12
+      },
+      { "wait":25 }
+    ],
+    "sequenceQuestion":[
+      { "as":{ "_":[ "objectTyped", "char" ] }, "executeAction":"update" },
+      { "subsequence":{ "_":[ "stencil", "sequenceText" ] } },
+      { "object":{ "type":[ "menu", "hideable" ], "image":"sprites", "tileY":68, "width":200, "height":60, "zIndex":5, "x":52, "y":60 } },
+      { "set":{ "counter":0 } },
+      {
+        "times":{ "_":[ "this", "answers", "count" ] },
+        "execute":[
+          {
+            "object":{
+              "type":[ "menu", "hideable" ],
+              "width":200, "height":10,
+              "zIndex":6, "x":60, "y":{ "_":[ 70, "+", { "_":[ "that", "counter", "*", 10 ] } ] },
+              "color":"#fff",
+              "font":"spectrum", "lineHeight":10, "html":{ "_":[ "that", "answers", { "_":[ "that", "counter" ] } ] }
+            }
+          },
+          { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+        ]
+      },
+      { "wait":25 },
+      {
+        "object":{
+          "type":[ "menu", "hideable", "selector" ],
+          "image":"sprites", "tileX":200, "tileY":116, "width":9, "height":9,
+          "zIndex":20, "y":180,
+          "option":0,
+          "timer":0,
+          "states":[
+            {
+              "code":{
+                "name":"Execute",
+                "data":[
+                  { "sum":0.4, "to":{ "_":[ "this", "timer" ] } },
+                  { "when":{ "_":[ "keyUp", "isHit" ] }, "subtract":1, "to":{ "_":[ "this", "option" ] }, "playAudio":"fire" },
+                  { "when":{ "_":[ "keyDown", "isHit" ] }, "sum":1, "to":{ "_":[ "this", "option" ] }, "playAudio":"fire" },
+                  { "when":{ "_":[ "this", "option", "isLessThan", 0 ] }, "set":{ "option":{ "_":[ "scene", "answers", "count", "-", 1 ] } } },
+                  { "when":{ "_":[ "this", "option", "isGreaterEqualThan", { "_":[ "scene", "answers", "count" ] } ] }, "set":{ "option":0 } },
+                  { "when":{ "_":[ "keyA", "isHit" ] }, "set":{ "state":"selected" }, "playAudio":"beep" },
+                  { "set":{ "x":{ "_":[ "this", "timer", "sin", "*", 2, "+", 48 ] }, "y":{ "_":[ "this", "option", "*", 10, "+", 71 ] } } }
+                ]
+              }
+            },
+            {
+              "name":"selected",
+              "set":{ "x":48 },
+              "code":{
+                "name":"Sequence",
+                "data":[
+                  { "set":{ "visible":{ "_":[ "this", "visible", "not" ] } }, "wait":2, "loop":1, "cycles":7 },
+                  { "as":{ "_":"scene" }, "set":{ "answer":{ "_":[ "that", "option" ] } } },
+                  { "remove":1 }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      { "wait":1, "loop":1, "until":{ "_":[ "objectTyped", "selector", "not" ] } },
+      { "as":{ "_":[ "object", "menu" ] }, "remove":1 }
+    ],
+    "sequenceSay":[
+      { "as":{ "_":[ "objectTyped", "char" ] }, "executeAction":"update" },
+      { "subsequence":{ "_":[ "stencil", "sequenceText" ] } },
+      {
+        "object":{
+          "type":"next",
+          "image":"sprites", "tileX":200, "tileY":116, "width":9, "height":9,
+          "zIndex":20, "x":244, "y":180,
+          "states":{ "code":{ "name":"Sequence", "data":{ "set":{ "visible":{ "_":[ "this", "visible", "not" ] } }, "wait":10, "loop":1 } } }
+        }
+      },
+      { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+      { "as":{ "_":[ "objectTyped", "next" ] }, "remove":1 }
+    ],
+    "sequenceScene":{
+      "when":{ "_":[ "this", "oldbody", "isEqualTo", { "_":[ "this", "body" ] } ] },
+      "as":{ "_":[ "objectTyped", "char" ] },
+      "executeAction":"update",
+      "elseExecute":[
+        {
+          "when":{ "_":[ "resource", "dialogue", "characters", { "_":[ "this", "body" ] } ] },
+          "set":{ "bodydata":{ "_":[ "resource", "dialogue", "characters", { "_":[ "this", "body" ] } ] } },
+          "elseExecute":{ "set":{ "bodydata":{ "_":[ "variable", { "_":[ "this", "body" ] } ] } } }
+        },
+        { "set":{ "oldbody":{ "_":[ "this", "body" ] } } },
+        { "as":{ "_":[ "objectTyped", "char" ] }, "executeAction":"leave" },
+        {
+          "when":{ "_":[ "this", "bodydata" ] },
+          "execute":{
+            "when":{ "_":[ "this", "bodydata", "simplebody" ] },
+            "object":{
+              "set":{ "_":[ "stencil", "bodyModel" ] },
+              "execute":[
+                {
+                  "object":{ "image":"body", "width":192, "height":192, "zIndex":2, "x":0, "y":0, "frame":{ "_":[ "scene", "bodydata", "body" ] } },
+                  "into":{ "_":"this" }
+                },
+                { "object":{ "_":[ "stencil", "bodyMouth" ] }, "assign":{ "_":"that" }, "to":{ "_":[ "this", "mouth" ] }, "into":{ "_":"this" } }
+              ],
+              "states":{ "actions":{ "name":"update", "execute":{ "as":{ "_":[ "this", "mouth" ] }, "set":{ "state":{ "_":[ "scene", "face", 2 ] } } } } }
+            },
+            "elseExecute":{
+              "object":{
+                "set":{ "_":[ "stencil", "bodyModel" ] },
+                "execute":[
+                  {
+                    "object":[
+                      { "image":"body", "width":192, "height":192, "zIndex":2, "x":0, "y":0, "frame":{ "_":[ "scene", "bodydata", "body" ] } },
+                      { "image":"dress", "width":110, "height":192, "zIndex":3, "x":41, "y":0, "frame":{ "_":[ "scene", "bodydata", "dress" ] } },
+                      { "image":"hairback", "width":110, "height":192, "zIndex":1, "x":41, "y":0, "frame":{ "_":[ "scene", "bodydata", "hairback" ] } },
+                      { "image":"hairtop", "width":80, "height":80, "zIndex":6, "x":56, "y":17, "frame":{ "_":[ "scene", "bodydata", "hairtop" ] } }
+                    ],
+                    "into":{ "_":"this" }
+                  },
+                  {
+                    "object":{
+                      "image":"eyes", "tileY":{ "_":[ "scene", "bodydata", "eyes", "*", 40 ] }, "width":80, "height":40,
+                      "zIndex":4, "x":56, "y":39,
+                      "states":[
+                        {
+                          "name":":",
+                          "code":{
+                            "name":"Sequence",
+                            "data":[
+                              { "set":{ "frame":0 } },
+                              { "sum":1, "to":{ "_":[ "this", "frame" ] } },
+                              { "wait":1, "cycles":3, "loopTo":-1 },
+                              { "subtract":1, "to":{ "_":[ "this", "frame" ] } },
+                              { "wait":1, "cycles":3, "loopTo":-1 },
+                              { "wait":{ "_":[ "randomNumber", [ 75, 125 ] ] }, "loopTo":0 }
+                            ]
+                          }
+                        },
+                        {
+                          "name":">",
+                          "code":{
+                            "name":"Sequence",
+                            "data":[
+                              { "set":{ "frame":4 } },
+                              { "wait":{ "_":[ "randomNumber", [ 75, 125 ] ] } },
+                              { "set":{ "frame":2 }, "wait":1 },
+                              { "set":{ "frame":3 }, "wait":1 },
+                              { "set":{ "frame":2 }, "wait":1 },
+                              { "loopTo":0 }
+                            ]
+                          }
+                        },
+                        {
+                          "name":"|",
+                          "code":{
+                            "name":"Sequence",
+                            "data":[
+                              { "set":{ "frame":2 } },
+                              { "wait":{ "_":[ "randomNumber", [ 75, 125 ] ] } },
+                              { "set":{ "frame":3 } },
+                              { "wait":{ "_":[ "randomNumber", [ 25, 50 ] ] }, "loopTo":0 }
+                            ]
+                          }
+                        },
+                        { "name":"X", "set":{ "frame":3 } },
+                        { "name":";", "set":{ "frame":5 } },
+                        { "name":"^", "set":{ "frame":6 } }
+                      ]
+                    },
+                    "assign":{ "_":"that" },
+                    "to":{ "_":[ "this", "eyes" ] },
+                    "into":{ "_":"this" }
+                  },
+                  { "object":{ "_":[ "stencil", "bodyMouth" ] }, "assign":{ "_":"that" }, "to":{ "_":[ "this", "mouth" ] }, "into":{ "_":"this" } }
+                ],
+                "states":{
+                  "actions":{
+                    "name":"update",
+                    "execute":[
+                      { "as":{ "_":[ "this", "eyes" ] }, "set":{ "state":{ "_":[ "scene", "face", 0 ] } } },
+                      { "as":{ "_":[ "this", "mouth" ] }, "set":{ "state":{ "_":[ "scene", "face", 2 ] } } }
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "sequenceText":[
+      { "as":{ "_":[ "objectTyped", "text" ] }, "set":{ "html":"" } },
+      { "when":{ "_":[ "this", "person", "isEqualTo", "*" ] }, "set":{ "person":{ "_":[ "variable", "girl", "girlName" ] } } },
+      {
+        "when":{ "_":[ "this", "person" ] },
+        "execute":[
+          { "as":{ "_":[ "object", "person" ] }, "set":{ "visible":1, "html":{ "_":[ "that", "person" ] } } },
+          { "as":{ "_":[ "objectTyped", "text" ] }, "set":{ "height":40, "y":144 } }
+        ],
+        "elseExecute":[ { "as":{ "_":[ "objectTyped", "person" ] }, "set":{ "html":"" } }, { "as":{ "_":[ "objectTyped", "text" ] }, "set":{ "height":54, "y":130 } } ]
+      },
+      { "set":{ "counter":0 } },
+      {
+        "as":{ "_":[ "objectTyped", "text" ] },
+        "set":{ "html":{ "_":[ "this", "html", ".", { "_":[ "that", "says", { "_":[ "that", "counter" ] } ] } ] } },
+        "playAudio":"fire"
+      },
+      { "sum":1, "to":{ "_":[ "this", "counter" ] }, "wait":1 },
+      { "when":{ "_":[ "keyA", "isHit" ] }, "set":{ "counter":{ "_":[ "this", "says", "count" ] } } },
+      { "loopTo":-3, "until":{ "_":[ "this", "counter", "isEqualTo", { "_":[ "this", "says", "count" ] } ] } },
+      { "as":{ "_":[ "objectTyped", "text" ] }, "set":{ "html":{ "_":[ "that", "says" ] } }, "playAudio":"beep" },
+      { "wait":5 }
+    ]
+  },
+  "execute":[
+    { "when":{ "_":[ "storage", "kisu", "not" ] }, "as":{ "_":"storage" }, "set":{ "kisu":0 } },
+    { "as":{ "_":"variable" }, "set":{ "kisu":{ "_":[ "storage", "kisu" ] } } }
+  ],
+  "scenes":{
+    "intro":{
+      "object":[
+        {
+          "image":"logo", "width":174, "height":98,
+          "zIndex":10, "x":41,
+          "oy":-98,
+          "timer":0,
+          "states":{
+            "code":{
+              "name":"Execute",
+              "data":[
+                { "sum":{ "_":[ 20, "-", { "_":[ "this", "oy" ] }, "/", 10 ] }, "to":{ "_":[ "this", "oy" ] } },
+                { "sum":0.1, "to":{ "_":[ "this", "timer" ] } },
+                { "set":{ "y":{ "_":[ "this", "oy", "+", { "_":[ "this", "timer", "sin", "*", 5 ] } ] } } }
+              ]
+            }
+          }
+        },
+        {
+          "type":"hud",
+          "hudType":"label", "label":"KISU: %number|variable.kisu%",
+          "width":256, "height":10,
+          "zIndex":10, "x":0, "y":177,
+          "bgcolor":"#000", "color":"#fff",
+          "font":"spectrum", "lineHeight":10, "textAlign":"center"
+        },
+        {
+          "box":"label", "width":256,
+          "zIndex":100, "x":0, "y":141,
+          "color":"#fff",
+          "font":"spectrum", "fontSize":20, "lineHeight":20, "outline":"#000", "textAlign":"center", "html":"PRESS START",
+          "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "visible":0 }, "wait":20 }, { "set":{ "visible":1 }, "wait":20, "loopTo":0 } ] } }
+        },
+        { "width":256, "height":192, "x":0, "y":0, "bgcolor":"#f0f" }
+      ],
+      "execute":[
+        { "set":{ "counter":0, "skins":{ "_":[ "new", [ 68, 84, 100 ] ] } } },
+        { "shuffle":{ "_":[ "this", "skins" ] } },
+        {
+          "times":222,
+          "execute":[
+            {
+              "object":{
+                "set":{ "_":[ "stencil", "bgpanel" ] },
+                "tileY":{ "_":[ "that", "skins", { "_":[ "that", "counter", "%", 2 ] } ] },
+                "doWait":{ "_":[ "that", "counter", "%", 2 ] },
+                "ox":{ "_":[ "that", "counter", "%", 17, "-", 1, "*", 16 ] },
+                "oy":{ "_":[ "that", "counter", "/", 17, "floor", "-", 1, "*", 16 ] }
+              }
+            },
+            { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+          ]
+        }
+      ],
+      "scrollTimer":0,
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":[
+            { "set":{ "scrollTimer":{ "_":[ "this", "scrollTimer", "+", 0.5, "%", 16 ] } } },
+            {
+              "as":{ "_":[ "object", "bgpanel" ] },
+              "set":{ "x":{ "_":[ "this", "ox", "+", { "_":[ "that", "scrollTimer" ] } ] }, "y":{ "_":[ "this", "oy", "+", { "_":[ "that", "scrollTimer" ] } ] } }
+            },
+            { "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"player", "withTransition":3, "playAudio":"beep" }
+          ]
+        }
+      }
+    },
+    "ending":{
+      "object":{
+        "width":256, "height":1000,
+        "zIndex":10, "x":0, "y":192,
+        "color":"#fff",
+        "font":"spectrum", "outline":"#000", "textAlign":"center", "html":"ALMOST LOVE<br>(c) 2018<br>A tiny tribute to<br>dating sims.<br><br><br>Graphics by:<br>KesieV Norimaki<br><br><br>Code by:<br>KesieV Norimaki<br><br><br>Music:<br><br>Feeling Groovy<br>by Bob Brunsden<br><br>Say Love<br>by Baze<br><br><br>Big thanks to:<br>Bianca<br>Il Marsicano<br>The JTTA Team<br>Stefano \"Il Kusagari\" Fioretto<br>Romolo Camplani<br>All Akihabara age friends<br><br><br><br><br>Love never changes.<br>People do that.",
+        "forceY":-0.5,
+        "states":{ "code":{ "name":"Physics" } }
+      },
+      "playAudio":"bgm1",
+      "states":{
+        "code":[
+          { "name":"Sequence", "data":[ { "wait":1760 }, { "gotoScene":"intro", "withTransition":3, "stopChannel":"music" } ] },
+          { "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"intro", "withTransition":3, "stopChannel":"music" } }
+        ]
+      }
+    },
+    "player":{
+      "object":[
+        { "type":[ "hideable", "gui" ], "image":"sprites", "width":256, "height":70, "zIndex":5, "x":0, "y":124 },
+        { "type":[ "person", "hideable", "gui" ], "width":240, "height":10, "zIndex":10, "x":8, "y":130, "color":"#f0f", "font":"spectrum", "lineHeight":10 },
+        { "type":[ "text", "hideable", "gui" ], "width":240, "height":40, "zIndex":10, "x":8, "y":144, "color":"#fff", "font":"spectrum", "lineHeight":10 }
+      ],
+      "execute":{
+        "when":{ "_":[ "cheat", "showAnswer" ] },
+        "object":{
+          "type":"hud",
+          "hudType":"label", "label":"%text|scene.cheatMsg%",
+          "width":240, "height":10,
+          "zIndex":1000, "x":8, "y":2,
+          "color":"#f00",
+          "font":"spectrum", "lineHeight":10, "outline":"#000", "textAlign":"center"
+        }
+      },
+      "cheatMsg":"CHEAT ENABLED!",
+      "nextTrack":"track_intro",
+      "states":{
+        "code":[
+          {
+            "name":"Sequence",
+            "data":[
+              { "set":{ "currentTrack":{ "_":[ "this", "nextTrack" ] } } },
+              { "set":{ "nextTrack":0 } },
+              { "subsequence":{ "_":[ "resource", "dialogue", { "_":[ "this", "currentTrack" ] } ] } },
+              { "loopTo":0, "until":{ "_":[ "this", "nextTrack", "not" ] } },
+              { "as":{ "_":[ "object", "gui" ] }, "remove":1 },
+              {
+                "object":{
+                  "width":256, "height":10,
+                  "zIndex":50, "x":0, "y":192,
+                  "bgcolor":"#000", "color":"#fff",
+                  "font":"spectrum", "lineHeight":10, "textAlign":"right", "html":{ "_":[ "THE END - SCORE: ", ".", { "_":[ "variable", "score", "/", { "_":[ "variable", "allscore" ] }, "*", 100, "floor" ] }, ".", "%&nbsp;" ] },
+                  "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "this", "y", "isGreaterThan", 178 ] }, "subtract":1, "to":{ "_":[ "this", "y" ] } } } }
+                }
+              },
+              { "wait":25 },
+              { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+              { "gotoScene":"ending", "withTransition":3, "playAudio":"beep" }
+            ]
+          },
+          {
+            "name":"Execute",
+            "data":{
+              "when":{ "_":[ "keyB", "isDown" ] },
+              "as":{ "_":[ "object", "hideable" ] },
+              "set":{ "visible":0 },
+              "elseExecute":{ "as":{ "_":[ "object", "hideable" ] }, "set":{ "visible":1 } }
+            }
+          }
+        ]
+      }
+    }
+  }
+}
