@@ -1,0 +1,165 @@
+<html>
+	<body onload="onl()">
+		<span id="map"></span>
+		<div style="position:absolute;top:300px">
+			<textarea id="code" cols=80 rows=2>! ! ! ! < ! ! ! ! < ! ! ! ! ! ! !</textarea>
+			<hr>
+			<input type="button" value="Run" onclick="run()">
+			<input type="button" value="Render" onclick="render()">
+			<hr>
+			Out:
+			<textarea id="out" cols=80 rows=2></textarea>
+		</div>
+	</body>
+<script>
+var catStart={x:5,y:5};
+var map=[];
+var par=0,minx,miny,maxx,maxy;
+
+function onl(){
+	for (var y=0;y<11;y++){
+		var row=[];
+		map.push(row);
+		for (var x=0;x<11;x++) {
+			var cell=document.createElement("div");
+			cell.style.border="1px solid #7f7f7f";
+			cell.style.textAlign="center";
+			cell.style.position="absolute";
+			cell.style.width=cell.style.height=20;
+			cell.style.left=(x*20)+"px";
+			cell.style.top=(y*20)+"px";
+			if ((y==catStart.y)&&(x==catStart.x)) {
+				cell._cat=1;
+				cell.style.backgroundColor="#7fffff";
+				cell._blocked=1;
+			} else cell.onclick=function(){
+				if (this._obstacle) {
+					this._obstacle=0;
+					this.innerHTML="";
+				} else {
+					this._obstacle=1;
+					this.innerHTML="#";
+				}
+			}
+			document.body.appendChild(cell);
+			row.push(cell);
+		}
+	}
+}
+
+function clearMap() {
+	for (var y=0;y<map.length;y++) {
+		for (var x=0;x<map[y].length;x++) {
+			map[y][x]._passes=0;
+			if (map[y][x]._obstacle)
+				map[y][x].innerHTML="#";
+			else {
+				map[y][x]._value=0;
+				map[y][x].innerHTML="";
+			}
+		}
+	}
+}
+
+function render() {
+	run();
+	var out={
+
+      "set":{"_":["stencil","stageModel"]},
+      "par":par,
+      "tilemap":{
+        "tileWidth":24,
+        "tileHeight":13,
+        "skipResize":1,
+        "map":[          
+        ]
+      }    
+	};
+
+	var w=(maxx-minx)*24,h=(maxy-miny)*13;
+
+	for (var y=miny;y<=maxy;y++) {
+		var line="";
+		for (var x=minx;x<=maxx;x++) {
+			if (map[y][x]._cat) line+="!";
+			else if (map[y][x]._passes) line+="*";
+			else line+=" ";
+		}
+		out.tilemap.map.push(line);
+	}
+
+	out.tilemap.x=Math.floor((320-w)/2);
+	out.tilemap.y=Math.floor((105-h)/2);
+	document.getElementById("out").value=JSON.stringify(out);
+}
+
+function run() {
+	clearMap();
+	par=0;
+	minx=maxx=catStart.x;
+	miny=maxy=catStart.y;
+	var px=catStart.x,py=catStart.y,sd=2,pos=0,code=[];
+	var source=document.getElementById("code").value.trim().split(" ");
+	for (var i=0;i<source.length;i++)
+		if (source[i][0]=="@") {
+			var data=source[i].substr(1).split("-");
+			code.push({statement:"@",cycles:data[0]*1,counter:data[0]*1,len:data[1]*1});
+		} else code.push({statement:source[i][0]});
+	par=code.length;
+	while (pos<code.length) {
+		var line=code[pos];
+		switch (line.statement) {
+			case "!":{
+				var opx=px,opy=py;
+				switch (sd) {
+					case 0: { py--; break;}
+					case 1: { px++; break;}
+					case 2: { py++; break;}
+					case 3: { px--; break;}
+				}
+				if (map[py][px]._obstacle) {
+					px=opx;
+					py=opy;
+				} else {
+					map[py][px]._passes++;
+					map[py][px].innerHTML=map[py][px]._passes;
+				}
+				pos++;
+				break;
+			}
+			case ">":{
+				sd=(sd+1)%4;
+				pos++;
+				break;
+			}
+			case "<":{
+				sd--;
+				if (sd<0) sd=3;
+				pos++;
+				break;
+			}
+			case "@":{
+				line.counter--;
+				if (line.counter) {
+					pos-=line.len;
+				}
+				else {
+					line.counter=line.cycles;
+					pos++;
+				}
+				break;
+			}
+			default:{
+				console.warn("Wrong statement:",line.statement);
+				pos++;
+			}			
+		}
+			if (px<minx) minx=px;
+			if (py<miny) miny=py;
+			if (px>maxx) maxx=px;
+			if (py>maxy) maxy=py;
+	}
+}
+
+</script>
+</html>
