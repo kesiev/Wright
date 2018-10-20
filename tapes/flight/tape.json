@@ -1,0 +1,899 @@
+{
+  "name":"Almost Flight",
+  "author":"KesieV",
+  "year":2018,
+  "genre":"Flight simulator",
+  "description":"<p>I've reserved this short rambling about simulators, a genre I fondly hate, just for the last entry of the Wright! bad simulator series <i>\"Almost\"</i>, which I loved to code during these years.</p><p>As usual, let's have a quick look at the <a href='https://en.wikipedia.org/wiki/Simulation'>Wikipedia</a> definition. It's pretty long this time but it's filled with interesting things: \"A simulation is an <b>imitation</b> of the operation of a <b>real-world process or system</b>. The act of simulating something first requires that <b>a model be developed</b>; this model represents the key characteristics, behaviors and functions of the selected physical or abstract system or process. The model <b>represents the system itself</b>, whereas the simulation represents the operation of the system over time.\"</p><p>In simple terms, a simulation is a <i>thing</i> that imitates a real-world <i>another thing</i> so convincingly that may work as a <i>replacement</i>.<br>Wikipedia, as the term is commonly depicted, relates the whole <i>simulators</i> affair to a bunch of boring cold things, like <i>safety engineering, testing, training and education</i>. Except for the last entry, that is our  illustrious intruder: <i>video games</i>.</p><p>I'd like to put extra emphasis on the word <i>games</i>. Ready for the usual questions the press love so much? Here we go.</p><p>Do the gamers prefer to experience a <i>simulated replacement of reality</i> instead of living their true one? Are these <i>simulated experiences</i> as fun as the real thing?</p><p><i>\"No! Games are not a reality replacement! Gamers are normal people having fun! Life is way more exciting!\"</i> - Yeah. Okay. No. That's not entirely true.</p><p>As the saying goes: <i>\"life is short\"</i>. And modern life, for most of us, it is also <i>pretty boring</i>.</p><p>You don't need to be gloomy to accept that. We daily live all the little surprises and subtle changes the life reserves. There may happen some major changes here and there, like the love of your life, a son, a journey... or something way less fun. More rarely your life may change from the ground up. And you are doing your best every day, taking everything you can from life.</p><p>But, both in the short and long term, you're still bound to a relatively limited number of roles and in a very tight range of fields, due to the social structure, your own capabilities and the obvious shortage of time.</p><p>But what if it was possible to create a large number of <i>very approximative models of reality</i> that anyone can experience in order to <b>interact</b> with <i>just a very little slice</i> of another life?<br>I know that's <i>quantity over quality</i> and that's not always a good option... but what if this option <i>allow to do that instantly and whenever you want</i>, so you don't have to plan it or get prepared?</p><p>And what if you could make a <i>simulation of an experience that doesn't exist at all</i>? Even a totally <i>abstract</i> one?</p><p>Making <i>accessible simulations</i> that can transfer an experience to someone else is one of the art finest purposes. Games are art indeed and they are <i>interactive simulations</i> that can side to your first-hand blood and flesh existence a vision of <i>unlimited worlds</i> before your time is up.</p><p>Plot!</p><p>Flight simulators are notoriously <i>hard to play</i>, so this time I've included the whole plot and instructions into the game. Run it and... good luck!</p><p><i>(Huge thanks to Diego Aroldi, a colleague of mine, for his friendship and for suggesting me this important missing genre for the Wright! collection)</i></p>",
+  "screenshots":[ "flight-1.png", "flight-2.png" ],
+  "hardware":{
+    "width":256,
+    "height":192,
+    "filter":"retro"
+  },
+  "audioChannels":{
+    "sfx":{ "volume":1, "samples":[ "open", "blam", "scream", "beep2", "bigfire" ] },
+    "engine":{ "volume":0.5, "looping":1, "samples":[ "engine0", "engine1", "engine2", "engine3", "engine4" ] }
+  },
+  "cheats":{},
+  "resources":{
+    "cockpit":"cockpit.png",
+    "engine0":"engine-0.ogg",
+    "engine1":"engine-1.ogg",
+    "engine2":"engine-2.ogg",
+    "engine3":"engine-3.ogg",
+    "engine4":"engine-4.ogg",
+    "horizon":"horizon.png",
+    "sky":"sky.png",
+    "small":"small.font",
+    "spectrum":"spectrum.font",
+    "sprites":"sprites.png",
+    "title":"title.png",
+    "beep2":"../default/zxsounds/beep2.ogg",
+    "bigfire":"../default/zxsounds/bigfire.ogg",
+    "blam":"../default/zxsounds/blam.ogg",
+    "open":"../default/zxsounds/open.ogg",
+    "scream":"../default/zxsounds/scream.ogg"
+  },
+  "stencils":{
+    "codePhysics":[
+      {
+        "set":{
+          "radx":{ "_":[ "this", "angleX", "*", { "_":[ "constant", "pi" ] }, "/", 180 ] },
+          "rady":{ "_":[ "this", "angleY", "*", { "_":[ "constant", "pi" ] }, "/", 180 ] },
+          "radz":{ "_":[ "this", "angleZ", "*", { "_":[ "constant", "pi" ] }, "/", 180 ] }
+        }
+      },
+      {
+        "set":{
+          "cosax":{ "_":[ "this", "radx", "cos" ] },
+          "cosay":{ "_":[ "this", "rady", "cos" ] },
+          "cosaz":{ "_":[ "this", "radz", "cos" ] },
+          "sinax":{ "_":[ "this", "radx", "sin" ] },
+          "sinay":{ "_":[ "this", "rady", "sin" ] },
+          "sinaz":{ "_":[ "this", "radz", "sin" ] }
+        }
+      },
+      { "sum":{ "_":[ "this", "sinay", "*", { "_":[ "this", "cosax" ] }, "*", { "_":[ "this", "speed" ] }, "*", -1 ] }, "to":{ "_":[ "this", "xPos" ] } },
+      { "sum":{ "_":[ "this", "sinax", "*", { "_":[ "this", "speed" ] } ] }, "to":{ "_":[ "this", "yPos" ] } },
+      { "sum":{ "_":[ "this", "cosay", "*", { "_":[ "this", "cosax" ] }, "*", { "_":[ "this", "speed" ] } ] }, "to":{ "_":[ "this", "zPos" ] } }
+    ],
+    "codePrintHeader":[
+      {
+        "object":{
+          "width":256, "height":10,
+          "x":0, "y":{ "_":[ "that", "printy" ] },
+          "bgcolor":"#0f0", "color":"#000",
+          "font":"spectrum", "lineHeight":10, "textAlign":"center", "html":{ "_":[ "that", "text" ] }
+        }
+      },
+      { "sum":12, "to":{ "_":[ "this", "printy" ] } }
+    ],
+    "codePrintParagraph":[
+      {
+        "object":{
+          "width":240, "height":{ "_":[ "that", "textHeight" ] },
+          "x":8, "y":{ "_":[ "that", "printy" ] },
+          "color":"#fff",
+          "font":"small", "fontSize":8, "lineHeight":8, "html":{ "_":[ "that", "text" ] }
+        }
+      },
+      { "sum":{ "_":[ "that", "textHeight", "+", 2 ] }, "to":{ "_":[ "this", "printy" ] } }
+    ],
+    "codeRemove":[ { "as":{ "_":[ "this", "compassIndicator" ] }, "remove":1 }, { "remove":1 } ],
+    "codeShowMessage":{ "as":{ "_":[ "objectTyped", "message" ] }, "set":{ "html":{ "_":[ "that", "message" ] }, "timer":75 }, "playAudio":"beep2" },
+    "codeSpawnTarget":[
+      {
+        "set":{
+          "targetAngle":{ "_":[ "this", "angleY", "+", { "_":[ "randomNumber", { "_":[ "this", "targetModel", "targetAngleRange" ] } ] } ] },
+          "targetDistance":{ "_":[ "randomNumber", { "_":[ "this", "targetModel", "targetDistanceRange" ] }, "/", 100 ] }
+        }
+      },
+      {
+        "set":{
+          "targetxPos":{
+            "_":[
+              "this",
+              "targetAngle",
+              "*",
+              { "_":[ "constant", "pi" ] },
+              "/",
+              180,
+              "sin",
+              "*",
+              { "_":[ "this", "targetDistance", "*", -1 ] },
+              "+",
+              { "_":[ "objectTyped", "camera", "xPos" ] }
+            ]
+          },
+          "targetyPos":{ "_":[ "randomNumber", [ -1300, -500 ], "/", 100 ] },
+          "targetzPos":{
+            "_":[
+              "this",
+              "targetAngle",
+              "*",
+              { "_":[ "constant", "pi" ] },
+              "/",
+              180,
+              "cos",
+              "*",
+              { "_":[ "this", "targetDistance" ] },
+              "+",
+              { "_":[ "objectTyped", "camera", "zPos" ] }
+            ]
+          }
+        }
+      },
+      {
+        "object":{
+          "set":{ "_":[ "that", "targetModel" ] },
+          "xPos":{ "_":[ "that", "targetxPos" ] },
+          "yPos":{ "_":[ "that", "targetyPos" ] },
+          "zPos":{ "_":[ "that", "targetzPos" ] }
+        }
+      }
+    ],
+    "codeUpdateScore":{ "when":{ "_":[ "variable", "score", "isLessThan", 0 ] }, "as":{ "_":"variable" }, "set":{ "score":0 } },
+    "player":{
+      "type":[ "player", "gameobject" ],
+      "set":[ { "_":[ "stencil", "skyObjectModel" ] }, { "_":[ "stencil", "camera" ] } ],
+      "brakes":1,
+      "controlsRatio":0,
+      "engineNoise":0,
+      "gear":true,
+      "lastEngineNoise":-1,
+      "power":0,
+      "yPos":-3,
+      "states":{
+        "actions":{
+          "name":"frame",
+          "execute":[
+            { "set":{ "grounded":{ "_":[ "this", "yPos", "isGreaterEqualThan", -3 ] }, "nopower":1 } },
+            {
+              "when":{ "_":[ "this", "grounded", "isEqualTo", { "_":[ "this", "gear" ] } ] },
+              "set":{ "gearbonus":1 },
+              "elseExecute":{ "set":{ "gearbonus":0.5 } }
+            },
+            {
+              "set":{
+                "onAirStrip":{
+                  "_":[
+                    "this",
+                    "xPos",
+                    "isGreaterEqualThan",
+                    -6,
+                    "and",
+                    { "_":[ "this", "xPos", "isLessEqualThan", 6 ] },
+                    "and",
+                    { "_":[ "this", "zPos", "isGreaterEqualThan", 0 ] },
+                    "and",
+                    { "_":[ "this", "zPos", "isLessEqualThan", 80 ] }
+                  ]
+                }
+              }
+            },
+            {
+              "when":{ "_":[ "keyB", "isDown" ] },
+              "execute":[
+                { "when":{ "_":[ "keyDown", "isHit" ] }, "set":{ "brakes":{ "_":[ "this", "brakes", "not" ] } }, "playAudio":"blam" },
+                { "when":{ "_":[ "keyUp", "isHit" ] }, "set":{ "gear":{ "_":[ "this", "gear", "not" ] } }, "playAudio":"open" }
+              ]
+            },
+            {
+              "when":{ "_":[ "this", "grounded" ] },
+              "execute":[
+                { "set":{ "bump":{ "_":[ "this", "angleX", "shortestAngleTo", 0, "*", 0.5 ] } } },
+                { "when":{ "_":[ "this", "bump", "abs", "isGreaterThan", 2 ] }, "playAudio":"scream" },
+                { "sum":{ "_":[ "this", "bump" ] }, "to":{ "_":[ "this", "angleX" ] } },
+                {
+                  "subtract":{ "_":[ "this", "bump", "abs", "*", { "_":[ "this", "speed" ] }, "*", 100, "*", { "_":[ "this", "gearbonus" ] } ] },
+                  "to":{ "_":[ "variable", "score" ] }
+                },
+                {
+                  "when":{ "_":[ "this", "brakes" ] },
+                  "execute":[
+                    { "set":{ "speed":{ "_":[ "this", "speed", "*", 0.98 ] } } },
+                    {
+                      "when":{ "_":[ "keyA", "isDown" ] },
+                      "execute":{
+                        "when":{ "_":[ "keyUp", "isDown" ] },
+                        "set":{ "nopower":0 },
+                        "execute":{
+                          "when":{ "_":[ "this", "power", "isLessThan", 100 ] },
+                          "sum":1,
+                          "to":{ "_":[ "this", "power" ] },
+                          "elseExecute":{ "subtract":5, "to":{ "_":[ "variable", "bonus" ] } }
+                        }
+                      }
+                    },
+                    { "when":{ "_":[ "this", "nopower" ] }, "subtract":1, "to":{ "_":[ "this", "power" ] } }
+                  ],
+                  "elseExecute":[
+                    {
+                      "when":{ "_":[ "this", "power" ] },
+                      "execute":[
+                        {
+                          "sum":{ "_":[ "this", "gearbonus", "*", 100, "*", { "_":[ "this", "gearbonus" ] }, "*", { "_":[ "variable", "landtakeoffBonus" ] } ] },
+                          "to":{ "_":[ "variable", "bonus" ] }
+                        },
+                        { "subtract":1, "to":{ "_":[ "this", "power" ] } },
+                        { "sum":0.01, "to":{ "_":[ "this", "speed" ] } }
+                      ]
+                    },
+                    { "when":{ "_":[ "keyA", "isDown" ] }, "execute":{ "when":{ "_":[ "keyUp", "isDown" ] }, "sum":0.003, "to":{ "_":[ "this", "speed" ] } } },
+                    { "set":{ "speed":{ "_":[ "this", "speed", "*", 0.99 ] } } }
+                  ]
+                },
+                {
+                  "when":{ "_":[ "this", "speed", "isGreaterThan", 0.5 ] },
+                  "set":{ "controlsRatio":{ "_":[ "this", "speed", "/", 10 ] } },
+                  "elseExecute":{ "set":{ "controlsRatio":0 } }
+                },
+                {
+                  "when":{ "_":[ "variable", "bonusMode" ] },
+                  "sum":{ "_":[ "this", "speed", "*", 100, "*", { "_":[ "this", "gearbonus" ] }, "*", { "_":[ "variable", "landtakeoffBonus" ] } ] },
+                  "to":{ "_":[ "variable", "bonus" ] }
+                }
+              ],
+              "elseExecute":[
+                {
+                  "when":{ "_":[ "this", "power" ] },
+                  "execute":[
+                    { "subtract":1, "to":{ "_":[ "this", "power" ] } },
+                    {
+                      "subtract":{ "_":[ "this", "gearbonus", "*", 200, "*", { "_":[ "this", "gearbonus" ] }, "*", { "_":[ "variable", "landtakeoffBonus" ] } ] },
+                      "to":{ "_":[ "variable", "bonus" ] }
+                    }
+                  ]
+                },
+                { "sum":{ "_":[ "this", "speed", "*", 10, "*", { "_":[ "this", "gearbonus" ] } ] }, "to":{ "_":[ "variable", "score" ] } },
+                { "sum":0.01, "to":{ "_":[ "this", "controlsRatio" ] } },
+                {
+                  "when":{ "_":[ "keyA", "isDown" ] },
+                  "execute":{
+                    "when":{ "_":[ "keyUp", "isDown" ] },
+                    "execute":{ "sum":0.01, "to":{ "_":[ "this", "speed" ] } },
+                    "elseExecute":{
+                      "when":{ "_":[ "this", "speed" ] },
+                      "execute":{ "when":{ "_":[ "keyDown", "isDown" ] }, "execute":{ "subtract":0.005, "to":{ "_":[ "this", "speed" ] } } }
+                    }
+                  }
+                }
+              ]
+            },
+            { "set":{ "controlsRatio":{ "_":[ "this", "controlsRatio", "limitValue", [ 0, 1 ] ] } } },
+            {
+              "when":{ "_":[ "keyRight", "isDown" ] },
+              "execute":[
+                { "subtract":{ "_":[ "this", "controlsRatio" ] }, "to":{ "_":[ "this", "angleY" ] } },
+                { "subtract":{ "_":[ "this", "controlsRatio", "*", 0.2 ] }, "to":{ "_":[ "this", "angleZ" ] } }
+              ],
+              "elseExecute":{
+                "when":{ "_":[ "keyLeft", "isDown" ] },
+                "execute":[
+                  { "sum":{ "_":[ "this", "controlsRatio" ] }, "to":{ "_":[ "this", "angleY" ] } },
+                  { "sum":{ "_":[ "this", "controlsRatio", "*", 0.2 ] }, "to":{ "_":[ "this", "angleZ" ] } }
+                ],
+                "elseExecute":{ "set":{ "angleZ":{ "_":[ "this", "angleZ", "*", 0.8 ] } } }
+              }
+            },
+            {
+              "when":{ "_":[ "keyA", "isUp", "and", { "_":[ "keyB", "isUp" ] } ] },
+              "execute":[
+                { "when":{ "_":[ "keyUp", "isDown" ] }, "sum":{ "_":[ "this", "controlsRatio" ] }, "to":{ "_":[ "this", "angleX" ] } },
+                { "when":{ "_":[ "keyDown", "isDown" ] }, "subtract":{ "_":[ "this", "controlsRatio" ] }, "to":{ "_":[ "this", "angleX" ] } }
+              ]
+            },
+            {
+              "set":{
+                "speed":{ "_":[ "this", "speed", "limitValue", [ 0, 1 ] ] },
+                "angleX":{ "_":[ "this", "angleX", "limitValue", [ -45, 45 ] ] },
+                "angleZ":{ "_":[ "this", "angleZ", "limitValue", [ -5, 5 ] ] },
+                "power":{ "_":[ "this", "power", "limitValue", [ 0, 100 ] ] },
+                "yPos":{ "_":[ "this", "yPos", "limitValue", [ -14, -3 ] ] }
+              }
+            },
+            { "when":{ "_":[ "this", "angleZ", "abs", "isLessThan", 0.01 ] }, "set":{ "angleZ":0 } },
+            {
+              "when":{ "_":[ "this", "grounded" ] },
+              "execute":{ "when":{ "_":[ "this", "speed", "isLessThan", 0.001 ] }, "set":{ "speed":0 } },
+              "elseExecute":{ "when":{ "_":[ "this", "speed", "isLessThan", 0.2 ] }, "sum":0.01, "to":{ "_":[ "this", "speed" ] } }
+            },
+            { "_":[ "stencil", "codeUpdateScore" ] },
+            {
+              "when":{ "_":[ "objectTyped", "bronzetarget", "not" ] },
+              "set":{ "targetModel":{ "_":[ "stencil", "bronzeTarget" ] } },
+              "execute":{ "_":[ "stencil", "codeSpawnTarget" ] }
+            },
+            {
+              "when":{ "_":[ "objectTyped", "silvertarget", "not" ] },
+              "set":{ "targetModel":{ "_":[ "stencil", "silverTarget" ] } },
+              "execute":{ "_":[ "stencil", "codeSpawnTarget" ] }
+            },
+            {
+              "when":{ "_":[ "objectTyped", "goldtarget", "not" ] },
+              "set":{ "targetModel":{ "_":[ "stencil", "goldTarget" ] } },
+              "execute":{ "_":[ "stencil", "codeSpawnTarget" ] }
+            },
+            {
+              "when":{ "_":[ "variable", "bonusMode" ] },
+              "execute":{
+                "when":{ "_":[ "this", "onAirStrip" ] },
+                "execute":{
+                  "when":{ "_":[ "this", "grounded", "and", { "_":[ "this", "speed", "not" ] } ] },
+                  "execute":[
+                    { "sum":{ "_":[ "variable", "bonus" ] }, "to":{ "_":[ "variable", "score" ] } },
+                    {
+                      "set":{ "message":{ "_":[ { "_":[ "variable", "landtakeoffMessages", 1 ] }, ".", { "_":[ "variable", "bonus", "floor" ] }, ".", "pts." ] } },
+                      "execute":{ "_":[ "stencil", "codeShowMessage" ] }
+                    },
+                    { "as":{ "_":"variable" }, "set":{ "bonus":0, "bonusMode":0, "bonusName":"TAKEOFF BONUS" } }
+                  ]
+                },
+                "elseExecute":{ "as":{ "_":"variable" }, "set":{ "bonus":0 } }
+              },
+              "elseExecute":{
+                "when":{ "_":[ "this", "onAirStrip", "not" ] },
+                "execute":[
+                  {
+                    "when":{ "_":[ "this", "yPos", "isGreaterThan", -4 ] },
+                    "set":{ "message":"SORRY, BAD TAKEOFF... NO BONUS." },
+                    "execute":{ "_":[ "stencil", "codeShowMessage" ] },
+                    "elseExecute":[
+                      {
+                        "set":{ "message":{ "_":[ { "_":[ "variable", "landtakeoffMessages", 0 ] }, ".", { "_":[ "variable", "bonus", "floor" ] }, ".", "pts." ] } },
+                        "execute":{ "_":[ "stencil", "codeShowMessage" ] }
+                      },
+                      { "sum":{ "_":[ "variable", "bonus" ] }, "to":{ "_":[ "variable", "score" ] } }
+                    ]
+                  },
+                  { "as":{ "_":"variable" }, "set":{ "bonus":0, "bonusMode":1, "bonusName":"LAND BONUS" } }
+                ]
+              }
+            },
+            {
+              "when":{ "_":[ "this", "brakes", "and", { "_":[ "this", "grounded" ] } ] },
+              "set":{ "engineNoise":{ "_":[ "this", "power", "/", 100, "*", 4, "floor" ] } },
+              "elseExecute":{ "set":{ "engineNoise":{ "_":[ "this", "speed", "*", 4, "floor" ] } } }
+            },
+            {
+              "when":{ "_":[ "this", "lastEngineNoise", "isNotEqualTo", { "_":[ "this", "engineNoise" ] } ] },
+              "execute":[
+                { "set":{ "lastEngineNoise":{ "_":[ "this", "engineNoise" ] } } },
+                { "playAudio":{ "_":[ "engine", ".", { "_":[ "this", "engineNoise" ] } ] }, "stopChannel":"engine" }
+              ]
+            }
+          ]
+        }
+      }
+    },
+    "camera":{
+      "type":"camera",
+      "visible":0,
+      "isCamera":1,
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":[
+            { "executeAction":"frame" },
+            { "_":[ "stencil", "codePhysics" ] },
+            {
+              "as":{ "_":[ "object", "skyobject" ] },
+              "execute":{
+                "when":{ "_":[ "this", "isCamera" ] },
+                "set":{ "visible":0 },
+                "elseExecute":[
+                  { "executeAction":"frame" },
+                  { "_":[ "stencil", "codePhysics" ] },
+                  {
+                    "set":{
+                      "dx":{ "_":[ "this", "xPos", "-", { "_":[ "that", "xPos" ] } ] },
+                      "dy":{ "_":[ "this", "yPos", "-", { "_":[ "that", "yPos" ] } ] },
+                      "dz":{ "_":[ "this", "zPos", "-", { "_":[ "that", "zPos" ] } ] }
+                    }
+                  },
+                  { "set":{ "dist":{ "_":[ "this", "dx", "^", 2, "+", { "_":[ "this", "dy", "^", 2 ] }, "+", { "_":[ "this", "dz", "^", 2 ] }, "sqrt" ] } } },
+                  {
+                    "when":{ "_":[ "this", "dist", "isLessThan", 60, "or", { "_":[ "this", "forceDraw" ] } ] },
+                    "execute":[
+                      {
+                        "set":{
+                          "rx":{ "_":[ "this", "xPos", "-", { "_":[ "that", "xPos" ] } ] },
+                          "ry":{ "_":[ "this", "yPos", "-", { "_":[ "that", "yPos" ] } ] },
+                          "rz":{ "_":[ "this", "zPos", "-", { "_":[ "that", "zPos" ] } ] }
+                        }
+                      },
+                      { "set":{ "nrz":{ "_":[ "this", "rz", "*", { "_":[ "that", "cosay" ] }, "-", { "_":[ "this", "rx", "*", { "_":[ "that", "sinay" ] } ] } ] } } },
+                      { "set":{ "nrx":{ "_":[ "this", "rz", "*", { "_":[ "that", "sinay" ] }, "+", { "_":[ "this", "rx", "*", { "_":[ "that", "cosay" ] } ] } ] } } },
+                      { "set":{ "rx":{ "_":[ "this", "nrx" ] }, "rz":{ "_":[ "this", "nrz" ] } } },
+                      { "set":{ "nry":{ "_":[ "this", "ry", "*", { "_":[ "that", "cosax" ] }, "-", { "_":[ "this", "rz", "*", { "_":[ "that", "sinax" ] } ] } ] } } },
+                      { "set":{ "nrz":{ "_":[ "this", "ry", "*", { "_":[ "that", "sinax" ] }, "+", { "_":[ "this", "rz", "*", { "_":[ "that", "cosax" ] } ] } ] } } },
+                      { "set":{ "ry":{ "_":[ "this", "nry" ] }, "rz":{ "_":[ "this", "nrz" ] } } },
+                      { "set":{ "nrx":{ "_":[ "this", "rx", "*", { "_":[ "that", "cosaz" ] }, "-", { "_":[ "this", "ry", "*", { "_":[ "that", "sinaz" ] } ] } ] } } },
+                      { "set":{ "nry":{ "_":[ "this", "rx", "*", { "_":[ "that", "sinaz" ] }, "+", { "_":[ "this", "ry", "*", { "_":[ "that", "cosaz" ] } ] } ] } } },
+                      { "set":{ "rx":{ "_":[ "this", "nrx" ] }, "ry":{ "_":[ "this", "nry" ] } } },
+                      { "set":{ "factor":{ "_":[ { "_":[ "constant", "fov" ] }, "/", { "_":[ "this", "rz", "+", 0.0001 ] } ] } } },
+                      {
+                        "set":{
+                          "drawX":{ "_":[ "this", "rx", "*", { "_":[ "this", "factor" ] }, "+", { "_":[ "constant", "viewWidthd2" ] } ] },
+                          "drawY":{ "_":[ "this", "ry", "*", { "_":[ "this", "factor" ] }, "+", { "_":[ "constant", "viewHeightd2" ] } ] }
+                        }
+                      },
+                      { "executeAction":"updateIndicator" },
+                      { "when":{ "_":[ "this", "rz", "isGreaterEqualThan", 0 ] }, "executeAction":"render", "elseExecute":{ "set":{ "visible":0 } } }
+                    ],
+                    "elseExecute":{ "set":{ "visible":0 } }
+                  },
+                  { "when":{ "_":[ "this", "isStar" ] }, "execute":{ "when":{ "_":[ "this", "visible", "not" ] }, "executeAction":"shuffle" } }
+                ]
+              }
+            },
+            { "as":{ "_":[ "object", "postprocess" ] }, "executeAction":"run" }
+          ]
+        }
+      }
+    },
+    "compassIndicatorModel":{
+      "forceDraw":1,
+      "states":{
+        "execute":{
+          "object":{
+            "type":"huds",
+            "width":20, "height":10,
+            "zIndex":10002, "y":{ "_":[ "that", "indicatorY" ] },
+            "color":{ "_":[ "that", "indicatorColor" ] },
+            "font":"small", "fontSize":8, "lineHeight":10, "outline":"#000", "textAlign":"center"
+          },
+          "assign":{ "_":"that" },
+          "to":{ "_":[ "this", "compassIndicator" ] }
+        },
+        "actions":{
+          "name":"updateIndicator",
+          "execute":{
+            "as":{ "_":[ "this", "compassIndicator" ] },
+            "execute":[
+              { "set":{ "x":{ "_":[ "that", "drawX", "-", 10, "limitValue", [ 55, 179 ] ] }, "visible":{ "_":[ "that", "rz", "isGreaterEqualThan", 0 ] } } },
+              {
+                "when":{ "_":[ "that", "dist", "isLessThan", 100 ] },
+                "set":{ "html":{ "_":[ "that", "dist", "ceil" ] } },
+                "elseExecute":{ "set":{ "html":{ "_":[ "that", "indicatorLabel" ] } } }
+              }
+            ]
+          }
+        }
+      }
+    },
+    "skyObjectModel":{ "type":[ "skyobject", "unoptimize" ], "visible":0, "speed":0, "angleX":0, "angleY":0, "angleZ":0, "rotation":0, "xPos":0, "yPos":0, "zPos":0 },
+    "dot":{
+      "set":{ "_":[ "stencil", "skyObjectModel" ] },
+      "width":16, "height":16,
+      "hHeight":8,
+      "hWidth":8,
+      "isVisible":1,
+      "states":{
+        "actions":{
+          "name":"render",
+          "execute":{
+            "set":{
+              "zIndex":{ "_":[ 1000, "-", { "_":[ "this", "dist", "*", 10 ] }, "floor" ] }, "x":{ "_":[ "this", "drawX", "-", { "_":[ "this", "hWidth" ] } ] }, "y":{ "_":[ "this", "drawY", "-", { "_":[ "this", "hHeight" ] } ] },
+              "visible":{ "_":[ "this", "isVisible" ] }, "angle":{ "_":[ "that", "angleZ", "+", { "_":[ "this", "rotation" ] } ] }, "scale":{ "_":[ 5, "/", { "_":[ "this", "dist" ] } ] }
+            }
+          }
+        }
+      }
+    },
+    "horizon":{
+      "type":"horizon",
+      "set":{ "_":[ "stencil", "skyObjectModel" ] },
+      "image":"horizon", "width":512, "height":384,
+      "zIndex":2,
+      "originX":"256px", "originY":0,
+      "forceDraw":1,
+      "hWidth":256,
+      "states":{
+        "actions":[
+          {
+            "name":"render",
+            "execute":{
+              "set":{
+                "x":{ "_":[ "this", "drawX", "-", { "_":[ "this", "hWidth" ] } ] }, "y":{ "_":[ "this", "drawY" ] },
+                "visible":1, "angle":{ "_":[ "that", "angleZ" ] }
+              }
+            }
+          },
+          {
+            "name":"frame",
+            "execute":{
+              "set":{
+                "xPos":{
+                  "_":[ "objectTyped", "camera", "angleY", "*", { "_":[ "constant", "pi" ] }, "/", 180, "sin", "*", -128, "+", { "_":[ "objectTyped", "camera", "xPos" ] } ]
+                },
+                "yPos":0,
+                "zPos":{
+                  "_":[ "objectTyped", "camera", "angleY", "*", { "_":[ "constant", "pi" ] }, "/", 180, "cos", "*", 128, "+", { "_":[ "objectTyped", "camera", "zPos" ] } ]
+                }
+              }
+            }
+          }
+        ]
+      }
+    },
+    "target":{
+      "type":[ "target", "gameobject" ],
+      "set":[ { "_":[ "stencil", "dot" ] }, { "_":[ "stencil", "compassIndicatorModel" ] } ],
+      "image":"sprites", "tileY":29, "width":34, "height":34,
+      "hHeight":17,
+      "hWidth":17,
+      "indicatorLabel":"TGT",
+      "indicatorY":8,
+      "yPos":-3,
+      "zPos":5,
+      "states":{
+        "actions":{
+          "name":"frame",
+          "execute":{
+            "when":{ "_":[ "this", "timer" ] },
+            "execute":[
+              { "subtract":1, "to":{ "_":[ "this", "timer" ] } },
+              { "when":{ "_":[ "this", "timer", "isLessThan", 75 ] }, "set":{ "isVisible":{ "_":[ "this", "timer", "%", 2 ] } } },
+              { "set":{ "rotation":{ "_":[ "this", "rotation", "+", 2, "%", 360 ] } } },
+              {
+                "when":{ "_":[ "this", "dist", "isLessThan", 1 ] },
+                "execute":[
+                  {
+                    "set":{
+                      "bonus":{ "_":[ { "_":[ "this", "score" ] }, "*", { "_":[ "objectTyped", "player", "speed" ] }, "*", { "_":[ "objectTyped", "player", "gearbonus" ] } ] }
+                    }
+                  },
+                  {
+                    "set":{ "message":{ "_":[ "this", "targetMessage", ".", " ", ".", { "_":[ "this", "bonus", "floor" ] }, ".", "pts." ] } },
+                    "execute":{ "_":[ "stencil", "codeShowMessage" ] }
+                  },
+                  { "sum":{ "_":[ "this", "bonus" ] }, "to":{ "_":[ "variable", "score" ] } },
+                  { "_":[ "stencil", "codeRemove" ] }
+                ]
+              }
+            ],
+            "elseExecute":{ "_":[ "stencil", "codeRemove" ] }
+          }
+        }
+      }
+    },
+    "bronzeTarget":{
+      "type":"bronzetarget",
+      "set":{ "_":[ "stencil", "target" ] },
+      "tileX":68,
+      "indicatorColor":"#f00",
+      "score":1000,
+      "targetAngleRange":[ -25, 25 ],
+      "targetDistanceRange":[ 6000, 8000 ],
+      "targetMessage":"BRONZE TARGET GOT.",
+      "timer":250
+    },
+    "goldTarget":{
+      "type":"goldtarget",
+      "set":{ "_":[ "stencil", "target" ] },
+      "tileX":0,
+      "indicatorColor":"#ff0",
+      "score":2000,
+      "targetAngleRange":[ -45, 45 ],
+      "targetDistanceRange":[ 2000, 4000 ],
+      "targetMessage":"GOLD TARGET GOT.",
+      "timer":500
+    },
+    "silverTarget":{
+      "type":"silvertarget",
+      "set":{ "_":[ "stencil", "target" ] },
+      "tileX":34,
+      "indicatorColor":"#7f7f7f",
+      "score":1500,
+      "targetAngleRange":[ -35, 35 ],
+      "targetDistanceRange":[ 4000, 6000 ],
+      "targetMessage":"SILVER TARGET GOT.",
+      "timer":375
+    }
+  },
+  "execute":[
+    { "when":{ "_":[ "storage", "hiscore", "not" ] }, "as":{ "_":"storage" }, "set":{ "hiscore":0 } },
+    { "as":{ "_":"variable" }, "set":{ "hiscore":{ "_":[ "storage", "hiscore" ] } } },
+    { "as":{ "_":"constant" }, "set":{ "fov":128, "pi":3.1415, "viewHeight":120, "viewWidth":{ "_":[ "scene", "width" ] } } },
+    { "as":{ "_":"constant" }, "set":{ "viewHeightd2":{ "_":[ "this", "viewHeight", "/", 2 ] }, "viewWidthd2":{ "_":[ "this", "viewWidth", "/", 2 ] } } }
+  ],
+  "scenes":{
+    "intro":{
+      "object":[
+        { "image":"title", "width":256, "height":192 },
+        {
+          "box":"label", "width":256,
+          "zIndex":5, "x":0, "y":153,
+          "color":"#fff",
+          "font":"spectrum", "fontSize":20, "lineHeight":20, "outline":"#000", "textAlign":"center", "html":"PRESS START",
+          "states":{ "code":{ "name":"Sequence", "data":[ { "set":{ "visible":0 }, "wait":10 }, { "set":{ "visible":1 }, "wait":10, "loopTo":0 } ] } }
+        },
+        {
+          "box":"label", "width":256, "height":14,
+          "zIndex":5, "x":0, "y":172,
+          "bgcolor":"#000", "color":"#fff",
+          "font":"spectrum", "fontSize":20, "lineHeight":14, "textAlign":"center", "html":{ "_":[ "HI-SCORE: ", ".", { "_":[ "variable", "hiscore" ] } ] }
+        }
+      ],
+      "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"instructions", "withTransition":3, "playAudio":"beep2" } } }
+    },
+    "instructions":{
+      "object":{
+        "width":256, "height":10,
+        "x":0, "y":179,
+        "bgcolor":"#0f0", "color":"#000",
+        "font":"small", "fontSize":8, "lineHeight":10, "textAlign":"center", "html":"Press A button to start"
+      },
+      "execute":[
+        { "set":{ "text":"INSTRUCTIONS" }, "execute":{ "_":[ "stencil", "codePrintHeader" ] } },
+        {
+          "set":{
+            "text":"Your mission is to test the new experimental fighter D1-3G0 AIR HOLD for a day. It has been designed to be easy to use and implements an innovative scoring system for pilot performances ranking. Land, take-off, stunt and use the instrumentations perfectly for greater scores. Do your best, pilot!",
+            "textHeight":50
+          },
+          "execute":{ "_":[ "stencil", "codePrintParagraph" ] }
+        },
+        { "set":{ "text":"CONTROLS" }, "execute":{ "_":[ "stencil", "codePrintHeader" ] } },
+        {
+          "set":{
+            "text":"(No buttons hold) Left/Right: Bank - Up/Down: Nose<br>(Hold A button) Left/Right: Bank - Up/Down: Throttle<br>(Hold B button) Up: Toggle gear - Down: Toggle brakes",
+            "textHeight":26
+          },
+          "execute":{ "_":[ "stencil", "codePrintParagraph" ] }
+        },
+        { "set":{ "text":"TAKE-OFF" }, "execute":{ "_":[ "stencil", "codePrintHeader" ] } },
+        {
+          "set":{
+            "text":"Enable brakes and landing gear. Throttle to the max and disable brakes. At half speed, nose up. Remember to retract the landing gear afterwards!",
+            "textHeight":26
+          },
+          "execute":{ "_":[ "stencil", "codePrintParagraph" ] }
+        },
+        { "set":{ "text":"LANDING" }, "execute":{ "_":[ "stencil", "codePrintHeader" ] } },
+        {
+          "set":{ "text":"Try to land as aligned to the ground as you can. Then enable the landing gear and the brakes.", "textHeight":18 },
+          "execute":{ "_":[ "stencil", "codePrintParagraph" ] }
+        }
+      ],
+      "printy":3,
+      "states":{ "code":{ "name":"Execute", "data":{ "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"play", "withTransition":3, "playAudio":"beep2" } } }
+    },
+    "play":{
+      "object":[
+        {
+          "type":"hud",
+          "hudType":"label", "label":"SCORE<br>%number|variable.score.floor%<br>%text|variable.bonusName%<br>%number|variable.bonus.floor%<br>GEAR BONUS<br>%number|objectTyped.player.gearbonus.*.100%%%",
+          "width":81, "height":50,
+          "zIndex":10002, "x":90, "y":133,
+          "font":"small", "fontSize":8, "lineHeight":7, "outline":"#000", "textAlign":"center"
+        },
+        { "type":"sky", "image":"sky", "width":256, "height":{ "_":[ "constant", "viewHeight" ] }, "x":0, "y":0 },
+        { "image":"cockpit", "width":256, "height":192, "zIndex":10000, "x":0, "y":0 },
+        {
+          "width":100, "height":3,
+          "zIndex":10002, "x":7, "y":150,
+          "bgcolor":"#ff0",
+          "states":{ "code":{ "name":"Execute", "data":{ "set":{ "width":{ "_":[ "objectTyped", "player", "power", "/", 100, "*", 56, "+", 1 ] } } } } }
+        },
+        {
+          "image":"sprites", "width":16, "height":7,
+          "zIndex":10002, "x":74,
+          "states":{ "code":{ "name":"Execute", "data":{ "set":{ "y":{ "_":[ 177, "-", { "_":[ "objectTyped", "player", "speed", "*", 42 ] } ] } } } } }
+        },
+        {
+          "image":"sprites", "width":16, "height":7,
+          "zIndex":10002, "x":167,
+          "states":{ "code":{ "name":"Execute", "data":{ "set":{ "y":{ "_":[ 177, "+", { "_":[ "objectTyped", "player", "yPos", "/", 14, "*", 39 ] } ] } } } } }
+        },
+        {
+          "image":"sprites", "tileY":12, "width":40, "height":17,
+          "zIndex":10002, "x":201, "y":147,
+          "states":{ "code":{ "name":"Execute", "data":{ "set":{ "angle":{ "_":[ "objectTyped", "player", "angleZ" ] } } } } }
+        },
+        {
+          "image":"sprites", "tileY":12, "width":40, "height":17,
+          "zIndex":10002, "x":201, "y":147,
+          "states":{ "code":{ "name":"Execute", "data":{ "set":{ "angle":{ "_":[ "objectTyped", "player", "angleZ" ] } } } } }
+        },
+        {
+          "image":"sprites", "tileY":7, "width":10, "height":5,
+          "zIndex":10002, "x":99, "y":114,
+          "states":{
+            "code":{ "name":"Execute", "data":{ "when":{ "_":[ "objectTyped", "player", "brakes" ] }, "set":{ "frame":1 }, "elseExecute":{ "set":{ "frame":0 } } } }
+          }
+        },
+        {
+          "image":"sprites", "tileY":7, "width":10, "height":5,
+          "zIndex":10002, "x":147, "y":114,
+          "states":{
+            "code":{ "name":"Execute", "data":{ "when":{ "_":[ "objectTyped", "player", "gear" ] }, "set":{ "frame":0 }, "elseExecute":{ "set":{ "frame":1 } } } }
+          }
+        },
+        {
+          "set":[ { "_":[ "stencil", "dot" ] }, { "_":[ "stencil", "compassIndicatorModel" ] } ],
+          "indicatorColor":"#fff",
+          "indicatorLabel":"LND",
+          "indicatorY":0,
+          "isVisible":0,
+          "xPos":0,
+          "yPos":0,
+          "zPos":40
+        },
+        { "set":{ "_":[ "stencil", "player" ] } },
+        { "set":{ "_":[ "stencil", "bronzeTarget" ] }, "timer":500, "xPos":0, "yPos":-5, "zPos":90 },
+        { "set":{ "_":[ "stencil", "silverTarget" ] }, "timer":500, "xPos":0, "yPos":-8, "zPos":110 },
+        { "set":{ "_":[ "stencil", "goldTarget" ] }, "timer":500, "xPos":0, "yPos":-12, "zPos":130 },
+        {
+          "type":[ "message", "huds" ],
+          "width":256, "height":10,
+          "zIndex":10002, "x":0, "y":75,
+          "color":"#0f0",
+          "font":"small", "fontSize":8, "lineHeight":10, "outline":"#000", "textAlign":"center",
+          "states":{
+            "code":{
+              "name":"Execute",
+              "data":{
+                "when":{ "_":[ "this", "timer" ] },
+                "execute":[ { "subtract":1, "to":{ "_":[ "this", "timer" ] } }, { "when":{ "_":[ "this", "timer", "not" ] }, "set":{ "html":"" } } ]
+              }
+            }
+          }
+        },
+        { "set":{ "message":{ "_":[ "randomValue", [ "GOOD LUCK, PILOT!", "DO YOUR BEST, PILOT!" ] ] } }, "execute":{ "_":[ "stencil", "codeShowMessage" ] } }
+      ],
+      "execute":[
+        { "as":{ "_":"variable" }, "set":{ "bonus":0, "bonusMode":0, "bonusName":"TAKEOFF BONUS", "score":0 } },
+        { "object":{ "set":{ "_":[ "stencil", "horizon" ] } } },
+        { "set":{ "counter":80, "dotcolor":"#fff" } },
+        {
+          "times":20,
+          "execute":[
+            {
+              "object":[
+                { "set":{ "_":[ "stencil", "dot" ] }, "bgcolor":{ "_":[ "that", "dotcolor" ] }, "xPos":-6, "yPos":0, "zPos":{ "_":[ "that", "counter" ] } },
+                { "set":{ "_":[ "stencil", "dot" ] }, "bgcolor":{ "_":[ "that", "dotcolor" ] }, "xPos":6, "yPos":0, "zPos":{ "_":[ "that", "counter" ] } }
+              ]
+            },
+            { "when":{ "_":[ "this", "dotcolor", "isEqualTo", "#fff" ] }, "set":{ "dotcolor":"#f00" }, "elseExecute":{ "set":{ "dotcolor":"#fff" } } },
+            {
+              "when":{ "_":[ "this", "counter", "isLessThan", 28 ] },
+              "object":[
+                { "set":{ "_":[ "stencil", "dot" ] }, "bgcolor":"#0f0", "xPos":{ "_":[ "that", "counter", "/", 2.3, "-", 6 ] }, "yPos":0, "zPos":0 },
+                { "set":{ "_":[ "stencil", "dot" ] }, "bgcolor":"#0f0", "xPos":{ "_":[ "that", "counter", "/", 2.3, "-", 6 ] }, "yPos":0, "zPos":80 }
+              ]
+            },
+            { "subtract":4, "to":{ "_":[ "this", "counter" ] } }
+          ]
+        },
+        {
+          "times":20,
+          "execute":{
+            "object":{
+              "set":{ "_":[ "stencil", "dot" ] },
+              "width":8, "height":8,
+              "bgcolor":"#000000",
+              "hHeight":4,
+              "hWidth":4,
+              "isStar":1,
+              "states":{
+                "execute":{ "executeAction":"shuffle" },
+                "actions":{
+                  "name":"shuffle",
+                  "execute":{
+                    "set":{
+                      "xPos":{ "_":[ "randomNumber", [ -8000, 8000 ], "/", 100, "+", { "_":[ "objectTyped", "camera", "xPos" ] } ] },
+                      "yPos":0,
+                      "zPos":{ "_":[ "randomNumber", [ -8000, 8000 ], "/", 100, "+", { "_":[ "objectTyped", "camera", "zPos" ] } ] }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ],
+      "states":[
+        {
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "as":{ "_":"variable" }, "set":{ "landtakeoffBonus":1, "landtakeoffMessages":[ "MORNING TAKEOFF ", "MORNING LANDING " ] } },
+              { "as":{ "_":[ "objectTyped", "sky" ] }, "set":{ "bgcolor":"#007f7f" } },
+              { "as":{ "_":[ "objectTyped", "horizon" ] }, "set":{ "bgcolor":"#7f0000" } },
+              { "wait":1500 },
+              { "as":{ "_":"variable" }, "set":{ "landtakeoffBonus":1.3, "landtakeoffMessages":[ "NOON TAKEOFF ", "NOON LANDING " ] } },
+              { "as":{ "_":[ "objectTyped", "sky" ] }, "set":{ "bgcolor":"#0ff" } },
+              { "as":{ "_":[ "objectTyped", "horizon" ] }, "set":{ "bgcolor":"#7f7f00" } },
+              { "wait":1500 },
+              { "as":{ "_":"variable" }, "set":{ "landtakeoffBonus":1.6, "landtakeoffMessages":[ "EVENING TAKEOFF ", "EVENING LANDING " ] } },
+              { "as":{ "_":[ "objectTyped", "sky" ] }, "set":{ "tileX":256, "bgcolor":"#007f7f" } },
+              { "as":{ "_":[ "objectTyped", "horizon" ] }, "set":{ "bgcolor":"#00007f" } },
+              { "wait":1500 },
+              { "as":{ "_":"variable" }, "set":{ "landtakeoffBonus":2.5, "landtakeoffMessages":[ "NIGHT TAKEOFF ", "NIGHT LANDING " ] } },
+              { "as":{ "_":[ "objectTyped", "sky" ] }, "set":{ "tileX":256, "bgcolor":"#00007f" } },
+              { "as":{ "_":[ "objectTyped", "horizon" ] }, "set":{ "bgcolor":"#000" } },
+              { "wait":1500 },
+              { "set":{ "state":"end" } }
+            ]
+          }
+        },
+        {
+          "name":"end",
+          "execute":[
+            { "stopChannel":"engine" },
+            { "as":{ "_":[ "object", "gameobject" ] }, "set":{ "state":"frozen" } },
+            { "as":{ "_":[ "object", "huds" ] }, "remove":1 }
+          ],
+          "code":{
+            "name":"Sequence",
+            "data":[
+              { "as":{ "_":"variable" }, "set":{ "score":{ "_":[ "variable", "score", "floor" ] } } },
+              { "publishScore":{ "_":[ "variable", "score" ] } },
+              {
+                "object":{
+                  "width":256, "height":40,
+                  "zIndex":10005, "x":0, "y":12,
+                  "color":"#0f0",
+                  "font":"spectrum", "fontSize":40, "lineHeight":17, "outline":"#000", "textAlign":"center", "html":"FLIGHT<br>OVER",
+                  "states":{ "code":{ "name":"Sequence", "data":{ "set":{ "visible":{ "_":[ "this", "visible", "not" ] } }, "wait":1, "loop":1, "cycles":10 } } }
+                },
+                "playAudio":"bigfire"
+              },
+              { "wait":25 },
+              {
+                "object":{
+                  "width":256, "height":12,
+                  "zIndex":10005, "x":0, "y":47,
+                  "color":"#0f0",
+                  "font":"small", "fontSize":8, "lineHeight":12, "outline":"#000", "textAlign":"center", "html":{ "_":[ "YOUR SCORE: ", ".", { "_":[ "variable", "score" ] }, ".", "pts." ] }
+                },
+                "playAudio":"beep2"
+              },
+              { "wait":25 },
+              {
+                "object":{
+                  "width":256, "height":12,
+                  "zIndex":10005, "x":0, "y":57,
+                  "color":"#0f0",
+                  "font":"small", "fontSize":8, "lineHeight":12, "outline":"#000", "textAlign":"center", "html":{ "_":[ "BEST SCORE: ", ".", { "_":[ "variable", "hiscore" ] }, ".", "pts." ] }
+                },
+                "playAudio":"beep2"
+              },
+              { "wait":25 },
+              {
+                "when":{ "_":[ "variable", "score", "isGreaterThan", { "_":[ "variable", "hiscore" ] } ] },
+                "execute":[
+                  {
+                    "object":{
+                      "width":112, "height":13,
+                      "zIndex":10005, "x":72, "y":70,
+                      "bgcolor":"#0f0", "border":"#000", "color":"#000",
+                      "font":"small", "fontSize":8, "lineHeight":12, "textAlign":"center", "html":"NEW HIGH SCORE!",
+                      "states":{ "code":{ "name":"Sequence", "data":{ "set":{ "visible":{ "_":[ "this", "visible", "not" ] } }, "wait":1, "loop":1, "cycles":10 } } }
+                    },
+                    "playAudio":"bigfire"
+                  },
+                  { "as":{ "_":"variable" }, "set":{ "hiscore":{ "_":[ "variable", "score" ] } } },
+                  { "as":{ "_":"storage" }, "set":{ "hiscore":{ "_":[ "variable", "score" ] } } }
+                ],
+                "elseExecute":{
+                  "object":{
+                    "width":112, "height":13,
+                    "zIndex":10005, "x":72, "y":70,
+                    "bgcolor":"#0f0", "border":"#000", "color":"#000",
+                    "font":"small", "fontSize":8, "lineHeight":12, "textAlign":"center", "html":"BETTER LUCK NEXT TIME!"
+                  },
+                  "playAudio":"beep2"
+                }
+              },
+              { "wait":25 },
+              { "wait":1, "loop":1, "until":{ "_":[ "keyA", "isHit" ] } },
+              { "gotoScene":"intro", "withTransition":3 }
+            ]
+          }
+        }
+      ]
+    }
+  }
+}
