@@ -1,0 +1,793 @@
+{
+  "name":"Chip-8",
+  "author":"KesieV",
+  "year":2018,
+  "genre":"Emulator",
+  "description":"<p>There is no doubt that emulation is crucial for historic preservation. The question is: what <i>exactly</i> we're preserving?</p><p>The famous <a href='https://en.wikipedia.org/wiki/MAME'>MAME</a> emulator approach is to emulate arcade games circuit by circuit: a no compromised and time-consuming approach for the sake of emulation accuracy. Replicating the original hardware via software is fully legal - what's not is running the exact software these machines were running in the arcades.</p><p><a href='https://www.fbalpha.com/'>Final Burn</a> instead offers a set of <i>speed hacks</i> for some emulated games: instead of cloning how the hardware works, speed hacks approximate just what the hardware <i>did</i> resulting in faster but less accurate emulation. Final Burn, together with more speed-hack emulators, is the fortune of many Chinese hardware producers since allows to cheap portable console and desktop arcade machines to run great glories from the past - even a dozen of different systems on the same machine.</p><p>Okay. Not without <i>one or two</i> copyright infringements - but probably not in the motherland, which lived few turbulent years of <a href='https://en.wikipedia.org/wiki/Video_gaming_in_China'>video game bans</a>.</p><p>Emulation of old games is not a problem at all today: there are a lot of solutions that work on common and even cheap machines - copyright apart. Even if you want to play by the rules there are <a href='https://en.wikipedia.org/wiki/NES_Classic_Edition'>official version of these knock-off consoles</a>, which accurately resembles the original hardware but are limited to play just a few games of a single system-Unsurprisingly enough the thirst of retrogaming is so unstoppable that you can even break these limits with few hacks and turn these games back to their original <i>cheap console glory</i> and play more systems.</p><p>The <i>need</i> of preserving old games and the <i>desire</i> of playing them again burns. We're using all the software tricks and mastery we know to make hardware immortal. We are even mimicking the original shapes to make their <i>ergonomy</i> immortal. But that's not enough.</p><p>Old school pixel art was built for <a href='https://vgdensetsu.tumblr.com/post/179656817318/designing-2d-graphics-in-the-japanese-industry'>make use of old CRT displays imperfections</a> and that's why most of the emulated games graphics looks <i>dry</i> on LCD displays. And even the audio is not the same: music and sound effects coming from the old speakers built-in into arcade cabinets sounded <i>warmer</i> than the one coming from modern sound systems. And that's really just the tip of the iceberg.</p><p>Experiencing old school gaming without its <i>defects</i> is like judging history without considering its context: we're just making up an alternate history.But fear not: there probably is <i>no solution</i>. Even if SEGA tried hard and used <a href='https://www.youtube.com/watch?v=yDBEOj_oyG8'>virtual reality</a> in order to bring you to your old bedroom we can just give a glimpse of what old school gaming looked to newer generations... and a frustrating stripped down one to oldsters, now filled with preconceptions and fake memories.</p><p>Oh, sorry. I was missing the point.</p><p>We can emulate the people we respect tearing their life apart and trying hard on cloning it. Or we can fill our lives with <i>speed-hacks</i> and reach their same goals as fast as we can, even if the result isn't accurate. We can be a cheap copy their shape and then hack ourselves to be multiple persons. But that's not enough: even if we can fake our reality to be closer to our mentors', we're just dry interpretations of them which is missing the context.</p><p>The best we can do is to be their <i>alternate history</i>, which frustrates the oldsters and disappoints the youngsters. Inevitably becoming a brand new and ever-changing individual in the process - hoping to be badly <i>emulated</i> in the future.</p><p>Plot!</p><p>This time I've ported a <a href='https://en.wikipedia.org/wiki/CHIP-8'>Chip-8</a> interpreter, which was used on 1970s 8-bit microcomputers, using the Wright! Engine. Yeah - a Chip-8 interpreter described by a JSON file. While it's a pretty raw implementation and I've built-in just a few public domain game ROMs, this <i>last but two</i> entry is very important: the whole Wright! project has been inspired by years of emulations... and I'm closing my own circle with a true one.</p><p>On the game selector menu use UP/DOWN for changing game and the A BUTTON for playing it. Every game has its own controls but most of them are using UP/DOWN/LEFT/RIGHT and the A BUTTON. Hold down A+B for a while to go back to the game selector.</p>",
+  "screenshots":[ "chip8-1.png", "chip8-2.png" ],
+  "hardware":{
+    "width":256,
+    "height":192,
+    "filter":"retro"
+  },
+  "audioChannels":{
+    "sfx":{ "volume":1, "samples":[ "beep", "menu", "select" ] }
+  },
+  "cheats":{},
+  "resources":{
+    "images":"images.png",
+    "small":"small.font",
+    "spectrum":"spectrum.font",
+    "rom_airplane":"roms/Airplane.ch8",
+    "rom_astrododge":"roms/Astro Dodge [Revival Studios, 2008].ch8",
+    "rom_blinky":"roms/Blinky [Hans Christian Egeberg, 1991].ch8",
+    "rom_blitz":"roms/Blitz [David Winter].ch8",
+    "rom_brix":"roms/Brix [Andreas Gustafsson, 1990].ch8",
+    "rom_cave":"roms/Cave.ch8",
+    "rom_connect4":"roms/Connect 4 [David Winter].ch8",
+    "rom_hidden":"roms/Hidden [David Winter, 1996].ch8",
+    "rom_invaders":"roms/Space Invaders [David Winter].ch8",
+    "rom_merlin":"roms/Merlin [David Winter].ch8",
+    "rom_missile":"roms/Missile [David Winter].ch8",
+    "rom_pong2":"roms/Pong 2 (Pong hack) [David Winter, 1997].ch8",
+    "rom_puzzle":"roms/Puzzle.ch8",
+    "rom_rushhour":"roms/Rush Hour [Hap, 2006].ch8",
+    "rom_spaceflight":"roms/Space Flight.ch8",
+    "rom_submarine":"roms/Submarine [Carmelo Cortez, 1978].ch8",
+    "rom_tank":"roms/Tank.ch8",
+    "rom_tetris":"roms/Tetris [Fran Dachille, 1991].ch8",
+    "rom_trip8demo":"roms/Trip8 Demo (2008) [Revival Studios].ch8",
+    "rom_ufo":"roms/UFO [Lutz V, 1992].ch8",
+    "rom_worm":"roms/Worm V4 [RB-Revival Studios, 2007].ch8",
+    "beep":{ "decay":0.028, "frequency":685, "sustain":0.028, "wave":"sine" },
+    "menu":{ "attack":0.012, "decay":0.018, "frequency":325, "frequencyJump1amount":0.22, "frequencyJump1onset":0.33, "release":0.056, "sustain":0.008, "wave":"square" },
+    "select":{ "attack":0.012, "decay":0.018, "frequency":425, "frequencyJump1amount":0.22, "frequencyJump1onset":0.33, "release":0.056, "sustain":0.008, "wave":"square" }
+  },
+  "stencils":{
+    "codeCheckKeyPressed":[
+      { "set":{ "counter":0, "keyIsPressed":0 } },
+      {
+        "times":{ "_":[ "this", "keymap", "count" ] },
+        "execute":[
+          {
+            "when":{ "_":[ { "_":[ { "_":[ "this", "keymap", { "_":[ "this", "counter" ] } ] }, 0 ] }, "isDown" ] },
+            "execute":{
+              "when":{ "_":[ "this", "keymap", { "_":[ "this", "counter" ] }, 1, "isEqualTo", { "_":[ "this", "v", { "_":[ "this", "vx" ] } ] } ] },
+              "set":{ "keyIsPressed":1 }
+            }
+          },
+          { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+        ]
+      }
+    ],
+    "codeClearScreen":[
+      { "set":{ "counter":0 } },
+      {
+        "times":{ "_":[ "constant", "display_size" ] },
+        "execute":[ { "assign":0, "to":{ "_":[ "this", "display", { "_":[ "this", "counter" ] } ] } }, { "sum":1, "to":{ "_":[ "this", "counter" ] } } ]
+      },
+      { "as":{ "_":[ "object", "dot" ] }, "set":{ "visible":0 } }
+    ],
+    "dataRoms":[
+      {
+        "name":"Airplane",
+        "description":"Airplane - Blitz type of bombing game. Hit \"A BUTTON\" to drop a bomb.",
+        "keymap":[ [ "keyA", 8 ] ],
+        "romResource":"rom_airplane"
+      },
+      {
+        "name":"Astrododge",
+        "description":"Astro Dodge (2008), by Revival Studios<br><br>Your goal is to make your way through the asteroids field and dodge the asteroids, scoring points for each asteroid you are able to dodge. Directions buttons will move your ship, A BUTTON will start the game.",
+        "keymap":[ [ "keyLeft", 4 ], [ "keyRight", 6 ], [ "keyUp", 2 ], [ "keyDown", 8 ], [ "keyA", 5 ] ],
+        "loadStoreQuirk":1,
+        "romResource":"rom_astrododge"
+      },
+      {
+        "name":"Blinky",
+        "description":"Blinky (1991), by Hans Christian Egeberg<br><br>Pacman clone.<br>Use directions to move.",
+        "keymap":[ [ "keyDown", 6 ], [ "keyRight", 8 ], [ "keyLeft", 7 ], [ "keyUp", 3 ], [ "keyA", 15 ], [ "keyB", 1 ] ],
+        "loadStoreQuirk":1,
+        "romResource":"rom_blinky",
+        "shiftQuirk":1
+      },
+      {
+        "name":"Blitz",
+        "description":"Blitz, by David Winter<br><br>This game is a BOMBER clone. You are in a plane, and you must destroy the towers of a town. Your plane is flying left to right, and goes down. Use A BUTTON to drop a bomb. The game ends when you crash yourself on a tower...",
+        "keymap":[ [ "keyA", 5 ] ],
+        "romResource":"rom_blitz"
+      },
+      {
+        "name":"Brix",
+        "description":"Brix (1999), by Andres Gustafsson<br><br>Arkanoid clone. Use LEFT/RIGHT for moving.",
+        "keymap":[ [ "keyLeft", 4 ], [ "keyRight", 6 ] ],
+        "romResource":"rom_brix"
+      },
+      {
+        "name":"Cave",
+        "description":"Cave (199x)<br><br>Guide the dot to end of the cave maze without bumping into a wall. Navigation: direction buttons. A BUTTON to start.",
+        "keymap":[ [ "keyLeft", 4 ], [ "keyRight", 6 ], [ "keyUp", 2 ], [ "keyDown", 8 ], [ "keyA", 15 ] ],
+        "romResource":"rom_cave"
+      },
+      {
+        "name":"Connect 4",
+        "description":"Connect 4, by David Winter<br><br>This game is for two players. The goal is to align 4 coins in the game area. Each player's coins are colored. When you drop a coin, it is paced on the latest dropped coin in the same column, or at the bottom if the column is empty. Once the column is full, you cannot place any more coins in it. To select a column, use left and right.<br>To drop a coin, use the A BUTTON. There is no winner detection yet. This will be soon avalaible (Hey! I don't spend my life on CHIP8 !).",
+        "keymap":[ [ "keyLeft", 4 ], [ "keyRight", 6 ], [ "keyA", 5 ] ],
+        "loadStoreQuirk":1,
+        "romResource":"rom_connect4"
+      },
+      {
+        "name":"Hidden",
+        "description":"Hidden (1996), by David Winter<br><br>HIDDEN is a \"memory\" game. It is very simple to play. The rules are as follow: your goal is to find all the identical cards in a minimum time. You are playing in a 4*4 card grid. You can see only two cards at the same time. Once this time passed, these two cards will remain shown if they are identical, otherwise they will be hidden again. When the game is finished, two scores are shown: SC is your score, corresponding to the number of tries HI is the best score (smallest number of tries made to finish) The keys are: UP/DOWN/LEFT/RIGHT for moving and A BUTTON to show a card.",
+        "keymap":[ [ "keyLeft", 4 ], [ "keyRight", 6 ], [ "keyUp", 2 ], [ "keyDown", 8 ], [ "keyA", 5 ] ],
+        "loadStoreQuirk":1,
+        "romResource":"rom_hidden"
+      },
+      {
+        "name":"Merlin",
+        "description":"Merlin, by David Winter<br><br>This is the SIMON game. The goal is to remember in which order the squares are lighted. The game begins by lighting 4 random squares, and then asks you to light the squares in the correct order. You win a level when you give the exact order, and each increasing level shows a additionnal square. The game ends when you light an incorrect square. Keys are UP and DOWN for the two upper squares, then LEFT and RIGHT for the two other ones.",
+        "keymap":[ [ "keyRight", 8 ], [ "keyLeft", 7 ], [ "keyUp", 4 ], [ "keyDown", 5 ] ],
+        "romResource":"rom_merlin"
+      },
+      {
+        "name":"Missile",
+        "description":"Missile, by David Winter<br><br>Shoot the targets with the moving gun. Use the A BUTTON for firing.",
+        "keymap":[ [ "keyA", 8 ] ],
+        "romResource":"rom_missile"
+      },
+      {
+        "name":"Pong 2",
+        "description":"Pong 2 (Pong hack, 1997), by David Winter",
+        "keymap":[ [ "keyUp", 1 ], [ "keyDown", 4 ], [ "keyA", 12 ], [ "keyB", 13 ] ],
+        "romResource":"rom_pong2"
+      },
+      {
+        "name":"Puzzle",
+        "description":"4x4 tile puzzle - rearrange them into the order 0-F.<br>Use directions for moving.",
+        "keymap":[ [ "keyLeft", 6 ], [ "keyRight", 4 ], [ "keyUp", 2 ], [ "keyDown", 8 ] ],
+        "romResource":"rom_puzzle"
+      },
+      {
+        "name":"Rush Hour",
+        "description":"Rush Hour (2006), by Hap<br><br>The goal of the game is to slide the arrow block(s) out of the 6*6 grid. Completing 10 boards will be awarded with the inclusion of the next boardset(s) as seen from the connections on the boardset select screen, a password will be given so you don't have to complete the game in a single session. (not working in this emulator due to lack of buttons ;) - KesieV",
+        "keymap":[ [ "keyDown", 8 ], [ "keyUp", 5 ], [ "keyLeft", 7 ], [ "keyRight", 9 ], [ "keyA", 10 ] ],
+        "romResource":"rom_rushhour"
+      },
+      {
+        "name":"Space Flight",
+        "description":"Space flight game<br><br>Fly through the asteroid field. Use UP/DOWN to navigate space ship and A BUTTON to start the game.",
+        "keymap":[ [ "keyA", 15 ], [ "keyA", 14 ], [ "keyUp", 1 ], [ "keyDown", 4 ] ],
+        "romResource":"rom_spaceflight"
+      },
+      {
+        "name":"Space Invaders",
+        "description":"Space Invaders (1978), by David Winter<br><br>The well known game. Destroy the invaders with your ship. Shoot with A BUTTON, move with LEFT/RIGHT. Press A BUTTON to begin a game.",
+        "keymap":[ [ "keyLeft", 4 ], [ "keyRight", 6 ], [ "keyA", 5 ] ],
+        "romResource":"rom_invaders",
+        "shiftQuirk":1
+      },
+      {
+        "name":"Submarine",
+        "description":"Submarine (1978), by Carmelo Cortez<br><br>The Sub Game is my favorite. Press \"5\" key to fire depth charges at the subs below. You score 15 points for a small sub and 5 points for the larger. You get 25 depth charges to start.",
+        "keymap":[ [ "keyA", 5 ] ],
+        "romResource":"rom_submarine"
+      },
+      {
+        "name":"SuperWorm V4",
+        "description":"SuperWorm V4 (2007), by Revival Studios<br><br>SuperWorm V4 is an update of the SuperChip8 game: Worm3 by RB. The original game was only for SuperChip, so i've created a Chip-8 port. It also includes several speed fixes and a new control system.",
+        "keymap":[ [ "keyLeft", 4 ], [ "keyRight", 6 ], [ "keyUp", 2 ], [ "keyDown", 8 ], [ "keyA", 5 ] ],
+        "romResource":"rom_worm"
+      },
+      {
+        "name":"Tank",
+        "description":"You are in a tank which has 25 bombs. Your goal is to hit 25 times a mobile target. The game ends when all your bombs are shot. If your tank hits the target, you lose 5 bombs. Use directions for moving and A BUTTON for firing.",
+        "keymap":[ [ "keyA", 5 ], [ "keyDown", 2 ], [ "keyLeft", 4 ], [ "keyUp", 8 ], [ "keyRight", 6 ] ],
+        "romResource":"rom_tank"
+      },
+      {
+        "name":"Tetris",
+        "description":"Tetris (1991), by Fran Dachille<br><br>Use LEFT/RIGHT for moving. DOWN for dropping, A BUTTON for rotating.",
+        "keymap":[ [ "keyA", 4 ], [ "keyDown", 7 ], [ "keyLeft", 5 ], [ "keyRight", 6 ] ],
+        "romResource":"rom_tetris"
+      },
+      {
+        "name":"Trip8 Demo",
+        "description":"Trip8 Demo (2008), by Revival Studios<br><br>The Trip8/SuperTrip8 demo are demo's for the Chip-8 and SuperChip8 systems. The demo consists of an intro, 3D vectorballs, and 4 randomized dot-effects.<br>Writing a demo for the original Chip-8 interpreter was a real pain, since your framerate basically drops in half for every sprite you need to draw. So even clearing and redrawing a few dots will cause the framerate to drop to near zero :) Originally the demo was going to be bigger and there were much more graphical effects programmed/prototyped, but a lot of these effects turned out to be too much for the original unoptimized Chip-8 interpreters to handle.",
+        "keymap":[ [ "keyA", 5 ] ],
+        "romResource":"rom_trip8demo"
+      },
+      {
+        "name":"UFO",
+        "description":"UFO (1992)<br><br>You have a stationary missle launcher at the bottom of the screen. You can shoot in three directions; left diagonal, straight up, and right diagonal.. using the direction keys respectively... You try to hit one of two objects flying by... at apparently varying speeds... Your score is displayed on your left, the number of missles you have left is displayed on your right.",
+        "keymap":[ [ "keyUp", 5 ], [ "keyLeft", 4 ], [ "keyRight", 6 ] ],
+        "romResource":"rom_ufo"
+      }
+    ]
+  },
+  "execute":[
+    {
+      "as":{ "_":"variable" },
+      "set":{
+        "fontData":[ 240, 144, 144, 144, 240, 32, 96, 32, 32, 112, 240, 16, 240, 128, 240, 240, 16, 240, 16, 240, 144, 144, 240, 16, 16, 240, 128, 240, 16, 240, 240, 128, 240, 144, 240, 240, 16, 32, 64, 64, 240, 144, 240, 144, 240, 240, 144, 240, 16, 240, 240, 144, 240, 144, 144, 224, 144, 224, 144, 224, 240, 128, 128, 128, 240, 224, 144, 144, 144, 224, 240, 128, 240, 128, 240, 240, 128, 240, 128, 128 ],
+        "romId":0
+      }
+    },
+    {
+      "as":{ "_":"constant" },
+      "set":{
+        "display_height":32,
+        "display_pixelsize":3,
+        "display_width":64,
+        "display_x":32,
+        "display_y":27,
+        "mem_programstart":512,
+        "mem_size":4096,
+        "reg_size":16
+      }
+    },
+    { "as":{ "_":"constant" }, "set":{ "display_size":{ "_":[ "constant", "display_height", "*", { "_":[ "constant", "display_width" ] } ] } } }
+  ],
+  "scenes":{
+    "intro":{
+      "object":[
+        { "image":"images", "width":256, "height":24, "x":0, "y":0 },
+        { "type":"romDescription", "width":108, "height":152, "x":140, "y":32, "color":"#fff", "font":"small", "fontSize":8, "lineHeight":8 }
+      ],
+      "execute":[
+        { "set":{ "counter":0 } },
+        {
+          "times":15,
+          "execute":[
+            {
+              "object":{
+                "type":{ "_":[ "row", ".", { "_":[ "that", "counter" ] } ] },
+                "width":120, "height":10,
+                "x":8, "y":{ "_":[ "that", "counter", "*", 10, "+", 32 ] },
+                "color":"#fff",
+                "font":"spectrum", "lineHeight":10,
+                "execute":{ "when":{ "_":[ "that", "counter", "isEqualTo", 7 ] }, "set":{ "bgcolor":"#00f" } }
+              }
+            },
+            { "sum":1, "to":{ "_":[ "that", "counter" ] } }
+          ]
+        }
+      ],
+      "states":{
+        "execute":{ "executeAction":"updateList" },
+        "code":{
+          "name":"Execute",
+          "data":[
+            {
+              "when":{ "_":[ "keyUp", "isHit" ] },
+              "execute":[
+                { "as":{ "_":"variable" }, "subtract":1, "to":{ "_":[ "variable", "romId" ] }, "playAudio":"menu" },
+                {
+                  "when":{ "_":[ "variable", "romId", "isLessThan", 0 ] },
+                  "as":{ "_":"variable" },
+                  "set":{ "romId":{ "_":[ "stencil", "dataRoms", "count", "-", 1 ] } }
+                },
+                { "executeAction":"updateList" }
+              ]
+            },
+            {
+              "when":{ "_":[ "keyDown", "isHit" ] },
+              "execute":[
+                { "as":{ "_":"variable" }, "sum":1, "to":{ "_":[ "variable", "romId" ] }, "playAudio":"menu" },
+                {
+                  "when":{ "_":[ "variable", "romId", "isGreaterEqualThan", { "_":[ "stencil", "dataRoms", "count" ] } ] },
+                  "as":{ "_":"variable" },
+                  "set":{ "romId":0 }
+                },
+                { "executeAction":"updateList" }
+              ]
+            },
+            { "when":{ "_":[ "keyA", "isHit" ] }, "gotoScene":"emulator", "withTransition":3, "playAudio":"select" }
+          ]
+        },
+        "actions":{
+          "name":"updateList",
+          "execute":[
+            { "set":{ "counter":0 } },
+            {
+              "times":15,
+              "execute":[
+                { "set":{ "itemid":{ "_":[ "variable", "romId", "+", { "_":[ "this", "counter" ] }, "-", 7 ] } } },
+                {
+                  "as":{ "_":[ "objectTyped", { "_":[ "row", ".", { "_":[ "that", "counter" ] } ] } ] },
+                  "execute":{
+                    "when":{ "_":[ "that", "itemid", "isLessThan", 0 ] },
+                    "set":{ "html":"" },
+                    "elseExecute":{
+                      "when":{ "_":[ "that", "itemid", "isGreaterEqualThan", { "_":[ "stencil", "dataRoms", "count" ] } ] },
+                      "set":{ "html":"" },
+                      "elseExecute":{ "set":{ "html":{ "_":[ "stencil", "dataRoms", { "_":[ "that", "itemid" ] }, "name" ] } } }
+                    }
+                  }
+                },
+                { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+              ]
+            },
+            {
+              "as":{ "_":[ "objectTyped", "romDescription" ] },
+              "set":{ "html":{ "_":[ "stencil", "dataRoms", { "_":[ "variable", "romId" ] }, "description" ] } }
+            }
+          ]
+        }
+      }
+    },
+    "emulator":{
+      "object":{ "image":"images", "tileY":24, "width":256, "height":192, "x":0, "y":0 },
+      "execute":[
+        { "set":{ "counter":0 } },
+        {
+          "set":{
+            "keymap":{ "_":[ "stencil", "dataRoms", { "_":[ "variable", "romId" ] }, "keymap" ] },
+            "loadStoreQuirk":{ "_":[ "stencil", "dataRoms", { "_":[ "variable", "romId" ] }, "loadStoreQuirk" ] },
+            "romResource":{ "_":[ "stencil", "dataRoms", { "_":[ "variable", "romId" ] }, "romResource" ] },
+            "shiftQuirk":{ "_":[ "stencil", "dataRoms", { "_":[ "variable", "romId" ] }, "shiftQuirk" ] }
+          }
+        },
+        {
+          "REM":"Prepare screen.",
+          "times":{ "_":[ "constant", "display_size" ] },
+          "execute":[
+            {
+              "object":{
+                "type":[ "dot", { "_":[ "dot", ".", { "_":[ "that", "counter" ] } ] } ],
+                "width":{ "_":[ "constant", "display_pixelsize" ] }, "height":{ "_":[ "constant", "display_pixelsize" ] },
+                "zIndex":1, "x":{ "_":[ "that", "counter", "%", { "_":[ "constant", "display_width" ] }, "*", { "_":[ "constant", "display_pixelsize" ] }, "+", { "_":[ "constant", "display_x" ] } ] }, "y":{ "_":[ "that", "counter", "/", { "_":[ "constant", "display_width" ] }, "floor", "*", { "_":[ "constant", "display_pixelsize" ] }, "+", { "_":[ "constant", "display_y" ] } ] },
+                "visible":0,
+                "bgcolor":"#0f0"
+              }
+            },
+            { "sum":1, "to":{ "_":[ "that", "counter" ] } }
+          ]
+        },
+        { "set":{ "counter":0 } },
+        {
+          "times":{ "_":[ "constant", "mem_size" ] },
+          "execute":[ { "assign":0, "to":{ "_":[ "this", "memory", { "_":[ "this", "counter" ] } ] } }, { "sum":1, "to":{ "_":[ "this", "counter" ] } } ]
+        },
+        { "set":{ "counter":0 } },
+        {
+          "times":{ "_":[ "variable", "fontData", "count" ] },
+          "execute":[
+            { "assign":{ "_":[ "variable", "fontData", { "_":[ "this", "counter" ] } ] }, "to":{ "_":[ "this", "memory", { "_":[ "this", "counter" ] } ] } },
+            { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+          ]
+        },
+        { "set":{ "counter":0 } },
+        {
+          "times":{ "_":[ "constant", "reg_size" ] },
+          "execute":[ { "assign":0, "to":{ "_":[ "this", "v", { "_":[ "this", "counter" ] } ] } }, { "sum":1, "to":{ "_":[ "this", "counter" ] } } ]
+        },
+        { "_":[ "stencil", "codeClearScreen" ] },
+        { "set":{ "counter":0 } },
+        {
+          "times":{ "_":[ "resource", { "_":[ "this", "romResource" ] }, "count" ] },
+          "execute":[
+            {
+              "assign":{ "_":[ "resource", { "_":[ "this", "romResource" ] }, { "_":[ "this", "counter" ] } ] },
+              "to":{ "_":[ "this", "memory", { "_":[ "this", "counter", "+", { "_":[ "constant", "mem_programstart" ] } ] } ] }
+            },
+            { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+          ]
+        }
+      ],
+      "delayTimer":0,
+      "display":{ "_":[ "new", [] ] },
+      "i":0,
+      "memory":{ "_":[ "new", [] ] },
+      "pc":{ "_":[ "constant", "mem_programstart" ] },
+      "quitTimer":0,
+      "soundTimer":0,
+      "sp":0,
+      "stack":{ "_":[ "new", [] ] },
+      "v":{ "_":[ "new", [] ] },
+      "states":{
+        "code":{
+          "name":"Execute",
+          "data":[
+            {
+              "when":{ "_":[ "keyA", "isDown", "and", { "_":[ "keyB", "isDown" ] } ] },
+              "execute":[
+                { "sum":1, "to":{ "_":[ "this", "quitTimer" ] } },
+                { "when":{ "_":[ "this", "quitTimer", "isGreaterThan", 25 ] }, "gotoScene":"intro", "withTransition":3, "playAudio":"select" }
+              ],
+              "elseExecute":{ "set":{ "quitTimer":0 } }
+            },
+            {
+              "when":{ "_":[ "this", "waitKey" ] },
+              "execute":[
+                { "set":{ "counter":0 } },
+                {
+                  "times":{ "_":[ "this", "keymap", "count" ] },
+                  "execute":[
+                    {
+                      "when":{ "_":[ { "_":[ { "_":[ "this", "keymap", { "_":[ "this", "counter" ] } ] }, 0 ] }, "isDown" ] },
+                      "assign":{ "_":[ { "_":[ "this", "keymap", { "_":[ "this", "counter" ] } ] }, 1 ] },
+                      "to":{ "_":[ "this", "v", { "_":[ "this", "vx" ] } ] },
+                      "set":{ "waitKey":0 }
+                    },
+                    { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+                  ]
+                }
+              ],
+              "elseExecute":{
+                "times":10,
+                "execute":{
+                  "when":{ "_":[ "this", "waitKey", "not" ] },
+                  "execute":[
+                    {
+                      "set":{
+                        "opcode":{ "_":[ "this", "memory", { "_":[ "this", "pc" ] }, "bitShiftLeft", 8, "+", { "_":[ "this", "memory", { "_":[ "this", "pc", "+", 1 ] } ] } ] }
+                      }
+                    },
+                    { "sum":2, "to":{ "_":[ "this", "pc" ] } },
+                    {
+                      "set":{
+                        "firstNibble":{ "_":[ "this", "opcode", "bitAnd", 61440 ] },
+                        "vx":{ "_":[ "this", "opcode", "bitAnd", 3840, "bitShiftRight", 8 ] },
+                        "vy":{ "_":[ "this", "opcode", "bitAnd", 240, "bitShiftRight", 4 ] }
+                      }
+                    },
+                    {
+                      "when":{ "_":[ "this", "firstNibble", "isEqualTo", 0 ] },
+                      "execute":[
+                        { "REM":"Clear the display.", "when":{ "_":[ "this", "opcode", "isEqualTo", 224 ] }, "execute":{ "_":[ "stencil", "codeClearScreen" ] } },
+                        {
+                          "REM":"Return from subroutine.",
+                          "when":{ "_":[ "this", "opcode", "isEqualTo", 238 ] },
+                          "execute":[ { "subtract":1, "to":{ "_":[ "this", "sp" ] } }, { "set":{ "pc":{ "_":[ "this", "stack", { "_":[ "this", "sp" ] } ] } } } ]
+                        }
+                      ]
+                    },
+                    {
+                      "REM":"Jump to location nnn.",
+                      "when":{ "_":[ "this", "firstNibble", "isEqualTo", 4096 ] },
+                      "set":{ "pc":{ "_":[ "this", "opcode", "bitAnd", 4095 ] } }
+                    },
+                    {
+                      "REM":"Call subroutine at nnnn.",
+                      "when":{ "_":[ "this", "firstNibble", "isEqualTo", 8192 ] },
+                      "execute":[
+                        { "assign":{ "_":[ "this", "pc" ] }, "to":{ "_":[ "that", "stack", { "_":[ "this", "sp" ] } ] } },
+                        { "sum":1, "to":{ "_":[ "this", "sp" ] } },
+                        { "set":{ "pc":{ "_":[ "this", "opcode", "bitAnd", 4095 ] } } }
+                      ]
+                    },
+                    {
+                      "REM":"Skip next instruction if vX equals kk.",
+                      "when":{ "_":[ "this", "firstNibble", "isEqualTo", 12288 ] },
+                      "execute":{
+                        "when":{ "_":[ "this", "v", { "_":[ "this", "vx" ] }, "isEqualTo", { "_":[ "this", "opcode", "bitAnd", 255 ] } ] },
+                        "sum":2,
+                        "to":{ "_":[ "this", "pc" ] }
+                      }
+                    },
+                    {
+                      "REM":"Skip next instruction if vX doesn't equal kk.",
+                      "when":{ "_":[ "this", "firstNibble", "isEqualTo", 16384 ] },
+                      "execute":{
+                        "when":{ "_":[ "this", "v", { "_":[ "this", "vx" ] }, "isNotEqualTo", { "_":[ "this", "opcode", "bitAnd", 255 ] } ] },
+                        "sum":2,
+                        "to":{ "_":[ "this", "pc" ] }
+                      }
+                    },
+                    {
+                      "REM":"Skip next instruction if vX equals vY.",
+                      "when":{ "_":[ "this", "firstNibble", "isEqualTo", 20480 ] },
+                      "execute":{
+                        "when":{ "_":[ "this", "v", { "_":[ "this", "vx" ] }, "isEqualTo", { "_":[ "this", "v", { "_":[ "this", "vy" ] } ] } ] },
+                        "sum":2,
+                        "to":{ "_":[ "this", "pc" ] }
+                      }
+                    },
+                    {
+                      "REM":"Set Vx equal to kk.",
+                      "when":{ "_":[ "this", "firstNibble", "isEqualTo", 24576 ] },
+                      "assign":{ "_":[ "this", "opcode", "bitAnd", 255 ] },
+                      "to":{ "_":[ "this", "v", { "_":[ "this", "vx" ] } ] }
+                    },
+                    {
+                      "REM":"Set Vx equal to Vx + kk.",
+                      "when":{ "_":[ "this", "firstNibble", "isEqualTo", 28672 ] },
+                      "execute":[
+                        { "set":{ "val":{ "_":[ "this", "opcode", "bitAnd", 255, "+", { "_":[ "this", "v", { "_":[ "this", "vx" ] } ] } ] } } },
+                        { "when":{ "_":[ "this", "val", "isGreaterThan", 255 ] }, "subtract":256, "to":{ "_":[ "this", "val" ] } },
+                        { "assign":{ "_":[ "this", "val" ] }, "to":{ "_":[ "this", "v", { "_":[ "this", "vx" ] } ] } }
+                      ]
+                    },
+                    {
+                      "when":{ "_":[ "this", "firstNibble", "isEqualTo", 32768 ] },
+                      "execute":[
+                        { "set":{ "lastNibble":{ "_":[ "this", "opcode", "bitAnd", 15 ] } } },
+                        {
+                          "REM":"Stores register Vy in Vx.",
+                          "when":{ "_":[ "this", "lastNibble", "isEqualTo", 0 ] },
+                          "assign":{ "_":[ "this", "v", { "_":[ "this", "vy" ] } ] },
+                          "to":{ "_":[ "this", "v", { "_":[ "this", "vx" ] } ] }
+                        },
+                        {
+                          "REM":"Set vX equal to vX OR Vy.",
+                          "when":{ "_":[ "this", "lastNibble", "isEqualTo", 1 ] },
+                          "assign":{ "_":[ "this", "v", { "_":[ "this", "vx" ] }, "bitOr", { "_":[ "this", "v", { "_":[ "this", "vy" ] } ] } ] },
+                          "to":{ "_":[ "this", "v", { "_":[ "this", "vx" ] } ] }
+                        },
+                        {
+                          "REM":"Set Vx equal to Vx AND Vy",
+                          "when":{ "_":[ "this", "lastNibble", "isEqualTo", 2 ] },
+                          "assign":{ "_":[ "this", "v", { "_":[ "this", "vx" ] }, "bitAnd", { "_":[ "this", "v", { "_":[ "this", "vy" ] } ] } ] },
+                          "to":{ "_":[ "this", "v", { "_":[ "this", "vx" ] } ] }
+                        },
+                        {
+                          "REM":"Set Vx equal to Vx XOR Vy",
+                          "when":{ "_":[ "this", "lastNibble", "isEqualTo", 3 ] },
+                          "assign":{ "_":[ "this", "v", { "_":[ "this", "vx" ] }, "bitXor", { "_":[ "this", "v", { "_":[ "this", "vy" ] } ] } ] },
+                          "to":{ "_":[ "this", "v", { "_":[ "this", "vx" ] } ] }
+                        },
+                        {
+                          "REM":"Set Vx equal to Vx + Vy, set Vf equal to carry.",
+                          "when":{ "_":[ "this", "lastNibble", "isEqualTo", 4 ] },
+                          "execute":[
+                            { "sum":{ "_":[ "this", "v", { "_":[ "this", "vy" ] } ] }, "to":{ "_":[ "this", "v", { "_":[ "this", "vx" ] } ] } },
+                            { "assign":{ "_":[ "this", "v", { "_":[ "this", "vx" ] }, "isGreaterThan", 255 ] }, "to":{ "_":[ "this", "v", 15 ] } },
+                            {
+                              "when":{ "_":[ "this", "v", { "_":[ "this", "vx" ] }, "isGreaterThan", 255 ] },
+                              "subtract":256,
+                              "to":{ "_":[ "this", "v", { "_":[ "this", "vx" ] } ] }
+                            }
+                          ]
+                        },
+                        {
+                          "REM":"Set Vx equal to Vx - Vy, set Vf equal to NOT borrow.",
+                          "when":{ "_":[ "this", "lastNibble", "isEqualTo", 5 ] },
+                          "execute":[
+                            {
+                              "assign":{ "_":[ "this", "v", { "_":[ "this", "vx" ] }, "isGreaterThan", { "_":[ "this", "v", { "_":[ "this", "vy" ] } ] } ] },
+                              "to":{ "_":[ "this", "v", 15 ] }
+                            },
+                            { "subtract":{ "_":[ "this", "v", { "_":[ "this", "vy" ] } ] }, "to":{ "_":[ "this", "v", { "_":[ "this", "vx" ] } ] } },
+                            { "when":{ "_":[ "this", "v", { "_":[ "this", "vx" ] }, "isLessThan", 0 ] }, "sum":256, "to":{ "_":[ "this", "v", { "_":[ "this", "vx" ] } ] } }
+                          ]
+                        },
+                        {
+                          "REM":"Set Vx = Vy SHR 1.",
+                          "when":{ "_":[ "this", "lastNibble", "isEqualTo", 6 ] },
+                          "execute":[
+                            { "when":{ "_":[ "this", "shiftQuirk" ] }, "assign":{ "_":[ "this", "vx" ] }, "to":{ "_":[ "this", "vy" ] } },
+                            { "assign":{ "_":[ "this", "v", { "_":[ "this", "vy" ] }, "bitAnd", 1, "isGreaterThan", 0 ] }, "to":{ "_":[ "this", "v", 15 ] } },
+                            { "assign":{ "_":[ "this", "v", { "_":[ "this", "vy" ] }, "bitShiftRight", 1 ] }, "to":{ "_":[ "this", "v", { "_":[ "this", "vx" ] } ] } }
+                          ]
+                        },
+                        {
+                          "REM":"Set Vx equal to Vy - Vx, set Vf equal to NOT borrow.",
+                          "when":{ "_":[ "this", "lastNibble", "isEqualTo", 7 ] },
+                          "execute":[
+                            {
+                              "assign":{ "_":[ "this", "v", { "_":[ "this", "vy" ] }, "isGreaterThan", { "_":[ "this", "v", { "_":[ "this", "vx" ] } ] } ] },
+                              "to":{ "_":[ "this", "v", 15 ] }
+                            },
+                            {
+                              "assign":{ "_":[ "this", "v", { "_":[ "this", "vy" ] }, "-", { "_":[ "this", "v", { "_":[ "this", "vx" ] } ] } ] },
+                              "to":{ "_":[ "this", "v", { "_":[ "this", "vx" ] } ] }
+                            },
+                            { "when":{ "_":[ "this", "v", { "_":[ "this", "vx" ] }, "isLessThan", 0 ] }, "sum":256, "to":{ "_":[ "this", "v", { "_":[ "this", "vx" ] } ] } }
+                          ]
+                        },
+                        {
+                          "REM":"Set Vx = Vy SHL 1.",
+                          "when":{ "_":[ "this", "lastNibble", "isEqualTo", 14 ] },
+                          "execute":[
+                            { "when":{ "_":[ "this", "shiftQuirk" ] }, "assign":{ "_":[ "this", "vx" ] }, "to":{ "_":[ "this", "vy" ] } },
+                            { "assign":{ "_":[ "this", "v", { "_":[ "this", "vy" ] }, "bitAnd", 128, "isGreaterThan", 0 ] }, "to":{ "_":[ "this", "v", 15 ] } },
+                            { "assign":{ "_":[ "this", "v", { "_":[ "this", "vy" ] }, "bitShiftLeft", 1 ] }, "to":{ "_":[ "this", "v", { "_":[ "this", "vx" ] } ] } },
+                            {
+                              "when":{ "_":[ "this", "v", { "_":[ "this", "vx" ] }, "isGreaterThan", 255 ] },
+                              "subtract":256,
+                              "to":{ "_":[ "this", "v", { "_":[ "this", "vx" ] } ] }
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "REM":"Skip next instruction if Vx is not equal to Vy.",
+                      "when":{ "_":[ "this", "firstNibble", "isEqualTo", 36864 ] },
+                      "execute":{
+                        "when":{ "_":[ "this", "v", { "_":[ "this", "vx" ] }, "isNotEqualTo", { "_":[ "this", "v", { "_":[ "this", "vy" ] } ] } ] },
+                        "sum":2,
+                        "to":{ "_":[ "this", "pc" ] }
+                      }
+                    },
+                    {
+                      "REM":"Set I equal to nnn.",
+                      "when":{ "_":[ "this", "firstNibble", "isEqualTo", 40960 ] },
+                      "assign":{ "_":[ "this", "opcode", "bitAnd", 4095 ] },
+                      "to":{ "_":[ "this", "i" ] }
+                    },
+                    {
+                      "REM":"Jump to location V0 + nnn.",
+                      "when":{ "_":[ "this", "firstNibble", "isEqualTo", 45056 ] },
+                      "assign":{ "_":[ "this", "opcode", "bitAnd", 4095, "+", { "_":[ "this", "v", 0 ] } ] },
+                      "to":{ "_":[ "this", "pc" ] }
+                    },
+                    {
+                      "REM":"Set Vx equal to random byte AND kk.",
+                      "when":{ "_":[ "this", "firstNibble", "isEqualTo", 49152 ] },
+                      "assign":{ "_":[ "randomNumber", [ 0, 255 ], "bitAnd", { "_":[ "this", "opcode", "bitAnd", 255 ] } ] },
+                      "to":{ "_":[ "this", "v", { "_":[ "this", "vx" ] } ] }
+                    },
+                    {
+                      "REM":"Display n-byte sprite starting at memory location I at (Vx, Vy), set VF equal to collision.",
+                      "when":{ "_":[ "this", "firstNibble", "isEqualTo", 53248 ] },
+                      "execute":[
+                        { "assign":0, "to":{ "_":[ "this", "v", 15 ] } },
+                        {
+                          "set":{
+                            "counterY":0,
+                            "registerX":{ "_":[ "this", "v", { "_":[ "this", "vx" ] } ] },
+                            "registerY":{ "_":[ "this", "v", { "_":[ "this", "vy" ] } ] },
+                            "spriteHeight":{ "_":[ "this", "opcode", "bitAnd", 15 ] }
+                          }
+                        },
+                        {
+                          "times":{ "_":[ "this", "spriteHeight" ] },
+                          "execute":[
+                            { "set":{ "spr":{ "_":[ "this", "memory", { "_":[ "this", "i", "+", { "_":[ "this", "counterY" ] } ] } ] } } },
+                            { "set":{ "counterX":0 } },
+                            {
+                              "times":8,
+                              "execute":[
+                                {
+                                  "when":{ "_":[ "this", "spr", "bitAnd", 128, "isGreaterThan", 0 ] },
+                                  "execute":[
+                                    {
+                                      "set":{
+                                        "pixelX":{ "_":[ "this", "registerX", "+", { "_":[ "this", "counterX" ] } ] },
+                                        "pixelY":{ "_":[ "this", "registerY", "+", { "_":[ "this", "counterY" ] } ] }
+                                      }
+                                    },
+                                    { "set":{ "pixelLocation":{ "_":[ "this", "pixelX", "+", { "_":[ "this", "pixelY", "*", { "_":[ "constant", "display_width" ] } ] } ] } } },
+                                    {
+                                      "assign":{ "_":[ "this", "display", { "_":[ "this", "pixelLocation" ] }, "bitXor", 1 ] },
+                                      "to":{ "_":[ "this", "display", { "_":[ "this", "pixelLocation" ] } ] }
+                                    },
+                                    { "when":{ "_":[ "this", "display", { "_":[ "this", "pixelLocation" ] }, "not" ] }, "assign":1, "to":{ "_":[ "this", "v", 15 ] } },
+                                    {
+                                      "as":{ "_":[ "objectTyped", { "_":[ "dot", ".", { "_":[ "this", "pixelLocation" ] } ] } ] },
+                                      "set":{ "visible":{ "_":[ "that", "display", { "_":[ "that", "pixelLocation" ] } ] } }
+                                    }
+                                  ]
+                                },
+                                { "assign":{ "_":[ "this", "spr", "bitShiftLeft", 1 ] }, "to":{ "_":[ "this", "spr" ] } },
+                                { "sum":1, "to":{ "_":[ "this", "counterX" ] } }
+                              ]
+                            },
+                            { "sum":1, "to":{ "_":[ "this", "counterY" ] } }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "when":{ "_":[ "this", "firstNibble", "isEqualTo", 57344 ] },
+                      "execute":[
+                        { "set":{ "lastNibble":{ "_":[ "this", "opcode", "bitAnd", 255 ] } } },
+                        {
+                          "REM":"Skip next instruction if the key with the value Vx is pressed.",
+                          "when":{ "_":[ "this", "lastNibble", "isEqualTo", 158 ] },
+                          "execute":[ { "_":[ "stencil", "codeCheckKeyPressed" ] }, { "when":{ "_":[ "this", "keyIsPressed" ] }, "sum":2, "to":{ "_":[ "this", "pc" ] } } ]
+                        },
+                        {
+                          "REM":"Skip next instruction if the key with the value Vx is NOT pressed.",
+                          "when":{ "_":[ "this", "lastNibble", "isEqualTo", 161 ] },
+                          "execute":[ { "_":[ "stencil", "codeCheckKeyPressed" ] }, { "when":{ "_":[ "this", "keyIsPressed", "not" ] }, "sum":2, "to":{ "_":[ "this", "pc" ] } } ]
+                        }
+                      ]
+                    },
+                    {
+                      "when":{ "_":[ "this", "firstNibble", "isEqualTo", 61440 ] },
+                      "execute":[
+                        { "set":{ "lastNibble":{ "_":[ "this", "opcode", "bitAnd", 255 ] } } },
+                        {
+                          "REM":"Place value of DT in Vx.",
+                          "when":{ "_":[ "this", "lastNibble", "isEqualTo", 7 ] },
+                          "assign":{ "_":[ "this", "delayTimer" ] },
+                          "to":{ "_":[ "this", "v", { "_":[ "this", "vx" ] } ] }
+                        },
+                        { "REM":"Wait for keypress, then store it in Vx.", "when":{ "_":[ "this", "lastNibble", "isEqualTo", 10 ] }, "set":{ "waitKey":1 } },
+                        {
+                          "REM":"DT is set to Vx.",
+                          "when":{ "_":[ "this", "lastNibble", "isEqualTo", 21 ] },
+                          "assign":{ "_":[ "this", "v", { "_":[ "this", "vx" ] } ] },
+                          "to":{ "_":[ "this", "delayTimer" ] }
+                        },
+                        {
+                          "REM":"Set sound timer to Vx.",
+                          "when":{ "_":[ "this", "lastNibble", "isEqualTo", 24 ] },
+                          "assign":{ "_":[ "this", "v", { "_":[ "this", "vx" ] } ] },
+                          "to":{ "_":[ "this", "soundTimer" ] }
+                        },
+                        {
+                          "REM":"Set I equal to I + Vx",
+                          "when":{ "_":[ "this", "lastNibble", "isEqualTo", 30 ] },
+                          "sum":{ "_":[ "this", "v", { "_":[ "this", "vx" ] } ] },
+                          "to":{ "_":[ "this", "i" ] }
+                        },
+                        {
+                          "REM":"Set I equal to location of sprite for digit Vx.",
+                          "when":{ "_":[ "this", "lastNibble", "isEqualTo", 41 ] },
+                          "assign":{ "_":[ "this", "v", { "_":[ "this", "vx" ] }, "*", 5 ] },
+                          "to":{ "_":[ "this", "i" ] }
+                        },
+                        {
+                          "REM":"Store BCD representation of Vx in memory location starting at location I.",
+                          "when":{ "_":[ "this", "lastNibble", "isEqualTo", 51 ] },
+                          "execute":[
+                            { "set":{ "counter":3, "number":{ "_":[ "this", "v", { "_":[ "this", "vx" ] } ] } } },
+                            {
+                              "times":3,
+                              "execute":[
+                                {
+                                  "assign":{ "_":[ "this", "number", "%", 10 ] },
+                                  "to":{ "_":[ "this", "memory", { "_":[ "this", "i", "+", { "_":[ "this", "counter" ] }, "-", 1 ] } ] }
+                                },
+                                { "set":{ "number":{ "_":[ "this", "number", "/", 10, "floor" ] } } },
+                                { "subtract":1, "to":{ "_":[ "this", "counter" ] } }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "REM":"Store registers V0 through Vx in memory starting at location I.",
+                          "when":{ "_":[ "this", "lastNibble", "isEqualTo", 85 ] },
+                          "execute":[
+                            { "set":{ "counter":0 } },
+                            {
+                              "times":{ "_":[ "this", "vx", "+", 1 ] },
+                              "execute":[
+                                {
+                                  "assign":{ "_":[ "this", "v", { "_":[ "this", "counter" ] } ] },
+                                  "to":{ "_":[ "this", "memory", { "_":[ "this", "i", "+", { "_":[ "this", "counter" ] } ] } ] }
+                                },
+                                { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+                              ]
+                            },
+                            { "when":{ "_":[ "this", "loadStoreQuirk", "not" ] }, "sum":{ "_":[ "this", "vx", "+", 1 ] }, "to":{ "_":[ "this", "i" ] } }
+                          ]
+                        },
+                        {
+                          "REM":"Store registers V0 through Vx in memory starting at location I.",
+                          "when":{ "_":[ "this", "lastNibble", "isEqualTo", 101 ] },
+                          "execute":[
+                            { "set":{ "counter":0 } },
+                            {
+                              "times":{ "_":[ "this", "vx", "+", 1 ] },
+                              "execute":[
+                                {
+                                  "assign":{ "_":[ "this", "memory", { "_":[ "this", "i", "+", { "_":[ "this", "counter" ] } ] } ] },
+                                  "to":{ "_":[ "this", "v", { "_":[ "this", "counter" ] } ] }
+                                },
+                                { "sum":1, "to":{ "_":[ "this", "counter" ] } }
+                              ]
+                            },
+                            { "when":{ "_":[ "this", "loadStoreQuirk", "not" ] }, "sum":{ "_":[ "this", "vx", "+", 1 ] }, "to":{ "_":[ "this", "i" ] } }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            },
+            { "REM":"Handle timers.", "when":{ "_":[ "this", "delayTimer", "isGreaterThan", 0 ] }, "subtract":1, "to":{ "_":[ "this", "delayTimer" ] } },
+            {
+              "REM":"Handle sound.",
+              "when":{ "_":[ "this", "soundTimer", "isGreaterThan", 0 ] },
+              "execute":[ { "when":{ "_":[ "this", "soundTimer", "isEqualTo", 1 ] }, "playAudio":"beep" }, { "subtract":1, "to":{ "_":[ "this", "soundTimer" ] } } ]
+            }
+          ]
+        }
+      }
+    }
+  }
+}
