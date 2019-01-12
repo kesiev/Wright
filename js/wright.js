@@ -66,9 +66,9 @@ var Supports = (function(){
 			}
 		},
 		exitFullScreen:function() {
-			if (Supports.nativeFullscreen)
-				document[Supports.nativeFullscreen.exit]();
-			else if (this._fullscreen.node) {
+			if (Supports.nativeFullscreen) {
+				if (this.isFullScreen()) document[Supports.nativeFullscreen.exit]();
+			} else if (this._fullscreen.node) {
 				this._fullscreen.node.style.position=this._fullscreen.position;
 				this._fullscreen.node.style.left=this._fullscreen.left;
 				this._fullscreen.node.style.right=this._fullscreen.right;
@@ -146,7 +146,7 @@ var Supports = (function(){
 	ret.audioContext=window.AudioContext||window.webkitAudioContext;
 	ret.isAudio=!!ret.audioContext;
 	ret.isSafari=navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1;
-	if (div.requestFullscreen) ret.nativeFullscreen={request:"requestFullscreen",exit:"exitFullscreen",is:"fullscreenEnabled",on:"fullscreenchange",error:"fullscreenerror"};
+	if (div.requestFullscreen) ret.nativeFullscreen={request:"requestFullscreen",exit:"exitFullscreen",is:"fullscreen",on:"fullscreenchange",error:"fullscreenerror"};
 	else if (div.webkitRequestFullscreen) ret.nativeFullscreen={request:"webkitRequestFullScreen",exit:"webkitExitFullscreen",is:"webkitIsFullScreen",on:"webkitfullscreenchange",error:"webkitfullscreenerror"};
 	else if (div.mozRequestFullScreen) ret.nativeFullscreen={request:"mozRequestFullScreen",exit:"mozCancelFullScreen",is:"mozFullScreenElement",on:"mozfullscreenchange",error:"mozfullscreenerror"};
 	else if (div.msRequestFullscreen) ret.nativeFullscreen={request:"msRequestFullscreen",exit:"msExitFullscreen",is:"msFullscreenElement",on:"MSFullscreenChange",error:"msfullscreenerror"};
