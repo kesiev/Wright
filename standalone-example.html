@@ -1,0 +1,27 @@
+<html>
+<head>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Wright! Stand alone</title>
+	<link rel="stylesheet" href="fonts/stylesheet.css" type="text/css" charset="utf-8" />
+	<meta name="viewport" id="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<script type="text/javascript" src="js/wright.js?a=1"></script>
+</head>
+<body onload="onl()">
+	<div id="settings"></div>
+	<div id="wrightContainer" style="margin:auto"></div>	
+</body>
+<script>
+function onl() {
+	runSingleWright('bumpking',{
+		tapesRoot:'tapes/',
+		settingsContainer:document.getElementById('settings'),
+		gameContainer:document.getElementById('wrightContainer'),
+		scale:2,
+		onRun:function(){
+			settings.parentNode.removeChild(settings);
+			document.body.scrollTop = document.documentElement.scrollTop = 0;
+		}
+	});
+}
+</script>
+</html>
