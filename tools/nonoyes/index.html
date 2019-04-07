@@ -1,0 +1,68 @@
+<style>
+	body {
+		background-color: #ffd;
+	}
+</style>
+<div>
+	<input type="number" id="m" min="1" max="20" step="1" value="16">
+	<input type="number" id="n" min="1" max="20" step="1" value="16">
+	<input type="button" onclick="dump()" value="dump">
+  <input type="button" onclick="load()" value="load">
+</div>
+<canvas style="width:600px"></canvas>
+<canvas></canvas>
+<script src="nonogram.js"></script>
+<script>
+function $(selector) {
+  return document.querySelector(selector)
+}
+function $$(selector) {
+  return document.querySelectorAll(selector)
+}
+var canvases = $$('canvas')
+var asd;
+
+function load() {
+  var txt;
+  if (txt=prompt("Load:")) {
+
+    var data=JSON.parse("{"+txt+"}");
+    $('#m').value=data.rows.length
+    $('#n').value=data.cols.length;
+    var slv=new nonogram.Solver(data.rows, data.cols, canvases[1], {
+      delay: 0,
+      onSuccess: function (time) {
+       newCustomNonogram(this.grid);
+      },
+    }).solve();
+  }
+}
+
+function dump() {
+  prompt("Paste it in a Nonoyes scene:",JSON.stringify({rows:asd.hints.row,cols:asd.hints.column}));
+}
+function newCustomNonogram(grid) {
+  asd=new nonogram.Editor(
+    parseInt($('#m').value),
+    parseInt($('#n').value),
+    canvases[0],
+    {
+      grid:grid,
+      threshold: 0,
+      onHintChange: function (row, column) {
+        
+        new nonogram.Solver(row, column, canvases[1], {
+          delay: 0,
+          onSuccess: function (time) {
+            console.log(time)
+          },
+        }).solve()
+      },
+    }
+  );
+  console.log(asd);
+}
+$('#m').addEventListener('change', newCustomNonogram)
+$('#n').addEventListener('change', newCustomNonogram)
+newCustomNonogram()
+</script>
