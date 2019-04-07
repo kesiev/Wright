@@ -1,0 +1,128 @@
+<html>
+<head>
+	<script src="CCapture.all.min.js"></script>
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>Wright! Dev</title>
+	<link rel="stylesheet" href="../../fonts/stylesheet.css" type="text/css" charset="utf-8" />
+	<meta name="viewport" id="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	<script type="text/javascript" src="../../js/wright.js?a=3"></script>
+</head>
+<body onclick="onl()" onkeydown="kd(event)">
+	<div id="wrightContainer" style="margin:auto"></div>
+	<div id="debugdock"></div>
+	<input type="button" onclick="recordStart()" value="Record" id="recordbutton"  style="display:none">
+	<input type="button" onclick="recordStop()" value="Stop" id="stopbutton" style="display:none">
+	<input type="button" onclick="recordSave()" value="Save" id="savebutton" style="display:none">
+</body>
+<script>
+var gametitle="starcatland";
+var captureTime=5;
+var done=0;
+var recording=0;
+var capturer,subcapturer,gametitle;
+
+/*
+
+	file 'clip1.webm'
+	file 'clip2.webm'
+	file 'clip3.webm'
+	file 'clip4.webm'
+
+	ffmpeg -f concat -safe 0 -i clip.txt out.gif
+
+*/
+
+
+function kd(e) {
+	if (e.keyCode==65) {
+		subcapturer = new CCapture( { format: 'webm',framerate: 25, name:gametitle,	timeLimit:captureTime} );
+		subcapturer.start();
+	}
+	/*
+	if (e.keyCode==65)
+		if (recording) {
+			recordStop();
+			recordSave();
+		} else {
+			recordStart();
+		}
+		*/
+}
+
+function recordCreate() {
+	capturer = new CCapture( { format: 'webm',framerate: 25, name:gametitle,	timeLimit:captureTime} ); //  timeLimit:5 autoSaveTime:5 
+}
+
+function recordStart() {
+	subcapturer = new CCapture( { format: 'webm',framerate: 25, name:gametitle,	timeLimit:captureTime} );
+		subcapturer.start();
+		return;
+	console.log("Start recording");
+	recording=1;	
+	capturer.start();
+	//capturer = new CCapture( { format: 'gif', workersPath: '__DELME/capture/',framerate: 25 } );
+	document.getElementById("recordbutton").style.display="none";
+	document.getElementById("stopbutton").style.display="block";
+	document.getElementById("savebutton").style.display="none";
+}
+function recordStop() {
+	console.log("Stop recording");
+	recordCreate();
+	recording=0;
+	capturer.stop();
+	document.getElementById("recordbutton").style.display="block";
+	document.getElementById("stopbutton").style.display="none";
+	document.getElementById("savebutton").style.display="block";
+}
+function recordSave() {
+	console.log("Saving...");
+	capturer.save();	
+}
+
+function onl() {
+
+
+	if (done) return;
+
+	recordCreate();
+
+	document.getElementById("recordbutton").style.display="block";
+
+	done=1;
+	//Supports.nativeFullscreen=0;
+	runSingleWright(gametitle,{
+		tapesRoot:'../../tapes/',
+		gameContainer:document.getElementById('wrightContainer'),
+		volume:100,
+		scale:1,	
+		renderer:1,
+		filter:'Recorder',
+		cheats:{
+			autoBrake:0,
+			unlimitedTime:0,
+			unlimitedFault:0,
+
+			unlimitedHealth:0,
+			unlimitedLives:1,
+			unlimitedShots:0,
+			//unlimitedTime:1,
+			invulnerability:0,
+			//kebabMode:1,
+			unlimitedlife:1,
+			//unlimitedlives:1,
+			//unlimitedlife:1,
+			//showAnswer:1,
+			//singlePlayerOnly:1
+		},
+		recorder:function(canvas) {
+			if (capturer) capturer.capture( canvas );
+			if (subcapturer) subcapturer.capture( canvas );
+		},
+		onPublishScore:function(score) {
+			console.warn("Publishing score: "+score);
+		}
+	});
+}
+</script>
+</html>
+
