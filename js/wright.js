@@ -532,10 +532,8 @@ var DOMInator=function(useCanvas,aliasmode,controller,nosleep){
 		return size;
 	}
 	function topFixes(font,size,pos){
-		if (Supports.isFirefox) {
-			if (font=="spectrum") return pos-(size*0.1245);
-			if (font=="small") return pos+1;
-		}
+		if (font=="spectrum") return pos-(size*0.05);
+		if (font=="small") return pos+1;
 		return pos;
 	}
 
@@ -1391,6 +1389,7 @@ var DOMInator=function(useCanvas,aliasmode,controller,nosleep){
 					case "lineHeight":{
 						this.attributes.prints=0;
 						this.style[k]=v;
+						if ((k=="lineHeight")||(k=="fontFamily")) this.style.lineHeight=lineHeightFixes(this.style.fontFamily,this.style.lineHeight);
 						if ((k=="width")||(k=="height")) this.attributes.blit=0;
 						break;
 					}
