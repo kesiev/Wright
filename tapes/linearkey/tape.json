@@ -697,20 +697,23 @@
                     ]
                   },
                   {
-                    "when":{ "_":[ "this", "distanceTo", { "_":[ "this", "nextpoint" ] }, "isLessEqualThan", { "_":[ "this", "movingSpeed" ] } ] },
-                    "execute":[
-                      {
-                        "set":{
-                          "x":{ "_":[ "this", "nextpoint", "x" ] }, "y":{ "_":[ "this", "nextpoint", "y" ] },
-                          "forceX":0, "forceY":0,
-                          "side":{ "_":[ "this", "nextpoint", "side" ] },
-                          "waitCounter":{ "_":[ "this", "nextpoint", "wait" ] }
-                        }
-                      },
-                      { "_":[ "stencil", "codeSideUpdate" ] },
-                      { "sum":1, "to":{ "_":[ "this", "waypoint" ] } }
-                    ],
-                    "elseExecute":{ "applyVector":{ "angle":{ "_":[ "this", "angleTo", { "_":[ "this", "nextpoint" ] } ] }, "length":{ "_":[ "this", "movingSpeed" ] } } }
+                    "when":{ "_":[ "this", "nextpoint" ] },
+                    "execute":{
+                      "when":{ "_":[ "this", "distanceTo", { "_":[ "this", "nextpoint" ] }, "isLessEqualThan", { "_":[ "this", "movingSpeed" ] } ] },
+                      "execute":[
+                        {
+                          "set":{
+                            "x":{ "_":[ "this", "nextpoint", "x" ] }, "y":{ "_":[ "this", "nextpoint", "y" ] },
+                            "forceX":0, "forceY":0,
+                            "side":{ "_":[ "this", "nextpoint", "side" ] },
+                            "waitCounter":{ "_":[ "this", "nextpoint", "wait" ] }
+                          }
+                        },
+                        { "_":[ "stencil", "codeSideUpdate" ] },
+                        { "sum":1, "to":{ "_":[ "this", "waypoint" ] } }
+                      ],
+                      "elseExecute":{ "applyVector":{ "angle":{ "_":[ "this", "angleTo", { "_":[ "this", "nextpoint" ] } ] }, "length":{ "_":[ "this", "movingSpeed" ] } } }
+                    }
                   }
                 ]
               }
